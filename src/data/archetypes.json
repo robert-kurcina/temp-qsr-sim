@@ -1,0 +1,15 @@
+{
+  "common": [
+    { "name": "Untrained", "bp": 7 },
+    { "name": "Militia", "bp": 20 },
+    { "name": "Average", "bp": 30 },
+    { "name": "Veteran", "bp": 61 },
+    { "name": "Elite", "bp": 129 }
+  ],
+  "variants": [
+    { "base": "Veteran", "variant": "Wise", "trait": "Leadership", "bp_add": 20 },
+    { "base": "Veteran", "variant": "Tactician", "trait": "Tactics", "bp_add": 20 },
+    { "base": "Veteran", "variant": "Fighter", "trait": "Fight", "bp_add": 12 },
+    { "base": "Veteran", "variant": "Brawler", "trait": "Brawl", "bp_add": 12 }
+  ]
+}

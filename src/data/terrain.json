@@ -1,0 +1,38 @@
+[
+  {
+    "name": "Wall",
+    "type": "blocking",
+    "height_mu": 1.2,
+    "material": "stone",
+    "color": "#7f8c8d"
+  },
+  {
+    "name": "Woods",
+    "type": "blocking",
+    "height_mu": 7.0,
+    "material": "foliage",
+    "color": "#27ae60"
+  },
+  {
+    "name": "Hill",
+    "type": "elevation",
+    "height_mu": 1.5,
+    "slope_ratio": 0.5,
+    "material": "earth",
+    "color": "#d35400"
+  },
+  {
+    "name": "Debris",
+    "type": "cover_only",
+    "height_mu": 0.5,
+    "material": "rubble",
+    "color": "#bdc3c7"
+  },
+  {
+    "name": "Building",
+    "type": "blocking",
+    "height_mu": 2.0,
+    "material": "brick",
+    "color": "#8b6b45"
+  }
+]

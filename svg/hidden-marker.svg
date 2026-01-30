@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 19.05 19.05">
+  <defs>
+    <clipPath id="c" clipPathUnits="userSpaceOnUse">
+      <path d="M-42.024 29.267h58.5v-58.5h-58.5z"/>
+    </clipPath>
+    <clipPath id="d" clipPathUnits="userSpaceOnUse">
+      <path d="M-572.54-350.955h612v792h-612Z"/>
+    </clipPath>
+    <clipPath id="b" clipPathUnits="userSpaceOnUse">
+      <path d="M-572.537-343.375h612v792h-612Z"/>
+    </clipPath>
+    <clipPath id="a" clipPathUnits="userSpaceOnUse">
+      <path d="M-572.54-370.374h612v792h-612Z"/>
+    </clipPath>
+  </defs>
+  <path d="M29.25 29.25h-58.5v-58.5h58.5z" clip-path="url(#a)" transform="translate(9.525 9.525) scale(.35278)"/>
+  <path d="M0 0c14.912 0 27.002 12.089 27.002 26.999 0 14.91-12.09 27-27.002 27-14.909 0-26.998-12.09-26.998-27S-14.909 0 0 0" clip-path="url(#b)" transform="translate(9.524) scale(.35278)"/>
+  <path fill="#fff" d="m0 0-4.947-6.544.005 3.898-5.181.005-.007-5.181 3.897-.005-6.557-4.93-6.543 4.947 3.896-.003.006 5.178-5.181.008-.007-3.896-4.93 6.554 4.947 6.545-.003-3.894 5.182-.008.007 5.181-3.898.004 6.556 4.93 6.543-4.945-3.896.004-.005-5.182 5.18-.006.005 3.897z" clip-path="url(#c)" transform="translate(14.032 9.52) scale(.35278)"/>
+  <path fill="#fff" d="M0 0c-10.708 0-19.419 8.711-19.419 19.419S-10.708 38.838 0 38.838s19.419-8.711 19.419-19.419S10.708 0 0 0m0 40.838c-11.811 0-21.419-9.608-21.419-21.419S-11.811-2 0-2s21.419 9.608 21.419 21.419S11.811 40.838 0 40.838" clip-path="url(#d)" transform="translate(9.525 2.674) scale(.35278)"/>
+</svg>

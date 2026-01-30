@@ -1,0 +1,302 @@
+[
+  {
+    "name": "Armor, Combat Suit",
+    "class": "Armor - Suit",
+    "bp": 43,
+    "ar": 2,
+    "traits": ["[Laden X=0]", "Armor X=2"]
+  },
+  {
+    "name": "Armor, Field",
+    "class": "Armor - Suit",
+    "bp": 22,
+    "ar": 4,
+    "traits": ["[Laden X=4]", "Armor X=4"]
+  },
+  {
+    "name": "Armor, Field Advanced",
+    "class": "Armor - Suit",
+    "bp": 25,
+    "ar": 4,
+    "traits": ["[Laden X=4]", "Armor X=4", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Field Bulletproof Flex",
+    "class": "Armor - Suit",
+    "bp": 28,
+    "ar": 4,
+    "traits": ["[Laden X=3]", "Armor X=4", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Field Flex",
+    "class": "Armor - Suit",
+    "bp": 25,
+    "ar": 4,
+    "traits": ["[Laden X=3]", "Armor X=4"]
+  },
+  {
+    "name": "Armor, Field Mail",
+    "class": "Armor - Suit",
+    "bp": 20,
+    "ar": 4,
+    "traits": ["[Laden X=4]", "Armor X=4", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Field Nanoweave",
+    "class": "Armor - Suit",
+    "bp": 30,
+    "ar": 4,
+    "traits": ["[Laden X=2]", "Armor X=4", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Field Nanoweave BP",
+    "class": "Armor - Suit",
+    "bp": 35,
+    "ar": 5,
+    "traits": ["[Laden X=2]", "Armor X=5", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Field, Bulletproof",
+    "class": "Armor - Suit",
+    "bp": 25,
+    "ar": 5,
+    "traits": ["[Laden X=4]", "Armor X=5"]
+  },
+  {
+    "name": "Armor, Field, Bulletproof Advanced",
+    "class": "Armor - Suit",
+    "bp": 28,
+    "ar": 5,
+    "traits": ["[Laden X=4]", "Armor X=5", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Heavy",
+    "class": "Armor - Suit",
+    "bp": 15,
+    "ar": 6
+  },
+  {
+    "name": "Armor, Heavy Advanced",
+    "class": "Armor - Suit",
+    "bp": 18,
+    "ar": 6,
+    "traits": ["[Laden X=3]", "Armor X=6", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Heavy Bulletproof Flex",
+    "class": "Armor - Suit",
+    "bp": 22,
+    "ar": 6,
+    "traits": ["[Laden X=2]", "Armor X=6", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Heavy Flex",
+    "class": "Armor - Suit",
+    "bp": 18,
+    "ar": 6,
+    "traits": ["[Laden X=2]", "Armor X=6", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Heavy Mail",
+    "class": "Armor - Suit",
+    "bp": 16,
+    "ar": 6,
+    "traits": ["[Laden X=3]", "Armor X=6", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Heavy Nanoweave",
+    "class": "Armor - Suit",
+    "bp": 25,
+    "ar": 6,
+    "traits": ["[Laden X=1]", "Armor X=6", "Deflect X=3"]
+  },
+  {
+    "name": "Armor, Heavy Nanoweave BP",
+    "class": "Armor - Suit",
+    "bp": 30,
+    "ar": 7,
+    "traits": ["[Laden X=1]", "Armor X=7", "Deflect X=3"]
+  },
+  {
+    "name": "Armor, Heavy, Bulletproof",
+    "class": "Armor - Suit",
+    "bp": 20,
+    "ar": 7,
+    "traits": ["[Laden X=3]", "Armor X=7"]
+  },
+  {
+    "name": "Armor, Heavy, Bulletproof Advanced",
+    "class": "Armor - Suit",
+    "bp": 23,
+    "ar": 7,
+    "traits": ["[Laden X=3]", "Armor X=7", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Light",
+    "class": "Armor - Suit",
+    "bp": 8,
+    "ar": 2,
+    "traits": ["[Laden X=1]", "Armor X=2"]
+  },
+  {
+    "name": "Armor, Light Advanced",
+    "class": "Armor - Suit",
+    "bp": 11,
+    "ar": 2,
+    "traits": ["[Laden X=1]", "Armor X=2", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Light Bulletproof Flex",
+    "class": "Armor - Suit",
+    "bp": 14,
+    "ar": 2,
+    "traits": ["[Laden X=0]", "Armor X=2", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Light Flex",
+    "class": "Armor - Suit",
+    "bp": 11,
+    "ar": 2,
+    "traits": ["[Laden X=0]", "Armor X=2"]
+  },
+  {
+    "name": "Armor, Light Mail",
+    "class": "Armor - Suit",
+    "bp": 9,
+    "ar": 2,
+    "traits": ["[Laden X=1]", "Armor X=2", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Light Nanoweave",
+    "class": "Armor - Suit",
+    "bp": 16,
+    "ar": 2,
+    "traits": ["[Laden X=0]", "Armor X=2", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Light Nanoweave BP",
+    "class": "Armor - Suit",
+    "bp": 19,
+    "ar": 3,
+    "traits": ["[Laden X=0]", "Armor X=3", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Light, Bulletproof",
+    "class": "Armor - Suit",
+    "bp": 11,
+    "ar": 3,
+    "traits": ["[Laden X=1]", "Armor X=3"]
+  },
+  {
+    "name": "Armor, Light, Bulletproof Advanced",
+    "class": "Armor - Suit",
+    "bp": 14,
+    "ar": 3,
+    "traits": ["[Laden X=1]", "Armor X=3", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Medium",
+    "class": "Armor - Suit",
+    "bp": 13,
+    "ar": 3,
+    "traits": ["[Laden X=2]", "Armor X=3"]
+  },
+  {
+    "name": "Armor, Medium Advanced",
+    "class": "Armor - Suit",
+    "bp": 16,
+    "ar": 3,
+    "traits": ["[Laden X=2]", "Armor X=3", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Medium Bulletproof Flex",
+    "class": "Armor - Suit",
+    "bp": 19,
+    "ar": 3,
+    "traits": ["[Laden X=1]", "Armor X=3", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Medium Flex",
+    "class": "Armor - Suit",
+    "bp": 16,
+    "ar": 3,
+    "traits": ["[Laden X=1]", "Armor X=3"]
+  },
+  {
+    "name": "Armor, Medium Mail",
+    "class": "Armor - Suit",
+    "bp": 14,
+    "ar": 3,
+    "traits": ["[Laden X=2]", "Armor X=3", "Deflect X=1"]
+  },
+  {
+    "name": "Armor, Medium Nanoweave",
+    "class": "Armor - Suit",
+    "bp": 21,
+    "ar": 3,
+    "traits": ["[Laden X=1]", "Armor X=3", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Medium Nanoweave BP",
+    "class": "Armor - Suit",
+    "bp": 24,
+    "ar": 4,
+    "traits": ["[Laden X=1]", "Armor X=4", "Deflect X=2"]
+  },
+  {
+    "name": "Armor, Medium, Bulletproof",
+    "class": "Armor - Suit",
+    "bp": 16,
+    "ar": 4,
+    "traits": ["[Laden X=2]", "Armor X=4"]
+  },
+  {
+    "name": "Armor, Medium, Bulletproof Advanced",
+    "class": "Armor - Suit",
+    "bp": 19,
+    "ar": 4,
+    "traits": ["[Laden X=2]", "Armor X=4", "Deflect X=1"]
+  },
+  {
+    "name": "Armored Gear",
+    "class": "Armor - Gear",
+    "bp": 5,
+    "ar": 0,
+    "traits": ["[Laden X=0]"]
+  },
+  {
+    "name": "Armored Gear, Bracer",
+    "class": "Armor - Gear",
+    "bp": 6,
+    "ar": 0,
+    "traits": ["[Laden X=0]", "Deflect X=1"]
+  },
+  {
+    "name": "Armored Gear, Bulletproof",
+    "class": "Armor - Gear",
+    "bp": 8,
+    "ar": 0,
+    "traits": ["[Laden X=0]", "Armor X=1"]
+  },
+  {
+    "name": "Armored Gear, Padding",
+    "class": "Armor - Gear",
+    "bp": 4,
+    "ar": 0,
+    "traits": ["[Laden X=0]"]
+  },
+  {
+    "name": "Armored Gear, Padding Bulletproof",
+    "class": "Armor - Gear",
+    "bp": 6,
+    "ar": 0,
+    "traits": ["[Laden X=0]", "Armor X=1"]
+  },
+  {
+    "name": "Armored Gear, Vaumbrace",
+    "class": "Armor - Gear",
+    "bp": 7,
+    "ar": 0,
+    "traits": ["[Laden X=0]", "Deflect X=1"]
+  }
+]

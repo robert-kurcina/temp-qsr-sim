@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MEST Tactics</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Hamburger Menu Toggle (Mobile) -->
+  <button id="menu-toggle" class="hamburger" aria-label="Toggle menu">
+    ☰ MEST Tactics
+  </button>
+
+  <!-- Mobile Menu -->
+  <nav id="mobile-menu" class="mobile-menu hidden" role="navigation">
+    <button id="menu-close" class="close-btn">✕</button>
+    <ul class="menu-list">
+      <li><a href="#" data-tab="dashboard">🏠 Dashboard</a></li>
+      <li><a href="#" data-tab="builder">🛠️ Builder</a></li>
+      <li><a href="#" data-tab="gameplay">🎮 Gameplay</a></li>
+      <li><a href="#" data-tab="analysis">📊 Analysis</a></li>
+      <li><a href="#" data-tab="settings">⚙️ Settings</a></li>
+    </ul>
+  </nav>
+
+  <!-- Desktop Tab Bar -->
+  <nav id="desktop-tabs" class="desktop-tab-bar hidden" role="tablist">
+    <button data-tab="dashboard" class="tab-btn active">🏠 Dashboard</button>
+    <button data-tab="builder" class="tab-btn">🛠️ Builder</button>
+    <button data-tab="gameplay" class="tab-btn">🎮 Gameplay</button>
+    <button data-tab="analysis" class="tab-btn">📊 Analysis</button>
+    <button data-tab="settings" class="tab-btn">⚙️ Settings</button>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main id="main-content" class="container">
+    <div id="loading" class="loading">
+      <h1>MEST Tactics</h1>
+      <p>Loading canonical data...</p>
+    </div>
+    <div id="dashboard" class="tab-content hidden"></div>
+    <div id="builder" class="tab-content hidden"></div>
+    <div id="gameplay" class="tab-content hidden"></div>
+    <div id="analysis" class="tab-content hidden"></div>
+    <div id="settings" class="tab-content hidden"></div>
+  </main>
+
+  <script type="module" src="/src/app.js"></script>
+</body>
+</html>

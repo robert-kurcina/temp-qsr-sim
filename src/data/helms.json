@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Helmet, Light",
+    "class": "Helmet",
+    "bp": 3,
+    "ar": 1,
+    "traits": []
+  },
+  {
+    "name": "Helmet, Medium",
+    "class": "Helmet",
+    "bp": 6,
+    "ar": 2,
+    "traits": []
+  },
+  {
+    "name": "Helmet, Heavy",
+    "class": "Helmet",
+    "bp": 9,
+    "ar": 3,
+    "traits": ["[Laden X=1]"]
+  }
+]

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Shield, Small",
+    "class": "Armor - Shield",
+    "bp": 5,
+    "ar": 1,
+    "traits": ["[1H]", "Coverage"]
+  },
+  {
+    "name": "Shield, Light",
+    "class": "Armor - Shield",
+    "bp": 5,
+    "ar": 1,
+    "traits": ["[1H]", "Coverage"]
+  },
+  {
+    "name": "Shield, Medium",
+    "class": "Armor - Shield",
+    "bp": 10,
+    "ar": 2,
+    "traits": ["[1H]","[Laden]", "Coverage", "Deflect"]
+  },
+  {
+    "name": "Shield, Large",
+    "class": "Armor - Shield",
+    "bp": 13,
+    "ar": 2,
+    "traits": ["[Laden X=1]", "Armor 2", "Coverage"]
+  }
+]

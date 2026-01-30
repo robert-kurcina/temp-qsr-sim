@@ -1,0 +1,1124 @@
+[
+  {
+    "name": "Amulet of Eyes",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 15
+  },
+  {
+    "name": "Amulet of Fears",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 35
+  },
+  {
+    "name": "Belt of Strength",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 20
+  },
+  {
+    "name": "Bracers of Stealth",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 37
+  },
+  {
+    "name": "Collar, Spiked",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 12
+  },
+  {
+    "name": "Mask of Command",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 34
+  },
+  {
+    "name": "Necklace of Comfort",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 15
+  },
+  {
+    "name": "Ring of Flight",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 41
+  },
+  {
+    "name": "Ring of Leaping",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 20
+  },
+  {
+    "name": "Ring of Running",
+    "class": "Misc - Accessory",
+    "traits": [],
+    "bp": 20
+  },
+  {
+    "name": "Agenda Document",
+    "class": "Misc - Advantage",
+    "traits": [],
+    "bp": 14
+  },
+  {
+    "name": "Favored Passage",
+    "class": "Misc - Advantage",
+    "traits": [],
+    "bp": 16
+  },
+  {
+    "name": "Immune-Blast-1",
+    "class": "Misc - Advantage",
+    "traits": ["Immune-Blast X=1"],
+    "bp": 19
+  },
+  {
+    "name": "Immune-Blast-2",
+    "class": "Misc - Advantage",
+    "traits": ["Immune-Blast X=2"],
+    "bp": 30
+  },
+  {
+    "name": "Medicinals, Alcohol",
+    "class": "Misc - Advantage",
+    "traits": ["Grit"],
+    "bp": 17
+  },
+  {
+    "name": "Medicinals, Alcohol, Copious",
+    "class": "Misc - Advantage",
+    "traits": ["Grit X=2", "[Stupid]"],
+    "bp": 11
+  },
+  {
+    "name": "Medicinals, Euphorics",
+    "class": "Misc - Advantage",
+    "traits": ["Focused X=1"],
+    "bp": 18
+  },
+  {
+    "name": "Medicinals, Euphorics, Copious",
+    "class": "Misc - Advantage",
+    "traits": ["Focused X=2", "[Braggart]"],
+    "bp": 16
+  },
+  {
+    "name": "Medicinals, Hallucenogenics",
+    "class": "Misc - Advantage",
+    "traits": ["Manapool X=1"],
+    "bp": 32
+  },
+  {
+    "name": "Medicinals, Hallucenogenics, Copious",
+    "class": "Misc - Advantage",
+    "traits": ["Manapool X=2", "[Delusional"],
+    "bp": 21
+  },
+  {
+    "name": "Medicinals, Painkillers",
+    "class": "Misc - Advantage",
+    "traits": ["Sturdy X=1"],
+    "bp": 14
+  },
+  {
+    "name": "Medicinals, Painkillers, Copious",
+    "class": "Misc - Advantage",
+    "traits": ["Sturdy X=2", "[Belligerent]"],
+    "bp": 2
+  },
+  {
+    "name": "Medicinals, Psychoactives",
+    "class": "Misc - Advantage",
+    "traits": ["Frenzy"],
+    "bp": 15
+  },
+  {
+    "name": "Medicinals, Stimulants",
+    "class": "Misc - Advantage",
+    "traits": ["Brawn X=1"],
+    "bp": 11
+  },
+  {
+    "name": "Medicinals, Stimulants, Copious",
+    "class": "Misc - Advantage",
+    "traits": ["Brawn X=2", "[Reckless"],
+    "bp": 7
+  },
+  {
+    "name": "Nanotech:Rage",
+    "class": "Misc - Advantage",
+    "traits": ["Brawl X=1", "Brawn X=1", "Quick X=1"],
+    "bp": 27
+  },
+  {
+    "name": "Nanotech:Rampage",
+    "class": "Misc - Advantage",
+    "traits": ["Brawl X=2", "Brawn X=2", "Quick X=1"],
+    "bp": 28
+  },
+  {
+    "name": "Nanotech:Resist",
+    "class": "Misc - Advantage",
+    "traits": ["Resist X=2"],
+    "bp": 32
+  },
+  {
+    "name": "Nanotech:Run",
+    "class": "Misc - Advantage",
+    "traits": ["Quick X=2", "Brawl X=1"],
+    "bp": 28
+  },
+  {
+    "name": "Notebook, Leadership",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Leadership"],
+    "bp": 14
+  },
+  {
+    "name": "Notebook, Scholarship",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Scholarship"],
+    "bp": 14
+  },
+  {
+    "name": "Notebook, Tactics",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Tactics"],
+    "bp": 14
+  },
+  {
+    "name": "Package, Assassin",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Assassin"],
+    "bp": 35
+  },
+  {
+    "name": "Package, Berserker",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Berserker"],
+    "bp": 31
+  },
+  {
+    "name": "Package, Predict",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Predict"],
+    "bp": 47
+  },
+  {
+    "name": "Package, Recon",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Recon"],
+    "bp": 31
+  },
+  {
+    "name": "Package, Timer",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Timer"],
+    "bp": 99
+  },
+  {
+    "name": "Package, Warrior",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Warrior"],
+    "bp": 28
+  },
+  {
+    "name": "Prayer-Book",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Prayer-Book"],
+    "bp": 11
+  },
+  {
+    "name": "Prayer-Relic",
+    "class": "Misc - Advantage",
+    "traits": ["[Discard > Type] Prayer-Relic"],
+    "bp": 23
+  },
+  {
+    "name": "Sigil of Athletics",
+    "class": "Misc - Advantage",
+    "traits": ["Athletics X=1"],
+    "bp": 30
+  },
+  {
+    "name": "Sigil of Hunting",
+    "class": "Misc - Advantage",
+    "traits": ["Hunting X=1"],
+    "bp": 43
+  },
+  {
+    "name": "Silencer",
+    "class": "Misc - Attachment",
+    "traits": ["[Discard! > Type] Silencer"],
+    "bp": 6
+  },
+  {
+    "name": "Silencer, Advanced",
+    "class": "Misc - Attachment",
+    "traits": ["[Discard! > Type] Silencer, Advanced"],
+    "bp": 11
+  },
+  {
+    "name": "Arcanum, Accessory, Monstrum",
+    "class": "Misc - Device",
+    "traits": ["[Discard > Type] Monstrum"],
+    "bp": 48
+  },
+  {
+    "name": "Comm-helmet, Early",
+    "class": "Misc - Device",
+    "traits": ["Comms X=1"],
+    "bp": 15
+  },
+  {
+    "name": "Comm-link",
+    "class": "Misc - Device",
+    "traits": ["Comms X=1"],
+    "bp": 11
+  },
+  {
+    "name": "Comm-link, Boosted",
+    "class": "Misc - Device",
+    "traits": ["Comms X=2"],
+    "bp": 14
+  },
+  {
+    "name": "Comm-link, Early",
+    "class": "Misc - Device",
+    "traits": ["Comms X=1"],
+    "bp": 11
+  },
+  {
+    "name": "Damper > Type",
+    "class": "Misc - Device",
+    "traits": ["Damper X=1"],
+    "bp": 24
+  },
+  {
+    "name": "Damper 2 > Type",
+    "class": "Misc - Device",
+    "traits": ["Damper X=2"],
+    "bp": 32
+  },
+  {
+    "name": "Damper 3 > Type",
+    "class": "Misc - Device",
+    "traits": ["Damper X=3"],
+    "bp": 38
+  },
+  {
+    "name": "Damper 4 > Type",
+    "class": "Misc - Device",
+    "traits": ["Damper X=4"],
+    "bp": 44
+  },
+  {
+    "name": "Device, Synchron-1.1",
+    "class": "Misc - Device",
+    "traits": ["Synchron X=1"],
+    "bp": 67
+  },
+  {
+    "name": "Device, Synchron-2.1",
+    "class": "Misc - Device",
+    "traits": ["Synchron X=2"],
+    "bp": 106
+  },
+  {
+    "name": "Device, Synchron-3.2",
+    "class": "Misc - Device",
+    "traits": ["Synchron X=3"],
+    "bp": 153
+  },
+  {
+    "name": "Device, Synchron, Archaic",
+    "class": "Misc - Device",
+    "traits": ["Synchron X=1"],
+    "bp": 57
+  },
+  {
+    "name": "Device, Synchron, Early",
+    "class": "Misc - Device",
+    "traits": ["Synchron X=1"],
+    "bp": 62
+  },
+  {
+    "name": "Electrocounter Orbs",
+    "class": "Misc - Device",
+    "traits": ["Counter X=1"],
+    "bp": 18
+  },
+  {
+    "name": "Spotlight, S1-Small",
+    "class": "Misc - Device",
+    "traits": ["Light X=1"],
+    "bp": 14
+  },
+  {
+    "name": "Spotlight, S2-Large",
+    "class": "Misc - Device",
+    "traits": ["Light X=2"],
+    "bp": 18
+  },
+  {
+    "name": "A/Grav, Belt",
+    "class": "Misc - Tool",
+    "traits": ["Flight X=1"],
+    "bp": 35
+  },
+  {
+    "name": "A/Grav, Ring",
+    "class": "Misc - Tool",
+    "traits": ["Flight X=1"],
+    "bp": 55
+  },
+  {
+    "name": "Anti-gravity Harness",
+    "class": "Misc - Tool",
+    "traits": ["Flight X=2"],
+    "bp": 74
+  },
+  {
+    "name": "Arcanum, Accessory, Amulet",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Amulet"],
+    "bp": 37
+  },
+  {
+    "name": "Arcanum, Accessory, Ring",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Ring"],
+    "bp": 21
+  },
+  {
+    "name": "Arcanum, Accessory, Stone",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Stone"],
+    "bp": 20
+  },
+  {
+    "name": "Arcanum, Accessory, Trinket",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Trinket"],
+    "bp": 9
+  },
+  {
+    "name": "Arcanum, Codex, Common",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Codex, Common"],
+    "bp": 61
+  },
+  {
+    "name": "Arcanum, Codex, Legendary",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Codex, Legendary"],
+    "bp": 136
+  },
+  {
+    "name": "Arcanum, Scroll, Major",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Scroll, Major"],
+    "bp": 29
+  },
+  {
+    "name": "Arcanum, Scroll, Minor",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Scroll, Minor"],
+    "bp": 13
+  },
+  {
+    "name": "Arcanum, Tome, Greater",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Tome, Greater"],
+    "bp": 85
+  },
+  {
+    "name": "Arcanum, Tome, Lesser",
+    "class": "Misc - Tool",
+    "traits": ["[Discard > Type] Tome, Lesser"],
+    "bp": 56
+  },
+  {
+    "name": "Automedic",
+    "class": "Misc - Tool",
+    "traits": ["Heal X=1"],
+    "bp": 30
+  },
+  {
+    "name": "Comm-link, Box",
+    "class": "Misc - Tool",
+    "traits": ["Comms X=1"],
+    "bp": 11
+  },
+  {
+    "name": "Comm-link, Box-Hand-held",
+    "class": "Misc - Tool",
+    "traits": ["Comms X=1"],
+    "bp": 9
+  },
+  {
+    "name": "Comm-link, Box, Archaic",
+    "class": "Misc - Tool",
+    "traits": ["Comms X=1"],
+    "bp": 6
+  },
+  {
+    "name": "Comm-link, Box, Early",
+    "class": "Misc - Tool",
+    "traits": ["Comms X=1"],
+    "bp": 9
+  },
+  {
+    "name": "Comm-link, Box, Early (Embedded)",
+    "class": "Misc - Tool",
+    "traits": ["Comms X=1"],
+    "bp": 13
+  },
+  {
+    "name": "Comm-link, Jammer, Early",
+    "class": "Misc - Tool",
+    "traits": ["Jam X=1"],
+    "bp": 12
+  },
+  {
+    "name": "Comm-link, Jammer, Modern",
+    "class": "Misc - Tool",
+    "traits": ["Jam X=2"],
+    "bp": 31
+  },
+  {
+    "name": "Detonator",
+    "class": "Misc - Tool",
+    "traits": ["Detonate X=1"],
+    "bp": 25
+  },
+  {
+    "name": "Displacer Device",
+    "class": "Misc - Tool",
+    "traits": ["Teleport X=1"],
+    "bp": 137
+  },
+  {
+    "name": "Exxo-skeleton, Lifter Frame",
+    "class": "Misc - Tool",
+    "traits": ["Lift X=1"],
+    "bp": 6
+  },
+  {
+    "name": "Field Harness",
+    "class": "Misc - Tool",
+    "traits": ["Carry X=1"],
+    "bp": 35
+  },
+  {
+    "name": "Flashlight",
+    "class": "Misc - Tool",
+    "traits": ["Light X=1"],
+    "bp": 9
+  },
+  {
+    "name": "Flashlight, Advanced",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2"],
+    "bp": 13
+  },
+  {
+    "name": "Kit, Medical, CFAK",
+    "class": "Misc - Tool",
+    "traits": ["Heal X=1"],
+    "bp": 5
+  },
+  {
+    "name": "Kit, Medical, CFAK-v2",
+    "class": "Misc - Tool",
+    "traits": ["Heal X=2"],
+    "bp": 23
+  },
+  {
+    "name": "Kit, Medical, Field",
+    "class": "Misc - Tool",
+    "traits": ["Heal X=2"],
+    "bp": 23
+  },
+  {
+    "name": "Kit, Medical, Tactical",
+    "class": "Misc - Tool",
+    "traits": ["Heal X=1"],
+    "bp": 10
+  },
+  {
+    "name": "Lamp or Candle",
+    "class": "Misc - Tool",
+    "traits": ["Light X=1"],
+    "bp": 3
+  },
+  {
+    "name": "Lamp or Candle. Large",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2"],
+    "bp": 6
+  },
+  {
+    "name": "Lantern, Basic",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2"],
+    "bp": 14
+  },
+  {
+    "name": "Lantern, Basic, Large",
+    "class": "Misc - Tool",
+    "traits": ["Light X=3"],
+    "bp": 19
+  },
+  {
+    "name": "Lantern, Electric",
+    "class": "Misc - Tool",
+    "traits": ["Light X=3"],
+    "bp": 17
+  },
+  {
+    "name": "Lantern, Electric, Small",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2"],
+    "bp": 13
+  },
+  {
+    "name": "Lantern, Fueled",
+    "class": "Misc - Tool",
+    "traits": ["Light X=3"],
+    "bp": 33
+  },
+  {
+    "name": "Lantern, Fueled, Small",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2"],
+    "bp": 20
+  },
+  {
+    "name": "Launcher, Grenade Early",
+    "class": "Misc - Tool",
+    "traits": ["Launch X=1"],
+    "bp": 7
+  },
+  {
+    "name": "Launcher, Grenade Modern",
+    "class": "Misc - Tool",
+    "traits": ["Launch X=2"],
+    "bp": 10
+  },
+  {
+    "name": "Launcher, Grenade, Multi-rapid",
+    "class": "Misc - Tool",
+    "traits": ["Launch X=3"],
+    "bp": 19
+  },
+  {
+    "name": "Launcher, Grenade, Rapid",
+    "class": "Misc - Tool",
+    "traits": ["Launch X=2"],
+    "bp": 12
+  },
+  {
+    "name": "Leash",
+    "class": "Misc - Tool",
+    "traits": ["Control X=1"],
+    "bp": 19
+  },
+  {
+    "name": "Medicinals, Healing Potion",
+    "class": "Misc - Tool",
+    "traits": ["Regenerate X=1"],
+    "bp": 13
+  },
+  {
+    "name": "Medicinals, Healing Potion, Pure",
+    "class": "Misc - Tool",
+    "traits": ["Regenerate X=2", "[Prissy]"],
+    "bp": 17
+  },
+  {
+    "name": "Mirror",
+    "class": "Misc - Tool",
+    "traits": ["Reflect X=1"],
+    "bp": 5
+  },
+  {
+    "name": "Module, Control",
+    "class": "Misc - Tool",
+    "traits": ["Control X=1"],
+    "bp": 42
+  },
+  {
+    "name": "Module, Manipulator",
+    "class": "Misc - Tool",
+    "traits": ["Manipulate X=1"],
+    "bp": 66
+  },
+  {
+    "name": "Module, System",
+    "class": "Misc - Tool",
+    "traits": ["System X=1"],
+    "bp": 60
+  },
+  {
+    "name": "Module, Trigger",
+    "class": "Misc - Tool",
+    "traits": ["Trigger X=1"],
+    "bp": 22
+  },
+  {
+    "name": "Rope",
+    "class": "Misc - Tool",
+    "traits": ["Climb X=1"],
+    "bp": 0
+  },
+  {
+    "name": "Springsuit",
+    "class": "Misc - Tool",
+    "traits": ["Jump X=1"],
+    "bp": 23
+  },
+  {
+    "name": "Springsuit, Combat",
+    "class": "Misc - Tool",
+    "traits": ["Jump X=2"],
+    "bp": 32
+  },
+  {
+    "name": "Spy-glass",
+    "class": "Misc - Tool",
+    "traits": ["See X=1"],
+    "bp": 16
+  },
+  {
+    "name": "Teleporter Beacons",
+    "class": "Misc - Tool",
+    "traits": ["Teleport X=1"],
+    "bp": 12
+  },
+  {
+    "name": "Teleporter Pack",
+    "class": "Misc - Tool",
+    "traits": ["Teleport X=2"],
+    "bp": 55
+  },
+  {
+    "name": "Torch, Basic",
+    "class": "Misc - Tool",
+    "traits": ["Light X=1"],
+    "bp": 10
+  },
+  {
+    "name": "Torch, Basic, Large",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2"],
+    "bp": 14
+  },
+  {
+    "name": "Torch, Flaming",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2", "Burn X=1"],
+    "bp": 13
+  },
+  {
+    "name": "Torch, Flaming, Large",
+    "class": "Misc - Tool",
+    "traits": ["Light X=3", "Burn X=1"],
+    "bp": 18
+  },
+  {
+    "name": "Torch, Flashlight",
+    "class": "Misc - Tool",
+    "traits": ["Light X=1"],
+    "bp": 9
+  },
+  {
+    "name": "Torch, Staff",
+    "class": "Misc - Tool",
+    "traits": ["Light X=2"],
+    "bp": 19
+  },
+  {
+    "name": "Ammo Belt, Bandolier",
+    "class": "Misc - Upgrade",
+    "traits": ["[Laden X=1]"],
+    "bp": 13
+  },
+  {
+    "name": "Ammo Belt, Bandolier, Archaic",
+    "class": "Misc - Upgrade",
+    "traits": ["[Laden X=1]"],
+    "bp": 6
+  },
+  {
+    "name": "Ammo Box",
+    "class": "Misc - Upgrade",
+    "traits": ["[Laden X=1]"],
+    "bp": 7
+  },
+  {
+    "name": "Ammo, AP",
+    "class": "Misc - Upgrade",
+    "traits": ["AP X=1"],
+    "bp": 10
+  },
+  {
+    "name": "Ammo, AP-II",
+    "class": "Misc - Upgrade",
+    "traits": ["AP X=2"],
+    "bp": 15
+  },
+  {
+    "name": "Ammo, AT",
+    "class": "Misc - Upgrade",
+    "traits": ["AT X=1"],
+    "bp": 30
+  },
+  {
+    "name": "Ammo, AT-II",
+    "class": "Misc - Upgrade",
+    "traits": ["AT X=2"],
+    "bp": 39
+  },
+  {
+    "name": "Ammo, HE",
+    "class": "Misc - Upgrade",
+    "traits": ["HE X=1"],
+    "bp": 5
+  },
+  {
+    "name": "Ammo, HEAP",
+    "class": "Misc - Upgrade",
+    "traits": ["HEAP X=1"],
+    "bp": 19
+  },
+  {
+    "name": "Ammo, HEAP-II",
+    "class": "Misc - Upgrade",
+    "traits": ["HEAP X=2"],
+    "bp": 25
+  },
+  {
+    "name": "Ammo, HEAT",
+    "class": "Misc - Upgrade",
+    "traits": ["HEAT X=1"],
+    "bp": 40
+  },
+  {
+    "name": "Ammo, HEAT-II",
+    "class": "Misc - Upgrade",
+    "traits": ["HEAT X=2"],
+    "bp": 49
+  },
+  {
+    "name": "Ammo, HP",
+    "class": "Misc - Upgrade",
+    "traits": ["HP X=1"],
+    "bp": 6
+  },
+  {
+    "name": "Ammo, Tracer Round",
+    "class": "Misc - Upgrade",
+    "traits": ["Tracer X=1"],
+    "bp": 9
+  },
+  {
+    "name": "Arcanum, Attachment, Large",
+    "class": "Misc - Upgrade",
+    "traits": ["[Discard > Type] Attachment, Large"],
+    "bp": 66
+  },
+  {
+    "name": "Arcanum, Attachment, Small",
+    "class": "Misc - Upgrade",
+    "traits": ["[Discard > Type] Attachment, Small"],
+    "bp": 58
+  },
+  {
+    "name": "Gas-mask",
+    "class": "Misc - Upgrade",
+    "traits": ["Filter X=1"],
+    "bp": 16
+  },
+  {
+    "name": "Gas-mask, Hooded",
+    "class": "Misc - Upgrade",
+    "traits": ["Filter X=2"],
+    "bp": 20
+  },
+  {
+    "name": "Gas-mask, Respirator",
+    "class": "Misc - Upgrade",
+    "traits": ["Filter X=2"],
+    "bp": 20
+  },
+  {
+    "name": "Goggles",
+    "class": "Misc - Upgrade",
+    "traits": ["See X=1"],
+    "bp": 13
+  },
+  {
+    "name": "Goggles, Night-vision",
+    "class": "Misc - Upgrade",
+    "traits": ["See X=2"],
+    "bp": 10
+  },
+  {
+    "name": "Goggles, Night-vision, Adv.",
+    "class": "Misc - Upgrade",
+    "traits": ["See X=3"],
+    "bp": 13
+  },
+  {
+    "name": "Goggles, Optiplex",
+    "class": "Misc - Upgrade",
+    "traits": ["See X=3"],
+    "bp": 17
+  },
+  {
+    "name": "Goggles, Pin-point",
+    "class": "Misc - Upgrade",
+    "traits": ["See X=4"],
+    "bp": 23
+  },
+  {
+    "name": "Goggles, Sensor",
+    "class": "Misc - Upgrade",
+    "traits": ["Sense X=1"],
+    "bp": 23
+  },
+  {
+    "name": "Heirloom Weapon",
+    "class": "Misc - Upgrade",
+    "traits": ["[Discard > Type] Heirloom"],
+    "bp": 6
+  },
+  {
+    "name": "Kit, Glider Caped",
+    "class": "Misc - Upgrade",
+    "traits": ["Glide X=1"],
+    "bp": 29
+  },
+  {
+    "name": "Kit, Glider Winged",
+    "class": "Misc - Upgrade",
+    "traits": ["Glide X=2"],
+    "bp": 38
+  },
+  {
+    "name": "Poisoned Weapon",
+    "class": "Misc - Upgrade",
+    "traits": ["Poison X=1"],
+    "bp": 10
+  },
+  {
+    "name": "Poisoned Weapon, Deadly",
+    "class": "Misc - Upgrade",
+    "traits": ["Poison X=2"],
+    "bp": 13
+  },
+  {
+    "name": "Reinforced, Polearm",
+    "class": "Misc - Upgrade",
+    "traits": ["Reinforce X=1"],
+    "bp": 0
+  },
+  {
+    "name": "Reinforced, Standard",
+    "class": "Misc - Upgrade",
+    "traits": ["Reinforce X=1"],
+    "bp": 3
+  },
+  {
+    "name": "Seal of Arrows",
+    "class": "Misc - Upgrade",
+    "traits": ["Arrow X=1"],
+    "bp": 13
+  },
+  {
+    "name": "Seal of Daggers",
+    "class": "Misc - Upgrade",
+    "traits": ["Dagger X=1"],
+    "bp": 6
+  },
+  {
+    "name": "Sniper Scope, Advanced",
+    "class": "Misc - Upgrade",
+    "traits": ["Scope X=3"],
+    "bp": 55
+  },
+  {
+    "name": "Sniper Scope, Advanced, Starlight",
+    "class": "Misc - Upgrade",
+    "traits": ["Scope X=4"],
+    "bp": 74
+  },
+  {
+    "name": "Sniper Scope, Basic",
+    "class": "Misc - Upgrade",
+    "traits": ["Scope X=1"],
+    "bp": 18
+  },
+  {
+    "name": "Sniper Scope, Laser",
+    "class": "Misc - Upgrade",
+    "traits": ["Scope X=2"],
+    "bp": 12
+  },
+  {
+    "name": "Sniper Scope, Starlight",
+    "class": "Misc - Upgrade",
+    "traits": ["Scope X=2"],
+    "bp": 36
+  },
+  {
+    "name": "Targeting System",
+    "class": "Misc - Upgrade",
+    "traits": ["Target X=1"],
+    "bp": 4
+  },
+  {
+    "name": "Upgrade:Balanced",
+    "class": "Misc - Upgrade",
+    "traits": ["Balance X=1"],
+    "bp": 2
+  },
+  {
+    "name": "Upgrade:Masterworks",
+    "class": "Misc - Upgrade",
+    "traits": ["Masterwork X=1"],
+    "bp": 12
+  },
+  {
+    "name": "Upgrade:Poisoned",
+    "class": "Misc - Upgrade",
+    "traits": ["Poison X=1"],
+    "bp": 10
+  },
+  {
+    "name": "Upgrade:Poisoned, Deadly",
+    "class": "Misc - Upgrade",
+    "traits": ["Poison X=2"],
+    "bp": 13
+  },
+  {
+    "name": "Upgrade:Reinforced",
+    "class": "Misc - Upgrade",
+    "traits": ["Reinforce X=1"],
+    "bp": 4
+  },
+  {
+    "name": "Upgrade:Reinforced, Polearm",
+    "class": "Misc - Upgrade",
+    "traits": ["Reinforce X=1"],
+    "bp": 0
+  },
+  {
+    "name": "Upgrade:Well-honed",
+    "class": "Misc - Upgrade",
+    "traits": ["Hone X=1"],
+    "bp": 6
+  },
+  {
+    "name": "Explosives, Agenda Bomb, Large",
+    "class": "Munitions",
+    "traits": ["Bomb X=3"],
+    "bp": 29
+  },
+  {
+    "name": "Explosives, Agenda Bomb, Small",
+    "class": "Munitions",
+    "traits": ["Bomb X=1"],
+    "bp": 12
+  },
+  {
+    "name": "Explosives, Agenda Bomb,Medium",
+    "class": "Munitions",
+    "traits": ["Bomb X=2"],
+    "bp": 20
+  },
+  {
+    "name": "Explosives, Bomb, Large",
+    "class": "Munitions",
+    "traits": ["Bomb X=5"],
+    "bp": 183
+  },
+  {
+    "name": "Explosives, Bomb, Small",
+    "class": "Munitions",
+    "traits": ["Bomb X=4"],
+    "bp": 110
+  },
+  {
+    "name": "Explosives, Mine, IED",
+    "class": "Munitions",
+    "traits": ["Mine X=4"],
+    "bp": 203
+  },
+  {
+    "name": "Explosives, Mine, Tank",
+    "class": "Munitions",
+    "traits": ["Mine X=5"],
+    "bp": 317
+  },
+  {
+    "name": "Explosives, Petard",
+    "class": "Munitions",
+    "traits": ["Petard X=1"],
+    "bp": 13
+  },
+  {
+    "name": "Explosives, Powderkeg",
+    "class": "Munitions",
+    "traits": ["Powderkeg X=2"],
+    "bp": 61
+  },
+  {
+    "name": "Explosives, Satchel",
+    "class": "Munitions",
+    "traits": ["Satchel X=2"],
+    "bp": 45
+  },
+  {
+    "name": "Explosives, Satchel, Pulse",
+    "class": "Munitions",
+    "traits": ["Satchel X=2", "Pulse X=1"],
+    "bp": 39
+  },
+  {
+    "name": "Mine, Acid, Small",
+    "class": "Munitions",
+    "traits": ["Mine X=1", "Acid X=1"],
+    "bp": 15
+  },
+  {
+    "name": "Mine, Anti-personnel",
+    "class": "Munitions",
+    "traits": ["Mine X=3", "Frag X=4"],
+    "bp": 85
+  },
+  {
+    "name": "Mine, Anti-personnel, Micromag",
+    "class": "Munitions",
+    "traits": ["Mine X=3", "Mag X=2"],
+    "bp": 19
+  },
+  {
+    "name": "Mine, Heat, Medium",
+    "class": "Munitions",
+    "traits": ["Mine X=2", "Heat X=1"],
+    "bp": 27
+  },
+  {
+    "name": "Mine, Heat, Small",
+    "class": "Munitions",
+    "traits": ["Mine X=1", "Heat X=1"],
+    "bp": 14
+  }
+]

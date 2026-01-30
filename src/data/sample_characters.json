@@ -1,0 +1,47 @@
+[
+  {
+    "archetype": "Veteran",
+    "weapons": ["Sword, Broad"],
+    "armor": ["Armor, Medium"],
+    "shield": ["Shield, Medium"],
+    "helm": null,
+    "traits": ["Grit"],
+    "bp": 101
+  },
+  {
+    "archetype": "Average",
+    "weapons": ["2 × Daggers"],
+    "armor": ["Armor, Light"],
+    "shield": null,
+    "helm": null,
+    "traits": ["Knife-fighter"],
+    "bp": 47
+  },
+  {
+    "archetype": "Militia",
+    "weapons": ["Spear, Medium"],
+    "armor": null,
+    "shield": null,
+    "helm": "Helmet",
+    "traits": [],
+    "bp": 66
+  },
+  {
+    "archetype": "Elite",
+    "weapons": ["Bow, Long"],
+    "armor": ["Armor, Light"],
+    "shield": null,
+    "helm": "Helmet",
+    "traits": ["Grit", "Fight", "Shoot"],
+    "bp": 150
+  },
+  {
+    "archetype": "Veteran",
+    "weapons": ["Hammer, War"],
+    "armor": ["Armor, Light"],
+    "shield": null,
+    "helm": "Helmet",
+    "traits": ["Brawl"],
+    "bp": 95
+  }
+]

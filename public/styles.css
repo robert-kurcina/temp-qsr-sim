@@ -1,0 +1,239 @@
+/* Mobile-First Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --secondary: #6b7280;
+  --success: #16a34a;
+  --warning: #ca8a04;
+  --error: #dc2626;
+  --background: #f9fafb;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: #1f2937;
+  background-color: var(--background);
+  padding: 16px;
+  min-height: 100vh;
+}
+
+/* Typography */
+h1 { font-size: 1.5rem; font-weight: bold; margin-bottom: 16px; }
+h2 { font-size: 1.25rem; font-weight: bold; margin-bottom: 12px; }
+p { margin-bottom: 8px; }
+
+/* Layout */
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Hidden utility */
+.hidden { display: none !important; }
+
+/* Loading state */
+.loading {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+/* Touch targets */
+.min-h-\[48px\] { min-height: 48px !important; }
+.min-w-\[48px\] { min-width: 48px !important; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0 1rem;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.btn-secondary {
+  background-color: #f3f4f6;
+  color: var(--secondary);
+}
+.btn-secondary:hover {
+  background-color: #e5e7eb;
+}
+
+/* Hamburger Menu (Mobile) */
+.hamburger {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1000;
+  font-size: 1.25rem;
+  background: none;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 0.5rem;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 100vh;
+  background: white;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+  z-index: 999;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.menu-list {
+  margin-top: 40px;
+}
+
+.menu-list li {
+  margin-bottom: 8px;
+}
+
+.menu-list a {
+  display: block;
+  padding: 12px 16px;
+  text-decoration: none;
+  color: var(--secondary);
+  border-radius: 0.5rem;
+  transition: background-color 0.15s;
+}
+
+.menu-list a:hover {
+  background-color: #f3f4f6;
+}
+
+/* Desktop Tab Bar */
+@media (min-width: 768px) {
+  .hamburger { display: none; }
+  .mobile-menu { display: none !important; }
+  
+  .desktop-tab-bar {
+    display: flex;
+    gap: 8px;
+    padding: 16px 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .tab-btn {
+    padding: 8px 16px;
+    border: none;
+    background: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s;
+  }
+  
+  .tab-btn.active {
+    background-color: var(--primary);
+    color: white;
+  }
+  
+  .tab-btn:not(.active):hover {
+    background-color: #f3f4f6;
+  }
+  
+  /* Wider container on desktop */
+  .container {
+    max-width: 800px;
+  }
+}
+
+/* Tab Content */
+.tab-content {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Card styling */
+.organism-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Status indicators */
+.status-warning { color: var(--warning); }
+.status-error { color: var(--error); }
+.status-success { color: var(--success); }
+
+/* Add to styles.css */
+#battlefield-container {
+  position: relative;
+  height: 400px;
+  background: #f3f4f6;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+#battlefield-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* Responsive battlefield */
+@media (max-width: 767px) {
+  #battlefield-container {
+    height: 300px;
+  }
+}

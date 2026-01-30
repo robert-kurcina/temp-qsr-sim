@@ -1,0 +1,14 @@
+{
+  "Overreach": {
+    "type": "action_modifier",
+    "conditions": {
+      "attacker.free": true,
+      "attacker.attentive": true,
+      "weapon.natural": false
+    },
+    "effects": {
+      "melee_range": "+1 MU",
+      "penalties": { "REF": -1, "CCA": -1 }
+    }
+  }
+}

@@ -1,0 +1,191 @@
+[
+  {
+    "tech_age": "Stone",
+    "tech_period": "Ancient",
+    "tech_level": 1,
+    "tech_year": -5000,
+    "weapons": [
+      "Taser Rifle",
+      "Taser Pistol"
+    ],
+    "armors": [
+      "Ballistic Vest",
+      "Tactical Helmet"
+    ],
+    "equipment": [
+      "Night Vision Goggles",
+      "Radio Communicator"
+    ]
+  },
+  {
+    "tech_age": "Bronze",
+    "tech_period": "Ancient",
+    "tech_level": 2,
+    "tech_year": -2250,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Iron",
+    "tech_period": "Ancient",
+    "tech_level": 3,
+    "tech_year": -500,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Dark",
+    "tech_period": "Ancient",
+    "tech_level": 4,
+    "tech_year": 500,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Medieval",
+    "tech_period": "Archaic",
+    "tech_level": 5,
+    "tech_year": 1000,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Renassance",
+    "tech_period": "Archaic",
+    "tech_level": 6,
+    "tech_year": 1300,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Colonial",
+    "tech_period": "Archaic",
+    "tech_level": 7,
+    "tech_year": 1500,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Sail",
+    "tech_period": "Expansionist",
+    "tech_level": 8,
+    "tech_year": 1650,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Industrial",
+    "tech_period": "Expansionist",
+    "tech_level": 9,
+    "tech_year": 1750,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Machine",
+    "tech_period": "Expansionist",
+    "tech_level": 10,
+    "tech_year": 1850,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Modern",
+    "tech_period": "Modern",
+    "tech_level": 11,
+    "tech_year": 1900,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Atomic",
+    "tech_period": "Modern",
+    "tech_level": 12,
+    "tech_year": 1950,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Information",
+    "tech_period": "Modern",
+    "tech_level": 13,
+    "tech_year": 2000,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Robotics",
+    "tech_period": "Near Future",
+    "tech_level": 14,
+    "tech_year": 2025,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Fusion",
+    "tech_period": "Near Future",
+    "tech_level": 15,
+    "tech_year": 2050,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Quantum",
+    "tech_period": "Far Future",
+    "tech_level": 16,
+    "tech_year": 2100,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Energy",
+    "tech_period": "Far Future",
+    "tech_level": 17,
+    "tech_year": 2250,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Gravity",
+    "tech_period": "Far Future",
+    "tech_level": 18,
+    "tech_year": 3000,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Psionic",
+    "tech_period": "Fantastic",
+    "tech_level": 19,
+    "tech_year": 3350,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  },
+  {
+    "tech_age": "Symbolic",
+    "tech_period": "Fantastic",
+    "tech_level": 20,
+    "tech_year": 5000,
+    "weapons": [],
+    "armors": [],
+    "equipment": []
+  }
+]

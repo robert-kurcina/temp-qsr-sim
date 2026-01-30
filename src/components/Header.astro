@@ -1,0 +1,16 @@
+---
+import { pageContent } from '../data/bundledData.js';
+const { hero_section } = pageContent;
+---
+
+<header class="bg-gray-800 text-white p-4 sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">{hero_section.title}</h1>
+        <nav>
+            <a href="#hero" class="px-4 hover:text-gray-300">Home</a>
+            <a href="#problem" class="px-4 hover:text-gray-300">Problem</a>
+            <a href="#solution" class="px-4 hover:text-gray-300">Solution</a>
+            <a href="#features" class="px-4 hover:text-gray-300">Features</a>
+        </nav>
+    </div>
+</header>

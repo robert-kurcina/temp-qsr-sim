@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="336" viewBox="0 0 63.5 88.9">
+  <defs>
+    <clipPath id="a" clipPathUnits="userSpaceOnUse">
+      <path d="M836 0h816v1056H836Z"/>
+    </clipPath>
+    <clipPath id="b" clipPathUnits="userSpaceOnUse">
+      <path d="M405.756 642.587h165.6v-66.812h-165.6z"/>
+    </clipPath>
+    <clipPath id="e" clipPathUnits="userSpaceOnUse">
+      <path d="M836 0h816v1056H836Z"/>
+    </clipPath>
+    <clipPath id="f" clipPathUnits="userSpaceOnUse">
+      <path d="M405.756 575.775h165.6v-65.549h-165.6z"/>
+    </clipPath>
+    <clipPath id="c" clipPathUnits="userSpaceOnUse">
+      <path d="M836 0h816v1056H836Z"/>
+    </clipPath>
+    <clipPath id="d" clipPathUnits="userSpaceOnUse">
+      <path d="M405.756 708.137h165.6v-65.55h-165.6z"/>
+    </clipPath>
+  </defs>
+  <path fill="olive" d="M0 0h63.5v88.9H0z"/>
+  <path fill="#fff" d="M61.383 87.075H2.963V3.255h58.42z"/>
+  <g clip-path="url(#a)" opacity=".5" transform="translate(-361.37 -12.329) scale(.26458)">
+    <path fill="#ffdd15" d="M571.356 575.775h-165.6v66.812h165.6z" clip-path="url(#b)" transform="matrix(1.33333 0 0 -1.33333 836 1056)"/>
+  </g>
+  <g stroke-width=".36" font-size="4.322">
+    <text xml:space="preserve" x="321.241" y="101.52" transform="matrix(.97949 0 0 1.02094 -309.82 -50.295)"><tspan x="321.241" y="101.52" fill="#231f20" font-family="Eordeoghlakat" font-size="12.44" font-weight="400">2</tspan></text>
+    <text xml:space="preserve" x="328.857" y="95.761" transform="matrix(.97949 0 0 1.02094 -309.82 -50.295)"><tspan x="328.857" y="95.761" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">Transfer ownership to one </tspan><tspan x="328.857" y="99.908" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">of the involved </tspan><tspan x="354.665" y="99.908" fill="#231f20" font-family="Microstile" font-size="4.147" font-style="italic" font-weight="400">Opposing </tspan><tspan x="328.857" y="104.054" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">players to </tspan><tspan x="347.185" y="104.054" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="700">reroll </tspan><tspan x="358.024" y="104.054" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">any Test.</tspan><tspan x="328.857" y="108.201" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">Except the Initiative Test.</tspan></text>
+  </g>
+  <path fill="#fff" d="M63.5 32.686H0V0h63.5z"/>
+  <text xml:space="preserve" x="315.453" y="59.141" stroke-width=".353" font-size="4.233" transform="translate(-309.82 -50.295)"><tspan x="315.453" y="59.141" fill="#231f20" font-family="Microstile" font-size="4.939" font-weight="700">The player with the card </tspan><tspan x="315.453" y="64.08" fill="#231f20" font-family="Microstile" font-size="4.939" font-weight="700">may use it as follows:</tspan></text>
+  <g clip-path="url(#c)" opacity=".5" transform="translate(-361.37 -12.329) scale(.26458)">
+    <path fill="#00a14b" d="M571.356 642.587h-165.6v65.55h165.6z" clip-path="url(#d)" transform="matrix(1.33333 0 0 -1.33333 836 1056)"/>
+  </g>
+  <g stroke-width=".36" font-size="4.322">
+    <text xml:space="preserve" x="321.241" y="78.87" transform="matrix(.97949 0 0 1.02094 -309.82 -50.295)"><tspan x="321.241" y="78.87" fill="#231f20" font-family="Eordeoghlakat" font-size="12.44" font-weight="400">1</tspan></text>
+    <text xml:space="preserve" x="327.651" y="73.111" transform="matrix(.97949 0 0 1.02094 -309.82 -50.295)"><tspan x="327.651" y="73.111" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">As an option, automatically </tspan><tspan x="327.651" y="77.258" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="700">win </tspan><tspan x="334.874" y="77.258" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">any tied Initiative Test </tspan><tspan x="327.651" y="81.404" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">but receive </tspan><tspan x="348.151" y="81.404" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="700">zero </tspan><tspan x="357.066" y="81.404" fill="#231f20" font-family="Microstile" font-size="4.147" font-style="italic" font-weight="400">cascades </tspan><tspan x="327.651" y="85.551" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">in return.</tspan></text>
+  </g>
+  <g clip-path="url(#e)" opacity=".5" transform="translate(-361.37 -12.329) scale(.26458)">
+    <path fill="#ec1c24" d="M571.356 510.226h-165.6v65.55h165.6z" clip-path="url(#f)" transform="matrix(1.33333 0 0 -1.33333 836 1056)"/>
+  </g>
+  <path fill="#231f20" d="M14.306 87.075H2.963V63.95h11.343z"/>
+  <g stroke-width=".36" font-size="4.322">
+    <text xml:space="preserve" x="-137.167" y="315.559" transform="matrix(0 -.97949 1.02094 0 -309.82 -50.295)"><tspan x="-137.167" y="315.559" fill="#ec1c24" font-family="Eordeoghlakat" font-size="9.675" font-weight="400">NOTE:</tspan></text>
+    <text xml:space="preserve" x="331.993" y="117.488" transform="matrix(.97949 0 0 1.02094 -309.82 -50.295)"><tspan x="331.993" y="117.488" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">The </tspan><tspan x="339.515" y="117.488" fill="#231f20" font-family="Microstile" font-size="4.147" font-style="italic" font-weight="400">Initiative </tspan><tspan x="355.006" y="117.488" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">card is </tspan><tspan x="331.993" y="121.635" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">automatically </tspan><tspan x="356.275" y="121.635" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="700">transferred </tspan><tspan x="331.993" y="125.781" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">to the winner of the </tspan><tspan x="331.993" y="129.928" fill="#231f20" font-family="Microstile" font-size="4.147" font-weight="400">Initiative Test.</tspan></text>
+  </g>
+  <path fill="#ec1c24" d="M61.383 63.95H2.963v-.568h58.42zm0 23.095H2.963v-.568h58.42z"/>
+</svg>

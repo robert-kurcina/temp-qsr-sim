@@ -1,0 +1,18 @@
+{
+  "attack": {
+    "melee": {
+      "condition": "target.inMeleeRange() && attacker.hasWeaponClass('Melee')",
+      "action": "rollHitTest(attacker.CCA, target.REF)",
+      "modifiers": [
+        { "if": "attacker.hasTrait('Fight')", "apply": "+1b to Hit Test" }
+      ]
+    },
+    "ranged": {
+      "condition": "los.exists && distance <= weapon.OR",
+      "action": "rollHitTest(attacker.RCA, target.REF)",
+      "modifiers": [
+        { "if": "target.inCover()", "apply": "-1m to Hit Test" }
+      ]
+    }
+  }
+}

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="57.6" height="57.6" viewBox="0 0 15.24 15.24">
+  <defs>
+    <clipPath id="b" clipPathUnits="userSpaceOnUse">
+      <path d="M220.189 718.746c0-14.912 12.088-27 27-27s27 12.088 27 27c0 14.911-12.088 27-27 27s-27-12.089-27-27"/>
+    </clipPath>
+    <clipPath id="c" clipPathUnits="userSpaceOnUse">
+      <path d="M293.585 97.672c0 19.883 16.118 36 36 36 19.883 0 36-16.117 36-36 0-19.881-16.117-36-36-36-19.882 0-36 16.119-36 36"/>
+    </clipPath>
+    <clipPath id="d" clipPathUnits="userSpaceOnUse">
+      <path d="M-10.421 28.914h36v-36h-36z"/>
+    </clipPath>
+    <clipPath id="a" clipPathUnits="userSpaceOnUse">
+      <path d="M-71.627-366.862h612v792h-612Z"/>
+    </clipPath>
+  </defs>
+  <path fill="#fff" d="M29.25 29.25h-58.5v-58.5h58.5z" clip-path="url(#a)" transform="translate(7.62 7.62) scale(.26051)"/>
+  <path fill="#fff" d="M283.188 681.741h-72v72h72z" clip-path="url(#b)" transform="matrix(.26051 0 0 -.26051 -56.776 194.863)"/>
+  <g clip-path="url(#c)" opacity=".8" transform="translate(-56.776 -11.464) scale(.19538)">
+    <path fill="#ed2c24" d="m0 0 18.493 18.492c3.599-5.179 3.096-12.364-1.517-16.975C12.363-3.096 5.179-3.599 0 0m-1.818 20.311c4.611 4.613 11.797 5.116 16.975 1.517L-3.336 3.337C-6.935 8.515-6.431 15.7-1.818 20.311m22.13 3.337c-7.021 7.021-18.446 7.021-25.467 0-7.022-7.021-7.022-18.447 0-25.467 7.021-7.022 18.446-7.022 25.467 0 7.022 7.02 7.022 18.446 0 25.467" clip-path="url(#d)" transform="matrix(1.33333 0 0 -1.33333 319.383 113.56)"/>
+  </g>
+</svg>

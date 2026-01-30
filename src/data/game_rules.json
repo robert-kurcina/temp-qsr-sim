@@ -1,0 +1,4 @@
+{
+  "balanceTolerance": 25,
+  "description": "Final BP totals must be within 25 BP of each other"
+}

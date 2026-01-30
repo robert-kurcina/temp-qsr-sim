@@ -1,0 +1,29 @@
+{
+  "small": {
+    "name": "Small",
+    "minBP": 250,
+    "maxBP": 500,
+    "minModels": 4,
+    "maxModels": 8,
+    "battlefieldSizeMU": 24,
+    "endGameThreshold": 4
+  },
+  "medium": {
+    "name": "Medium",
+    "minBP": 500,
+    "maxBP": 750,
+    "minModels": 6,
+    "maxModels": 12,
+    "battlefieldSizeMU": 36,
+    "endGameThreshold": 6
+  },
+  "large": {
+    "name": "Large",
+    "minBP": 750,
+    "maxBP": 1000,
+    "minModels": 8,
+    "maxModels": 16,
+    "battlefieldSizeMU": 48,
+    "endGameThreshold": 8
+  }
+}

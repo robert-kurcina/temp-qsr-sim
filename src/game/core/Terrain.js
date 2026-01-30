@@ -1,0 +1,1 @@
+export function createTree(data) { /* uses data from terrain.json */ }
