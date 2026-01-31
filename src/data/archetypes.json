@@ -1,11 +1,41 @@
+
 {
-  "common": [
-    { "name": "Untrained", "bp": 7 },
-    { "name": "Militia", "bp": 20 },
-    { "name": "Average", "bp": 30 },
-    { "name": "Veteran", "bp": 61 },
-    { "name": "Elite", "bp": 129 }
-  ],
+  "common": {
+    "Untrained": {
+      "attributes": { "cca": 0, "rca": 0, "ref": 2, "int": 2, "pow": 1, "str": 1, "for": 2, "mov": 2, "siz": 3 },
+      "traits": [],
+      "bp": 7,
+      "species": "Humanoid"
+    },
+    "Militia": {
+      "attributes": { "cca": 1, "rca": 1, "ref": 2, "int": 2, "pow": 2, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+      "traits": [],
+      "bp": 20,
+      "species": "Humanoid",
+      "class": "Common"
+    },
+    "Average": {
+      "attributes": { "cca": 2, "rca": 2, "ref": 2, "int": 2, "pow": 2, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+      "traits": [],
+      "bp": 30,
+      "species": "Humanoid",
+      "class": "Common"
+    },
+    "Veteran": {
+      "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 3, "pow": 3, "str": 3, "for": 3, "mov": 3, "siz": 3 },
+      "traits": ["Grit"],
+      "bp": 61,
+      "species": "Humanoid",
+      "class": "Common"
+    },
+    "Elite": {
+      "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 3, "pow": 3, "str": 3, "for": 3, "mov": 3, "siz": 3 },
+      "traits": ["Grit", "Fight", "Shoot"],
+      "bp": 129,
+      "species": "Humanoid",
+      "class": "Common"
+    }
+  },
   "variants": [
     { "base": "Veteran", "variant": "Wise", "trait": "Leadership", "bp_add": 20 },
     { "base": "Veteran", "variant": "Tactician", "trait": "Tactics", "bp_add": 20 },

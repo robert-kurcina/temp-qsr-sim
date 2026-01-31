@@ -2,6 +2,11 @@
 import { loadAll } from './app/DataLoader.js';
 import { StateManager } from './app/StateManager.js';
 import { renderDashboard } from './ui/pages/DashboardPage.js';
+import { renderBuilderPage } from './ui/pages/BuilderPage.js';
+import { CharacterBuilder } from './ui/organisms/CharacterBuilder.js';
+import { AssemblyManager } from './ui/organisms/AssemblyManager.js';
+import { MissionBuilder } from './ui/organisms/MissionBuilder.js';
+import { ProfileManagerUI } from './ui/organisms/ProfileManager.js';
 
 // Render settings page when needed
 if (StateManager.currentState === 'settings') {
@@ -38,6 +43,7 @@ async function init() {
   try {
     // Load canonical data
     const data = await loadAll();
+    window.APP_DATA = data;
 
     // Initialize state
     StateManager.initialize(data);
@@ -59,10 +65,11 @@ async function init() {
 
   // Render builder page when needed
   if (StateManager.currentState === 'builder') {
-    document.getElementById('builder').innerHTML = renderBuilderPage(data);
-    CharacterBuilder.init(data);
+    document.getElementById('builder').innerHTML = renderBuilderPage(window.APP_DATA);
+    CharacterBuilder.init(window.APP_DATA);
     AssemblyManager.init();
     MissionBuilder.init();
+    ProfileManagerUI.init();
   }
 }
 
@@ -85,3 +92,6 @@ function initAIIntegration() {
 
   // Initialize AI controls
   initAIControls(window.AI_INTEG)
+}
+
+init();

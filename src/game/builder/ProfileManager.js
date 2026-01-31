@@ -139,7 +139,8 @@ export class ProfileManager {
       typeof data === 'object' &&
       typeof data.archetype === 'string' &&
       typeof data.bp === 'number' &&
-      Array.isArray(data.weapons)
+      Array.isArray(data.weapons) &&
+      Array.isArray(data.armor)
     );
   }
 

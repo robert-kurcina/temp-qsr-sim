@@ -275,7 +275,7 @@
     "name": "Armored Gear, Bulletproof",
     "class": "Armor - Gear",
     "bp": 8,
-    "ar": 0,
+    "ar": 1,
     "traits": ["[Laden X=0]", "Armor X=1"]
   },
   {
@@ -289,7 +289,7 @@
     "name": "Armored Gear, Padding Bulletproof",
     "class": "Armor - Gear",
     "bp": 6,
-    "ar": 0,
+    "ar": 1,
     "traits": ["[Laden X=0]", "Armor X=1"]
   },
   {

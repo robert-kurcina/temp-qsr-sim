@@ -2,6 +2,7 @@
 import { CharacterBuilder } from '../organisms/CharacterBuilder.js';
 import { AssemblyManager } from '../organisms/AssemblyManager.js';
 import { MissionBuilder } from '../organisms/MissionBuilder.js';
+import { ProfileManagerUI } from '../organisms/ProfileManager.js';
 
 /**
  * Main Builder page with sub-tab navigation
@@ -39,7 +40,16 @@ export function renderBuilderPage(data) {
 function renderSubTab(subTab, data) {
   switch (subTab) {
     case 'profile':
-      return CharacterBuilder.render(data);
+      return `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            ${CharacterBuilder.render(data)}
+          </div>
+          <div>
+            ${ProfileManagerUI.render()}
+          </div>
+        </div>
+      `;
     case 'assembly':
       return AssemblyManager.render(data);
     case 'mission':

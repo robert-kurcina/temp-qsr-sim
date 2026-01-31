@@ -1,5 +1,4 @@
-// /src/core/Weapon.js
-import { weapons as weaponsData } from '../../../data/bundledData.js';
+import weaponsData from '../../data/weapons.json';
 
 /**
  * Represents a weapon with stats and traits
@@ -44,8 +43,17 @@ export class Weapon {
    */
   getOR(str) {
     if (this.or === 'STR"') return str;
-    if (this.or === 'STR +3"') return str + 3;
-    if (this.or === 'STR - 1"') return Math.max(0, str - 1);
+    if (this.or.startsWith('STR')) {
+        const match = this.or.match(/STR ([+-]) (\d+)\"/);
+        if(match) {
+            const operator = match[1];
+            const value = parseInt(match[2], 10);
+            if (operator === '+') {
+                return str + value;
+            }
+            return Math.max(0, str - value);
+        }
+    }
     return this.or; // e.g., "-"
   }
 }

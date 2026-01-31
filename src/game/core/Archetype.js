@@ -1,58 +1,56 @@
-// /src/core/Archetype.js
-import { archetypes as archetypesData } from '../../../data/bundledData.js';
+
+import archetypesData from '../../data/archetypes.json';
 
 /**
- * Represents a base or variant archetype (e.g., "Veteran", "Tactician")
+ * Represents a character archetype (e.g., Veteran, Zealot)
  */
 export class Archetype {
   /**
-   * @param {string} name - e.g., "Veteran", "Wise"
-   * @param {Object} [overrides] - Optional attribute overrides
+   * @param {string} name - The name of the archetype, e.g., "Veteran"
    */
-  constructor(name, overrides = {}) {
+  constructor(name) {
     this.name = name;
-    this._loadFromData(overrides);
+    this.variants = {};
+    this._loadFromData();
   }
 
-  _loadFromData(overrides) {
-    // Check common archetypes first
-    let base = archetypesData.common.find(a => a.name === this.name);
-    if (base) {
-      this.bp = base.bp;
-      this.type = 'common';
-      return;
+  _loadFromData() {
+    const data = (archetypesData.default || archetypesData).common[this.name];
+    if (!data) {
+      throw new Error(`Unknown archetype: ${this.name}`);
     }
 
-    // Check variants
-    const variant = archetypesData.variants.find(v => v.variant === this.name);
-    if (variant) {
-      this.base = variant.base;
-      this.trait = variant.trait;
-      this.bpAdd = variant.bp_add;
-      this.type = 'variant';
-      return;
-    }
+    this.class = data.class;
+    this.bp = data.bp;
+    this.attributes = data.attributes;
+    this.mov = data.attributes.mov;
+    this.str = data.attributes.str;
+    this.ref = data.attributes.ref;
+    this.wil = data.attributes.wil;
+    this.traits = data.traits || [];
 
-    throw new Error(`Unknown archetype: ${this.name}`);
+    const allVariants = (archetypesData.default || archetypesData).variants;
+    this.variants = {};
+    allVariants
+      .filter(v => v.base === this.name)
+      .forEach(v => {
+        this.variants[v.variant] = {
+          bp: v.bp_add,
+          adds: [v.trait]
+        };
+      });
   }
 
   /**
-   * Get total BP cost when applied to a base archetype
-   * @param {Archetype} base - Base archetype (e.g., Veteran)
-   * @returns {number}
+   * Get data for a specific variant
+   * @param {string} variantName
+   * @returns {{bp: number, adds: string[]}|null}
    */
-  getVariantBP(base) {
-    if (this.type !== 'variant') return this.bp;
-    return base.bp + this.bpAdd;
+  getVariant(variantName) {
+    return this.variants[variantName] || null;
   }
 
-  /**
-   * Get full trait name (e.g., "Leadership 1")
-   * @returns {string|null}
-   */
   getTrait() {
-    if (this.type !== 'variant') return null;
-    // Assume level 1 for now; extend later for multi-level traits
-    return `${this.trait} 1`;
+    return this.traits[0] || null;
   }
 }

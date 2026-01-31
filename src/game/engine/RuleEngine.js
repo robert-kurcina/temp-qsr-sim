@@ -50,31 +50,63 @@ export class RuleEngine {
   }
 
   /**
-   * Get CCA/RCA modifiers for Close Combat
-   * @param {Character} attacker
-   * @param {Character} defender
-   * @param {Weapon} weapon
+   * Get modifiers for any combat or attribute test.
+   * @param {Character} character - The character performing the test.
+   * @param {Object} context - { target, weapon, testType, combatType }
    * @returns {Object} - { bonusDice: number, penaltyDice: number }
    */
-  static getCombatModifiers(attacker, defender, weapon) {
+  static getTestModifiers(character, context = {}) {
     let bonusDice = 0;
     let penaltyDice = 0;
+    const { target, weapon, combatType } = context;
 
-    // Fighter trait: reduces penalty dice
-    if (attacker.hasTrait('Fight')) {
-      // QSR: "Fight X — Reduces up to X penalty Modifier dice"
-      // For now, assume level 1 → reduce 1 penalty die
-      penaltyDice = Math.max(0, penaltyDice - 1);
+    // --- Universal Modifiers ---
+
+    // Concentrate action: +1 bonus die to the next Test.
+    if (character.isConcentrating()) {
+      bonusDice += 1;
+      character.removeStatus('Concentrating'); // Consume the status
     }
+    
+    // --- Combat-Specific Modifiers ---
+    if (combatType) {
+        // Leaning penalty for the attacker
+        if (character.isLeaning() && combatType === 'ranged') {
+            penaltyDice += 1;
+        }
 
-    // Terrain cover penalties (to be integrated with LOSEngine)
-    if (defender.inCover()) {
-      penaltyDice += 1; // -1m = -1 penalty die
+        // Leaning penalty for the defender (smaller target)
+        if (target && target.isLeaning()) {
+            penaltyDice += 1;
+        }
+
+        // Fighter trait: reduces penalty dice
+        if (character.hasTrait('Fight')) {
+          penaltyDice = Math.max(0, penaltyDice - 1);
+        }
+
+        // Terrain cover penalties
+        if (target && target.inCover()) { // Assuming inCover() method exists
+          penaltyDice += 1;
+        }
+
+        // Flanked penalty
+        if (target && this.isFlanked(target)) {
+          penaltyDice += 1;
+        }
     }
+    
+    // --- Weapon & Hand-Related Penalties ---
+    if (weapon) {
+        const handsRequired = character.handManager.getHandsRequired(weapon);
+        const isWeaponInHand = character.handManager.inHand.some(i => i.name === weapon.name);
 
-    // Flanked penalty
-    if (this.isFlanked(defender)) {
-      penaltyDice += 1;
+        // Penalty for using a 2H weapon with 1 hand
+        if (isWeaponInHand && handsRequired === 2 && character.getFreeHands() > 0) {
+            // If you have a 2H weapon in hand but still have a free hand,
+            // it means you're not dedicating both hands to it.
+            penaltyDice += 1;
+        }
     }
 
     return { bonusDice, penaltyDice };
@@ -99,11 +131,18 @@ export class RuleEngine {
    */
   static validateMovement(character, move) {
     const errors = [];
+
+    // A move action costs 1 AP.
+    if (character.getAvailableAP() < 1) {
+        errors.push(`Insufficient AP: need 1, have ${character.getAvailableAP()}`);
+    }
     
-    // Check AP cost
-    const apCost = this.calculateAPCost(character, move.path);
-    if (apCost > character.getAvailableAP()) {
-      errors.push(`Insufficient AP: need ${apCost}, have ${character.getAvailableAP()}`);
+    // Check if the path cost is within the character's movement allowance for a single action.
+    const movementAllowance = this.getMovementAllowance(character);
+    const movementCost = this.calculateMovementCost(character, move.path);
+
+    if (movementCost > movementAllowance) {
+      errors.push(`Path cost of ${movementCost.toFixed(1)} MU exceeds single action allowance of ${movementAllowance} MU.`);
     }
 
     // Check terrain legality
@@ -117,13 +156,24 @@ export class RuleEngine {
   }
 
   /**
-   * Calculate AP cost for a path
+   * Calculates the movement allowance for a single Move action.
+   * Rule: MOV + 2"
+   * @param {Character} character
+   * @returns {number} The total movement allowance in MU.
+   */
+  static getMovementAllowance(character) {
+    const mov = character?.archetype?.attributes?.MOV ?? 0;
+    return mov + 2;
+  }
+
+  /**
+   * Calculate movement cost for a path in Movement Units (MU).
    * @param {Character} character
    * @param {Array} path - [{ terrain, distance }, ...]
-   * @returns {number}
+   * @returns {number} The total cost in MU.
    */
-  static calculateAPCost(character, path) {
-    let total = 0;
+  static calculateMovementCost(character, path) {
+    let totalCost = 0;
     const ladenPenalty = character.getLadenPenalty();
     
     for (const segment of path) {
@@ -135,15 +185,16 @@ export class RuleEngine {
         costPerMU = 3;
       }
       
-      // Apply Laden penalty
+      // Apply Laden penalty (this might need clarification if it affects the new system)
+      // For now, we assume it increases the MU cost.
       if (ladenPenalty > 0) {
         costPerMU += ladenPenalty;
       }
       
-      total += costPerMU * segment.distance;
+      totalCost += costPerMU * segment.distance;
     }
     
-    return total;
+    return totalCost;
   }
 
   /**
@@ -158,34 +209,45 @@ export class RuleEngine {
     return true;
   }
 
-  // Add this method to RuleEngine class
-
-    /**
-     * Resolve a Close Combat attack
-     * @param {Character} attacker
-     * @param {Character} defender
-     * @param {Weapon} weapon
-     * @returns {CombatResult}
-     */
-    static resolveCloseCombat(attacker, defender, weapon) {
-    // Get combat modifiers
-    const modifiers = this.getCombatModifiers(attacker, defender, weapon);
+  /**
+   * Resolve a Close Combat attack
+   * @param {Character} attacker
+   * @param {Character} defender
+   * @param {Weapon} weapon
+   * @returns {CombatResult}
+   */
+  static resolveCloseCombat(attacker, defender, weapon) {
+    const modifiers = this.getTestModifiers(attacker, { target: defender, weapon, combatType: 'close' });
+    const advantage = this.hasGrit(attacker) && !attacker.isDisordered() && !defender.hasTrait('Intimidating');
     
-    // Apply Grit advantage if applicable
-    const advantage = this.hasGrit(attacker) && 
-                    !attacker.isDisordered() && 
-                    !defender.hasTrait('Intimidating');
-    
-    // Roll Hit Test
     const hitTest = DiceRoller.rollHitTest(
-        attacker.getCCA(), // Assume Character has getCCA()
-        defender.getREF(), // Assume Character has getREF()
+        attacker.getCCA(), 
+        defender.getREF(),
         modifiers,
         { advantage }
     );
     
     return new CombatResult(hitTest, attacker, defender);
-    }
+  }
+
+  /**
+   * Resolve a Ranged Combat attack
+   * @param {Character} attacker
+   * @param {Character} defender
+   * @param {Weapon} weapon
+   * @returns {CombatResult}
+   */
+  static resolveRangedCombat(attacker, defender, weapon) {
+    const modifiers = this.getTestModifiers(attacker, { target: defender, weapon, combatType: 'ranged' });
+    
+    const hitTest = DiceRoller.rollHitTest(
+        attacker.getRCA(),
+        defender.getREF(),
+        modifiers
+    );
+
+    return new CombatResult(hitTest, attacker, defender);
+  }
 }
 
 /**
@@ -197,4 +259,3 @@ export class ValidationResult {
     this.messages = messages;
   }
 }
-

@@ -1,5 +1,4 @@
-// /src/core/Equipment.js
-import { equipment as equipmentData } from '../../../data/bundledData.js';
+import equipmentData from '../../data/equipment.json';
 
 /**
  * Represents a single equipment item (Alcohol, Stimulant, etc.)
@@ -19,7 +18,7 @@ export class Equipment {
       throw new Error(`Unknown equipment: ${this.name}`);
     }
 
-    this.effect = item.effect;
+    this.traits = item.traits;
     this.bp = item.bp;
   }
 
@@ -29,6 +28,6 @@ export class Equipment {
    * @returns {boolean}
    */
   hasEffect(keyword) {
-    return this.effect.includes(keyword);
+    return this.traits.some(t => t.includes(keyword));
   }
 }

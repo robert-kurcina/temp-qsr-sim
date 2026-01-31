@@ -15,7 +15,7 @@ export class CharacterBuilder {
    * @param {string} config.archetype - Base archetype (e.g., "Veteran")
    * @param {string} [config.variant] - Variant trait (e.g., "Fighter")
    * @param {string[]} [config.weapons] - Weapon names
-   * @param {Object} [config.armor] - { helm, suit, shield }
+   * @param {string[]} [config.armor] - Armor names (e.g., ["Light Helmet", "Medium Armor"])
    * @param {string} [config.equipment] - Equipment name
    * @returns {CharacterProfile}
    */
@@ -36,11 +36,7 @@ export class CharacterBuilder {
     const weapons = (config.weapons || []).map(name => new Weapon(name));
     
     // Build armor
-    const armor = {
-      helm: config.armor?.helm ? new Armor('Helm', config.armor.helm) : null,
-      suit: config.armor?.suit ? new Armor('Armor', config.armor.suit) : null,
-      shield: config.armor?.shield ? new Armor('Shield', config.armor.shield) : null
-    };
+    const armors = (config.armor || []).map(name => new Armor(name));
 
     // Build equipment
     const equipment = config.equipment ? new Equipment(config.equipment) : null;
@@ -59,8 +55,8 @@ export class CharacterBuilder {
     });
 
     // Add armor
-    Object.values(armor).forEach(piece => {
-      if (piece) totalBP += piece.bp;
+    armors.forEach(piece => {
+      totalBP += piece.bp;
     });
 
     // Add equipment
@@ -88,7 +84,7 @@ export class CharacterBuilder {
       archetype: config.archetype,
       variant: config.variant,
       weapons: config.weapons || [],
-      armor: config.armor,
+      armor: config.armor || [],
       equipment: config.equipment,
       bp: totalBP,
       traits,
