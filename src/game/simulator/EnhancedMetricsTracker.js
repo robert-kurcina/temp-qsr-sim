@@ -22,7 +22,7 @@ export class EnhancedMetricsTracker {
     this.metrics.moraleTests[sideKey]++;
     
     // Check if Grit prevents the test
-    if (this.hasGritTrait(model) && context.fallenModelPOW <= model.POW) {
+    if (this.hasGritTrait(model) && context.fallenModelPOW <= model.pow) {
       this.metrics.gritUsage[sideKey].moraleImmunity++;
       return false; // Test prevented
     }

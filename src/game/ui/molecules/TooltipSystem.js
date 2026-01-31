@@ -73,7 +73,7 @@ export class TooltipSystem {
     const profile = this.profiles[model.id] || {};
 
     // Build written form
-    const writtenForm = `${profile.CCA || 0} ${profile.RCA || 0} ${profile.REF || 0} | ${profile.INT || 0} ${profile.POW || 0} ${profile.STR || 0} | ${profile.FOR || 0} ${profile.MOV || 0} ${profile.SIZ || 0}`;
+    const writtenForm = `${profile.cca || 0} ${profile.rca || 0} ${profile.ref || 0} | ${profile.int || 0} ${profile.pow || 0} ${profile.str || 0} | ${profile.for || 0} ${profile.mov || 0} ${profile.siz || 0}`;
 
     // Build items list
     const items = [];

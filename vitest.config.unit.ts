@@ -1,5 +1,6 @@
 
 import { defineConfig } from 'vitest/config';
+import path from 'path';
 
 export default defineConfig({
   test: {
@@ -11,5 +12,10 @@ export default defineConfig({
     environment: 'node',
     // Override the default test matching pattern to only include .test.js files
     include: ['**/*.test.js'],
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
   },
 });

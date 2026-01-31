@@ -87,7 +87,6 @@ export const ProfileFitnessAnalyzer = {
   
   calculateBPBreakdown(profile, data) {
     let archetypeBP = 30; // Default Average
-    let variantBP = 0;
     let weaponBP = 0;
     let armorBP = 0;
     let equipmentBP = 0;
@@ -95,12 +94,6 @@ export const ProfileFitnessAnalyzer = {
     // Archetype BP
     const archetype = data.archetypes.common.find(a => a.name === profile.archetype);
     if (archetype) archetypeBP = archetype.bp;
-    
-    // Variant BP
-    if (profile.variant) {
-      const variant = data.archetypes.variants.find(v => v.variant === profile.variant);
-      if (variant) variantBP = variant.bp_add;
-    }
     
     // Weapon BP
     const weapon = data.weapons.find(w => w.name === profile.weapon);
@@ -145,25 +138,16 @@ export const ProfileFitnessAnalyzer = {
     
     return {
       archetype: archetypeBP,
-      variant: variantBP,
       weapon: weaponBP,
       armor: armorBP,
       equipment: equipmentBP,
       unarmedReduction: unarmedReduction,
-      total: archetypeBP + variantBP + weaponBP + armorBP + equipmentBP + unarmedReduction
+      total: archetypeBP + weaponBP + armorBP + equipmentBP + unarmedReduction
     };
   },
   
   analyzeTraits(profile) {
     const traits = [];
-    
-    if (profile.variant) {
-      traits.push({
-        name: profile.variant,
-        efficiency: 'High',
-        description: this.getTraitDescription(profile.variant)
-      });
-    }
     
     if (profile.equipment === 'Alcohol') {
       traits.push({
@@ -200,11 +184,6 @@ export const ProfileFitnessAnalyzer = {
       recommendations.push('Armor cost is high (>25% of total BP)');
     }
     
-    // Archetype efficiency
-    if (bpBreakdown.archetype > 100 && !profile.variant) {
-      recommendations.push('Consider adding a variant trait for better efficiency');
-    }
-    
     return recommendations;
   },
   
@@ -212,7 +191,6 @@ export const ProfileFitnessAnalyzer = {
     const total = breakdown.total;
     const items = [
       { label: 'Archetype', value: breakdown.archetype },
-      { label: 'Variant', value: breakdown.variant },
       { label: 'Weapon', value: breakdown.weapon },
       { label: 'Armor', value: breakdown.armor },
       { label: 'Equipment', value: breakdown.equipment }

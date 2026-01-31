@@ -1,45 +1,93 @@
 
 {
-  "common": {
-    "Untrained": {
-      "attributes": { "cca": 0, "rca": 0, "ref": 2, "int": 2, "pow": 1, "str": 1, "for": 2, "mov": 2, "siz": 3 },
-      "traits": [],
-      "bp": 7,
-      "species": "Humanoid"
-    },
-    "Militia": {
-      "attributes": { "cca": 1, "rca": 1, "ref": 2, "int": 2, "pow": 2, "str": 2, "for": 2, "mov": 2, "siz": 3 },
-      "traits": [],
-      "bp": 20,
-      "species": "Humanoid",
-      "class": "Common"
-    },
-    "Average": {
-      "attributes": { "cca": 2, "rca": 2, "ref": 2, "int": 2, "pow": 2, "str": 2, "for": 2, "mov": 2, "siz": 3 },
-      "traits": [],
-      "bp": 30,
-      "species": "Humanoid",
-      "class": "Common"
-    },
-    "Veteran": {
-      "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 3, "pow": 3, "str": 3, "for": 3, "mov": 3, "siz": 3 },
-      "traits": ["Grit"],
-      "bp": 61,
-      "species": "Humanoid",
-      "class": "Common"
-    },
-    "Elite": {
-      "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 3, "pow": 3, "str": 3, "for": 3, "mov": 3, "siz": 3 },
-      "traits": ["Grit", "Fight", "Shoot"],
-      "bp": 129,
-      "species": "Humanoid",
-      "class": "Common"
-    }
+  "Untrained": {
+    "attributes": { "cca": 0, "rca": 1, "ref": 2, "int": 2, "pow": 1, "str": 1, "for": 2, "mov": 2, "siz": 3 },
+    "traits": [],
+    "bp": 7,
+    "species": "Humanoid"
   },
-  "variants": [
-    { "base": "Veteran", "variant": "Wise", "trait": "Leadership", "bp_add": 20 },
-    { "base": "Veteran", "variant": "Tactician", "trait": "Tactics", "bp_add": 20 },
-    { "base": "Veteran", "variant": "Fighter", "trait": "Fight", "bp_add": 12 },
-    { "base": "Veteran", "variant": "Brawler", "trait": "Brawl", "bp_add": 12 }
-  ]
+  "Militia": {
+    "attributes": { "cca": 1, "rca": 2, "ref": 2, "int": 2, "pow": 2, "str": 1, "for": 2, "mov": 2, "siz": 3 },
+    "traits": [],
+    "bp": 20,
+    "species": "Humanoid",
+    "class": "Common"
+  },
+  "Average": {
+    "attributes": { "cca": 2, "rca": 2, "ref": 2, "int": 2, "pow": 2, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": [],
+    "bp": 30,
+    "species": "Humanoid",
+    "class": "Common"
+  },
+  "Veteran": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit"],
+    "bp": 61,
+    "species": "Humanoid",
+    "class": "Common"
+  },
+  "Elite": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 3, "pow": 3, "str": 3, "for": 3, "mov": 3, "siz": 3 },
+    "traits": ["Grit", "Fight", "Shoot"],
+    "bp": 129,
+    "species": "Humanoid",
+    "class": "Common"
+  },
+  "Average, Evasive": {
+    "attributes": { "cca": 2, "rca": 2, "ref": 2, "int": 2, "pow": 2, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Evasive"],
+    "bp": 33,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  },
+  "Veteran, Fighter": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit", "Fight"],
+    "bp": 66,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  },
+  "Veteran, Grizzled": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit X=2"],
+    "bp": 72,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  },
+  "Veteran, Knife-fighter": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit", "Knife-fighter"],
+    "bp": 70,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  },
+  "Veteran, Shooter": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit", "Shoot"],
+    "bp": 66,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  },
+  "Veteran, Sneak": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit", "Sneaky"],
+    "bp": 73,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  },
+  "Veteran, Tactician": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit", "Tactics"],
+    "bp": 81,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  },
+  "Veteran, Wise": {
+    "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
+    "traits": ["Grit", "Leadership"],
+    "bp": 72,
+    "species": "Humanoid",
+    "class": "Variant Common"
+  }
 }

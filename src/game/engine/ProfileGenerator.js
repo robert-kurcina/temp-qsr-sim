@@ -6,7 +6,6 @@ export class ProfileGenerator {
   constructor(data) {
     this.data = data;
     this.archetypes = data.archetypes.common;
-    this.variants = data.archetypes.variants;
     this.weapons = data.weapons;
     this.armors = data.armors;
     this.equipment = data.equipment;
@@ -23,13 +22,6 @@ export class ProfileGenerator {
       // Select archetype
       const archetype = this.getRandomWeighted(this.archetypes);
       let totalBP = archetype.bp;
-      
-      // Add variant (30% chance)
-      let variant = null;
-      if (Math.random() < 0.3 && this.variants.length > 0) {
-        variant = this.getRandomWeighted(this.variants);
-        totalBP += variant.bp_add;
-      }
       
       // Add weapon (90% chance, else unarmed -3 BP)
       let weapon = null;
@@ -66,12 +58,11 @@ export class ProfileGenerator {
         return {
           name: profileName,
           archetype: archetype.name,
-          variant: variant ? variant.variant : null,
           weapon: weapon ? weapon.name : 'Unarmed',
           armor: Object.keys(armor).length > 0 ? armor : null,
           equipment: equipment ? equipment.name : null,
           bp: totalBP,
-          traits: variant ? [variant.variant] : []
+          traits: []
         };
       }
       
@@ -92,7 +83,6 @@ export class ProfileGenerator {
     return {
       name: 'Basic Profile',
       archetype: archetype.name,
-      variant: null,
       weapon: 'Unarmed',
       armor: null,
       equipment: null,

@@ -1,0 +1,186 @@
+
+[
+  {
+    "name": "Fizzle",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Arcanic",
+    "params": ["Item"],
+    "classifiers": ["Asset", "Magic"],
+    "description": "See the section on Fantastic Items for more information."
+  },
+  {
+    "name": "Asset",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Asset:Type",
+    "description": "May only be assigned to something which is an Item. If type Type is specified, then the Item must be of that Type or have that Trait."
+  },
+  {
+    "name": "Atmosphere",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Attack Effect",
+    "description": "Trait may only be assigned to something which can attack or cause Damage."
+  },
+  {
+    "name": "Attribute",
+    "description": "All Attributes except for SIZ may be improved using the Upgrade Attribute rules."
+  },
+  {
+    "name": "Bio-agent",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Bio-hazard",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Champion",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Effect",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Electric",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Electronic",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Explosion",
+    "description": "Qualifies for Suppression."
+  },
+  {
+    "name": "Fire",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Firearm",
+    "isName": true,
+    "description": "This is a keyword and a name part."
+  },
+  {
+    "name": "Gas",
+    "classifiers": ["Attack Effect"],
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Genetic",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Intrinsic",
+    "description": "Limited for assignment to models by sculpt, or by its conceptual design."
+  },
+  {
+    "name": "Leader",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Magic",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Mind",
+    "description": "Allow just one of these traits."
+  },
+  {
+    "name": "Movement",
+    "description": "This trait provides benefits for Agility or Movement."
+  },
+  {
+    "name": "Mythos",
+    "classifiers": ["Magic"],
+    "description": "Disregards Fear Tests and Sanity Tests. Elder Sign will affect this character. May not be assigned to character if it already has Invader or Outsider."
+  },
+  {
+    "name": "Outsider",
+    "classifiers": ["Magic"],
+    "description": "May not be assigned to character if it already has Mythos or Invader."
+  },
+  {
+    "name": "Psionic",
+    "params": ["Item"],
+    "classifiers": ["Psychic"],
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Psionicist",
+    "classifiers": ["Psychic"],
+    "description": "Reveal targets using Psychic or Etheric traits within LOS. MEMSic if within 16 MU."
+  },
+  {
+    "name": "Psychic",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Psychology",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Psychotronic",
+    "params": ["Item"],
+    "classifiers": ["Asset", "Psychic"],
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Ranged",
+    "isName": true,
+    "description": "This is a keyword and a name part."
+  },
+  {
+    "name": "Skill",
+    "description": "May be acquired, reduced, or improved unless assigned to an Item."
+  },
+  {
+    "name": "Spellcaster",
+    "description": "Reveal targets within LOS using any traits with the Magic keyword. Include Arcanic or Psychic if within 16 MU."
+  },
+  {
+    "name": "Suit",
+    "description": "Allow just one of these traits and it must be assigned to Suit armor."
+  },
+  {
+    "name": "Thermal",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Unchanging",
+    "description": "This character is disallowed to acquire Skill traits if it is not a Champion."
+  },
+  {
+    "name": "Undead",
+    "classifiers": ["Magic"],
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Virtuosity",
+    "classifiers": ["Psychic"],
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Water",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Weapon",
+    "isName": true,
+    "description": "This is a keyword and a name part."
+  },
+  {
+    "name": "Wet",
+    "description": "This is a keyword."
+  },
+  {
+    "name": "Natural Weapon",
+    "description": "This is a Melee Weapon to be used for the Close Combat Hit and Close Combat Damage Tests. Are not penalized for use in multiple attacks. May not use Overreach when attacking. Unless otherwise described, it is Accuracy +0, Impact +0, and uses STR for Damage."
+  }
+]

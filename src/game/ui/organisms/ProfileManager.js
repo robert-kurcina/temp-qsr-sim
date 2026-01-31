@@ -26,7 +26,6 @@ export const ProfileManagerUI = {
           <li class="flex justify-between items-center mb-2">
             <span>${name}</span>
             <div>
-              ${Button({ text: 'Load', variant: 'secondary', 'data-profile-name': name, class: 'load-profile-btn' })}
               ${Button({ text: 'Delete', variant: 'danger', 'data-profile-name': name, class: 'delete-profile-btn' })}
             </div>
           </li>
@@ -64,7 +63,6 @@ export const ProfileManagerUI = {
 
     // Update CharacterBuilder UI
     document.getElementById('archetype-select').value = profile.archetype;
-    document.getElementById('variant-select').value = profile.variant || '';
     document.getElementById('weapon-select').value = profile.weapons[0] || '';
     document.getElementById('equipment-select').value = profile.equipment || '';
 

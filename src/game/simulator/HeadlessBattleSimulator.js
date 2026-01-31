@@ -77,17 +77,10 @@ export class HeadlessBattleSimulator {
     const baseStats = this.getBaseArchetypeStats(archetype);
     const traits = [...(baseStats.traits || [])];
     
-    // Apply variant
-    if (variant) {
-      const variantData = this.getVariantData(`${archetype}, ${variant}`);
-      traits.push(...variantData.traits);
-    }
-    
     return {
       id: id,
       side: side,
       archetype: archetype,
-      variant: variant,
       cca: baseStats.cca,
       rca: baseStats.rca, 
       ref: baseStats.ref,
@@ -128,22 +121,7 @@ export class HeadlessBattleSimulator {
     };
     return archetypes[archetype] || archetypes['Average'];
   }
-  
-  /**
-   * Get variant data
-   */
-  getVariantData(variantName) {
-    const variants = {
-      'Veteran, Wise': { traits: ['Leadership'] },
-      'Veteran, Shooter': { traits: ['Shoot'] },
-      'Veteran, Sneak': { traits: ['Sneaky'] },
-      'Average, Fighter': { traits: ['Fight'] },
-      'Average, Shooter': { traits: ['Shoot'] },
-      'Militia, Grizzled': { traits: ['Grit'] },
-      'Untrained, Sneak': { traits: ['Sneaky'] }
-    };
-    return variants[variantName] || { traits: [] };
-  }
+
   
   /**
    * Run single turn

@@ -8,10 +8,6 @@ export class ComprehensiveMatchupTests {
   constructor() {
     this.framework = new GeneralizedOptimizationFramework();
     this.archetypes = ['Untrained', 'Militia', 'Average', 'Veteran', 'Elite'];
-    this.variants = [
-      'Average Sneak', 'Average Brawler', 'Average Acrobatic', 
-      'Average Fighter', 'Average Sprinter', 'Average Shooter', 'Average Evasive'
-    ];
     this.weapons = [
       'Sword, (Broad)', 'Spear, Medium', 'Bow, Long', 'Hammer, War', 
       'Axe, Long', 'Daggers', 'Staff', 'Club, Spiked Mace',
@@ -43,21 +39,8 @@ export class ComprehensiveMatchupTests {
       tests.push({
         ...baseConfig,
         archetype: archetype,
-        variant: null,
         testName: `${testType} - ${archetype}`
       });
-      
-      // Test variants (for Average archetype only)
-      if (archetype === 'Average') {
-        for (const variant of this.variants) {
-          tests.push({
-            ...baseConfig,
-            archetype: 'Average',
-            variant: variant,
-            testName: `${testType} - ${variant}`
-          });
-        }
-      }
     }
     
     return tests;
@@ -131,8 +114,8 @@ export class ComprehensiveMatchupTests {
     
     const hiddenTests = [];
     
-    // Focus on viable hidden archetypes (Sneak variants, lighter armor)
-    const viableArchetypes = ['Untrained', 'Militia', 'Average', 'Average Sneak', 'Average Evasive'];
+    // Focus on viable hidden archetypes (Sneak and Evasive variants, lighter armor)
+    const viableArchetypes = ['Untrained', 'Militia', 'Average', 'Veteran, Sneak', 'Average, Evasive'];
     const lightArmorConfigs = [
       [], // No armor
       ['Armored Gear'],

@@ -12,8 +12,7 @@ export class CharacterBuilder {
   /**
    * Build a character profile from configuration
    * @param {Object} config
-   * @param {string} config.archetype - Base archetype (e.g., "Veteran")
-   * @param {string} [config.variant] - Variant trait (e.g., "Fighter")
+   * @param {string} config.archetype - Archetype (e.g., "Veteran", or "Veteran, Fighter")
    * @param {string[]} [config.weapons] - Weapon names
    * @param {string[]} [config.armor] - Armor names (e.g., ["Light Helmet", "Medium Armor"])
    * @param {string} [config.equipment] - Equipment name
@@ -21,16 +20,7 @@ export class CharacterBuilder {
    */
   static build(config) {
     // Validate archetype
-    const baseArchetype = new Archetype(config.archetype);
-    
-    // Resolve variant
-    let variantArchetype = null;
-    if (config.variant) {
-      variantArchetype = new Archetype(config.variant);
-      if (variantArchetype.type !== 'variant') {
-        throw new Error(`"${config.variant}" is not a valid variant`);
-      }
-    }
+    const archetype = new Archetype(config.archetype);
 
     // Build weapons
     const weapons = (config.weapons || []).map(name => new Weapon(name));
@@ -42,12 +32,7 @@ export class CharacterBuilder {
     const equipment = config.equipment ? new Equipment(config.equipment) : null;
 
     // Calculate total BP
-    let totalBP = baseArchetype.bp;
-    
-    // Add variant cost
-    if (variantArchetype) {
-      totalBP = variantArchetype.getVariantBP(baseArchetype);
-    }
+    let totalBP = archetype.bp;
 
     // Add weapons
     weapons.forEach(weapon => {
@@ -65,6 +50,7 @@ export class CharacterBuilder {
     }
 
     // Apply Unarmed reduction
+    // TODO what needs to be done is that all characters which are not assigned a Weapon, or which do not have a Natural weapon assigned, or have a Trait with the Natural keyword, must be assigned "Unarmed" and that will count as a Natural Weapon and itself has the implicit "Natural" keyword.
     const isUnarmed = weapons.length === 0;
     if (isUnarmed) {
       totalBP -= 3; // QSR: "Unarmed — All characters begin with... (–3 BP)"
@@ -72,17 +58,12 @@ export class CharacterBuilder {
 
     // Get traits
     const traits = [];
-    if (variantArchetype) {
-      const trait = variantArchetype.getTrait();
-      if (trait) traits.push(trait);
-    }
-    if (equipment && equipment.hasEffect('Grit')) {
-      traits.push('Advantage Grit');
+    if (equipment && equipment.hasTrait('Grit')) {
+      traits.push('Grit');
     }
 
     return new CharacterProfile({
       archetype: config.archetype,
-      variant: config.variant,
       weapons: config.weapons || [],
       armor: config.armor || [],
       equipment: config.equipment,
@@ -99,7 +80,6 @@ export class CharacterBuilder {
 export class CharacterProfile {
   constructor(data) {
     this.archetype = data.archetype;
-    this.variant = data.variant;
     this.weapons = data.weapons;
     this.armor = data.armor;
     this.equipment = data.equipment;
@@ -114,7 +94,6 @@ export class CharacterProfile {
   toJSON() {
     return {
       archetype: this.archetype,
-      variant: this.variant,
       weapons: this.weapons,
       armor: this.armor,
       equipment: this.equipment,
@@ -129,7 +108,6 @@ export class CharacterProfile {
   static fromJSON(json) {
     return new CharacterProfile({
       archetype: json.archetype,
-      variant: json.variant,
       weapons: json.weapons,
       armor: json.armor,
       equipment: json.equipment,

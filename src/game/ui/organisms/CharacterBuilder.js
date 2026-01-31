@@ -27,19 +27,6 @@ export const CharacterBuilder = {
         })}
 
         ${SelectInput({
-          label: 'Variant Trait',
-          id: 'variant-select',
-          options: [
-            { value: '', label: 'None' },
-            { value: 'Fighter', label: 'Fighter (+12 BP)' },
-            { value: 'Wise', label: 'Wise (+20 BP)' },
-            { value: 'Tactician', label: 'Tactician (+20 BP)' },
-            { value: 'Brawler', label: 'Brawler (+12 BP)' }
-          ],
-          value: ''
-        })}
-
-        ${SelectInput({
           label: 'Primary Weapon',
           id: 'weapon-select',
           options: weaponOptions,
@@ -81,7 +68,6 @@ export const CharacterBuilder = {
         <div class="mt-6">
           ${Button({
             text: 'Save Profile',
-            variant: 'primary',
             size: 'lg',
             icon: '👤',
             id: 'save-profile-btn'
@@ -143,7 +129,6 @@ export const CharacterBuilder = {
   setupBPListener(data) {
     const updateBP = () => {
       const archetype = document.getElementById('archetype-select').value;
-      const variant = document.getElementById('variant-select').value;
       const weapon = document.getElementById('weapon-select').value;
 
       const armor = [];
@@ -158,7 +143,6 @@ export const CharacterBuilder = {
 
       const config = {
         archetype,
-        variant,
         weapons: weapon ? [weapon] : [],
         armor,
         equipment,
@@ -174,7 +158,7 @@ export const CharacterBuilder = {
     };
 
     // Listen for changes
-    ['archetype-select', 'variant-select', 'weapon-select', 'game-size-select', 'armor-helm', 'armor-suit', 'armor-shield', 'equipment-select']
+    ['archetype-select', 'weapon-select', 'game-size-select', 'armor-helm', 'armor-suit', 'armor-shield', 'equipment-select']
       .forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('change', updateBP);
@@ -188,7 +172,6 @@ export const CharacterBuilder = {
     if (!name) return;
 
     const archetype = document.getElementById('archetype-select').value;
-    const variant = document.getElementById('variant-select').value;
     const weapon = document.getElementById('weapon-select').value;
 
     const armor = [];
@@ -203,7 +186,6 @@ export const CharacterBuilder = {
 
     const config = {
       archetype,
-      variant,
       weapons: weapon ? [weapon] : [],
       armor,
       equipment,

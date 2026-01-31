@@ -162,7 +162,7 @@ export class RuleEngine {
    * @returns {number} The total movement allowance in MU.
    */
   static getMovementAllowance(character) {
-    const mov = character?.archetype?.attributes?.MOV ?? 0;
+    const mov = character?.archetype?.attributes?.mov ?? 0;
     return mov + 2;
   }
 

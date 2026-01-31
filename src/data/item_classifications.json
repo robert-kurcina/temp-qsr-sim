@@ -1,0 +1,157 @@
+{
+	"Armor - Energy": {
+		"wae_class": "Armor",
+		"item_type": "Energy",
+		"item_class": "Armor"
+	},
+	"Armor - Gear": {
+		"wae_class": "Armor",
+		"item_type": "Gear",
+		"item_class": "Armor"
+	},
+	"Armor - Helm": {
+		"wae_class": "Armor",
+		"item_type": "Helm",
+		"item_class": "Armor"
+	},
+	"Armor - Shield": {
+		"wae_class": "Armor",
+		"item_type": "Shield",
+		"item_class": "Armor"
+	},
+	"Armor - Suit": {
+		"wae_class": "Armor",
+		"item_type": "Suit",
+		"item_class": "Armor"
+	},
+	"Bow": {
+		"wae_class": "Weapon",
+		"item_type": null,
+		"item_class": "Bow"
+	},
+	"Firearm - Archaic": {
+		"wae_class": "Weapon",
+		"item_type": "Archaic",
+		"item_class": "Firearm"
+	},
+	"Firearm - Modern": {
+		"wae_class": "Weapon",
+		"item_type": "Modern",
+		"item_class": "Firearm"
+	},
+	"Melee": {
+		"wae_class": "Weapon",
+		"item_type": null,
+		"item_class": "Melee"
+	},
+	"Melee - Energy": {
+		"wae_class": "Weapon",
+		"item_type": "Energy",
+		"item_class": "Melee"
+	},
+	"Melee - Magic": {
+		"wae_class": "Weapon",
+		"item_type": "Magic",
+		"item_class": "Melee"
+	},
+	"Misc - Accessory": {
+		"wae_class": "Equipment",
+		"item_type": "Accessory",
+		"item_class": "Misc"
+	},
+	"Misc - Advantage": {
+		"wae_class": "Equipment",
+		"item_type": "Advantage",
+		"item_class": "Misc"
+	},
+	"Misc - Attachment": {
+		"wae_class": "Equipment",
+		"item_type": "Attachment",
+		"item_class": "Misc"
+	},
+	"Misc - Device": {
+		"wae_class": "Equipment",
+		"item_type": "Device",
+		"item_class": "Misc"
+	},
+	"Misc - Tool": {
+		"wae_class": "Equipment",
+		"item_type": "Tool",
+		"item_class": "Misc"
+	},
+	"Misc - Trick": {
+		"wae_class": "Equipment",
+		"item_type": "Trick",
+		"item_class": "Misc"
+	},
+	"Misc - Upgrade": {
+		"wae_class": "Equipment",
+		"item_type": "Upgrade",
+		"item_class": "Misc"
+	},
+	"Munitions": {
+		"wae_class": "Equipment",
+		"item_type": null,
+		"item_class": "Munitions"
+	},
+	"Natural": {
+		"wae_class": "Weapon",
+		"item_type": null,
+		"item_class": "Natural"
+	},
+	"Range - Archaic": {
+		"wae_class": "Weapon",
+		"item_type": "Archaic",
+		"item_class": "Range"
+	},
+	"Range - Energy": {
+		"wae_class": "Weapon",
+		"item_type": "Energy",
+		"item_class": "Range"
+	},
+	"Range - Futuristic": {
+		"wae_class": "Weapon",
+		"item_type": "Futuristic",
+		"item_class": "Range"
+	},
+	"Range - Magic": {
+		"wae_class": "Weapon",
+		"item_type": "Magic",
+		"item_class": "Range"
+	},
+	"Range - Modern": {
+		"wae_class": "Weapon",
+		"item_type": "Modern",
+		"item_class": "Range"
+	},
+	"Support - Archaic": {
+		"wae_class": "Weapon",
+		"item_type": "Archaic",
+		"item_class": "Support"
+	},
+	"Support - Energy": {
+		"wae_class": "Weapon",
+		"item_type": "Energy",
+		"item_class": "Support"
+	},
+	"Support - Futuristic": {
+		"wae_class": "Weapon",
+		"item_type": "Futuristic",
+		"item_class": "Support"
+	},
+	"Support - Modern": {
+		"wae_class": "Weapon",
+		"item_type": "Modern",
+		"item_class": "Support"
+	},
+	"Thrown": {
+		"wae_class": "Weapon",
+		"item_type": null,
+		"item_class": "Thrown"
+	},
+	"Thrown (Grenade)": {
+		"wae_class": "Equipment",
+		"item_type": "Grenade",
+		"item_class": "Thrown"
+	}
+}
