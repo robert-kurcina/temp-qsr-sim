@@ -49,6 +49,40 @@ The existing `LOSSystem.js` has been identified as a candidate for a major refac
     *   **Leaning:** A mechanism to check LOS from a point adjacent to a hard cover object, simulating a character leaning out to shoot.
     *   **Hidden Status:** The system must be able to account for a character's "Hidden" status, which may affect whether they can be targeted even if a technical line of sight exists.
 
+### Testing Mechanics
+
+The `DiceRoller.js` engine has been updated to reflect the detailed testing mechanics of the MEST QSR game system.
+
+*   **Dice Types:**
+    *   **Base (White):** 0 successes on 1-3, 1 success on 4-5, 2 successes on 6.
+    *   **Modifier (Red):** 0 successes on 1-3, 1 success on 4-6.
+    *   **Wild (Yellow):** 0 successes on 1-3, 1 success on 4-5, 3 successes on 6.
+
+*   **Test Types:**
+    *   **Opposed Test:** Pits two characters against each other. Each player rolls 2 Base dice plus any bonus dice and adds their relevant attribute.
+    *   **Unopposed Test:** Pits a character against the "System". The System rolls 2 Base dice and has a fixed attribute of 2.
+
+*   **Bonus and Penalty Dice:**
+    *   Bonuses (+1m, +1b, +1w) add dice to the character's pool.
+    *   Penalties (-1m, -1b, -1w) award the corresponding die to the *opposing* player.
+
+*   **Flattening Dice:**
+    *   Before rolling, identical dice types in both the active and passive player's pools are canceled out.
+    *   A minimum of two Base dice are always retained by each player.
+
+*   **Scoring and Resolution:**
+    *   **Test Score:** A player's total score is the sum of their dice successes plus their relevant attribute value.
+    *   **Success:** The active character succeeds if their Test Score is greater than or equal to the passive player's score.
+    *   **Cascades:** On a success, the number of points by which the active player's score exceeds the passive player's score. A tie results in 0 cascades.
+    *   **Misses:** On a failure, the number of points the active player would have needed to tie.
+    *   **Difficulty Rating (DR):** A numerical penalty added to the passive player's final Test Score.
+
+*   **Carry-overs:**
+    *   **Modifier Dice:** Carry-over as a bonus Modifier die on a roll of 6.
+    *   **Base Dice:** Carry-over as a bonus Base die on a roll of 6.
+    *   **Wild Dice:** Carry-over as a bonus Wild die on a roll of 4, 5, or 6.
+    *   Carry-overs are only applicable from Hit Tests to Damage Tests and from Link Tests to Weave Tests. The System player never receives carry-overs.
+
 ### Testing
 
 *   **Unit Tests:** The project uses `vitest` for unit testing. The tests are located in the same directory as the files they test and are named with a `.test.js` suffix.

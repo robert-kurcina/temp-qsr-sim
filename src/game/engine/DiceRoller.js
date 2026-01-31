@@ -1,4 +1,3 @@
-
 // /src/game/engine/DiceRoller.js
 
 /**
@@ -12,33 +11,25 @@ export class Die {
     this.carryOver = false;
   }
 
-  /**
-   * Rolls a single 6-sided die and calculates the score and carry-over.
-   */
   roll() {
     this.value = Math.floor(Math.random() * 6) + 1;
     this._calculateScoreAndCarryOver();
     return this;
   }
 
-  /**
-   * Mocks a roll for testing purposes.
-   * @param {number} value - The value to set the die to.
-   */
   mockRoll(value) {
     this.value = value;
     this._calculateScoreAndCarryOver();
     return this;
   }
 
-  /**
-   * Determines the score and carry-over status based on the die's type and value.
-   * @private
-   */
   _calculateScoreAndCarryOver() {
+    this.score = 0;
+    this.carryOver = false;
+
     switch (this.type) {
       case 'base':
-        if (this.value >= 4) this.score = 1;
+        if (this.value >= 4 && this.value <= 5) this.score = 1;
         if (this.value === 6) {
           this.score = 2;
           this.carryOver = true;
@@ -49,70 +40,141 @@ export class Die {
         if (this.value === 6) this.carryOver = true;
         break;
       case 'wild':
-        if (this.value >= 4) {
-          this.score = 1;
+        if (this.value >= 4 && this.value <= 5) {
+            this.score = 1;
+            this.carryOver = true;
+        }
+        if (this.value === 6) {
+          this.score = 3;
           this.carryOver = true;
         }
         break;
-      default:
-        this.score = 0;
-        this.carryOver = false;
     }
   }
 }
 
 /**
- * Represents the result of one player's dice pool in a test.
+ * Holds the results of a player's dice rolls.
  */
-export class PlayerTestResult {
+export class PlayerRollResult {
   constructor(dice) {
     this.dice = dice; // Array of Die objects
-    this.totalScore = dice.reduce((sum, die) => sum + die.score, 0);
+    this.diceScore = dice.reduce((sum, die) => sum + die.score, 0);
     this.carryOverDice = dice.filter(die => die.carryOver);
   }
 }
 
+
 /**
- * Represents the final result of an Opposed Test between an Active and Passive player.
+ * Represents the final result of a test.
  */
-export class OpposedTestResult {
-  constructor(activeResult, passiveResult) {
-    this.activeResult = activeResult;
-    this.passiveResult = passiveResult;
-    this.success = activeResult.totalScore >= passiveResult.totalScore;
+export class TestResult {
+  constructor(activeRoll, passiveRoll, activeAttribute, passiveAttribute, dr = 0) {
+    this.activeRoll = activeRoll;
+    this.passiveRoll = passiveRoll;
+    this.activeAttribute = activeAttribute;
+    this.passiveAttribute = passiveAttribute;
+    this.dr = dr;
+
+    this.activeScore = activeRoll.diceScore + activeAttribute;
+    this.passiveScore = passiveRoll.diceScore + passiveAttribute + dr;
+
+    this.success = this.activeScore >= this.passiveScore;
     this.cascades = 0;
-    this.transferredDice = { base: 0, modifier: 0, wild: 0 };
+    this.misses = 0;
+    this.carryOver = { base: 0, modifier: 0, wild: 0 };
 
     if (this.success) {
-      // Calculate cascades: difference in scores, but at least 1 for a tie.
-      this.cascades = (activeResult.totalScore - passiveResult.totalScore) || 1;
-
-      // If the active player passed, count the dice that generated a carry-over.
-      for (const die of activeResult.carryOverDice) {
-        if (this.transferredDice[die.type] !== undefined) {
-          this.transferredDice[die.type]++;
+      this.cascades = this.activeScore - this.passiveScore;
+      for (const die of activeRoll.carryOverDice) {
+        if (this.carryOver[die.type] !== undefined) {
+          this.carryOver[die.type]++;
         }
       }
+    } else {
+      this.misses = this.passiveScore - this.activeScore + 1;
     }
   }
 }
+
 
 /**
  * Main dice rolling engine for performing tests.
  */
 export class DiceRoller {
+
+  /**
+   * Flattens two dice pools by canceling out dice of the same type.
+   * Each player must retain at least two Base dice.
+   * @param {{base: number, modifier: number, wild: number}} activePool
+   * @param {{base: number, modifier: number, wild: number}} passivePool
+   * @returns {{flatActivePool: object, flatPassivePool: object}}
+   */
+  static flattenDice(activePool, passivePool) {
+    const flatActivePool = { ...activePool };
+    const flatPassivePool = { ...passivePool };
+
+    // Flatten modifier dice
+    const minModifiers = Math.min(flatActivePool.modifier, flatPassivePool.modifier);
+    flatActivePool.modifier -= minModifiers;
+    flatPassivePool.modifier -= minModifiers;
+
+    // Flatten wild dice
+    const minWilds = Math.min(flatActivePool.wild, flatPassivePool.wild);
+    flatActivePool.wild -= minWilds;
+    flatPassivePool.wild -= minWilds;
+
+    // Flatten base dice, ensuring each player keeps at least 2
+    const availableToFlattenActive = Math.max(0, flatActivePool.base - 2);
+    const availableToFlattenPassive = Math.max(0, flatPassivePool.base - 2);
+    const minBase = Math.min(availableToFlattenActive, availableToFlattenPassive);
+    flatActivePool.base -= minBase;
+    flatPassivePool.base -= minBase;
+
+    return { flatActivePool, flatPassivePool };
+  }
+
   /**
    * Performs an Opposed Test between an Active and a Passive player.
-   * @param {{base: number, modifier: number, wild: number}} activeDicePool - The dice pool for the Active player.
-   * @param {{base: number, modifier: number, wild: number}} passiveDicePool - The dice pool for the Passive player.
-   * @returns {OpposedTestResult} - The comprehensive result of the test.
+   * @param {{base: number, modifier: number, wild: number}} activeDicePool
+   * @param {number} activeAttribute
+   * @param {{base: number, modifier: number, wild: number}} passiveDicePool
+   * @param {number} passiveAttribute
+   * @param {number} [dr=0] - Difficulty Rating added to the passive player's score.
+   * @returns {TestResult}
    */
-  static performOpposedTest(activeDicePool, passiveDicePool) {
-    const activeResult = this._rollPlayerPool(activeDicePool);
-    // Passive players do not generate carry-overs, so we clear that status after the roll.
-    const passiveResult = this._rollPlayerPool(passiveDicePool, { isPassive: true });
+  static performOpposedTest(activeDicePool, activeAttribute, passiveDicePool, passiveAttribute, dr = 0) {
+    // Add 2 base dice for each player per the rules.
+    const fullActivePool = { base: (activeDicePool.base || 0) + 2, modifier: activeDicePool.modifier || 0, wild: activeDicePool.wild || 0 };
+    const fullPassivePool = { base: (passiveDicePool.base || 0) + 2, modifier: passiveDicePool.modifier || 0, wild: passiveDicePool.wild || 0 };
 
-    return new OpposedTestResult(activeResult, passiveResult);
+    const { flatActivePool, flatPassivePool } = this.flattenDice(fullActivePool, fullPassivePool);
+
+    const activeResult = this._rollPlayerPool(flatActivePool);
+    // Passive players do not generate carry-overs per rules.
+    const passiveResult = this._rollPlayerPool(flatPassivePool, { isPassive: true });
+
+    return new TestResult(activeResult, passiveResult, activeAttribute, passiveAttribute, dr);
+  }
+
+  /**
+   * Performs an Unopposed Test against the System.
+   * @param {{base: number, modifier: number, wild: number}} activeDicePool
+   * @param {number} activeAttribute
+   * @param {number} [dr=0] - Difficulty Rating added to the System's score.
+   * @returns {TestResult}
+   */
+  static performUnopposedTest(activeDicePool, activeAttribute, dr = 0) {
+    const passiveDicePool = { base: 0, modifier: 0, wild: 0 }; // Gets 2 base dice in performOpposedTest
+    const passiveAttribute = 2; // System attribute is always 2
+
+    return this.performOpposedTest(
+      activeDicePool,
+      activeAttribute,
+      passiveDicePool,
+      passiveAttribute,
+      dr
+    );
   }
 
   /**
@@ -133,6 +195,6 @@ export class DiceRoller {
         rolledDice.push(die);
       }
     }
-    return new PlayerTestResult(rolledDice);
+    return new PlayerRollResult(rolledDice);
   }
 }

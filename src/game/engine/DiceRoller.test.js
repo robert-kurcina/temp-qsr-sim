@@ -1,143 +1,159 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Die, DiceRoller, TestResult } from './DiceRoller.js';
 
-import { describe, it, expect, vi } from 'vitest';
-import { DiceRoller, OpposedTestResult, Die } from './DiceRoller';
+// Mocking Math.random to control dice rolls
+const mockRandom = (values) => {
+  let i = 0;
+  return () => {
+    if (i >= values.length) {
+      throw new Error('Mocked random values exhausted');
+    }
+    return (values[i++] - 1) / 6;
+  };
+};
 
-// To test the internal classes, we need to import them directly.
-// In a real-world scenario, you might not export them, but for testing, it's useful.
-// For this test, we'll spy on the DiceRoller's internal methods to mock rolls.
+describe('DiceRoller System', () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
 
-// Mocking the roll method to control outcomes
-// We need to reach into the module to get the Die class instance that DiceRoller uses.
-// A better way would be to inject the Die class, but for now, we'll patch Math.random.
-
-describe('DiceRoller Logic', () => {
-
-  describe('Die Scoring and Carry-over', () => {
-    // Helper to test individual die rolls
-    const testDie = (type, rollValue, expectedScore, expectedCarryOver) => {
-      vi.spyOn(Math, 'random').mockReturnValueOnce((rollValue - 1) / 6);
-      const die = new Die(type).roll();
-      expect(die.score).toBe(expectedScore);
-      expect(die.carryOver).toBe(expectedCarryOver);
-      vi.restoreAllMocks();
-    };
-
-    it('should score Base dice correctly', () => {
-      testDie('base', 1, 0, false); // Fail
-      testDie('base', 3, 0, false); // Fail
-      testDie('base', 4, 1, false); // Pass
-      testDie('base', 5, 1, false); // Pass
-      testDie('base', 6, 2, true);  // Pass + Carry-over
+  describe('Die Class', () => {
+    it('should score a Base die correctly', () => {
+      const die = new Die('base');
+      expect(die.mockRoll(1).score).toBe(0);
+      expect(die.mockRoll(3).score).toBe(0);
+      expect(die.mockRoll(4).score).toBe(1);
+      expect(die.mockRoll(5).score).toBe(1);
+      expect(die.mockRoll(6).score).toBe(2);
+      expect(die.mockRoll(6).carryOver).toBe(true);
     });
 
-    it('should score Modifier dice correctly', () => {
-      testDie('modifier', 3, 0, false); // Fail
-      testDie('modifier', 4, 1, false); // Pass
-      testDie('modifier', 5, 1, false); // Pass
-      testDie('modifier', 6, 1, true);  // Pass + Carry-over
+    it('should score a Modifier die correctly', () => {
+      const die = new Die('modifier');
+      expect(die.mockRoll(3).score).toBe(0);
+      expect(die.mockRoll(4).score).toBe(1);
+      expect(die.mockRoll(6).score).toBe(1);
+      expect(die.mockRoll(6).carryOver).toBe(true);
+      expect(die.mockRoll(5).carryOver).toBe(false);
     });
 
-    it('should score Wild dice correctly', () => {
-      testDie('wild', 3, 0, false); // Fail
-      testDie('wild', 4, 1, true);  // Pass + Carry-over
-      testDie('wild', 5, 1, true);  // Pass + Carry-over
-      testDie('wild', 6, 1, true);  // Pass + Carry-over
+    it('should score a Wild die correctly', () => {
+      const die = new Die('wild');
+      expect(die.mockRoll(3).score).toBe(0);
+      expect(die.mockRoll(4).score).toBe(1);
+      expect(die.mockRoll(5).score).toBe(1);
+      expect(die.mockRoll(6).score).toBe(3);
+      expect(die.mockRoll(4).carryOver).toBe(true);
+      expect(die.mockRoll(6).carryOver).toBe(true);
+      expect(die.mockRoll(3).carryOver).toBe(false);
     });
   });
 
-  describe('OpposedTestResult Calculation', () => {
+  describe('DiceRoller.flattenDice', () => {
+    it('should cancel out matching dice types', () => {
+      const active = { base: 3, modifier: 2, wild: 1 };
+      const passive = { base: 4, modifier: 1, wild: 1 };
+      const { flatActivePool, flatPassivePool } = DiceRoller.flattenDice(active, passive);
 
-    it('should handle the specific example provided', () => {
-      // Active Player rolls: Base(6), Base(3), Wild(4), Modifier(5)
-      // Passive Player rolls: Base(2), Base(4), Base(6)
-
-      const mockRolls = [
-        // Active Player
-        (6 - 1) / 6, // Base -> 6 (Score 2, CarryOver)
-        (3 - 1) / 6, // Base -> 3 (Score 0)
-        (4 - 1) / 6, // Wild -> 4 (Score 1, CarryOver)
-        (5 - 1) / 6, // Modifier -> 5 (Score 1)
-        // Passive Player
-        (2 - 1) / 6, // Base -> 2 (Score 0)
-        (4 - 1) / 6, // Base -> 4 (Score 1)
-        (6 - 1) / 6, // Base -> 6 (Score 2, but no carry-over for passive)
-      ];
-
-      let mockIndex = 0;
-      vi.spyOn(Math, 'random').mockImplementation(() => mockRolls[mockIndex++]);
-
-      const activePool = { base: 2, wild: 1, modifier: 1 };
-      const passivePool = { base: 3, modifier: 0, wild: 0 };
-
-      const result = DiceRoller.performOpposedTest(activePool, passivePool);
-
-      // Verify scores
-      expect(result.activeResult.totalScore).toBe(4); // 2 + 0 + 1 + 1
-      expect(result.passiveResult.totalScore).toBe(3); // 0 + 1 + 2
-
-      // Verify outcome
-      expect(result.success).toBe(true);
-      expect(result.cascades).toBe(1); // 4 - 3
-
-      // Verify transferred dice
-      expect(result.transferredDice).toEqual({ base: 1, modifier: 0, wild: 1 });
-
-      vi.restoreAllMocks();
+      // Modifiers: 2 vs 1 -> 1 vs 0
+      // Wilds: 1 vs 1 -> 0 vs 0
+      expect(flatActivePool.modifier).toBe(1);
+      expect(flatPassivePool.modifier).toBe(0);
+      expect(flatActivePool.wild).toBe(0);
+      expect(flatPassivePool.wild).toBe(0);
     });
 
-    it('should handle a tie correctly (cascades = 1)', () => {
-      const mockRolls = [
-        (4 - 1) / 6, // Active: Base -> 4 (Score 1)
-        (4 - 1) / 6, // Active: Base -> 4 (Score 1)
-        (5 - 1) / 6, // Passive: Base -> 5 (Score 1)
-        (5 - 1) / 6, // Passive: Base -> 5 (Score 1)
-      ];
-      let mockIndex = 0;
-      vi.spyOn(Math, 'random').mockImplementation(() => mockRolls[mockIndex++]);
+    it('should not flatten the last 2 base dice for each player', () => {
+      const active = { base: 3, modifier: 1, wild: 0 };
+      const passive = { base: 5, modifier: 1, wild: 0 };
+      const { flatActivePool, flatPassivePool } = DiceRoller.flattenDice(active, passive);
 
-      const result = DiceRoller.performOpposedTest({ base: 2 }, { base: 2 });
-
-      expect(result.activeResult.totalScore).toBe(2);
-      expect(result.passiveResult.totalScore).toBe(2);
-      expect(result.success).toBe(true);
-      expect(result.cascades).toBe(1); // Tie results in 1 cascade
-      expect(result.transferredDice).toEqual({ base: 0, modifier: 0, wild: 0 });
-
-      vi.restoreAllMocks();
+      // Active has 1 base die to spare (3-2). Passive has 3 (5-2).
+      // They cancel 1 base die.
+      expect(flatActivePool.base).toBe(2); // 3 - 1
+      expect(flatPassivePool.base).toBe(4); // 5 - 1
     });
 
-    it('should handle a passive player win', () => {
-        const mockRolls = [
-            (1 - 1) / 6, // Active: Base -> 1 (Score 0)
-            (6 - 1) / 6, // Passive: Base -> 6 (Score 2)
-        ];
-        let mockIndex = 0;
-        vi.spyOn(Math, 'random').mockImplementation(() => mockRolls[mockIndex++]);
+    it('should handle zero dice pools', () => {
+      const active = { base: 2, modifier: 0, wild: 0 };
+      const passive = { base: 2, modifier: 0, wild: 0 };
+      const { flatActivePool, flatPassivePool } = DiceRoller.flattenDice(active, passive);
+      expect(flatActivePool).toEqual({ base: 2, modifier: 0, wild: 0 });
+      expect(flatPassivePool).toEqual({ base: 2, modifier: 0, wild: 0 });
+    });
+  });
 
-        const result = DiceRoller.performOpposedTest({ base: 1 }, { base: 1 });
+  describe('DiceRoller.performOpposedTest', () => {
+    it('calculates success, cascades, and carry-over correctly', () => {
+      vi.spyOn(Math, 'random').mockImplementation(mockRandom([6, 5, 4, 3, 2, 1])); // Active: 6,5,4; Passive: 3,2,1
+
+      const activePool = { base: 1, modifier: 1, wild: 1 }; // Total 3 base, 1 mod, 1 wild
+      const passivePool = { base: 1, modifier: 0, wild: 0 }; // Total 3 base
+
+      const result = DiceRoller.performOpposedTest(activePool, 5, passivePool, 3);
+
+      // Active Rolls: Base(6, score=2, carry), Base(5, score=1), Mod(4, score=1)
+      // Passive Rolls: Base(3, score=0), Base(2, score=0), Base(1, score=0)
+      // Active Dice Score = 2 + 1 + 1 = 4
+      // Passive Dice Score = 0 + 0 + 0 = 0
+      // Active Total = 4 (dice) + 5 (attr) = 9
+      // Passive Total = 0 (dice) + 3 (attr) = 3
+
+      expect(result.success).toBe(true);
+      expect(result.activeScore).toBe(9);
+      expect(result.passiveScore).toBe(3);
+      expect(result.cascades).toBe(6);
+      expect(result.misses).toBe(0);
+      expect(result.carryOver).toEqual({ base: 1, modifier: 0, wild: 0 }); // Wild has carry-over but it's a wild die
+    });
+
+    it('handles ties by giving success to the active player with zero cascades', () => {
+      vi.spyOn(Math, 'random').mockImplementation(mockRandom([4, 4, 4, 4]));
+
+      const result = DiceRoller.performOpposedTest({ base: 0 }, 2, { base: 0 }, 2);
+      // Active: Base(4), Base(4) -> Score 2. Total = 2 + 2 = 4
+      // Passive: Base(4), Base(4) -> Score 2. Total = 2 + 2 = 4
+
+      expect(result.success).toBe(true);
+      expect(result.cascades).toBe(0);
+    });
+
+    it('calculates misses correctly on failure', () => {
+        vi.spyOn(Math, 'random').mockImplementation(mockRandom([1, 1, 6, 6]));
+        const result = DiceRoller.performOpposedTest({ base: 0 }, 1, { base: 0 }, 5);
+        // Active: Base(1), Base(1) -> Score 0. Total = 0 + 1 = 1
+        // Passive: Base(6), Base(6) -> Score 4. Total = 4 + 5 = 9
 
         expect(result.success).toBe(false);
         expect(result.cascades).toBe(0);
-        expect(result.transferredDice).toEqual({ base: 0, modifier: 0, wild: 0 });
-        vi.restoreAllMocks();
+        expect(result.misses).toBe(9); // 9 - 1 + 1
     });
 
-     it('should not give carry-over benefits to passive player', () => {
-        const mockRolls = [
-            (4-1)/6, // Active Base -> 4 (Score 1)
-            (6-1)/6, // Passive Wild -> 6 (Score 1, would carry-over, but is passive)
-        ];
-        let mockIndex = 0;
-        vi.spyOn(Math, 'random').mockImplementation(() => mockRolls[mockIndex++]);
+    it('applies Difficulty Rating (DR) to the passive score', () => {
+      vi.spyOn(Math, 'random').mockImplementation(mockRandom([5, 5, 1, 1]));
+      const result = DiceRoller.performOpposedTest({ base: 0 }, 2, { base: 0 }, 2, 3);
+      // Active: Base(5), Base(5) -> Score 2. Total = 2 + 2 = 4
+      // Passive: Base(1), Base(1) -> Score 0. Total = 0 + 2 + 3 (DR) = 5
 
-        const activePool = { base: 1 };
-        const passivePool = { wild: 1 };
-        const result = DiceRoller.performOpposedTest(activePool, passivePool);
+      expect(result.success).toBe(false);
+      expect(result.passiveScore).toBe(5);
+      expect(result.misses).toBe(2);
+    });
+  });
 
-        expect(result.success).toBe(true);
-        expect(result.cascades).toBe(1); // Tie
-        expect(result.passiveResult.carryOverDice.length).toBe(0);
-        vi.restoreAllMocks();
+  describe('DiceRoller.performUnopposedTest', () => {
+    it('runs an unopposed test against the System correctly', () => {
+      vi.spyOn(Math, 'random').mockImplementation(mockRandom([6, 6, 1, 1]));
+      const result = DiceRoller.performUnopposedTest({ base: 0, modifier: 0, wild: 0 }, 5, 1);
+
+      // Active: Base(6), Base(6) -> Score 4. Total = 4 + 5 = 9
+      // System: Base(1), Base(1) -> Score 0. Total = 0 + 2 (Sys Attr) + 1 (DR) = 3
+
+      expect(result.success).toBe(true);
+      expect(result.activeScore).toBe(9);
+      expect(result.passiveScore).toBe(3);
+      expect(result.cascades).toBe(6);
+      expect(result.carryOver.base).toBe(2);
     });
   });
 });
