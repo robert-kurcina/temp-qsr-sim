@@ -12,6 +12,62 @@ export interface AttackResult {
   damageTestResult?: any;
 }
 
+// This is an internal function to centralize all modifier logic.
+function _calculateModifiers(
+  attacker: Character,
+  defender: Character,
+  context: TestContext
+): { attackerBonus: DicePool, attackerPenalty: DicePool, defenderBonus: DicePool, defenderPenalty: DicePool } {
+  const attackerBonus: DicePool = {};
+  const attackerPenalty: DicePool = {};
+  const defenderBonus: DicePool = {};
+  const defenderPenalty: DicePool = {};
+
+  // 1. Calculate Hindrance Penalties
+  if (attacker.state.wounds > 0) {
+    attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+  }
+  if (attacker.state.delayTokens > 0) {
+    attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+  }
+  if (attacker.state.fearTokens > 0) {
+    attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+  }
+
+  if (defender.state.wounds > 0) {
+    defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+  }
+  if (defender.state.delayTokens > 0) {
+    defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+  }
+  if (defender.state.fearTokens > 0) {
+    defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+  }
+
+  // 2. Calculate Contextual Modifiers (from TestContext)
+  if (context.isDefending) {
+    defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
+  }
+  if (context.isCharge) {
+    attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
+  }
+  if (context.outnumberAdvantage && context.outnumberAdvantage > 0) {
+    attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
+  }
+  if (context.hasHighGround) {
+    attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
+  }
+  if (context.isCornered) {
+    defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+  }
+  if (context.isFlanked) {
+    defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+  }
+
+  return { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty };
+}
+
+
 const parseDiceString = (diceString: string): DicePool => {
   const dice: DicePool = {};
   const value = parseInt(diceString.slice(1, -1), 10) || 1;
@@ -57,44 +113,36 @@ function parseDamageFormula(formula: string, attacker: Character): { value: numb
   return { value, dice };
 }
 
-function getHindrancePenalty(character: Character): DicePool {
-  const penalty: DicePool = {};
-  const hindranceCount = (character.state.wounds > 0 ? 1 : 0) + 
-                         (character.state.delayTokens > 0 ? 1 : 0) + 
-                         (character.state.fearTokens > 0 ? 1 : 0);
-
-  if (hindranceCount > 0) {
-    penalty[DiceType.Modifier] = hindranceCount;
-  }
-  return penalty;
-}
-
 export function makeCloseCombatAttack(
   attacker: Character,
   defender: Character,
   weapon: Item,
   context: TestContext = {}
 ): AttackResult {
-  // 1. Perform the Hit Test (Opposed CCA vs. CCA)
+  // 1. Calculate all situational and state-based modifiers first.
+  const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, context);
+
+  // 2. Perform the Hit Test (Opposed CCA vs. CCA)
   const { bonusDice: accBonus, penaltyDice: accPenalty, scoreModifier } = parseAccuracy(weapon.accuracy);
 
   const hitTestAttacker: TestParticipant = {
     attributeValue: attacker.finalAttributes.cca,
-    bonusDice: accBonus,
-    penaltyDice: { ...getHindrancePenalty(attacker), ...accPenalty },
+    bonusDice: { ...attackerBonus, ...accBonus },
+    penaltyDice: { ...attackerPenalty, ...accPenalty },
   };
   const hitTestDefender: TestParticipant = {
     attributeValue: defender.finalAttributes.cca,
-    penaltyDice: getHindrancePenalty(defender),
+    bonusDice: defenderBonus,
+    penaltyDice: defenderPenalty,
   };
 
-  const hitTestResult = resolveTest(hitTestAttacker, hitTestDefender, -scoreModifier, context);
+  const hitTestResult = resolveTest(hitTestAttacker, hitTestDefender, -scoreModifier);
 
   if (!hitTestResult.pass) {
     return { hit: false, woundsInflicted: 0, remainingImpact: 0, hitTestResult };
   }
 
-  // 2. Perform the Damage Test (Opposed Dmg vs. FOR)
+  // 3. Perform the Damage Test (Unopposed Dmg vs. FOR)
   const damageFormula = weapon.dmg || 'STR';
   const { value: damageValue, dice: damageDice } = parseDamageFormula(damageFormula, attacker);
   
@@ -103,23 +151,24 @@ export function makeCloseCombatAttack(
     bonusDice: { ...damageDice, ...hitTestResult.carryOverDice },
   };
   
-  // This is now an opposed test
+  // The damage test is unopposed by a roll, so the defender is a system player.
   const damageTestDefender: TestParticipant = {
     attributeValue: defender.finalAttributes.for,
+    isSystemPlayer: true, // This is important for unopposed tests
   };
 
-  const damageTestResult = resolveTest(damageTestAttacker, damageTestDefender, 0, {});
+  const damageTestResult = resolveTest(damageTestAttacker, damageTestDefender, 0);
   
-  // 3. Calculate Final Wounds
-  const impact = weapon.impact || 0;
+  // 4. Calculate Final Wounds
+  const baseImpact = weapon.impact || 0;
+  const assistImpact = context.assistingModels || 0;
+  const totalImpact = baseImpact + assistImpact;
+
   const defenderAR = defender.state.armor.total;
-  const effectiveAR = Math.max(0, defenderAR - impact);
-  const remainingImpact = impact > defenderAR ? impact - defenderAR : 0;
+  const effectiveAR = Math.max(0, defenderAR - totalImpact);
+  const remainingImpact = totalImpact > defenderAR ? totalImpact - defenderAR : 0;
   const woundsDealtByRoll = damageTestResult.pass ? damageTestResult.cascades : 0;
   const woundsInflicted = Math.max(0, woundsDealtByRoll - effectiveAR);
-
-  // DO NOT MUTATE STATE. The caller is responsible for applying wounds.
-  // defender.state.wounds += woundsInflicted; <--- This was the bug!
 
   return {
     hit: true,

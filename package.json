@@ -4,9 +4,9 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "predev": "node scripts/bundle-data.js",
+    "predev": "node scripts/bundle-data.cjs",
     "build": "astro build",
-    "prebuild": "node scripts/bundle-data.js",
+    "prebuild": "node scripts/bundle-data.cjs",
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest"
