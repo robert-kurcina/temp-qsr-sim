@@ -7,62 +7,6 @@ import { traitLogicRegistry } from './trait-logic-registry';
 import { Trait } from './Trait';
 
 /**
- * Calculates the character's armor state based on their equipped items.
- * It now correctly reads the 'ar' property from items and also handles "Armor X" traits.
- * @param equipment The list of items equipped by the character.
- * @returns An ArmorState object with the calculated values.
- */
-function calculateArmorState(equipment: Item[]): ArmorState {
-  const armorState: ArmorState = {
-    total: 0,
-    suit: 0,
-    gear: 0,
-    shield: 0,
-    helm: 0,
-  };
-
-  for (const item of equipment) {
-    let arValue = 0;
-
-    // 1. Check for the direct 'ar' property on the item.
-    if (item.ar) {
-      arValue = parseInt(String(item.ar), 10) || 0;
-    }
-
-    // 2. Also check for an "Armor X" trait for flexibility, adding to any base 'ar' value.
-    const itemTraits = (item.traits || []).map(parseTrait);
-    const armorTrait = itemTraits.find(t => t.name.toLowerCase() === 'armor');
-    if (armorTrait && typeof armorTrait.value === 'number') {
-      arValue += armorTrait.value;
-    }
-
-    // If we found any armor value, assign it to the correct slot.
-    if (arValue > 0) {
-      let armorType: keyof Omit<ArmorState, 'total'> | null = null;
-      const lowerCaseClass = item.class.toLowerCase();
-
-      if (lowerCaseClass.includes('suit') || lowerCaseClass.includes('armor')) {
-        armorType = 'suit';
-      } else if (lowerCaseClass.includes('shield')) {
-        armorType = 'shield';
-      } else if (lowerCaseClass.includes('helm')) {
-        armorType = 'helm';
-      } else if (lowerCaseClass.includes('gear')) {
-        armorType = 'gear';
-      }
-
-      if (armorType) {
-        armorState[armorType] += arValue;
-        armorState.total += arValue;
-      }
-    }
-  }
-
-  return armorState;
-}
-
-
-/**
  * Creates a new Character instance from a Profile.
  * This is the primary function for taking a template and making it a usable entity.
  * @param profile The profile to instantiate.
@@ -90,8 +34,40 @@ export function createCharacter(profile: Profile, characterName: string): Charac
     }
   }
 
-  // 5. Calculate armor state from equipment.
-  const armor = calculateArmorState(profile.equipment);
+  // 5. Calculate armor state directly from the profile's equipment.
+  const armorState: ArmorState = { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 };
+  for (const item of profile.equipment) {
+    const itemTraits = (item.traits || []).map(parseTrait);
+    const armorTrait = itemTraits.find(t => t.name.toLowerCase() === 'armor');
+
+    if (armorTrait && typeof armorTrait.value === 'number' && armorTrait.value > 0) {
+      const arValue = armorTrait.value;
+      const lowerCaseClass = (item.class || '').toLowerCase();
+      let assigned = false;
+
+      if (lowerCaseClass.includes('suit')) {
+        armorState.suit += arValue;
+        assigned = true;
+      } else if (lowerCaseClass.includes('helm')) {
+        armorState.helm += arValue;
+        assigned = true;
+      } else if (lowerCaseClass.includes('shield')) {
+        armorState.shield += arValue;
+        assigned = true;
+      } else if (lowerCaseClass.includes('gear')) {
+        armorState.gear += arValue;
+        assigned = true;
+      } else if (lowerCaseClass.includes('armor')) {
+        // Fallback for general armor types
+        armorState.suit += arValue;
+        assigned = true;
+      }
+
+      if (assigned) {
+        armorState.total += arValue;
+      }
+    }
+  }
 
   // 6. Assemble the final Character object.
   const character: Character = {
@@ -109,7 +85,7 @@ export function createCharacter(profile: Profile, characterName: string): Charac
       isDisordered: false,
       isDistracted: false,
       statusEffects: [],
-      armor, // Assign the calculated armor state
+      armor: armorState, // Assign the calculated armor state
     },
   };
 
