@@ -65,6 +65,10 @@ export interface Character {
     isWaiting: boolean;
     isDisordered: boolean;
     isDistracted: boolean;
+    isEngaged: boolean;      // New State: Is the character in base-to-base with an enemy?
+    isInCover: boolean;      // New State: Is the character receiving benefits of cover?
+    isKOd: boolean; 
+    isEliminated: boolean; 
     statusEffects: string[]; // e.g., ['Confused']
     
     /**

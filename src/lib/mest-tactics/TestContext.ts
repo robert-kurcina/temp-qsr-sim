@@ -24,6 +24,7 @@ export interface TestContext {
   // --- Ranged Combat & Detection Modifiers ---
   distance?: number;        // For Point-blank, Elevation, and Distance modifiers
   orm?: number;             // For the -1m Distance penalty per ORM
+  isPointBlank?: boolean;    // For the +1m Point-Blank bonus
   elevationAdvantage?: number; // For the +1m Elevation bonus
   obscuringModels?: number; // For the -1m Obscured penalty
   isLeaning?: boolean;      // For the -1b Leaning penalty (active character)
@@ -39,4 +40,5 @@ export interface TestContext {
   helpingModels?: number;   // For the +1m Help bonus
   isSafe?: boolean;         // For the +1w Safety bonus (Morale)
   isConfined?: boolean;     // For the -1m Confined penalty
+  delayTokensAdded?: number; // For stun damage
 }
