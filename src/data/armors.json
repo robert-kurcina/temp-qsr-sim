@@ -1,386 +1,126 @@
-[
-  {
-    "name": "Armor, Combat Suit",
-    "class": "Armor - Suit",
-    "bp": 43,
-    "ar": 2,
-    "traits": ["Armor X=2"]
-  },
-  {
-    "name": "Armor, Field",
-    "class": "Armor - Suit",
-    "bp": 22,
-    "ar": 4,
-    "traits": ["[Laden X=4]", "Armor X=4"]
-  },
-  {
-    "name": "Armor, Field Advanced",
-    "class": "Armor - Suit",
-    "bp": 25,
-    "ar": 4,
-    "traits": ["[Laden X=4]", "Armor X=4", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Field Bulletproof Flex",
-    "class": "Armor - Suit",
-    "bp": 28,
-    "ar": 4,
-    "traits": ["[Laden X=3]", "Armor X=4", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Field Flex",
-    "class": "Armor - Suit",
-    "bp": 25,
-    "ar": 4,
-    "traits": ["[Laden X=3]", "Armor X=4"]
-  },
-  {
-    "name": "Armor, Field Mail",
-    "class": "Armor - Suit",
-    "bp": 20,
-    "ar": 4,
-    "traits": ["[Laden X=4]", "Armor X=4", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Field Nanoweave",
-    "class": "Armor - Suit",
-    "bp": 30,
-    "ar": 4,
-    "traits": ["[Laden X=2]", "Armor X=4", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Field Nanoweave BP",
-    "class": "Armor - Suit",
-    "bp": 35,
-    "ar": 5,
-    "traits": ["[Laden X=2]", "Armor X=5", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Field, Bulletproof",
-    "class": "Armor - Suit",
-    "bp": 25,
-    "ar": 5,
-    "traits": ["[Laden X=4]", "Armor X=5"]
-  },
-  {
-    "name": "Armor, Field, Bulletproof Advanced",
-    "class": "Armor - Suit",
-    "bp": 28,
-    "ar": 5,
-    "traits": ["[Laden X=4]", "Armor X=5", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Heavy",
-    "class": "Armor - Suit",
-    "bp": 15,
-    "ar": 6
-  },
-  {
-    "name": "Armor, Heavy Advanced",
-    "class": "Armor - Suit",
-    "bp": 18,
-    "ar": 6,
-    "traits": ["[Laden X=3]", "Armor X=6", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Heavy Bulletproof Flex",
-    "class": "Armor - Suit",
-    "bp": 22,
-    "ar": 6,
-    "traits": ["[Laden X=2]", "Armor X=6", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Heavy Flex",
-    "class": "Armor - Suit",
-    "bp": 18,
-    "ar": 6,
-    "traits": ["[Laden X=2]", "Armor X=6", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Heavy Mail",
-    "class": "Armor - Suit",
-    "bp": 16,
-    "ar": 6,
-    "traits": ["[Laden X=3]", "Armor X=6", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Heavy Nanoweave",
-    "class": "Armor - Suit",
-    "bp": 25,
-    "ar": 6,
-    "traits": ["[Laden X=1]", "Armor X=6", "Deflect X=3"]
-  },
-  {
-    "name": "Armor, Heavy Nanoweave BP",
-    "class": "Armor - Suit",
-    "bp": 30,
-    "ar": 7,
-    "traits": ["[Laden X=1]", "Armor X=7", "Deflect X=3"]
-  },
-  {
-    "name": "Armor, Heavy, Bulletproof",
-    "class": "Armor - Suit",
-    "bp": 20,
-    "ar": 7,
-    "traits": ["[Laden X=3]", "Armor X=7"]
-  },
-  {
-    "name": "Armor, Heavy, Bulletproof Advanced",
-    "class": "Armor - Suit",
-    "bp": 23,
-    "ar": 7,
-    "traits": ["[Laden X=3]", "Armor X=7", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Light",
-    "class": "Armor - Suit",
-    "bp": 8,
-    "ar": 2,
-    "traits": ["[Laden X=1]", "Armor X=2"]
-  },
-  {
-    "name": "Armor, Light Advanced",
-    "class": "Armor - Suit",
-    "bp": 11,
-    "ar": 2,
-    "traits": ["[Laden X=1]", "Armor X=2", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Light Bulletproof Flex",
-    "class": "Armor - Suit",
-    "bp": 14,
-    "ar": 2,
-    "traits": ["Armor X=2", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Light Flex",
-    "class": "Armor - Suit",
-    "bp": 11,
-    "ar": 2,
-    "traits": ["Armor X=2"]
-  },
-  {
-    "name": "Armor, Light Mail",
-    "class": "Armor - Suit",
-    "bp": 9,
-    "ar": 2,
-    "traits": ["[Laden X=1]", "Armor X=2", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Light Nanoweave",
-    "class": "Armor - Suit",
-    "bp": 16,
-    "ar": 2,
-    "traits": ["Armor X=2", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Light Nanoweave BP",
-    "class": "Armor - Suit",
-    "bp": 19,
-    "ar": 3,
-    "traits": ["Armor X=3", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Light, Bulletproof",
-    "class": "Armor - Suit",
-    "bp": 11,
-    "ar": 3,
-    "traits": ["[Laden X=1]", "Armor X=3"]
-  },
-  {
-    "name": "Armor, Light, Bulletproof Advanced",
-    "class": "Armor - Suit",
-    "bp": 14,
-    "ar": 3,
-    "traits": ["[Laden X=1]", "Armor X=3", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Medium",
-    "class": "Armor - Suit",
-    "bp": 13,
-    "ar": 3,
-    "traits": ["[Laden X=2]", "Armor X=3"]
-  },
-  {
-    "name": "Armor, Medium Advanced",
-    "class": "Armor - Suit",
-    "bp": 16,
-    "ar": 3,
-    "traits": ["[Laden X=2]", "Armor X=3", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Medium Bulletproof Flex",
-    "class": "Armor - Suit",
-    "bp": 19,
-    "ar": 3,
-    "traits": ["[Laden X=1]", "Armor X=3", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Medium Flex",
-    "class": "Armor - Suit",
-    "bp": 16,
-    "ar": 3,
-    "traits": ["[Laden X=1]", "Armor X=3"]
-  },
-  {
-    "name": "Armor, Medium Mail",
-    "class": "Armor - Suit",
-    "bp": 14,
-    "ar": 3,
-    "traits": ["[Laden X=2]", "Armor X=3", "Deflect X=1"]
-  },
-  {
-    "name": "Armor, Medium Nanoweave",
-    "class": "Armor - Suit",
-    "bp": 21,
-    "ar": 3,
-    "traits": ["[Laden X=1]", "Armor X=3", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Medium Nanoweave BP",
-    "class": "Armor - Suit",
-    "bp": 24,
-    "ar": 4,
-    "traits": ["[Laden X=1]", "Armor X=4", "Deflect X=2"]
-  },
-  {
-    "name": "Armor, Medium, Bulletproof",
-    "class": "Armor - Suit",
-    "bp": 16,
-    "ar": 4,
-    "traits": ["[Laden X=2]", "Armor X=4"]
-  },
-  {
-    "name": "Armor, Medium, Bulletproof Advanced",
-    "class": "Armor - Suit",
-    "bp": 19,
-    "ar": 4,
-    "traits": ["[Laden X=2]", "Armor X=4", "Deflect X=1"]
-  },
-  {
-    "name": "Armored Gear",
-    "class": "Armor - Gear",
-    "bp": 5,
-    "ar": 0,
-    "traits": []
-  },
-  {
-    "name": "Armored Gear, Bracer",
-    "class": "Armor - Gear",
-    "bp": 6,
-    "ar": 0,
-    "traits": ["Deflect X=1"]
-  },
-  {
-    "name": "Armored Gear, Bulletproof",
-    "class": "Armor - Gear",
-    "bp": 8,
-    "ar": 1,
-    "traits": ["Armor X=1"]
-  },
-  {
-    "name": "Armored Gear, Padding",
-    "class": "Armor - Gear",
-    "bp": 4,
-    "ar": 0,
-    "traits": []
-  },
-  {
-    "name": "Armored Gear, Padding Bulletproof",
-    "class": "Armor - Gear",
-    "bp": 6,
-    "ar": 1,
-    "traits": ["Armor X=1"]
-  },
-  {
-    "name": "Armored Gear, Vaumbrace",
-    "class": "Armor - Gear",
-    "bp": 7,
-    "ar": 0,
-    "traits": ["Deflect X=1"]
-  },
-  {
-    "name": "Shield, Small",
-    "class": "Armor - Shield",
-    "bp": 5,
-    "ar": 1,
-    "traits": ["[1H]", "Coverage"]
-  },
-  {
-    "name": "Shield, Light",
-    "class": "Armor - Shield",
-    "bp": 5,
-    "ar": 1,
-    "traits": ["[1H]", "Coverage"]
-  },
-  {
-    "name": "Shield, Medium",
-    "class": "Armor - Shield",
-    "bp": 10,
-    "ar": 2,
-    "traits": ["[1H]","[Laden]", "Coverage", "Deflect"]
-  },
-  {
-    "name": "Shield, Large",
-    "class": "Armor - Shield",
-    "bp": 13,
-    "ar": 2,
-    "traits": ["[Laden X=1]", "Armor 2", "Coverage"]
-  },
-  {
-    "name": "Helmet, Common",
-    "class": "Armor - Helm",
-    "bp": 3,
-    "ar": 0,
-    "traits": ["Protective X=1"]
-  },
-  {
-    "name": "Helmet, Common, Bulletproof",
-    "class": "Armor - Helm",
-    "bp": 13,
-    "ar": 0,
-    "traits": ["Protective X=1", "Bulletproof"]
-  },
-  {
-    "name": "Helmet, Full",
-    "class": "Armor - Helm",
-    "bp": 5,
-    "ar": 1,
-    "traits": ["[Blinders]", "Protective X=1", "Armor X=1"]
-  },
-  {
-    "name": "Helmet, Full",
-    "class": "Armor - Helm",
-    "bp": 14,
-    "ar": 1,
-    "traits": ["[Blinders]", "Protective X=1", "Armor X=1", "Bulletproof"]
-  },
-  {
-    "name": "Helmet, Full",
-    "class": "Armor - Helm",
-    "bp": 4,
-    "ar": 1,
-    "traits": ["[Blinders]", "[Prissy]", "Protective X=1", "Armor X=1"]
-  },
-  {
-    "name": "Helmet, Reinforced",
-    "class": "Armor - Helm",
-    "bp": 7,
-    "ar": 1,
-    "traits": ["[Blinders]", "[Laden X=1]", "Deflect X=1", "Protective X=1", "Armor X=1"]
-  },
-  {
-    "name": "Helmet, Riot",
-    "class": "Armor - Helm",
-    "bp": 8,
-    "ar": 0,
-    "traits": ["[Blinders]", "Deflect X=1", "Protective X=2"]
-  },
-  {
-    "name": "Helmet, Riot, Bulletproof",
-    "class": "Armor - Helm",
-    "bp": 17,
-    "ar": 0,
-    "traits": ["[Blinders]", "Deflect X=1", "Protective X=2", "Bulletproof"]
-  }
-]
+{
+	"Armor, Combat Suit": {"class": "Armor - Suit","bp":43,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 2", " Hardened", " Battery X:Type > List" ]},
+	"Armor, Field Advanced": {"class": "Armor - Suit","bp":23,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 3]", " Deflect 2", " Advanced", " [Lumbering]" ]},
+	"Armor, Field Bulletproof Flex": {"class": "Armor - Suit","bp":29,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 3]", " Deflect 2", " [Flexible]", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Field Flex": {"class": "Armor - Suit","bp":20,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 3]", " Deflect 2", " [Flexible]", " [Lumbering]" ]},
+	"Armor, Field Mail": {"class": "Armor - Suit","bp":18,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 3]", " Deflect 2", " [Mail]", " [Lumbering]" ]},
+	"Armor, Field Nanoweave BP": {"class": "Armor - Suit","bp":37,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 2]", " Deflect 2", " Nanoweave", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Field Nanoweave": {"class": "Armor - Suit","bp":28,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 2]", " Deflect 2", " Nanoweave", " [Lumbering]" ]},
+	"Armor, Field": {"class": "Armor - Suit","bp":22,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 4]", " Deflect 2", " [Lumbering]" ]},
+	"Armor, Field, Bulletproof Advanced": {"class": "Armor - Suit","bp":32,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 3]", " Deflect 2", " Advanced", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Field, Bulletproof": {"class": "Armor - Suit","bp":31,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 8", " [Laden 4]", " Deflect 2", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Heavy Advanced": {"class": "Armor - Suit","bp":16,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden 2]", " Deflect", " Advanced", " [Lumbering]" ]},
+	"Armor, Heavy Bulletproof Flex": {"class": "Armor - Suit","bp":22,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden 2]", " Deflect", " [Flexible]", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Heavy Flex": {"class": "Armor - Suit","bp":13,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden 2]", " Deflect", " [Flexible]", " [Lumbering]" ]},
+	"Armor, Heavy Mail": {"class": "Armor - Suit","bp":11,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden 2]", " Deflect", " [Mail]", " [Lumbering]" ]},
+	"Armor, Heavy Nanoweave BP": {"class": "Armor - Suit","bp":30,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Nanoweave", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Heavy Nanoweave": {"class": "Armor - Suit","bp":21,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Nanoweave", " [Lumbering]" ]},
+	"Armor, Heavy": {"class": "Armor - Suit","bp":15,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden 3]", " Deflect", " [Lumbering]" ]},
+	"Armor, Heavy, Bulletproof Advanced": {"class": "Armor - Suit","bp":25,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden 2]", " Deflect", " Advanced", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Heavy, Bulletproof": {"class": "Armor - Suit","bp":24,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden 3]", " Deflect", " [Lumbering]", " Bulletproof" ]},
+	"Armor, Light Advanced": {"class": "Armor - Suit","bp":9,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Deflect", " Advanced" ]},
+	"Armor, Light Bulletproof Flex": {"class": "Armor - Suit","bp":16,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Deflect", " [Flexible]", " Bulletproof" ]},
+	"Armor, Light Flex": {"class": "Armor - Suit","bp":6,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Deflect", " [Flexible]" ]},
+	"Armor, Light Mail": {"class": "Armor - Suit","bp":4,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Deflect", " [Mail]" ]},
+	"Armor, Light Nanoweave BP": {"class": "Armor - Suit","bp":24,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Deflect", " Nanoweave", " Bulletproof" ]},
+	"Armor, Light Nanoweave": {"class": "Armor - Suit","bp":14,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Deflect", " Nanoweave" ]},
+	"Armor, Light": {"class": "Armor - Suit","bp":8,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " [Laden]", " Deflect" ]},
+	"Armor, Light, Bulletproof Advanced": {"class": "Armor - Suit","bp":19,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Deflect", " Advanced", " Bulletproof" ]},
+	"Armor, Light, Bulletproof": {"class": "Armor - Suit","bp":18,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " [Laden]", " Deflect", " Bulletproof" ]},
+	"Armor, Medium Advanced": {"class": "Armor - Suit","bp":14,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " Advanced" ]},
+	"Armor, Medium Bulletproof Flex": {"class": "Armor - Suit","bp":21,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " [Flexible]", " Bulletproof" ]},
+	"Armor, Medium Flex": {"class": "Armor - Suit","bp":11,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " [Flexible]" ]},
+	"Armor, Medium Mail": {"class": "Armor - Suit","bp":8,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden 2]", " Deflect", " [Mail]" ]},
+	"Armor, Medium Nanoweave BP": {"class": "Armor - Suit","bp":30,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " Deflect", " Nanoweave", " Bulletproof" ]},
+	"Armor, Medium Nanoweave": {"class": "Armor - Suit","bp":20,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " Deflect", " Nanoweave" ]},
+	"Armor, Medium": {"class": "Armor - Suit","bp":13,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden 2]", " Deflect" ]},
+	"Armor, Medium, Bulletproof Advanced": {"class": "Armor - Suit","bp":24,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " Advanced", " Bulletproof" ]},
+	"Armor, Medium, Bulletproof": {"class": "Armor - Suit","bp":23,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden 2]", " Deflect", " Bulletproof" ]},
+	"Armored Gear": {"class": "Armor - Gear","bp":5,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Deflect", " Conceal" ]},
+	"Armored Gear, Bracer": {"class": "Armor - Gear","bp":9,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Deflect", " Parry", " Armor" ]},
+	"Armored Gear, Bulletproof": {"class": "Armor - Gear","bp":15,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Deflect", " Conceal", " Bulletproof" ]},
+	"Armored Gear, Padding Bulletproof": {"class": "Armor - Gear","bp":12,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " [Laden]", " Bulletproof" ]},
+	"Armored Gear, Padding": {"class": "Armor - Gear","bp":5,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " [Laden]", " Armor" ]},
+	"Armored Gear, Vaumbrace": {"class": "Armor - Gear","bp":9,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Deflect", " Parry", " Armor" ]},
+	"Blast-suit, Advanced": {"class": "Armor - Suit","bp":25,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 3", " [Laden 2]", " Bombproof 3", " [Awkward]", " Deflect", " [Lumbering]", " Bulletproof" ]},
+	"Blast-suit, Early": {"class": "Armor - Suit","bp":11,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 3", " [Laden 3]", " Bombproof 2", " [Awkward]", " [Lumbering]" ]},
+	"Blast-suit, Reinforced": {"class": "Armor - Suit","bp":25,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 5", " [Laden 4]", " Bombproof 3", " [Lumbering]" ]}
+	"Comm-helmet": {"class": "Armor - Helm","bp":20,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor", " Protective", " Radio 2" ]},
+	"Dynamic Armor, Heavy": {"class": "Armor - Suit","bp":82,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden 2]", " Bulletproof", " Protective", " Resist X > List" ]},
+	"Dynamic Armor, Light": {"class": "Armor - Suit","bp":49,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " [Laden]", " Deflect", " Battery X:Type > List", " Bulletproof", " Protective", " Resist X > List" ]},
+	"Dynamic Armor, Medium": {"class": "Armor - Suit","bp":64,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden]", " Bulletproof", " Protective", " Resist X > List" ]},
+	"Exxo-skeleton, Heavy": {"class": "Armor - Suit","bp":35,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 2", " Battery X:Type > List", " MOV 2" ]},
+	"Exxo-skeleton, Lifter Frame": {"class": "Misc - Tool","bp":6,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " [Stub]", " Battery X:Type > List" ]},
+	"Exxo-skeleton, Light": {"class": "Armor - Suit","bp":44,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 2", " Battery X:Type > List", " MOV 4" ]},
+	"Exxo-skin": {"class": "Armor - Suit","bp":38,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 2", " Hardened", " REF", " Discrete" ]},
+	"Exxo-skin, Carapace": {"class": "Armor - Suit","bp":40,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 6", " Hardened 2", " [Lumbering]", " Discrete" ]},
+	"Exxo-skin, Scaled": {"class": "Armor - Suit","bp":45,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 4", " Hardened", " REF", " Discrete" ]},
+	"Exxo-skin, Segmented": {"class": "Armor - Suit","bp":44,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 6", " Hardened", " Discrete" ]},
+	"Force Armor, Heavy": {"class": "Armor - Suit","bp":84,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden 2]", " Bulletproof", " Protective", " Resist X > List" ]},
+	"Force Armor, Light": {"class": "Armor - Suit","bp":52,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " [Laden]", " Deflect", " Battery X:Type > List", " Bulletproof", " Protective", " Resist X > List" ]},
+	"Force Armor, Medium": {"class": "Armor - Suit","bp":67,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden]", " Bulletproof", " Protective", " Resist X > List" ]},
+	"Hardsuit, Archaic": {"class": "Armor - Suit","bp":63,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bulletproof", " Armor 4", " Hardened", " Deflect", " Leap", " Protective", " [Laden 2]", " [Lumbering]", " SIZ", " Envirosuit X > List" ]},
+	"Hardsuit, Enhanced, Archaic": {"class": "Armor - Suit","bp":82,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bulletproof", " Armor 4", " Hardened", " Deflect", " Leap 2", " STR", " Protective", " [Laden]", " [Lumbering]", " SIZ 2", " Envirosuit X > List" ]},
+	"Hardsuit, Platform, Archaic": {"class": "Armor - Suit","bp":77,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bulletproof", " Armor 6", " Hardened", " Deflect 3", " STR", " Protective", " [Laden]", " [Lumbering]", " SIZ 2", " Envirosuit X > List" ]},
+	"Hardsuit, Scout": {"class": "Armor - Suit","bp":120,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bulletproof", " Armor 2", " Hardened", " Deflect 2", " Leap 3", " Protective", " [Laden]", " Detect 2", " SIZ", " Optics 2", " Envirosuit X > List" ]},
+	"Hardsuit, Standard": {"class": "Armor - Suit","bp":94,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bulletproof", " Armor 4", " Hardened", " Deflect 2", " Leap 2", " Protective", " [Laden]", " Detect", " SIZ", " Optics", " Envirosuit X > List" ]},
+	"Hardsuit, War": {"class": "Armor - Suit","bp":116,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bulletproof", " Armor 4", " Hardened 2", " Deflect 3", " Leap", " Bombproof", " Protective", " [Laden 2]", " Detect", " SIZ 2", " Optics", " Envirosuit X > List" ]},
+	"Hardsuit, Windup": {"class": "Armor - Suit","bp":143,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bulletproof", " Armor 6", " Hardened", " Deflect 3", " Windup", " Protective", " [Laden 2]", " [Lumbering]", " SIZ 2", " Envirosuit X > List" ]},
+	"Helmet, Common": {"class": "Armor - Helm","bp":3,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective" ]},
+	"Helmet, Common, Bulletproof": {"class": "Armor - Helm","bp":13,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " Bulletproof" ]},
+	"Helmet, Full": {"class": "Armor - Helm","bp":5,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " Armor", " [Blinders]" ]},
+	"Helmet, Full, Bulletproof": {"class": "Armor - Helm","bp":14,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " Armor", " [Blinders]", " Bulletproof" ]},
+	"Helmet, Full-Elaborate": {"class": "Armor - Helm","bp":4,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " Armor", " [Blinders]", " [Prissy]" ]},
+	"Helmet, Reinforced Bulletproof": {"class": "Armor - Helm","bp":16,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " Armor", " [Blinders]", " [Laden]", " Deflect", " Bulletproof" ]},
+	"Helmet, Reinforced": {"class": "Armor - Helm","bp":7,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective", " Armor", " [Blinders]", " [Laden]", " Deflect" ]},
+	"Helmet, Riot Bulletproof": {"class": "Armor - Helm","bp":17,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective 2", " [Blinders]", " Deflect", " Bulletproof" ]},
+	"Helmet, Riot": {"class": "Armor - Helm","bp":8,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Protective 2", " [Blinders]", " Deflect" ]},
+	"Improvised Parry": {"class": "Armor - Shield","bp":3,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Parry" ]},
+	"Jet-pack, Gear": {"class": "Armor - Gear","bp":27,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden 2]", " Flight", " [Backblast]" ]},
+	"Jet-pack, Jump": {"class": "Armor - Gear","bp":39,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden 2]", " Flight", " [Backblast]", " Leap 2" ]},
+	"Jet-pack, Suit": {"class": "Armor - Suit","bp":66,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden 2]", " Flight 2", " [Backblast]", " Armor 4", " Bulletproof" ]},
+	"Jet-pack, Suit, Advanced": {"class": "Armor - Suit","bp":103,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden 2]", " Flight 4", " [Backblast]", " Armor 4", " Bulletproof" ]},
+	"Mage Armor, Light": {"class": "Armor - Suit","bp":37,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " [Laden]", " Deflect", " Battery X:Type > List", " Bulletproof", " Protective" ]},
+	"Mage Armor, Medium": {"class": "Armor - Suit","bp":50,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden]", " Bulletproof", " Protective" ]},
+	"Phlogiston Suit": {"class": "Armor - Suit","bp":8,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Envirosuit X > List" ]},
+	"Phlogiston Suit, Fireproof": {"class": "Armor - Suit","bp":36,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Envirosuit X > List", " Fireproof 2", " [Laden]" ]},
+	"Phlogiston Suit, Improved BP": {"class": "Armor - Suit","bp":63,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Envirosuit X > List", " Bulletproof", " Armor 4", " [Laden 2]", " Fireproof 2" ]},
+	"Phlogiston Suit, Improved": {"class": "Armor - Suit","bp":39,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Envirosuit X > List", " Bulletproof", " Armor 4", " [Laden 2]" ]},
+	"Plasmashield, Heavy": {"class": "Armor - Energy","bp":36,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 8", " Bulletproof", " Deflect 3", " [1H]" ]},
+	"Plasmashield, Light": {"class": "Armor - Energy","bp":24,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 6", " Bulletproof", " Deflect", " [1H]" ]},
+	"Plasmashield, Medium": {"class": "Armor - Energy","bp":21,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 4", " Bulletproof", " Deflect 2", " [1H]" ]},
+	"Powered Armor-Battle": {"class": "Armor - Energy","bp":126,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 8", " Hardened 3", " Envirosuit X > List", " Battery X:Type > List", " Leap", " SIZ 2", " Bombproof", " Bulletproof" ]},
+	"Powered Armor-Combat": {"class": "Armor - Energy","bp":169,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 6", " Hardened 2", " Envirosuit X > List", " Battery X:Type > List", " Coverage 2", " Resist X > List", " SIZ 2", " Bulletproof" ]},
+	"Powered Armor-Early": {"class": "Armor - Suit","bp":65,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 6", " Hardened", " Envirosuit X > List", " Battery X:Type > List", " SIZ 2", " [Lumbering]", " [Fragile]", " Bulletproof" ]},
+	"Powered Armor-Exxo": {"class": "Armor - Energy","bp":29,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 4", " Battery X:Type > List", " Tall", " SIZ", " Brawn 2", " [Lumbering]", " [Fragile 2]" ]},
+	"Powered Armor-ExxoHvy": {"class": "Armor - Energy","bp":47,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 6", " Battery X:Type > List", " Tall", " SIZ 2", " Brawn 4", " [Lumbering]", " [Fragile]" ]},
+	"Powered Armor-Standard": {"class": "Armor - Energy","bp":76,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 6", " Hardened 2", " Envirosuit X > List", " Battery X:Type > List", " SIZ", " [Lumbering]", " Bulletproof" ]},
+	"Powered Armor-Stealth": {"class": "Armor - Energy","bp":91,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 4", " Hardened", " Envirosuit X > List", " Battery X:Type > List", " Coverage", " SIZ", " Sensors", " Bulletproof" ]},
+	"Powered Shielding": {"class": "Armor - Energy","bp":34,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Stub]", " Armor 4", " Conceal", " Bulletproof", " Imbue", " Deflect" ]},
+	"Powered Shielding-Heavy": {"class": "Armor - Energy","bp":57,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 6", " Conceal", " Bulletproof", " Imbue 2", " Deflect" ]},
+	"Proximity Suit, Fireproof BP": {"class": "Armor - Suit","bp":71,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Envirosuit X > List", " Armor 4", " [Laden 2]", " Fireproof", " Bulletproof" ]},
+	"Proximity Suit, Fireproof": {"class": "Armor - Suit","bp":41,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Envirosuit X > List", " [Laden]", " Fireproof" ]},
+	"Psi Armor, Heavy": {"class": "Armor - Suit","bp":52,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden 2]", " Bulletproof", " Protective" ]},
+	"Psi Armor, Light": {"class": "Armor - Suit","bp":27,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " [Laden]", " Deflect", " Battery X:Type > List", " Bulletproof", " Protective" ]},
+	"Psi Armor, Medium": {"class": "Armor - Suit","bp":39,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 4", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden]", " Bulletproof", " Protective" ]},
+	"Sensor Array": {"class": "Armor - Helm","bp":42,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Protective", " Sensors 2", " Optics 3" ]},
+	"Shield, Heavy-Large": {"class": "Armor - Shield","bp":17,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden 2]", " Armor 3", " Coverage", " Bash", " Protective", " [2H]" ]},
+	"Shield, Heavy-Medium": {"class": "Armor - Shield","bp":12,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 2", " Coverage", " Bash", " [1H]" ]},
+	"Shield, Heavy-Small": {"class": "Armor - Shield","bp":3,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor", " Bash", " [1H]" ]},
+	"Shield, Improvised-Large": {"class": "Armor - Shield","bp":5,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor", " Deflect", " [2H]" ]},
+	"Shield, Improvised-Small": {"class": "Armor - Shield","bp":2,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Parry", " [1H]" ]},
+	"Shield, Large": {"class": "Armor - Shield","bp":13,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 2", " Coverage", " Protective", " [1H]" ]},
+	"Shield, Large, Bulletproof": {"class": "Armor - Shield","bp":24,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 2", " Coverage", " Protective", " [1H]", " Bulletproof" ]},
+	"Shield, Light": {"class": "Armor - Shield","bp":8,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor", " Coverage", " [1H]" ]},
+	"Shield, Medium": {"class": "Armor - Shield","bp":10,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor", " Coverage", " Deflect", " [1H]" ]},
+	"Shield, Medium, Bulletproof": {"class": "Armor - Shield","bp":21,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor", " Coverage", " Deflect", " [1H]", " Bulletproof" ]},
+	"Shield, Medium-Spiked": {"class": "Armor - Shield","bp":11,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor", " Bash", " Impact", " Deflect", " [1H]" ]},
+	"Shield, Riot": {"class": "Armor - Shield","bp":29,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " Coverage", " Parry", " Deflect", " [1H]", " Bulletproof" ]},
+	"Shield, Riot, Large": {"class": "Armor - Shield","bp":32,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Laden]", " Armor 4", " Coverage", " Protective", " Deflect", " [2H]", " Bulletproof" ]},
+	"Shield, Small": {"class": "Armor - Shield","bp":8,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Coverage", " Parry", " [1H]" ]},
+	"Shield, Small, Bulletproof": {"class": "Armor - Shield","bp":19,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Coverage", " Deflect", " [1H]", " Bulletproof" ]},
+	"Shield, Small, Spiked": {"class": "Armor - Shield","bp":16,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Deflect", " Coverage", " Spike", " [1H]", " Bulletproof" ]},
+	"Shield, Small-Buckle": {"class": "Armor - Shield","bp":4,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bash", " Parry", " [1H]" ]},
+	"Stealth Suit": {"class": "Armor - Suit","bp":63,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 4", " Hardened", " Envirosuit X > List", " Battery X:Type > List" ]},
+  "Mage Armor, Heavy": {"class": "Armor - Suit","bp":65,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden 2]", " Bulletproof", " Protective" ]},
+}

@@ -1,0 +1,21 @@
+{
+	"Bow, Light Quickened": {"class": "Bow","bp":4,"or": "4","accuracy": "+1m","impact": 1,"dmg": "2","traits":[ "[2H]", " [Noise 2]" ]},
+	"Bow, Light": {"class": "Bow","bp":3,"or": "4","accuracy": "+1m","impact": 1,"dmg": "2","traits":[ "[Reload]", " [2H]", " [Noise 2]" ]},
+	"Bow, Long": {"class": "Bow","bp":13,"or": "10","accuracy": "-","impact": 3,"dmg": "2+1w","traits":[ "[Reload 2]", " Impale", " [2H]", " [Noise 2]" ]},
+	"Bow, Medium Heavy": {"class": "Bow","bp":10,"or": "6","accuracy": "-","impact": 2,"dmg": "2+2m","traits":[ "[Reload]", " [2H]", " [Noise 2]" ]},
+	"Bow, Medium Quickened": {"class": "Bow","bp":9,"or": "6","accuracy": "-","impact": 2,"dmg": "2+1m","traits":[ "[2H]", " [Noise 2]" ]},
+	"Bow, Medium": {"class": "Bow","bp":7,"or": "6","accuracy": "-","impact": 2,"dmg": "2+1m","traits":[ "[Reload]", " [2H]", " [Noise 2]" ]},
+	"Bow, Recurve Heavy": {"class": "Bow","bp":8,"or": "6","accuracy": "-","impact": 3,"dmg": "2+1w","traits":[ "[Reload 2]", " [Laden]", " [2H]", " [Noise 2]" ]},
+	"Bow, Recurve": {"class": "Bow","bp":10,"or": "4","accuracy": "+1m","impact": 2,"dmg": "2+1b","traits":[ "[Reload]", " [2H]", " [Noise 2]" ]},
+	"Bow, War": {"class": "Bow","bp":16,"or": "8","accuracy": "-","impact": 4,"dmg": "2+2b","traits":[ "[Reload 2]", " Impale", " [Laden]", " [2H]", " [Noise 2]" ]},
+	"Crossbow, Heavy": {"class": "Bow","bp":8,"or": "10","accuracy": "-","impact": 3,"dmg": "4+1b","traits":[ "[Reload 3]", " Impale", " [Laden 2]", " [Clumsy]", " [2H]", " [Noise 3]" ]},
+	"Crossbow, Light": {"class": "Bow","bp":5,"or": "8","accuracy": "-","impact": 2,"dmg": "2+1b","traits":[ "[Reload]", " [Clumsy]", " [2H]", " [Noise 2]" ]},
+	"Crossbow, Medium": {"class": "Bow","bp":10,"or": "10","accuracy": "-","impact": 3,"dmg": "3+1b","traits":[ "[Reload 2]", " Impale", " [Laden]", " [Clumsy]", " [2H]", " [Noise 2]" ]},
+	"Crossbow, Repeating Heavy": {"class": "Bow","bp":17,"or": "8","accuracy": "-1m","impact": 3,"dmg": "4+1b","traits":[ "Impale", " [Laden 2]", " [Clumsy]", " [2H]", " Switch:Trait", " [Noise 3]" ]},
+	"Crossbow, Repeating": {"class": "Bow","bp":9,"or": "8","accuracy": "-","impact": 2,"dmg": "3+1b","traits":[ "[Laden]", " [Clumsy]", " [2H]", " Switch:Trait", " [Noise 3]" ]},
+	"Crossbow, Single-hand Pistol": {"class": "Bow","bp":2,"or": "4","accuracy": "+1m","impact": 2,"dmg": "1+1b","traits":[ "[Reload]", " Melee", " [Clumsy]", " [1H]", " [Noise 2]" ]},
+	"Crossbow, Single-hand Pistol, Hvy": {"class": "Bow","bp":5,"or": "4","accuracy": "+1m","impact": 2,"dmg": "2+1b","traits":[ "[Reload 2]", " Melee", " [Clumsy]", " [1H]", " [Noise 2]" ]},
+	"Crossbow, Single-hand Pistol, Hvy, Masterwork": {"class": "Bow","bp":13,"or": "4","accuracy": "+2m","impact": 3,"dmg": "3+1b","traits":[ "[Reload 2]", " Melee", " [Clumsy]", " [1H]", " [Noise 2]" ]},
+	"Crossbow, Single-hand Pistol, Masterwork": {"class": "Bow","bp":12,"or": "4","accuracy": "+2m","impact": 3,"dmg": "2+1b","traits":[ "[Reload]", " Melee", " [Clumsy]", " [1H]", " [Noise 2]" ]},
+	"Slingshot": {"class": "Bow","bp":8,"or": "2","accuracy": "+1b","impact": 0,"dmg": "2-1b","traits":[ "ROF", " [Stub]", " [Noise 2]", " [2H]" ]}
+}
