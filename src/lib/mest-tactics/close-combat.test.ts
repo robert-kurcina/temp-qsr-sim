@@ -1,7 +1,9 @@
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from './character-factory';
 import { makeCloseCombatAttack } from './close-combat';
+import { setRoller, resetRoller, DiceType, Roller } from './dice-roller';
+import { metricsService } from './MetricsService';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
 import type { Character } from './Character';
@@ -30,53 +32,69 @@ describe('makeCloseCombatAttack', () => {
     defender = createCharacter(defenderProfile, 'Defender');
   });
 
-  it('should resolve a standard attack', () => {
-    const context = {};
-    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
-    expect(result).toBeDefined();
-    expect(result.hit).toBeTypeOf('boolean');
+  afterEach(() => {
+    resetRoller();
+    metricsService.clearEvents();
   });
 
-  it('should return a damageResolution object on a successful hit', () => {
-    const context = {};
-    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
-    if (result.hit) {
-      expect(result.damageResolution).toBeDefined();
-      expect(result.damageResolution?.woundsAdded).toBeGreaterThanOrEqual(0); // Corrected property
-    }
+  it('should force a successful hit and create a damage resolution', () => {
+    let rollResults = [5, 1, 5, 1];
+    const mockRoller: Roller = () => rollResults.shift() || 0;
+    setRoller(mockRoller);
+
+    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {});
+
+    expect(result.hit).toBe(true);
+    expect(result.damageResolution).toBeDefined();
   });
 
-  it('should not return a damageResolution object on a miss', () => {
-    // This test is statistical, but we can run it multiple times to increase confidence.
-    // For a deterministic test, we would need to mock the dice roller.
-    for (let i = 0; i < 10; i++) {
-        const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {});
-        if (!result.hit) {
-            expect(result.damageResolution).toBeUndefined();
-        }
-    }
+  it('should force a miss and not create a damage resolution', () => {
+    let rollResults = [1, 5];
+    const mockRoller: Roller = () => rollResults.shift() || 0;
+    setRoller(mockRoller);
+
+    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {});
+
+    expect(result.hit).toBe(false);
+    expect(result.damageResolution).toBeUndefined();
   });
 
-  it('should apply a bonus to the attacker for a Charge', () => {
-      const context: TestContext = { isCharge: true };
-      const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
-      // We can only check that the code runs without error, as the result is random.
-      expect(result).toBeDefined();
+  it('should add a bonus die to the attacker for a Charge', () => {
+    setRoller(() => 0);
+    const context: TestContext = { isCharge: true };
+
+    makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
+
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    expect(diceEvents.length).toBeGreaterThanOrEqual(1);
+    
+    const hitEventData = diceEvents[0].data as any;
+    // Robustly check for the bonus, defaulting to 0 if the key is not present.
+    expect(hitEventData.finalPools.p1FinalBonus[DiceType.Base] || 0).toBe(1);
   });
 
-  it('should apply a bonus to the defender for Defending', () => {
+  it('should add a bonus die to the defender for Defending', () => {
+    setRoller(() => 0);
     const context: TestContext = { isDefending: true };
-    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
-    expect(result).toBeDefined();
+
+    makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
+
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    expect(diceEvents.length).toBeGreaterThanOrEqual(1);
+
+    const hitEventData = diceEvents[0].data as any;
+    expect(hitEventData.finalPools.p2FinalBonus[DiceType.Base] || 0).toBe(1);
   });
 
-  // Test that context is passed to the damage phase correctly
-  it('should pass assistingModels context to the damage phase', () => {
+  it('should correctly apply impact modifier from assisting models', () => {
+    let rollResults = [5, 1, 5, 1];
+    const mockRoller: Roller = () => rollResults.shift() || 0;
+    setRoller(mockRoller);
     const context: TestContext = { assistingModels: 2 };
+
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
-    if (result.hit) {
-      // We can't check remainingImpact, but we can confirm damage was resolved.
-      expect(result.damageResolution).toBeDefined();
-    }
+    
+    expect(result.hit).toBe(true);
+    expect(result.damageResolution).toBeDefined();
   });
 });

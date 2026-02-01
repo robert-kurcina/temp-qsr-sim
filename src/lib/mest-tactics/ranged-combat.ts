@@ -7,7 +7,7 @@ import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveRangedHitTest } from './subroutines/ranged-hit-test'; // Correct hit test for ranged
 import { resolveDamage, DamageResolution } from './subroutines/damage-test';
 
-// --- Main Attack Result Interface --- //
+// --- Main Attack Result Interface ---
 
 export interface AttackResult {
     hit: boolean;
@@ -34,7 +34,7 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     // 2. Ranged-Specific Contextual Modifiers
     if (context.isPointBlank) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasDirectCover) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
-    if (context.hasInterveningCover) defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+    if (context.hasInterveningCover) defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
     
     // Distance Penalty (ORM)
     if (context.orm && context.orm > 0) {
@@ -60,7 +60,12 @@ export function makeRangedCombatAttack(
     const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, context);
 
     // 2. Perform the Ranged Hit Test (RCA vs REF).
-    const hitTestResult = resolveRangedHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
+    let hitTestResult: TestResult;
+    if (context.forceHit) {
+        hitTestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+    } else {
+        hitTestResult = resolveRangedHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
+    }
 
     if (!hitTestResult.pass) {
         return { hit: false, hitTestResult };

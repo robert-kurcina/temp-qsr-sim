@@ -52,21 +52,30 @@ This phase implemented the core trait system using a strict Test-Driven Developm
 This phase introduced the `TestContext` object, a data container that holds all relevant situational information for a test (e.g., `isCharge`, `isFlanked`, `hasCover`). This architectural change paved the way for a clean and scalable implementation of new rules by decoupling the core test logic from the specifics of any given situation.
 
 ### **Phase 4: Combat System Refactor (Completed)**
-Building on the `TestContext`, the monolithic `combat.ts` module was refactored into two distinct, high-level modules, adhering to the Single Responsibility Principle.
-*   **`close-combat.ts`:** Now exclusively handles all close combat attacks, using the `hit-test.ts` subroutine for its opposed CCA vs. CCA roll. It correctly implements all close-combat-specific modifiers.
-*   **`ranged-combat.ts`:** A new module created to exclusively handle all direct ranged attacks. It implements ranged-specific modifiers (e.g., Point-Blank, Cover) and uses its own dedicated `ranged-hit-test.ts` subroutine for the opposed RCA vs. REF roll.
-*   **Code Reuse:** Both modules leverage the same `damage-test.ts` subroutine for damage resolution.
-*   **Cleanup:** The obsolete `combat.ts` file was deleted.
+The monolithic `combat.ts` module was refactored into two distinct, high-level modules: `close-combat.ts` and `ranged-combat.ts`. Both modules leverage shared subroutines for hit and damage tests, adhering to the Single Responsibility Principle.
 
 ### **Phase 5: Morale & Compulsory Actions (Completed)**
-This phase implemented the game's psychology and morale system.
-*   **Character State:** The `Character.ts` interface was updated with `isEngaged` and `isInCover` flags to track a character's immediate situation.
-*   **`morale-test.ts` Subroutine:** A new subroutine was created to handle all unopposed `WIL` (Willpower) based morale checks, such as Rally actions.
-*   **`compulsory-actions.ts` Module:** This high-level module was created to determine the actions a character must take when their morale breaks. It includes:
-    *   **State Utility Functions:** `isNervous`, `isDisordered`, `isPanicked`, and `isEliminatedByFear` provide clean, readable checks for a character's morale status based on their `fearTokens`.
-    *   **`getCompulsoryActions` Function:** This core function analyzes a character's state and returns a structured list of required actions (Disengage, Move to Safety, or Rally), including the AP cost, based on the rules of priority. It also handles the automatic elimination of a character who accumulates 4+ fear tokens.
+This phase implemented the game's psychology and morale system, including character state tracking, morale checks, and the determination of compulsory actions based on a character's fear level.
 
----
+### **Phase 6: Instrumentation & Metrics Framework (Current)**
+This phase marks a strategic shift from pure feature implementation to building a foundational framework for long-term analysis and robust testing. The goal is to create a centralized system for logging and tracking key gameplay events. This will provide immediate value by enabling deterministic, reliable testing and will serve as the core data-gathering mechanism for future game balance analysis.
 
-### **Phase 6: Next Steps**
-The core combat and morale systems are now robust and well-structured. What feature would you like to implement next?
+**The Plan:**
+
+1.  **Design the `MetricsService`:**
+    *   Create a central singleton service, `MetricsService`, responsible for capturing and storing gameplay events.
+    *   It will expose a primary method: `logEvent(eventName: string, data: object)`.
+    *   It will maintain an in-memory log of all captured events.
+
+2.  **Instrument the Dice Roller:**
+    *   The `dice-roller.ts` module will be the first to be instrumented.
+    *   Every dice roll will be logged as a `diceRoll` event, capturing all inputs (stats, modifiers) and outputs (success/failure, degrees of success).
+
+3.  **Create a Mockable Testing Framework:**
+    *   Refactor the `dice-roller.ts` module to allow its core rolling function to be replaced or "mocked" during tests.
+    *   In our test suites, we will replace the random roller with a deterministic one that returns pre-defined results.
+
+4.  **Refactor Combat Tests for Determinism:**
+    *   Update the `close-combat.test.ts` and `ranged-combat.test.ts` suites.
+    *   Remove statistical loops and unreliable checks.
+    *   For each test, we will now inject specific dice roll outcomes (e.g., "force a hit," "force a miss") to validate the code paths with 100% reliability.

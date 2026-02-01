@@ -1,4 +1,8 @@
 
+import { metricsService } from './MetricsService';
+
+// --- Core Types --- //
+
 export enum DiceType {
   Modifier = 'Modifier',
   Base = 'Base',
@@ -27,7 +31,13 @@ export interface TestResult {
   carryOverDice: DicePool;
 }
 
-function _roll(pool: DicePool): number {
+// --- Roller Abstraction for Mocking --- //
+
+/** Defines the signature for a function that can roll a dice pool. */
+export type Roller = (pool: DicePool) => number;
+
+/** The default, random roller implementation. */
+const _randomRoll: Roller = (pool) => {
   let successes = 0;
   for (const key in pool) {
     const type = key as DiceType;
@@ -49,54 +59,65 @@ function _roll(pool: DicePool): number {
     }
   }
   return successes;
+};
+
+/** The active roller used by the system. Defaults to the random one. */
+let activeRoller: Roller = _randomRoll;
+
+/**
+ * Sets the active dice roller for the system. Used to inject mocks for testing.
+ * @param newRoller The new roller function to use.
+ */
+export function setRoller(newRoller: Roller) {
+  activeRoller = newRoller;
 }
+
+/** Resets the active dice roller to the default random implementation. */
+export function resetRoller() {
+  activeRoller = _randomRoll;
+}
+
+// --- Main Test Resolution Logic --- //
 
 export function resolveTest(
   activeParticipant: TestParticipant,
   passiveParticipant: TestParticipant,
   difficultyRating: number = 0,
-  p1ScoreOverride?: () => number,
-  p2ScoreOverride?: () => number
 ): TestResult {
   const p1_totalBonus = activeParticipant.bonusDice || {};
   const p2_totalBonus = passiveParticipant.bonusDice || {};
   const p1_totalPenalty = activeParticipant.penaltyDice || {};
   const p2_totalPenalty = passiveParticipant.penaltyDice || {};
 
-  // Active player's bonuses are cancelled by passive player's penalties
-  const p1FinalBonus: DicePool = { ...p1_totalBonus };
-  // Passive player's bonuses are cancelled by active player's penalties
-  const p2FinalBonus: DicePool = { ...p2_totalBonus };
-
   // Cancellation logic
+  const p1FinalBonus: DicePool = { ...p1_totalBonus };
+  const p2FinalBonus: DicePool = { ...p2_totalBonus };
   for (const key in p1_totalBonus) {
     const type = key as DiceType;
     const p1b = p1FinalBonus[type] || 0;
     const p2p = p2_totalPenalty[type] || 0;
     const cancelCount = Math.min(p1b, p2p);
     p1FinalBonus[type] = p1b - cancelCount;
-    p2_totalPenalty[type] = p2p - cancelCount; // This isn't strictly needed but good for clarity
+    p2_totalPenalty[type] = (p2_totalPenalty[type] || 0) - cancelCount;
   }
-
   for (const key in p2_totalBonus) {
     const type = key as DiceType;
     const p2b = p2FinalBonus[type] || 0;
     const p1p = p1_totalPenalty[type] || 0;
     const cancelCount = Math.min(p2b, p1p);
     p2FinalBonus[type] = p2b - cancelCount;
-    p1_totalPenalty[type] = p1p - cancelCount;
+    p1_totalPenalty[type] = (p1_totalPenalty[type] || 0) - cancelCount;
   }
 
   const p1Pool: DicePool = { ...p1FinalBonus, [DiceType.Base]: 2 };
   const p2Pool: DicePool = { ...p2FinalBonus, [DiceType.Base]: 2 };
 
-  const p1Successes = _roll(p1Pool);
-  const p2Successes = _roll(p2Pool);
+  const p1Successes = activeRoller(p1Pool);
+  const p2Successes = activeRoller(p2Pool);
 
-  const activePlayerTestScore = p1ScoreOverride ? p1ScoreOverride() : activeParticipant.attributeValue + p1Successes;
-
+  const activePlayerTestScore = activeParticipant.attributeValue + p1Successes;
   const passiveBaseAttribute = passiveParticipant.isSystemPlayer ? 2 : passiveParticipant.attributeValue;
-  const passivePlayerTestScore = p2ScoreOverride ? p2ScoreOverride() : passiveBaseAttribute + p2Successes + difficultyRating;
+  const passivePlayerTestScore = passiveBaseAttribute + p2Successes + difficultyRating;
   
   const scoreDifference = activePlayerTestScore - passivePlayerTestScore;
 
@@ -112,7 +133,7 @@ export function resolveTest(
     carryOverDice[DiceType.Base] = cascades - 1;
   }
 
-  return {
+  const result: TestResult = {
     pass,
     cascades,
     misses,
@@ -120,4 +141,22 @@ export function resolveTest(
     passivePlayerTestScore,
     carryOverDice,
   };
+
+  // Log the event to our new metrics service
+  metricsService.logEvent('diceTestResolved', {
+    inputs: {
+        activeParticipant,
+        passiveParticipant,
+        difficultyRating
+    },
+    finalPools: {
+        p1FinalBonus,
+        p2FinalBonus,
+        p1FinalPenalty: p1_totalPenalty,
+        p2FinalPenalty: p2_totalPenalty
+    },
+    result,
+  });
+
+  return result;
 }
