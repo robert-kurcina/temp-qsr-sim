@@ -44,7 +44,7 @@
 	"Armored Gear, Vaumbrace": {"class": "Armor - Gear","bp":9,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Deflect", " Parry", " Armor" ]},
 	"Blast-suit, Advanced": {"class": "Armor - Suit","bp":25,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 3", " [Laden 2]", " Bombproof 3", " [Awkward]", " Deflect", " [Lumbering]", " Bulletproof" ]},
 	"Blast-suit, Early": {"class": "Armor - Suit","bp":11,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 3", " [Laden 3]", " Bombproof 2", " [Awkward]", " [Lumbering]" ]},
-	"Blast-suit, Reinforced": {"class": "Armor - Suit","bp":25,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 5", " [Laden 4]", " Bombproof 3", " [Lumbering]" ]}
+	"Blast-suit, Reinforced": {"class": "Armor - Suit","bp":25,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 5", " [Laden 4]", " Bombproof 3", " [Lumbering]" ]},
 	"Comm-helmet": {"class": "Armor - Helm","bp":20,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor", " Protective", " Radio 2" ]},
 	"Dynamic Armor, Heavy": {"class": "Armor - Suit","bp":82,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden 2]", " Bulletproof", " Protective", " Resist X > List" ]},
 	"Dynamic Armor, Light": {"class": "Armor - Suit","bp":49,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 2", " [Laden]", " Deflect", " Battery X:Type > List", " Bulletproof", " Protective", " Resist X > List" ]},
@@ -122,5 +122,5 @@
 	"Shield, Small, Spiked": {"class": "Armor - Shield","bp":16,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Deflect", " Coverage", " Spike", " [1H]", " Bulletproof" ]},
 	"Shield, Small-Buckle": {"class": "Armor - Shield","bp":4,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Bash", " Parry", " [1H]" ]},
 	"Stealth Suit": {"class": "Armor - Suit","bp":63,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "[Blinders]", " Armor 4", " Hardened", " Envirosuit X > List", " Battery X:Type > List" ]},
-  "Mage Armor, Heavy": {"class": "Armor - Suit","bp":65,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden 2]", " Bulletproof", " Protective" ]},
+  "Mage Armor, Heavy": {"class": "Armor - Suit","bp":65,"or": "-","accuracy": "-","impact": 0,"dmg": "-","traits":[ "Armor 6", " [Laden]", " Deflect", " Battery X:Type > List", " [Laden 2]", " Bulletproof", " Protective" ]}
 }

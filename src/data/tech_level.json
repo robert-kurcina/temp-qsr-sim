@@ -4,18 +4,9 @@
     "tech_period": "Ancient",
     "tech_level": 1,
     "tech_year": -5000,
-    "weapons": [
-      "Taser Rifle",
-      "Taser Pistol"
-    ],
-    "armors": [
-      "Ballistic Vest",
-      "Tactical Helmet"
-    ],
-    "equipment": [
-      "Night Vision Goggles",
-      "Radio Communicator"
-    ]
+    "weapons": [],
+    "armors": [],
+    "equipment": []
   },
   {
     "tech_age": "Bronze",

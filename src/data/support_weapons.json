@@ -19,7 +19,7 @@
 	"Beam Cannon, Heavy": {"class": "Support - Energy","bp":296,"or": "24","accuracy": "+1m","impact": 7,"dmg": "12+3w","traits":[ "[Crewed 4]", " ROF 2", " Cleave 2", " Caustic 2", " Pierce 3", " [2H]", " Line X > List", " [Traversal!]", " [Feed]" ]},
 	"Beam Cannon, Light": {"class": "Support - Energy","bp":134,"or": "16","accuracy": "+1m","impact": 5,"dmg": "6+3w","traits":[ "[Crewed 2]", " ROF 2", " Cleave", " Caustic", " Pierce", " [2H]", " Line X > List", " [Traversal]", " [Feed]" ]},
 	"Beam Gun": {"class": "Support - Energy","bp":175,"or": "16","accuracy": "+1m","impact": 5,"dmg": "6+4w","traits":[ "[Laden 2]", " ROF 4", " [Crewed 2]", " Caustic", " Pierce", " [2H]", " Line X > List", " [Feed]" ]},
-	"Beam Gun, Advanced": {"class": "Support - Energy","bp":200,"or": "16","accuracy": "+1m","impact": 6,"dmg": "7+4w","traits":[ "[Laden 2]", " ROF 4", " [Crewed 2]", " Caustic", " Pierce", " [2H]", " Line X > List", " [Feed]" ]}
+	"Beam Gun, Advanced": {"class": "Support - Energy","bp":200,"or": "16","accuracy": "+1m","impact": 6,"dmg": "7+4w","traits":[ "[Laden 2]", " ROF 4", " [Crewed 2]", " Caustic", " Pierce", " [2H]", " Line X > List", " [Feed]" ]},
 	"Cannon, A 12.7mm": {"class": "Support - Modern","bp":11,"or": "16","accuracy": "-1w","impact": 2,"dmg": "6","traits":[ "[Reload 2]", " [Traversal!]", " Pierce 2", " [Crewed 2]", " [Blackpowder]", " [2H]", " [Carriage 3]" ]},
 	"Cannon, B 25mm (2-pdr)": {"class": "Support - Modern","bp":10,"or": "16","accuracy": "-1w","impact": 2,"dmg": "7","traits":[ "[Reload 3]", " [Traversal!]", " Pierce 3", " [Crewed 2]", " [Blackpowder]", " [1H]", " [Carriage 4]" ]},
 	"Cannon, C 42mm (6-pdr)": {"class": "Support - Modern","bp":6,"or": "16","accuracy": "-1w","impact": 2,"dmg": "8","traits":[ "[Reload 4]", " [Traversal!]", " Pierce 4", " [Crewed 3]", " [Blackpowder]", " [1H]", " [Carriage 5]" ]},
@@ -56,5 +56,5 @@
 	"Pipe Cannon, 2-pdr": {"class": "Support - Archaic","bp":14,"or": "10","accuracy": "-1b","impact": 0,"dmg": "4+3w","traits":[ "[Reload 3]", " [Laden 3]", " [Emplace 3]", " Pierce 3", " [2H]", " [Blackpowder]" ]},
 	"Plasma Cannon": {"class": "Support - Energy","bp":167,"or": "16","accuracy": "-","impact": 3,"dmg": "8+4w","traits":[ "Disrupt", " Burn 2", " Caustic", " Pierce 2", " [2H]", " [Feed 2]", " ROF 2" ]},
 	"Plasma Cannon, Heavy": {"class": "Support - Energy","bp":229,"or": "20","accuracy": "-","impact": 4,"dmg": "10+6w","traits":[ "Disrupt 2", " Burn 3", " Caustic 2", " Pierce 3", " [2H]", " [Feed 2]", " ROF 2" ]},
-	"Submachine-gun, Archaic": {"class": "Support - Archaic","bp":35,"or": "8","accuracy": "-1m","impact": 1,"dmg": "4","traits":[ "[Reload]", " [Laden]", " Fire-lane", " ROF 3", " Burst", " [1H]", " [Blackpowder]", " [Jitter!]", " [Feed 2]" ]},
+	"Submachine-gun, Archaic": {"class": "Support - Archaic","bp":35,"or": "8","accuracy": "-1m","impact": 1,"dmg": "4","traits":[ "[Reload]", " [Laden]", " Fire-lane", " ROF 3", " Burst", " [1H]", " [Blackpowder]", " [Jitter!]", " [Feed 2]" ]}
 }
