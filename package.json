@@ -9,7 +9,7 @@
     "prebuild": "node scripts/bundle-data.js",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "vitest --config vitest.config.unit.ts"
+    "test": "vitest"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

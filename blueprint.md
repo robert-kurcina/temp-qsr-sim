@@ -1,45 +1,69 @@
+
 # Project Blueprint
 
 ## Overview
 
-This project is a simulation engine for a tabletop wargame. The core logic involves parsing character, weapon, and equipment traits from various data sources.
+This project is a **headless wargame simulator** designed to run in Firebase Studio. The goal is to create a flexible and performant simulator that can be easily extended with new rules and scenarios, with all interactions occurring via terminal scripts.
 
-## Current Task: Implement Documented Trait Parser (Simple Forms)
+## Reference Documents
 
-The immediate goal is to implement a parser for the simplest and most common human-readable trait formats. This will serve as the foundation for the more complex parser later.
+*   **`rules.md`**: This file contains the canonical game rules, definitions, and modifier tables as provided by the user. It serves as the primary source of truth for all game mechanic implementations.
 
-### **Plan**
+## Design and Features
 
-1.  **Test-Driven Development (TDD):**
-    *   First, create `src/game/core/TraitParser.test.js`.
-    *   This test file will define the expected behavior for parsing simple documented traits. Tests will cover:
-        *   Binary traits: `"TraitName"`
-        *   Binary disabilities: `"[DisabilityName]"`
-        *   Traits with explicit levels: `"TraitName X"`
-        *   Disabilities with explicit levels: `"[DisabilityName X]"`
-        *   Traits with implicit levels (defaulting to 1).
+### Architecture
 
-2.  **`TraitParser` Implementation:**
-    *   Create `src/game/core/Trait.js` containing:
-        *   **`Trait` class:** A data object to store parsed properties (`name`, `level`, `isDisability`).
-        *   **`TraitParser` class:** Contains the logic to parse these simple documented trait strings.
-    *   The parser will be implemented to pass all tests defined in `TraitParser.test.js`.
+*   **Runtime:** Node.js with TypeScript.
+*   **Logic:** Core game rules are implemented as modular TypeScript functions.
+*   **Data:** Game data (archetypes, items, traits) is stored in JSON files.
 
+### Existing Features
 
-## Future Enhancements
+*   **Data-Driven Design:** Core character and item data is externalized in JSON files, allowing for easy modification.
+*   **Character Creation:** A factory function (`createCharacter`) builds character objects from profiles, applying traits and calculating final attributes.
+*   **Core Dice Mechanics:** A robust `dice-roller.ts` module handles the fundamental d10-based test resolution, including cascades and misses.
+*   **Basic Combat Simulation:** The `combat.ts` module orchestrates a full combat sequence (`makeCloseCombatAttack`), from the initial opposed hit test to the final unopposed damage test, including carry-over dice logic.
+*   **Unit Testing:** The system is validated via a Vitest test (`combat.test.ts`), which runs a headless simulation and logs the detailed results.
 
-### Advanced Documented Trait Parser
+## Current Request: Implement Situational Test Modifiers
 
-After the simple parser is complete, it will be expanded to handle more complex, human-readable trait strings.
+**Goal:** Evolve the simulator to account for common battlefield situations that grant bonus or penalty dice to tests. This involves implementing the logic described in the `rules.md` file.
 
-**Capabilities will include:**
-*   **Complex Dependencies:** Parsing parent-child relationships using `>` and `:` delimiters (e.g., `"Parent > Child"`).
-*   **Trait Packages:** Parsing grouped traits within curly braces `{...}`.
-*   **Advanced Delimiters:** Handling `.` as a delimiter in trait lists.
-*   **Normalization:** Pre-processing non-standard formats like `[A][B]` and `A:B > C`.
-*   **Variations:** Parsing trailing characters like `+`, `!`, and `!!` as distinct properties.
-*   **Stat-line Targets:** Recognizing and parsing direct stat benefits (e.g., `"Accuracy +1m"`).
+---
 
-### JSON Trait Parser
+### **Phase 1: Initial Simulator Implementation (Completed)**
 
-A separate utility or an extension of the main parser may be needed to handle the specific formats found in the project's `.json` data files (e.g., `"Regenerate X=2"`), if they differ from the documented trait format.
+The foundational phase is complete. We have successfully built and validated a headless simulator capable of resolving a basic close combat attack between two characters, including dice rolling, attribute tests, and wound calculation.
+
+---
+
+### **Phase 2: Situational Test Modifiers (In Progress)**
+
+This phase introduces a new layer of contextual logic to the simulation.
+
+#### **High-Level Plan: The "Test Context" Object**
+
+The central architectural change will be the introduction of a `TestContext` object. This object will act as a data container, holding all relevant information about a test beyond just the attacker and defender. It will be constructed before a test is resolved and passed into the core logic. This prevents a tangled mess of function parameters and allows for clean, scalable implementation of new rules.
+
+#### **Iterative Implementation Steps**
+
+1.  **Foundational Refactoring:**
+    *   **Extend Character State:** The `Character` interface's `state` property will be expanded to track new conditions required by the rules (e.g., `fearTokens: number`, `delayTokens: number`, `isHidden: boolean`, `isWaiting: boolean`).
+    *   **Introduce `TestContext`:** Define a `TestContext` interface that can hold flags and data for various situations (e.g., `isCharge: boolean`, `isFlanked: boolean`, `elevationAdvantage: number`, `distance: number`).
+    *   **Refactor `resolveTest`:** The function signature will be updated to `resolveTest(..., context: TestContext)`.
+    *   **Create `calculateSituationalModifiers`:** A new, pure function will be created. It will take the `TestContext` as input and return an object containing the total dice modifications (`{ base: 0, modifier: 0, wild: 0, impact: 0 }`). This keeps the modifier logic separate and testable.
+
+2.  **Implement Character-State & Action-Based Modifiers:**
+    *   These modifiers rely on the state of the characters or the action being performed, making them the easiest to implement first.
+    *   **Hindrance:** The most common modifier. The logic will be updated to add a -1 Modifier die for each Wound, Fear, and Delay token.
+    *   **Action Flags:** The `TestContext` will be populated with flags like `isDefending`, `isCharging`, `isOverreach`. The test runner will be updated to set these flags to simulate different actions.
+    *   **State Flags:** Implement `Suddenness` (from `isHidden`), `Focus` (from `isWaiting`), and `Solo`.
+
+3.  **Implement Spatial & Environmental Modifiers (Abstracted Approach):**
+    *   A full geometric simulation of a 3D battlefield is outside the current scope. To avoid this complexity, we will use an **abstracted approach**. The test runner will be responsible for *declaring* the spatial conditions rather than calculating them.
+    *   **Mock Spatial Data:** The `TestContext` will be populated with pre-calculated spatial data (e.g., `isFlanked: true`, `hasHighGround: true`, `coverType: 'Direct'`).
+    *   **Implement Modifier Logic:** With the context providing the necessary data, the `calculateSituationalModifiers` function will be updated to handle the logic for:
+        *   **Close Combat:** `Assist`, `High Ground`, `Size`, `Outnumber`, `Cornered`, `Flanked`.
+        *   **Ranged Combat:** `Point-blank`, `Elevation`, `Size`, `Distance`, `Intervening Cover`, `Direct Cover`, `Hard Cover`.
+
+This iterative plan allows us to systematically build the complex modifier system, ensuring each piece is logical and testable, without getting bogged down in premature geometric calculations.

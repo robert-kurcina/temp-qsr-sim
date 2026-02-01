@@ -142,9 +142,6 @@
     "[Fettered > Target]": {
         "description": "Intrinsic. Unchanging. Until released via a Fiddle action, this character must always remain within Cohesion of a character from assembly Assembly or else it may not activate. If no such character remains on the battlefield this character is Eliminated. Requires a Fiddle action by a character of Target while in base-contact to make Fettered again if released." 
     },
-    "[Fizzle]": {
-        "description": "This is a keyword trait."
-    },
     "[Flex]": {
         "description": "Asset. Suit. (Should be Laden -1). If the Opposing Attacker tied or passes their Damage Test using a Weapon with an Impact rating of zero or has the Stun trait, this character receives at least 1 Delay token as Stun damage."
     },
@@ -295,7 +292,7 @@
         "description": "Attack Effect. List of traits available for use when this character is Free and Attentive."
     },
     "[Stay > List]": {
-        "description": "While in base-contact with the target, this item benefits from the items listed within <traits>."
+        "description": "While in base-contact with the target, this item benefits from the traits within list List."
     },
     "[Stub]": {
         "description": "Attack Effect. May not use Overreach when attacking. Penalized -1 Modifier die Close Hit Tests unless in base-contact with only Opposing models using weapons with [Stub] for Close Combat. Passive characters in base-contact are not considered Engaged unless they also have [Stub]." 
@@ -352,7 +349,7 @@
         "description": "Genetic. Requires +X Mana for Spellcasting or using Etheric, Magic, or Arcane Items. Any attacks against this character from Etheric, Magic, or Arcane require +X Mana."
     },
     "Acid X": {
-        "description": "Attack Effect. After passing the Hit Test, if the target has effectively zero Armor Rating, assign the target one Acid token plus 1 per SIZ cascades spent. Receive X cascades for this purpose. See the Advanced Game section for more information regarding this effect." 
+        "description": "Attack Effect. After passing the Hit Test, if the target has effectively zero Armor Rating, assign the target one Acid token plus 1 per SIZ cascades spent. Receive X cascades for this purpose." 
     },
     "Acrobatic X": {
         "description": "Genetic. Skill. Movement. Receive +X Wild dice Defender Close Combat Tests."
@@ -361,7 +358,7 @@
         "description": "Asset. Suit. (Should be Laden -1, and if Advanced+ then also Deflect +1)"
     },
     "Ammo X": {
-        "description": "Asset. Ignore the first X Out-of-Ammo! Dice. If there are remaining Out-of-Ammo! Dice; roll a die and score a success to keep if first use; otherwise reduce Ammo by 1 level, discarding if it becomes level 0. If in base-contact with an Emplaced weapon, other models also in base-contact with it may use this model’s Ammo X trait. See the Advanced Rules section on Fire-lanes for more information." 
+        "description": "Asset. Ignore the first X Out-of-Ammo! Dice. If there are remaining Out-of-Ammo! Dice; roll a die and score a success to keep if first use; otherwise reduce Ammo by 1 level, discarding if it becomes level 0. If in base-contact with an Emplaced weapon, other models also in base-contact with it may use this model’s Ammo X trait." 
     },
     "Amorphous X": {
         "description": "Intrinsic. Psychic. Genetic. While Attentive, has X additional |Hands|, and Reach X. May perform any Action not involving movement or reposition as though it were up to X MU away. Penalize any Tests with DR equal to the MU distance used. May reposition through porous terrain up to X MU thick while in base-contact. Players should agree and declare which terrain elements are porous, such as Doors, Windows, Bushes, etc." 
@@ -381,9 +378,6 @@
     "Anti-psionic X": {
         "description": "Attack Effect. Psychic. AoE. Attenuation. Have target perform an Unopposed Test at -X Modifier dice. For every miss, it must disable one Items with the Psychic keyword for the remainder of the Mission. Have target perform an Unopposed POW Test at -X Modifier dice. Upon fail, the target acquires a Delay token per miss." 
     },
-    "AoE": {
-        "description": "Attack Effect. This is a keyword."
-    },
     "Archer X": {
         "description": "Skill. Improves use of Bow weapons as follows: Receive bonus X Modifier dice for the Attacker Range Combat Tests, and reduce [Reload] penalty by X in total for Bow weapons |In Hand|."
     },
@@ -391,7 +385,7 @@
         "description": "Intrinsic. Reduce any Wound Damage received by X; also known as +X |Armor Rating|; therefore +X AR. Weapon’s Impact rating [I] reduces total AR by an equivalent amount. If a character is attacked by a Concentrated Attack, reduce 3 AR from each item Type with the Armor trait." 
     },
     "Augment X > List": {
-        "description": "Provides a maximum level multiplier of X for traits, attributes, and disabilities in <list>. At the start of an activation note the level used; it may be increased or decreased by one. Each level used multiplies the effect of the items in that <list>. Any disability activated take effect at the end of the action. If there are multiple disabilities listed, each is associated with a single level used plus the prior level if any. Cost is 5 plus the sum of costs for items in <list>."
+        "description": "Provides a maximum level multiplier of X for traits, attributes, and disabilities in list List. At the start of an activation note the level used; it may be increased or decreased by one. Each level used multiplies the effect of the traits in list List. Any disability activated take effect at the end of the action. If there are multiple disabilities listed, each is associated with a single level used plus the prior level if any. BP cost is 5 plus the sum of costs for traits in list List."
     },
     "Aura X > List": {
         "description": "Aura X > Traits — AoE. Aura OR is 1 MU. Specify a target location. All models within LOS and X ORM are targets. Reduce X by 1 for each ORM to a target for effective X. All targets are subject to the traits Traits, but only up to the level equal to the effective X." 
@@ -405,8 +399,8 @@
     "Battery X:Type > List": {
         "description": "Intrinsic. Electronic. Provides X Battery points at the start of this character’s Initiative which can be used to temporarily improve the associated Item's abilities until its next Initiative. An Item with access to multiple Battery traits keeps how they are available to be spent separate. While the Battery isn't disabled, each of the traits in list List are always available even if none of the Battery points have been spent. Within list List, each Battery point spent increases all traits within it. Each Battery point may instead be spent to receive +1 Base die for a test normally involving the Item. If a Weapon then it is for the Damage Test. If Armor then it is for the Hit or Damage Test. If Equipment then it is for a non-Combat Test." 
     },
-    "Beacon X > Trait": {
-        "description": "Any Friendly model with <trait> or matching <character> may use this as a beacon; it behaves as though it were at this object’s location."
+    "Beacon X > Target": {
+        "description": "Any Friendly model with trait Target or matching archetype Target may use this as a beacon; it behaves as though it were at this object’s location."
     },
     "Believer X > Belief": {
         "description": "Psychology. Skill. Character is an overt Believer of belief Belief. This provides bonuses and penalties to Defender Tests involving the |Psychology| keyword, such as Fear tests. While Attentive, receives +X Base dice Defender Tests involving the keyword |Psychology|, unless that source of Psychology has the same belief. Default it does not. While Distracted or Nervous, penalized -X Base dice Defender Tests involving the keyword |Psychology| if that source of Psychology has the same belief. Default it does not." 
@@ -457,7 +451,7 @@
         "description": "For the current Range Combat Attack; X randomly selected models which are within X × 1 MU behind the target along LOF, or in base-contact to very first target of the attack, are also attacked if they within LOS. Use the same Attacker's dice roll for Hit Test for each. If Burst > Trait, then all targets are affected by the trait Trait when the Attacker Range Combat Test passes."
     },
     "Cast X > Target": {
-        "description": "Spend 1 AP to activate trait <target> to self. The trait <target> stays active until this character's next Initiative. See Casting Spells for more information."
+        "description": "Spend 1 AP to activate trait Target to self. The trait Target stays active until this character's next Initiative. See Casting Spells for more information."
     },
     "Caustic X": {
         "description": "Attack Effect. Permanently reduce Armor of target by X. If target effectively has no Armor Rating when it is attacked, it acquires 1 Acid token per X." 
@@ -471,8 +465,8 @@
     "Charge": {
         "description": "When Attentive, receive +1 Wild die Attacker Damage Test and +1 Impact if this used with the |Charge| bonus. See Performing Movement Action for more information."
     },
-    "Charismatic X > Belief": {
-        "description": "If Ordered and of the highest level X within Cohesion or Visibility and LOS, award all Friendly Attentive Believers of belief <Belief> with +1 Wild die for Morale Tests and +1 Modifier die for Combat Hit Tests. No more than one Charismatic may provide this benefit to any Believer at a time."
+    "Charismatic X > Target": {
+        "description": "If Ordered and of the highest level X within Cohesion or Visibility and LOS, award all Friendly Attentive Believers of belief Target with +1 Wild die for Morale Tests and +1 Modifier die for Combat Hit Tests. No more than one Charismatic may provide this benefit to any Believer at a time."
     },
     "Chase X": {
         "description": "Genetic. If Free and Attentive and an Opposing model within Visibility moves away; optionally reposition this model towards it up to MOV × X MU. Allow this once per Action. Double the reposition if acquire a Delay token." 
@@ -487,7 +481,7 @@
         "description": "Upgrade Obstacle terrain effects on movement; Impassable > Difficult when climbing upwards, and Impassable > Rough when climbing down. When climbing Walls or Terrain but not entirely clearing that obstacle; indicate position with a marker. While upon that obstacle, penalized -1 Wild die Combat Tests."
     },
     "Cloud X > Type": {
-        "description": "AoE. See Gas > Type. Place 3 equally spaced size X Gas markers of type Type in base-contact with the target location. Use the Unbiased Scatter diagram to place the first marker. Effectively reduce X by 1 and place 2 more Gas markers of the effective size X in base-contact to each of those. While the effective X is at least 1, repeat above. See the Advanced Game rules section for Gas and Fire for more information." 
+        "description": "AoE. See Gas > Type. Place 3 equally spaced size X Gas markers of type Type in base-contact with the target location. Use the Unbiased Scatter diagram to place the first marker. Effectively reduce X by 1 and place 2 more Gas markers of the effective size X in base-contact to each of those. While the effective X is at least 1, repeat above." 
     },
     "Cockpit X": {
         "description": "This model allows one model with at least INT 2 to enter it as a |Pilot|, changing this model's status to Piloted. The Pilot model must be of SIZ -3 or smaller. While Piloted, when this model is Eliminated so is the Pilot model. While Piloted, the model uses a mix of its own attribute values and the Pilot's. This model's CCA, RCA, and REF is the lower of its own attribute value plus X, as compared to the Pilot's matching attribute value. The Pilot's INT and POW are used when necessary, with the Pilot receiving +1 POW for each SIZ this model is larger than an opponent for Opposed Fear tests. When this model takes damage, examine the Attacker's Base dice; any carry-over not matched by the Defender's dice will apply a Delay token as Stun damage against the Pilot. The Pilot may enter or exit from or to base-contact for 2 AP as a Fiddle action."
@@ -502,7 +496,7 @@
         "description": "Cone OR is X × 1 MU. Do perform Range Combat Hit Test, but instead pick a battlefield location at half Weapon's OR or greater. Any Attentive Free models with equal or higher REF may reposition up to Agility away by acquiring a Delay token. For every ORM reduce Cone OR by 1. All targets within LOS and within Cone OR of that location are automatically Hit and are subject to trait Trait."
     },
     "Confuse X": {
-        "description": "Attack Effect. Psychology. If target is Hit, have it perform an Unopposed Test using the higher of its INT or POW. Upon pass, assign the target one Confused token and one more per 3 cascades. Receive X cascades for this purpose. See the Advanced Game section for more information regarding this effect." 
+        "description": "Attack Effect. Psychology. If target is Hit, have it perform an Unopposed Test using the higher of its INT or POW. Upon pass, assign the target one Confused token and one more per 3 cascades. Receive X cascades for this purpose." 
     },
     "Construct:Energy X > List": {
         "description": "Intrinsic. see Overload X. Spend 1 AP and place a Energy Construct token in base-contact with the character; it has been manifested and attached. While attached, it will provide the traits identified in list List to the character. Whenever this character is to receive Wound damage, it may instead remove a Energy Construct token it manifested. A character may target an Opposing Energy Construct during Close or Range Combat at DR X; if the Attacker test passes, then remove the target Energy Construct token. Apply +1 DR if the Attack Effect doesn’t match this Construct." 
@@ -564,14 +558,9 @@
     "Eject": {
         "description": "When Eliminated, any Pilot model that has entered this model is not Eliminated but is instead repositioned using Biased Scatter away. The distance is equal to this model's SIZ plus the successes scored on SIZ Modifier dice. Mark the position where the Pilot would land; it is Eliminiated if this is off the battlefield. The Pilot lands at the start of the next Turn during its Owner's Initiative with 2 Delay tokens plus one more for each 1 MU scored on the Modifier dice."
     },
-    "Electronic": {
-        "description": "This is a keyword trait."
-    },
-    "Energize X > List": {
-        "description": "See <trait>. Increases the level of <trait> by X. Can increase the level by up to two; for each increase either spend an extra AP, or if Attentive acquire a Delay token. Cost of this trait is equal to 2 + half of <traits> times X."
-    },
-    "Energy": {
-        "description": "This is a keyword trait."
+
+    "Energize X > Target": {
+        "description": "See trait Target. Increases the level of trait Target by X. Can increase the level by up to two; for each increase either spend an extra AP, or if Attentive acquire a Delay token. The BP cost of this trait is equal to 2 + half of trait Target, times X."
     },
     "Entangle X": {
         "description": "Intrinsic. Perform an  MUEntangle MU Bonus Action after performing the Attacker Hit Test. Spend cascades equal to target SIZ to assign a Entangle marker to the target; presume +X cascades for this purpose. Allow this multiple times, but limit to X Entangle markers per item with this trait." 
@@ -587,9 +576,6 @@
     },
     "Expendable": {
         "description": "Intrinsic. Unchanging. Do not count nor consider for Bottle Test calculations. Never causes non-Expendable characters to perform Morale Tests when KO’d or Eliminated. Never provides bonuses to non-Expendable characters for Morale Tests." 
-    },
-    "Explosion": {
-        "description": "This is a keyword trait. Qualifies for Suppression. See the Advanced Rules section on Suppression for more information." 
     },
     "Extra-arms X": {
         "description": "Intrinsic. Has X additional hands ( MUHands MU). If X is 2-3, 4-7, or 8 and higher; then receive 1, 2, or 3 Arm AP. Arm AP may only be spent on Fiddle and Combat Actions. For each Arm AP used, the character is penalized -1 Modifier die for all Fiddle Tests and Combat Tests." 
@@ -607,10 +593,10 @@
         "description": "Skill. Reduce up to X penalty Modifier dice for Close Combat Hit Tests. When Attentive, for each level of Fight higher than the Opposing character, allow an additional Bonus Action for the Attack action. These additional Bonus Actions may not have already been performed during this Action." 
     },
     "Fire X": {
-        "description": "Attack Effect. Receive X Fire points to place Fire markers before resolving the Attacker Damage Test. Place at the target one or more Fire markers by spending Fire points. These are 0.5, 1, 2, or 3 MU in diameter for 1, 2, 3, or 4 Fire points. Fire markers must be placed no further than X MU from any other Fire marker already placed by this attack. See the Advanced Game rules section for Fire for more information on its effects." 
+        "description": "Attack Effect. Receive X Fire points to place Fire markers before resolving the Attacker Damage Test. Place at the target one or more Fire markers by spending Fire points. These are 0.5, 1, 2, or 3 MU in diameter for 1, 2, 3, or 4 Fire points. Fire markers must be placed no further than X MU from any other Fire marker already placed by this attack." 
     },
     "Fire-lane": {
-        "description": "This weapon qualifies to use the Fire-lane rules. See the Advanced Rules section for Fire-lane rules for more information."
+        "description": "This weapon qualifies to use the Fire-lane rules."
     },
     "Fireproof X": {
         "description": "Ignores the effects of X Burn markers it has been assigned, and reduces any effects from Fire by X dice."
@@ -658,7 +644,7 @@
         "description": "Intrinsic. Also known as HR or |Hardness Rating|. If effective HR is at least 1, the Concentrate action doesn't reduce Armor Rating by 3 unless in base-contact with Attacker. When targeted for any attack;  reduce X + 1 Impact reduce X + 1 Damage received and then convert up to X + 1 remaining Damage to instead become Stun damage." 
     },
     "Hatred X > List": {
-        "description": "Psychology. Skill. Specify a named Champion, named Archetype, named Assembly, named Faction, or named Belief. Must move into within first ORM, or into base-contact and perform an Attack action if member of list List is within Visibility. Receive +X Modifier die Attacker Hit Test and any Morale Tests involving target Name. May attack KO’d targets if they match name Name. ()" 
+        "description": "Psychology. Skill. Specify a named Champion, named Archetype, named Assembly, named Faction, or named Belief. Must move into within first ORM, or into base-contact and perform an Attack action if member of list List is within Visibility. Receive +X Modifier die Attacker Hit Test and any Morale Tests involving target Name. May attack KO’d targets if they match name Name." 
     },
     "Heal X": {
         "description": "Magic. Skill. Bio-agent. Leader. Receive +X Wild dice for the Revive action but use the higher of this character's INT or the target's FOR. Upon pass may also, for every 2 cascades spent; remove a Fear, Burn, Confused, or Poison token."
@@ -711,9 +697,6 @@
     "Intense X": {
         "description": "Psychology. Skill. Virtuosity. While Attentive Ordered and using Concentrate receive an additional +X for any Tests."
     },
-    "Invader": {
-        "description": "This is a keyword. May not be assigned to character if it already has Mythos or Invader."
-    },
     "Investigator X": {
         "description": "Award +1 RP if have the highest total Investigator levels in play. When using Resource or Tactics cards and a die roll is required; roll X additional dice and pick the results of the most favorable die."
     },
@@ -721,7 +704,7 @@
         "description": "May use Hide action even without Cover. Automatically becomes Hidden at the start of any character’s Initiative while Free. Do not remove this model’s Hidden status unless a Detect Test is first performed and passed. This model may not become Engaged nor targeted for an Attack until Revealed. Opposing characters with Invisibility, Detect, or Sensors automatically reduce this character’s Invisibility level by a similar amount for purposes of allowing this character to be Engaged or targeted for an Attack." 
     },
     "Jammer X > Trait": {
-        "description": "AoE. Jammer OR is equal to X × 8 MU. Reduce X by 1 per Jammer ORM.All models that are within range of the Jammer which have traits in list List reduce them by X."
+        "description": "AoE. Jammer OR is equal to X × 8 MU. Reduce X by 1 per Jammer ORM. All models that are within range of the Jammer which have traits in list List reduce them by X."
     },
     "Kick X": {
         "description": "Natural Weapon. See [Stub]. This trait may be used to attack as though it were a Natural weapon. Penalized -X Base dice Attacker Close Combat Hit Test. The Attacker Close Combat Damage Test causes Stun damage. Receive +1 Modifier die per Sprint level if began Action with target in Melee Range. Receives +X cascades for the Push-back Bonus Action as the only choice allowed." 
@@ -745,7 +728,7 @@
         "description": "Magic. Skill. Bio-agent. Provide a new Leech Bonus Action to be used upon passing Attacker Close Combat Damage Test with a Natural weapon that has Impact greater than zero. Convert up to X Wounds the target receives into Stun damage or a Delay token, and this model removes either a Wound, Delay, Poison, Fear, or Dazed token." 
     },
     "Light X": {
-        "description": "w"
+        "description": "Asset. Attack Effect. Visibility OR is X MU to this Light Source, and for any character in base-contact with it. A model in base-contact with or equipped with a Light Source may never be Hidden unless out of LOS."
     },
     "Light X (Cone)": {
         "description": "See Light X. Creates a 45-degree Point-light source front-arc outwards to the target and illuminates any other models within X MU of it. This only benefits any character behind the LOF from the Light source to a target, and any Attentive character."
@@ -825,9 +808,6 @@
     "Multi-target X": {
         "description": "Intrinsic. Perform the same Range Attack again but against another target within Cohesion of the LOF to the last. Do this X times."
     },
-    "Mythos": {
-        "description": "This is a keyword. Disregards Fear Tests and Sanity Tests. Elder Sign will affect this character. May not be assigned to character if it already has Invader or Outsider."
-    },
     "Nanoweave": {
         "description": "Asset. Suit. Negates one level of Cleave when targeted. Reduce [Laden] by 2. (Should be Laden -2)"
     },
@@ -854,9 +834,6 @@
     },
     "Optics X": {
         "description": "Asset. While using the Concentrate action and the range to target is at least 8 MU, the Optics OR is double the higher of Visibility OR or the Ranged weapon OR before modifications from any other traits. For every X above one, double the Optics OR. All targets within within LOS and Optics OR are regarded as Revealed, but they keep their Hidden status for other models until Detected." 
-    },
-    "Outsider": {
-        "description": "This is a keyword. May not be assigned to character if it already has Mythos or Invader."
     },
     "Outwit X": {
         "description": "If Attentive and the target is Distracted; may use INT for Hit Tests, Disengage Tests, and Detect Tests and with +X Modifier dice. Reduces Opposing Outwit X."
@@ -945,9 +922,6 @@
     "Psi-Weave X": {
         "description": "Psychic. Receives +X Modifier dice for Attacker Damage Test, which is performed using Opposed INT vs. POW. Ignores all target Armor traits if target is Distracted or is within Visibility."
     },
-    "Psychic": {
-        "description": "This is a keyword trait. Asset or Skill."
-    },
     "Pummel X": {
         "description": "Skill. Natural Weapon. See [2H]. This trait may be used to attack as though it were a Natural weapon, and counts as having used 2 Hands. When used for Attacking receive +X Modifier dice for the Attacker Close Combat Tests. Receive +X Impact if Attentive. Penalized -1 Modifier die Defender Close Combat Tests unless equipped with another Melee weapon. Receive +1 Stun trait if the Opposing model is within 1 SIZ of this model." 
     },
@@ -994,7 +968,7 @@
         "description": "Provides bonuses when handling Steeds. If there are more than one species of Steed available in the game (such as Dog or Equine) for which this character can Mount, this bonus must be specific to one species. Receives +X Modifier dice for Rider Tests, and a Steed’s Morale Tests while Mounted. Reduces an Attentive Free Steed’s effect Fear token amount by X while in base-contact when determining if it can be Mounted." 
     },
     "ROF X": {
-        "description": "Attack Effect. Receive X ROF markers to attack Opposing models or battlefield locations when performing Attacker Range Combat. Each additional time the Attacker uses ROF this Initiative, reduce X by 1. Place the ROF markers between targets within LOS. Each target that is in LOS and which has an ROF marker within 1 MU range is attacked with +1 Wild die, known as an ROF die, for the Attacker Hit Test for each marker. Resolve all Attacker Tests before resolving any Morale Tests. Afterwards, remove all ROF markers. See the Advanced Game rules section for Rate-of-Fire Attacks for more information." 
+        "description": "Attack Effect. Receive X ROF markers to attack Opposing models or battlefield locations when performing Attacker Range Combat. Each additional time the Attacker uses ROF this Initiative, reduce X by 1. Place the ROF markers between targets within LOS. Each target that is in LOS and which has an ROF marker within 1 MU range is attacked with +1 Wild die, known as an ROF die, for the Attacker Hit Test for each marker. Resolve all Attacker Tests before resolving any Morale Tests. Afterwards, remove all ROF markers." 
     },
     "Scholar X": {
         "description": "Leader. Skill. This character is worth X Resource Points if brought into the Mission and is not Eliminated. Requires Resource Cards; When this character acquires an Objective marker, draw X additional Resource cards. Keep one card and reshuffle the remainder. (²) Requires Agenda Cards; When assigning Agenda cards, qualify to receive an additional card. (²)"
@@ -1025,9 +999,6 @@
     },
     "SIZ X": {
         "description": "Increases the model's SIZ while equipped with this Armor. Use a larger model to represent this new SIZ."
-    },
-    "Skill": {
-        "description": "This is a keyword. May be acquired, reduced, or improved unless assigned to an Item."
     },
     "Slam X": {
         "description": "Natural Weapon. See [Awkward], [Stub]. Receive +X Physicality and +X Modifier die when performing a Dislodging Charge. If the target also has Slam X and is Free or Attentive, reduce both an equal amount first. Receive the +1 Stun trait if the Opposing model is within 1 SIZ of this model." 
@@ -1138,7 +1109,7 @@
         "description": "Natural Weapon. See Multi-strike X. See [Hafted]. See Thresh."
     },
     "Terrifying X": {
-        "description": "Attack Effect. Psychology. Magic. See Fear X. Opposing models which acquire one or more Fear tokens, will also acquire an equal number of Transfixed tokens. If Opposing models have the Terrifying trait, reduce X by the lower rating experienced by either model. See the Advanced Game section for more information regarding these effects." 
+        "description": "Attack Effect. Psychology. Magic. See Fear X. Opposing models which acquire one or more Fear tokens, will also acquire an equal number of Transfixed tokens. If Opposing models have the Terrifying trait, reduce X by the lower rating experienced by either model. " 
     },
     "Tesseract X": {
         "description": "Voluntarily leaves the battlefield for 1 AP as a Fiddle action, and will not count as being Eliminated. Each additional AP will allow one additional target which doesn't have a Magic trait and is in base-contact to come with if it is of no larger than SIZ + 3. All such targets are allowed a final action at -X Modifier dice Opposed INT Test before this model leaves with them. Upon pass, they acquire a Delay token. Upon fail, if they are Opposing models they count as Eliminated and are removed from play."
@@ -1162,7 +1133,7 @@
         "description": "Intrinsic. Unless specified otherwise, begins any game session as Enabled. When Enabled it will receive the Initiative and behave as any other character. If Engaged, may be made Disabled! by an Opposing Attentive Ordered character in base-contact using a Fiddle action for X + 1 AP and pass a Fiddle Test DR 1. When Disabled!, will never receive the Initiative; identify with a Disabled! token as necessary If Free, may become Enabled by a Free Attentive Ordered character in base-contact using a Fiddle action for X AP, or Disabled! for X + 1 AP. If list List is provided; the first is the default status instead of Enabled. Performing a Fiddle action will cycle to the next status in List, and another Fiddle action will return to the first status. If trait list List is provided, each must be either assigned to a character or assigned to an Item it has before toggling status between Disabled! or Enabled. Missing one or more traits requires a Fiddle Test DR 1, with +1 AP and +1 DR per each." 
     },
     "Torment X": {
-        "description": "Attack Effect. Psychology. Magic. If a Close Combat Attack causes the target to perform a Fear Test, acquire a Delay token to trigger this ability. When triggered, have the target to perform the Fear Test, but at DR X. For every miss, either assign to the target a Confused, Fear, Delay, or Transfixed token. If Opposing models have the Torment trait, reduce X by the lower rating experienced by either model. See the Advanced Game section for more information regarding these effects." 
+        "description": "Attack Effect. Psychology. Magic. If a Close Combat Attack causes the target to perform a Fear Test, acquire a Delay token to trigger this ability. When triggered, have the target to perform the Fear Test, but at DR X. For every miss, either assign to the target a Confused, Fear, Delay, or Transfixed token. If Opposing models have the Torment trait, reduce X by the lower rating experienced by either model." 
     },
     "Tough X": {
         "description": "Intrinsic. May receive an additional +X Wounds as Light Wounds. X may not be higher than FOR."
