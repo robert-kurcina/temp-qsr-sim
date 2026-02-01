@@ -23,8 +23,13 @@ export const getSampleCharacters = () => fetchData('/data/sample_characters.json
 export const getTechLevel = () => fetchData('/data/tech_level.json');
 export const getTerrain = () => fetchData('/data/terrain.json');
 export const getTokenSpecs = () => fetchData('/data/tokenSpecs.js');
-export const getTraits = () => fetchData('/data/traits.json');
-export const getWeapons = () => fetchData('/data/weapons.json');
+export const getActiveOptions = () => fetchData('/data/active_options.json');
+export const getMeleeWeapons = () => fetchData('/data/melee_weapons.json');
+export const getBowWeapons = () => fetchData('/data/bow_weapons.json');
+export const getRangedWeapons = () => fetchData('/data/ranged_weapons.json');
+export const getThrownWeapons = () => fetchData('/data/thrown_weapons.json');
+export const getSupportWeapons = () => fetchData('/data/support_weapons.json');
+export const getGrenadeWeapons = () => fetchData('/data/grenade_weapons.json');
 
 export async function loadAll() {
     const [
@@ -37,8 +42,13 @@ export async function loadAll() {
         sample_characters,
         tech_level,
         terrain,
-        traits,
-        weapons,
+        activeOptions,
+        meleeWeapons,
+        bowWeapons,
+        rangedWeapons,
+        thrownWeapons,
+        supportWeapons,
+        grenadeWeapons 
     ] = await Promise.all([
         getArchetypes(),
         getArmors(),
@@ -49,8 +59,13 @@ export async function loadAll() {
         getSampleCharacters(),
         getTechLevel(),
         getTerrain(),
-        getTraits(),
-        getWeapons(),
+        getActiveOptions(),
+        getMeleeWeapons(),
+        getBowWeapons(),
+        getRangedWeapons(),
+        getThrownWeapons(),
+        getSupportWeapons(),
+        getGrenadeWeapons()
     ]);
 
     return {
@@ -63,7 +78,14 @@ export async function loadAll() {
         sample_characters,
         tech_level,
         terrain,
-        traits,
-        weapons,
+        activeOptions,
+        weapons: {
+          ...meleeWeapons
+          // ...bowWeapons,
+          // ...rangedWeapons,
+          // ...thrownWeapons,
+          // ...supportWeapons,
+          // ...grenadeWeapons
+        },
     };
 }

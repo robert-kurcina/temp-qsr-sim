@@ -103,6 +103,7 @@ export class FullModifierSimulator {
   
   /**
    * Build comprehensive test context
+   * TODO implement these functions and features
    */
   buildTestContext(attacker, defender, combatType, gameState) {
     const context = {
@@ -139,6 +140,7 @@ export class FullModifierSimulator {
       hindranceCount: this.getHindranceCount(attacker, gameState),
       
       // Special conditions
+      // TODO implement these functions
       isOverreach: this.checkOverreach(attacker, gameState),
       isLeaning: this.checkLeaning(attacker, gameState),
       isBlind: this.checkBlindAttack(attacker, gameState),
