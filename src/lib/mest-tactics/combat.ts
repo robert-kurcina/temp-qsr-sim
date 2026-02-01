@@ -114,7 +114,7 @@ export function makeCloseCombatAttack(
   const impact = weapon.impact || 0;
   const defenderAR = defender.state.armor.total;
   const effectiveAR = Math.max(0, defenderAR - impact);
-  const remainingImpact = Math.max(0, impact - defenderAR);
+  const remainingImpact = impact > defenderAR ? impact - defenderAR : 0;
   const woundsDealtByRoll = damageTestResult.pass ? damageTestResult.cascades : 0;
   const woundsInflicted = Math.max(0, woundsDealtByRoll - effectiveAR);
 

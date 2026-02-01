@@ -40,8 +40,8 @@ export function createCharacter(profile: Profile, characterName: string): Charac
     const itemTraits = (item.traits || []).map(parseTrait);
     const armorTrait = itemTraits.find(t => t.name.toLowerCase() === 'armor');
 
-    if (armorTrait && typeof armorTrait.value === 'number' && armorTrait.value > 0) {
-      const arValue = armorTrait.value;
+    if (armorTrait && typeof armorTrait.level === 'number' && armorTrait.level > 0) {
+      const arValue = armorTrait.level;
       const lowerCaseClass = (item.class || '').toLowerCase();
       let assigned = false;
 

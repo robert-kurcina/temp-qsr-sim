@@ -27,7 +27,7 @@ export function parseTrait(source: string): Trait {
   const valueMatch = source.match(/(.*) (\d+)/);
   if (valueMatch) {
     trait.name = valueMatch[1].trim();
-    trait.value = parseInt(valueMatch[2], 10);
+    trait.level = parseInt(valueMatch[2], 10); // Corrected from trait.value
   } else {
     trait.name = source.trim();
   }
