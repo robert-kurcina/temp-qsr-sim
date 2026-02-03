@@ -86,6 +86,11 @@ export function resolveDamage(
     const damageFormula = weapon.dmg;
 
     if (damageFormula && damageFormula !== '-') {
+        // Impact is a property of the hit, calculated before the damage roll.
+        const baseImpact = weapon.impact || 0;
+        const assistImpact = context.assistingModels || 0;
+        totalImpact = baseImpact + assistImpact;
+
         const { value: damageValue, dice: damageDice } = parseDamageFormula(damageFormula, attacker);
         
         const damageTestAttacker: TestParticipant = {
@@ -101,17 +106,13 @@ export function resolveDamage(
 
         // 3. Calculate Wounds from the roll (if it passed)
         if (damageTestResult.pass) {
-            const baseImpact = weapon.impact || 0;
-            const assistImpact = context.assistingModels || 0;
-            totalImpact = baseImpact + assistImpact;
             const effectiveAR = Math.max(0, defender.state.armor.total - totalImpact);
+            const netScore = Math.max(0, (damageTestResult.score || 0) - effectiveAR);
 
-            const netCascades = Math.max(0, damageTestResult.cascades - effectiveAR);
-
-            if (netCascades > defender.state.wounds) {
-                woundsFromDamage = netCascades - defender.state.wounds;
+            if (netScore > defender.finalAttributes.for) {
+                woundsFromDamage = netScore - defender.finalAttributes.for;
             } else {
-                woundsFromDamage = 1;
+                woundsFromDamage = 1; // Minimum 1 wound on a successful damage roll
             }
         }
     }

@@ -100,6 +100,6 @@ describe('makeRangedCombatAttack', () => {
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
     const hitEventData = diceEvents[0].data as any;
-    expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier]).toBe(2);
+    expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(2);
   });
 });

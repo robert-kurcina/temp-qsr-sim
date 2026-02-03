@@ -48,7 +48,7 @@ describe('makeDisengageAction', () => {
         makeDisengageAction(disengager, defender, defenderWeapon, { isCornered: true });
         const diceEvents = metricsService.getEventsByName('diceTestResolved');
         const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier]).toBe(1);
+        expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
     });
 
     it('should apply a penalty to the disengager if flanked', () => {
@@ -56,7 +56,7 @@ describe('makeDisengageAction', () => {
         makeDisengageAction(disengager, defender, defenderWeapon, { isFlanked: true });
         const diceEvents = metricsService.getEventsByName('diceTestResolved');
         const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier]).toBe(1);
+        expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
     });
 
     it('should apply a bonus to the disengager for high ground', () => {
@@ -85,10 +85,10 @@ describe('makeDisengageAction', () => {
 
     it('should apply a penalty for overreach', () => {
         setRoller(() => 0);
-        makeDisengageAction(disengager, defender, defenderWeapon, { isOverreaching: true });
+        makeDisengageAction(disengager, defender, defenderWeapon, { isOverreach: true });
         const diceEvents = metricsService.getEventsByName('diceTestResolved');
         const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier]).toBe(1);
+        expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
     });
 
     it('should apply a bonus for size difference', () => {

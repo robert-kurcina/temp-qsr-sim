@@ -104,22 +104,18 @@ export function resolveTest(
     let p2Bonus = participant2.bonusDice || {};
     let p2Penalty = participant2.penaltyDice || {};
 
-    // Cancellation
+    // As per QSR, penalty dice are awarded to the opponent.
+    p2Bonus = mergeDicePools(p2Bonus, p1Penalty);
+    p1Bonus = mergeDicePools(p1Bonus, p2Penalty);
+
+    // Cancellation (Flattening)
     for (const type in p1Bonus) {
         const key = type as DiceType;
         const p1b = p1Bonus[key] || 0;
-        const p2p = p2Penalty[key] || 0;
-        const cancel = Math.min(p1b, p2p);
-        p1Bonus[key] = p1b - cancel;
-        p2Penalty[key] = p2p - cancel;
-    }
-    for (const type in p2Bonus) {
-        const key = type as DiceType;
         const p2b = p2Bonus[key] || 0;
-        const p1p = p1Penalty[key] || 0;
-        const cancel = Math.min(p2b, p1p);
+        const cancel = Math.min(p1b, p2b);
+        p1Bonus[key] = p1b - cancel;
         p2Bonus[key] = p2b - cancel;
-        p1Penalty[key] = p1p - cancel;
     }
 
     // Build final pools
@@ -128,15 +124,6 @@ export function resolveTest(
 
     let p1Pool = mergeDicePools(p1BasePool, p1Bonus);
     let p2Pool = mergeDicePools(p2BasePool, p2Bonus);
-
-    for (const type in p1Penalty) {
-        const key = type as DiceType;
-        p1Pool[key] = Math.max(0, (p1Pool[key] || 0) - (p1Penalty[key] || 0));
-    }
-    for (const type in p2Penalty) {
-        const key = type as DiceType;
-        p2Pool[key] = Math.max(0, (p2Pool[key] || 0) - (p2Penalty[key] || 0));
-    }
 
     let p1Successes = 0;
     let p1Misses = 0;
@@ -180,7 +167,7 @@ export function resolveTest(
         p2Rolls,
         p1Misses,
         p2Misses,
-        finalPools: { p1FinalBonus: p1Bonus, p1FinalPenalty: p1Penalty, p2FinalBonus: p2Bonus, p2FinalPenalty: p2Penalty },
+        finalPools: { p1FinalBonus: p1Bonus, p1FinalPenalty: {}, p2FinalBonus: p2Bonus, p2FinalPenalty: {} },
     };
 
     metricsService.logEvent('diceTestResolved', result);

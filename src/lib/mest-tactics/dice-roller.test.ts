@@ -108,20 +108,21 @@ describe('resolveTest', () => {
     expect(result.score).toBe(3);
   });
 
-  it('should cancel bonus and penalty dice', () => {
+  it('should award penalty dice to the opponent and then flatten', () => {
     const participant1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 2 } };
     const participant2: TestParticipant = { attributeValue: 1, penaltyDice: { [DiceType.Base]: 2 } };
 
-    // Cancellation leaves both with 1 base die.
-    setRoller((count) => [4]); // Both will roll 1 die and get 1 success
+    // P2's 2 penalty dice are awarded to P1. P1 now has 4 bonus dice.
+    // P1 rolls 1 (base) + 4 (bonus) = 5 dice.
+    // P2 rolls 1 (base) die.
+    setRoller((count) => (count === 5 ? [4, 4, 4, 4, 4] : [4])); // P1 gets 5 successes, P2 gets 1.
     const result = resolveTest(participant1, participant2);
     
-    // P1: attr(1) + successes(1) = 2
+    // P1: attr(1) + successes(5) = 6
     // P2: attr(1) + successes(1) = 2
-    // Score: 2 - 2 = 0
-    expect(result.participant1Score).toBe(2);
-    expect(result.participant2Score).toBe(2);
-    expect(result.finalPools.p1FinalBonus[DiceType.Base]).toBe(0);
-    expect(result.finalPools.p2FinalPenalty[DiceType.Base]).toBe(0);
+    // Score: 6 - 2 = 4
+    expect(result.score).toBe(4);
+    expect(result.finalPools.p1FinalBonus[DiceType.Base]).toBe(4);
+    expect(result.finalPools.p2FinalBonus[DiceType.Base]).toBe(0);
   });
 });

@@ -45,5 +45,5 @@ export function resolveHitTest(
   };
 
   // 4. Resolve the test, applying the score modifier from accuracy
-  return resolveTest(hitTestAttacker, hitTestDefender, -scoreModifier);
+  return resolveTest(hitTestAttacker, hitTestDefender, scoreModifier);
 }

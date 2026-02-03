@@ -5,16 +5,15 @@ import { TestContext } from '../TestContext';
 import { DicePool } from '../dice-roller';
 
 /**
- * Resolves an unopposed Morale Test for a single character.
- * This is typically a test against the character's WIL attribute.
- * It is used for actions like Rally or resisting fear-inducing events.
+ * Resolves a MEST Tactics Morale Test.
+ * This is a canonically-defined Unopposed POW Test where a score >= 0 is a PASS.
  *
- * @param character The character making the morale test.
- * @param context The situational context, containing any potential bonus or penalty dice.
- * @param difficulty An optional score modifier to make the test harder. Defaults to 0.
- * @param bonusDice Optional bonus dice to add to the test.
- * @param penaltyDice Optional penalty dice to add to the test.
- * @returns The result of the unopposed WIL test.
+ * @param character The character making the test.
+ * @param context The situational context (not used by base morale, but available for traits).
+ * @param difficulty The target number for the unopposed test. This is the system's POW attribute.
+ * @param bonusDice Optional bonus dice from traits or other effects.
+ * @param penaltyDice Optional penalty dice from traits or other effects.
+ * @returns The result of the Unopposed POW test.
  */
 export function resolveMoraleTest(
   character: Character,
@@ -24,20 +23,21 @@ export function resolveMoraleTest(
   penaltyDice: DicePool = {},
 ): TestResult {
 
-  // Define the participant for the Morale Test.
+  // As per MEST QSR, Morale Tests are Unopposed POW tests.
   const participant: TestParticipant = {
-    attributeValue: character.finalAttributes.wil, // Morale tests are based on Willpower
+    attributeValue: character.finalAttributes.pow,
     bonusDice,
     penaltyDice,
   };
 
-  // A morale test is unopposed, so the defender is a "system player" with a value of 0.
+  // For an Unopposed Test, the difficulty IS the attribute of the opposing system player.
+  // The system player does not roll dice.
   const systemPlayer: TestParticipant = {
-    attributeValue: 0,
+    attributeValue: difficulty,
     isSystemPlayer: true, 
   };
 
-  // Resolve the test, applying the difficulty as a negative score modifier.
-  // A higher difficulty makes the test harder to pass.
-  return resolveTest(participant, systemPlayer, -difficulty, true);
+  // The MEST QSR specifies that Morale Tests pass on a tie (score >= 0).
+  // Therefore, the passOnTie parameter for resolveTest must be true.
+  return resolveTest(participant, systemPlayer, 0, true);
 }

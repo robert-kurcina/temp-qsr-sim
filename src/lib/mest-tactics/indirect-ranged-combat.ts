@@ -33,7 +33,7 @@ function _calculateModifiers(
 
     // 2. ORM Penalty
     if (orm > 0) {
-        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + orm;
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + orm;
     }
 
     // 3. Weapon Accuracy
