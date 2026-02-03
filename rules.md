@@ -52,7 +52,7 @@ There are common situations which arise that will affect the ability of characte
 | **Waiting**   | +1 All characters in Wait status receive +1 REF when qualifying for a React.                                                         |
 | **Solo**      | +1 A single model selected to perform React against a Group Action receives an effective +1 REF.                                      |
 | **Suddenness**| +1m Hit Test if Hidden at start of Action.                                                                                            |
-| **Friendly**  | +1m Morale Tests when an Attentive Ordered Friendly model is within Cohesion.                                                         |
+| **Friendly**  | +1m Morale Tests when an Attentive Ordered Friendly model is in Cohesion.                                                         |
 | **Help**      | +1m Each Free Attentive Ordered Friendly model in base-contact with the target of a Fiddle action if given a Delay token.             |
 | **Safety**    | +1w Morale Tests if behind Cover or out of LOS, and not within 2 AP Movement of Opposing models.                                       |
 | **Concentrate** | +1w For any Test associated with an Action if paired with the Concentrate action which itself requires 1 AP.                           |
@@ -107,6 +107,31 @@ Each of the Standard Conditions usually have a pairing. Friendly and Opposing ar
 *   **Melee Range** — A target is within Melee Range if its volume is in base-contact with an Opposing model's volume.
 *   **Engaged** — A model is considered Engaged if it is within the Melee Range of an Opposing model.
 
+---
+
+## Visibility & Line of Sight (LOS)
+
+A model must have Line of Sight (LOS) to a target to perform many actions, especially Ranged Combat and Detect actions.
+
+*   **Line of Sight (LOS):** An imaginary straight line drawn from any part of the active model's volume to any part of the target model's volume. If this line is blocked by solid, opaque terrain or other models, LOS is blocked.
+*   **Revealed:** The default state for all models. A Revealed model can be targeted by actions that require LOS.
+*   **Hidden:** A model that is not Revealed is Hidden. A Hidden model cannot be targeted by most actions until it becomes Revealed.
+
+### Forms of Concealment
+
+Concealment affects the success of Hit, Detect, and Damage Tests by making a target harder to see or affect.
+
+| Type | Effect | Description |
+| :--- | :--- | :--- |
+| **Intervening Cover** | -1m to Hit/Detect | LOS to the target passes through terrain that provides cover, but the target is not in base-contact with it. |
+| **Direct Cover** | -1b to Hit/Detect | The target is in base-contact with terrain that provides cover. |
+| **Hard Cover** | -1w to Damage | The target is behind cover robust enough to significantly diminish the impact of an attack (e.g., a stone wall). |
+| **Obscured** | -1m to Hit/Detect | LOS is partially blocked by other models (friendly or opposing) or other minor visual obstructions. |
+| **Leaning** | -1b to Hit/Detect | The active model or its target is leaning from behind terrain it is in base-contact with. |
+| **Blind Attack** | -1w to Hit | The active model is making an Indirect Attack (e.g., lobbing an explosive) at a target it cannot see. |
+
+---
+
 # Combat Rules
 
 ## Weapon Properties
@@ -142,6 +167,17 @@ This is an Attack action. The Active character acquires a Delay token if this is
 3.  **Overreach (Optional):** Attacker may increase Melee Range by +1 MU for their first action, taking a -1 REF and -1 penalty to the Close Combat Test.
 4.  **Resolve Hit Test:** Perform an Opposed CCA test, applying relevant Situational Modifiers and the weapon's Accuracy bonus.
 5.  **Proceed to Damage Test:** If the Hit Test passes, perform a Close Combat Damage Test.
+
+## Performing a Disengage Action
+
+This action is available to any character that is **Engaged**. Its purpose is to allow a character to break away from close combat.
+
+1.  **Announce Action:** The Active character, who must be Engaged, declares they are attempting to Disengage.
+2.  **Select Opponent:** The player chooses one Engaged Opposing model to be the primary opponent for the test.
+3.  **Resolve Disengage Test:** Perform an Opposed Test using the Disengager's **REF** versus the Opponent's **CCA**. Apply any relevant Situational Modifiers from the "Close Combat & Disengage" table.
+4.  **Determine Outcome:**
+    *   **On a success,** the Disengager is no longer Engaged. They may immediately make a move of up to half their MOV attribute, ending the move in a Free position.
+    *   **On a failure,** the Disengager remains Engaged and their action ends.
 
 ## Performing Direct Range Combat
 

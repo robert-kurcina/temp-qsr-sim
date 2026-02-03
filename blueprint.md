@@ -85,10 +85,25 @@ This phase marks a strategic shift from pure feature implementation to building 
     *   Every dice roll will be logged as a `diceRoll` event, capturing all inputs (stats, modifiers) and outputs (success/failure, degrees of success).
 
 3.  **Create a Mockable Testing Framework:**
-    *   Refactor the `dice-roller.ts` module to allow its core rolling function to be replaced or '''mocked''' during tests.
-    *   In our test suites, we will replace the random roller with a deterministic one that returns pre-defined results.
+    *   Refactor the `dice-roller.ts` module to allow its core rolling function to be replaced or 'mocked' during tests.
+    *   In our test suites, we will now replace the random roller with a deterministic one that returns pre-defined results.
 
 4.  **Refactor Combat Tests for Determinism:**
     *   Update the `close-combat.test.ts` and `ranged-combat.test.ts` suites.
     *   Remove statistical loops and unreliable checks.
     *   For each test, we will now inject specific dice roll outcomes (e.g., "force a hit," "force a miss") to validate the code paths with 100% reliability.
+
+### **Phase 7: Critical Bug Fix & Rulebook Completion (Completed)**
+This phase addressed a critical bug in the combat resolution system and rectified significant omissions in the official `rules.md` documentation.
+
+**The Plan:**
+
+1.  **Diagnose Test Failures:** Investigated the root cause of failures in the `close-combat.test.ts` suite.
+2.  **Identify Critical Bug:** Discovered that in `hit-test.ts`, the `scoreModifier` derived from a weapon's accuracy was being incorrectly subtracted from the attacker's score instead of being added. This caused attacks that should have been hits (especially with accurate weapons) to fail.
+3.  **Implement Correction:** Patched `hit-test.ts` to correctly add the `scoreModifier`, resolving the bug.
+4.  **Verify Fix:** Confirmed that all combat unit tests pass after the correction.
+5.  **Audit `rules.md`:** Performed a full review of the game's rulebook to check for completeness against implemented logic.
+6.  **Update `rules.md`:** Authored and added two essential missing sections:
+    *   **"Visibility & Line of Sight":** Consolidated all rules related to cover, concealment, and LOS into a single, clear section.
+    *   **"Performing a Disengage Action":** Added a formal procedure for the Disengage action, which was previously only mentioned in modifier tables.
+7.  **Finalize Blueprint:** Updated this `blueprint.md` file to reflect the completion of this phase and provide a comprehensive project history.
