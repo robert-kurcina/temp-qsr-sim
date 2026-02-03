@@ -1,104 +1,127 @@
 
-import { describe, it, expect, afterEach } from 'vitest';
-import { resolveTest, setRoller, resetRoller, TestParticipant, DiceType, Roller } from './dice-roller';
+import { describe, it, expect, beforeEach } from 'vitest';
+import { resolveTest, setRoller, resetRoller, DiceType } from './dice-roller';
+import type { TestParticipant } from './dice-roller';
 
 describe('resolveTest', () => {
-
-  afterEach(() => {
+  beforeEach(() => {
     resetRoller();
   });
 
-  // --- Unopposed Tests (against the System) ---
+  it('should return a PASS result when participant 1 has a higher score', () => {
+    const participant1: TestParticipant = { attributeValue: 3 };
+    const participant2: TestParticipant = { attributeValue: 1 };
 
-  it('should PASS an unopposed test on a TIE with the System', () => {
-    const attacker: TestParticipant = { attributeValue: 2 }; // Attacker base score 2
-    const system: TestParticipant = { attributeValue: 999, isSystemPlayer: true }; // System base score 2
-    setRoller(() => 0); // No extra successes from dice
-    
-    const result = resolveTest(attacker, system, 0);
+    // P1 rolls 3 dice, P2 rolls 1 die.
+    setRoller((count) => (count === 3 ? [6, 6, 1] : [4]));
+    const result = resolveTest(participant1, participant2);
 
+    // P1: attr(3) + successes(4) = 7
+    // P2: attr(1) + successes(1) = 2
+    // Score: 7 - 2 = 5
     expect(result.pass).toBe(true);
-    expect(result.cascades).toBe(1); // Tie results in 1 cascade
+    expect(result.score).toBe(5);
+    expect(result.participant1Score).toBe(7);
+    expect(result.participant2Score).toBe(2);
   });
 
-  it('should PASS an unopposed test when score > System', () => {
-    const attacker: TestParticipant = { attributeValue: 3 }; // Attacker base score 3
-    const system: TestParticipant = { attributeValue: 999, isSystemPlayer: true }; // System base score 2
-    setRoller(() => 0);
+  it('should return a FAIL result when participant 1 has a lower score', () => {
+    const participant1: TestParticipant = { attributeValue: 1 };
+    const participant2: TestParticipant = { attributeValue: 3 };
 
-    const result = resolveTest(attacker, system, 0);
+    // P1 rolls 1 die, P2 rolls 3 dice.
+    setRoller((count) => (count === 1 ? [4] : [6, 6, 1]));
+    const result = resolveTest(participant1, participant2);
 
-    expect(result.pass).toBe(true);
-    expect(result.cascades).toBe(1); // 3 - 2 = 1
-  });
-
-  it('should FAIL an unopposed test when score < System', () => {
-    const attacker: TestParticipant = { attributeValue: 1 }; // Attacker base score 1
-    const system: TestParticipant = { attributeValue: 999, isSystemPlayer: true }; // System base score 2
-    setRoller(() => 0);
-
-    const result = resolveTest(attacker, system, 0);
-
+    // P1: attr(1) + successes(1) = 2
+    // P2: attr(3) + successes(4) = 7
+    // Score: 2 - 7 = -5
     expect(result.pass).toBe(false);
-    expect(result.misses).toBe(1); // 2 - 1 = 1
+    expect(result.score).toBe(-5);
+    expect(result.participant1Score).toBe(2);
+    expect(result.participant2Score).toBe(7);
   });
 
-  // --- Opposed Tests (against another character) ---
+  it('should return a FAIL result on a TIE by default', () => {
+    const participant1: TestParticipant = { attributeValue: 2 };
+    const participant2: TestParticipant = { attributeValue: 2 };
 
-  it('should PASS an opposed test on a TIE', () => {
-    const attacker: TestParticipant = { attributeValue: 3 };
-    const defender: TestParticipant = { attributeValue: 3 };
-    setRoller(() => 0);
-    
-    const result = resolveTest(attacker, defender, 0);
+    // Both roll 2 dice.
+    setRoller((count) => [4, 5]); // Both get 2 successes
+    const result = resolveTest(participant1, participant2);
 
-    expect(result.pass).toBe(true);
-    expect(result.cascades).toBe(1); // Tie results in 1 cascade
-  });
-
-  it('should PASS an opposed test when score > defender', () => {
-    const attacker: TestParticipant = { attributeValue: 4 };
-    const defender: TestParticipant = { attributeValue: 2 };
-    setRoller(() => 0);
-
-    const result = resolveTest(attacker, defender, 0);
-
-    expect(result.pass).toBe(true);
-    expect(result.cascades).toBe(2); // 4 - 2 = 2
-  });
-
-  it('should FAIL an opposed test when score < defender', () => {
-    const attacker: TestParticipant = { attributeValue: 3 };
-    const defender: TestParticipant = { attributeValue: 5 };
-    setRoller(() => 0);
-
-    const result = resolveTest(attacker, defender, 0);
-
+    // P1: attr(2) + successes(2) = 4
+    // P2: attr(2) + successes(2) = 4
+    // Score: 4 - 4 = 0
     expect(result.pass).toBe(false);
-    expect(result.misses).toBe(2); // 5 - 3 = 2
+    expect(result.score).toBe(0);
   });
 
-  // --- Special Mechanics ---
+  it('should return a PASS result on a TIE if passOnTie is true', () => {
+    const participant1: TestParticipant = { attributeValue: 2 };
+    const participant2: TestParticipant = { attributeValue: 2 };
 
-  it('should calculate carry-over dice correctly (cascades - 1)', () => {
-    const attacker: TestParticipant = { attributeValue: 6 };
-    const defender: TestParticipant = { attributeValue: 2 };
-    setRoller(() => 0);
+    setRoller((count) => [4, 5]);
+    const result = resolveTest(participant1, participant2, 0, true);
 
-    const result = resolveTest(attacker, defender, 0);
-
-    expect(result.cascades).toBe(4);
-    expect(result.carryOverDice[DiceType.Base]).toBe(3); // 4 - 1 = 3
+    // P1 Score: 4, P2 Score: 4. Final Score: 0. Pass on tie.
+    expect(result.pass).toBe(true);
+    expect(result.score).toBe(0);
   });
 
-  it('should NOT generate carry-over dice on a tie (cascades = 1)', () => {
-    const attacker: TestParticipant = { attributeValue: 4 };
-    const defender: TestParticipant = { attributeValue: 4 };
-    setRoller(() => 0);
+  it('should correctly apply a scoreModifier', () => {
+    const participant1: TestParticipant = { attributeValue: 2 };
+    const participant2: TestParticipant = { attributeValue: 2 };
 
-    const result = resolveTest(attacker, defender, 0);
+    setRoller((count) => [4, 5]);
+    const result = resolveTest(participant1, participant2, 1); // +1 modifier
 
-    expect(result.cascades).toBe(1);
-    expect(result.carryOverDice[DiceType.Base]).toBeUndefined();
+    // P1 Score: 4, P2 Score: 4. Final Score: 4 - 4 + 1 = 1. Pass.
+    expect(result.pass).toBe(true);
+    expect(result.score).toBe(1);
+  });
+
+  it('should correctly calculate misses', () => {
+    const participant1: TestParticipant = { attributeValue: 2 }; // rolls 2 dice
+    const participant2: TestParticipant = { attributeValue: 1 }; // rolls 1 die
+
+    setRoller((count) => (count === 2 ? [1, 2] : [1]));
+    const result = resolveTest(participant1, participant2);
+
+    // P1 rolls [1, 2] -> 1 miss.
+    // P2 rolls [1] -> 1 miss.
+    expect(result.p1Misses).toBe(1);
+    expect(result.p2Misses).toBe(1);
+  });
+
+  it('should correctly apply bonus dice', () => {
+    const participant1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 1 } }; // Total 2 dice
+    const participant2: TestParticipant = { attributeValue: 1 }; // Total 1 die
+
+    setRoller((count) => (count === 2 ? [6, 6] : [4]));
+    const result = resolveTest(participant1, participant2);
+
+    // P1: attr(1) + successes(4) = 5
+    // P2: attr(1) + successes(1) = 2
+    // Score: 5 - 2 = 3
+    expect(result.participant1Score).toBe(5);
+    expect(result.score).toBe(3);
+  });
+
+  it('should cancel bonus and penalty dice', () => {
+    const participant1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 2 } };
+    const participant2: TestParticipant = { attributeValue: 1, penaltyDice: { [DiceType.Base]: 2 } };
+
+    // Cancellation leaves both with 1 base die.
+    setRoller((count) => [4]); // Both will roll 1 die and get 1 success
+    const result = resolveTest(participant1, participant2);
+    
+    // P1: attr(1) + successes(1) = 2
+    // P2: attr(1) + successes(1) = 2
+    // Score: 2 - 2 = 0
+    expect(result.participant1Score).toBe(2);
+    expect(result.participant2Score).toBe(2);
+    expect(result.finalPools.p1FinalBonus[DiceType.Base]).toBe(0);
+    expect(result.finalPools.p2FinalPenalty[DiceType.Base]).toBe(0);
   });
 });

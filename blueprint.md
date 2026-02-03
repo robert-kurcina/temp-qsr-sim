@@ -16,6 +16,19 @@ This project is a **headless wargame simulator** designed to run in Firebase Stu
 
 **2. Separation of Responsibilities (SOLID):** The codebase will adhere to SOLID design principles, with a strong emphasis on the Single Responsibility Principle. Complex processes, like combat resolution, will be broken down into smaller, modular, and independently testable subroutines. A core function will then act as an orchestrator, managing the flow of data between these subroutines. This ensures a clean, maintainable, and scalable architecture.
 
+## Core Game Mechanics
+
+### Test Resolution
+
+*   **General Rule:** A test (opposed or unopposed) is considered a "pass" if the final calculated `score` is strictly greater than 0. The score is calculated as `(Player 1 Attribute + Player 1 Successes) - (Player 2 Attribute + Player 2 Successes)`.
+
+### Morale Tests
+
+*   **Unopposed:** Morale Tests are a special type of unopposed test.
+*   **Success Condition:** A Morale Test is considered a "pass" if the final score is greater than or equal to zero (`score >= 0`). A tie is a pass.
+*   **Misses:** The outcome of a Morale Test is not determined by "successes" (cascades), but by "misses". The goal is to avoid accumulating misses.
+*   **Tie Result:** A tie on a Morale Test results in a pass with zero misses.
+
 ## Reference Documents
 
 *   **`rules.md`**: This file contains the canonical game rules, definitions, and modifier tables as provided by the user. It serves as the primary source of truth for all game mechanic implementations.
@@ -72,7 +85,7 @@ This phase marks a strategic shift from pure feature implementation to building 
     *   Every dice roll will be logged as a `diceRoll` event, capturing all inputs (stats, modifiers) and outputs (success/failure, degrees of success).
 
 3.  **Create a Mockable Testing Framework:**
-    *   Refactor the `dice-roller.ts` module to allow its core rolling function to be replaced or "mocked" during tests.
+    *   Refactor the `dice-roller.ts` module to allow its core rolling function to be replaced or '''mocked''' during tests.
     *   In our test suites, we will replace the random roller with a deterministic one that returns pre-defined results.
 
 4.  **Refactor Combat Tests for Determinism:**

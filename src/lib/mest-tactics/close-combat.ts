@@ -34,7 +34,7 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
 
     // 2. Contextual Modifiers
     if (context.isDefending) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
-    if (context.isCharge) attackerBonus[DiceType.Base] = (attackerBonus[DiceType.Base] || 0) + 1;
+    if (context.isCharge) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.isOverreach) attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1; // Overreach Penalty
     if (context.outnumberAdvantage) attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
     if (context.hasHighGround) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
@@ -63,22 +63,24 @@ export function makeCloseCombatAttack(
     // 2. Perform the Hit Test.
     const hitTestResult = resolveHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
 
-    if (!hitTestResult.pass) {
+    // A hit only succeeds if the attacker's score is strictly greater than the defender's.
+    const isHit = (hitTestResult.score > 0) || context.forceHit;
+
+    if (!isHit) {
         return { hit: false, hitTestResult };
     }
 
-    // 3. If the hit is successful, perform the Damage Resolution.
+    // 3. If the hit is successful (or forced), perform the Damage Resolution.
     const damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult, context);
 
     // 4. Update the defender's state with the results of the damage resolution.
-    // Note: This is a direct mutation of the character object.
     defender.state.wounds = damageResolution.defenderState.wounds;
     defender.state.delayTokens = damageResolution.defenderState.delayTokens;
     defender.state.isKOd = damageResolution.defenderState.isKOd;
     defender.state.isEliminated = damageResolution.defenderState.isEliminated;
 
     return {
-        hit: true,
+        hit: true, // It's a hit, either by roll or by force
         damageResolution,
         hitTestResult,
     };

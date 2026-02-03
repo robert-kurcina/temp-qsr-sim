@@ -1,34 +1,47 @@
 
-import { DicePool, DiceType } from '../dice-roller';
-
-const parseDiceString = (diceString: string): DicePool => {
-    const dice: DicePool = {};
-    const value = parseInt(diceString.slice(1, -1), 10) || 1;
-    const type = diceString.endsWith('m') ? DiceType.Modifier : diceString.endsWith('b') ? DiceType.Base : DiceType.Wild;
-    dice[type] = value;
-    return dice;
-  };
-  
+import { DicePool, DiceType } from "../dice-roller";
 
 /**
- * Parses the accuracy value of a weapon.
- * @param accuracy The accuracy value from the weapon item.
- * @returns An object containing bonus dice, penalty dice, and score modifier.
+ * Parses a weapon's accuracy string (e.g., "Acc(+1b)") into a DicePool object.
  */
-export function parseAccuracy(accuracy: string | number | undefined): { bonusDice: DicePool, penaltyDice: DicePool, scoreModifier: number } {
-    const result = { bonusDice: {}, penaltyDice: {}, scoreModifier: 0 };
-    if (accuracy === undefined || accuracy === '-') return result;
-  
-    if (typeof accuracy === 'number') {
-      result.scoreModifier = accuracy;
-    } else if (accuracy.endsWith('m') || accuracy.endsWith('b') || accuracy.endsWith('w')) {
-      if (accuracy.startsWith('-')) {
-        result.penaltyDice = parseDiceString(accuracy);
-      } else {
-        result.bonusDice = parseDiceString(accuracy.startsWith('+') ? accuracy : '+' + accuracy);
-      }
-    } else {
-      result.scoreModifier = parseInt(accuracy, 10) || 0;
+export function parseAccuracy(accuracyString: string | undefined): { bonusDice: DicePool, penaltyDice: DicePool } {
+    const bonusDice: DicePool = {};
+    const penaltyDice: DicePool = {};
+
+    if (!accuracyString) {
+        return { bonusDice, penaltyDice };
     }
-    return result;
-  }
+
+    const regex = /Acc\(([-+])(\d+)([bmw])\)/;
+    const match = accuracyString.match(regex);
+
+    if (match) {
+        const sign = match[1];
+        const value = parseInt(match[2], 10);
+        const typeChar = match[3];
+
+        let diceType: DiceType;
+        switch (typeChar) {
+            case 'b':
+                diceType = DiceType.Base;
+                break;
+            case 'm':
+                diceType = DiceType.Modifier;
+                break;
+            case 'w':
+                diceType = DiceType.Wild;
+                break;
+            default:
+                // Should not happen with the regex
+                return { bonusDice, penaltyDice };
+        }
+
+        if (sign === '+') {
+            bonusDice[diceType] = (bonusDice[diceType] || 0) + value;
+        } else {
+            penaltyDice[diceType] = (penaltyDice[diceType] || 0) + value;
+        }
+    }
+
+    return { bonusDice, penaltyDice };
+}

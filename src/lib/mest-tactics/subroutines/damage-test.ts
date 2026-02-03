@@ -1,8 +1,8 @@
 
 import { Character } from '../Character';
 import { resolveTest, TestParticipant, DicePool, DiceType, TestResult } from '../dice-roller';
-import { Item } from '../Item'; // Corrected path
-import { TestContext } from '../TestContext'; // Corrected path
+import { Item } from '../Item';
+import { TestContext } from '../TestContext';
 
 // --- Sub-functions for parsing --- //
 
@@ -38,6 +38,7 @@ function parseDamageFormula(formula: string, attacker: Character): { value: numb
 // --- Result Interfaces --- //
 
 export interface DamageResolution {
+    impact: number;
     woundsAdded: number;
     stunWoundsAdded: number;
     delayTokensAdded: number;
@@ -65,9 +66,9 @@ export function resolveDamage(
     let woundsFromStun = 0;
     let woundsFromDamage = 0;
     let finalDelayTokens = defender.state.delayTokens;
+    let totalImpact = 0;
 
     // 1. Resolve Stun Damage (e.g., from 'Delay' trait)
-    // This happens *before* the damage roll and is not stopped by armor.
     const apAllotment = 2; // Default AP
     const newDelayTokens = context.delayTokensAdded || 0;
     if (newDelayTokens > 0) {
@@ -102,7 +103,7 @@ export function resolveDamage(
         if (damageTestResult.pass) {
             const baseImpact = weapon.impact || 0;
             const assistImpact = context.assistingModels || 0;
-            const totalImpact = baseImpact + assistImpact;
+            totalImpact = baseImpact + assistImpact;
             const effectiveAR = Math.max(0, defender.state.armor.total - totalImpact);
 
             const netCascades = Math.max(0, damageTestResult.cascades - effectiveAR);
@@ -125,6 +126,7 @@ export function resolveDamage(
 
     // 5. Return the final resolution
     return {
+        impact: totalImpact,
         woundsAdded: woundsFromDamage,
         stunWoundsAdded: woundsFromStun,
         delayTokensAdded: newDelayTokens,

@@ -39,5 +39,5 @@ export function resolveMoraleTest(
 
   // Resolve the test, applying the difficulty as a negative score modifier.
   // A higher difficulty makes the test harder to pass.
-  return resolveTest(participant, systemPlayer, -difficulty);
+  return resolveTest(participant, systemPlayer, -difficulty, true);
 }

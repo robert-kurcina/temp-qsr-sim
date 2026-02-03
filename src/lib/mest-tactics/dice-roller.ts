@@ -4,159 +4,185 @@ import { metricsService } from './MetricsService';
 // --- Core Types --- //
 
 export enum DiceType {
-  Modifier = 'Modifier',
-  Base = 'Base',
-  Wild = 'Wild',
+    Modifier = 'Modifier',
+    Base = 'Base',
+    Wild = 'Wild',
 }
 
 export type DicePool = {
-  [DiceType.Modifier]?: number;
-  [DiceType.Base]?: number;
-  [DiceType.Wild]?: number;
+    [DiceType.Modifier]?: number;
+    [DiceType.Base]?: number;
+    [DiceType.Wild]?: number;
 };
 
 export interface TestParticipant {
-  attributeValue: number;
-  bonusDice?: DicePool;
-  penaltyDice?: DicePool;
-  isSystemPlayer?: boolean;
+    attributeValue: number;
+    bonusDice?: DicePool;
+    penaltyDice?: DicePool;
+    isSystemPlayer?: boolean;
 }
 
 export interface TestResult {
-  pass: boolean;
-  cascades: number;
-  misses: number;
-  activePlayerTestScore: number;
-  passivePlayerTestScore: number;
-  carryOverDice: DicePool;
+    pass: boolean;
+    score: number;
+    participant1Score: number;
+    participant2Score: number;
+    p1Rolls: number[];
+    p2Rolls: number[];
+    p1Misses: number;
+    p2Misses: number;
+    finalPools: { 
+        p1FinalBonus: DicePool, 
+        p1FinalPenalty: DicePool, 
+        p2FinalBonus: DicePool, 
+        p2FinalPenalty: DicePool 
+    };
 }
 
 // --- Roller Abstraction for Mocking --- //
 
-/** Defines the signature for a function that can roll a dice pool. */
-export type Roller = (pool: DicePool) => number;
+export type Roller = (diceCount: number) => number[];
 
-/** The default, random roller implementation. */
-const _randomRoll: Roller = (pool) => {
-  let successes = 0;
-  for (const key in pool) {
-    const type = key as DiceType;
-    for (let i = 0; i < (pool[type] || 0); i++) {
-      const value = Math.floor(Math.random() * 6) + 1;
-      switch (type) {
-        case DiceType.Modifier:
-          if (value >= 4) successes += 1;
-          break;
-        case DiceType.Base:
-          if (value >= 4 && value <= 5) successes += 1;
-          if (value === 6) successes += 2;
-          break;
-        case DiceType.Wild:
-          if (value >= 4 && value <= 5) successes += 1;
-          if (value === 6) successes += 3;
-          break;
-      }
+const _randomRoller: Roller = (diceCount: number) => {
+    const rolls: number[] = [];
+    for (let i = 0; i < diceCount; i++) {
+        rolls.push(Math.floor(Math.random() * 6) + 1);
     }
-  }
-  return successes;
+    return rolls;
 };
 
-/** The active roller used by the system. Defaults to the random one. */
-let activeRoller: Roller = _randomRoll;
+let activeRoller: Roller = _randomRoller;
 
-/**
- * Sets the active dice roller for the system. Used to inject mocks for testing.
- * @param newRoller The new roller function to use.
- */
-export function setRoller(newRoller: Roller) {
-  activeRoller = newRoller;
+export function setRoller(newRoller: Roller | (() => number) | ((count: number) => number[])) {
+    if (typeof newRoller === 'function' && newRoller.length === 0) {
+        activeRoller = (diceCount: number) => Array(diceCount).fill(null).map(() => (newRoller as () => number)());
+    } else {
+        activeRoller = newRoller as Roller;
+    }
 }
 
-/** Resets the active dice roller to the default random implementation. */
 export function resetRoller() {
-  activeRoller = _randomRoll;
+    activeRoller = _randomRoller;
+}
+
+function getSuccesses(rolls: number[], type: DiceType): number {
+    let successes = 0;
+    for (const roll of rolls) {
+        if (type === DiceType.Modifier) {
+            if (roll >= 4) successes++;
+        } else if (type === DiceType.Base) {
+            if (roll >= 4 && roll <= 5) successes++;
+            if (roll === 6) successes += 2;
+        } else { // Wild
+            if (roll >= 4 && roll <= 5) successes++;
+            if (roll === 6) successes += 3;
+        }
+    }
+    return successes;
 }
 
 // --- Main Test Resolution Logic --- //
 
+function mergeDicePools(pool1: DicePool, pool2: DicePool): DicePool {
+    const result: DicePool = { ...pool1 };
+    for (const type in pool2) {
+        const key = type as DiceType;
+        result[key] = (result[key] || 0) + (pool2[key] || 0);
+    }
+    return result;
+}
+
 export function resolveTest(
-  activeParticipant: TestParticipant,
-  passiveParticipant: TestParticipant,
-  difficultyRating: number = 0,
+    participant1: TestParticipant,
+    participant2: TestParticipant,
+    scoreModifier: number = 0,
+    passOnTie: boolean = false
 ): TestResult {
-  const p1_totalBonus = activeParticipant.bonusDice || {};
-  const p2_totalBonus = passiveParticipant.bonusDice || {};
-  const p1_totalPenalty = activeParticipant.penaltyDice || {};
-  const p2_totalPenalty = passiveParticipant.penaltyDice || {};
 
-  // Cancellation logic
-  const p1FinalBonus: DicePool = { ...p1_totalBonus };
-  const p2FinalBonus: DicePool = { ...p2_totalBonus };
-  for (const key in p1_totalBonus) {
-    const type = key as DiceType;
-    const p1b = p1FinalBonus[type] || 0;
-    const p2p = p2_totalPenalty[type] || 0;
-    const cancelCount = Math.min(p1b, p2p);
-    p1FinalBonus[type] = p1b - cancelCount;
-    p2_totalPenalty[type] = (p2_totalPenalty[type] || 0) - cancelCount;
-  }
-  for (const key in p2_totalBonus) {
-    const type = key as DiceType;
-    const p2b = p2FinalBonus[type] || 0;
-    const p1p = p1_totalPenalty[type] || 0;
-    const cancelCount = Math.min(p2b, p1p);
-    p2FinalBonus[type] = p2b - cancelCount;
-    p1_totalPenalty[type] = (p1_totalPenalty[type] || 0) - cancelCount;
-  }
+    let p1Bonus = participant1.bonusDice || {};
+    let p1Penalty = participant1.penaltyDice || {};
+    let p2Bonus = participant2.bonusDice || {};
+    let p2Penalty = participant2.penaltyDice || {};
 
-  const p1Pool: DicePool = { ...p1FinalBonus, [DiceType.Base]: 2 };
-  const p2Pool: DicePool = { ...p2FinalBonus, [DiceType.Base]: 2 };
+    // Cancellation
+    for (const type in p1Bonus) {
+        const key = type as DiceType;
+        const p1b = p1Bonus[key] || 0;
+        const p2p = p2Penalty[key] || 0;
+        const cancel = Math.min(p1b, p2p);
+        p1Bonus[key] = p1b - cancel;
+        p2Penalty[key] = p2p - cancel;
+    }
+    for (const type in p2Bonus) {
+        const key = type as DiceType;
+        const p2b = p2Bonus[key] || 0;
+        const p1p = p1Penalty[key] || 0;
+        const cancel = Math.min(p2b, p1p);
+        p2Bonus[key] = p2b - cancel;
+        p1Penalty[key] = p1p - cancel;
+    }
 
-  const p1Successes = activeRoller(p1Pool);
-  const p2Successes = activeRoller(p2Pool);
+    // Build final pools
+    const p1BasePool = participant1.isSystemPlayer ? {} : { [DiceType.Base]: participant1.attributeValue };
+    const p2BasePool = participant2.isSystemPlayer ? {} : { [DiceType.Base]: participant2.attributeValue };
 
-  const activePlayerTestScore = activeParticipant.attributeValue + p1Successes;
-  const passiveBaseAttribute = passiveParticipant.isSystemPlayer ? 2 : passiveParticipant.attributeValue;
-  const passivePlayerTestScore = passiveBaseAttribute + p2Successes + difficultyRating;
-  
-  const scoreDifference = activePlayerTestScore - passivePlayerTestScore;
+    let p1Pool = mergeDicePools(p1BasePool, p1Bonus);
+    let p2Pool = mergeDicePools(p2BasePool, p2Bonus);
 
-  const pass = scoreDifference >= 0;
-  let cascades = 0;
-  if (pass) {
-    cascades = scoreDifference === 0 ? 1 : scoreDifference;
-  }
-  const misses = !pass ? Math.abs(scoreDifference) : 0;
+    for (const type in p1Penalty) {
+        const key = type as DiceType;
+        p1Pool[key] = Math.max(0, (p1Pool[key] || 0) - (p1Penalty[key] || 0));
+    }
+    for (const type in p2Penalty) {
+        const key = type as DiceType;
+        p2Pool[key] = Math.max(0, (p2Pool[key] || 0) - (p2Penalty[key] || 0));
+    }
 
-  const carryOverDice: DicePool = {};
-  if (pass && cascades > 1 && !activeParticipant.isSystemPlayer) {
-    carryOverDice[DiceType.Base] = cascades - 1;
-  }
+    let p1Successes = 0;
+    let p1Misses = 0;
+    const p1Rolls: number[] = [];
+    for (const type in p1Pool) {
+        const key = type as DiceType;
+        const diceCount = p1Pool[key];
+        if (diceCount && diceCount > 0) {
+            const rolls = activeRoller(diceCount);
+            p1Rolls.push(...rolls);
+            p1Successes += getSuccesses(rolls, key);
+            p1Misses += rolls.filter(r => r === 1).length;
+        }
+    }
 
-  const result: TestResult = {
-    pass,
-    cascades,
-    misses,
-    activePlayerTestScore,
-    passivePlayerTestScore,
-    carryOverDice,
-  };
+    let p2Successes = 0;
+    let p2Misses = 0;
+    const p2Rolls: number[] = [];
+    for (const type in p2Pool) {
+        const key = type as DiceType;
+        const diceCount = p2Pool[key];
+        if (diceCount && diceCount > 0) {
+            const rolls = activeRoller(diceCount);
+            p2Rolls.push(...rolls);
+            p2Successes += getSuccesses(rolls, key);
+            p2Misses += rolls.filter(r => r === 1).length;
+        }
+    }
 
-  // Log the event to our new metrics service
-  metricsService.logEvent('diceTestResolved', {
-    inputs: {
-        activeParticipant,
-        passiveParticipant,
-        difficultyRating
-    },
-    finalPools: {
-        p1FinalBonus,
-        p2FinalBonus,
-        p1FinalPenalty: p1_totalPenalty,
-        p2FinalPenalty: p2_totalPenalty
-    },
-    result,
-  });
+    const p1Score = participant1.attributeValue + p1Successes;
+    const p2Score = participant2.attributeValue + p2Successes;
+    const score = p1Score - p2Score + scoreModifier;
+    const pass = passOnTie ? score >= 0 : score > 0;
 
-  return result;
+    const result: TestResult = {
+        pass,
+        score,
+        participant1Score: p1Score,
+        participant2Score: p2Score,
+        p1Rolls,
+        p2Rolls,
+        p1Misses,
+        p2Misses,
+        finalPools: { p1FinalBonus: p1Bonus, p1FinalPenalty: p1Penalty, p2FinalBonus: p2Bonus, p2FinalPenalty: p2Penalty },
+    };
+
+    metricsService.logEvent('diceTestResolved', result);
+    return result;
 }
