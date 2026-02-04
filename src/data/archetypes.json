@@ -55,7 +55,7 @@
     "species": "Humanoid",
     "class": "Variant Common"
   },
-  "Veteran, Knife-fighter": {
+  "Veteran, Knife-fighter": {p
     "attributes": { "cca": 3, "rca": 3, "ref": 3, "int": 2, "pow": 3, "str": 2, "for": 2, "mov": 2, "siz": 3 },
     "traits": ["Grit", "Knife-fighter"],
     "bp": 70,
