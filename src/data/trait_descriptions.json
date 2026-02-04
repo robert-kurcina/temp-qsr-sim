@@ -258,7 +258,7 @@
     "[Reload X]": {
         "description": "Asset. See [1H]. After performing an action or a Test with this weapon and it is available for use; indicate that it needs to be reloaded using an Out-of-Ammo! marker. It remains unusable until after the character performs X Fiddle actions for 1 AP each."
     },
-    "[Requires > Type]": {
+    "[Requires > Type]": { 
         "description": "Asset. Requires an Item of the type Type listed before it can be used. The type may also refer to a trait, such as Reach or [Grenade X], that an Item should have."
     },
     "[Reveal]": {

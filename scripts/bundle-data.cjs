@@ -1,10 +1,20 @@
-
 const fs = require('fs');
 const path = require('path');
 
 const dataDir = path.join(__dirname, '..', 'src', 'data');
 const outputDir = path.join(__dirname, '..', 'src', 'lib');
 const outputFile = path.join(outputDir, 'data.ts');
+
+const itemDataFiles = [
+    'armors.json',
+    'bow_weapons.json',
+    'equipment.json',
+    'grenade_weapons.json',
+    'melee_weapons.json',
+    'ranged_weapons.json',
+    'support_weapons.json',
+    'thrown_weapons.json'
+];
 
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir, { recursive: true });
@@ -13,11 +23,35 @@ if (!fs.existsSync(outputDir)) {
 const bundledData = {};
 
 fs.readdirSync(dataDir).forEach(file => {
-  if (file.endsWith('.json')) {
+  if (file.endsWith('.json')) { // Ensure we only process JSON files
     const filePath = path.join(dataDir, file);
     const fileName = path.basename(file, '.json');
     const fileContent = fs.readFileSync(filePath, 'utf-8');
-    bundledData[fileName] = JSON.parse(fileContent);
+    const data = JSON.parse(fileContent);
+
+    if (itemDataFiles.includes(file)) {
+        // Process each item in the JSON file
+        for (const itemName in data) {
+            if (Object.prototype.hasOwnProperty.call(data, itemName)) {
+                const item = data[itemName];
+
+                if (item.class) {
+                    // Split class into classification and type
+                    const classParts = item.class.split(' - ');
+                    item.classification = classParts[0];
+                    item.type = classParts.length > 1 ? classParts[1] : classParts[0];
+                } else {
+                    console.log(`Item "${itemName}" in file "${fileName}" is missing the 'class' property.`);
+                }
+
+                // Trim whitespace from traits
+                if (item.traits && Array.isArray(item.traits)) {
+                    item.traits = item.traits.map(trait => trait.trim());
+                }
+            }
+        }
+    }
+    bundledData[fileName] = data;
   }
 });
 

@@ -279,10 +279,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 2",
-        " Hardened",
-        " Battery X:Type > List"
-      ]
+        "Armor 2",
+        "Hardened",
+        "Battery X:Type > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field Advanced": {
       "class": "Armor - Suit",
@@ -293,11 +295,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 3]",
-        " Deflect 2",
-        " Advanced",
-        " [Lumbering]"
-      ]
+        "[Laden 3]",
+        "Deflect 2",
+        "Advanced",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field Bulletproof Flex": {
       "class": "Armor - Suit",
@@ -308,12 +312,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 3]",
-        " Deflect 2",
-        " [Flexible]",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 3]",
+        "Deflect 2",
+        "[Flexible]",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field Flex": {
       "class": "Armor - Suit",
@@ -324,11 +330,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 3]",
-        " Deflect 2",
-        " [Flexible]",
-        " [Lumbering]"
-      ]
+        "[Laden 3]",
+        "Deflect 2",
+        "[Flexible]",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field Mail": {
       "class": "Armor - Suit",
@@ -339,11 +347,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 3]",
-        " Deflect 2",
-        " [Mail]",
-        " [Lumbering]"
-      ]
+        "[Laden 3]",
+        "Deflect 2",
+        "[Mail]",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field Nanoweave BP": {
       "class": "Armor - Suit",
@@ -354,12 +364,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 2]",
-        " Deflect 2",
-        " Nanoweave",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 2]",
+        "Deflect 2",
+        "Nanoweave",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field Nanoweave": {
       "class": "Armor - Suit",
@@ -370,11 +382,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 2]",
-        " Deflect 2",
-        " Nanoweave",
-        " [Lumbering]"
-      ]
+        "[Laden 2]",
+        "Deflect 2",
+        "Nanoweave",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field": {
       "class": "Armor - Suit",
@@ -385,10 +399,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 4]",
-        " Deflect 2",
-        " [Lumbering]"
-      ]
+        "[Laden 4]",
+        "Deflect 2",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field, Bulletproof Advanced": {
       "class": "Armor - Suit",
@@ -399,12 +415,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 3]",
-        " Deflect 2",
-        " Advanced",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 3]",
+        "Deflect 2",
+        "Advanced",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Field, Bulletproof": {
       "class": "Armor - Suit",
@@ -415,11 +433,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 8",
-        " [Laden 4]",
-        " Deflect 2",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 4]",
+        "Deflect 2",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy Advanced": {
       "class": "Armor - Suit",
@@ -430,11 +450,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden 2]",
-        " Deflect",
-        " Advanced",
-        " [Lumbering]"
-      ]
+        "[Laden 2]",
+        "Deflect",
+        "Advanced",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy Bulletproof Flex": {
       "class": "Armor - Suit",
@@ -445,12 +467,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden 2]",
-        " Deflect",
-        " [Flexible]",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 2]",
+        "Deflect",
+        "[Flexible]",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy Flex": {
       "class": "Armor - Suit",
@@ -461,11 +485,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden 2]",
-        " Deflect",
-        " [Flexible]",
-        " [Lumbering]"
-      ]
+        "[Laden 2]",
+        "Deflect",
+        "[Flexible]",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy Mail": {
       "class": "Armor - Suit",
@@ -476,11 +502,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden 2]",
-        " Deflect",
-        " [Mail]",
-        " [Lumbering]"
-      ]
+        "[Laden 2]",
+        "Deflect",
+        "[Mail]",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy Nanoweave BP": {
       "class": "Armor - Suit",
@@ -491,12 +519,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden]",
-        " Deflect",
-        " Nanoweave",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Nanoweave",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy Nanoweave": {
       "class": "Armor - Suit",
@@ -507,11 +537,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden]",
-        " Deflect",
-        " Nanoweave",
-        " [Lumbering]"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Nanoweave",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy": {
       "class": "Armor - Suit",
@@ -522,10 +554,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden 3]",
-        " Deflect",
-        " [Lumbering]"
-      ]
+        "[Laden 3]",
+        "Deflect",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy, Bulletproof Advanced": {
       "class": "Armor - Suit",
@@ -536,12 +570,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden 2]",
-        " Deflect",
-        " Advanced",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 2]",
+        "Deflect",
+        "Advanced",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Heavy, Bulletproof": {
       "class": "Armor - Suit",
@@ -552,11 +588,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden 3]",
-        " Deflect",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 3]",
+        "Deflect",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light Advanced": {
       "class": "Armor - Suit",
@@ -567,9 +605,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Deflect",
-        " Advanced"
-      ]
+        "Deflect",
+        "Advanced"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light Bulletproof Flex": {
       "class": "Armor - Suit",
@@ -580,10 +620,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Deflect",
-        " [Flexible]",
-        " Bulletproof"
-      ]
+        "Deflect",
+        "[Flexible]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light Flex": {
       "class": "Armor - Suit",
@@ -594,9 +636,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Deflect",
-        " [Flexible]"
-      ]
+        "Deflect",
+        "[Flexible]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light Mail": {
       "class": "Armor - Suit",
@@ -607,9 +651,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Deflect",
-        " [Mail]"
-      ]
+        "Deflect",
+        "[Mail]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light Nanoweave BP": {
       "class": "Armor - Suit",
@@ -620,10 +666,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Deflect",
-        " Nanoweave",
-        " Bulletproof"
-      ]
+        "Deflect",
+        "Nanoweave",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light Nanoweave": {
       "class": "Armor - Suit",
@@ -634,9 +682,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Deflect",
-        " Nanoweave"
-      ]
+        "Deflect",
+        "Nanoweave"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light": {
       "class": "Armor - Suit",
@@ -647,9 +697,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " [Laden]",
-        " Deflect"
-      ]
+        "[Laden]",
+        "Deflect"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light, Bulletproof Advanced": {
       "class": "Armor - Suit",
@@ -660,10 +712,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Deflect",
-        " Advanced",
-        " Bulletproof"
-      ]
+        "Deflect",
+        "Advanced",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Light, Bulletproof": {
       "class": "Armor - Suit",
@@ -674,10 +728,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " [Laden]",
-        " Deflect",
-        " Bulletproof"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium Advanced": {
       "class": "Armor - Suit",
@@ -688,10 +744,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " Advanced"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Advanced"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium Bulletproof Flex": {
       "class": "Armor - Suit",
@@ -702,11 +760,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " [Flexible]",
-        " Bulletproof"
-      ]
+        "[Laden]",
+        "Deflect",
+        "[Flexible]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium Flex": {
       "class": "Armor - Suit",
@@ -717,10 +777,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " [Flexible]"
-      ]
+        "[Laden]",
+        "Deflect",
+        "[Flexible]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium Mail": {
       "class": "Armor - Suit",
@@ -731,10 +793,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden 2]",
-        " Deflect",
-        " [Mail]"
-      ]
+        "[Laden 2]",
+        "Deflect",
+        "[Mail]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium Nanoweave BP": {
       "class": "Armor - Suit",
@@ -745,10 +809,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " Deflect",
-        " Nanoweave",
-        " Bulletproof"
-      ]
+        "Deflect",
+        "Nanoweave",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium Nanoweave": {
       "class": "Armor - Suit",
@@ -759,9 +825,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " Deflect",
-        " Nanoweave"
-      ]
+        "Deflect",
+        "Nanoweave"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium": {
       "class": "Armor - Suit",
@@ -772,9 +840,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden 2]",
-        " Deflect"
-      ]
+        "[Laden 2]",
+        "Deflect"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium, Bulletproof Advanced": {
       "class": "Armor - Suit",
@@ -785,11 +855,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " Advanced",
-        " Bulletproof"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Advanced",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armor, Medium, Bulletproof": {
       "class": "Armor - Suit",
@@ -800,10 +872,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden 2]",
-        " Deflect",
-        " Bulletproof"
-      ]
+        "[Laden 2]",
+        "Deflect",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Armored Gear": {
       "class": "Armor - Gear",
@@ -814,8 +888,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Deflect",
-        " Conceal"
-      ]
+        "Conceal"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Armored Gear, Bracer": {
       "class": "Armor - Gear",
@@ -826,9 +902,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Deflect",
-        " Parry",
-        " Armor"
-      ]
+        "Parry",
+        "Armor"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Armored Gear, Bulletproof": {
       "class": "Armor - Gear",
@@ -839,9 +917,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Deflect",
-        " Conceal",
-        " Bulletproof"
-      ]
+        "Conceal",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Armored Gear, Padding Bulletproof": {
       "class": "Armor - Gear",
@@ -852,9 +932,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " [Laden]",
-        " Bulletproof"
-      ]
+        "[Laden]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Armored Gear, Padding": {
       "class": "Armor - Gear",
@@ -865,9 +947,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " [Laden]",
-        " Armor"
-      ]
+        "[Laden]",
+        "Armor"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Armored Gear, Vaumbrace": {
       "class": "Armor - Gear",
@@ -878,9 +962,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Deflect",
-        " Parry",
-        " Armor"
-      ]
+        "Parry",
+        "Armor"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Blast-suit, Advanced": {
       "class": "Armor - Suit",
@@ -891,13 +977,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 3",
-        " [Laden 2]",
-        " Bombproof 3",
-        " [Awkward]",
-        " Deflect",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "[Laden 2]",
+        "Bombproof 3",
+        "[Awkward]",
+        "Deflect",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Blast-suit, Early": {
       "class": "Armor - Suit",
@@ -908,11 +996,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 3",
-        " [Laden 3]",
-        " Bombproof 2",
-        " [Awkward]",
-        " [Lumbering]"
-      ]
+        "[Laden 3]",
+        "Bombproof 2",
+        "[Awkward]",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Blast-suit, Reinforced": {
       "class": "Armor - Suit",
@@ -923,10 +1013,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 5",
-        " [Laden 4]",
-        " Bombproof 3",
-        " [Lumbering]"
-      ]
+        "[Laden 4]",
+        "Bombproof 3",
+        "[Lumbering]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Comm-helmet": {
       "class": "Armor - Helm",
@@ -937,9 +1029,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor",
-        " Protective",
-        " Radio 2"
-      ]
+        "Protective",
+        "Radio 2"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Dynamic Armor, Heavy": {
       "class": "Armor - Suit",
@@ -950,14 +1044,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden 2]",
-        " Bulletproof",
-        " Protective",
-        " Resist X > List"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden 2]",
+        "Bulletproof",
+        "Protective",
+        "Resist X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Dynamic Armor, Light": {
       "class": "Armor - Suit",
@@ -968,13 +1064,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " Bulletproof",
-        " Protective",
-        " Resist X > List"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "Bulletproof",
+        "Protective",
+        "Resist X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Dynamic Armor, Medium": {
       "class": "Armor - Suit",
@@ -985,14 +1083,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden]",
-        " Bulletproof",
-        " Protective",
-        " Resist X > List"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden]",
+        "Bulletproof",
+        "Protective",
+        "Resist X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Exxo-skeleton, Heavy": {
       "class": "Armor - Suit",
@@ -1003,10 +1103,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 2",
-        " Battery X:Type > List",
-        " MOV 2"
-      ]
+        "Armor 2",
+        "Battery X:Type > List",
+        "MOV 2"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Exxo-skeleton, Lifter Frame": {
       "class": "Misc - Tool",
@@ -1017,9 +1119,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " [Stub]",
-        " Battery X:Type > List"
-      ]
+        "[Stub]",
+        "Battery X:Type > List"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Exxo-skeleton, Light": {
       "class": "Armor - Suit",
@@ -1030,10 +1134,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 2",
-        " Battery X:Type > List",
-        " MOV 4"
-      ]
+        "Armor 2",
+        "Battery X:Type > List",
+        "MOV 4"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Exxo-skin": {
       "class": "Armor - Suit",
@@ -1044,11 +1150,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 2",
-        " Hardened",
-        " REF",
-        " Discrete"
-      ]
+        "Armor 2",
+        "Hardened",
+        "REF",
+        "Discrete"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Exxo-skin, Carapace": {
       "class": "Armor - Suit",
@@ -1059,11 +1167,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 6",
-        " Hardened 2",
-        " [Lumbering]",
-        " Discrete"
-      ]
+        "Armor 6",
+        "Hardened 2",
+        "[Lumbering]",
+        "Discrete"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Exxo-skin, Scaled": {
       "class": "Armor - Suit",
@@ -1074,11 +1184,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 4",
-        " Hardened",
-        " REF",
-        " Discrete"
-      ]
+        "Armor 4",
+        "Hardened",
+        "REF",
+        "Discrete"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Exxo-skin, Segmented": {
       "class": "Armor - Suit",
@@ -1089,10 +1201,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 6",
-        " Hardened",
-        " Discrete"
-      ]
+        "Armor 6",
+        "Hardened",
+        "Discrete"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Force Armor, Heavy": {
       "class": "Armor - Suit",
@@ -1103,14 +1217,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden 2]",
-        " Bulletproof",
-        " Protective",
-        " Resist X > List"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden 2]",
+        "Bulletproof",
+        "Protective",
+        "Resist X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Force Armor, Light": {
       "class": "Armor - Suit",
@@ -1121,13 +1237,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " Bulletproof",
-        " Protective",
-        " Resist X > List"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "Bulletproof",
+        "Protective",
+        "Resist X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Force Armor, Medium": {
       "class": "Armor - Suit",
@@ -1138,14 +1256,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden]",
-        " Bulletproof",
-        " Protective",
-        " Resist X > List"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden]",
+        "Bulletproof",
+        "Protective",
+        "Resist X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Hardsuit, Archaic": {
       "class": "Armor - Suit",
@@ -1156,16 +1276,18 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 4",
-        " Hardened",
-        " Deflect",
-        " Leap",
-        " Protective",
-        " [Laden 2]",
-        " [Lumbering]",
-        " SIZ",
-        " Envirosuit X > List"
-      ]
+        "Armor 4",
+        "Hardened",
+        "Deflect",
+        "Leap",
+        "Protective",
+        "[Laden 2]",
+        "[Lumbering]",
+        "SIZ",
+        "Envirosuit X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Hardsuit, Enhanced, Archaic": {
       "class": "Armor - Suit",
@@ -1176,17 +1298,19 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 4",
-        " Hardened",
-        " Deflect",
-        " Leap 2",
-        " STR",
-        " Protective",
-        " [Laden]",
-        " [Lumbering]",
-        " SIZ 2",
-        " Envirosuit X > List"
-      ]
+        "Armor 4",
+        "Hardened",
+        "Deflect",
+        "Leap 2",
+        "STR",
+        "Protective",
+        "[Laden]",
+        "[Lumbering]",
+        "SIZ 2",
+        "Envirosuit X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Hardsuit, Platform, Archaic": {
       "class": "Armor - Suit",
@@ -1197,16 +1321,18 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 6",
-        " Hardened",
-        " Deflect 3",
-        " STR",
-        " Protective",
-        " [Laden]",
-        " [Lumbering]",
-        " SIZ 2",
-        " Envirosuit X > List"
-      ]
+        "Armor 6",
+        "Hardened",
+        "Deflect 3",
+        "STR",
+        "Protective",
+        "[Laden]",
+        "[Lumbering]",
+        "SIZ 2",
+        "Envirosuit X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Hardsuit, Scout": {
       "class": "Armor - Suit",
@@ -1217,17 +1343,19 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 2",
-        " Hardened",
-        " Deflect 2",
-        " Leap 3",
-        " Protective",
-        " [Laden]",
-        " Detect 2",
-        " SIZ",
-        " Optics 2",
-        " Envirosuit X > List"
-      ]
+        "Armor 2",
+        "Hardened",
+        "Deflect 2",
+        "Leap 3",
+        "Protective",
+        "[Laden]",
+        "Detect 2",
+        "SIZ",
+        "Optics 2",
+        "Envirosuit X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Hardsuit, Standard": {
       "class": "Armor - Suit",
@@ -1238,17 +1366,19 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 4",
-        " Hardened",
-        " Deflect 2",
-        " Leap 2",
-        " Protective",
-        " [Laden]",
-        " Detect",
-        " SIZ",
-        " Optics",
-        " Envirosuit X > List"
-      ]
+        "Armor 4",
+        "Hardened",
+        "Deflect 2",
+        "Leap 2",
+        "Protective",
+        "[Laden]",
+        "Detect",
+        "SIZ",
+        "Optics",
+        "Envirosuit X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Hardsuit, War": {
       "class": "Armor - Suit",
@@ -1259,18 +1389,20 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 4",
-        " Hardened 2",
-        " Deflect 3",
-        " Leap",
-        " Bombproof",
-        " Protective",
-        " [Laden 2]",
-        " Detect",
-        " SIZ 2",
-        " Optics",
-        " Envirosuit X > List"
-      ]
+        "Armor 4",
+        "Hardened 2",
+        "Deflect 3",
+        "Leap",
+        "Bombproof",
+        "Protective",
+        "[Laden 2]",
+        "Detect",
+        "SIZ 2",
+        "Optics",
+        "Envirosuit X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Hardsuit, Windup": {
       "class": "Armor - Suit",
@@ -1281,16 +1413,18 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 6",
-        " Hardened",
-        " Deflect 3",
-        " Windup",
-        " Protective",
-        " [Laden 2]",
-        " [Lumbering]",
-        " SIZ 2",
-        " Envirosuit X > List"
-      ]
+        "Armor 6",
+        "Hardened",
+        "Deflect 3",
+        "Windup",
+        "Protective",
+        "[Laden 2]",
+        "[Lumbering]",
+        "SIZ 2",
+        "Envirosuit X > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Helmet, Common": {
       "class": "Armor - Helm",
@@ -1301,7 +1435,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective"
-      ]
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Common, Bulletproof": {
       "class": "Armor - Helm",
@@ -1312,8 +1448,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " Bulletproof"
-      ]
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Full": {
       "class": "Armor - Helm",
@@ -1324,9 +1462,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " Armor",
-        " [Blinders]"
-      ]
+        "Armor",
+        "[Blinders]"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Full, Bulletproof": {
       "class": "Armor - Helm",
@@ -1337,10 +1477,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " Armor",
-        " [Blinders]",
-        " Bulletproof"
-      ]
+        "Armor",
+        "[Blinders]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Full-Elaborate": {
       "class": "Armor - Helm",
@@ -1351,10 +1493,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " Armor",
-        " [Blinders]",
-        " [Prissy]"
-      ]
+        "Armor",
+        "[Blinders]",
+        "[Prissy]"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Reinforced Bulletproof": {
       "class": "Armor - Helm",
@@ -1365,12 +1509,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " Armor",
-        " [Blinders]",
-        " [Laden]",
-        " Deflect",
-        " Bulletproof"
-      ]
+        "Armor",
+        "[Blinders]",
+        "[Laden]",
+        "Deflect",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Reinforced": {
       "class": "Armor - Helm",
@@ -1381,11 +1527,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective",
-        " Armor",
-        " [Blinders]",
-        " [Laden]",
-        " Deflect"
-      ]
+        "Armor",
+        "[Blinders]",
+        "[Laden]",
+        "Deflect"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Riot Bulletproof": {
       "class": "Armor - Helm",
@@ -1396,10 +1544,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective 2",
-        " [Blinders]",
-        " Deflect",
-        " Bulletproof"
-      ]
+        "[Blinders]",
+        "Deflect",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Helmet, Riot": {
       "class": "Armor - Helm",
@@ -1410,9 +1560,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Protective 2",
-        " [Blinders]",
-        " Deflect"
-      ]
+        "[Blinders]",
+        "Deflect"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Improvised Parry": {
       "class": "Armor - Shield",
@@ -1423,7 +1575,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Parry"
-      ]
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Jet-pack, Gear": {
       "class": "Armor - Gear",
@@ -1434,9 +1588,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " Flight",
-        " [Backblast]"
-      ]
+        "Flight",
+        "[Backblast]"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Jet-pack, Jump": {
       "class": "Armor - Gear",
@@ -1447,10 +1603,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " Flight",
-        " [Backblast]",
-        " Leap 2"
-      ]
+        "Flight",
+        "[Backblast]",
+        "Leap 2"
+      ],
+      "classification": "Armor",
+      "type": "Gear"
     },
     "Jet-pack, Suit": {
       "class": "Armor - Suit",
@@ -1461,11 +1619,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " Flight 2",
-        " [Backblast]",
-        " Armor 4",
-        " Bulletproof"
-      ]
+        "Flight 2",
+        "[Backblast]",
+        "Armor 4",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Jet-pack, Suit, Advanced": {
       "class": "Armor - Suit",
@@ -1476,11 +1636,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " Flight 4",
-        " [Backblast]",
-        " Armor 4",
-        " Bulletproof"
-      ]
+        "Flight 4",
+        "[Backblast]",
+        "Armor 4",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Mage Armor, Light": {
       "class": "Armor - Suit",
@@ -1491,12 +1653,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " Bulletproof",
-        " Protective"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "Bulletproof",
+        "Protective"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Mage Armor, Medium": {
       "class": "Armor - Suit",
@@ -1507,13 +1671,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden]",
-        " Bulletproof",
-        " Protective"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden]",
+        "Bulletproof",
+        "Protective"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Phlogiston Suit": {
       "class": "Armor - Suit",
@@ -1524,7 +1690,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Envirosuit X > List"
-      ]
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Phlogiston Suit, Fireproof": {
       "class": "Armor - Suit",
@@ -1535,9 +1703,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Envirosuit X > List",
-        " Fireproof 2",
-        " [Laden]"
-      ]
+        "Fireproof 2",
+        "[Laden]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Phlogiston Suit, Improved BP": {
       "class": "Armor - Suit",
@@ -1548,11 +1718,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Envirosuit X > List",
-        " Bulletproof",
-        " Armor 4",
-        " [Laden 2]",
-        " Fireproof 2"
-      ]
+        "Bulletproof",
+        "Armor 4",
+        "[Laden 2]",
+        "Fireproof 2"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Phlogiston Suit, Improved": {
       "class": "Armor - Suit",
@@ -1563,10 +1735,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Envirosuit X > List",
-        " Bulletproof",
-        " Armor 4",
-        " [Laden 2]"
-      ]
+        "Bulletproof",
+        "Armor 4",
+        "[Laden 2]"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Plasmashield, Heavy": {
       "class": "Armor - Energy",
@@ -1577,11 +1751,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 8",
-        " Bulletproof",
-        " Deflect 3",
-        " [1H]"
-      ]
+        "Armor 8",
+        "Bulletproof",
+        "Deflect 3",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Plasmashield, Light": {
       "class": "Armor - Energy",
@@ -1592,11 +1768,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 6",
-        " Bulletproof",
-        " Deflect",
-        " [1H]"
-      ]
+        "Armor 6",
+        "Bulletproof",
+        "Deflect",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Plasmashield, Medium": {
       "class": "Armor - Energy",
@@ -1607,11 +1785,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 4",
-        " Bulletproof",
-        " Deflect 2",
-        " [1H]"
-      ]
+        "Armor 4",
+        "Bulletproof",
+        "Deflect 2",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Armor-Battle": {
       "class": "Armor - Energy",
@@ -1622,15 +1802,17 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 8",
-        " Hardened 3",
-        " Envirosuit X > List",
-        " Battery X:Type > List",
-        " Leap",
-        " SIZ 2",
-        " Bombproof",
-        " Bulletproof"
-      ]
+        "Armor 8",
+        "Hardened 3",
+        "Envirosuit X > List",
+        "Battery X:Type > List",
+        "Leap",
+        "SIZ 2",
+        "Bombproof",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Armor-Combat": {
       "class": "Armor - Energy",
@@ -1641,15 +1823,17 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 6",
-        " Hardened 2",
-        " Envirosuit X > List",
-        " Battery X:Type > List",
-        " Coverage 2",
-        " Resist X > List",
-        " SIZ 2",
-        " Bulletproof"
-      ]
+        "Armor 6",
+        "Hardened 2",
+        "Envirosuit X > List",
+        "Battery X:Type > List",
+        "Coverage 2",
+        "Resist X > List",
+        "SIZ 2",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Armor-Early": {
       "class": "Armor - Suit",
@@ -1660,15 +1844,17 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 6",
-        " Hardened",
-        " Envirosuit X > List",
-        " Battery X:Type > List",
-        " SIZ 2",
-        " [Lumbering]",
-        " [Fragile]",
-        " Bulletproof"
-      ]
+        "Armor 6",
+        "Hardened",
+        "Envirosuit X > List",
+        "Battery X:Type > List",
+        "SIZ 2",
+        "[Lumbering]",
+        "[Fragile]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Powered Armor-Exxo": {
       "class": "Armor - Energy",
@@ -1679,14 +1865,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 4",
-        " Battery X:Type > List",
-        " Tall",
-        " SIZ",
-        " Brawn 2",
-        " [Lumbering]",
-        " [Fragile 2]"
-      ]
+        "Armor 4",
+        "Battery X:Type > List",
+        "Tall",
+        "SIZ",
+        "Brawn 2",
+        "[Lumbering]",
+        "[Fragile 2]"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Armor-ExxoHvy": {
       "class": "Armor - Energy",
@@ -1697,14 +1885,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 6",
-        " Battery X:Type > List",
-        " Tall",
-        " SIZ 2",
-        " Brawn 4",
-        " [Lumbering]",
-        " [Fragile]"
-      ]
+        "Armor 6",
+        "Battery X:Type > List",
+        "Tall",
+        "SIZ 2",
+        "Brawn 4",
+        "[Lumbering]",
+        "[Fragile]"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Armor-Standard": {
       "class": "Armor - Energy",
@@ -1715,14 +1905,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 6",
-        " Hardened 2",
-        " Envirosuit X > List",
-        " Battery X:Type > List",
-        " SIZ",
-        " [Lumbering]",
-        " Bulletproof"
-      ]
+        "Armor 6",
+        "Hardened 2",
+        "Envirosuit X > List",
+        "Battery X:Type > List",
+        "SIZ",
+        "[Lumbering]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Armor-Stealth": {
       "class": "Armor - Energy",
@@ -1733,15 +1925,17 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 4",
-        " Hardened",
-        " Envirosuit X > List",
-        " Battery X:Type > List",
-        " Coverage",
-        " SIZ",
-        " Sensors",
-        " Bulletproof"
-      ]
+        "Armor 4",
+        "Hardened",
+        "Envirosuit X > List",
+        "Battery X:Type > List",
+        "Coverage",
+        "SIZ",
+        "Sensors",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Shielding": {
       "class": "Armor - Energy",
@@ -1752,12 +1946,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Stub]",
-        " Armor 4",
-        " Conceal",
-        " Bulletproof",
-        " Imbue",
-        " Deflect"
-      ]
+        "Armor 4",
+        "Conceal",
+        "Bulletproof",
+        "Imbue",
+        "Deflect"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Powered Shielding-Heavy": {
       "class": "Armor - Energy",
@@ -1768,12 +1964,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 6",
-        " Conceal",
-        " Bulletproof",
-        " Imbue 2",
-        " Deflect"
-      ]
+        "Armor 6",
+        "Conceal",
+        "Bulletproof",
+        "Imbue 2",
+        "Deflect"
+      ],
+      "classification": "Armor",
+      "type": "Energy"
     },
     "Proximity Suit, Fireproof BP": {
       "class": "Armor - Suit",
@@ -1784,11 +1982,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Envirosuit X > List",
-        " Armor 4",
-        " [Laden 2]",
-        " Fireproof",
-        " Bulletproof"
-      ]
+        "Armor 4",
+        "[Laden 2]",
+        "Fireproof",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Proximity Suit, Fireproof": {
       "class": "Armor - Suit",
@@ -1799,9 +1999,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Envirosuit X > List",
-        " [Laden]",
-        " Fireproof"
-      ]
+        "[Laden]",
+        "Fireproof"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Psi Armor, Heavy": {
       "class": "Armor - Suit",
@@ -1812,13 +2014,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden 2]",
-        " Bulletproof",
-        " Protective"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden 2]",
+        "Bulletproof",
+        "Protective"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Psi Armor, Light": {
       "class": "Armor - Suit",
@@ -1829,12 +2033,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " Bulletproof",
-        " Protective"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "Bulletproof",
+        "Protective"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Psi Armor, Medium": {
       "class": "Armor - Suit",
@@ -1845,13 +2051,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 4",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden]",
-        " Bulletproof",
-        " Protective"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden]",
+        "Bulletproof",
+        "Protective"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Sensor Array": {
       "class": "Armor - Helm",
@@ -1862,10 +2070,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Protective",
-        " Sensors 2",
-        " Optics 3"
-      ]
+        "Protective",
+        "Sensors 2",
+        "Optics 3"
+      ],
+      "classification": "Armor",
+      "type": "Helm"
     },
     "Shield, Heavy-Large": {
       "class": "Armor - Shield",
@@ -1876,12 +2086,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " Armor 3",
-        " Coverage",
-        " Bash",
-        " Protective",
-        " [2H]"
-      ]
+        "Armor 3",
+        "Coverage",
+        "Bash",
+        "Protective",
+        "[2H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Heavy-Medium": {
       "class": "Armor - Shield",
@@ -1892,11 +2104,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 2",
-        " Coverage",
-        " Bash",
-        " [1H]"
-      ]
+        "Armor 2",
+        "Coverage",
+        "Bash",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Heavy-Small": {
       "class": "Armor - Shield",
@@ -1907,10 +2121,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor",
-        " Bash",
-        " [1H]"
-      ]
+        "Armor",
+        "Bash",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Improvised-Large": {
       "class": "Armor - Shield",
@@ -1921,10 +2137,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor",
-        " Deflect",
-        " [2H]"
-      ]
+        "Armor",
+        "Deflect",
+        "[2H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Improvised-Small": {
       "class": "Armor - Shield",
@@ -1935,8 +2153,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Parry",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Large": {
       "class": "Armor - Shield",
@@ -1947,11 +2167,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 2",
-        " Coverage",
-        " Protective",
-        " [1H]"
-      ]
+        "Armor 2",
+        "Coverage",
+        "Protective",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Large, Bulletproof": {
       "class": "Armor - Shield",
@@ -1962,12 +2184,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 2",
-        " Coverage",
-        " Protective",
-        " [1H]",
-        " Bulletproof"
-      ]
+        "Armor 2",
+        "Coverage",
+        "Protective",
+        "[1H]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Light": {
       "class": "Armor - Shield",
@@ -1978,9 +2202,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor",
-        " Coverage",
-        " [1H]"
-      ]
+        "Coverage",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Medium": {
       "class": "Armor - Shield",
@@ -1991,11 +2217,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor",
-        " Coverage",
-        " Deflect",
-        " [1H]"
-      ]
+        "Armor",
+        "Coverage",
+        "Deflect",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Medium, Bulletproof": {
       "class": "Armor - Shield",
@@ -2006,12 +2234,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor",
-        " Coverage",
-        " Deflect",
-        " [1H]",
-        " Bulletproof"
-      ]
+        "Armor",
+        "Coverage",
+        "Deflect",
+        "[1H]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Medium-Spiked": {
       "class": "Armor - Shield",
@@ -2022,12 +2252,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor",
-        " Bash",
-        " Impact",
-        " Deflect",
-        " [1H]"
-      ]
+        "Armor",
+        "Bash",
+        "Impact",
+        "Deflect",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Riot": {
       "class": "Armor - Shield",
@@ -2038,12 +2270,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 2",
-        " Coverage",
-        " Parry",
-        " Deflect",
-        " [1H]",
-        " Bulletproof"
-      ]
+        "Coverage",
+        "Parry",
+        "Deflect",
+        "[1H]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Riot, Large": {
       "class": "Armor - Shield",
@@ -2054,13 +2288,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Armor 4",
-        " Coverage",
-        " Protective",
-        " Deflect",
-        " [2H]",
-        " Bulletproof"
-      ]
+        "Armor 4",
+        "Coverage",
+        "Protective",
+        "Deflect",
+        "[2H]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Small": {
       "class": "Armor - Shield",
@@ -2071,9 +2307,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Coverage",
-        " Parry",
-        " [1H]"
-      ]
+        "Parry",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Small, Bulletproof": {
       "class": "Armor - Shield",
@@ -2084,10 +2322,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Coverage",
-        " Deflect",
-        " [1H]",
-        " Bulletproof"
-      ]
+        "Deflect",
+        "[1H]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Small, Spiked": {
       "class": "Armor - Shield",
@@ -2098,11 +2338,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Deflect",
-        " Coverage",
-        " Spike",
-        " [1H]",
-        " Bulletproof"
-      ]
+        "Coverage",
+        "Spike",
+        "[1H]",
+        "Bulletproof"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Shield, Small-Buckle": {
       "class": "Armor - Shield",
@@ -2113,9 +2355,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bash",
-        " Parry",
-        " [1H]"
-      ]
+        "Parry",
+        "[1H]"
+      ],
+      "classification": "Armor",
+      "type": "Shield"
     },
     "Stealth Suit": {
       "class": "Armor - Suit",
@@ -2126,11 +2370,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Blinders]",
-        " Armor 4",
-        " Hardened",
-        " Envirosuit X > List",
-        " Battery X:Type > List"
-      ]
+        "Armor 4",
+        "Hardened",
+        "Envirosuit X > List",
+        "Battery X:Type > List"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     },
     "Mage Armor, Heavy": {
       "class": "Armor - Suit",
@@ -2141,13 +2387,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor 6",
-        " [Laden]",
-        " Deflect",
-        " Battery X:Type > List",
-        " [Laden 2]",
-        " Bulletproof",
-        " Protective"
-      ]
+        "[Laden]",
+        "Deflect",
+        "Battery X:Type > List",
+        "[Laden 2]",
+        "Bulletproof",
+        "Protective"
+      ],
+      "classification": "Armor",
+      "type": "Suit"
     }
   },
   "bow_weapons": {
@@ -2160,8 +2408,10 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[2H]",
-        " [Noise 2]"
-      ]
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, Light": {
       "class": "Bow",
@@ -2172,9 +2422,11 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[Reload]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, Long": {
       "class": "Bow",
@@ -2185,10 +2437,12 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Reload 2]",
-        " Impale",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "Impale",
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, Medium Heavy": {
       "class": "Bow",
@@ -2199,9 +2453,11 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[Reload]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, Medium Quickened": {
       "class": "Bow",
@@ -2212,8 +2468,10 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[2H]",
-        " [Noise 2]"
-      ]
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, Medium": {
       "class": "Bow",
@@ -2224,9 +2482,11 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[Reload]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, Recurve Heavy": {
       "class": "Bow",
@@ -2237,10 +2497,12 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Reload 2]",
-        " [Laden]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "[Laden]",
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, Recurve": {
       "class": "Bow",
@@ -2251,9 +2513,11 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Reload]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Bow, War": {
       "class": "Bow",
@@ -2264,11 +2528,13 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "[Reload 2]",
-        " Impale",
-        " [Laden]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "Impale",
+        "[Laden]",
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Heavy": {
       "class": "Bow",
@@ -2279,12 +2545,14 @@ export const gameData = {
       "dmg": "4+1b",
       "traits": [
         "[Reload 3]",
-        " Impale",
-        " [Laden 2]",
-        " [Clumsy]",
-        " [2H]",
-        " [Noise 3]"
-      ]
+        "Impale",
+        "[Laden 2]",
+        "[Clumsy]",
+        "[2H]",
+        "[Noise 3]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Light": {
       "class": "Bow",
@@ -2295,10 +2563,12 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Reload]",
-        " [Clumsy]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "[Clumsy]",
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Medium": {
       "class": "Bow",
@@ -2309,12 +2579,14 @@ export const gameData = {
       "dmg": "3+1b",
       "traits": [
         "[Reload 2]",
-        " Impale",
-        " [Laden]",
-        " [Clumsy]",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "Impale",
+        "[Laden]",
+        "[Clumsy]",
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Repeating Heavy": {
       "class": "Bow",
@@ -2325,12 +2597,14 @@ export const gameData = {
       "dmg": "4+1b",
       "traits": [
         "Impale",
-        " [Laden 2]",
-        " [Clumsy]",
-        " [2H]",
-        " Switch:Trait",
-        " [Noise 3]"
-      ]
+        "[Laden 2]",
+        "[Clumsy]",
+        "[2H]",
+        "Switch:Trait",
+        "[Noise 3]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Repeating": {
       "class": "Bow",
@@ -2341,11 +2615,13 @@ export const gameData = {
       "dmg": "3+1b",
       "traits": [
         "[Laden]",
-        " [Clumsy]",
-        " [2H]",
-        " Switch:Trait",
-        " [Noise 3]"
-      ]
+        "[Clumsy]",
+        "[2H]",
+        "Switch:Trait",
+        "[Noise 3]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Single-hand Pistol": {
       "class": "Bow",
@@ -2356,11 +2632,13 @@ export const gameData = {
       "dmg": "1+1b",
       "traits": [
         "[Reload]",
-        " Melee",
-        " [Clumsy]",
-        " [1H]",
-        " [Noise 2]"
-      ]
+        "Melee",
+        "[Clumsy]",
+        "[1H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Single-hand Pistol, Hvy": {
       "class": "Bow",
@@ -2371,11 +2649,13 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Reload 2]",
-        " Melee",
-        " [Clumsy]",
-        " [1H]",
-        " [Noise 2]"
-      ]
+        "Melee",
+        "[Clumsy]",
+        "[1H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Single-hand Pistol, Hvy, Masterwork": {
       "class": "Bow",
@@ -2386,11 +2666,13 @@ export const gameData = {
       "dmg": "3+1b",
       "traits": [
         "[Reload 2]",
-        " Melee",
-        " [Clumsy]",
-        " [1H]",
-        " [Noise 2]"
-      ]
+        "Melee",
+        "[Clumsy]",
+        "[1H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Crossbow, Single-hand Pistol, Masterwork": {
       "class": "Bow",
@@ -2401,11 +2683,13 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Reload]",
-        " Melee",
-        " [Clumsy]",
-        " [1H]",
-        " [Noise 2]"
-      ]
+        "Melee",
+        "[Clumsy]",
+        "[1H]",
+        "[Noise 2]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     },
     "Slingshot": {
       "class": "Bow",
@@ -2416,10 +2700,12 @@ export const gameData = {
       "dmg": "2-1b",
       "traits": [
         "ROF",
-        " [Stub]",
-        " [Noise 2]",
-        " [2H]"
-      ]
+        "[Stub]",
+        "[Noise 2]",
+        "[2H]"
+      ],
+      "classification": "Bow",
+      "type": "Bow"
     }
   },
   "equipment": {
@@ -2432,7 +2718,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Flight"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "A/Grav, Ring": {
       "class": "Misc - Tool",
@@ -2443,7 +2731,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Flight 2"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Agenda Document": {
       "class": "Misc - Advantage",
@@ -2454,7 +2744,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard > Type]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Ammo Belt, Bandolier": {
       "class": "Misc - Upgrade",
@@ -2465,9 +2757,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Ammo 3",
-        " Discrete",
-        " [Laden]"
-      ]
+        "Discrete",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo Belt, Bandolier, Archaic": {
       "class": "Misc - Upgrade",
@@ -2478,9 +2772,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Ammo",
-        " Discrete",
-        " [Laden]"
-      ]
+        "Discrete",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo Box": {
       "class": "Misc - Upgrade",
@@ -2491,8 +2787,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Ammo",
-        " Discrete"
-      ]
+        "Discrete"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, AP": {
       "class": "Misc - Upgrade",
@@ -2503,8 +2801,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Impact",
-        " Impale"
-      ]
+        "Impale"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, AP-II": {
       "class": "Misc - Upgrade",
@@ -2515,8 +2815,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Impact 2",
-        " Impale"
-      ]
+        "Impale"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, AT": {
       "class": "Misc - Upgrade",
@@ -2527,10 +2829,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Pierce",
-        " Cleave",
-        " [Recoil]",
-        " [Laden]"
-      ]
+        "Cleave",
+        "[Recoil]",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, AT-II": {
       "class": "Misc - Upgrade",
@@ -2541,10 +2845,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Pierce 2",
-        " Cleave",
-        " [Recoil]",
-        " [Laden]"
-      ]
+        "Cleave",
+        "[Recoil]",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, HE": {
       "class": "Misc - Upgrade",
@@ -2555,9 +2861,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Blast",
-        " Cleave",
-        " [Laden]"
-      ]
+        "Cleave",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, HEAP": {
       "class": "Misc - Upgrade",
@@ -2568,10 +2876,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Blast",
-        " Impact 2",
-        " Cleave",
-        " [Laden]"
-      ]
+        "Impact 2",
+        "Cleave",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, HEAP-II": {
       "class": "Misc - Upgrade",
@@ -2582,10 +2892,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Blast",
-        " Impact 3",
-        " Cleave",
-        " [Laden]"
-      ]
+        "Impact 3",
+        "Cleave",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, HEAT": {
       "class": "Misc - Upgrade",
@@ -2596,11 +2908,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Blast",
-        " Pierce",
-        " Cleave 2",
-        " [Recoil]",
-        " [Laden]"
-      ]
+        "Pierce",
+        "Cleave 2",
+        "[Recoil]",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, HEAT-II": {
       "class": "Misc - Upgrade",
@@ -2611,11 +2925,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Blast",
-        " Pierce 2",
-        " Cleave 2",
-        " [Recoil]",
-        " [Laden]"
-      ]
+        "Pierce 2",
+        "Cleave 2",
+        "[Recoil]",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, HP": {
       "class": "Misc - Upgrade",
@@ -2626,7 +2942,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Stun"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ammo, Tracer Round": {
       "class": "Misc - Upgrade",
@@ -2637,7 +2955,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Amulet of Eyes": {
       "class": "Misc - Accessory",
@@ -2648,8 +2968,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sensors",
-        " Detect"
-      ]
+        "Detect"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Amulet of Fears": {
       "class": "Misc - Accessory",
@@ -2660,8 +2982,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fear",
-        " Exert X > List"
-      ]
+        "Exert X > List"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Anti-gravity Harness": {
       "class": "Misc - Tool",
@@ -2672,8 +2996,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Flight 3"
-      ]
+        "Flight 3"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Accessory, Amulet": {
       "class": "Misc - Tool",
@@ -2684,9 +3010,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Manapool",
-        " [Discard]",
-        " Codex"
-      ]
+        "[Discard]",
+        "Codex"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Accessory, Monstrum": {
       "class": "Misc - Device",
@@ -2697,10 +3025,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Manapool 2",
-        " [Discard+]",
-        " Codex",
-        " [1H]"
-      ]
+        "[Discard+]",
+        "Codex",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Arcanum, Accessory, Ring": {
       "class": "Misc - Tool",
@@ -2711,8 +3041,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard]",
-        " Codex"
-      ]
+        "Codex"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Accessory, Stone": {
       "class": "Misc - Tool",
@@ -2723,8 +3055,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard+]",
-        " Manapool 2"
-      ]
+        "Manapool 2"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Accessory, Trinket": {
       "class": "Misc - Tool",
@@ -2735,8 +3069,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Manapool",
-        " [Discard!]"
-      ]
+        "[Discard!]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Attachment, Large": {
       "class": "Misc - Upgrade",
@@ -2747,9 +3083,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Manapool 2",
-        " Codex",
-        " [Laden]"
-      ]
+        "Codex",
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Arcanum, Attachment, Small": {
       "class": "Misc - Upgrade",
@@ -2760,8 +3098,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Manapool",
-        " Codex"
-      ]
+        "Codex"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Arcanum, Codex, Common": {
       "class": "Misc - Tool",
@@ -2772,10 +3112,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Codex 2",
-        " Scholar",
-        " [Laden]",
-        " [2H]"
-      ]
+        "Scholar",
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Codex, Legendary": {
       "class": "Misc - Tool",
@@ -2786,10 +3128,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Codex 6",
-        " Scholar 2",
-        " [Laden 2]",
-        " [2H]"
-      ]
+        "Scholar 2",
+        "[Laden 2]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Scroll, Major": {
       "class": "Misc - Tool",
@@ -2800,9 +3144,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Codex 2",
-        " [Discard]",
-        " [2H]"
-      ]
+        "[Discard]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Scroll, Minor": {
       "class": "Misc - Tool",
@@ -2813,9 +3159,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Codex",
-        " [Discard!]",
-        " [2H]"
-      ]
+        "[Discard!]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Tome, Greater": {
       "class": "Misc - Tool",
@@ -2826,9 +3174,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Codex 5",
-        " [Laden]",
-        " [2H]"
-      ]
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arcanum, Tome, Lesser": {
       "class": "Misc - Tool",
@@ -2839,8 +3189,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Codex 3",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Arquebus, Heavy": {
       "class": "Firearm - Archaic",
@@ -2851,12 +3203,14 @@ export const gameData = {
       "dmg": "3+3b",
       "traits": [
         "[Discard!]",
-        " [Entropy]",
-        " [Recoil]",
-        " [Laden]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Entropy]",
+        "[Recoil]",
+        "[Laden]",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Arquebus, Light": {
       "class": "Firearm - Archaic",
@@ -2867,11 +3221,13 @@ export const gameData = {
       "dmg": "3+1b",
       "traits": [
         "[Discard!]",
-        " [Entropy!]",
-        " [Laden]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Entropy!]",
+        "[Laden]",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Arquebus, Medium": {
       "class": "Firearm - Archaic",
@@ -2882,11 +3238,13 @@ export const gameData = {
       "dmg": "3+2b",
       "traits": [
         "[Discard!]",
-        " [Entropy!]",
-        " [Laden]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Entropy!]",
+        "[Laden]",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Automedic": {
       "class": "Misc - Tool",
@@ -2897,8 +3255,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Heal",
-        " Regenerate"
-      ]
+        "Regenerate"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Belt of Strength": {
       "class": "Misc - Accessory",
@@ -2909,8 +3269,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Exert X > List",
-        " FOR"
-      ]
+        "FOR"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Bracers of Stealth": {
       "class": "Misc - Accessory",
@@ -2921,8 +3283,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Stealthy",
-        " REF"
-      ]
+        "REF"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Collar, Spiked": {
       "class": "Misc - Accessory",
@@ -2933,8 +3297,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List",
-        " Conceal"
-      ]
+        "Conceal"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Comm-helmet, Early": {
       "class": "Misc - Device",
@@ -2945,10 +3311,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Armor",
-        " Protective",
-        " [Fizzle]",
-        " Radio"
-      ]
+        "Protective",
+        "[Fizzle]",
+        "Radio"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Comm-link": {
       "class": "Misc - Device",
@@ -2959,7 +3327,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Comm-link, Boosted": {
       "class": "Misc - Device",
@@ -2970,8 +3340,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio 3",
-        " [Laden]"
-      ]
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Comm-link, Box": {
       "class": "Misc - Tool",
@@ -2982,9 +3354,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio 2",
-        " [Laden]",
-        " [Noise 2]"
-      ]
+        "[Laden]",
+        "[Noise 2]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Comm-link, Box, Archaic": {
       "class": "Misc - Tool",
@@ -2995,10 +3369,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio",
-        " [Laden 3]",
-        " [Noise 2]",
-        " [2H]"
-      ]
+        "[Laden 3]",
+        "[Noise 2]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Comm-link, Box, Early": {
       "class": "Misc - Tool",
@@ -3009,10 +3385,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio 2",
-        " [Laden 2]",
-        " [Noise 2]",
-        " [2H]"
-      ]
+        "[Laden 2]",
+        "[Noise 2]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Comm-link, Box, Early (Embedded)": {
       "class": "Misc - Tool",
@@ -3023,7 +3401,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio 2"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Comm-link, Box-Hand-held": {
       "class": "Misc - Tool",
@@ -3034,9 +3414,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio",
-        " [Noise 2]",
-        " [1H]"
-      ]
+        "[Noise 2]",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Comm-link, Early": {
       "class": "Misc - Device",
@@ -3047,7 +3429,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Comm-link, Jammer, Early": {
       "class": "Misc - Tool",
@@ -3058,9 +3442,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 3]",
-        " Radio Jammer 2",
-        " [2H]"
-      ]
+        "Radio Jammer 2",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Comm-link, Jammer, Modern": {
       "class": "Misc - Tool",
@@ -3071,9 +3457,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " Radio Jammer 4",
-        " [2H]"
-      ]
+        "Radio Jammer 4",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Damper > Type": {
       "class": "Misc - Device",
@@ -3084,7 +3472,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Damper X > Type"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Damper 2 > Type": {
       "class": "Misc - Device",
@@ -3095,7 +3485,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Damper X > Type"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Damper 3 > Type": {
       "class": "Misc - Device",
@@ -3106,8 +3498,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Damper X > Type",
-        " [Laden]"
-      ]
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Damper 4 > Type": {
       "class": "Misc - Device",
@@ -3118,8 +3512,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Damper X > Type",
-        " [Laden 2]"
-      ]
+        "[Laden 2]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Detonator": {
       "class": "Misc - Tool",
@@ -3130,9 +3526,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Trigger",
-        " [1H]"
-      ]
+        "Trigger",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Device, Synchron, Archaic": {
       "class": "Misc - Device",
@@ -3143,10 +3541,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Synchronized",
-        " Radio X > Target",
-        " [2H]"
-      ]
+        "Synchronized",
+        "Radio X > Target",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Device, Synchron, Early": {
       "class": "Misc - Device",
@@ -3157,9 +3557,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Synchronized",
-        " Radio X > Target",
-        " [2H]"
-      ]
+        "Radio X > Target",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Device, Synchron-1.1": {
       "class": "Misc - Device",
@@ -3170,9 +3572,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Synchronized",
-        " Radio X > Target",
-        " [1H]"
-      ]
+        "Radio X > Target",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Device, Synchron-2.1": {
       "class": "Misc - Device",
@@ -3183,9 +3587,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Synchronized 2",
-        " Radio X > Target",
-        " [1H]"
-      ]
+        "Radio X > Target",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Device, Synchron-3.2": {
       "class": "Misc - Device",
@@ -3196,9 +3602,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Synchronized 3",
-        " Radio X > Target",
-        " [1H]"
-      ]
+        "Radio X > Target",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Displacer Device": {
       "class": "Misc - Tool",
@@ -3209,11 +3617,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Displace 3",
-        " Translucent",
-        " Discrete",
-        " Projection"
-      ]
+        "Displace 3",
+        "Translucent",
+        "Discrete",
+        "Projection"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Electrocounter Orbs": {
       "class": "Misc - Device",
@@ -3224,7 +3634,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard+]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Explosives, Agenda Bomb, Large": {
       "class": "Munitions",
@@ -3235,9 +3647,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard!]",
-        " Blast 8",
-        " Frag 5"
-      ]
+        "Blast 8",
+        "Frag 5"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Agenda Bomb, Small": {
       "class": "Munitions",
@@ -3248,9 +3662,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard!]",
-        " Blast 6",
-        " Frag 3"
-      ]
+        "Blast 6",
+        "Frag 3"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Agenda Bomb,Medium": {
       "class": "Munitions",
@@ -3261,9 +3677,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard!]",
-        " Blast 7",
-        " Frag 4"
-      ]
+        "Blast 7",
+        "Frag 4"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Bomb, Large": {
       "class": "Munitions",
@@ -3274,11 +3692,13 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Pierce",
-        " [Configure 3]",
-        " Blast 11",
-        " Stun 2",
-        " Frag 7"
-      ]
+        "[Configure 3]",
+        "Blast 11",
+        "Stun 2",
+        "Frag 7"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Bomb, Small": {
       "class": "Munitions",
@@ -3289,11 +3709,13 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "Pierce",
-        " [Configure 2]",
-        " Blast 9",
-        " Stun",
-        " Frag 5"
-      ]
+        "[Configure 2]",
+        "Blast 9",
+        "Stun",
+        "Frag 5"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Mine, IED": {
       "class": "Munitions",
@@ -3304,13 +3726,15 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "Disrupt 5",
-        " [Laden 3]",
-        " [Configure 2]",
-        " Blast 10",
-        " Cleave",
-        " Pierce",
-        " Frag 7"
-      ]
+        "[Laden 3]",
+        "[Configure 2]",
+        "Blast 10",
+        "Cleave",
+        "Pierce",
+        "Frag 7"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Mine, Tank": {
       "class": "Munitions",
@@ -3321,13 +3745,15 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Disrupt 8",
-        " [Laden 6]",
-        " [Configure 3]",
-        " Blast 12",
-        " Cleave",
-        " Pierce",
-        " Frag 9"
-      ]
+        "[Laden 6]",
+        "[Configure 3]",
+        "Blast 12",
+        "Cleave",
+        "Pierce",
+        "Frag 9"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Petard": {
       "class": "Munitions",
@@ -3338,12 +3764,14 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Disrupt 3",
-        " [Laden 4]",
-        " Blast 6",
-        " [Fizzle 2]",
-        " [Discard!]",
-        " Frag 2"
-      ]
+        "[Laden 4]",
+        "Blast 6",
+        "[Fizzle 2]",
+        "[Discard!]",
+        "Frag 2"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Powderkeg": {
       "class": "Munitions",
@@ -3354,14 +3782,16 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Disrupt 4",
-        " [Laden 4]",
-        " [Configure 2]",
-        " Blast 10",
-        " Cleave",
-        " Pierce 2",
-        " [Fizzle 2]",
-        " Frag 4"
-      ]
+        "[Laden 4]",
+        "[Configure 2]",
+        "Blast 10",
+        "Cleave",
+        "Pierce 2",
+        "[Fizzle 2]",
+        "Frag 4"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Satchel": {
       "class": "Munitions",
@@ -3372,13 +3802,15 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Disrupt 3",
-        " [Laden]",
-        " [Configure]",
-        " Blast 8",
-        " Stun",
-        " [Discard!]",
-        " Frag 6"
-      ]
+        "[Laden]",
+        "[Configure]",
+        "Blast 8",
+        "Stun",
+        "[Discard!]",
+        "Frag 6"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Explosives, Satchel, Pulse": {
       "class": "Munitions",
@@ -3389,14 +3821,16 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Disrupt",
-        " [Laden]",
-        " [Configure]",
-        " Blast 7",
-        " Stun",
-        " [Discard!]",
-        " Anti-electric 6",
-        " Frag 4"
-      ]
+        "[Laden]",
+        "[Configure]",
+        "Blast 7",
+        "Stun",
+        "[Discard!]",
+        "Anti-electric 6",
+        "Frag 4"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Favored Passage": {
       "class": "Misc - Advantage",
@@ -3407,7 +3841,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard! > Type]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Field Harness": {
       "class": "Misc - Tool",
@@ -3418,9 +3854,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Field 3",
-        " Discrete"
-      ]
+        "Field 3",
+        "Discrete"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Flashlight": {
       "class": "Misc - Tool",
@@ -3431,9 +3869,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Directional)",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Flashlight, Advanced": {
       "class": "Misc - Tool",
@@ -3444,9 +3884,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Directional)",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Gas-mask": {
       "class": "Misc - Upgrade",
@@ -3457,8 +3899,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List",
-        " [Poor Shot]"
-      ]
+        "[Poor Shot]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Gas-mask, Hooded": {
       "class": "Misc - Upgrade",
@@ -3469,9 +3913,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List",
-        " [Blinders]",
-        " [Poor Shot 2]"
-      ]
+        "[Blinders]",
+        "[Poor Shot 2]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Gas-mask, Respirator": {
       "class": "Misc - Upgrade",
@@ -3482,7 +3928,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Goggles": {
       "class": "Misc - Upgrade",
@@ -3493,9 +3941,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics",
-        " Resist X > List",
-        " [Poor Shot 2]"
-      ]
+        "Resist X > List",
+        "[Poor Shot 2]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Goggles, Night-vision": {
       "class": "Misc - Upgrade",
@@ -3506,9 +3956,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Night-vision 2",
-        " [Poor Shot]",
-        " Switch:Trait"
-      ]
+        "[Poor Shot]",
+        "Switch:Trait"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Goggles, Night-vision, Adv.": {
       "class": "Misc - Upgrade",
@@ -3519,9 +3971,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Night-vision 4",
-        " [Poor Shot 2]",
-        " Switch:Trait"
-      ]
+        "[Poor Shot 2]",
+        "Switch:Trait"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Goggles, Optiplex": {
       "class": "Misc - Upgrade",
@@ -3532,10 +3986,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Night-vision 2",
-        " [Poor Shot 2]",
-        " Sensors",
-        " Switch:Trait"
-      ]
+        "[Poor Shot 2]",
+        "Sensors",
+        "Switch:Trait"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Goggles, Pin-point": {
       "class": "Misc - Upgrade",
@@ -3546,8 +4002,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Pin-point",
-        " RCA"
-      ]
+        "RCA"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Goggles, Sensor": {
       "class": "Misc - Upgrade",
@@ -3558,9 +4016,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Poor Shot 3]",
-        " Sensors 3",
-        " Switch:Trait"
-      ]
+        "Sensors 3",
+        "Switch:Trait"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Immune-Blast-1": {
       "class": "Misc - Advantage",
@@ -3571,7 +4031,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Immune-Blast-2": {
       "class": "Misc - Advantage",
@@ -3582,7 +4044,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Kit, Glider Caped": {
       "class": "Misc - Upgrade",
@@ -3593,8 +4057,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Glide 2"
-      ]
+        "Glide 2"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Kit, Glider Winged": {
       "class": "Misc - Upgrade",
@@ -3605,9 +4071,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " Glide 4",
-        " [Winged]"
-      ]
+        "Glide 4",
+        "[Winged]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Kit, Medical, CFAK": {
       "class": "Misc - Tool",
@@ -3618,7 +4086,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Medic"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Kit, Medical, CFAK-v2": {
       "class": "Misc - Tool",
@@ -3629,8 +4099,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Medic 2",
-        " Heal"
-      ]
+        "Heal"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Kit, Medical, Field": {
       "class": "Misc - Tool",
@@ -3641,10 +4113,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Medic 3",
-        " Medic X > List",
-        " [2H]"
-      ]
+        "Medic 3",
+        "Medic X > List",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Kit, Medical, Tactical": {
       "class": "Misc - Tool",
@@ -3655,10 +4129,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Medic",
-        " Medic X > List",
-        " [2H]"
-      ]
+        "Medic",
+        "Medic X > List",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lamp or Candle": {
       "class": "Misc - Tool",
@@ -3669,8 +4145,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lamp or Candle. Large": {
       "class": "Misc - Tool",
@@ -3681,8 +4159,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lantern, Basic": {
       "class": "Misc - Tool",
@@ -3693,8 +4173,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lantern, Basic, Large": {
       "class": "Misc - Tool",
@@ -3705,8 +4187,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lantern, Electric": {
       "class": "Misc - Tool",
@@ -3717,10 +4201,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Electronic",
-        " Light 8",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "Light 8",
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lantern, Electric, Small": {
       "class": "Misc - Tool",
@@ -3731,10 +4217,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Electronic",
-        " Light 6",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "Light 6",
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lantern, Fueled": {
       "class": "Misc - Tool",
@@ -3745,10 +4233,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [Discard! > Type]",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "[Discard! > Type]",
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Lantern, Fueled, Small": {
       "class": "Misc - Tool",
@@ -3759,10 +4249,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [Discard! > Type]",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "[Discard! > Type]",
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Launcher, Grenade Early": {
       "class": "Misc - Tool",
@@ -3773,9 +4265,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Requires > Type]",
-        " [Arc]",
-        " [Reload 2]"
-      ]
+        "[Arc]",
+        "[Reload 2]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Launcher, Grenade Modern": {
       "class": "Misc - Tool",
@@ -3786,9 +4280,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Requires > Type]",
-        " [Arc]",
-        " [Reload]"
-      ]
+        "[Arc]",
+        "[Reload]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Launcher, Grenade, Multi-rapid": {
       "class": "Misc - Tool",
@@ -3799,10 +4295,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Requires > Type]",
-        " [Arc]",
-        " [Reload]",
-        " Multi-target 2"
-      ]
+        "[Arc]",
+        "[Reload]",
+        "Multi-target 2"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Launcher, Grenade, Rapid": {
       "class": "Misc - Tool",
@@ -3813,10 +4311,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Requires > Type]",
-        " [Arc]",
-        " [Reload]",
-        " Multi-target"
-      ]
+        "[Arc]",
+        "[Reload]",
+        "Multi-target"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Leash": {
       "class": "Misc - Tool",
@@ -3827,8 +4327,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Leash 2",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Mask of Command": {
       "class": "Misc - Accessory",
@@ -3839,8 +4341,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Tactics",
-        " Leadership"
-      ]
+        "Leadership"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Medicinals, Alcohol": {
       "class": "Misc - Advantage",
@@ -3851,7 +4355,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Grit"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Alcohol, Copious": {
       "class": "Misc - Advantage",
@@ -3862,8 +4368,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Grit 2",
-        " [Stupid]"
-      ]
+        "[Stupid]"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Euphorics": {
       "class": "Misc - Advantage",
@@ -3874,7 +4382,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Focused"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Euphorics, Copious": {
       "class": "Misc - Advantage",
@@ -3885,8 +4395,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Focused 2",
-        " [Braggart]"
-      ]
+        "[Braggart]"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Hallucenogenics": {
       "class": "Misc - Advantage",
@@ -3897,7 +4409,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Manapool"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Hallucenogenics, Copious": {
       "class": "Misc - Advantage",
@@ -3908,8 +4422,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Manapool 2",
-        " [Delusional]"
-      ]
+        "[Delusional]"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Healing Potion": {
       "class": "Misc - Tool",
@@ -3920,7 +4436,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Regenerate"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Medicinals, Healing Potion, Pure": {
       "class": "Misc - Tool",
@@ -3931,8 +4449,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Regenerate 2",
-        " [Prissy]"
-      ]
+        "[Prissy]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Medicinals, Painkillers": {
       "class": "Misc - Advantage",
@@ -3943,7 +4463,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sturdy"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Painkillers, Copious": {
       "class": "Misc - Advantage",
@@ -3954,8 +4476,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sturdy 2",
-        " [Belligerent]"
-      ]
+        "[Belligerent]"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Psychoactives": {
       "class": "Misc - Advantage",
@@ -3966,7 +4490,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Frenzy"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Stimulants": {
       "class": "Misc - Advantage",
@@ -3977,7 +4503,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Brawn"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Medicinals, Stimulants, Copious": {
       "class": "Misc - Advantage",
@@ -3988,9 +4516,11 @@ export const gameData = {
       "dmg": "1m",
       "traits": [
         "Brawn 2",
-        " [Reckless]",
-        " Tough"
-      ]
+        "[Reckless]",
+        "Tough"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Mine, Acid, Small": {
       "class": "Munitions",
@@ -4001,10 +4531,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Splash X > Trait",
-        " Deploy 2",
-        " [Carriage 3]",
-        " Switch:Trait"
-      ]
+        "Deploy 2",
+        "[Carriage 3]",
+        "Switch:Trait"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Mine, Anti-personnel": {
       "class": "Munitions",
@@ -4015,13 +4547,15 @@ export const gameData = {
       "dmg": "3+4w",
       "traits": [
         "Disrupt 3",
-        " [Laden]",
-        " [Configure]",
-        " Blast 4",
-        " Cleave",
-        " Pierce",
-        " Frag 4"
-      ]
+        "[Laden]",
+        "[Configure]",
+        "Blast 4",
+        "Cleave",
+        "Pierce",
+        "Frag 4"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Mine, Anti-personnel, Micromag": {
       "class": "Munitions",
@@ -4032,11 +4566,13 @@ export const gameData = {
       "dmg": "3+2m",
       "traits": [
         "Disrupt",
-        " [Configure]",
-        " Blast",
-        " Cleave",
-        " Frag 2"
-      ]
+        "[Configure]",
+        "Blast",
+        "Cleave",
+        "Frag 2"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Mine, Heat, Medium": {
       "class": "Munitions",
@@ -4047,10 +4583,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Heat 3",
-        " Deploy 3",
-        " [Carriage 4]",
-        " Switch:Trait"
-      ]
+        "Deploy 3",
+        "[Carriage 4]",
+        "Switch:Trait"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Mine, Heat, Small": {
       "class": "Munitions",
@@ -4061,10 +4599,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Heat 2",
-        " Deploy 2",
-        " [Carriage 3]",
-        " Switch:Trait"
-      ]
+        "Deploy 2",
+        "[Carriage 3]",
+        "Switch:Trait"
+      ],
+      "classification": "Munitions",
+      "type": "Munitions"
     },
     "Mirror": {
       "class": "Misc - Tool",
@@ -4075,9 +4615,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard]",
-        " Blinding",
-        " [1H]"
-      ]
+        "Blinding",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Module, Control": {
       "class": "Misc - Tool",
@@ -4088,11 +4630,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Configure 2]",
-        " Radio X > Target",
-        " Controller X > Target",
-        " [Laden]",
-        " [2H]"
-      ]
+        "Radio X > Target",
+        "Controller X > Target",
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Module, Manipulator": {
       "class": "Misc - Tool",
@@ -4103,10 +4647,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Configure]",
-        " Radio X > Target",
-        " Controller X > Target",
-        " [2H]"
-      ]
+        "Radio X > Target",
+        "Controller X > Target",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Module, System": {
       "class": "Misc - Tool",
@@ -4117,11 +4663,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Configure 3]",
-        " Radio X > Target",
-        " Controller X > Target",
-        " [Laden 2]",
-        " [2H]"
-      ]
+        "Radio X > Target",
+        "Controller X > Target",
+        "[Laden 2]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Module, Trigger": {
       "class": "Misc - Tool",
@@ -4132,10 +4680,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Radio X > Target",
-        " Controller X > Target",
-        " [Discard!]",
-        " [1H]"
-      ]
+        "Controller X > Target",
+        "[Discard!]",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Nanotech:Rage": {
       "class": "Misc - Advantage",
@@ -4146,9 +4696,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Brawl",
-        " Brawn",
-        " Quick"
-      ]
+        "Brawn",
+        "Quick"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Nanotech:Rampage": {
       "class": "Misc - Advantage",
@@ -4159,9 +4711,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "STR",
-        " CCA",
-        " Grit"
-      ]
+        "CCA",
+        "Grit"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Nanotech:Resist": {
       "class": "Misc - Advantage",
@@ -4172,8 +4726,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "FOR",
-        " POW"
-      ]
+        "POW"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Nanotech:Run": {
       "class": "Misc - Advantage",
@@ -4184,8 +4740,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sprint",
-        " Chase"
-      ]
+        "Chase"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Necklace of Comfort": {
       "class": "Misc - Accessory",
@@ -4196,8 +4754,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Medic",
-        " Grit"
-      ]
+        "Grit"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Notebook, Leadership": {
       "class": "Misc - Advantage",
@@ -4208,7 +4768,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard > Type]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Notebook, Scholarship": {
       "class": "Misc - Advantage",
@@ -4219,7 +4781,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard > Type]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Notebook, Tactics": {
       "class": "Misc - Advantage",
@@ -4230,7 +4794,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard > Type]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Package, Assassin": {
       "class": "Misc - Advantage",
@@ -4241,9 +4807,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Acrobatic",
-        " Evasive",
-        " Presence"
-      ]
+        "Evasive",
+        "Presence"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Package, Berserker": {
       "class": "Misc - Advantage",
@@ -4254,9 +4822,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Focused",
-        " Frenzy",
-        " Death-grip"
-      ]
+        "Frenzy",
+        "Death-grip"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Package, Predict": {
       "class": "Misc - Advantage",
@@ -4267,8 +4837,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Predict",
-        " Outwit"
-      ]
+        "Outwit"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Package, Recon": {
       "class": "Misc - Advantage",
@@ -4279,10 +4851,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Detect 3",
-        " Sniper",
-        " Shoot 2",
-        " [Solitary]"
-      ]
+        "Sniper",
+        "Shoot 2",
+        "[Solitary]"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Package, Timer": {
       "class": "Misc - Advantage",
@@ -4293,9 +4867,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Timing 2",
-        " Obviate",
-        " Lucky"
-      ]
+        "Obviate",
+        "Lucky"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Package, Warrior": {
       "class": "Misc - Advantage",
@@ -4306,10 +4882,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Shoot",
-        " Fight",
-        " Grit X",
-        " Tactics"
-      ]
+        "Fight",
+        "Grit X",
+        "Tactics"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Poisoned Weapon": {
       "class": "Misc - Upgrade",
@@ -4320,7 +4898,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Poison"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Poisoned Weapon, Deadly": {
       "class": "Misc - Upgrade",
@@ -4331,7 +4911,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Poison 2"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Prayer-Book": {
       "class": "Misc - Advantage",
@@ -4342,7 +4924,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard+ > Type]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Prayer-Relic": {
       "class": "Misc - Advantage",
@@ -4353,8 +4937,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Discard+ > Type]",
-        " [Laden]"
-      ]
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Reinforced, Polearm": {
       "class": "Misc - Upgrade",
@@ -4365,8 +4951,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Deflect",
-        " [Laden]"
-      ]
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Reinforced, Standard": {
       "class": "Misc - Upgrade",
@@ -4377,8 +4965,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Deflect",
-        " [Laden]"
-      ]
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Ring of Flight": {
       "class": "Misc - Accessory",
@@ -4389,7 +4979,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Flight"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Ring of Leaping": {
       "class": "Misc - Accessory",
@@ -4400,8 +4992,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Leap",
-        " Pounce"
-      ]
+        "Pounce"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Ring of Running": {
       "class": "Misc - Accessory",
@@ -4412,8 +5006,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sprint",
-        " Chase"
-      ]
+        "Chase"
+      ],
+      "classification": "Misc",
+      "type": "Accessory"
     },
     "Rope": {
       "class": "Misc - Tool",
@@ -4424,10 +5020,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Climb",
-        " [Laden]",
-        " [Emplace]",
-        " [2H]"
-      ]
+        "[Laden]",
+        "[Emplace]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Seal of Arrows": {
       "class": "Misc - Upgrade",
@@ -4438,7 +5036,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "ROF"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Seal of Daggers": {
       "class": "Misc - Upgrade",
@@ -4449,7 +5049,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cleave"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Sigil of Athletics": {
       "class": "Misc - Advantage",
@@ -4460,9 +5062,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Evasive",
-        " Acrobatic",
-        " Slippery"
-      ]
+        "Acrobatic",
+        "Slippery"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Sigil of Hunting": {
       "class": "Misc - Advantage",
@@ -4473,8 +5077,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Infiltrate",
-        " Surefooted"
-      ]
+        "Surefooted"
+      ],
+      "classification": "Misc",
+      "type": "Advantage"
     },
     "Silencer": {
       "class": "Misc - Attachment",
@@ -4485,8 +5091,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Silent",
-        " [_PACKAGE_]"
-      ]
+        "[_PACKAGE_]"
+      ],
+      "classification": "Misc",
+      "type": "Attachment"
     },
     "Silencer, Advanced": {
       "class": "Misc - Attachment",
@@ -4497,8 +5105,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Silent 2",
-        " [_PACKAGE_]"
-      ]
+        "[_PACKAGE_]"
+      ],
+      "classification": "Misc",
+      "type": "Attachment"
     },
     "Sniper Scope, Advanced": {
       "class": "Misc - Upgrade",
@@ -4509,8 +5119,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics 4",
-        " Pin-point"
-      ]
+        "Pin-point"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Sniper Scope, Advanced, Starlight": {
       "class": "Misc - Upgrade",
@@ -4521,9 +5133,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics 4",
-        " Night-vision 4",
-        " Pin-point"
-      ]
+        "Night-vision 4",
+        "Pin-point"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Sniper Scope, Basic": {
       "class": "Misc - Upgrade",
@@ -4534,7 +5148,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics 2"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Sniper Scope, Laser": {
       "class": "Misc - Upgrade",
@@ -4545,8 +5161,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics",
-        " RCA"
-      ]
+        "RCA"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Sniper Scope, Starlight": {
       "class": "Misc - Upgrade",
@@ -4557,8 +5175,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics 2",
-        " Night-vision 4"
-      ]
+        "Night-vision 4"
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Spotlight, S1-Small": {
       "class": "Misc - Device",
@@ -4569,10 +5189,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Electronic",
-        " [Emplace X > Trait]",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "[Emplace X > Trait]",
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Spotlight, S2-Large": {
       "class": "Misc - Device",
@@ -4583,10 +5205,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Electronic",
-        " [Emplace X > Trait]",
-        " Switch:Trait",
-        " [2H]"
-      ]
+        "[Emplace X > Trait]",
+        "Switch:Trait",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Device"
     },
     "Springsuit": {
       "class": "Misc - Tool",
@@ -4597,8 +5221,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Leap 2",
-        " Evasive"
-      ]
+        "Evasive"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Springsuit, Combat": {
       "class": "Misc - Tool",
@@ -4609,9 +5235,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Leap 3",
-        " Evasive",
-        " Slippery"
-      ]
+        "Evasive",
+        "Slippery"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Spy-glass": {
       "class": "Misc - Tool",
@@ -4622,7 +5250,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Optics 2"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Targeting System": {
       "class": "Misc - Upgrade",
@@ -4633,7 +5263,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Brace"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Teleporter Beacons": {
       "class": "Misc - Tool",
@@ -4644,8 +5276,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Beacon X > Trait",
-        " [Laden]"
-      ]
+        "[Laden]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Teleporter Pack": {
       "class": "Misc - Tool",
@@ -4656,10 +5290,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " Teleport",
-        " Discrete",
-        " Manifest"
-      ]
+        "Teleport",
+        "Discrete",
+        "Manifest"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Torch, Basic": {
       "class": "Misc - Tool",
@@ -4670,8 +5306,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Torch, Basic, Large": {
       "class": "Misc - Tool",
@@ -4682,8 +5320,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Torch, Flaming": {
       "class": "Misc - Tool",
@@ -4694,9 +5334,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [Discard > Type]",
-        " [1H]"
-      ]
+        "[Discard > Type]",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Torch, Flaming, Large": {
       "class": "Misc - Tool",
@@ -4707,9 +5349,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light X (Flicker)",
-        " [Discard > Type]",
-        " [1H]"
-      ]
+        "[Discard > Type]",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Torch, Flashlight": {
       "class": "Misc - Tool",
@@ -4720,10 +5364,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Light 4",
-        " Electronic",
-        " Switch:Trait",
-        " [1H]"
-      ]
+        "Electronic",
+        "Switch:Trait",
+        "[1H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Torch, Staff": {
       "class": "Misc - Tool",
@@ -4734,10 +5380,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Reach",
-        " Light X (Flicker)",
-        " [Discard > Type]",
-        " [2H]"
-      ]
+        "Light X (Flicker)",
+        "[Discard > Type]",
+        "[2H]"
+      ],
+      "classification": "Misc",
+      "type": "Tool"
     },
     "Upgrade:Balanced": {
       "class": "Misc - Upgrade",
@@ -4746,7 +5394,9 @@ export const gameData = {
       "accuracy": "+1m",
       "impact": 0,
       "dmg": "-",
-      "traits": []
+      "traits": [],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Upgrade:Masterworks": {
       "class": "Misc - Upgrade",
@@ -4755,7 +5405,9 @@ export const gameData = {
       "accuracy": "-",
       "impact": 1,
       "dmg": "1+1m",
-      "traits": []
+      "traits": [],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Upgrade:Poisoned": {
       "class": "Misc - Upgrade",
@@ -4766,7 +5418,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Poison"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Upgrade:Poisoned, Deadly": {
       "class": "Misc - Upgrade",
@@ -4777,7 +5431,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Poison 2"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Upgrade:Reinforced": {
       "class": "Misc - Upgrade",
@@ -4786,7 +5442,9 @@ export const gameData = {
       "accuracy": "-1m",
       "impact": 1,
       "dmg": "1m",
-      "traits": []
+      "traits": [],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Upgrade:Reinforced, Polearm": {
       "class": "Misc - Upgrade",
@@ -4797,7 +5455,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Upgrade:Well-honed": {
       "class": "Misc - Upgrade",
@@ -4806,7 +5466,9 @@ export const gameData = {
       "accuracy": "-",
       "impact": 1,
       "dmg": "1m",
-      "traits": []
+      "traits": [],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Wheeled, Armored-pedaler": {
       "class": "Vehicle",
@@ -4817,13 +5479,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 6",
-        " SIZ",
-        " Sprint",
-        " [Lumbering]",
-        " Bombproof 2",
-        " Deflect 2"
-      ]
+        "Armor 6",
+        "SIZ",
+        "Sprint",
+        "[Lumbering]",
+        "Bombproof 2",
+        "Deflect 2"
+      ],
+      "classification": "Vehicle",
+      "type": "Vehicle"
     },
     "Wheeled, Gun Carriage, Large": {
       "class": "Vehicle",
@@ -4834,11 +5498,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 7]",
-        " SIZ 2",
-        " [Crewed 2]",
-        " Armor 4",
-        " Bulletproof"
-      ]
+        "SIZ 2",
+        "[Crewed 2]",
+        "Armor 4",
+        "Bulletproof"
+      ],
+      "classification": "Vehicle",
+      "type": "Vehicle"
     },
     "Wheeled, Gun Carriage, Tricycle": {
       "class": "Vehicle",
@@ -4849,11 +5515,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 4]",
-        " SIZ",
-        " [Crewed 2]",
-        " Armor 2",
-        " Bulletproof"
-      ]
+        "SIZ",
+        "[Crewed 2]",
+        "Armor 2",
+        "Bulletproof"
+      ],
+      "classification": "Vehicle",
+      "type": "Vehicle"
     },
     "Wheeled, Steam-chair": {
       "class": "Vehicle",
@@ -4864,11 +5532,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Bulletproof",
-        " Armor 6",
-        " SIZ",
-        " Sprint",
-        " [Lumbering]"
-      ]
+        "Armor 6",
+        "SIZ",
+        "Sprint",
+        "[Lumbering]"
+      ],
+      "classification": "Vehicle",
+      "type": "Vehicle"
     },
     "Wheeled, Tankette": {
       "class": "Vehicle",
@@ -4879,13 +5549,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Vehicle]",
-        " Surefooted",
-        " SIZ 4",
-        " Sprint 2",
-        " Hardened 2",
-        " Armor 2",
-        " Deflect 2"
-      ]
+        "Surefooted",
+        "SIZ 4",
+        "Sprint 2",
+        "Hardened 2",
+        "Armor 2",
+        "Deflect 2"
+      ],
+      "classification": "Vehicle",
+      "type": "Vehicle"
     }
   },
   "game_rules": {
@@ -4931,11 +5603,13 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Blast 7",
-        " Stun",
-        " [Discard]",
-        " [Reload]",
-        " Frag 2"
-      ]
+        "Stun",
+        "[Discard]",
+        "[Reload]",
+        "Frag 2"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Explosives, Fire-bomb": {
       "class": "Thrown (Grenade)",
@@ -4946,13 +5620,15 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fire",
-        " Conceal",
-        " [Scatter]",
-        " Blast 5",
-        " Burn",
-        " [Discard]",
-        " [Reload]"
-      ]
+        "Conceal",
+        "[Scatter]",
+        "Blast 5",
+        "Burn",
+        "[Discard]",
+        "[Reload]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Explosives, Kettle-bomb": {
       "class": "Thrown (Grenade)",
@@ -4963,15 +5639,17 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Disrupt 2",
-        " Conceal",
-        " [Scatter]",
-        " Blast 5",
-        " [Fizzle]",
-        " [Discard]",
-        " [Reload]",
-        " [Laden]",
-        " Frag 2"
-      ]
+        "Conceal",
+        "[Scatter]",
+        "Blast 5",
+        "[Fizzle]",
+        "[Discard]",
+        "[Reload]",
+        "[Laden]",
+        "Frag 2"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Explosives, Stick, Dynamite": {
       "class": "Thrown (Grenade)",
@@ -4982,12 +5660,14 @@ export const gameData = {
       "dmg": "1",
       "traits": [
         "Conceal",
-        " [Scatter]",
-        " Blast 5",
-        " Stun",
-        " [Discard+]",
-        " [Reload 2]"
-      ]
+        "[Scatter]",
+        "Blast 5",
+        "Stun",
+        "[Discard+]",
+        "[Reload 2]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Blacksmoke": {
       "class": "Thrown (Grenade)",
@@ -4998,8 +5678,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Caustic": {
       "class": "Thrown (Grenade)",
@@ -5010,8 +5692,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Knockout": {
       "class": "Thrown (Grenade)",
@@ -5022,8 +5706,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Knockout-2": {
       "class": "Thrown (Grenade)",
@@ -5034,8 +5720,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Mustard": {
       "class": "Thrown (Grenade)",
@@ -5046,8 +5734,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Nerve": {
       "class": "Thrown (Grenade)",
@@ -5058,8 +5748,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Nerve-2": {
       "class": "Thrown (Grenade)",
@@ -5070,8 +5762,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Poison 2": {
       "class": "Thrown (Grenade)",
@@ -5082,8 +5776,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Poison": {
       "class": "Thrown (Grenade)",
@@ -5094,8 +5790,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Riot": {
       "class": "Thrown (Grenade)",
@@ -5106,8 +5804,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Riot-3": {
       "class": "Thrown (Grenade)",
@@ -5118,8 +5818,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Smoke": {
       "class": "Thrown (Grenade)",
@@ -5130,8 +5832,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Smoke-2": {
       "class": "Thrown (Grenade)",
@@ -5142,8 +5846,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Cannister, Steam": {
       "class": "Thrown (Grenade)",
@@ -5154,8 +5860,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Fume X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Acid": {
       "class": "Thrown (Grenade)",
@@ -5166,8 +5874,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Blacksmoke": {
       "class": "Thrown (Grenade)",
@@ -5178,8 +5888,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Caustic": {
       "class": "Thrown (Grenade)",
@@ -5190,8 +5902,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Knockout": {
       "class": "Thrown (Grenade)",
@@ -5202,8 +5916,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Mustard": {
       "class": "Thrown (Grenade)",
@@ -5214,8 +5930,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Nerve": {
       "class": "Thrown (Grenade)",
@@ -5226,8 +5944,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Poison 2": {
       "class": "Thrown (Grenade)",
@@ -5238,8 +5958,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Poison": {
       "class": "Thrown (Grenade)",
@@ -5250,8 +5972,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Riot": {
       "class": "Thrown (Grenade)",
@@ -5262,8 +5986,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Smoke": {
       "class": "Thrown (Grenade)",
@@ -5274,8 +6000,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade, Steam": {
       "class": "Thrown (Grenade)",
@@ -5286,8 +6014,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Gas Grenade: Steam": {
       "class": "Thrown (Grenade)",
@@ -5298,8 +6028,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Cloud X > Type",
-        " [Grenade]"
-      ]
+        "[Grenade]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Anti-magic": {
       "class": "Thrown (Grenade)",
@@ -5310,11 +6042,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast",
-        " Anti-magic 3",
-        " Anti-psionic",
-        " [1H]"
-      ]
+        "Blast",
+        "Anti-magic 3",
+        "Anti-psionic",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Anti-psi": {
       "class": "Thrown (Grenade)",
@@ -5325,10 +6059,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast",
-        " Anti-psionic 3",
-        " [1H]"
-      ]
+        "Blast",
+        "Anti-psionic 3",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Archaic": {
       "class": "Thrown (Grenade)",
@@ -5339,10 +6075,12 @@ export const gameData = {
       "dmg": "1b",
       "traits": [
         "[Grenade]",
-        " Blast 2",
-        " Frag 3",
-        " [1H]"
-      ]
+        "Blast 2",
+        "Frag 3",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Concussion": {
       "class": "Thrown (Grenade)",
@@ -5353,10 +6091,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast 5",
-        " Frag 2",
-        " [1H]"
-      ]
+        "Blast 5",
+        "Frag 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Concussion, Adv.": {
       "class": "Thrown (Grenade)",
@@ -5367,10 +6107,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast 6",
-        " Frag 2",
-        " [1H]"
-      ]
+        "Blast 6",
+        "Frag 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Dancer": {
       "class": "Thrown (Grenade)",
@@ -5381,11 +6123,13 @@ export const gameData = {
       "dmg": "1w",
       "traits": [
         "[Grenade]",
-        " Blast 2",
-        " Frag 3",
-        " Multi-strike 2",
-        " [1H]"
-      ]
+        "Blast 2",
+        "Frag 3",
+        "Multi-strike 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Flash": {
       "class": "Thrown (Grenade)",
@@ -5396,10 +6140,12 @@ export const gameData = {
       "dmg": "1m",
       "traits": [
         "[Grenade]",
-        " Blast 2",
-        " Blinding 4",
-        " [1H]"
-      ]
+        "Blast 2",
+        "Blinding 4",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Flash-bang": {
       "class": "Thrown (Grenade)",
@@ -5410,11 +6156,13 @@ export const gameData = {
       "dmg": "1m",
       "traits": [
         "[Grenade]",
-        " Blast 4",
-        " Frag",
-        " Blinding 2",
-        " [1H]"
-      ]
+        "Blast 4",
+        "Frag",
+        "Blinding 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Flash-bang, Adv.": {
       "class": "Thrown (Grenade)",
@@ -5425,11 +6173,13 @@ export const gameData = {
       "dmg": "1m",
       "traits": [
         "[Grenade]",
-        " Blast 4",
-        " Frag",
-        " Blinding 3",
-        " [1H]"
-      ]
+        "Blast 4",
+        "Frag",
+        "Blinding 3",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Fragmentation": {
       "class": "Thrown (Grenade)",
@@ -5440,10 +6190,12 @@ export const gameData = {
       "dmg": "1w",
       "traits": [
         "[Grenade]",
-        " Blast 3",
-        " Frag 4",
-        " [1H]"
-      ]
+        "Blast 3",
+        "Frag 4",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Fragmentation, Adv.": {
       "class": "Thrown (Grenade)",
@@ -5454,10 +6206,12 @@ export const gameData = {
       "dmg": "2w",
       "traits": [
         "[Grenade]",
-        " Blast 3",
-        " Frag 4",
-        " [1H]"
-      ]
+        "Blast 3",
+        "Frag 4",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, HE": {
       "class": "Thrown (Grenade)",
@@ -5468,10 +6222,12 @@ export const gameData = {
       "dmg": "1+1w",
       "traits": [
         "[Grenade]",
-        " Blast 6",
-        " Frag 2",
-        " [1H]"
-      ]
+        "Blast 6",
+        "Frag 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, HE, Adv.": {
       "class": "Thrown (Grenade)",
@@ -5482,10 +6238,12 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Grenade]",
-        " Blast 6",
-        " Frag 2",
-        " [1H]"
-      ]
+        "Blast 6",
+        "Frag 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Pulse": {
       "class": "Thrown (Grenade)",
@@ -5496,10 +6254,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast",
-        " Anti-electric 3",
-        " [1H]"
-      ]
+        "Blast",
+        "Anti-electric 3",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Pulse, Adv.": {
       "class": "Thrown (Grenade)",
@@ -5510,10 +6270,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast",
-        " Anti-electric 6",
-        " [1H]"
-      ]
+        "Blast",
+        "Anti-electric 6",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Shrapnel": {
       "class": "Thrown (Grenade)",
@@ -5524,11 +6286,13 @@ export const gameData = {
       "dmg": "2w",
       "traits": [
         "[Grenade]",
-        " Blast 3",
-        " Frag 3",
-        " Cleave",
-        " [1H]"
-      ]
+        "Blast 3",
+        "Frag 3",
+        "Cleave",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Shrapnel, Adv.": {
       "class": "Thrown (Grenade)",
@@ -5539,11 +6303,13 @@ export const gameData = {
       "dmg": "3w",
       "traits": [
         "[Grenade]",
-        " Blast 3",
-        " Frag 3",
-        " Cleave",
-        " [1H]"
-      ]
+        "Blast 3",
+        "Frag 3",
+        "Cleave",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Sonic": {
       "class": "Thrown (Grenade)",
@@ -5554,11 +6320,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast 5",
-        " Frag",
-        " Sonics 2",
-        " [1H]"
-      ]
+        "Blast 5",
+        "Frag",
+        "Sonics 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Sonic, Adv.": {
       "class": "Thrown (Grenade)",
@@ -5569,11 +6337,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Blast 6",
-        " Frag",
-        " Sonics 3",
-        " [1H]"
-      ]
+        "Blast 6",
+        "Frag",
+        "Sonics 3",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Web Stunner": {
       "class": "Thrown (Grenade)",
@@ -5584,9 +6354,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Burst 3",
-        " [1H]"
-      ]
+        "Burst 3",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Grenade, Web": {
       "class": "Thrown (Grenade)",
@@ -5597,9 +6369,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Grenade]",
-        " Burst 2",
-        " [1H]"
-      ]
+        "Burst 2",
+        "[1H]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Groundingsuit, Advanced": {
       "class": "Thrown (Grenade)",
@@ -5610,7 +6384,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List"
-      ]
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     },
     "Groundingsuit, Early": {
       "class": "Thrown (Grenade)",
@@ -5621,8 +6397,10 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Resist X > List",
-        " [Laden]"
-      ]
+        "[Laden]"
+      ],
+      "classification": "Thrown (Grenade)",
+      "type": "Thrown (Grenade)"
     }
   },
   "item_classifications": {
@@ -6003,10 +6781,12 @@ export const gameData = {
       "dmg": "STR+1w",
       "traits": [
         "Cleave",
-        " Throwable",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "Throwable",
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Axe, Battle": {
       "class": "Melee",
@@ -6017,10 +6797,12 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Cleave",
-        " Impale",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "Impale",
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Axe, Long": {
       "class": "Melee",
@@ -6031,11 +6813,13 @@ export const gameData = {
       "dmg": "STR+1w",
       "traits": [
         "Cleave 2",
-        " Throwable",
-        " Reach",
-        " [Hafted]",
-        " [2H]"
-      ]
+        "Throwable",
+        "Reach",
+        "[Hafted]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Axe, Pick": {
       "class": "Melee",
@@ -6046,11 +6830,13 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Cleave",
-        " Reach",
-        " [Hafted]",
-        " [Awkward]",
-        " [2H]"
-      ]
+        "Reach",
+        "[Hafted]",
+        "[Awkward]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Axe, Tactical": {
       "class": "Melee",
@@ -6061,11 +6847,13 @@ export const gameData = {
       "dmg": "STR+1m",
       "traits": [
         "Cleave",
-        " Discrete",
-        " [Stub]",
-        " Throwable",
-        " [1H]"
-      ]
+        "Discrete",
+        "[Stub]",
+        "Throwable",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Axe-Sword of Tan-doc": {
       "class": "Melee",
@@ -6076,14 +6864,16 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Cleave",
-        " STR",
-        " Heal",
-        " Regenerate",
-        " Parry",
-        " Deflect",
-        " Bulletproof",
-        " Battery X:Type > List"
-      ]
+        "STR",
+        "Heal",
+        "Regenerate",
+        "Parry",
+        "Deflect",
+        "Bulletproof",
+        "Battery X:Type > List"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Bayonet": {
       "class": "Melee",
@@ -6094,10 +6884,12 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[Awkward]",
-        " Reach",
-        " Impale",
-        " Silent 2"
-      ]
+        "Reach",
+        "Impale",
+        "Silent 2"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Bite-1": {
       "class": "Natural",
@@ -6108,8 +6900,10 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[Stub]",
-        " Cleave"
-      ]
+        "Cleave"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Bite-2": {
       "class": "Natural",
@@ -6120,8 +6914,10 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[Stub]",
-        " Cleave"
-      ]
+        "Cleave"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Bite-3": {
       "class": "Natural",
@@ -6132,8 +6928,10 @@ export const gameData = {
       "dmg": "2+3m",
       "traits": [
         "[Stub]",
-        " Cleave"
-      ]
+        "Cleave"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Black Jacks or Sap": {
       "class": "Melee",
@@ -6144,10 +6942,12 @@ export const gameData = {
       "dmg": "2-1m",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Stun",
-        " [1H]"
-      ]
+        "Discrete",
+        "Stun",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Chainsaw, Claw, Heavy": {
       "class": "Melee",
@@ -6158,10 +6958,12 @@ export const gameData = {
       "dmg": "3+2w",
       "traits": [
         "[Hafted]",
-        " [Stub]",
-        " Multi-strike",
-        " [2H]"
-      ]
+        "[Stub]",
+        "Multi-strike",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Chainsaw, Claw, Light": {
       "class": "Melee",
@@ -6172,10 +6974,12 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Hafted]",
-        " [Stub]",
-        " Multi-strike",
-        " [1H]"
-      ]
+        "[Stub]",
+        "Multi-strike",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Chainsaw, Claw, Medium": {
       "class": "Melee",
@@ -6186,10 +6990,12 @@ export const gameData = {
       "dmg": "3+1b",
       "traits": [
         "[Hafted]",
-        " [Stub]",
-        " Multi-strike",
-        " [1H]"
-      ]
+        "[Stub]",
+        "Multi-strike",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Chainsaw, Heavy": {
       "class": "Melee",
@@ -6200,11 +7006,13 @@ export const gameData = {
       "dmg": "3+2w",
       "traits": [
         "[Hafted]",
-        " [Laden 2]",
-        " [Stub]",
-        " Multi-strike",
-        " [1H]"
-      ]
+        "[Laden 2]",
+        "[Stub]",
+        "Multi-strike",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Chainsaw, Light": {
       "class": "Melee",
@@ -6215,11 +7023,13 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Hafted]",
-        " [Laden]",
-        " [Stub]",
-        " Multi-strike",
-        " [2H]"
-      ]
+        "[Laden]",
+        "[Stub]",
+        "Multi-strike",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Chainsaw, Medium": {
       "class": "Melee",
@@ -6230,11 +7040,13 @@ export const gameData = {
       "dmg": "3+1b",
       "traits": [
         "[Hafted]",
-        " [Laden]",
-        " [Stub]",
-        " Multi-strike",
-        " [2H]"
-      ]
+        "[Laden]",
+        "[Stub]",
+        "Multi-strike",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Claw-1": {
       "class": "Melee",
@@ -6245,9 +7057,11 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Stub]",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Claw-2": {
       "class": "Melee",
@@ -6258,9 +7072,11 @@ export const gameData = {
       "dmg": "2+2w",
       "traits": [
         "[Stub]",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Claw-3": {
       "class": "Melee",
@@ -6271,9 +7087,11 @@ export const gameData = {
       "dmg": "2+3w",
       "traits": [
         "[Stub]",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Claws-1": {
       "class": "Natural",
@@ -6284,8 +7102,10 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Stub]",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Claws-2": {
       "class": "Natural",
@@ -6296,8 +7116,10 @@ export const gameData = {
       "dmg": "2+2w",
       "traits": [
         "[Stub]",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Claws-3": {
       "class": "Natural",
@@ -6308,8 +7130,10 @@ export const gameData = {
       "dmg": "2+3w",
       "traits": [
         "[Stub]",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Club": {
       "class": "Melee",
@@ -6320,9 +7144,11 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Stun",
-        " [1H]",
-        " Silent"
-      ]
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Club, Baton": {
       "class": "Melee",
@@ -6333,10 +7159,12 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[Stun-only]",
-        " Stun",
-        " [1H]",
-        " Silent"
-      ]
+        "Stun",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Club, Circus Mallet": {
       "class": "Melee",
@@ -6347,11 +7175,13 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Stub]",
-        " [Stun-only]",
-        " Reach",
-        " [Awkward]",
-        " [2H]"
-      ]
+        "[Stun-only]",
+        "Reach",
+        "[Awkward]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Club, Crowbar": {
       "class": "Melee",
@@ -6362,9 +7192,11 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[Stun-only]",
-        " Stun",
-        " [1H]"
-      ]
+        "Stun",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Club, Heavy": {
       "class": "Melee",
@@ -6375,10 +7207,12 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "Reach",
-        " Stun",
-        " [Hafted]",
-        " [2H]"
-      ]
+        "Stun",
+        "[Hafted]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Club, Mace": {
       "class": "Melee",
@@ -6389,9 +7223,11 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Stun",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Club, Mace, Spiked": {
       "class": "Melee",
@@ -6402,9 +7238,11 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Stun",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Club, Shovel": {
       "class": "Melee",
@@ -6415,9 +7253,11 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Stun",
-        " [Stub]",
-        " [2H]"
-      ]
+        "[Stub]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Dagger, Obsidian": {
       "class": "Melee",
@@ -6428,13 +7268,15 @@ export const gameData = {
       "dmg": "STR",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Throwable",
-        " Impale",
-        " [Discard+]",
-        " [1H]",
-        " Silent"
-      ]
+        "Discrete",
+        "Throwable",
+        "Impale",
+        "[Discard+]",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Dagger, Stiletto": {
       "class": "Melee",
@@ -6445,11 +7287,13 @@ export const gameData = {
       "dmg": "2-1b",
       "traits": [
         "[Stub]",
-        " Conceal",
-        " Impale",
-        " [1H]",
-        " Silent"
-      ]
+        "Conceal",
+        "Impale",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Daggers": {
       "class": "Melee",
@@ -6460,11 +7304,13 @@ export const gameData = {
       "dmg": "STR",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Throwable",
-        " [1H]",
-        " Silent"
-      ]
+        "Discrete",
+        "Throwable",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Daggers, Spectral": {
       "class": "Melee",
@@ -6475,11 +7321,13 @@ export const gameData = {
       "dmg": "STR",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Throwable",
-        " [1H]",
-        " Silent"
-      ]
+        "Discrete",
+        "Throwable",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Electrostaff": {
       "class": "Melee - Energy",
@@ -6490,12 +7338,14 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[Reveal]",
-        " Stun",
-        " Reach",
-        " [Hafted]",
-        " Perimeter",
-        " [2H]"
-      ]
+        "Stun",
+        "Reach",
+        "[Hafted]",
+        "Perimeter",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Electrostaff, Neon": {
       "class": "Melee - Energy",
@@ -6506,13 +7356,15 @@ export const gameData = {
       "dmg": "2+3m",
       "traits": [
         "[Reveal]",
-        " Stun 2",
-        " Reach",
-        " [Hafted]",
-        " Perimeter",
-        " [2H]",
-        " Light X (Flicker)"
-      ]
+        "Stun 2",
+        "Reach",
+        "[Hafted]",
+        "Perimeter",
+        "[2H]",
+        "Light X (Flicker)"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Flail": {
       "class": "Melee",
@@ -6523,11 +7375,13 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Thresh",
-        " Stun",
-        " [Hafted]",
-        " [Stub]",
-        " [1H]"
-      ]
+        "Stun",
+        "[Hafted]",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Flail, Farming": {
       "class": "Melee",
@@ -6538,12 +7392,14 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Reach",
-        " Thresh",
-        " Stun",
-        " [Hafted]",
-        " [Awkward]",
-        " [2H]"
-      ]
+        "Thresh",
+        "Stun",
+        "[Hafted]",
+        "[Awkward]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Flail, Morningstar": {
       "class": "Melee",
@@ -6554,11 +7410,13 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "Thresh",
-        " Stun",
-        " [Hafted]",
-        " [Stub]",
-        " [1H]"
-      ]
+        "Stun",
+        "[Hafted]",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Flail, Tri-section": {
       "class": "Melee",
@@ -6569,12 +7427,14 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Reach 2",
-        " Thresh",
-        " Stun",
-        " [Reckless]",
-        " [Awkward]",
-        " [2H]"
-      ]
+        "Thresh",
+        "Stun",
+        "[Reckless]",
+        "[Awkward]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Gauntlet, Clawed": {
       "class": "Melee",
@@ -6585,9 +7445,11 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Silent",
-        " [Stub]",
-        " [1H]"
-      ]
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Gauntlet, Controller": {
       "class": "Range - Energy",
@@ -6598,10 +7460,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Melee",
-        " Conceal",
-        " Telekinesis",
-        " [1H]"
-      ]
+        "Conceal",
+        "Telekinesis",
+        "[1H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Hammer, Forge": {
       "class": "Melee",
@@ -6612,9 +7476,11 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "Stun",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hammer, Long": {
       "class": "Melee",
@@ -6625,10 +7491,12 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Reach",
-        " Stun 2",
-        " [Hafted]",
-        " [2H]"
-      ]
+        "Stun 2",
+        "[Hafted]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hammer, Maul": {
       "class": "Melee",
@@ -6639,13 +7507,15 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Awkward]",
-        " Reach",
-        " Stun 2",
-        " [Hafted]",
-        " [Fragile]",
-        " [2H]",
-        " [Laden]"
-      ]
+        "Reach",
+        "Stun 2",
+        "[Hafted]",
+        "[Fragile]",
+        "[2H]",
+        "[Laden]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hammer, Sledge": {
       "class": "Melee",
@@ -6656,12 +7526,14 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Awkward]",
-        " Reach",
-        " Stun 2",
-        " [Hafted]",
-        " [2H]",
-        " [Laden]"
-      ]
+        "Reach",
+        "Stun 2",
+        "[Hafted]",
+        "[2H]",
+        "[Laden]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hammer, War": {
       "class": "Melee",
@@ -6672,10 +7544,12 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Stun 2",
-        " [Hafted]",
-        " Impale",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "Impale",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hammer, War, Ban-1": {
       "class": "Melee",
@@ -6686,11 +7560,13 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Aura X > List",
-        " Stun 2",
-        " [Hafted]",
-        " Impale",
-        " [1H]"
-      ]
+        "Stun 2",
+        "[Hafted]",
+        "Impale",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hammer, War, Ban-2": {
       "class": "Melee",
@@ -6701,11 +7577,13 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Aura X > List",
-        " Stun 2",
-        " [Hafted]",
-        " Impale",
-        " [1H]"
-      ]
+        "Stun 2",
+        "[Hafted]",
+        "Impale",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Heirloom Weapon": {
       "class": "Misc - Upgrade",
@@ -6716,7 +7594,9 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Knife-fighter"
-      ]
+      ],
+      "classification": "Misc",
+      "type": "Upgrade"
     },
     "Hook, Crook": {
       "class": "Melee",
@@ -6727,12 +7607,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Stun-only]",
-        " Reach",
-        " [Hafted]",
-        " Bonus:Melee X > Action",
-        " [1H]",
-        " Strike"
-      ]
+        "Reach",
+        "[Hafted]",
+        "Bonus:Melee X > Action",
+        "[1H]",
+        "Strike"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hook, Meat": {
       "class": "Melee",
@@ -6743,12 +7625,14 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[Awkward]",
-        " [Stub]",
-        " Bonus:Melee X > Action",
-        " [1H]",
-        " Impale",
-        " Silent"
-      ]
+        "[Stub]",
+        "Bonus:Melee X > Action",
+        "[1H]",
+        "Impale",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hook, Scythe": {
       "class": "Melee",
@@ -6759,15 +7643,17 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Awkward]",
-        " Reach",
-        " Cleave",
-        " [Hafted]",
-        " Bonus:Melee X > Action",
-        " [2H]",
-        " Strike",
-        " Impale",
-        " Silent"
-      ]
+        "Reach",
+        "Cleave",
+        "[Hafted]",
+        "Bonus:Melee X > Action",
+        "[2H]",
+        "Strike",
+        "Impale",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hook, Sickle, Fist": {
       "class": "Melee",
@@ -6778,13 +7664,15 @@ export const gameData = {
       "dmg": "1+1w",
       "traits": [
         "[Awkward]",
-        " Cleave",
-        " [Stub]",
-        " Bonus:Melee X > Action",
-        " [1H]",
-        " Strike",
-        " Silent"
-      ]
+        "Cleave",
+        "[Stub]",
+        "Bonus:Melee X > Action",
+        "[1H]",
+        "Strike",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hook, Sickle, Hand": {
       "class": "Melee",
@@ -6795,13 +7683,15 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Awkward]",
-        " Cleave",
-        " [Hafted]",
-        " Bonus:Melee X > Action",
-        " [1H]",
-        " Strike",
-        " Silent"
-      ]
+        "Cleave",
+        "[Hafted]",
+        "Bonus:Melee X > Action",
+        "[1H]",
+        "Strike",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hook, Spearcrook": {
       "class": "Melee",
@@ -6812,13 +7702,15 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "Perimeter",
-        " Reach",
-        " Charge",
-        " [Hafted]",
-        " Bonus:Melee X > Action",
-        " [2H]",
-        " Strike"
-      ]
+        "Reach",
+        "Charge",
+        "[Hafted]",
+        "Bonus:Melee X > Action",
+        "[2H]",
+        "Strike"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Hook, Swordcrook": {
       "class": "Melee",
@@ -6829,12 +7721,14 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "Perimeter",
-        " Reach",
-        " Cleave",
-        " [Hafted]",
-        " Bonus:Melee X > Action",
-        " [2H]"
-      ]
+        "Reach",
+        "Cleave",
+        "[Hafted]",
+        "Bonus:Melee X > Action",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Improvised Melee": {
       "class": "Melee",
@@ -6845,8 +7739,10 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[Stub]",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Improvised Melee, Large": {
       "class": "Melee",
@@ -6857,10 +7753,12 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[Stub]",
-        " Reach",
-        " [Laden]",
-        " [2H]"
-      ]
+        "Reach",
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Knife, Large": {
       "class": "Melee",
@@ -6871,12 +7769,14 @@ export const gameData = {
       "dmg": "STR+1m",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Cleave",
-        " Throwable",
-        " [1H]",
-        " Silent"
-      ]
+        "Discrete",
+        "Cleave",
+        "Throwable",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Knife, Medium": {
       "class": "Melee",
@@ -6887,11 +7787,13 @@ export const gameData = {
       "dmg": "STR+1m",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Throwable",
-        " [1H]",
-        " Silent"
-      ]
+        "Discrete",
+        "Throwable",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Knife, Small": {
       "class": "Melee",
@@ -6902,11 +7804,13 @@ export const gameData = {
       "dmg": "STR-1m",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Throwable",
-        " [1H]",
-        " Silent"
-      ]
+        "Discrete",
+        "Throwable",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Knife, Tactical": {
       "class": "Melee",
@@ -6917,11 +7821,13 @@ export const gameData = {
       "dmg": "STR",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Throwable",
-        " [1H]",
-        " Silent"
-      ]
+        "Discrete",
+        "Throwable",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Knuckledusters": {
       "class": "Melee",
@@ -6932,10 +7838,12 @@ export const gameData = {
       "dmg": "2-1m",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Stun",
-        " [Hafted]"
-      ]
+        "Discrete",
+        "Stun",
+        "[Hafted]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Knuckledusters, Spiked": {
       "class": "Melee",
@@ -6946,10 +7854,12 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[Stub]",
-        " Discrete",
-        " Stun",
-        " [Hafted]"
-      ]
+        "Discrete",
+        "Stun",
+        "[Hafted]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Net, Retarius": {
       "class": "Melee",
@@ -6960,12 +7870,14 @@ export const gameData = {
       "dmg": "2-1m",
       "traits": [
         "Hold 2",
-        " Thresh",
-        " [Awkward]",
-        " [Discard! > Type]",
-        " [1H]",
-        " Silent"
-      ]
+        "Thresh",
+        "[Awkward]",
+        "[Discard! > Type]",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Plasmablade": {
       "class": "Melee - Energy",
@@ -6976,11 +7888,13 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "Cleave 2",
-        " Imbue 3",
-        " Conceal",
-        " Pierce",
-        " [1H]"
-      ]
+        "Imbue 3",
+        "Conceal",
+        "Pierce",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Polearm, Glaive": {
       "class": "Melee",
@@ -6991,11 +7905,13 @@ export const gameData = {
       "dmg": "2+3m",
       "traits": [
         "Reach",
-        " [Awkward]",
-        " Charge",
-        " Perimeter",
-        " [2H]"
-      ]
+        "[Awkward]",
+        "Charge",
+        "Perimeter",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Polearm, Halberd": {
       "class": "Melee",
@@ -7006,12 +7922,14 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Cleave",
-        " Reach",
-        " Charge",
-        " [Hafted]",
-        " Perimeter",
-        " [2H]"
-      ]
+        "Reach",
+        "Charge",
+        "[Hafted]",
+        "Perimeter",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Polearm, Pike": {
       "class": "Melee",
@@ -7022,13 +7940,15 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[Laden]",
-        " [Awkward]",
-        " Charge",
-        " Perimeter",
-        " [Hafted]",
-        " [2H]",
-        " Reach 2"
-      ]
+        "[Awkward]",
+        "Charge",
+        "Perimeter",
+        "[Hafted]",
+        "[2H]",
+        "Reach 2"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Polearm, Scythe": {
       "class": "Melee",
@@ -7039,9 +7959,11 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Cleave 2",
-        " [Hafted]",
-        " [2H]"
-      ]
+        "[Hafted]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Powered Gauntlets": {
       "class": "Melee - Energy",
@@ -7052,12 +7974,14 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "[Stub]",
-        " Battery X:Type > List",
-        " Anti-electric",
-        " Stun",
-        " [2H]",
-        " Silent"
-      ]
+        "Battery X:Type > List",
+        "Anti-electric",
+        "Stun",
+        "[2H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Powered Gloves": {
       "class": "Melee - Energy",
@@ -7068,10 +7992,12 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Stub]",
-        " Battery X:Type > List",
-        " [2H]",
-        " Silent"
-      ]
+        "Battery X:Type > List",
+        "[2H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Powered Staff": {
       "class": "Melee - Energy",
@@ -7082,12 +8008,14 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "Reach",
-        " Stun 2",
-        " [Awkward]",
-        " Perimeter",
-        " Battery X:Type > List",
-        " [2H]"
-      ]
+        "Stun 2",
+        "[Awkward]",
+        "Perimeter",
+        "Battery X:Type > List",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Pummel-1": {
       "class": "Natural",
@@ -7098,7 +8026,9 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[1H]"
-      ]
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Pummel-2": {
       "class": "Natural",
@@ -7109,7 +8039,9 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[1H]"
-      ]
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Pummel-3": {
       "class": "Natural",
@@ -7120,7 +8052,9 @@ export const gameData = {
       "dmg": "2+3m",
       "traits": [
         "[1H]"
-      ]
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Sickstick": {
       "class": "Melee - Energy",
@@ -7131,10 +8065,12 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Stub]",
-        " Entangle 2",
-        " Conceal",
-        " [1H]"
-      ]
+        "Entangle 2",
+        "Conceal",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Spear, Long": {
       "class": "Melee",
@@ -7145,12 +8081,14 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[Laden]",
-        " Reach 2",
-        " Charge",
-        " [Awkward]",
-        " [Hafted]",
-        " [2H]"
-      ]
+        "Reach 2",
+        "Charge",
+        "[Awkward]",
+        "[Hafted]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Spear, Medium": {
       "class": "Melee",
@@ -7161,11 +8099,13 @@ export const gameData = {
       "dmg": "STR+2m",
       "traits": [
         "Reach",
-        " Throwable",
-        " Charge",
-        " Perimeter",
-        " [2H]"
-      ]
+        "Throwable",
+        "Charge",
+        "Perimeter",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Spear, of Stealth": {
       "class": "Melee",
@@ -7176,12 +8116,14 @@ export const gameData = {
       "dmg": "STR+2m",
       "traits": [
         "Reach",
-        " Throwable",
-        " Charge",
-        " Perimeter",
-        " Stealthy",
-        " [2H]"
-      ]
+        "Throwable",
+        "Charge",
+        "Perimeter",
+        "Stealthy",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Spear, Short": {
       "class": "Melee",
@@ -7192,10 +8134,12 @@ export const gameData = {
       "dmg": "STR+2m",
       "traits": [
         "Throwable",
-        " [Hafted]",
-        " Impale",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "Impale",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Spear, Throwing": {
       "class": "Melee",
@@ -7206,10 +8150,12 @@ export const gameData = {
       "dmg": "STR+2m",
       "traits": [
         "Throwable",
-        " Perimeter",
-        " [Awkward]",
-        " [1H]"
-      ]
+        "Perimeter",
+        "[Awkward]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Spectral Claws-1": {
       "class": "Melee - Magic",
@@ -7220,11 +8166,13 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "Reach",
-        " [Hafted]",
-        " Cleave",
-        " Discrete",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "Cleave",
+        "Discrete",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Magic"
     },
     "Spectral Claws-1, Limited": {
       "class": "Melee - Magic",
@@ -7235,10 +8183,12 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[Stub]",
-        " Cleave",
-        " Discrete",
-        " [1H]"
-      ]
+        "Cleave",
+        "Discrete",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Magic"
     },
     "Spectral Claws-2": {
       "class": "Melee - Magic",
@@ -7249,11 +8199,13 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "Reach 2",
-        " [Hafted]",
-        " Cleave 2",
-        " Discrete",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "Cleave 2",
+        "Discrete",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Magic"
     },
     "Spectral Claws-2, Limited": {
       "class": "Melee - Magic",
@@ -7264,10 +8216,12 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[Stub]",
-        " Cleave 2",
-        " Discrete",
-        " [1H]"
-      ]
+        "Cleave 2",
+        "Discrete",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Magic"
     },
     "Spectral Claws-3": {
       "class": "Melee - Magic",
@@ -7278,11 +8232,13 @@ export const gameData = {
       "dmg": "2+3m",
       "traits": [
         "Reach 3",
-        " [Hafted]",
-        " Cleave 3",
-        " Discrete",
-        " [1H]"
-      ]
+        "[Hafted]",
+        "Cleave 3",
+        "Discrete",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Magic"
     },
     "Spectral Claws-3, Limited": {
       "class": "Melee - Magic",
@@ -7293,10 +8249,12 @@ export const gameData = {
       "dmg": "2+3m",
       "traits": [
         "[Stub]",
-        " Cleave 3",
-        " Discrete",
-        " [1H]"
-      ]
+        "Cleave 3",
+        "Discrete",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Magic"
     },
     "Staff": {
       "class": "Melee",
@@ -7307,11 +8265,13 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Reach",
-        " Stun",
-        " [Hafted]",
-        " Perimeter",
-        " [2H]"
-      ]
+        "Stun",
+        "[Hafted]",
+        "Perimeter",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Staff, Club": {
       "class": "Melee",
@@ -7322,11 +8282,13 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "Reach",
-        " Stun",
-        " [Awkward]",
-        " Perimeter",
-        " [2H]"
-      ]
+        "Stun",
+        "[Awkward]",
+        "Perimeter",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Staff, Greater Mage": {
       "class": "Melee",
@@ -7337,13 +8299,15 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Reach",
-        " Stun",
-        " [Hafted]",
-        " Perimeter",
-        " Manapool 6",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Stun",
+        "[Hafted]",
+        "Perimeter",
+        "Manapool 6",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Staff, Lesser Mage": {
       "class": "Melee",
@@ -7354,13 +8318,15 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Reach",
-        " Stun",
-        " [Hafted]",
-        " Perimeter",
-        " Manapool 3",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Stun",
+        "[Hafted]",
+        "Perimeter",
+        "Manapool 3",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Broad": {
       "class": "Melee",
@@ -7371,9 +8337,11 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "Parry",
-        " Cleave",
-        " [1H]"
-      ]
+        "Cleave",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Cutlass": {
       "class": "Melee",
@@ -7384,10 +8352,12 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "Parry",
-        " Cleave",
-        " Impale",
-        " [1H]"
-      ]
+        "Cleave",
+        "Impale",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Great": {
       "class": "Melee",
@@ -7398,11 +8368,13 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "Parry",
-        " Cleave",
-        " Impale",
-        " Stun",
-        " [2H]"
-      ]
+        "Cleave",
+        "Impale",
+        "Stun",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Long": {
       "class": "Melee",
@@ -7413,10 +8385,12 @@ export const gameData = {
       "dmg": "2+3m",
       "traits": [
         "Parry",
-        " Cleave",
-        " Impale",
-        " [1H]"
-      ]
+        "Cleave",
+        "Impale",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Rapier": {
       "class": "Melee",
@@ -7427,9 +8401,11 @@ export const gameData = {
       "dmg": "2-1m",
       "traits": [
         "Parry",
-        " Impale",
-        " [1H]"
-      ]
+        "Impale",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Saber": {
       "class": "Melee",
@@ -7440,8 +8416,10 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Parry",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Scimitar": {
       "class": "Melee",
@@ -7452,8 +8430,10 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "Cleave",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Scimitar, Grand": {
       "class": "Melee",
@@ -7464,8 +8444,10 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Cleave 2",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Sword, Short": {
       "class": "Melee",
@@ -7476,9 +8458,11 @@ export const gameData = {
       "dmg": "STR+1m",
       "traits": [
         "Parry",
-        " Throwable",
-        " [1H]"
-      ]
+        "Throwable",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Taser, Prod": {
       "class": "Melee - Energy",
@@ -7489,10 +8473,12 @@ export const gameData = {
       "dmg": "3+1m",
       "traits": [
         "[Stun-only]",
-        " [Hafted]",
-        " [1H]",
-        " Silent"
-      ]
+        "[Hafted]",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Taser, Rifle": {
       "class": "Melee - Energy",
@@ -7503,11 +8489,13 @@ export const gameData = {
       "dmg": "4+1m",
       "traits": [
         "[Stun-only]",
-        " Burst",
-        " Cycle 2",
-        " [2H]",
-        " Silent"
-      ]
+        "Burst",
+        "Cycle 2",
+        "[2H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Trident": {
       "class": "Melee",
@@ -7518,11 +8506,13 @@ export const gameData = {
       "dmg": "STR+2m",
       "traits": [
         "[Laden]",
-        " Throwable",
-        " Charge",
-        " Impale",
-        " [2H]"
-      ]
+        "Throwable",
+        "Charge",
+        "Impale",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Trident, Long": {
       "class": "Melee",
@@ -7533,13 +8523,15 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "[Laden]",
-        " Perimeter",
-        " Charge",
-        " Impale",
-        " Reach",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Perimeter",
+        "Charge",
+        "Impale",
+        "Reach",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Trident, Pitchfork": {
       "class": "Melee",
@@ -7550,13 +8542,15 @@ export const gameData = {
       "dmg": "1+1m",
       "traits": [
         "[Laden]",
-        " Perimeter",
-        " Charge",
-        " Impale",
-        " Reach",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Perimeter",
+        "Charge",
+        "Impale",
+        "Reach",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Unarmed": {
       "class": "Natural",
@@ -7567,7 +8561,9 @@ export const gameData = {
       "dmg": "2-1m",
       "traits": [
         "[Stub]"
-      ]
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Vibrodagger": {
       "class": "Melee - Energy",
@@ -7578,13 +8574,15 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "Stun",
-        " Battery X:Type > List",
-        " Cleave",
-        " Conceal",
-        " [Stub]",
-        " [1H]",
-        " Silent"
-      ]
+        "Battery X:Type > List",
+        "Cleave",
+        "Conceal",
+        "[Stub]",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Vibrosword": {
       "class": "Melee - Energy",
@@ -7595,12 +8593,14 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "Stun",
-        " Battery X:Type > List",
-        " Cleave 2",
-        " Parry",
-        " [1H]",
-        " Silent"
-      ]
+        "Battery X:Type > List",
+        "Cleave 2",
+        "Parry",
+        "[1H]",
+        "Silent"
+      ],
+      "classification": "Melee",
+      "type": "Energy"
     },
     "Waldo, Claws, Long": {
       "class": "Natural",
@@ -7611,10 +8611,12 @@ export const gameData = {
       "dmg": "2+1b",
       "traits": [
         "[Awkward]",
-        " STR 3",
-        " Reach",
-        " [1H]"
-      ]
+        "STR 3",
+        "Reach",
+        "[1H]"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Waldo, Claws, Short": {
       "class": "Natural",
@@ -7625,9 +8627,11 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Awkward]",
-        " STR 3",
-        " [1H]"
-      ]
+        "STR 3",
+        "[1H]"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Waldo, Hand ": {
       "class": "Natural",
@@ -7638,9 +8642,11 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Awkward]",
-        " STR 2",
-        " [1H]"
-      ]
+        "STR 2",
+        "[1H]"
+      ],
+      "classification": "Natural",
+      "type": "Natural"
     },
     "Waldo, Saw, Large": {
       "class": "Melee",
@@ -7651,10 +8657,12 @@ export const gameData = {
       "dmg": "2+2w",
       "traits": [
         "[Awkward]",
-        " Cleave 2",
-        " [Noise 2]",
-        " [1H]"
-      ]
+        "Cleave 2",
+        "[Noise 2]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Waldo, Saw, Small": {
       "class": "Melee",
@@ -7665,10 +8673,12 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "[Awkward]",
-        " Cleave",
-        " [Noise]",
-        " [1H]"
-      ]
+        "Cleave",
+        "[Noise]",
+        "[1H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Whip, Bull": {
       "class": "Melee",
@@ -7679,13 +8689,15 @@ export const gameData = {
       "dmg": "2-2m",
       "traits": [
         "Reach",
-        " Stun",
-        " Entangle",
-        " Hold",
-        " [Stub]",
-        " [1H]",
-        " [Awkward]"
-      ]
+        "Stun",
+        "Entangle",
+        "Hold",
+        "[Stub]",
+        "[1H]",
+        "[Awkward]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Whip, Metal Chain": {
       "class": "Melee",
@@ -7696,12 +8708,14 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Reach",
-        " Stun",
-        " Hold",
-        " [Laden]",
-        " [Stub]",
-        " [2H]"
-      ]
+        "Stun",
+        "Hold",
+        "[Laden]",
+        "[Stub]",
+        "[2H]"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Whip, Mollysword": {
       "class": "Melee",
@@ -7712,9 +8726,11 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "Pierce",
-        " [1H]",
-        " Silent 2"
-      ]
+        "[1H]",
+        "Silent 2"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     },
     "Whip, Monowire": {
       "class": "Melee",
@@ -7725,13 +8741,15 @@ export const gameData = {
       "dmg": "2+3w",
       "traits": [
         "[Stub]",
-        " Battery X:Type > List",
-        " [Reload]",
-        " [Solo > List]",
-        " [Awkward]",
-        " [2H]",
-        " Silent 3"
-      ]
+        "Battery X:Type > List",
+        "[Reload]",
+        "[Solo > List]",
+        "[Awkward]",
+        "[2H]",
+        "Silent 3"
+      ],
+      "classification": "Melee",
+      "type": "Melee"
     }
   },
   "page_content": {
@@ -7775,8 +8793,10 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Spray",
-        " Caustic 3"
-      ]
+        "Caustic 3"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Arc Weapon": {
       "class": "Range - Energy",
@@ -7787,10 +8807,12 @@ export const gameData = {
       "dmg": "4w",
       "traits": [
         "Blast 2",
-        " Stun 4",
-        " Brace",
-        " [2H]"
-      ]
+        "Stun 4",
+        "Brace",
+        "[2H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Carbine": {
       "class": "Range - Energy",
@@ -7801,10 +8823,12 @@ export const gameData = {
       "dmg": "3+2m",
       "traits": [
         "Cleave",
-        " ROF 3",
-        " [1H]",
-        " [Feed]"
-      ]
+        "ROF 3",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Carbine, Advanced": {
       "class": "Range - Energy",
@@ -7815,10 +8839,12 @@ export const gameData = {
       "dmg": "4+2m",
       "traits": [
         "Cleave",
-        " ROF 3",
-        " [1H]",
-        " [Feed]"
-      ]
+        "ROF 3",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Pistol": {
       "class": "Range - Energy",
@@ -7829,12 +8855,14 @@ export const gameData = {
       "dmg": "2+2m",
       "traits": [
         "ROF 3",
-        " Cleave",
-        " Conceal",
-        " Melee",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Cleave",
+        "Conceal",
+        "Melee",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Pistol, Advanced": {
       "class": "Range - Energy",
@@ -7845,12 +8873,14 @@ export const gameData = {
       "dmg": "3+2m",
       "traits": [
         "ROF 3",
-        " Cleave",
-        " Conceal",
-        " Melee",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Cleave",
+        "Conceal",
+        "Melee",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Rifle": {
       "class": "Range - Energy",
@@ -7861,10 +8891,12 @@ export const gameData = {
       "dmg": "4+2m",
       "traits": [
         "ROF 3",
-        " Cleave",
-        " [2H]",
-        " [Feed]"
-      ]
+        "Cleave",
+        "[2H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Rifle, Advanced Heavy": {
       "class": "Range - Energy",
@@ -7875,12 +8907,14 @@ export const gameData = {
       "dmg": "6+2m",
       "traits": [
         "ROF 4",
-        " Cleave 2",
-        " [Laden]",
-        " Burst",
-        " [2H]",
-        " [Feed]"
-      ]
+        "Cleave 2",
+        "[Laden]",
+        "Burst",
+        "[2H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Rifle, Advanced": {
       "class": "Range - Energy",
@@ -7891,10 +8925,12 @@ export const gameData = {
       "dmg": "5+2m",
       "traits": [
         "ROF 3",
-        " Cleave",
-        " [2H]",
-        " [Feed]"
-      ]
+        "Cleave",
+        "[2H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Rifle, Early Heavy": {
       "class": "Range - Energy",
@@ -7905,12 +8941,14 @@ export const gameData = {
       "dmg": "4+2m",
       "traits": [
         "ROF 4",
-        " Cleave 2",
-        " [Laden]",
-        " Burst",
-        " [2H]",
-        " [Feed 2]"
-      ]
+        "Cleave 2",
+        "[Laden]",
+        "Burst",
+        "[2H]",
+        "[Feed 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Rifle, Early": {
       "class": "Range - Energy",
@@ -7921,10 +8959,12 @@ export const gameData = {
       "dmg": "3+2m",
       "traits": [
         "ROF 3",
-        " Cleave",
-        " [2H]",
-        " [Feed 2]"
-      ]
+        "Cleave",
+        "[2H]",
+        "[Feed 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Beam Rifle, Heavy": {
       "class": "Range - Energy",
@@ -7935,12 +8975,14 @@ export const gameData = {
       "dmg": "5+2m",
       "traits": [
         "ROF 4",
-        " Cleave 2",
-        " [Laden]",
-        " Burst",
-        " [2H]",
-        " [Feed]"
-      ]
+        "Cleave 2",
+        "[Laden]",
+        "Burst",
+        "[2H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 12Minor - Basic": {
       "class": "Range - Energy",
@@ -7951,8 +8993,10 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Battery X:Type > List",
-        " [Noise]"
-      ]
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 12Minor - Burst": {
       "class": "Range - Energy",
@@ -7963,9 +9007,11 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Burst",
-        " Battery X:Type > List",
-        " [Noise]"
-      ]
+        "Battery X:Type > List",
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 12Minor - Rapid": {
       "class": "Range - Energy",
@@ -7976,9 +9022,11 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " Battery X:Type > List",
-        " [Noise]"
-      ]
+        "Battery X:Type > List",
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 12Minor - RapidBurst": {
       "class": "Range - Energy",
@@ -7989,10 +9037,12 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " Burst",
-        " Battery X:Type > List",
-        " [Noise]"
-      ]
+        "Burst",
+        "Battery X:Type > List",
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 13Major - Basic": {
       "class": "Range - Energy",
@@ -8003,8 +9053,10 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 13Major - Burst": {
       "class": "Range - Energy",
@@ -8015,9 +9067,11 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Burst",
-        " Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "Battery X:Type > List",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 13Major - Rapid": {
       "class": "Range - Energy",
@@ -8028,9 +9082,11 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "Battery X:Type > List",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 13Major - RapidBurst": {
       "class": "Range - Energy",
@@ -8041,10 +9097,12 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " Burst",
-        " Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "Burst",
+        "Battery X:Type > List",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 22Minor - Basic": {
       "class": "Range - Energy",
@@ -8055,8 +9113,10 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Battery X:Type > List",
-        " [Noise]"
-      ]
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 22Minor - Burst": {
       "class": "Range - Energy",
@@ -8067,9 +9127,11 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Burst",
-        " Battery X:Type > List",
-        " [Noise]"
-      ]
+        "Battery X:Type > List",
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 22Minor - Rapid": {
       "class": "Range - Energy",
@@ -8080,9 +9142,11 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " Battery X:Type > List",
-        " [Noise]"
-      ]
+        "Battery X:Type > List",
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 22Minor - RapidBurst": {
       "class": "Range - Energy",
@@ -8093,10 +9157,12 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " Burst",
-        " Battery X:Type > List",
-        " [Noise]"
-      ]
+        "Burst",
+        "Battery X:Type > List",
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 23Major - Basic": {
       "class": "Range - Energy",
@@ -8107,8 +9173,10 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 23Major - Burst": {
       "class": "Range - Energy",
@@ -8119,9 +9187,11 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Burst",
-        " Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "Battery X:Type > List",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 23Major - Rapid": {
       "class": "Range - Energy",
@@ -8132,9 +9202,11 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "Battery X:Type > List",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 23Major - RapidBurst": {
       "class": "Range - Energy",
@@ -8145,10 +9217,12 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " Burst",
-        " Battery X:Type > List",
-        " [Noise 2]"
-      ]
+        "Burst",
+        "Battery X:Type > List",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 2Minor - Basic": {
       "class": "Range - Energy",
@@ -8159,7 +9233,9 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "[Noise]"
-      ]
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 2Minor - Burst": {
       "class": "Range - Energy",
@@ -8170,8 +9246,10 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Burst",
-        " [Noise]"
-      ]
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 2Minor - Rapid": {
       "class": "Range - Energy",
@@ -8182,8 +9260,10 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " [Noise]"
-      ]
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 2Minor - RapidBurst": {
       "class": "Range - Energy",
@@ -8194,9 +9274,11 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " Burst",
-        " [Noise]"
-      ]
+        "Burst",
+        "[Noise]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 3Major - Basic": {
       "class": "Range - Energy",
@@ -8207,7 +9289,9 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[Noise 2]"
-      ]
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 3Major - Burst": {
       "class": "Range - Energy",
@@ -8218,8 +9302,10 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Burst",
-        " [Noise 2]"
-      ]
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 3Major - Rapid": {
       "class": "Range - Energy",
@@ -8230,8 +9316,10 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " [Noise 2]"
-      ]
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 3Major - RapidBurst": {
       "class": "Range - Energy",
@@ -8242,9 +9330,11 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " Burst",
-        " [Noise 2]"
-      ]
+        "Burst",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Greater - Basic": {
       "class": "Range - Energy",
@@ -8255,8 +9345,10 @@ export const gameData = {
       "dmg": "7",
       "traits": [
         "Pierce",
-        " [Noise 3]"
-      ]
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Greater - Burst": {
       "class": "Range - Energy",
@@ -8267,9 +9359,11 @@ export const gameData = {
       "dmg": "7",
       "traits": [
         "Burst",
-        " Pierce",
-        " [Noise 3]"
-      ]
+        "Pierce",
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Greater - Rapid": {
       "class": "Range - Energy",
@@ -8280,9 +9374,11 @@ export const gameData = {
       "dmg": "7",
       "traits": [
         "ROF",
-        " Pierce",
-        " [Noise 3]"
-      ]
+        "Pierce",
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Greater - RapidBurst": {
       "class": "Range - Energy",
@@ -8293,10 +9389,12 @@ export const gameData = {
       "dmg": "7",
       "traits": [
         "ROF",
-        " Burst",
-        " Pierce",
-        " [Noise 3]"
-      ]
+        "Burst",
+        "Pierce",
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Wondrous - Basic": {
       "class": "Range - Energy",
@@ -8307,8 +9405,10 @@ export const gameData = {
       "dmg": "9",
       "traits": [
         "Pierce 2",
-        " [Noise 3]"
-      ]
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Wondrous - Burst": {
       "class": "Range - Energy",
@@ -8319,9 +9419,11 @@ export const gameData = {
       "dmg": "9",
       "traits": [
         "Burst",
-        " Pierce 2",
-        " [Noise 3]"
-      ]
+        "Pierce 2",
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Wondrous - Rapid": {
       "class": "Range - Energy",
@@ -8332,9 +9434,11 @@ export const gameData = {
       "dmg": "9",
       "traits": [
         "ROF",
-        " Pierce 2",
-        " [Noise 3]"
-      ]
+        "Pierce 2",
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blast, 4Wondrous - RapidBurst": {
       "class": "Range - Energy",
@@ -8345,10 +9449,12 @@ export const gameData = {
       "dmg": "9",
       "traits": [
         "ROF",
-        " Burst",
-        " Pierce 2",
-        " [Noise 3]"
-      ]
+        "Burst",
+        "Pierce 2",
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blaster Glove": {
       "class": "Range - Energy",
@@ -8359,7 +9465,9 @@ export const gameData = {
       "dmg": "3+1w",
       "traits": [
         "[Reveal]"
-      ]
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Blaster Pistol": {
       "class": "Range - Futuristic",
@@ -8370,12 +9478,14 @@ export const gameData = {
       "dmg": "3+2b",
       "traits": [
         "Ricochet",
-        " ROF",
-        " Melee",
-        " [Reveal]",
-        " [1H]",
-        " [Feed]"
-      ]
+        "ROF",
+        "Melee",
+        "[Reveal]",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Blaster Pistol, Magnum": {
       "class": "Range - Futuristic",
@@ -8386,12 +9496,14 @@ export const gameData = {
       "dmg": "4+2b",
       "traits": [
         "Ricochet",
-        " ROF",
-        " Melee",
-        " [Reveal]",
-        " [1H]",
-        " [Feed]"
-      ]
+        "ROF",
+        "Melee",
+        "[Reveal]",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Blaster Rifle": {
       "class": "Range - Futuristic",
@@ -8402,12 +9514,14 @@ export const gameData = {
       "dmg": "4+2b",
       "traits": [
         "Ricochet",
-        " ROF 2",
-        " [Reveal]",
-        " [2H]",
-        " [Jitter+]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "[Reveal]",
+        "[2H]",
+        "[Jitter+]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Blaster Rifle, Magnum": {
       "class": "Range - Futuristic",
@@ -8418,12 +9532,14 @@ export const gameData = {
       "dmg": "5+2b",
       "traits": [
         "Ricochet",
-        " ROF 2",
-        " [Reveal]",
-        " [2H]",
-        " [Jitter+]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "[Reveal]",
+        "[2H]",
+        "[Jitter+]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Bolter Pistol": {
       "class": "Range - Energy",
@@ -8434,12 +9550,14 @@ export const gameData = {
       "dmg": "4+2m",
       "traits": [
         "[Reveal]",
-        " [Entropy!]",
-        " Ricochet",
-        " ROF",
-        " [1H]",
-        " Blast"
-      ]
+        "[Entropy!]",
+        "Ricochet",
+        "ROF",
+        "[1H]",
+        "Blast"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Bolter Rifle": {
       "class": "Range - Energy",
@@ -8450,13 +9568,15 @@ export const gameData = {
       "dmg": "5+2m",
       "traits": [
         "[Reveal]",
-        " [Entropy!]",
-        " Ricochet",
-        " ROF",
-        " [2H]",
-        " Frag",
-        " Blast 2"
-      ]
+        "[Entropy!]",
+        "Ricochet",
+        "ROF",
+        "[2H]",
+        "Frag",
+        "Blast 2"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Bolter Rifle, Adv": {
       "class": "Range - Energy",
@@ -8467,14 +9587,16 @@ export const gameData = {
       "dmg": "6+2m",
       "traits": [
         "[Reveal]",
-        " [Entropy!]",
-        " Ricochet",
-        " ROF 2",
-        " [Laden]",
-        " [2H]",
-        " Frag 2",
-        " Blast 3"
-      ]
+        "[Entropy!]",
+        "Ricochet",
+        "ROF 2",
+        "[Laden]",
+        "[2H]",
+        "Frag 2",
+        "Blast 3"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Carbine Light, Auto": {
       "class": "Firearm - Modern",
@@ -8485,12 +9607,14 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 2",
-        " [Awkward]",
-        " Melee",
-        " [1H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "[Awkward]",
+        "Melee",
+        "[1H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Carbine Light, Semi/A": {
       "class": "Firearm - Modern",
@@ -8501,11 +9625,13 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " [Awkward]",
-        " Melee",
-        " [1H]",
-        " [Feed]"
-      ]
+        "[Awkward]",
+        "Melee",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Carbine, Heavy, Auto": {
       "class": "Firearm - Modern",
@@ -8516,12 +9642,14 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF 2",
-        " [Awkward]",
-        " Melee",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "[Awkward]",
+        "Melee",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Carbine, Heavy, Semi/A": {
       "class": "Firearm - Modern",
@@ -8532,11 +9660,13 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " [Awkward]",
-        " Melee",
-        " [2H]",
-        " [Feed]"
-      ]
+        "[Awkward]",
+        "Melee",
+        "[2H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Carbine, Medium, Auto": {
       "class": "Firearm - Modern",
@@ -8547,12 +9677,14 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 2",
-        " [Awkward]",
-        " Melee",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "[Awkward]",
+        "Melee",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Carbine, Medium, Semi/A": {
       "class": "Firearm - Modern",
@@ -8563,11 +9695,13 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF",
-        " [Awkward]",
-        " Melee",
-        " [1H]",
-        " [Feed]"
-      ]
+        "[Awkward]",
+        "Melee",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Coil-gun, Heavy": {
       "class": "Range - Futuristic",
@@ -8578,12 +9712,14 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 2",
-        " Pierce",
-        " [2H]",
-        " [Laden 2]",
-        " [Feed 2]",
-        " [Reveal]"
-      ]
+        "Pierce",
+        "[2H]",
+        "[Laden 2]",
+        "[Feed 2]",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Coil-gun, Light": {
       "class": "Range - Futuristic",
@@ -8594,12 +9730,14 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " Pierce",
-        " [2H]",
-        " [Laden]",
-        " [Feed]",
-        " [Reveal]"
-      ]
+        "Pierce",
+        "[2H]",
+        "[Laden]",
+        "[Feed]",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Coil-gun, Medium": {
       "class": "Range - Futuristic",
@@ -8610,12 +9748,14 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF",
-        " Pierce 2",
-        " [2H]",
-        " [Laden]",
-        " [Feed 2]",
-        " [Reveal]"
-      ]
+        "Pierce 2",
+        "[2H]",
+        "[Laden]",
+        "[Feed 2]",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Deceptor Pistol": {
       "class": "Range - Energy",
@@ -8626,10 +9766,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Confuse",
-        " Burst",
-        " Resist X > List",
-        " [1H]"
-      ]
+        "Burst",
+        "Resist X > List",
+        "[1H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Deceptor Rifle": {
       "class": "Range - Energy",
@@ -8640,10 +9782,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Confuse 2",
-        " Burst",
-        " Resist X > List",
-        " [2H]"
-      ]
+        "Burst",
+        "Resist X > List",
+        "[2H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Electroweapon, Early": {
       "class": "Range - Modern",
@@ -8654,12 +9798,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " [Noise 3]",
-        " Anti-electric",
-        " Shock",
-        " Resist X > List",
-        " [1H]"
-      ]
+        "[Noise 3]",
+        "Anti-electric",
+        "Shock",
+        "Resist X > List",
+        "[1H]"
+      ],
+      "classification": "Range",
+      "type": "Modern"
     },
     "Electroweapon, Pulse, Pistol": {
       "class": "Range - Modern",
@@ -8670,11 +9816,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Noise 2]",
-        " Anti-electric 2",
-        " Shock",
-        " Resist X > List",
-        " [2H]"
-      ]
+        "Anti-electric 2",
+        "Shock",
+        "Resist X > List",
+        "[2H]"
+      ],
+      "classification": "Range",
+      "type": "Modern"
     },
     "Electroweapon, Pulse, Rifle": {
       "class": "Range - Modern",
@@ -8685,12 +9833,14 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " [Noise 3]",
-        " Anti-electric 4",
-        " Shock 2",
-        " Resist X > List",
-        " [2H]"
-      ]
+        "[Noise 3]",
+        "Anti-electric 4",
+        "Shock 2",
+        "Resist X > List",
+        "[2H]"
+      ],
+      "classification": "Range",
+      "type": "Modern"
     },
     "Fusion Pistol": {
       "class": "Range - Energy",
@@ -8701,13 +9851,15 @@ export const gameData = {
       "dmg": "6",
       "traits": [
         "[Reveal]",
-        " Burn",
-        " Ricochet",
-        " ROF",
-        " Melee",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Burn",
+        "Ricochet",
+        "ROF",
+        "Melee",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Musket, Blunderbuss": {
       "class": "Firearm - Archaic",
@@ -8718,11 +9870,13 @@ export const gameData = {
       "dmg": "3+2b",
       "traits": [
         "[Discard!]",
-        " [Entropy!!]",
-        " Spray",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Entropy!!]",
+        "Spray",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Musket, Heavy Smoothbore": {
       "class": "Firearm - Archaic",
@@ -8733,11 +9887,13 @@ export const gameData = {
       "dmg": "4+2w",
       "traits": [
         "[Reload 3]",
-        " [Entropy+]",
-        " [Recoil]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Entropy+]",
+        "[Recoil]",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Musket, Light, Smoothbore": {
       "class": "Firearm - Archaic",
@@ -8748,10 +9904,12 @@ export const gameData = {
       "dmg": "3+1b",
       "traits": [
         "[Reload 3]",
-        " [Entropy+]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Entropy+]",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Musket, Medium, Smoothbore": {
       "class": "Firearm - Archaic",
@@ -8762,10 +9920,12 @@ export const gameData = {
       "dmg": "4+2b",
       "traits": [
         "[Reload 3]",
-        " [Entropy+]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Entropy+]",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Needle Rifle": {
       "class": "Range - Futuristic",
@@ -8776,9 +9936,11 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 2",
-        " [2H]",
-        " Poison 2"
-      ]
+        "[2H]",
+        "Poison 2"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Needle Rifle, Adv": {
       "class": "Range - Futuristic",
@@ -8789,10 +9951,12 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Pierce",
-        " ROF 3",
-        " [2H]",
-        " Poison 2"
-      ]
+        "ROF 3",
+        "[2H]",
+        "Poison 2"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Needler Pistol": {
       "class": "Range - Futuristic",
@@ -8803,10 +9967,12 @@ export const gameData = {
       "dmg": "1",
       "traits": [
         "ROF",
-        " Melee",
-        " [1H]",
-        " Poison"
-      ]
+        "Melee",
+        "[1H]",
+        "Poison"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Needler Pistol, Adv": {
       "class": "Range - Futuristic",
@@ -8817,11 +9983,13 @@ export const gameData = {
       "dmg": "1",
       "traits": [
         "Pierce",
-        " ROF 2",
-        " Melee",
-        " [1H]",
-        " Poison"
-      ]
+        "ROF 2",
+        "Melee",
+        "[1H]",
+        "Poison"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Net-gun, Large": {
       "class": "Range - Energy",
@@ -8832,11 +10000,13 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Entangle 2",
-        " Multi-strike",
-        " [Laden]",
-        " Resist X > List",
-        " [2H]"
-      ]
+        "Multi-strike",
+        "[Laden]",
+        "Resist X > List",
+        "[2H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Net-gun, Small": {
       "class": "Range - Energy",
@@ -8847,9 +10017,11 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Entangle",
-        " Resist X > List",
-        " [1H]"
-      ]
+        "Resist X > List",
+        "[1H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "PDW, Heavy": {
       "class": "Firearm - Modern",
@@ -8860,13 +10032,15 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "[Awkward]",
-        " ROF 2",
-        " Burst",
-        " Melee",
-        " [2H]",
-        " [Jitter!]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Burst",
+        "Melee",
+        "[2H]",
+        "[Jitter!]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "PDW, Light": {
       "class": "Firearm - Modern",
@@ -8877,14 +10051,16 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "[Awkward]",
-        " Conceal",
-        " ROF 2",
-        " Burst",
-        " Melee",
-        " [2H]",
-        " [Jitter!]",
-        " [Feed]"
-      ]
+        "Conceal",
+        "ROF 2",
+        "Burst",
+        "Melee",
+        "[2H]",
+        "[Jitter!]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "PDW, Medium": {
       "class": "Firearm - Modern",
@@ -8895,13 +10071,15 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "[Awkward]",
-        " ROF 2",
-        " Burst",
-        " Melee",
-        " [2H]",
-        " [Jitter!]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Burst",
+        "Melee",
+        "[2H]",
+        "[Jitter!]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Pistol, Coach": {
       "class": "Firearm - Archaic",
@@ -8912,13 +10090,15 @@ export const gameData = {
       "dmg": "1+2b",
       "traits": [
         "[Discard!]",
-        " Spray",
-        " Melee",
-        " Conceal",
-        " [Entropy!!]",
-        " [1H]",
-        " [Blackpowder]"
-      ]
+        "Spray",
+        "Melee",
+        "Conceal",
+        "[Entropy!!]",
+        "[1H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Pistol, Dueling": {
       "class": "Firearm - Archaic",
@@ -8929,12 +10109,14 @@ export const gameData = {
       "dmg": "2w",
       "traits": [
         "[Discard!]",
-        " Melee",
-        " Conceal",
-        " [Entropy]",
-        " [1H]",
-        " [Blackpowder]"
-      ]
+        "Melee",
+        "Conceal",
+        "[Entropy]",
+        "[1H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Pistol, Heavy, Auto": {
       "class": "Firearm - Modern",
@@ -8945,12 +10127,14 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "Melee",
-        " ROF 2",
-        " Burst",
-        " [1H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Burst",
+        "[1H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Pistol, Heavy, Semi/A": {
       "class": "Firearm - Modern",
@@ -8961,10 +10145,12 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "Melee",
-        " ROF",
-        " [1H]",
-        " [Feed]"
-      ]
+        "ROF",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Pistol, Light, Auto": {
       "class": "Firearm - Modern",
@@ -8975,13 +10161,15 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Melee",
-        " Discrete",
-        " ROF 2",
-        " Burst",
-        " [1H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Discrete",
+        "ROF 2",
+        "Burst",
+        "[1H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Pistol, Light, Semi/A": {
       "class": "Firearm - Modern",
@@ -8992,11 +10180,13 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Melee",
-        " Discrete",
-        " ROF 2",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Discrete",
+        "ROF 2",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Pistol, Medium, Auto": {
       "class": "Firearm - Modern",
@@ -9007,13 +10197,15 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Melee",
-        " Conceal",
-        " ROF 2",
-        " Burst",
-        " [1H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Conceal",
+        "ROF 2",
+        "Burst",
+        "[1H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Pistol, Medium, Semi/A": {
       "class": "Firearm - Modern",
@@ -9024,11 +10216,13 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Melee",
-        " Conceal",
-        " ROF 2",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Conceal",
+        "ROF 2",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Pistol, Pepperbox": {
       "class": "Firearm - Archaic",
@@ -9039,12 +10233,14 @@ export const gameData = {
       "dmg": "1+2b",
       "traits": [
         "[Discard]",
-        " Melee",
-        " Conceal",
-        " [Entropy!]",
-        " [1H]",
-        " [Blackpowder]"
-      ]
+        "Melee",
+        "Conceal",
+        "[Entropy!]",
+        "[1H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Plasma Pistol": {
       "class": "Range - Energy",
@@ -9055,12 +10251,14 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "[Reveal]",
-        " Burn",
-        " [1H]",
-        " [Feed]",
-        " ROF",
-        " [Reveal]"
-      ]
+        "Burn",
+        "[1H]",
+        "[Feed]",
+        "ROF",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Plasma Rifle": {
       "class": "Range - Energy",
@@ -9071,15 +10269,17 @@ export const gameData = {
       "dmg": "6",
       "traits": [
         "[Reveal]",
-        " [Laden]",
-        " Burn",
-        " Caustic",
-        " Pierce",
-        " [2H]",
-        " [Feed]",
-        " ROF",
-        " [Reveal]"
-      ]
+        "[Laden]",
+        "Burn",
+        "Caustic",
+        "Pierce",
+        "[2H]",
+        "[Feed]",
+        "ROF",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Power-gem, Light": {
       "class": "Range - Magic",
@@ -9090,14 +10290,16 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "Burst",
-        " ROF",
-        " Pierce",
-        " Battery X:Type > List",
-        " [Crewed 2]",
-        " [2H]",
-        " [Carriage 3]",
-        " [Mounted]"
-      ]
+        "ROF",
+        "Pierce",
+        "Battery X:Type > List",
+        "[Crewed 2]",
+        "[2H]",
+        "[Carriage 3]",
+        "[Mounted]"
+      ],
+      "classification": "Range",
+      "type": "Magic"
     },
     "Power-gem, Medium": {
       "class": "Range - Magic",
@@ -9108,14 +10310,16 @@ export const gameData = {
       "dmg": "7",
       "traits": [
         "Burst",
-        " ROF",
-        " Pierce 2",
-        " Battery X:Type > List",
-        " [Crewed 2]",
-        " [2H]",
-        " [Carriage 3]",
-        " [Mounted]"
-      ]
+        "ROF",
+        "Pierce 2",
+        "Battery X:Type > List",
+        "[Crewed 2]",
+        "[2H]",
+        "[Carriage 3]",
+        "[Mounted]"
+      ],
+      "classification": "Range",
+      "type": "Magic"
     },
     "Rail-gun, Heavy": {
       "class": "Range - Futuristic",
@@ -9126,15 +10330,17 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 4",
-        " Burst 2",
-        " Pierce",
-        " [2H]",
-        " [Laden 2]",
-        " [Jitter+]",
-        " [Feed 2]",
-        " [Mounted 5]",
-        " [Reveal]"
-      ]
+        "Burst 2",
+        "Pierce",
+        "[2H]",
+        "[Laden 2]",
+        "[Jitter+]",
+        "[Feed 2]",
+        "[Mounted 5]",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Rail-gun, Light": {
       "class": "Range - Futuristic",
@@ -9145,15 +10351,17 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 2",
-        " Burst",
-        " Pierce",
-        " [2H]",
-        " [Laden]",
-        " [Jitter+]",
-        " [Feed 2]",
-        " [Mounted 3]",
-        " [Reveal]"
-      ]
+        "Burst",
+        "Pierce",
+        "[2H]",
+        "[Laden]",
+        "[Jitter+]",
+        "[Feed 2]",
+        "[Mounted 3]",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Rail-gun, Medium": {
       "class": "Range - Futuristic",
@@ -9164,15 +10372,17 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 3",
-        " Burst",
-        " Pierce 2",
-        " [2H]",
-        " [Laden]",
-        " [Jitter+]",
-        " [Feed 2]",
-        " [Mounted 4]",
-        " [Reveal]"
-      ]
+        "Burst",
+        "Pierce 2",
+        "[2H]",
+        "[Laden]",
+        "[Jitter+]",
+        "[Feed 2]",
+        "[Mounted 4]",
+        "[Reveal]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Revolver, Heavy": {
       "class": "Firearm - Modern",
@@ -9183,10 +10393,12 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "Melee",
-        " ROF",
-        " [1H]",
-        " [Feed]"
-      ]
+        "ROF",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Revolver, Heavy, Archaic": {
       "class": "Firearm - Archaic",
@@ -9197,13 +10409,15 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "[Awkward]",
-        " ROF",
-        " [Blackpowder]",
-        " [Entropy!!]",
-        " [1H]",
-        " Melee",
-        " [Feed]"
-      ]
+        "ROF",
+        "[Blackpowder]",
+        "[Entropy!!]",
+        "[1H]",
+        "Melee",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Revolver, Light": {
       "class": "Firearm - Modern",
@@ -9214,11 +10428,13 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Melee",
-        " Discrete",
-        " ROF",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Discrete",
+        "ROF",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Revolver, Light, Archaic": {
       "class": "Firearm - Archaic",
@@ -9229,13 +10445,15 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Melee",
-        " Discrete",
-        " ROF",
-        " [Blackpowder]",
-        " [Entropy!!]",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Discrete",
+        "ROF",
+        "[Blackpowder]",
+        "[Entropy!!]",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Revolver, Medium": {
       "class": "Firearm - Modern",
@@ -9246,11 +10464,13 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Melee",
-        " Conceal",
-        " ROF",
-        " [1H]",
-        " [Feed]"
-      ]
+        "Conceal",
+        "ROF",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Revolver, Medium, Archaic": {
       "class": "Firearm - Archaic",
@@ -9261,14 +10481,16 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "[Awkward]",
-        " Conceal",
-        " ROF",
-        " [Blackpowder]",
-        " [Entropy!!]",
-        " [1H]",
-        " Melee",
-        " [Feed]"
-      ]
+        "Conceal",
+        "ROF",
+        "[Blackpowder]",
+        "[Entropy!!]",
+        "[1H]",
+        "Melee",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Rifle, Heavy, Archaic": {
       "class": "Firearm - Archaic",
@@ -9279,11 +10501,13 @@ export const gameData = {
       "dmg": "4+2b",
       "traits": [
         "[Reload 3]",
-        " [Laden]",
-        " [Recoil]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Laden]",
+        "[Recoil]",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Rifle, Heavy, Auto": {
       "class": "Firearm - Modern",
@@ -9294,13 +10518,15 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF 2",
-        " Burst",
-        " Fire-lane",
-        " [Laden]",
-        " [2H]",
-        " [Jitter!]",
-        " [Feed]"
-      ]
+        "Burst",
+        "Fire-lane",
+        "[Laden]",
+        "[2H]",
+        "[Jitter!]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Heavy, Bolt/A": {
       "class": "Firearm - Modern",
@@ -9311,11 +10537,13 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[Reload]",
-        " [Recoil]",
-        " Pierce",
-        " [Laden]",
-        " [2H]"
-      ]
+        "[Recoil]",
+        "Pierce",
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Heavy, Semi/A": {
       "class": "Firearm - Modern",
@@ -9326,9 +10554,11 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF",
-        " [Laden]",
-        " [2H]"
-      ]
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Heavy, Single/A": {
       "class": "Firearm - Modern",
@@ -9339,10 +10569,12 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "[Recoil]",
-        " Pierce",
-        " [Laden]",
-        " [2H]"
-      ]
+        "Pierce",
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Light, Archaic": {
       "class": "Firearm - Archaic",
@@ -9353,9 +10585,11 @@ export const gameData = {
       "dmg": "3+1m",
       "traits": [
         "[Reload 3]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Rifle, Light, Auto": {
       "class": "Firearm - Modern",
@@ -9366,11 +10600,13 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 2",
-        " Burst",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Burst",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Light, Bolt/A": {
       "class": "Firearm - Modern",
@@ -9381,8 +10617,10 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "[Reload]",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Light, Semi/A": {
       "class": "Firearm - Modern",
@@ -9393,8 +10631,10 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Light, Single/A": {
       "class": "Firearm - Modern",
@@ -9405,7 +10645,9 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "[2H]"
-      ]
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Medium, Archaic": {
       "class": "Firearm - Archaic",
@@ -9416,9 +10658,11 @@ export const gameData = {
       "dmg": "4+1b",
       "traits": [
         "[Reload 3]",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Firearm",
+      "type": "Archaic"
     },
     "Rifle, Medium, Auto": {
       "class": "Firearm - Modern",
@@ -9429,11 +10673,13 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 3",
-        " Burst",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Burst",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Medium, Bolt/A": {
       "class": "Firearm - Modern",
@@ -9444,8 +10690,10 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[Reload]",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Medium, Semi/A": {
       "class": "Firearm - Modern",
@@ -9456,8 +10704,10 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rifle, Medium, Single/A": {
       "class": "Firearm - Modern",
@@ -9468,7 +10718,9 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[2H]"
-      ]
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rod, Emerald Flame": {
       "class": "Firearm - Modern",
@@ -9479,13 +10731,15 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 2",
-        " Burst",
-        " Modern 2",
-        " Melee",
-        " Conceal",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Burst",
+        "Modern 2",
+        "Melee",
+        "Conceal",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rod, Eternal Flame": {
       "class": "Firearm - Modern",
@@ -9496,13 +10750,15 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 2",
-        " Burst",
-        " Modern 2",
-        " Melee",
-        " Conceal",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Burst",
+        "Modern 2",
+        "Melee",
+        "Conceal",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rod, Last Rites": {
       "class": "Firearm - Modern",
@@ -9513,13 +10769,15 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF 4",
-        " Burst 2",
-        " Modern 2",
-        " Melee",
-        " Conceal",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Burst 2",
+        "Modern 2",
+        "Melee",
+        "Conceal",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rod, Stinging Blight": {
       "class": "Firearm - Modern",
@@ -9530,13 +10788,15 @@ export const gameData = {
       "dmg": "1",
       "traits": [
         "ROF",
-        " Burst",
-        " Modern 2",
-        " Melee",
-        " Conceal",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Burst",
+        "Modern 2",
+        "Melee",
+        "Conceal",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Rod, Suffering Light": {
       "class": "Firearm - Modern",
@@ -9547,13 +10807,15 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 3",
-        " Burst",
-        " Modern 2",
-        " Melee",
-        " Conceal",
-        " [2H]",
-        " [Awkward]"
-      ]
+        "Burst",
+        "Modern 2",
+        "Melee",
+        "Conceal",
+        "[2H]",
+        "[Awkward]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Auto": {
       "class": "Firearm - Modern",
@@ -9564,12 +10826,14 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[Entropy]",
-        " ROF 2",
-        " Spray",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Spray",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Auto, Heavy": {
       "class": "Firearm - Modern",
@@ -9580,13 +10844,15 @@ export const gameData = {
       "dmg": "5+3m",
       "traits": [
         "[Entropy]",
-        " ROF 2",
-        " Spray",
-        " [Recoil 2]",
-        " [2H]",
-        " [Jitter!]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Spray",
+        "[Recoil 2]",
+        "[2H]",
+        "[Jitter!]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Fletch": {
       "class": "Firearm - Modern",
@@ -9597,9 +10863,11 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "[Entropy+]",
-        " Spray",
-        " [2H]"
-      ]
+        "Spray",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Pump-action": {
       "class": "Firearm - Modern",
@@ -9610,9 +10878,11 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[Entropy]",
-        " Spray",
-        " [2H]"
-      ]
+        "Spray",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Pump-action, Heavy": {
       "class": "Firearm - Modern",
@@ -9623,10 +10893,12 @@ export const gameData = {
       "dmg": "5+3m",
       "traits": [
         "[Entropy]",
-        " [Recoil]",
-        " Spray",
-        " [2H]"
-      ]
+        "[Recoil]",
+        "Spray",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Sawed-off": {
       "class": "Firearm - Modern",
@@ -9637,11 +10909,13 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[Entropy!]",
-        " Conceal",
-        " Spray",
-        " Melee",
-        " [2H]"
-      ]
+        "Conceal",
+        "Spray",
+        "Melee",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Semi/A": {
       "class": "Firearm - Modern",
@@ -9652,10 +10926,12 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "[Entropy!]",
-        " ROF",
-        " Spray",
-        " [2H]"
-      ]
+        "ROF",
+        "Spray",
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Slug": {
       "class": "Firearm - Modern",
@@ -9666,8 +10942,10 @@ export const gameData = {
       "dmg": "6",
       "traits": [
         "[Recoil]",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Shotgun, Slug, Heavy": {
       "class": "Firearm - Modern",
@@ -9678,8 +10956,10 @@ export const gameData = {
       "dmg": "6+1b",
       "traits": [
         "[Recoil 2]",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Sonic Pistol": {
       "class": "Range - Futuristic",
@@ -9690,10 +10970,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sonics",
-        " Resist X > List",
-        " [1H]",
-        " [Noise 2]"
-      ]
+        "Resist X > List",
+        "[1H]",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Sonic Rifle": {
       "class": "Range - Futuristic",
@@ -9704,10 +10986,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sonics 2",
-        " Resist X > List",
-        " [2H]",
-        " [Noise 2]"
-      ]
+        "Resist X > List",
+        "[2H]",
+        "[Noise 2]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Sonic Rifle, Heavy": {
       "class": "Range - Futuristic",
@@ -9718,10 +11002,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Sonics 3",
-        " Resist X > List",
-        " [2H]",
-        " [Noise 3]"
-      ]
+        "Resist X > List",
+        "[2H]",
+        "[Noise 3]"
+      ],
+      "classification": "Range",
+      "type": "Futuristic"
     },
     "Spell - Pyrotechnics": {
       "class": "Range - Magic",
@@ -9732,8 +11018,10 @@ export const gameData = {
       "dmg": "2+1w",
       "traits": [
         "Blast 2",
-        " Stun"
-      ]
+        "Stun"
+      ],
+      "classification": "Range",
+      "type": "Magic"
     },
     "Stunner, Pistol": {
       "class": "Range - Energy",
@@ -9744,10 +11032,12 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Shock",
-        " Conceal",
-        " Melee",
-        " [1H]"
-      ]
+        "Conceal",
+        "Melee",
+        "[1H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Stunner, Rifle": {
       "class": "Range - Energy",
@@ -9758,8 +11048,10 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "Shock 2",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Stunner, Riot": {
       "class": "Range - Energy",
@@ -9770,9 +11062,11 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "Shock 2",
-        " Burst",
-        " [2H]"
-      ]
+        "Burst",
+        "[2H]"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     },
     "Submachine-gun, Heavy": {
       "class": "Firearm - Modern",
@@ -9783,11 +11077,13 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 5",
-        " Burst",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Burst",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Submachine-gun, Light": {
       "class": "Firearm - Modern",
@@ -9798,11 +11094,13 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 4",
-        " Burst",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Burst",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Submachine-gun, Medium": {
       "class": "Firearm - Modern",
@@ -9813,11 +11111,13 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 4",
-        " Burst",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Burst",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Firearm",
+      "type": "Modern"
     },
     "Taser, Personal": {
       "class": "Range - Energy",
@@ -9828,11 +11128,13 @@ export const gameData = {
       "dmg": "3+1m",
       "traits": [
         "[Stun-only]",
-        " Cycle",
-        " Conceal",
-        " [2H]",
-        " Silent"
-      ]
+        "Cycle",
+        "Conceal",
+        "[2H]",
+        "Silent"
+      ],
+      "classification": "Range",
+      "type": "Energy"
     }
   },
   "rules": {
@@ -9946,13 +11248,15 @@ export const gameData = {
       "dmg": "6+1w",
       "traits": [
         "[Laden]",
-        " [Discard!]",
-        " Pierce 4",
-        " Disrupt",
-        " [Backblast]",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 4",
+        "Disrupt",
+        "[Backblast]",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, Bazooka, M20": {
       "class": "Support - Modern",
@@ -9963,13 +11267,15 @@ export const gameData = {
       "dmg": "7+1w",
       "traits": [
         "[Laden]",
-        " [Discard!]",
-        " Pierce 5",
-        " Disrupt 2",
-        " [Backblast]",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 5",
+        "Disrupt 2",
+        "[Backblast]",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, Faustpatrone": {
       "class": "Support - Modern",
@@ -9980,13 +11286,15 @@ export const gameData = {
       "dmg": "4+1w",
       "traits": [
         "[Laden]",
-        " [Discard!]",
-        " Pierce 4",
-        " Disrupt",
-        " [Backblast]",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 4",
+        "Disrupt",
+        "[Backblast]",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, LAW": {
       "class": "Support - Modern",
@@ -9997,12 +11305,14 @@ export const gameData = {
       "dmg": "5+1w",
       "traits": [
         "[Laden]",
-        " [Discard!]",
-        " Pierce 5",
-        " Disrupt 3",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 5",
+        "Disrupt 3",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, MAW": {
       "class": "Support - Modern",
@@ -10013,12 +11323,14 @@ export const gameData = {
       "dmg": "5+1w",
       "traits": [
         "[Laden]",
-        " [Discard!]",
-        " Pierce 5",
-        " Disrupt 3",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 5",
+        "Disrupt 3",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, Panzerfaust": {
       "class": "Support - Modern",
@@ -10029,13 +11341,15 @@ export const gameData = {
       "dmg": "5+1w",
       "traits": [
         "[Laden]",
-        " [Discard!]",
-        " Pierce 5",
-        " Disrupt 2",
-        " [Backblast]",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 5",
+        "Disrupt 2",
+        "[Backblast]",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, Panzerschreck": {
       "class": "Support - Modern",
@@ -10046,13 +11360,15 @@ export const gameData = {
       "dmg": "4+1w",
       "traits": [
         "[Laden 2]",
-        " [Discard!]",
-        " Pierce 4",
-        " Disrupt",
-        " [Backblast 2]",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 4",
+        "Disrupt",
+        "[Backblast 2]",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, PIAT": {
       "class": "Support - Modern",
@@ -10063,12 +11379,14 @@ export const gameData = {
       "dmg": "5+1w",
       "traits": [
         "[Laden 2]",
-        " [Discard]",
-        " Pierce 3",
-        " Disrupt 2",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard]",
+        "Pierce 3",
+        "Disrupt 2",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, Rocket": {
       "class": "Support - Modern",
@@ -10079,12 +11397,14 @@ export const gameData = {
       "dmg": "3+2w",
       "traits": [
         "[Laden]",
-        " [Discard]",
-        " Pierce 3",
-        " Disrupt 2",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard]",
+        "Pierce 3",
+        "Disrupt 2",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Anti-tank Weapon, RPG-7": {
       "class": "Support - Modern",
@@ -10095,12 +11415,14 @@ export const gameData = {
       "dmg": "5+1w",
       "traits": [
         "[Laden]",
-        " [Discard!]",
-        " Pierce 6",
-        " Disrupt 4",
-        " [2H]",
-        " [Traversal]"
-      ]
+        "[Discard!]",
+        "Pierce 6",
+        "Disrupt 4",
+        "[2H]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Auto-cannon, Heavy": {
       "class": "Support - Modern",
@@ -10111,15 +11433,17 @@ export const gameData = {
       "dmg": "6",
       "traits": [
         "ROF 6",
-        " Burst 2",
-        " Fire-lane",
-        " Pierce 3",
-        " [2H]",
-        " [Laden 5]",
-        " [Jitter+]",
-        " [Feed 3]",
-        " Modern+ 4"
-      ]
+        "Burst 2",
+        "Fire-lane",
+        "Pierce 3",
+        "[2H]",
+        "[Laden 5]",
+        "[Jitter+]",
+        "[Feed 3]",
+        "Modern+ 4"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Auto-cannon, Light": {
       "class": "Support - Modern",
@@ -10130,15 +11454,17 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 4",
-        " Burst 2",
-        " Fire-lane",
-        " Pierce 3",
-        " [2H]",
-        " [Laden 4]",
-        " [Jitter+]",
-        " [Feed]",
-        " Modern+ 2"
-      ]
+        "Burst 2",
+        "Fire-lane",
+        "Pierce 3",
+        "[2H]",
+        "[Laden 4]",
+        "[Jitter+]",
+        "[Feed]",
+        "Modern+ 2"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Auto-cannon, Medium": {
       "class": "Support - Modern",
@@ -10149,15 +11475,17 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF 5",
-        " Burst 2",
-        " Fire-lane",
-        " Pierce 3",
-        " [2H]",
-        " [Laden 4]",
-        " [Jitter+]",
-        " [Feed 2]",
-        " Modern+ 3"
-      ]
+        "Burst 2",
+        "Fire-lane",
+        "Pierce 3",
+        "[2H]",
+        "[Laden 4]",
+        "[Jitter+]",
+        "[Feed 2]",
+        "Modern+ 3"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Ballista, Heavy": {
       "class": "Support - Archaic",
@@ -10168,12 +11496,14 @@ export const gameData = {
       "dmg": "6+2m",
       "traits": [
         "Pierce 3",
-        " [2H]",
-        " [Crewed 6]",
-        " [Carriage 5]",
-        " [Reload 8]",
-        " [Traversal!]"
-      ]
+        "[2H]",
+        "[Crewed 6]",
+        "[Carriage 5]",
+        "[Reload 8]",
+        "[Traversal!]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Ballista, Medium": {
       "class": "Support - Archaic",
@@ -10184,12 +11514,14 @@ export const gameData = {
       "dmg": "5+2m",
       "traits": [
         "Pierce 2",
-        " [2H]",
-        " [Crewed 4]",
-        " [Carriage 4]",
-        " [Reload 6]",
-        " [Traversal!]"
-      ]
+        "[2H]",
+        "[Crewed 4]",
+        "[Carriage 4]",
+        "[Reload 6]",
+        "[Traversal!]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Balllista, Light": {
       "class": "Support - Archaic",
@@ -10200,12 +11532,14 @@ export const gameData = {
       "dmg": "4+2m",
       "traits": [
         "Pierce",
-        " [2H]",
-        " [Crewed 2]",
-        " [Carriage 3]",
-        " [Reload 4]",
-        " [Traversal]"
-      ]
+        "[2H]",
+        "[Crewed 2]",
+        "[Carriage 3]",
+        "[Reload 4]",
+        "[Traversal]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Beam Cannon": {
       "class": "Support - Energy",
@@ -10216,15 +11550,17 @@ export const gameData = {
       "dmg": "9+3w",
       "traits": [
         "[Crewed 3]",
-        " ROF 3",
-        " Cleave",
-        " Caustic",
-        " Pierce 2",
-        " [2H]",
-        " Line X > List",
-        " [Traversal!]",
-        " [Feed]"
-      ]
+        "ROF 3",
+        "Cleave",
+        "Caustic",
+        "Pierce 2",
+        "[2H]",
+        "Line X > List",
+        "[Traversal!]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Beam Cannon, Heavy": {
       "class": "Support - Energy",
@@ -10235,15 +11571,17 @@ export const gameData = {
       "dmg": "12+3w",
       "traits": [
         "[Crewed 4]",
-        " ROF 2",
-        " Cleave 2",
-        " Caustic 2",
-        " Pierce 3",
-        " [2H]",
-        " Line X > List",
-        " [Traversal!]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Cleave 2",
+        "Caustic 2",
+        "Pierce 3",
+        "[2H]",
+        "Line X > List",
+        "[Traversal!]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Beam Cannon, Light": {
       "class": "Support - Energy",
@@ -10254,15 +11592,17 @@ export const gameData = {
       "dmg": "6+3w",
       "traits": [
         "[Crewed 2]",
-        " ROF 2",
-        " Cleave",
-        " Caustic",
-        " Pierce",
-        " [2H]",
-        " Line X > List",
-        " [Traversal]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Cleave",
+        "Caustic",
+        "Pierce",
+        "[2H]",
+        "Line X > List",
+        "[Traversal]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Beam Gun": {
       "class": "Support - Energy",
@@ -10273,14 +11613,16 @@ export const gameData = {
       "dmg": "6+4w",
       "traits": [
         "[Laden 2]",
-        " ROF 4",
-        " [Crewed 2]",
-        " Caustic",
-        " Pierce",
-        " [2H]",
-        " Line X > List",
-        " [Feed]"
-      ]
+        "ROF 4",
+        "[Crewed 2]",
+        "Caustic",
+        "Pierce",
+        "[2H]",
+        "Line X > List",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Beam Gun, Advanced": {
       "class": "Support - Energy",
@@ -10291,14 +11633,16 @@ export const gameData = {
       "dmg": "7+4w",
       "traits": [
         "[Laden 2]",
-        " ROF 4",
-        " [Crewed 2]",
-        " Caustic",
-        " Pierce",
-        " [2H]",
-        " Line X > List",
-        " [Feed]"
-      ]
+        "ROF 4",
+        "[Crewed 2]",
+        "Caustic",
+        "Pierce",
+        "[2H]",
+        "Line X > List",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Cannon, A 12.7mm": {
       "class": "Support - Modern",
@@ -10309,13 +11653,15 @@ export const gameData = {
       "dmg": "6",
       "traits": [
         "[Reload 2]",
-        " [Traversal!]",
-        " Pierce 2",
-        " [Crewed 2]",
-        " [Blackpowder]",
-        " [2H]",
-        " [Carriage 3]"
-      ]
+        "[Traversal!]",
+        "Pierce 2",
+        "[Crewed 2]",
+        "[Blackpowder]",
+        "[2H]",
+        "[Carriage 3]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Cannon, B 25mm (2-pdr)": {
       "class": "Support - Modern",
@@ -10326,13 +11672,15 @@ export const gameData = {
       "dmg": "7",
       "traits": [
         "[Reload 3]",
-        " [Traversal!]",
-        " Pierce 3",
-        " [Crewed 2]",
-        " [Blackpowder]",
-        " [1H]",
-        " [Carriage 4]"
-      ]
+        "[Traversal!]",
+        "Pierce 3",
+        "[Crewed 2]",
+        "[Blackpowder]",
+        "[1H]",
+        "[Carriage 4]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Cannon, C 42mm (6-pdr)": {
       "class": "Support - Modern",
@@ -10343,13 +11691,15 @@ export const gameData = {
       "dmg": "8",
       "traits": [
         "[Reload 4]",
-        " [Traversal!]",
-        " Pierce 4",
-        " [Crewed 3]",
-        " [Blackpowder]",
-        " [1H]",
-        " [Carriage 5]"
-      ]
+        "[Traversal!]",
+        "Pierce 4",
+        "[Crewed 3]",
+        "[Blackpowder]",
+        "[1H]",
+        "[Carriage 5]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Cannon, D 75mm (17-pdr)": {
       "class": "Support - Modern",
@@ -10360,13 +11710,15 @@ export const gameData = {
       "dmg": "9",
       "traits": [
         "[Reload 5]",
-        " [Traversal!]",
-        " Pierce 5",
-        " [Crewed 4]",
-        " [Blackpowder]",
-        " [1H]",
-        " [Carriage 6]"
-      ]
+        "[Traversal!]",
+        "Pierce 5",
+        "[Crewed 4]",
+        "[Blackpowder]",
+        "[1H]",
+        "[Carriage 6]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Flame-thrower, Heavy": {
       "class": "Support - Modern",
@@ -10377,13 +11729,15 @@ export const gameData = {
       "dmg": "5+2b",
       "traits": [
         "[Laden 4]",
-        " Stream X > List",
-        " [Recoil 2]",
-        " [Traversal!]",
-        " [Clumsy!]",
-        " [2H]",
-        " [Discard+]"
-      ]
+        "Stream X > List",
+        "[Recoil 2]",
+        "[Traversal!]",
+        "[Clumsy!]",
+        "[2H]",
+        "[Discard+]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Flame-thrower, Light": {
       "class": "Support - Modern",
@@ -10394,12 +11748,14 @@ export const gameData = {
       "dmg": "3+2b",
       "traits": [
         "[Laden 2]",
-        " Stream X > List",
-        " [Traversal+]",
-        " [Clumsy]",
-        " [2H]",
-        " [Discard+]"
-      ]
+        "Stream X > List",
+        "[Traversal+]",
+        "[Clumsy]",
+        "[2H]",
+        "[Discard+]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Flame-thrower, Medium": {
       "class": "Support - Modern",
@@ -10410,13 +11766,15 @@ export const gameData = {
       "dmg": "4+2b",
       "traits": [
         "[Laden 3]",
-        " Stream X > List",
-        " [Recoil]",
-        " [Traversal]",
-        " [Clumsy!]",
-        " [2H]",
-        " [Discard+]"
-      ]
+        "Stream X > List",
+        "[Recoil]",
+        "[Traversal]",
+        "[Clumsy!]",
+        "[2H]",
+        "[Discard+]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Flame-thrower, Mini": {
       "class": "Support - Modern",
@@ -10427,10 +11785,12 @@ export const gameData = {
       "dmg": "2+2b",
       "traits": [
         "[Laden]",
-        " Stream X > List",
-        " [1H]",
-        " [Discard+]"
-      ]
+        "Stream X > List",
+        "[1H]",
+        "[Discard+]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Gatling Gun, 20mm": {
       "class": "Support - Modern",
@@ -10441,13 +11801,15 @@ export const gameData = {
       "dmg": "6+1b",
       "traits": [
         "[Emplace X > Trait]",
-        " ROF 5",
-        " Burst 2",
-        " [2H]",
-        " [Jitter]",
-        " [Feed]",
-        " [Carriage 5]"
-      ]
+        "ROF 5",
+        "Burst 2",
+        "[2H]",
+        "[Jitter]",
+        "[Feed]",
+        "[Carriage 5]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Gatling Gun, Archaic": {
       "class": "Support - Archaic",
@@ -10458,15 +11820,17 @@ export const gameData = {
       "dmg": "5+1m",
       "traits": [
         "[Emplace X > Trait]",
-        " ROF 3",
-        " Burst",
-        " [2H]",
-        " [Blackpowder]",
-        " [Traversal!]",
-        " [Feed 2]",
-        " [Carriage 4]",
-        " [Mounted 3]"
-      ]
+        "ROF 3",
+        "Burst",
+        "[2H]",
+        "[Blackpowder]",
+        "[Traversal!]",
+        "[Feed 2]",
+        "[Carriage 4]",
+        "[Mounted 3]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Gatling Gun, Archaic-v2": {
       "class": "Support - Archaic",
@@ -10477,11 +11841,13 @@ export const gameData = {
       "dmg": "5+1m",
       "traits": [
         "[Emplace X > Trait]",
-        " [2H]",
-        " [Traversal!]",
-        " [Carriage 4]",
-        " [Mounted 3]"
-      ]
+        "[2H]",
+        "[Traversal!]",
+        "[Carriage 4]",
+        "[Mounted 3]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Gatling Gun, Early": {
       "class": "Support - Modern",
@@ -10492,12 +11858,14 @@ export const gameData = {
       "dmg": "6",
       "traits": [
         "[Emplace X > Trait]",
-        " ROF 4",
-        " Burst 2",
-        " [2H]",
-        " [Feed]",
-        " [Carriage 4]"
-      ]
+        "ROF 4",
+        "Burst 2",
+        "[2H]",
+        "[Feed]",
+        "[Carriage 4]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Gatling Gun, Early-v2": {
       "class": "Support - Modern",
@@ -10508,9 +11876,11 @@ export const gameData = {
       "dmg": "6",
       "traits": [
         "[Emplace X > Trait]",
-        " [2H]",
-        " [Carriage 4]"
-      ]
+        "[2H]",
+        "[Carriage 4]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Gatling Gun, Mini (Mounted)": {
       "class": "Support - Archaic",
@@ -10521,11 +11891,13 @@ export const gameData = {
       "dmg": "4+1m",
       "traits": [
         "[Mounted]",
-        " ROF 2",
-        " Burst",
-        " [1H]",
-        " [Feed]"
-      ]
+        "ROF 2",
+        "Burst",
+        "[1H]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Gatling Gun, Mini": {
       "class": "Support - Archaic",
@@ -10536,13 +11908,15 @@ export const gameData = {
       "dmg": "4+1m",
       "traits": [
         "[Laden 2]",
-        " ROF 2",
-        " Burst",
-        " [1H]",
-        " [Jitter!]",
-        " [Feed 2]",
-        " [Carriage 3]"
-      ]
+        "ROF 2",
+        "Burst",
+        "[1H]",
+        "[Jitter!]",
+        "[Feed 2]",
+        "[Carriage 3]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Hand Cannon": {
       "class": "Support - Archaic",
@@ -10553,13 +11927,15 @@ export const gameData = {
       "dmg": "2+3w",
       "traits": [
         "[Reload 3]",
-        " [Laden 2]",
-        " [Emplace]",
-        " [Entropy!]",
-        " Pierce",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Laden 2]",
+        "[Emplace]",
+        "[Entropy!]",
+        "Pierce",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Machine Gun, Heavy (Mounted)": {
       "class": "Support - Modern",
@@ -10570,15 +11946,17 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF 5",
-        " Burst 3",
-        " [Laden 3]",
-        " Fire-lane",
-        " [Mounted 3]",
-        " [2H]",
-        " Pierce 2",
-        " [Jitter!]",
-        " [Feed 2]"
-      ]
+        "Burst 3",
+        "[Laden 3]",
+        "Fire-lane",
+        "[Mounted 3]",
+        "[2H]",
+        "Pierce 2",
+        "[Jitter!]",
+        "[Feed 2]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Machine Gun, Heavy": {
       "class": "Support - Modern",
@@ -10589,14 +11967,16 @@ export const gameData = {
       "dmg": "5",
       "traits": [
         "ROF 5",
-        " Burst 3",
-        " [Laden 3]",
-        " [Emplace X > Trait]",
-        " [2H]",
-        " Pierce 2",
-        " [Jitter!]",
-        " [Feed 2]"
-      ]
+        "Burst 3",
+        "[Laden 3]",
+        "[Emplace X > Trait]",
+        "[2H]",
+        "Pierce 2",
+        "[Jitter!]",
+        "[Feed 2]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Machine Gun, Light (Mounted)": {
       "class": "Support - Modern",
@@ -10607,13 +11987,15 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 4",
-        " Burst",
-        " [Traversal]",
-        " Fire-lane",
-        " [Mounted 2]",
-        " [2H]",
-        " Pierce"
-      ]
+        "Burst",
+        "[Traversal]",
+        "Fire-lane",
+        "[Mounted 2]",
+        "[2H]",
+        "Pierce"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Machine Gun, Light": {
       "class": "Support - Modern",
@@ -10624,14 +12006,16 @@ export const gameData = {
       "dmg": "3",
       "traits": [
         "ROF 4",
-        " Burst",
-        " [Laden]",
-        " Fire-lane",
-        " [2H]",
-        " Pierce",
-        " [Jitter]",
-        " [Feed]"
-      ]
+        "Burst",
+        "[Laden]",
+        "Fire-lane",
+        "[2H]",
+        "Pierce",
+        "[Jitter]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Machine Gun, Medium (Mounted)": {
       "class": "Support - Modern",
@@ -10642,14 +12026,16 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 5",
-        " Burst 2",
-        " [Traversal]",
-        " Fire-lane",
-        " [Mounted 2]",
-        " [2H]",
-        " Pierce",
-        " [Feed]"
-      ]
+        "Burst 2",
+        "[Traversal]",
+        "Fire-lane",
+        "[Mounted 2]",
+        "[2H]",
+        "Pierce",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Machine Gun, Medium": {
       "class": "Support - Modern",
@@ -10660,14 +12046,16 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "ROF 5",
-        " Burst 2",
-        " [Laden 2]",
-        " [Emplace X > Trait]",
-        " [2H]",
-        " Pierce",
-        " [Jitter]",
-        " [Feed 2]"
-      ]
+        "Burst 2",
+        "[Laden 2]",
+        "[Emplace X > Trait]",
+        "[2H]",
+        "Pierce",
+        "[Jitter]",
+        "[Feed 2]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Machine Gun, Mitrailleuse": {
       "class": "Support - Archaic",
@@ -10678,14 +12066,16 @@ export const gameData = {
       "dmg": "2+4w",
       "traits": [
         "[Laden 5]",
-        " [Emplace 2]",
-        " Spray",
-        " ROF 3",
-        " [Reload]",
-        " [2H]",
-        " [Blackpowder]",
-        " [Feed]"
-      ]
+        "[Emplace 2]",
+        "Spray",
+        "ROF 3",
+        "[Reload]",
+        "[2H]",
+        "[Blackpowder]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Mortar, Heavy": {
       "class": "Support - Modern",
@@ -10696,15 +12086,17 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 4]",
-        " [Reload 2]",
-        " [Arc 12]",
-        " Blast 11",
-        " Stun 2",
-        " [2H]",
-        " [Emplace X > Trait]",
-        " Frag 7",
-        " [Scatter]"
-      ]
+        "[Reload 2]",
+        "[Arc 12]",
+        "Blast 11",
+        "Stun 2",
+        "[2H]",
+        "[Emplace X > Trait]",
+        "Frag 7",
+        "[Scatter]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Mortar, Light": {
       "class": "Support - Modern",
@@ -10715,10 +12107,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        " [2H]",
-        " [Emplace X > Trait]",
-        " [Scatter]"
-      ]
+        "[2H]",
+        "[Emplace X > Trait]",
+        "[Scatter]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Mortar, Medium": {
       "class": "Support - Modern",
@@ -10729,10 +12123,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 3]",
-        " [2H]",
-        " [Emplace X > Trait]",
-        " [Scatter]"
-      ]
+        "[2H]",
+        "[Emplace X > Trait]",
+        "[Scatter]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Mortar, Mini-mortar (Mounted)": {
       "class": "Support - Modern",
@@ -10743,14 +12139,16 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Traversal]",
-        " ROF",
-        " [Arc]",
-        " Blast 3",
-        " Stun",
-        " [1H]",
-        " Frag 3",
-        " [Scatter 2]"
-      ]
+        "ROF",
+        "[Arc]",
+        "Blast 3",
+        "Stun",
+        "[1H]",
+        "Frag 3",
+        "[Scatter 2]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Mortar, Mini-mortar": {
       "class": "Support - Modern",
@@ -10761,10 +12159,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden]",
-        " [2H]",
-        " [Emplace X > Trait]",
-        " [Scatter 2]"
-      ]
+        "[2H]",
+        "[Emplace X > Trait]",
+        "[Scatter 2]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Mounted Bolter Weapon": {
       "class": "Support - Energy",
@@ -10775,13 +12175,15 @@ export const gameData = {
       "dmg": "6+3m",
       "traits": [
         "[Entropy!]",
-        " Ricochet",
-        " ROF 4",
-        " [Feed]",
-        " [2H]",
-        " [Jitter+]",
-        " [Feed]"
-      ]
+        "Ricochet",
+        "ROF 4",
+        "[Feed]",
+        "[2H]",
+        "[Jitter+]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Mounted Flame-thrower": {
       "class": "Support - Futuristic",
@@ -10792,8 +12194,10 @@ export const gameData = {
       "dmg": "5+4w",
       "traits": [
         "Fire 3",
-        " [2H]"
-      ]
+        "[2H]"
+      ],
+      "classification": "Support",
+      "type": "Futuristic"
     },
     "Mounted Mortar, Mini-mortar": {
       "class": "Support - Modern",
@@ -10804,10 +12208,12 @@ export const gameData = {
       "dmg": "1w",
       "traits": [
         "[Arc]",
-        " Blast 2",
-        " Stun",
-        " [1H]"
-      ]
+        "Blast 2",
+        "Stun",
+        "[1H]"
+      ],
+      "classification": "Support",
+      "type": "Modern"
     },
     "Mounted Rail-gun": {
       "class": "Support - Futuristic",
@@ -10818,12 +12224,14 @@ export const gameData = {
       "dmg": "8",
       "traits": [
         "ROF 8",
-        " Burst 3",
-        " [Feed 4]",
-        " [2H]",
-        " [Jitter+]",
-        " [Feed]"
-      ]
+        "Burst 3",
+        "[Feed 4]",
+        "[2H]",
+        "[Jitter+]",
+        "[Feed]"
+      ],
+      "classification": "Support",
+      "type": "Futuristic"
     },
     "Pipe Cannon, 1-pdr": {
       "class": "Support - Archaic",
@@ -10834,12 +12242,14 @@ export const gameData = {
       "dmg": "3+3w",
       "traits": [
         "[Reload 3]",
-        " [Laden 2]",
-        " [Emplace 2]",
-        " Pierce 2",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Laden 2]",
+        "[Emplace 2]",
+        "Pierce 2",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Pipe Cannon, 2-pdr": {
       "class": "Support - Archaic",
@@ -10850,12 +12260,14 @@ export const gameData = {
       "dmg": "4+3w",
       "traits": [
         "[Reload 3]",
-        " [Laden 3]",
-        " [Emplace 3]",
-        " Pierce 3",
-        " [2H]",
-        " [Blackpowder]"
-      ]
+        "[Laden 3]",
+        "[Emplace 3]",
+        "Pierce 3",
+        "[2H]",
+        "[Blackpowder]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     },
     "Plasma Cannon": {
       "class": "Support - Energy",
@@ -10866,13 +12278,15 @@ export const gameData = {
       "dmg": "8+4w",
       "traits": [
         "Disrupt",
-        " Burn 2",
-        " Caustic",
-        " Pierce 2",
-        " [2H]",
-        " [Feed 2]",
-        " ROF 2"
-      ]
+        "Burn 2",
+        "Caustic",
+        "Pierce 2",
+        "[2H]",
+        "[Feed 2]",
+        "ROF 2"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Plasma Cannon, Heavy": {
       "class": "Support - Energy",
@@ -10883,13 +12297,15 @@ export const gameData = {
       "dmg": "10+6w",
       "traits": [
         "Disrupt 2",
-        " Burn 3",
-        " Caustic 2",
-        " Pierce 3",
-        " [2H]",
-        " [Feed 2]",
-        " ROF 2"
-      ]
+        "Burn 3",
+        "Caustic 2",
+        "Pierce 3",
+        "[2H]",
+        "[Feed 2]",
+        "ROF 2"
+      ],
+      "classification": "Support",
+      "type": "Energy"
     },
     "Submachine-gun, Archaic": {
       "class": "Support - Archaic",
@@ -10900,15 +12316,17 @@ export const gameData = {
       "dmg": "4",
       "traits": [
         "[Reload]",
-        " [Laden]",
-        " Fire-lane",
-        " ROF 3",
-        " Burst",
-        " [1H]",
-        " [Blackpowder]",
-        " [Jitter!]",
-        " [Feed 2]"
-      ]
+        "[Laden]",
+        "Fire-lane",
+        "ROF 3",
+        "Burst",
+        "[1H]",
+        "[Blackpowder]",
+        "[Jitter!]",
+        "[Feed 2]"
+      ],
+      "classification": "Support",
+      "type": "Archaic"
     }
   },
   "tech_level": [
@@ -11141,9 +12559,11 @@ export const gameData = {
       "dmg": "2-1w",
       "traits": [
         "Poison",
-        " [Reload]",
-        " [2H]"
-      ]
+        "[Reload]",
+        "[2H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Bola": {
       "class": "Thrown",
@@ -11154,11 +12574,13 @@ export const gameData = {
       "dmg": "2-1w",
       "traits": [
         "Conceal",
-        " Stun",
-        " Entangle",
-        " [Stub]",
-        " [1H]"
-      ]
+        "Stun",
+        "Entangle",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Boomerang, War": {
       "class": "Thrown",
@@ -11169,11 +12591,13 @@ export const gameData = {
       "dmg": "2-1b",
       "traits": [
         "Conceal",
-        " Ricochet",
-        " [Awkward]",
-        " Stun",
-        " [1H]"
-      ]
+        "Ricochet",
+        "[Awkward]",
+        "Stun",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Bottle-Phial, Acid-1": {
       "class": "Thrown",
@@ -11184,10 +12608,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Splash X > Trait",
-        " [Discard!]",
-        " [Scatter]",
-        " [1H]"
-      ]
+        "[Discard!]",
+        "[Scatter]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Bottle-Phial, Burn-1": {
       "class": "Thrown",
@@ -11198,10 +12624,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Splash X > Trait",
-        " [Discard!]",
-        " [Scatter]",
-        " [1H]"
-      ]
+        "[Discard!]",
+        "[Scatter]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Bottle-Phial, Caustic-1": {
       "class": "Thrown",
@@ -11212,10 +12640,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Splash X > Trait",
-        " [Discard!]",
-        " [Scatter]",
-        " [1H]"
-      ]
+        "[Discard!]",
+        "[Scatter]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Bottle-Phial, Confuse-1": {
       "class": "Thrown",
@@ -11226,10 +12656,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Splash X > Trait",
-        " [Discard!]",
-        " [Scatter]",
-        " [1H]"
-      ]
+        "[Discard!]",
+        "[Scatter]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Bottle-Phial, Fire-1": {
       "class": "Thrown",
@@ -11240,10 +12672,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Splash X > Trait",
-        " [Discard!]",
-        " [Scatter]",
-        " [1H]"
-      ]
+        "[Discard!]",
+        "[Scatter]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Bottle-Phial, Poison-1": {
       "class": "Thrown",
@@ -11254,10 +12688,12 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "Splash X > Trait",
-        " [Discard!]",
-        " [Scatter]",
-        " [1H]"
-      ]
+        "[Discard!]",
+        "[Scatter]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Chakram Rings": {
       "class": "Thrown",
@@ -11268,11 +12704,13 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Conceal",
-        " Ricochet 2",
-        " Melee",
-        " [Stub]",
-        " [1H]"
-      ]
+        "Ricochet 2",
+        "Melee",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Chakram Rings, Serrated": {
       "class": "Thrown",
@@ -11283,11 +12721,13 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "Conceal",
-        " Ricochet",
-        " Melee",
-        " [Stub]",
-        " [1H]"
-      ]
+        "Ricochet",
+        "Melee",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Discus": {
       "class": "Thrown",
@@ -11298,12 +12738,14 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Conceal",
-        " Ricochet 2",
-        " [Reload]",
-        " [Awkward]",
-        " Stun",
-        " [2H]"
-      ]
+        "Ricochet 2",
+        "[Reload]",
+        "[Awkward]",
+        "Stun",
+        "[2H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Improvised Thrown": {
       "class": "Thrown",
@@ -11314,8 +12756,10 @@ export const gameData = {
       "dmg": "2-1b",
       "traits": [
         "[Discard! > Type]",
-        " [1H]"
-      ]
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Improvised Thrown, Large": {
       "class": "Thrown",
@@ -11326,9 +12770,11 @@ export const gameData = {
       "dmg": "2-1m",
       "traits": [
         "[Discard! > Type]",
-        " [Laden]",
-        " [2H]"
-      ]
+        "[Laden]",
+        "[2H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Net, Deathnet": {
       "class": "Thrown",
@@ -11339,14 +12785,16 @@ export const gameData = {
       "dmg": "3+1w",
       "traits": [
         "Hold",
-        " Thresh",
-        " [Awkward]",
-        " [Stun-only]",
-        " [Discard! > Type]",
-        " [2H]",
-        " [Laden]",
-        " Silent 3"
-      ]
+        "Thresh",
+        "[Awkward]",
+        "[Stun-only]",
+        "[Discard! > Type]",
+        "[2H]",
+        "[Laden]",
+        "Silent 3"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Sling": {
       "class": "Thrown",
@@ -11357,11 +12805,13 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Stun",
-        " [Arc]",
-        " [Awkward]",
-        " [Stub]",
-        " [2H]"
-      ]
+        "[Arc]",
+        "[Awkward]",
+        "[Stub]",
+        "[2H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Sling, Staff": {
       "class": "Thrown",
@@ -11372,11 +12822,13 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "Stun",
-        " [Arc 2]",
-        " [Awkward]",
-        " [Stub]",
-        " [2H]"
-      ]
+        "[Arc 2]",
+        "[Awkward]",
+        "[Stub]",
+        "[2H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Staff, Sling": {
       "class": "Thrown",
@@ -11387,10 +12839,12 @@ export const gameData = {
       "dmg": "2+1m",
       "traits": [
         "[Awkward]",
-        " Stun",
-        " [Arc 2]",
-        " [2H]"
-      ]
+        "Stun",
+        "[Arc 2]",
+        "[2H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Throwing Axes": {
       "class": "Thrown",
@@ -11401,11 +12855,13 @@ export const gameData = {
       "dmg": "2",
       "traits": [
         "Cleave",
-        " Conceal",
-        " [Awkward]",
-        " [Hafted]",
-        " [1H]"
-      ]
+        "Conceal",
+        "[Awkward]",
+        "[Hafted]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Throwing Dart": {
       "class": "Thrown",
@@ -11416,12 +12872,14 @@ export const gameData = {
       "dmg": "2-1w",
       "traits": [
         "Poison",
-        " Conceal",
-        " [Awkward]",
-        " [Stub]",
-        " [Discard]",
-        " [1H]"
-      ]
+        "Conceal",
+        "[Awkward]",
+        "[Stub]",
+        "[Discard]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Throwing Knives": {
       "class": "Thrown",
@@ -11432,10 +12890,12 @@ export const gameData = {
       "dmg": "2-1w",
       "traits": [
         "Discrete",
-        " [Awkward]",
-        " [Stub]",
-        " [1H]"
-      ]
+        "[Awkward]",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Throwing Stars": {
       "class": "Thrown",
@@ -11446,10 +12906,12 @@ export const gameData = {
       "dmg": "2-1w",
       "traits": [
         "Discrete",
-        " [Awkward]",
-        " [Stub]",
-        " [1H]"
-      ]
+        "[Awkward]",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     },
     "Throwing Sticks": {
       "class": "Thrown",
@@ -11460,11 +12922,13 @@ export const gameData = {
       "dmg": "2-1w",
       "traits": [
         "[Stun-only]",
-        " Conceal",
-        " [Awkward]",
-        " [Stub]",
-        " [1H]"
-      ]
+        "Conceal",
+        "[Awkward]",
+        "[Stub]",
+        "[1H]"
+      ],
+      "classification": "Thrown",
+      "type": "Thrown"
     }
   },
   "trait_descriptions": {

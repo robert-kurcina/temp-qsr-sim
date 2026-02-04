@@ -10,9 +10,19 @@ export interface Item {
   name: string;
 
   /**
-   * The item's classification, e.g., "Melee", "Armor", "Natural".
+   * The item's full classification string, e.g., "Melee", "Armor - Suit", "Natural".
    */
   class: string;
+
+  /**
+   * The general classification of the item, e.g., "Melee", "Armor".
+   */
+  classification: string;
+
+  /**
+   * The specific type of the item, e.g., "Suit", "Energy".
+   */
+  type: string;
 
   /**
    * The Build Point cost of the item.
