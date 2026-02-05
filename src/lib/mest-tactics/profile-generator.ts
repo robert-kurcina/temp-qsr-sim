@@ -12,7 +12,7 @@ const itemDataMapping: {
     'Firearm': 'ranged_weapons',
     'Ordnance': 'ranged_weapons',
     'Armor': 'armors',
-    'Equipment': 'equipments',
+    'Equipment': 'equipment',
 };
 
 export interface Profile {
@@ -67,6 +67,7 @@ export function createProfiles(
 
     let totalHands = 0;
     let equipmentCount = 0;
+    let totalLaden = 0;
 
     itemNames.forEach(itemName => {
         let itemFound = false;
@@ -78,7 +79,13 @@ export function createProfiles(
                 itemTraits.push(...(item.traits || []));
                 totalBp += item.bp;
 
-                if (item.classification === 'Equipment') equipmentCount++;
+                const ladenTrait = item.traits.find(t => t.startsWith('[Laden'));
+                if (ladenTrait) {
+                    const match = ladenTrait.match(/\d+/);
+                    totalLaden += match ? parseInt(match[0]) : 1;
+                }
+
+                if (key === 'Equipment') equipmentCount++;
 
                 const handTrait = item.traits.find(t => t.startsWith('[') && t.endsWith('H]'));
                 if (handTrait) {
@@ -90,7 +97,7 @@ export function createProfiles(
                     meleeBp.push(item.bp);
                 } else if (item.classification === 'Firearm' || item.classification === 'Ordnance') {
                     rangedBp.push(item.bp);
-                } else if (item.classification === 'Equipment') {
+                } else if (item.classification === 'Equipment' || (item.classification && item.classification.includes('Shield'))) {
                     equipmentBp.push(item.bp);
                 }
 
@@ -123,7 +130,7 @@ export function createProfiles(
 
     const adjustedItemBp = [...adjustedMeleeBp, ...adjustedRangedBp, ...adjustedEquipmentBp].reduce((a, b) => a + b, 0);
     const nonDiscountedItemBp = items
-        .filter(i => i.classification !== 'Melee' && i.classification !== 'Firearm' && i.classification !== 'Ordnance' && i.classification !== 'Equipment')
+        .filter(i => i.classification !== 'Melee' && i.classification !== 'Firearm' && i.classification !== 'Ordnance' && i.classification !== 'Equipment' && !(i.classification && i.classification.includes('Shield')))
         .reduce((acc, item) => acc + item.bp, 0);
 
     const adjustedBp = primaryArchetypeData.bp + nonDiscountedItemBp + adjustedItemBp;
@@ -141,14 +148,12 @@ export function createProfiles(
 
     let adjPhysicality = physicality;
     let adjDurability = durability;
-    let totalLaden = 0;
     let totalDeflect = 0;
     let totalAR = 0;
 
     allCombinedTraits.forEach(trait => {
         if (trait.name === 'Brawn') adjPhysicality += trait.level || 0;
         if (trait.name === 'Tough') adjDurability += trait.level || 0;
-        if (trait.name === '[Laden]') totalLaden += trait.level || 0;
         if (trait.name === 'Deflect') totalDeflect += trait.level || 0;
         if (trait.name === 'Armor') totalAR += trait.level || 0;
     });
@@ -180,8 +185,8 @@ export function createProfiles(
         totalHands,
         totalDeflect,
         totalAR,
-        finalTraits: archetypeTraits,
-        allTraits: archetypeTraits
+        finalTraits: allCombinedTraits.map(formatTrait),
+        allTraits: allCombinedTraits.map(formatTrait)
     };
 
     return [profile];

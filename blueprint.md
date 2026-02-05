@@ -31,6 +31,7 @@ This project is a **headless wargame simulator** designed to run in Firebase Stu
 
 ## Reference Documents
 
+*   **`mastery.md`**: This file contains the MEST Tactics QSR System Mastery instructions, serving as a primary guide for interaction.
 *   **`rules.md`**: This file contains the canonical game rules, definitions, and modifier tables as provided by the user. It serves as the primary source of truth for all game mechanic implementations.
 
 ## Design and Features

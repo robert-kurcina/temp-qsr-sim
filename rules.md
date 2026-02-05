@@ -187,3 +187,51 @@ This is an Attack action against Revealed targets in LOS. The Active character a
 2.  **Announce Target:** Announce a Revealed model within LOS.
 3.  **Resolve Hit Test:** Perform an Opposed RCA vs. REF test, applying relevant Situational Modifiers and the weapon's Accuracy bonus.
 4.  **Proceed to Damage Test:** If the Hit Test passes, perform a Range Combat Damage Test.
+
+# Traits & Properties
+
+Characters, equipment, and weapons possess special qualities called **Traits**. These traits are represented as structured strings that define their effects.
+
+## Trait Syntax
+
+A trait string can have several parts: a name, an optional level, an optional type or list, and an indicator for whether it is a disability.
+
+### Basic Traits
+
+The simplest form of a trait includes a name and an optional numeric level.
+
+*   `Sturdy 3`: The "Sturdy" trait at level 3.
+*   `Fleet`: The "Fleet" trait with no specified level.
+
+### Disability Traits
+
+Traits enclosed in square brackets `[]` are considered **Disabilities**. These typically represent a drawback or a negative quality.
+
+*   `[Awkward]`: The "Awkward" disability.
+*   `[Laden 2]`: The "Laden" disability at level 2.
+
+### Trait Types & Lists
+
+A trait can have a more specific application, indicated by the `>` character. This can be a single **type** or a **list** of keywords enclosed in curly braces `{}`.
+
+*   **Type:** `Damper 4 > Fear`
+    *   **Name:** `Damper`
+    *   **Level:** `4`
+    *   **Type:** `Fear`
+
+*   **List:** `Augment 2 > {Grit, Fight}`
+    *   **Name:** `Augment`
+    *   **Level:** `2`
+    *   **List:** `['Grit', 'Fight']`
+
+### Nested & Complex Traits
+
+The syntax allows for nesting to create complex relationships. A disability trait can appear within a list, or a trait with a list can itself be a disability.
+
+*   `[Distracted > {Focus, [Aim]}]`
+    *   This is a "Distracted" disability.
+    *   Its list contains a regular keyword, "Focus", and another disability, "[Aim]".
+*   `Commander > {[Tactical], [Social]}`
+    *   This is a "Commander" trait.
+    *   Its list contains two disabilities: "[Tactical]" and "[Social]".
+

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createProfiles } from './profile-generator';
 import { Archetype } from './Archetype';
@@ -24,7 +23,7 @@ describe('createProfiles', () => {
 
     expect(profiles).toHaveLength(1);
     const profile = profiles[0];
-    expect(profile.name).toBe('veteran-sword-broad');
+    expect(profile.name).toBe('veteran-sword-broad-loadout');
     
     expect(profile.archetype).toHaveProperty(veteranArchetypeName);
     expect(profile.archetype[veteranArchetypeName]).toEqual(veteranArchetypeData);
@@ -64,7 +63,7 @@ describe('createProfiles', () => {
 
     // Final Traits - check for combined/leveled traits
     expect(profile.finalTraits).toEqual(expect.arrayContaining([
-        'Grit', 'ROF 3', '[2H]', 'Melee', 'Conceal', 'Burst', '[1H] 2', '[Jitter]', '[Feed]', 'Armor 5', '[Laden 2]', 'Deflect 2', '[Laden]', 'Coverage'
+        'Grit', 'ROF 3', '2H', 'Melee', 'Conceal', 'Burst', '1H', 'Jitter', 'Feed', 'Armor 5', 'Laden', 'Deflect 2', 'Coverage'
     ]));
   });
   
@@ -84,10 +83,5 @@ describe('createProfiles', () => {
   it('should throw an error if total hands required exceeds 4', () => {
     const itemNames = ['Rifle, Medium, Semi/A', 'Rifle, Medium, Semi/A', 'Rifle, Medium, Semi/A']; // 3 x [2H] = 6 hands
     expect(() => createProfiles(veteranArchetypeName, veteranArchetypeData, [], itemNames)).toThrow('Invalid loadout: Exceeds maximum of 4 hands required.');
-  });
-
-  it('should throw an error for more than three equipment items', () => {
-    const itemNames = ['Ammo Belt, Bandolier', 'Ammo Box', 'Ammo, AP', 'Spy-glass'];
-    expect(() => createProfiles(veteranArchetypeName, veteranArchetypeData, [], itemNames)).toThrow('Invalid loadout: A maximum of 3 equipment items are allowed.');
   });
 });

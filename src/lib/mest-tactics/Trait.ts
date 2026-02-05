@@ -1,4 +1,3 @@
-
 /**
  * Represents a parsed, structured Trait object.
  * This is the machine-readable format used by the simulator after the
