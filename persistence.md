@@ -25,3 +25,8 @@ This document outlines the requirements for the project's persistence layer.
 4.  **CLI Query Command:** A Node.js CLI command to query the persistent store for various objects (Profiles, Characters, Assemblies).
 5.  **CLI Export Command:** A Node.js CLI command to export the results of a query to a JSON file.
 6.  **Resilience:** The persistent store should be resilient to errors.
+7.  **Character Naming Convention:**
+    *   Character names must be unique.
+    *   The format is `[A-Z]-[0000-9999]`.
+    *   In case of a name collision, a suffix of `-[a-z][0-9]` will be appended.
+    *   Examples: `A-0001`, `A-0001-a2`.

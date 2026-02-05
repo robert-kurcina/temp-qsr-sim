@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "vitest",
-    "random-profile": "tsx scripts/generate-random-profile.ts"
+    "random-profile": "tsx scripts/generate-random-profile.ts",
+    "generate-assembly": "tsx scripts/generate-assembly.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

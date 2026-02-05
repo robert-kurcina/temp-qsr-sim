@@ -38,6 +38,66 @@ export interface Profile {
     allTraits: string[];
 }
 
+export function generateRandomProfile(): Profile {
+    const archetypeNames = Object.keys(gameData.archetypes);
+    const primaryArchetypeName = getRandomElement(archetypeNames);
+    const primaryArchetypeData = gameData.archetypes[primaryArchetypeName];
+
+    const meleeWeaponNames = Object.keys(gameData.melee_weapons);
+    const rangedWeaponNames = Object.keys(gameData.ranged_weapons);
+    const armorNames = Object.keys(gameData.armors);
+    const equipmentNames = Object.keys(gameData.equipment);
+
+    let selectedItems: string[] = [];
+    let generatedProfile: Profile | null = null;
+    let attempts = 0;
+
+    while (!generatedProfile && attempts < 20) {
+        attempts++;
+        selectedItems = [];
+
+        // Randomly select items with a degree of randomness to create variety
+        if (Math.random() > 0.3) {
+            selectedItems.push(getRandomElement(meleeWeaponNames));
+        }
+        if (Math.random() > 0.3) {
+            selectedItems.push(getRandomElement(rangedWeaponNames));
+        }
+        if (Math.random() > 0.3) {
+            selectedItems.push(getRandomElement(armorNames));
+        }
+        
+        const equipment = getRandomSubset(equipmentNames, 3);
+        selectedItems.push(...equipment);
+
+        try {
+            const profiles = createProfiles(primaryArchetypeName, primaryArchetypeData, [], selectedItems);
+            if (profiles.length > 0) {
+                generatedProfile = profiles[0];
+            }
+        } catch (error) {
+            // Invalid loadout, just try again.
+        }
+    }
+
+    if (!generatedProfile) {
+        // Fallback to a profile with no items if we fail to generate a valid one.
+        try {
+            const profiles = createProfiles(primaryArchetypeName, primaryArchetypeData, [], []);
+            if (profiles.length > 0) {
+                generatedProfile = profiles[0];
+            } else {
+                 throw new Error('Failed to generate a random profile even with no items.');
+            }
+        } catch(e) {
+             throw new Error('Failed to generate a random profile after multiple attempts.');
+        }
+    }
+    
+    return generatedProfile;
+}
+
+
 export function createProfiles(
     primaryArchetypeName: string,
     primaryArchetypeData: Archetype,
@@ -190,4 +250,15 @@ export function createProfiles(
     };
 
     return [profile];
+}
+
+// Helper functions for generateRandomProfile
+function getRandomElement<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function getRandomSubset<T>(arr: T[], maxCount: number): T[] {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    const count = Math.floor(Math.random() * (maxCount + 1));
+    return shuffled.slice(0, count);
 }

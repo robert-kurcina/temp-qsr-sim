@@ -13,18 +13,22 @@ import { Trait } from './Trait';
  * @param characterName The unique name for this character.
  * @returns A fully initialized Character object.
  */
-export function createCharacter(profile: Profile, characterName: string): Character {
+export function createCharacter(profile: Profile, characterName?: string): Character {
+  const primaryArchetype = Object.values(profile.archetype)[0];
+  if (!primaryArchetype) {
+    throw new Error('Profile does not contain a valid primary archetype.');
+  }
   // 1. Combine all raw trait strings from archetype and equipment.
   const rawTraits = [
-    ...(profile.archetype.traits || []),
-    ...profile.equipment.flatMap(item => item.traits || []),
+    ...(primaryArchetype.traits || []),
+    ...profile.items.flatMap(item => item.traits || []),
   ];
 
   // 2. Parse all raw strings into structured Trait objects.
   const allTraits: Trait[] = rawTraits.map(parseTrait);
 
   // 3. Start with a deep copy of the base archetype attributes.
-  const finalAttributes = { ...profile.archetype.attributes };
+  const finalAttributes = { ...primaryArchetype.attributes };
 
   // 4. Apply attribute-modifying trait logic.
   for (const trait of allTraits) {
@@ -36,13 +40,13 @@ export function createCharacter(profile: Profile, characterName: string): Charac
 
   // 5. Calculate armor state directly from the profile's equipment.
   const armorState: ArmorState = { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 };
-  for (const item of profile.equipment) {
+  for (const item of profile.items) {
     const itemTraits = (item.traits || []).map(parseTrait);
     const armorTrait = itemTraits.find(t => t.name.toLowerCase() === 'armor');
 
     if (armorTrait && typeof armorTrait.level === 'number' && armorTrait.level > 0) {
       const arValue = armorTrait.level;
-      const lowerCaseClass = (item.class || '').toLowerCase();
+      const lowerCaseClass = (item.classification || '').toLowerCase();
       let assigned = false;
 
       if (lowerCaseClass.includes('suit')) {
@@ -72,7 +76,7 @@ export function createCharacter(profile: Profile, characterName: string): Charac
   // 6. Assemble the final Character object.
   const character: Character = {
     id: Date.now().toString() + Math.random().toString(), // Basic unique ID
-    name: characterName,
+    name: characterName || profile.name,
     profile,
     allTraits,
     finalAttributes,

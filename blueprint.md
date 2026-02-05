@@ -48,6 +48,7 @@ This project is a **headless wargame simulator** designed to run in Firebase Stu
 
 *   **Data-Driven Design:** Core character and item data is externalized in JSON files.
 *   **Character Creation:** A factory (`createCharacter`) builds characters from profiles, applying traits and calculating attributes.
+*   **Assembly Factory:** A factory (`createAssembly`) that generates a collection of `Character` objects based on configurable constraints such as minimum/maximum characters and total Budget Points (BP).
 *   **Core Dice Mechanics:** A `dice-roller.ts` module handles d10-based test resolution.
 *   **Trait System:** A flexible system for adding abilities and modifiers to characters and items.
 *   **Unit Testing:** A comprehensive Vitest test suite validates all core logic.
@@ -72,40 +73,18 @@ The monolithic `combat.ts` module was refactored into two distinct, high-level m
 ### **Phase 5: Morale & Compulsory Actions (Completed)**
 This phase implemented the game's psychology and morale system, including character state tracking, morale checks, and the determination of compulsory actions based on a character's fear level.
 
-### **Phase 6: Instrumentation & Metrics Framework (Current)**
-This phase marks a strategic shift from pure feature implementation to building a foundational framework for long-term analysis and robust testing. The goal is to create a centralized system for logging and tracking key gameplay events. This will provide immediate value by enabling deterministic, reliable testing and will serve as the core data-gathering mechanism for future game balance analysis.
-
-**The Plan:**
-
-1.  **Design the `MetricsService`:**
-    *   Create a central singleton service, `MetricsService`, responsible for capturing and storing gameplay events.
-    *   It will expose a primary method: `logEvent(eventName: string, data: object)`.
-    *   It will maintain an in-memory log of all captured events.
-
-2.  **Instrument the Dice Roller:**
-    *   The `dice-roller.ts` module will be the first to be instrumented.
-    *   Every dice roll will be logged as a `diceRoll` event, capturing all inputs (stats, modifiers) and outputs (success/failure, degrees of success).
-
-3.  **Create a Mockable Testing Framework:**
-    *   Refactor the `dice-roller.ts` module to allow its core rolling function to be replaced or 'mocked' during tests.
-    *   In our test suites, we will now replace the random roller with a deterministic one that returns pre-defined results.
-
-4.  **Refactor Combat Tests for Determinism:**
-    *   Update the `close-combat.test.ts` and `ranged-combat.test.ts` suites.
-    *   Remove statistical loops and unreliable checks.
-    *   For each test, we will now inject specific dice roll outcomes (e.g., "force a hit," "force a miss") to validate the code paths with 100% reliability.
+### **Phase 6: Instrumentation & Metrics Framework (Completed)**
+This phase marked a strategic shift from pure feature implementation to building a foundational framework for long-term analysis and robust testing. The goal is to create a centralized system for logging and tracking key gameplay events. This will provide immediate value by enabling deterministic, reliable testing and will serve as the core data-gathering mechanism for future game balance analysis.
 
 ### **Phase 7: Critical Bug Fix & Rulebook Completion (Completed)**
 This phase addressed a critical bug in the combat resolution system and rectified significant omissions in the official `rules.md` documentation.
 
+### **Phase 8: Assembly Factory (Current)**
+This phase introduces the concept of an "Assembly," a collection of characters generated within specific constraints. This is the first step towards building a persistence layer and more complex scenario generation.
+
 **The Plan:**
 
-1.  **Diagnose Test Failures:** Investigated the root cause of failures in the `close-combat.test.ts` suite.
-2.  **Identify Critical Bug:** Discovered that in `hit-test.ts`, the `scoreModifier` derived from a weapon's accuracy was being incorrectly subtracted from the attacker's score instead of being added. This caused attacks that should have been hits (especially with accurate weapons) to fail.
-3.  **Implement Correction:** Patched `hit-test.ts` to correctly add the `scoreModifier`, resolving the bug.
-4.  **Verify Fix:** Confirmed that all combat unit tests pass after the correction.
-5.  **Audit `rules.md`:** Performed a full review of the game's rulebook to check for completeness against implemented logic.
-6.  **Update `rules.md`:** Authored and added two essential missing sections:
-    *   **"Visibility & Line of Sight":** Consolidated all rules related to cover, concealment, and LOS into a single, clear section.
-    *   **"Performing a Disengage Action":** Added a formal procedure for the Disengage action, which was previously only mentioned in modifier tables.
-7.  **Finalize Blueprint:** Updated this `blueprint.md` file to reflect the completion of this phase and provide a comprehensive project history.
+1.  **Define `Assembly` Interface:** Created a new `Assembly.ts` interface to define the data structure for a collection of characters.
+2.  **Create `assembly-factory.ts`:** Implemented the core factory logic to generate a valid assembly based on character count and BP constraints.
+3.  **Add CLI Command:** Created a `generate-assembly.ts` script and a corresponding `npm run generate-assembly` command to allow for easy generation of assemblies from the command line.
+4.  **Update Blueprint:** Updated this `blueprint.md` file to document the new Assembly Factory feature.
