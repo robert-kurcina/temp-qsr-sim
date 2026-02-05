@@ -1,36 +1,77 @@
+
 import { Trait } from './Trait';
 
 /**
  * Parses a raw trait string into a structured Trait object.
- * Handles various formats, e.g., "Sturdy 3", "Damper 4 > Fear", "Augment 2 > [Grit, Fight]".
+ * Handles formats like "Sturdy 3", "[Laden 2]", "[2H]", and "Grit".
  * @param source The raw string from the JSON data.
  * @returns A structured Trait object.
  */
 export function parseTrait(source: string): Trait {
-  const trait: Trait = { name: '', source };
+    const trimmedSource = source.trim();
 
-  // Handle lists first, e.g., "Augment 2 > [Grit, Fight]"
-  const listMatch = source.match(/(\[.*\])/);
-  if (listMatch) {
-    trait.list = listMatch[1].replace(/[\[\]]/g, '').split(',').map(s => s.trim());
-    source = source.replace(listMatch[0], '').trim();
-  }
+    // Regex for bracketed traits, e.g., "[Laden 2]", "[2H]"
+    // Captures the name inside the brackets and an optional level.
+    const bracketRegex = /^\[([a-zA-Z\s/,-]+?)(?: (\d+))?\]$/;
+    let match = trimmedSource.match(bracketRegex);
 
-  // Handle types, e.g., "Damper 4 > Fear"
-  const typeMatch = source.match(/(.*) > (.*)/);
-  if (typeMatch) {
-    source = typeMatch[1].trim();
-    trait.type = typeMatch[2].trim();
-  }
+    if (match) {
+        const name = `[${match[1]}]`;
+        const level = match[2] ? parseInt(match[2], 10) : 1;
+        return { name, level, source: trimmedSource };
+    }
 
-  // Handle values, e.g., "Sturdy 3"
-  const valueMatch = source.match(/(.*) (\d+)/);
-  if (valueMatch) {
-    trait.name = valueMatch[1].trim();
-    trait.level = parseInt(valueMatch[2], 10); // Corrected from trait.value
-  } else {
-    trait.name = source.trim();
-  }
+    // Regex for plain traits, e.g., "Sturdy 3", "Grit", "ROF 2"
+    // Captures the name and an optional level.
+    const plainRegex = /^([a-zA-Z\s/,-]+?)(?: (\d+))?$/;
+    match = trimmedSource.match(plainRegex);
+    
+    if (match) {
+        const name = match[1].trim();
+        const level = match[2] ? parseInt(match[2], 10) : 1;
+        return { name, level, source: trimmedSource };
+    }
 
-  return trait;
+    // Fallback for any traits that don't match the patterns
+    return { name: trimmedSource, level: 1, source: trimmedSource };
+}
+
+/**
+ * Combines an array of trait strings by parsing, merging, and leveling them up.
+ * @param traitStrings An array of raw trait strings.
+ * @returns An array of combined and leveled-up Trait objects.
+ */
+export function processTraits(traitStrings: string[]): Trait[] {
+    const parsedTraits = traitStrings.map(parseTrait);
+    const combined = new Map<string, Trait>();
+
+    for (const trait of parsedTraits) {
+        const existing = combined.get(trait.name);
+        if (existing) {
+            existing.level = (existing.level || 1) + (trait.level || 1);
+        } else {
+            combined.set(trait.name, { ...trait });
+        }
+    }
+    
+    return Array.from(combined.values());
+}
+
+/**
+ * Formats a Trait object back into a clean string representation.
+ * @param trait The Trait object to format.
+ * @returns A formatted string, e.g., "Grit 2" or "[Laden 3]".
+ */
+export function formatTrait(trait: Trait): string {
+    const { name, level } = trait;
+    
+    if (level && level > 1) {
+        if (name.startsWith('[') && name.endsWith(']')) {
+            const baseName = name.slice(1, -1);
+            return `[${baseName} ${level}]`;
+        }
+        return `${name} ${level}`;
+    }
+    
+    return name;
 }

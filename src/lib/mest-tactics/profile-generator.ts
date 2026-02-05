@@ -1,212 +1,182 @@
 
+import { gameData } from '../data';
 import { Archetype } from './Archetype';
 import { Item } from './Item';
-import { Profile } from './Profile';
-import { gameData } from '../data';
+import { Trait } from './Trait';
+import { processTraits, formatTrait, parseTrait } from './trait-parser';
 
-let profileCounter = 0;
-
-function generateProfileId(archetypeName: string, items: Item[]): string {
-  const safeArchetypeName = archetypeName.replace(/, /g, '-').toLowerCase();
-  if (items.length === 1) {
-    const safeItemName = items[0].name.replace(/, /g, '-').toLowerCase();
-    return `${safeArchetypeName}-${safeItemName}`;
-  } else if (items.length > 1) {
-    const safeItemName = items[0].name.replace(/, /g, '-').toLowerCase();
-    return `${safeArchetypeName}-${safeItemName}-loadout`;
-  }
-  profileCounter++;
-  return `${safeArchetypeName}-${String(profileCounter).padStart(4, '0')}`;
-}
-
-function combineAndLevelTraits(allTraits: string[]): string[] {
-    const traitLevels: Record<string, number> = {};
-    for (const traitString of allTraits) {
-        const match = traitString.match(/^(.+?)(?: (\d+))?$/);
-        if (match) {
-            const [, name, levelStr] = match;
-            const level = levelStr ? parseInt(levelStr, 10) : 1;
-            traitLevels[name] = (traitLevels[name] || 0) + level;
-        }
-    }
-    return Object.entries(traitLevels).map(([name, level]) => {
-        return level > 1 ? `${name} ${level}` : name;
-    });
-}
-
-const UNARMED_ITEM: Item = {
-  name: 'Unarmed',
-  class: 'Natural',
-  classification: 'Natural',
-  type: 'Natural',
-  bp: 0,
-  dmg: 'STR+0',
-  traits: ['[Natural]'],
+const itemDataMapping: {
+    [key: string]: keyof typeof gameData | null
+} = {
+    'Melee': 'melee_weapons',
+    'Firearm': 'ranged_weapons',
+    'Ordnance': 'ranged_weapons',
+    'Armor': 'armors',
+    'Equipment': 'equipments',
 };
 
-const IMPROVISED_ITEM: Item = {
-  name: 'Improvised Weapon',
-  class: 'Melee',
-  classification: 'Melee',
-  type: 'Melee',
-  bp: 0,
-  dmg: 'STR+1w',
-  traits: ['[Laden]'],
-};
-
-function calculateAdjustedBp(items: Item[], archetypeBp: number): {
-  adjustedBp: number, 
-  adjustedItemCosts: { meleeBp: number[], rangedBp: number[], equipmentBp: number[] }
-} {
-  const meleeWeapons: Item[] = [];
-  const rangedWeapons: Item[] = [];
-  const equipment: Item[] = [];
-
-  items.forEach(item => {
-    if (['Melee', 'Natural'].includes(item.class)) {
-      meleeWeapons.push(item);
-    } else if (['Bow', 'Firearm - Archaic', 'Firearm - Modern', 'Range - Archaic', 'Range - Energy', 'Range - Futuristic', 'Range - Magic', 'Range - Modern', 'Support - Archaic', 'Support - Energy', 'Support - Futuristic', 'Support - Modern', 'Thrown', 'Thrown (Grenade)'].includes(item.class)) {
-      rangedWeapons.push(item);
-    } else if (item.classification !== 'Armor') { // Equipment is everything not a weapon or armor
-      equipment.push(item);
-    }
-  });
-
-  const sortAndGetBp = (itemList: Item[]) => itemList.sort((a, b) => b.bp - a.bp).map(i => i.bp);
-
-  const meleeBp = sortAndGetBp(meleeWeapons);
-  const rangedBp = sortAndGetBp(rangedWeapons);
-  const equipmentBp = sortAndGetBp(equipment);
-
-  const calculateDiscountedBp = (bpList: number[]) => {
-    if (bpList.length === 0) return 0;
-    const [first, ...rest] = bpList;
-    return first + rest.reduce((sum, bp) => sum + Math.ceil(bp / 2), 0);
-  };
-
-  const armorBp = items.filter(i => i.classification === 'Armor').reduce((sum, item) => sum + item.bp, 0);
-
-  const adjustedBp = archetypeBp + 
-                     calculateDiscountedBp(meleeBp) + 
-                     calculateDiscountedBp(rangedBp) + 
-                     calculateDiscountedBp(equipmentBp) + 
-                     armorBp; // Armors are not discounted based on the rules
-
-  return { adjustedBp, adjustedItemCosts: { meleeBp, rangedBp, equipmentBp } };
+export interface Profile {
+    name: string;
+    archetype: { [key: string]: Archetype };
+    items: Item[];
+    totalBp: number;
+    adjustedBp: number;
+    adjustedItemCosts: { 
+        meleeBp: number[],
+        rangedBp: number[],
+        equipmentBp: number[]
+    };
+    physicality: number;
+    adjPhysicality: number;
+    durability: number;
+    adjDurability: number;
+    burden: { totalLaden: number; totalBurden: number; };
+    totalHands: number;
+    finalTraits: string[];
+    allTraits: string[];
 }
 
 export function createProfiles(
-  archetypeName: string, 
-  archetypeData: Archetype,
-  allowedItemClasses: string[],
-  itemNames?: string[]
+    primaryArchetypeName: string,
+    primaryArchetypeData: Archetype,
+    secondaryArchetypeNames: string[] = [],
+    itemNames: string[] = []
 ): Profile[] {
-  const itemCategories = [
-    gameData.armors,
-    gameData.bow_weapons,
-    gameData.equipment,
-    gameData.grenade_weapons,
-    gameData.melee_weapons,
-    gameData.ranged_weapons,
-    gameData.support_weapons,
-    gameData.thrown_weapons,
-  ];
 
-  const allItems: Item[] = itemCategories.flatMap(category =>
-    Object.entries(category).map(([name, itemData]) => ({
-      ...(itemData as Omit<Item, 'name'>),
-      name: name,
-    }))
-  );
+    const archetype: { [key: string]: Archetype } = { [primaryArchetypeName]: primaryArchetypeData };
+    let totalBp = primaryArchetypeData.bp;
+    const archetypeTraits = [...primaryArchetypeData.traits];
 
-  allItems.push(UNARMED_ITEM, IMPROVISED_ITEM);
+    secondaryArchetypeNames.forEach(name => {
+        const data = gameData.archetypes[name];
+        if (data) {
+            archetype[name] = data;
+            totalBp += data.bp;
+            archetypeTraits.push(...data.traits);
+        }
+    });
 
-  const createProfileObject = (items: Item[]): Profile => {
-    const allTraits = [...archetypeData.traits, ...items.flatMap(i => i.traits)];
-    const finalTraits = combineAndLevelTraits(allTraits);
+    const items: Item[] = [];
+    const itemTraits: string[] = [];
+    
+    let meleeBp: number[] = [];
+    let rangedBp: number[] = [];
+    let equipmentBp: number[] = [];
 
-    const physicality = Math.max(archetypeData.attributes.str, archetypeData.attributes.siz);
-    const durability = Math.max(archetypeData.attributes.for, archetypeData.attributes.siz);
+    let totalHands = 0;
+    let equipmentCount = 0;
+
+    itemNames.forEach(itemName => {
+        let itemFound = false;
+        for (const key in itemDataMapping) {
+            const dataKey = itemDataMapping[key] as keyof typeof gameData;
+            if (dataKey && dataKey in gameData && itemName in gameData[dataKey]) {
+                const item = { name: itemName, ...gameData[dataKey][itemName] } as Item;
+                items.push(item);
+                itemTraits.push(...(item.traits || []));
+                totalBp += item.bp;
+
+                if (item.classification === 'Equipment') equipmentCount++;
+
+                const handTrait = item.traits.find(t => t.startsWith('[') && t.endsWith('H]'));
+                if (handTrait) {
+                    if (handTrait.includes('1H')) totalHands += 1;
+                    if (handTrait.includes('2H')) totalHands += 2;
+                }
+
+                if (item.classification === 'Melee') {
+                    meleeBp.push(item.bp);
+                } else if (item.classification === 'Firearm' || item.classification === 'Ordnance') {
+                    rangedBp.push(item.bp);
+                } else if (item.classification === 'Equipment') {
+                    equipmentBp.push(item.bp);
+                }
+
+                itemFound = true;
+                break;
+            }
+        }
+        if (!itemFound) {
+            console.warn(`Item not found: ${itemName}`);
+        }
+    });
+
+    const armorTypes = items.filter(i => i.classification === 'Armor' && i.type !== 'Shield').map(i => i.type);
+    if (new Set(armorTypes).size < armorTypes.length) {
+        throw new Error('Invalid loadout: Cannot wear more than one armor of the same type.');
+    }
+
+    if (totalHands > 4) throw new Error('Invalid loadout: Exceeds maximum of 4 hands required.');
+    if (equipmentCount > 3) throw new Error('Invalid loadout: A maximum of 3 equipment items are allowed.');
+    
+    meleeBp.sort((a, b) => b - a);
+    rangedBp.sort((a, b) => b - a);
+    equipmentBp.sort((a, b) => b - a);
+
+    const discount = (bp: number, index: number) => (index > 0 ? Math.ceil(bp / 2) : bp);
+
+    const adjustedMeleeBp = meleeBp.map(discount);
+    const adjustedRangedBp = rangedBp.map(discount);
+    const adjustedEquipmentBp = equipmentBp.map(discount);
+
+    const adjustedItemBp = [...adjustedMeleeBp, ...adjustedRangedBp, ...adjustedEquipmentBp].reduce((a, b) => a + b, 0);
+    const nonDiscountedItemBp = items
+        .filter(i => i.classification !== 'Melee' && i.classification !== 'Firearm' && i.classification !== 'Ordnance' && i.classification !== 'Equipment')
+        .reduce((acc, item) => acc + item.bp, 0);
+
+    const adjustedBp = primaryArchetypeData.bp + nonDiscountedItemBp + adjustedItemBp;
+
+    const profileName = [primaryArchetypeName.toLowerCase().replace(/, /g, '-'), ...itemNames.slice(0, 2).map(name => name.toLowerCase().replace(/, /g, '-'))].join('-').replace(/[\s_]/g, '-');
+
+    const str = primaryArchetypeData.attributes.str;
+    const siz = primaryArchetypeData.attributes.siz;
+    const physicality = Math.max(str, siz);
+
+    const fort = primaryArchetypeData.attributes.for;
+    const durability = Math.max(fort, siz);
+
+    const allCombinedTraits = processTraits([...archetypeTraits, ...itemTraits]);
 
     let adjPhysicality = physicality;
-    finalTraits.forEach(trait => {
-        const brawnMatch = trait.match(/Brawn (\d+)/);
-        if (brawnMatch) {
-            adjPhysicality += parseInt(brawnMatch[1], 10);
+    let adjDurability = durability;
+    let totalLaden = 0;
+
+    allCombinedTraits.forEach(trait => {
+        if (trait.name === 'Brawn') adjPhysicality += trait.level || 0;
+        if (trait.name === 'Tough') adjDurability += trait.level || 0;
+        if (trait.name === '[Laden]') {
+            totalLaden += trait.level || 0;
         }
     });
-
-    const totalLaden = items.reduce((sum, item) => {
-        const ladenTrait = item.traits.find(t => t.startsWith('[Laden'));
-        if (ladenTrait) {
-            const match = ladenTrait.match(/Laden(?: (\d+))?/);
-            return sum + (match ? (parseInt(match[1] || '1', 10)) : 0);
-        }
-        return sum;
-    }, 0);
 
     const totalBurden = Math.max(0, totalLaden - adjPhysicality);
-
-    const handsRequired = items.reduce((sum, item) => {
-        if (item.traits.includes('[2H]')) return sum + 2;
-        if (item.traits.includes('[1H]')) return sum + 1;
-        return sum;
-    }, 0);
-
-    if (handsRequired > 4) {
-        throw new Error(`Invalid loadout: Exceeds maximum of 4 hands required.`);
+    if (totalBurden > 2) {
+        throw new Error('Invalid loadout: Exceeds maximum burden of 2.');
     }
 
-    const totalItemBp = items.reduce((sum, item) => sum + item.bp, 0);
-    const { adjustedBp, adjustedItemCosts } = calculateAdjustedBp(items, archetypeData.bp);
-
-    const armorTypes = new Set<string>();
-    items.filter(i => i.classification === 'Armor').forEach(armor => {
-      if (armorTypes.has(armor.type)) {
-        throw new Error(`Invalid loadout: Multiple armor pieces of type "${armor.type}" are not allowed.`);
-      }
-      armorTypes.add(armor.type);
-    });
-    
-    if (adjustedItemCosts.equipmentBp.length > 3) {
-        throw new Error(`Invalid loadout: A maximum of 3 equipment items are allowed.`);
-    }
-
-    return {
-      name: generateProfileId(archetypeName, items),
-      archetype: { [archetypeName]: archetypeData },
-      items: items,
-      totalBp: archetypeData.bp + totalItemBp,
-      adjustedBp,
-      adjustedItemCosts,
-      physicality,
-      adjPhysicality,
-      durability,
-      adjDurability: durability, // No traits affect durability yet
-      burden: {
-        totalLaden,
-        totalBurden
-      },
-      finalTraits: finalTraits,
+    const profile: Profile = {
+        name: profileName + '-loadout',
+        archetype,
+        items,
+        totalBp,
+        adjustedBp,
+        adjustedItemCosts: {
+            meleeBp: adjustedMeleeBp,
+            rangedBp: adjustedRangedBp,
+            equipmentBp: adjustedEquipmentBp,
+        },
+        physicality,
+        adjPhysicality,
+        durability,
+        adjDurability,
+        burden: {
+            totalLaden,
+            totalBurden
+        },
+        totalHands,
+        finalTraits: archetypeTraits,
+        allTraits: archetypeTraits
     };
-  };
 
-  if (itemNames && itemNames.length > 0) {
-    const selectedItems = itemNames.map(itemName => {
-      const item = allItems.find(i => i.name === itemName);
-      if (!item) {
-        throw new Error(`Item "${itemName}" not found.`);
-      }
-      return item;
-    });
-    return [createProfileObject(selectedItems)];
-  }
-
-  const allowedItems = allItems.filter(item => {
-    const isClassAllowed = allowedItemClasses.some(allowedClass => item.classification.includes(allowedClass));
-    const isDefaultItem = item.name === 'Unarmed' || item.name === 'Improvised Weapon';
-    return isClassAllowed || isDefaultItem;
-  });
-
-  return allowedItems.map(item => createProfileObject([item]));
+    return [profile];
 }
