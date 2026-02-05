@@ -32,6 +32,8 @@ export interface Profile {
     adjDurability: number;
     burden: { totalLaden: number; totalBurden: number; };
     totalHands: number;
+    totalDeflect: number;
+    totalAR: number;
     finalTraits: string[];
     allTraits: string[];
 }
@@ -140,13 +142,15 @@ export function createProfiles(
     let adjPhysicality = physicality;
     let adjDurability = durability;
     let totalLaden = 0;
+    let totalDeflect = 0;
+    let totalAR = 0;
 
     allCombinedTraits.forEach(trait => {
         if (trait.name === 'Brawn') adjPhysicality += trait.level || 0;
         if (trait.name === 'Tough') adjDurability += trait.level || 0;
-        if (trait.name === '[Laden]') {
-            totalLaden += trait.level || 0;
-        }
+        if (trait.name === '[Laden]') totalLaden += trait.level || 0;
+        if (trait.name === 'Deflect') totalDeflect += trait.level || 0;
+        if (trait.name === 'Armor') totalAR += trait.level || 0;
     });
 
     const totalBurden = Math.max(0, totalLaden - adjPhysicality);
@@ -174,6 +178,8 @@ export function createProfiles(
             totalBurden
         },
         totalHands,
+        totalDeflect,
+        totalAR,
         finalTraits: archetypeTraits,
         allTraits: archetypeTraits
     };

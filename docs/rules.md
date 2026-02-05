@@ -23,6 +23,8 @@ A Profile represents a specific configuration of an Archetype combined with a se
 - **totalBp**: The simple sum of the archetype's BP and the BP of all equipped items.
 - **adjustedBp**: The final BP cost after applying discounts for multiple items.
 - **adjustedItemCosts**: An object that categorizes item costs for calculating `adjustedBp`.
+- **totalDeflect**: The sum of all `Deflect X` trait values from the character's items and final traits.
+- **totalAR**: The sum of all `Armor X` trait values from the character's items and final traits.
 - **finalTraits**: An array of traits from the archetype and items.
 
 ### Core Character Stats
@@ -54,3 +56,5 @@ Each point of `totalBurden` applies the following penalties:
 - **`Brawn X`**: Increases `adjPhysicality` by X.
 - **`[Laden X]`**: Contributes X to the character's `totalLaden`.
 - **`[1H]` / `[2H]`**: Indicates an item requires one or two hands to use.
+- **`Deflect X`**: Contributes X to the character's `totalDeflect`.
+- **`Armor X`**: Contributes X to the character's `totalAR`.
