@@ -1,128 +1,105 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { resolveTest, setRoller, resetRoller, DiceType } from './dice-roller';
-import type { TestParticipant } from './dice-roller';
+import type { TestParticipant, Roller } from './dice-roller';
 
 describe('resolveTest', () => {
   beforeEach(() => {
     resetRoller();
   });
 
-  it('should return a PASS result when participant 1 has a higher score', () => {
-    const participant1: TestParticipant = { attributeValue: 3 };
-    const participant2: TestParticipant = { attributeValue: 1 };
-
-    // P1 rolls 3 dice, P2 rolls 1 die.
-    setRoller((count) => (count === 3 ? [6, 6, 1] : [4]));
-    const result = resolveTest(participant1, participant2);
-
-    // P1: attr(3) + successes(4) = 7
-    // P2: attr(1) + successes(1) = 2
-    // Score: 7 - 2 = 5
+  it('should return a PASS result when P1 score is higher', () => {
+    const p1: TestParticipant = { attributeValue: 3 };
+    const p2: TestParticipant = { attributeValue: 1, isSystemPlayer: true };
+    setRoller(() => [4, 4]); // P1 rolls, 2 successes. Score = 3+2=5. P2 score=1. Final = 4.
+    const result = resolveTest(p1, p2);
     expect(result.pass).toBe(true);
-    expect(result.score).toBe(5);
-    expect(result.participant1Score).toBe(7);
-    expect(result.participant2Score).toBe(2);
+    expect(result.score).toBe(4);
   });
 
-  it('should return a FAIL result when participant 1 has a lower score', () => {
-    const participant1: TestParticipant = { attributeValue: 1 };
-    const participant2: TestParticipant = { attributeValue: 3 };
-
-    // P1 rolls 1 die, P2 rolls 3 dice.
-    setRoller((count) => (count === 1 ? [4] : [6, 6, 1]));
-    const result = resolveTest(participant1, participant2);
-
-    // P1: attr(1) + successes(1) = 2
-    // P2: attr(3) + successes(4) = 7
-    // Score: 2 - 7 = -5
+  it('should return a FAIL result when P1 score is lower', () => {
+    const p1: TestParticipant = { attributeValue: 1 };
+    const p2: TestParticipant = { attributeValue: 5, isSystemPlayer: true };
+    setRoller(() => [1, 2]); // P1 rolls, 0 successes. Score = 1. P2 score=5. Final = -4.
+    const result = resolveTest(p1, p2);
     expect(result.pass).toBe(false);
-    expect(result.score).toBe(-5);
-    expect(result.participant1Score).toBe(2);
-    expect(result.participant2Score).toBe(7);
+    expect(result.score).toBe(-4);
   });
 
-  it('should return a FAIL result on a TIE by default', () => {
-    const participant1: TestParticipant = { attributeValue: 2 };
-    const participant2: TestParticipant = { attributeValue: 2 };
-
-    // Both roll 2 dice.
-    setRoller((count) => [4, 5]); // Both get 2 successes
-    const result = resolveTest(participant1, participant2);
-
-    // P1: attr(2) + successes(2) = 4
-    // P2: attr(2) + successes(2) = 4
-    // Score: 4 - 4 = 0
+  it('should FAIL on a TIE by default', () => {
+    const p1: TestParticipant = { attributeValue: 2 };
+    const p2: TestParticipant = { attributeValue: 4, isSystemPlayer: true };
+    setRoller(() => [4, 4]); // P1 rolls, 2 successes. Score=2+2=4. P2 score=4. Final=0.
+    const result = resolveTest(p1, p2);
     expect(result.pass).toBe(false);
     expect(result.score).toBe(0);
   });
 
-  it('should return a PASS result on a TIE if passOnTie is true', () => {
-    const participant1: TestParticipant = { attributeValue: 2 };
-    const participant2: TestParticipant = { attributeValue: 2 };
-
-    setRoller((count) => [4, 5]);
-    const result = resolveTest(participant1, participant2, 0, true);
-
-    // P1 Score: 4, P2 Score: 4. Final Score: 0. Pass on tie.
+  it('should PASS on a TIE if passOnTie is true', () => {
+    const p1: TestParticipant = { attributeValue: 2 };
+    const p2: TestParticipant = { attributeValue: 4, isSystemPlayer: true };
+    setRoller(() => [4, 4]); // P1 rolls, 2 successes. Score=2+2=4. P2 score=4. Final=0.
+    const result = resolveTest(p1, p2, 0, true);
     expect(result.pass).toBe(true);
     expect(result.score).toBe(0);
   });
 
   it('should correctly apply a scoreModifier', () => {
-    const participant1: TestParticipant = { attributeValue: 2 };
-    const participant2: TestParticipant = { attributeValue: 2 };
-
-    setRoller((count) => [4, 5]);
-    const result = resolveTest(participant1, participant2, 1); // +1 modifier
-
-    // P1 Score: 4, P2 Score: 4. Final Score: 4 - 4 + 1 = 1. Pass.
+    const p1: TestParticipant = { attributeValue: 2 };
+    const p2: TestParticipant = { attributeValue: 4, isSystemPlayer: true };
+    setRoller(() => [4, 4]); // P1 rolls, 2 succ. Score=2+2+1(mod)=5. P2 score=4. Final=1.
+    const result = resolveTest(p1, p2, 1);
     expect(result.pass).toBe(true);
     expect(result.score).toBe(1);
   });
 
-  it('should correctly calculate misses', () => {
-    const participant1: TestParticipant = { attributeValue: 2 }; // rolls 2 dice
-    const participant2: TestParticipant = { attributeValue: 1 }; // rolls 1 die
-
-    setRoller((count) => (count === 2 ? [1, 2] : [1]));
-    const result = resolveTest(participant1, participant2);
-
-    // P1 rolls [1, 2] -> 1 miss.
-    // P2 rolls [1] -> 1 miss.
+  it('should correctly calculate misses for both participants', () => {
+    const p1: TestParticipant = { attributeValue: 0 };
+    const p2: TestParticipant = { attributeValue: 0 };
+    
+    let isFirstRollerCall = true;
+    const roller: Roller = () => {
+      if (isFirstRollerCall) {
+        isFirstRollerCall = false;
+        return [1, 2, 3]; // P1 rolls, 1 miss
+      }
+      return [1, 1, 4]; // P2 rolls, 2 misses
+    };
+    setRoller(roller);
+    const result = resolveTest(p1, p2);
     expect(result.p1Misses).toBe(1);
-    expect(result.p2Misses).toBe(1);
+    expect(result.p2Misses).toBe(2);
   });
 
   it('should correctly apply bonus dice', () => {
-    const participant1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 1 } }; // Total 2 dice
-    const participant2: TestParticipant = { attributeValue: 1 }; // Total 1 die
-
-    setRoller((count) => (count === 2 ? [6, 6] : [4]));
-    const result = resolveTest(participant1, participant2);
-
-    // P1: attr(1) + successes(4) = 5
-    // P2: attr(1) + successes(1) = 2
-    // Score: 5 - 2 = 3
+    const p1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 2 } };
+    const p2: TestParticipant = { attributeValue: 1, isSystemPlayer: true };
+    // P1 has 2 base + 2 bonus = 4 dice. Rolls [6,6,1,1] -> 4 successes. Score=1+4=5. P2=1. Final=4.
+    setRoller(() => [6, 6, 1, 1]);
+    const result = resolveTest(p1, p2);
+    expect(result.score).toBe(4);
     expect(result.participant1Score).toBe(5);
-    expect(result.score).toBe(3);
   });
 
-  it('should award penalty dice to the opponent and then flatten', () => {
-    const participant1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 2 } };
-    const participant2: TestParticipant = { attributeValue: 1, penaltyDice: { [DiceType.Base]: 2 } };
+  it('should award penalty dice to opponent and flatten', () => {
+    const p1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 2 } };
+    const p2: TestParticipant = { attributeValue: 1, penaltyDice: { [DiceType.Base]: 2 } };
 
-    // P2's 2 penalty dice are awarded to P1. P1 now has 4 bonus dice.
-    // P1 rolls 1 (base) + 4 (bonus) = 5 dice.
-    // P2 rolls 1 (base) die.
-    setRoller((count) => (count === 5 ? [4, 4, 4, 4, 4] : [4])); // P1 gets 5 successes, P2 gets 1.
-    const result = resolveTest(participant1, participant2);
+    let isFirstRollerCall = true;
+    const roller: Roller = (count) => {
+      if (isFirstRollerCall) {
+        isFirstRollerCall = false;
+        return [4, 4, 4, 4, 1, 1]; // P1 rolls 6 dice (2base+2bonus+2penalty->bonus), 4 successes
+      }
+      return [1, 1]; // P2 rolls 2 dice, 0 successes
+    };
+    setRoller(roller);
+    const result = resolveTest(p1, p2);
     
-    // P1: attr(1) + successes(5) = 6
-    // P2: attr(1) + successes(1) = 2
-    // Score: 6 - 2 = 4
+    // P1 score=1+4=5. P2 score=1+0=1. Final=4.
     expect(result.score).toBe(4);
+    // P1 bonus:2, P2 penalty:2 -> P1 bonus pool: {base:4}. P2 bonus pool: {}. Flattening -> P1 final bonus:{base:4}.
     expect(result.finalPools.p1FinalBonus[DiceType.Base]).toBe(4);
-    expect(result.finalPools.p2FinalBonus[DiceType.Base]).toBe(0);
+    expect(result.finalPools.p2FinalBonus[DiceType.Base]).toBeUndefined();
   });
 });

@@ -31,12 +31,13 @@ export interface TestResult {
     p2Rolls: number[];
     p1Misses: number;
     p2Misses: number;
-    finalPools: { 
-        p1FinalBonus: DicePool, 
-        p1FinalPenalty: DicePool, 
-        p2FinalBonus: DicePool, 
-        p2FinalPenalty: DicePool 
+    finalPools: {
+        p1FinalBonus: DicePool,
+        p1FinalPenalty: DicePool,
+        p2FinalBonus: DicePool,
+        p2FinalPenalty: DicePool
     };
+    carryOverDice?: DicePool;
 }
 
 // --- Roller Abstraction for Mocking --- //
@@ -44,6 +45,7 @@ export interface TestResult {
 export type Roller = (diceCount: number) => number[];
 
 const _randomRoller: Roller = (diceCount: number) => {
+    if (diceCount <= 0) return [];
     const rolls: number[] = [];
     for (let i = 0; i < diceCount; i++) {
         rolls.push(Math.floor(Math.random() * 6) + 1);
@@ -53,44 +55,46 @@ const _randomRoller: Roller = (diceCount: number) => {
 
 let activeRoller: Roller = _randomRoller;
 
-export function setRoller(newRoller: Roller | (() => number) | ((count: number) => number[])) {
-    if (typeof newRoller === 'function' && newRoller.length === 0) {
-        activeRoller = (diceCount: number) => Array(diceCount).fill(null).map(() => (newRoller as () => number)());
-    } else {
-        activeRoller = newRoller as Roller;
-    }
+export function setRoller(newRoller: Roller) {
+    activeRoller = newRoller;
 }
 
 export function resetRoller() {
     activeRoller = _randomRoller;
 }
 
+// --- Success & Dice Calculation --- //
+
 function getSuccesses(rolls: number[], type: DiceType): number {
     let successes = 0;
-    for (const roll of rolls) {
+    const flatRolls = rolls.flat(); // Defensive flattening
+    for (const roll of flatRolls) {
         if (type === DiceType.Modifier) {
             if (roll >= 4) successes++;
         } else if (type === DiceType.Base) {
             if (roll >= 4 && roll <= 5) successes++;
-            if (roll === 6) successes += 2;
+            else if (roll === 6) successes += 2;
         } else { // Wild
             if (roll >= 4 && roll <= 5) successes++;
-            if (roll === 6) successes += 3;
+            else if (roll === 6) successes += 3;
         }
     }
     return successes;
 }
 
-// --- Main Test Resolution Logic --- //
-
-function mergeDicePools(pool1: DicePool, pool2: DicePool): DicePool {
-    const result: DicePool = { ...pool1 };
-    for (const type in pool2) {
-        const key = type as DiceType;
-        result[key] = (result[key] || 0) + (pool2[key] || 0);
+export function mergeDicePools(...pools: (DicePool | undefined)[]): DicePool {
+    const result: DicePool = {};
+    for (const pool of pools) {
+        if (!pool) continue;
+        for (const type in pool) {
+            const key = type as DiceType;
+            result[key] = (result[key] || 0) + (pool[key] || 0);
+        }
     }
     return result;
 }
+
+// --- Main Test Resolution Logic --- //
 
 export function resolveTest(
     participant1: TestParticipant,
@@ -98,44 +102,43 @@ export function resolveTest(
     scoreModifier: number = 0,
     passOnTie: boolean = false
 ): TestResult {
+    // 1. Determine base dice pools
+    const p1BasePool: DicePool = participant1.isSystemPlayer ? {} : { [DiceType.Base]: 2 };
+    const p2BasePool: DicePool = participant2.isSystemPlayer ? {} : { [DiceType.Base]: 2 };
 
-    let p1Bonus = participant1.bonusDice || {};
-    let p1Penalty = participant1.penaltyDice || {};
-    let p2Bonus = participant2.bonusDice || {};
-    let p2Penalty = participant2.penaltyDice || {};
+    // 2. Determine total bonus pools before flattening
+    const p1TotalBonus = mergeDicePools(participant1.bonusDice, participant2.penaltyDice);
+    const p2TotalBonus = mergeDicePools(participant2.bonusDice, participant1.penaltyDice);
 
-    // As per QSR, penalty dice are awarded to the opponent.
-    p2Bonus = mergeDicePools(p2Bonus, p1Penalty);
-    p1Bonus = mergeDicePools(p1Bonus, p2Penalty);
+    // 3. Flatten the bonus pools
+    const p1FinalBonus: DicePool = {};
+    const p2FinalBonus: DicePool = {};
+    const allDiceTypes: DiceType[] = [DiceType.Base, DiceType.Modifier, DiceType.Wild];
 
-    // Cancellation (Flattening)
-    for (const type in p1Bonus) {
-        const key = type as DiceType;
-        const p1b = p1Bonus[key] || 0;
-        const p2b = p2Bonus[key] || 0;
+    for (const type of allDiceTypes) {
+        const p1b = p1TotalBonus[type] || 0;
+        const p2b = p2TotalBonus[type] || 0;
         const cancel = Math.min(p1b, p2b);
-        p1Bonus[key] = p1b - cancel;
-        p2Bonus[key] = p2b - cancel;
+        if (p1b - cancel > 0) p1FinalBonus[type] = p1b - cancel;
+        if (p2b - cancel > 0) p2FinalBonus[type] = p2b - cancel;
     }
 
-    // Build final pools
-    const p1BasePool = participant1.isSystemPlayer ? {} : { [DiceType.Base]: participant1.attributeValue };
-    const p2BasePool = participant2.isSystemPlayer ? {} : { [DiceType.Base]: participant2.attributeValue };
+    // 4. Create final dice pools for rolling
+    const p1Pool = mergeDicePools(p1BasePool, p1FinalBonus);
+    const p2Pool = mergeDicePools(p2BasePool, p2FinalBonus);
 
-    let p1Pool = mergeDicePools(p1BasePool, p1Bonus);
-    let p2Pool = mergeDicePools(p2BasePool, p2Bonus);
-
+    // 5. Roll dice and calculate successes
     let p1Successes = 0;
     let p1Misses = 0;
     const p1Rolls: number[] = [];
     for (const type in p1Pool) {
-        const key = type as DiceType;
-        const diceCount = p1Pool[key];
+        const diceCount = p1Pool[type as DiceType];
         if (diceCount && diceCount > 0) {
             const rolls = activeRoller(diceCount);
-            p1Rolls.push(...rolls);
-            p1Successes += getSuccesses(rolls, key);
-            p1Misses += rolls.filter(r => r === 1).length;
+            const flatRolls = Array.isArray(rolls) ? rolls.flat() : [rolls]; // Ensure flat array
+            p1Rolls.push(...flatRolls);
+            p1Successes += getSuccesses(flatRolls, type as DiceType);
+            p1Misses += flatRolls.filter(r => r === 1).length;
         }
     }
 
@@ -143,21 +146,24 @@ export function resolveTest(
     let p2Misses = 0;
     const p2Rolls: number[] = [];
     for (const type in p2Pool) {
-        const key = type as DiceType;
-        const diceCount = p2Pool[key];
+        const diceCount = p2Pool[type as DiceType];
         if (diceCount && diceCount > 0) {
             const rolls = activeRoller(diceCount);
-            p2Rolls.push(...rolls);
-            p2Successes += getSuccesses(rolls, key);
-            p2Misses += rolls.filter(r => r === 1).length;
+            const flatRolls = Array.isArray(rolls) ? rolls.flat() : [rolls]; // Ensure flat array
+            p2Rolls.push(...flatRolls);
+            p2Successes += getSuccesses(flatRolls, type as DiceType);
+            p2Misses += flatRolls.filter(r => r === 1).length;
         }
     }
-
-    const p1Score = participant1.attributeValue + p1Successes;
-    const p2Score = participant2.attributeValue + p2Successes;
-    const score = p1Score - p2Score + scoreModifier;
+    
+    // 6. Calculate final scores
+    const p1Score = (participant1.attributeValue || 0) + p1Successes + scoreModifier;
+    const p2Score = (participant2.attributeValue || 0) + p2Successes;
+    
+    const score = p1Score - p2Score;
     const pass = passOnTie ? score >= 0 : score > 0;
 
+    // 7. Return result
     const result: TestResult = {
         pass,
         score,
@@ -167,7 +173,12 @@ export function resolveTest(
         p2Rolls,
         p1Misses,
         p2Misses,
-        finalPools: { p1FinalBonus: p1Bonus, p1FinalPenalty: {}, p2FinalBonus: p2Bonus, p2FinalPenalty: {} },
+        finalPools: {
+            p1FinalBonus,
+            p1FinalPenalty: participant1.penaltyDice || {},
+            p2FinalBonus,
+            p2FinalPenalty: participant2.penaltyDice || {}
+        },
     };
 
     metricsService.logEvent('diceTestResolved', result);

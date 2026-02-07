@@ -1,50 +1,36 @@
 
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, DicePool } from '../dice-roller';
+import { resolveTest, TestParticipant, DicePool, TestResult } from '../dice-roller';
 import { Item } from '../Item';
 import { parseAccuracy } from './accuracy-parser';
 
-/**
- * Resolves the opposed hit test in a ranged combat attack.
- * This is an Opposed RCA vs. REF Test.
- * @param attacker The attacking character.
- * @param defender The defending character.
- * @param weapon The weapon being used.
- * @param attackerBonus Base bonus dice for the attacker from context.
- * @param attackerPenalty Base penalty dice for the attacker from context.
- * @param defenderBonus Base bonus dice for the defender from context.
- * @param defenderPenalty Base penalty dice for the defender from context.
- * @returns The result of the opposed test.
- */
 export function resolveRangedHitTest(
-  attacker: Character,
-  defender: Character,
-  weapon: Item,
-  attackerBonus: DicePool,
-  attackerPenalty: DicePool,
-  defenderBonus: DicePool,
-  defenderPenalty: DicePool,
-) {
-  // 1. Get accuracy modifiers from the weapon
-  const { bonusDice: accBonus, penaltyDice: accPenalty, scoreModifier } = parseAccuracy(weapon.accuracy);
+    attacker: Character,
+    defender: Character,
+    weapon: Item,
+    attackerBonus: DicePool = {},
+    attackerPenalty: DicePool = {},
+    defenderBonus: DicePool = {},
+    defenderPenalty: DicePool = {},
+): TestResult {
+    
+    // Get the base attribute values for the test
+    const attackerAttribute = weapon.classification === 'Thrown' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
+    const defenderAttribute = defender.finalAttributes.ref;
 
-  // 2. Combine base modifiers with accuracy modifiers
-  const finalAttackerBonus = { ...attackerBonus, ...accBonus };
-  const finalAttackerPenalty = { ...attackerPenalty, ...accPenalty };
+    const accuracyBonus = parseAccuracy(weapon.accuracy);
 
-  // 3. Define the participants for the test (RCA vs REF)
-  const hitTestAttacker: TestParticipant = {
-    attributeValue: attacker.finalAttributes.rca, // Ranged Combat Attribute
-    bonusDice: finalAttackerBonus,
-    penaltyDice: finalAttackerPenalty,
-  };
+    const attackerParticipant: TestParticipant = {
+        attributeValue: attackerAttribute,
+        bonusDice: { ...attackerBonus, ...accuracyBonus },
+        penaltyDice: attackerPenalty,
+    };
 
-  const hitTestDefender: TestParticipant = {
-    attributeValue: defender.finalAttributes.ref, // Reflex Attribute
-    bonusDice: defenderBonus,
-    penaltyDice: defenderPenalty,
-  };
+    const defenderParticipant: TestParticipant = {
+        attributeValue: defenderAttribute,
+        bonusDice: defenderBonus,
+        penaltyDice: defenderPenalty,
+    };
 
-  // 4. Resolve the test, applying the score modifier from accuracy
-  return resolveTest(hitTestAttacker, hitTestDefender, -scoreModifier);
+    return resolveTest(attackerParticipant, defenderParticipant);
 }

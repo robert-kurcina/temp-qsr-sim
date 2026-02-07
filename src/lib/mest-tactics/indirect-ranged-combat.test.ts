@@ -2,12 +2,11 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from './character-factory';
 import { makeIndirectRangedAttack } from './indirect-ranged-combat';
-import { setRoller, resetRoller, DiceType, Roller } from './dice-roller';
+import { setRoller, resetRoller, DiceType } from './dice-roller';
 import { metricsService } from './MetricsService';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
 import type { Character } from './Character';
-import type { TestContext } from './TestContext';
 import { gameData } from '../data';
 
 const { archetypes, ranged_weapons } = gameData;
@@ -17,10 +16,10 @@ describe('makeIndirectRangedAttack', () => {
     let weapon: Item;
 
     beforeEach(() => {
-        const attackerArchetype = { name: 'Militia', ...archetypes['Militia'] };
-        weapon = { name: 'Grenade, HE', ...ranged_weapons['Grenade, HE'] }; // A typical indirect weapon
+        const attackerArchetype = { name: 'Militia', ...archetypes['Militia'] }; // RCA 2
+        weapon = { name: 'Grenade, HE', ...ranged_weapons['Grenade, HE'] };
         const attackerProfile: Profile = { archetype: attackerArchetype, equipment: [weapon] };
-        attacker = createCharacter(attackerProfile, 'Attacker'); // RCA 3
+        attacker = createCharacter(attackerProfile, 'Attacker');
     });
 
     afterEach(() => {
@@ -34,11 +33,11 @@ describe('makeIndirectRangedAttack', () => {
         expect(result.pass).toBe(true);
     });
 
-    it('should still pass the hit test with a large penalty if base attribute is high', () => {
-        setRoller(() => [1]); // Ensure no successes from dice
-        const result = makeIndirectRangedAttack(attacker, weapon, 10, {}); // ORM > RCA
-        // Attacker has RCA 3. System has difficulty 0. Even with 0 successes, score is 3.
-        expect(result.pass).toBe(true);
+    it('should fail the hit test with a large penalty', () => {
+        const attackerAttribute = attacker.finalAttributes.rca;
+        const orm = attackerAttribute + 1; // ORM > RCA = miss
+        const result = makeIndirectRangedAttack(attacker, weapon, orm, {});
+        expect(result.pass).toBe(false);
     });
 
     it('should apply an ORM penalty', () => {
@@ -46,17 +45,15 @@ describe('makeIndirectRangedAttack', () => {
         makeIndirectRangedAttack(attacker, weapon, 2, {});
         const diceEvents = metricsService.getEventsByName('diceTestResolved');
         const eventData = diceEvents[0].data as any;
-        // ORM of 2 is a -2 Modifier die penalty, which is awarded to the System player.
         expect(eventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(2);
     });
 
     it('should apply a hindrance penalty', () => {
         setRoller(() => [1]);
-        attacker.state.wounds = 1;
+        attacker.state.woundTokens = 1;
         makeIndirectRangedAttack(attacker, weapon, 0, {});
         const diceEvents = metricsService.getEventsByName('diceTestResolved');
         const eventData = diceEvents[0].data as any;
-        // Hindrance from wound is a -1 Modifier die penalty, awarded to System.
         expect(eventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
     });
 
@@ -73,7 +70,6 @@ describe('makeIndirectRangedAttack', () => {
         makeIndirectRangedAttack(attacker, weapon, 0, { hasDirectCover: true });
         const diceEvents = metricsService.getEventsByName('diceTestResolved');
         const eventData = diceEvents[0].data as any;
-        // Direct Cover is a -1 Base die penalty, awarded to System.
         expect(eventData.finalPools.p2FinalBonus[DiceType.Base] || 0).toBe(1);
     });
 
@@ -82,7 +78,6 @@ describe('makeIndirectRangedAttack', () => {
         makeIndirectRangedAttack(attacker, weapon, 0, { hasInterveningCover: true });
         const diceEvents = metricsService.getEventsByName('diceTestResolved');
         const eventData = diceEvents[0].data as any;
-        // Intervening Cover is a -1 Modifier die penalty, awarded to System.
         expect(eventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
     });
 

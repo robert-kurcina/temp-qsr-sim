@@ -14,14 +14,14 @@ import { Trait } from './Trait';
  * @returns A fully initialized Character object.
  */
 export function createCharacter(profile: Profile, characterName?: string): Character {
-  const primaryArchetype = Object.values(profile.archetype)[0];
+  const primaryArchetype = profile.archetype;
   if (!primaryArchetype) {
     throw new Error('Profile does not contain a valid primary archetype.');
   }
   // 1. Combine all raw trait strings from archetype and equipment.
   const rawTraits = [
     ...(primaryArchetype.traits || []),
-    ...profile.items.flatMap(item => item.traits || []),
+    ...(profile.equipment || []).flatMap(item => item.traits || []),
   ];
 
   // 2. Parse all raw strings into structured Trait objects.
@@ -40,7 +40,7 @@ export function createCharacter(profile: Profile, characterName?: string): Chara
 
   // 5. Calculate armor state directly from the profile's equipment.
   const armorState: ArmorState = { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 };
-  for (const item of profile.items) {
+  for (const item of profile.equipment) {
     const itemTraits = (item.traits || []).map(parseTrait);
     const armorTrait = itemTraits.find(t => t.name.toLowerCase() === 'armor');
 

@@ -18,8 +18,8 @@ describe('makeCloseCombatAttack', () => {
   let attackerWeapon: Item;
 
   beforeEach(() => {
-    const attackerArchetype = { name: "Veteran, Fighter", ...archetypes["Veteran, Fighter"] };
-    const defenderArchetype = { name: "Militia", ...archetypes["Militia"] };
+    const attackerArchetype = { name: "Veteran, Fighter", ...archetypes["Veteran, Fighter"] }; // CCA 4
+    const defenderArchetype = { name: "Militia", ...archetypes["Militia"] }; // REF 3
 
     attackerWeapon = { name: "Sword, Broad", ...melee_weapons["Sword, Broad"] };
     const defenderWeapon = { name: "Axe", ...melee_weapons["Axe"] };
@@ -38,7 +38,7 @@ describe('makeCloseCombatAttack', () => {
   });
 
   it('should force a successful hit and create a damage resolution', () => {
-    setRoller(() => 1);
+    setRoller(() => [1]);
     const context: TestContext = { forceHit: true };
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
     expect(result.hit).toBe(true);
@@ -46,43 +46,58 @@ describe('makeCloseCombatAttack', () => {
   });
 
   it('should pass the hit test and create a damage resolution', () => {
-    // Force a win for the attacker with the roller
-    const attackerDiceCount = attacker.finalAttributes.cca;
-    setRoller((count) => (count === attackerDiceCount ? [6, 6, 6, 6] : [1, 1, 1]));
+    // Attacker has CCA:4 and rolls 2 base dice. Defender has REF:3 and rolls 2 base dice.
+    const rolls = [[6, 6], [1, 1]]; // Attacker rolls [6,6], Defender rolls [1,1]
+    const statefulRoller: Roller = () => rolls.shift() || [1];
+    setRoller(statefulRoller);
+
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {});
+    // Attacker successes: 2 (from 6) + 2 (from 6) = 4. Score: 4 (CCA) + 4 = 8.
+    // Defender successes: 0 (from 1) + 0 (from 1) = 0. Score: 3 (REF) + 0 = 3.
+    // Final score: 8 - 3 = 5. HIT.
     expect(result.hit).toBe(true);
+    expect(result.hitTestResult.score).toBe(5);
     expect(result.damageResolution).toBeDefined();
   });
 
   it('should fail the hit test and not create a damage resolution', () => {
-    // Force a loss for the attacker with the roller
-    const attackerDiceCount = attacker.finalAttributes.cca;
-    setRoller((count) => (count === attackerDiceCount ? [1, 1, 1, 1] : [6, 6, 6]));
+    // Attacker has CCA:4 and rolls 2 base dice. Defender has REF:3 and rolls 2 base dice.
+    const rolls = [[1, 1], [6, 6]]; // Attacker rolls [1,1], Defender rolls [6,6]
+    const statefulRoller: Roller = () => rolls.shift() || [1];
+    setRoller(statefulRoller);
+
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {});
+
+    // Attacker successes: 0. Score: 4 (CCA) + 0 = 4.
+    // Defender successes: 4. Score: 3 (REF) + 4 = 7.
+    // Final score: 4 - 7 = -3. MISS.
     expect(result.hit).toBe(false);
+    expect(result.hitTestResult.score).toBe(-3);
     expect(result.damageResolution).toBeUndefined();
   });
 
   it('should add a bonus die to the attacker for a Charge', () => {
-    setRoller(() => 1);
+    setRoller(() => [1]);
     const context: TestContext = { isCharge: true };
     makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const hitEventData = diceEvents[0].data as any;
+    // Attacker gets +1 Modifier die for charge.
     expect(hitEventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
   });
 
   it('should add a bonus die to the defender for Defending', () => {
-    setRoller(() => 1);
+    setRoller(() => [1]);
     const context: TestContext = { isDefending: true };
     makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const hitEventData = diceEvents[0].data as any;
+    // Defender gets +1 Base die for defending.
     expect(hitEventData.finalPools.p2FinalBonus[DiceType.Base] || 0).toBe(1);
   });
 
   it('should correctly apply impact modifier from assisting models', () => {
-    setRoller(() => 1);
+    setRoller(() => [1]);
     const context: TestContext = { forceHit: true, assistingModels: 2 };
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
     expect(result.hit).toBe(true);

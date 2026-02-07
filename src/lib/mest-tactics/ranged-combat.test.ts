@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from './character-factory';
 import { makeRangedCombatAttack } from './ranged-combat';
-import { setRoller, resetRoller, DiceType, Roller } from './dice-roller';
+import { setRoller, resetRoller, DiceType } from './dice-roller';
 import { metricsService } from './MetricsService';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
@@ -34,9 +34,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should force a successful hit and create a damage resolution', () => {
-    let rollResults = [5, 1, 5, 1];
-    const mockRoller: Roller = () => rollResults.shift() || 0;
-    setRoller(mockRoller);
+    setRoller(() => [5, 1, 5, 1]);
 
     const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, { forceHit: true });
 
@@ -45,21 +43,25 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should force a miss and not create a damage resolution', () => {
-    let rollResults = [1, 5];
-    const mockRoller: Roller = () => rollResults.shift() || 0;
-    setRoller(mockRoller);
+    setRoller(() => [1, 5]);
 
-    const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, {});
+    const result = makeRangedCombatAttack(attacker, {
+      ...defender,
+      attributeValue: 2,
+    }, attackerWeapon, {});
 
     expect(result.hit).toBe(false);
     expect(result.damageResolution).toBeUndefined();
   });
 
   it('should add a point-blank bonus for the attacker', () => {
-    setRoller(() => 0);
+    setRoller(() => [0]);
     const context: TestContext = { isPointBlank: true };
 
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, {
+      ...defender,
+      attributeValue: 2,
+    }, attackerWeapon, context);
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
@@ -68,10 +70,13 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a cover bonus for the defender with direct cover', () => {
-    setRoller(() => 0);
+    setRoller(() => [0]);
     const context: TestContext = { hasDirectCover: true };
 
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, {
+      ...defender,
+      attributeValue: 2,
+    }, attackerWeapon, context);
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
@@ -80,10 +85,13 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a cover bonus for the defender with intervening cover', () => {
-    setRoller(() => 0);
+    setRoller(() => [0]);
     const context: TestContext = { hasInterveningCover: true };
 
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, {
+      ...defender,
+      attributeValue: 2,
+    }, attackerWeapon, context);
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
@@ -92,10 +100,13 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should apply an ORM penalty to the attacker', () => {
-    setRoller(() => 0);
+    setRoller(() => [0]);
     const context: TestContext = { orm: 2 }; // -2m penalty
 
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, {
+      ...defender,
+      attributeValue: 2,
+    }, attackerWeapon, context);
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);

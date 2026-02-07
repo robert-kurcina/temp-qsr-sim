@@ -1,6 +1,6 @@
 
 import { Character } from './Character';
-import { DicePool, DiceType, TestResult, resolveTest, TestParticipant } from './dice-roller';
+import { DicePool, DiceType, TestResult, resolveTest, TestParticipant, mergeDicePools } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
@@ -8,6 +8,7 @@ import { parseAccuracy } from './subroutines/accuracy-parser';
 
 export interface DisengageResult {
     pass: boolean;
+    score: number;
     testResult: TestResult;
 }
 
@@ -22,10 +23,10 @@ function _calculateModifiers(
     defenderBonus: DicePool, 
     defenderPenalty: DicePool
 } {
-    const disengagerBonus: DicePool = {};
-    const disengagerPenalty: DicePool = {};
-    const defenderBonus: DicePool = {};
-    const defenderPenalty: DicePool = {};
+    let disengagerBonus: DicePool = {};
+    let disengagerPenalty: DicePool = {};
+    let defenderBonus: DicePool = {};
+    let defenderPenalty: DicePool = {};
 
     // 1. Hindrance Penalties
     const disengagerHindrance = calculateHindrancePenalty({ 
@@ -44,8 +45,8 @@ function _calculateModifiers(
 
     // 2. Defender Weapon Accuracy
     const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(defenderWeapon.accuracy);
-    Object.assign(defenderBonus, accBonus);
-    Object.assign(defenderPenalty, accPenalty);
+    defenderBonus = mergeDicePools(defenderBonus, accBonus);
+    defenderPenalty = mergeDicePools(defenderPenalty, accPenalty);
 
     // 3. Contextual Modifiers
     if (context.isDefending) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
@@ -55,8 +56,6 @@ function _calculateModifiers(
     if (context.hasSuddenness) disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + 1;
 
     if (context.hasHighGround) {
-        // Simplified: assuming context tells us who has high ground.
-        // A more robust implementation might compare character elevations.
         disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + 1;
     }
 
@@ -89,33 +88,30 @@ export function makeDisengageAction(
     context: TestContext = {}
 ): DisengageResult {
 
-    // 1. Handle Automatic Pass conditions
     if (context.isAutoPass) {
-        const testResult: TestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
-        return { pass: true, testResult };
+        const testResult: TestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], p1Misses: 0, p2Misses: 0, finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+        return { pass: true, score: 99, testResult };
     }
 
-    // 2. Calculate situational modifiers.
     const { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(disengager, defender, defenderWeapon, context);
 
-    // 3. Define the participants for the test (REF vs CCA).
     const disengagerParticipant: TestParticipant = {
-        attributeValue: disengager.finalAttributes.ref, // Disengager uses REF
+        attributeValue: disengager.finalAttributes.ref,
         bonusDice: disengagerBonus,
         penaltyDice: disengagerPenalty,
     };
 
     const defenderParticipant: TestParticipant = {
-        attributeValue: defender.finalAttributes.cca, // Defender uses CCA
+        attributeValue: defender.finalAttributes.cca,
         bonusDice: defenderBonus,
         penaltyDice: defenderPenalty,
     };
 
-    // 4. Resolve the test.
-    const testResult = resolveTest(disengagerParticipant, defenderParticipant);
+    const testResult = resolveTest(disengagerParticipant, defenderParticipant, 0, true);
 
     return {
         pass: testResult.pass,
+        score: testResult.score,
         testResult,
     };
 }

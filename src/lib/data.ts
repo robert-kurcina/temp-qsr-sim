@@ -2402,10 +2402,10 @@ export const gameData = {
     "Bow, Light Quickened": {
       "class": "Bow",
       "bp": 4,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+1m",
       "impact": 1,
-      "dmg": "2",
+      "dmg": "STR",
       "traits": [
         "[2H]",
         "[Noise 2]"
@@ -2416,10 +2416,10 @@ export const gameData = {
     "Bow, Light": {
       "class": "Bow",
       "bp": 3,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+1m",
       "impact": 1,
-      "dmg": "2",
+      "dmg": "STR",
       "traits": [
         "[Reload]",
         "[2H]",
@@ -2431,10 +2431,10 @@ export const gameData = {
     "Bow, Long": {
       "class": "Bow",
       "bp": 13,
-      "or": "10",
+      "or": "STR+8",
       "accuracy": "-",
       "impact": 3,
-      "dmg": "2+1w",
+      "dmg": "STR+1w",
       "traits": [
         "[Reload 2]",
         "Impale",
@@ -2447,10 +2447,10 @@ export const gameData = {
     "Bow, Medium Heavy": {
       "class": "Bow",
       "bp": 10,
-      "or": "6",
+      "or": "STR+4",
       "accuracy": "-",
       "impact": 2,
-      "dmg": "2+2m",
+      "dmg": "STR+2m",
       "traits": [
         "[Reload]",
         "[2H]",
@@ -2462,10 +2462,10 @@ export const gameData = {
     "Bow, Medium Quickened": {
       "class": "Bow",
       "bp": 9,
-      "or": "6",
+      "or": "STR+4",
       "accuracy": "-",
       "impact": 2,
-      "dmg": "2+1m",
+      "dmg": "STR+1m",
       "traits": [
         "[2H]",
         "[Noise 2]"
@@ -2476,10 +2476,10 @@ export const gameData = {
     "Bow, Medium": {
       "class": "Bow",
       "bp": 7,
-      "or": "6",
+      "or": "STR+4",
       "accuracy": "-",
       "impact": 2,
-      "dmg": "2+1m",
+      "dmg": "STR+1m",
       "traits": [
         "[Reload]",
         "[2H]",
@@ -2491,10 +2491,10 @@ export const gameData = {
     "Bow, Recurve Heavy": {
       "class": "Bow",
       "bp": 8,
-      "or": "6",
+      "or": "STR+4",
       "accuracy": "-",
       "impact": 3,
-      "dmg": "2+1w",
+      "dmg": "STR+1w",
       "traits": [
         "[Reload 2]",
         "[Laden]",
@@ -2507,10 +2507,10 @@ export const gameData = {
     "Bow, Recurve": {
       "class": "Bow",
       "bp": 10,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+1m",
       "impact": 2,
-      "dmg": "2+1b",
+      "dmg": "STR+1b",
       "traits": [
         "[Reload]",
         "[2H]",
@@ -2522,10 +2522,10 @@ export const gameData = {
     "Bow, War": {
       "class": "Bow",
       "bp": 16,
-      "or": "8",
+      "or": "STR+6",
       "accuracy": "-",
       "impact": 4,
-      "dmg": "2+2b",
+      "dmg": "STR+2b",
       "traits": [
         "[Reload 2]",
         "Impale",
@@ -2539,7 +2539,7 @@ export const gameData = {
     "Crossbow, Heavy": {
       "class": "Bow",
       "bp": 8,
-      "or": "10",
+      "or": "STR+8",
       "accuracy": "-",
       "impact": 3,
       "dmg": "4+1b",
@@ -2557,10 +2557,10 @@ export const gameData = {
     "Crossbow, Light": {
       "class": "Bow",
       "bp": 5,
-      "or": "8",
+      "or": "STR+6",
       "accuracy": "-",
       "impact": 2,
-      "dmg": "2+1b",
+      "dmg": "STR+1b",
       "traits": [
         "[Reload]",
         "[Clumsy]",
@@ -2573,7 +2573,7 @@ export const gameData = {
     "Crossbow, Medium": {
       "class": "Bow",
       "bp": 10,
-      "or": "10",
+      "or": "STR+8",
       "accuracy": "-",
       "impact": 3,
       "dmg": "3+1b",
@@ -2591,7 +2591,7 @@ export const gameData = {
     "Crossbow, Repeating Heavy": {
       "class": "Bow",
       "bp": 17,
-      "or": "8",
+      "or": "STR+6",
       "accuracy": "-1m",
       "impact": 3,
       "dmg": "4+1b",
@@ -2609,7 +2609,7 @@ export const gameData = {
     "Crossbow, Repeating": {
       "class": "Bow",
       "bp": 9,
-      "or": "8",
+      "or": "STR+6",
       "accuracy": "-",
       "impact": 2,
       "dmg": "3+1b",
@@ -2626,7 +2626,7 @@ export const gameData = {
     "Crossbow, Single-hand Pistol": {
       "class": "Bow",
       "bp": 2,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+1m",
       "impact": 2,
       "dmg": "1+1b",
@@ -2643,10 +2643,10 @@ export const gameData = {
     "Crossbow, Single-hand Pistol, Hvy": {
       "class": "Bow",
       "bp": 5,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+1m",
       "impact": 2,
-      "dmg": "2+1b",
+      "dmg": "STR+1b",
       "traits": [
         "[Reload 2]",
         "Melee",
@@ -2660,7 +2660,7 @@ export const gameData = {
     "Crossbow, Single-hand Pistol, Hvy, Masterwork": {
       "class": "Bow",
       "bp": 13,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+2m",
       "impact": 3,
       "dmg": "3+1b",
@@ -2677,10 +2677,10 @@ export const gameData = {
     "Crossbow, Single-hand Pistol, Masterwork": {
       "class": "Bow",
       "bp": 12,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+2m",
       "impact": 3,
-      "dmg": "2+1b",
+      "dmg": "STR+1b",
       "traits": [
         "[Reload]",
         "Melee",
@@ -2694,10 +2694,10 @@ export const gameData = {
     "Slingshot": {
       "class": "Bow",
       "bp": 8,
-      "or": "2",
+      "or": "STR",
       "accuracy": "+1b",
       "impact": 0,
-      "dmg": "2-1b",
+      "dmg": "STR-1b",
       "traits": [
         "ROF",
         "[Stub]",
@@ -7281,7 +7281,7 @@ export const gameData = {
     "Dagger, Stiletto": {
       "class": "Melee",
       "bp": 9,
-      "or": "2",
+      "or": "STR",
       "accuracy": "+1b",
       "impact": 3,
       "dmg": "2-1b",
@@ -7439,7 +7439,7 @@ export const gameData = {
     "Gauntlet, Clawed": {
       "class": "Melee",
       "bp": 6,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "-",
       "impact": 1,
       "dmg": "2+1w",
@@ -7601,7 +7601,7 @@ export const gameData = {
     "Hook, Crook": {
       "class": "Melee",
       "bp": 2,
-      "or": "1",
+      "or": "STR-1",
       "accuracy": "-1m",
       "impact": 0,
       "dmg": "-",
@@ -7696,7 +7696,7 @@ export const gameData = {
     "Hook, Spearcrook": {
       "class": "Melee",
       "bp": 36,
-      "or": "1",
+      "or": "STR-1",
       "accuracy": "-1m",
       "impact": 2,
       "dmg": "2+2m",
@@ -7715,7 +7715,7 @@ export const gameData = {
     "Hook, Swordcrook": {
       "class": "Melee",
       "bp": 24,
-      "or": "1",
+      "or": "STR-1",
       "accuracy": "-1m",
       "impact": 1,
       "dmg": "2+2m",
@@ -7733,7 +7733,7 @@ export const gameData = {
     "Improvised Melee": {
       "class": "Melee",
       "bp": 0,
-      "or": "1",
+      "or": "STR-1",
       "accuracy": "-",
       "impact": 0,
       "dmg": "2",
@@ -7864,7 +7864,7 @@ export const gameData = {
     "Net, Retarius": {
       "class": "Melee",
       "bp": 14,
-      "or": "2",
+      "or": "STR",
       "accuracy": "+1w",
       "impact": 0,
       "dmg": "2-1m",
@@ -8517,7 +8517,7 @@ export const gameData = {
     "Trident, Long": {
       "class": "Melee",
       "bp": 16,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-",
       "impact": 1,
       "dmg": "2+2m",
@@ -8536,7 +8536,7 @@ export const gameData = {
     "Trident, Pitchfork": {
       "class": "Melee",
       "bp": 9,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-1m",
       "impact": 1,
       "dmg": "1+1m",
@@ -12553,10 +12553,10 @@ export const gameData = {
     "Blow-dart Gun": {
       "class": "Thrown",
       "bp": 23,
-      "or": "2",
+      "or": "STR",
       "accuracy": "+1b",
       "impact": 3,
-      "dmg": "2-1w",
+      "dmg": "STR-1w",
       "traits": [
         "Poison",
         "[Reload]",
@@ -12568,10 +12568,10 @@ export const gameData = {
     "Bola": {
       "class": "Thrown",
       "bp": 19,
-      "or": "2",
+      "or": "STR",
       "accuracy": "+1m",
       "impact": 0,
-      "dmg": "2-1w",
+      "dmg": "STR-1w",
       "traits": [
         "Conceal",
         "Stun",
@@ -12585,10 +12585,10 @@ export const gameData = {
     "Boomerang, War": {
       "class": "Thrown",
       "bp": 14,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "-",
       "impact": 0,
-      "dmg": "2-1b",
+      "dmg": "STR-1b",
       "traits": [
         "Conceal",
         "Ricochet",
@@ -12602,7 +12602,7 @@ export const gameData = {
     "Bottle-Phial, Acid-1": {
       "class": "Thrown",
       "bp": 7,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-1m",
       "impact": 0,
       "dmg": "-",
@@ -12618,7 +12618,7 @@ export const gameData = {
     "Bottle-Phial, Burn-1": {
       "class": "Thrown",
       "bp": 8,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-1m",
       "impact": 0,
       "dmg": "-",
@@ -12634,7 +12634,7 @@ export const gameData = {
     "Bottle-Phial, Caustic-1": {
       "class": "Thrown",
       "bp": 10,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-1m",
       "impact": 0,
       "dmg": "-",
@@ -12650,7 +12650,7 @@ export const gameData = {
     "Bottle-Phial, Confuse-1": {
       "class": "Thrown",
       "bp": 5,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-1m",
       "impact": 0,
       "dmg": "-",
@@ -12666,7 +12666,7 @@ export const gameData = {
     "Bottle-Phial, Fire-1": {
       "class": "Thrown",
       "bp": 11,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-1m",
       "impact": 0,
       "dmg": "-",
@@ -12682,7 +12682,7 @@ export const gameData = {
     "Bottle-Phial, Poison-1": {
       "class": "Thrown",
       "bp": 6,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-1m",
       "impact": 0,
       "dmg": "-",
@@ -12698,10 +12698,10 @@ export const gameData = {
     "Chakram Rings": {
       "class": "Thrown",
       "bp": 25,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-",
       "impact": 1,
-      "dmg": "2",
+      "dmg": "STR",
       "traits": [
         "Conceal",
         "Ricochet 2",
@@ -12715,10 +12715,10 @@ export const gameData = {
     "Chakram Rings, Serrated": {
       "class": "Thrown",
       "bp": 31,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-",
       "impact": 2,
-      "dmg": "2+1m",
+      "dmg": "STR+1m",
       "traits": [
         "Conceal",
         "Ricochet",
@@ -12732,10 +12732,10 @@ export const gameData = {
     "Discus": {
       "class": "Thrown",
       "bp": 16,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-",
       "impact": 0,
-      "dmg": "2",
+      "dmg": "STR",
       "traits": [
         "Conceal",
         "Ricochet 2",
@@ -12750,10 +12750,10 @@ export const gameData = {
     "Improvised Thrown": {
       "class": "Thrown",
       "bp": 0,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-1w",
       "impact": 0,
-      "dmg": "2-1b",
+      "dmg": "STR-1b",
       "traits": [
         "[Discard! > Type]",
         "[1H]"
@@ -12764,10 +12764,10 @@ export const gameData = {
     "Improvised Thrown, Large": {
       "class": "Thrown",
       "bp": 0,
-      "or": "1",
+      "or": "STR-1",
       "accuracy": "-1w",
       "impact": 0,
-      "dmg": "2-1m",
+      "dmg": "STR-1m",
       "traits": [
         "[Discard! > Type]",
         "[Laden]",
@@ -12779,7 +12779,7 @@ export const gameData = {
     "Net, Deathnet": {
       "class": "Thrown",
       "bp": 38,
-      "or": "2",
+      "or": "STR",
       "accuracy": "+1w",
       "impact": 0,
       "dmg": "3+1w",
@@ -12799,10 +12799,10 @@ export const gameData = {
     "Sling": {
       "class": "Thrown",
       "bp": 8,
-      "or": "4",
+      "or": "STR+2",
       "accuracy": "+1m",
       "impact": 0,
-      "dmg": "2",
+      "dmg": "STR",
       "traits": [
         "Stun",
         "[Arc]",
@@ -12816,10 +12816,10 @@ export const gameData = {
     "Sling, Staff": {
       "class": "Thrown",
       "bp": 10,
-      "or": "12",
+      "or": "STR+10",
       "accuracy": "+1m",
       "impact": 0,
-      "dmg": "2+1m",
+      "dmg": "STR+1m",
       "traits": [
         "Stun",
         "[Arc 2]",
@@ -12833,10 +12833,10 @@ export const gameData = {
     "Staff, Sling": {
       "class": "Thrown",
       "bp": 10,
-      "or": "6",
+      "or": "STR+4",
       "accuracy": "-",
       "impact": 0,
-      "dmg": "2+1m",
+      "dmg": "STR+1m",
       "traits": [
         "[Awkward]",
         "Stun",
@@ -12849,10 +12849,10 @@ export const gameData = {
     "Throwing Axes": {
       "class": "Thrown",
       "bp": 17,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-",
       "impact": 1,
-      "dmg": "2",
+      "dmg": "STR",
       "traits": [
         "Cleave",
         "Conceal",
@@ -12866,10 +12866,10 @@ export const gameData = {
     "Throwing Dart": {
       "class": "Thrown",
       "bp": 11,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-",
       "impact": 2,
-      "dmg": "2-1w",
+      "dmg": "STR-1w",
       "traits": [
         "Poison",
         "Conceal",
@@ -12884,10 +12884,10 @@ export const gameData = {
     "Throwing Knives": {
       "class": "Thrown",
       "bp": 8,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "+1m",
       "impact": 1,
-      "dmg": "2-1w",
+      "dmg": "STR-1w",
       "traits": [
         "Discrete",
         "[Awkward]",
@@ -12900,10 +12900,10 @@ export const gameData = {
     "Throwing Stars": {
       "class": "Thrown",
       "bp": 9,
-      "or": "3",
+      "or": "STR+1",
       "accuracy": "-",
       "impact": 2,
-      "dmg": "2-1w",
+      "dmg": "STR-1w",
       "traits": [
         "Discrete",
         "[Awkward]",
@@ -12916,10 +12916,10 @@ export const gameData = {
     "Throwing Sticks": {
       "class": "Thrown",
       "bp": 2,
-      "or": "2",
+      "or": "STR",
       "accuracy": "-",
       "impact": 0,
-      "dmg": "2-1w",
+      "dmg": "STR-1w",
       "traits": [
         "[Stun-only]",
         "Conceal",

@@ -20,35 +20,29 @@ describe('resolveMoraleTest', () => {
   });
 
   it('should pass the morale test if the score is greater than 0', () => {
-    setRoller((count) => [6, 6]); // 4 successes
+    setRoller(() => [6, 6]); // 4 successes
     const result = resolveMoraleTest(character, {}, 0);
-    // Character: POW(2) + Successes(4) = 6.
-    // System: Difficulty(0) + Successes(0) = 0.
-    // Final Score: 6 - 0 = 6. PASS.
+    // POW(2) + successes(4) = 6.  6 > 0 so pass.
     expect(result.pass).toBe(true);
     expect(result.score).toBe(6);
   });
 
   it('should pass the morale test if the score is exactly 0 (a tie)', () => {
-    setRoller((count) => [1, 2, 3]); // 0 successes
+    setRoller(() => []); // 0 successes
     const difficulty = 2; // Adjusted difficulty to match character's base POW
     const result = resolveMoraleTest(character, {}, difficulty);
-    // Character: POW(2) + Successes(0) = 2.
-    // System: Difficulty(2) + Successes(0) = 2.
-    // Final Score: 2 - 2 = 0. PASS (on a tie).
+    // POW(2) + successes(0) - difficulty(2) = 0. 0 >= 0 so pass.
     expect(result.pass).toBe(true);
     expect(result.score).toBe(0);
   });
 
   it('should fail the morale test if the score is less than 0', () => {
-    setRoller((count) => [1, 2, 3]); // 0 successes
-    const difficulty = 4;
+    setRoller(() => []); // 0 successes
+    const difficulty = 3;
     const result = resolveMoraleTest(character, {}, difficulty);
-    // Character: POW(2) + Successes(0) = 2.
-    // System: Difficulty(4) + Successes(0) = 4.
-    // Final Score: 2 - 4 = -2. FAIL.
+    // POW(2) + successes(0) - difficulty(3) = -1. -1 < 0 so fail.
     expect(result.pass).toBe(false);
-    expect(result.score).toBe(-2);
+    expect(result.score).toBe(-1);
   });
 
   it('should correctly calculate misses (as p1Misses)', () => {
@@ -58,16 +52,12 @@ describe('resolveMoraleTest', () => {
   });
 
   it('should apply bonus dice and calculate misses', () => {
-    // Character has POW 2 (2 Base Dice) + 2 Bonus Base Dice = 4 total Base Dice.
-    const bonusDice = { [DiceType.Base]: 2 }; 
-    // Rolls: [1, 1, 6, 6, 6] -> 2 misses, 6 successes (2+2+2).
-    setRoller((count) => [1, 1, 6, 6, 6]); 
+    const bonusDice = { [DiceType.Base]: 2 };
+    setRoller((count) => (count === 4 ? [1, 1, 6, 6] : []));
     const result = resolveMoraleTest(character, {}, 0, bonusDice);
-    // Character: POW(2) + Successes(6) = 8.
-    // System: Difficulty(0).
-    // Final Score: 8 - 0 = 8. PASS.
+    // POW(2) + Bonus(2) = 4 dice. 2 misses, 4 successes. Score 6.
     expect(result.pass).toBe(true);
     expect(result.p1Misses).toBe(2);
-    expect(result.score).toBe(8);
+    expect(result.score).toBe(6);
   });
 });

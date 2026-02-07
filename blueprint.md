@@ -16,6 +16,8 @@ This project is a **headless wargame simulator** designed to run in Firebase Stu
 
 **2. Separation of Responsibilities (SOLID):** The codebase will adhere to SOLID design principles, with a strong emphasis on the Single Responsibility Principle. Complex processes, like combat resolution, will be broken down into smaller, modular, and independently testable subroutines. A core function will then act as an orchestrator, managing the flow of data between these subroutines. This ensures a clean, maintainable, and scalable architecture.
 
+**3. Strict Debugging Protocol:** When unit tests fail, especially in complex modules like the `dice-roller`, extensive `console.log` statements MUST be added to the relevant functions to trace the execution flow. This data-driven approach is critical for identifying the root cause of the failure before attempting a fix. **These logs MUST NOT be removed until `npm test` confirms that all unit tests are passing.** This ensures a verifiable and robust debugging process.
+
 ## Core Game Mechanics
 
 ### Test Resolution
@@ -79,12 +81,8 @@ This phase marked a strategic shift from pure feature implementation to building
 ### **Phase 7: Critical Bug Fix & Rulebook Completion (Completed)**
 This phase addressed a critical bug in the combat resolution system and rectified significant omissions in the official `rules.md` documentation.
 
-### **Phase 8: Assembly Factory (Current)**
+### **Phase 8: Assembly Factory (Completed)**
 This phase introduces the concept of an "Assembly," a collection of characters generated within specific constraints. This is the first step towards building a persistence layer and more complex scenario generation.
 
-**The Plan:**
-
-1.  **Define `Assembly` Interface:** Created a new `Assembly.ts` interface to define the data structure for a collection of characters.
-2.  **Create `assembly-factory.ts`:** Implemented the core factory logic to generate a valid assembly based on character count and BP constraints.
-3.  **Add CLI Command:** Created a `generate-assembly.ts` script and a corresponding `npm run generate-assembly` command to allow for easy generation of assemblies from the command line.
-4.  **Update Blueprint:** Updated this `blueprint.md` file to document the new Assembly Factory feature.
+### **Phase 9: Critical Bug Hunt & Resolution (Completed)**
+This phase was dedicated to identifying and resolving critical bugs in the core game mechanics to ensure the simulator is functioning as expected according to the established rules. The work involved a deep dive into the `indirect-ranged-combat.ts` module, correcting a misinterpretation of the automatic miss rule and fixing a bug in how hindrance penalties were applied. The debugging process was guided by our strict protocol of using extensive logging and iterative testing, which ultimately led to the successful resolution of all issues and a full suite of passing tests.

@@ -1,49 +1,35 @@
 
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, DicePool } from '../dice-roller';
+import { resolveTest, TestParticipant, DicePool, TestResult, DiceType, mergeDicePools } from '../dice-roller';
 import { Item } from '../Item';
 import { parseAccuracy } from './accuracy-parser';
 
-/**
- * Resolves the opposed hit test in a close combat attack.
- * @param attacker The attacking character.
- * @param defender The defending character.
- * @param weapon The weapon being used.
- * @param attackerBonus Base bonus dice for the attacker from context.
- * @param attackerPenalty Base penalty dice for the attacker from context.
- * @param defenderBonus Base bonus dice for the defender from context.
- * @param defenderPenalty Base penalty dice for the defender from context.
- * @returns The result of the opposed test.
- */
 export function resolveHitTest(
-  attacker: Character,
-  defender: Character,
-  weapon: Item,
-  attackerBonus: DicePool,
-  attackerPenalty: DicePool,
-  defenderBonus: DicePool,
-  defenderPenalty: DicePool,
-) {
-  // 1. Get accuracy modifiers from the weapon
-  const { bonusDice: accBonus, penaltyDice: accPenalty, scoreModifier } = parseAccuracy(weapon.accuracy);
+    attacker: Character,
+    defender: Character,
+    weapon: Item,
+    attackerBonus: DicePool = {},
+    attackerPenalty: DicePool = {},
+    defenderBonus: DicePool = {},
+    defenderPenalty: DicePool = {},
+): TestResult {
+    
+    const attackerAttribute = weapon.classification === 'Melee' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
+    const defenderAttribute = defender.finalAttributes.ref;
 
-  // 2. Combine base modifiers with accuracy modifiers
-  const finalAttackerBonus = { ...attackerBonus, ...accBonus };
-  const finalAttackerPenalty = { ...attackerPenalty, ...accPenalty };
+    const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(weapon.accuracy);
 
-  // 3. Define the participants for the test
-  const hitTestAttacker: TestParticipant = {
-    attributeValue: attacker.finalAttributes.cca,
-    bonusDice: finalAttackerBonus,
-    penaltyDice: finalAttackerPenalty,
-  };
+    const attackerParticipant: TestParticipant = {
+        attributeValue: attackerAttribute,
+        bonusDice: mergeDicePools(attackerBonus, accBonus),
+        penaltyDice: mergeDicePools(attackerPenalty, accPenalty),
+    };
 
-  const hitTestDefender: TestParticipant = {
-    attributeValue: defender.finalAttributes.cca,
-    bonusDice: defenderBonus,
-    penaltyDice: defenderPenalty,
-  };
+    const defenderParticipant: TestParticipant = {
+        attributeValue: defenderAttribute,
+        bonusDice: defenderBonus,
+        penaltyDice: defenderPenalty,
+    };
 
-  // 4. Resolve the test, applying the score modifier from accuracy
-  return resolveTest(hitTestAttacker, hitTestDefender, scoreModifier);
+    return resolveTest(attackerParticipant, defenderParticipant);
 }

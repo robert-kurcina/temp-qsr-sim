@@ -1,6 +1,6 @@
 
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, TestResult } from '../dice-roller';
+import { resolveTest, TestParticipant, TestResult, DiceType, mergeDicePools } from '../dice-roller';
 import { TestContext } from '../TestContext';
 import { DicePool } from '../dice-roller';
 
@@ -26,8 +26,8 @@ export function resolveMoraleTest(
   // As per MEST QSR, Morale Tests are Unopposed POW tests.
   const participant: TestParticipant = {
     attributeValue: character.finalAttributes.pow,
-    bonusDice,
-    penaltyDice,
+    bonusDice: bonusDice,
+    penaltyDice: penaltyDice,
   };
 
   // For an Unopposed Test, the difficulty IS the attribute of the opposing system player.
