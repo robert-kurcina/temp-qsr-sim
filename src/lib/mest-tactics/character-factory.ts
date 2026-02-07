@@ -5,23 +5,55 @@ import { Item } from './Item';
 import { parseTrait } from './trait-parser';
 import { traitLogicRegistry } from './trait-logic-registry';
 import { Trait } from './Trait';
+import { databaseService } from './database';
 
 /**
- * Creates a new Character instance from a Profile.
- * This is the primary function for taking a template and making it a usable entity.
- * @param profile The profile to instantiate.
- * @param characterName The unique name for this character.
- * @returns A fully initialized Character object.
+ * Generates a unique character name based on the specified format.
+ * Checks the database to ensure the name is not already in use.
+ * @returns A unique character name string.
  */
-export function createCharacter(profile: Profile, characterName?: string): Character {
+async function generateUniqueCharacterName(): Promise<string> {
+    await databaseService.read();
+    const existingNames = new Set(databaseService.characters.map(c => c.name));
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+    const randomNumber = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+    let baseName = `${randomLetter}-${randomNumber}`;
+    let finalName = baseName;
+    let suffixCounter = 0;
+
+    while (existingNames.has(finalName)) {
+        const suffixChars = 'abcdefghijklmnopqrstuvwxyz';
+        const randomChar = suffixChars[suffixCounter % suffixChars.length];
+        const randomDigit = Math.floor(suffixCounter / suffixChars.length) % 10;
+        finalName = `${baseName}-${randomChar}${randomDigit}`;
+        suffixCounter++;
+    }
+
+    return finalName;
+}
+
+
+/**
+ * Creates a new Character instance from a Profile and persists it to the database.
+ * @param profile The profile to instantiate.
+ * @returns A fully initialized and persisted Character object.
+ */
+export async function createCharacter(profile: Profile): Promise<Character> {
+  await databaseService.read();
+
   const primaryArchetype = profile.archetype;
   if (!primaryArchetype) {
     throw new Error('Profile does not contain a valid primary archetype.');
   }
+  
+  const equipment = profile.equipment || [];
+
   // 1. Combine all raw trait strings from archetype and equipment.
   const rawTraits = [
     ...(primaryArchetype.traits || []),
-    ...(profile.equipment || []).flatMap(item => item.traits || []),
+    ...equipment.flatMap(item => item.traits || []),
   ];
 
   // 2. Parse all raw strings into structured Trait objects.
@@ -40,7 +72,7 @@ export function createCharacter(profile: Profile, characterName?: string): Chara
 
   // 5. Calculate armor state directly from the profile's equipment.
   const armorState: ArmorState = { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 };
-  for (const item of profile.equipment) {
+  for (const item of equipment) {
     const itemTraits = (item.traits || []).map(parseTrait);
     const armorTrait = itemTraits.find(t => t.name.toLowerCase() === 'armor');
 
@@ -73,15 +105,18 @@ export function createCharacter(profile: Profile, characterName?: string): Chara
     }
   }
 
-  // 6. Assemble the final Character object.
+  // 6. Generate a unique name for the character.
+  const characterName = await generateUniqueCharacterName();
+
+  // 7. Assemble the final Character object.
   const character: Character = {
     id: Date.now().toString() + Math.random().toString(), // Basic unique ID
-    name: characterName || profile.name,
+    name: characterName,
     profile,
     allTraits,
     finalAttributes,
     state: {
-      wounds: 0,
+      woundTokens: 0,
       delayTokens: 0,
       fearTokens: 0,
       isHidden: false,
@@ -92,6 +127,13 @@ export function createCharacter(profile: Profile, characterName?: string): Chara
       armor: armorState, // Assign the calculated armor state
     },
   };
+
+  // 8. Persist the new character and its profile to the database.
+  if (!databaseService.profiles.find(p => p.name === profile.name)) {
+      databaseService.profiles.push(profile);
+  }
+  databaseService.characters.push(character);
+  await databaseService.write();
 
   return character;
 }

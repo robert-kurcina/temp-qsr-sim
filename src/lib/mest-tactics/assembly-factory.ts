@@ -1,10 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
+
 import { Assembly } from './Assembly';
 import { Character } from './Character';
 import { createCharacter } from './character-factory';
 import { generateRandomProfile } from './profile-generator';
-import { generateNextName, readState, writeState, NameGeneratorState } from './name-generator';
+import { databaseService } from './database';
 
 interface AssemblyConstraints {
   minCharacters?: number;
@@ -13,11 +12,27 @@ interface AssemblyConstraints {
   maxBP?: number;
 }
 
-let assemblyCounter = 0;
+/**
+ * Generates a unique assembly name and ensures it doesn't already exist in the database.
+ * @returns A unique assembly name string.
+ */
+async function generateUniqueAssemblyName(): Promise<string> {
+    await databaseService.read();
+    const existingNames = new Set(databaseService.assemblies.map(a => a.name));
+    let counter = databaseService.assemblies.length + 1;
+    let assemblyName = `Assembly-${counter}`;
 
-export function createAssembly(constraints: AssemblyConstraints = {}): Assembly {
-  const nameGenState = readState();
-  let currentNameGenState: NameGeneratorState = nameGenState;
+    while (existingNames.has(assemblyName)) {
+        counter++;
+        assemblyName = `Assembly-${counter}`;
+    }
+
+    return assemblyName;
+}
+
+
+export async function createAssembly(constraints: AssemblyConstraints = {}): Promise<Assembly> {
+  await databaseService.read();
 
   const {
     minCharacters = 4,
@@ -32,41 +47,40 @@ export function createAssembly(constraints: AssemblyConstraints = {}): Assembly 
 
   while (totalCharacters < maxCharacters && totalBP < maxBP) {
     const profile = generateRandomProfile();
-    const { name, nextState } = generateNextName(currentNameGenState);
-    currentNameGenState = nextState;
 
-    const character = createCharacter(profile, name);
-
-    if (totalBP + character.profile.adjustedBp > maxBP) {
-      break; // Stop if adding the character exceeds the max BP
+    // Stop if adding even a character with 0 BP would exceed constraints.
+    // A more sophisticated check might look at the cheapest possible character.
+    if (totalBP + (profile.adjustedBp || 0) > maxBP && totalCharacters < minCharacters) {
+        continue; // Try a different profile if we haven't met the minimums.
     }
+
+    if (totalBP + (profile.adjustedBp || 0) > maxBP) {
+        break; // Stop if the next character will exceed the max BP.
+    }
+
+    const character = await createCharacter(profile);
 
     characters.push(character);
     totalBP += character.profile.adjustedBp;
     totalCharacters++;
 
     if (totalCharacters >= minCharacters && totalBP >= minBP) {
-        break;
+        // Optional: decide if you want to stop as soon as constraints are met
+        // or continue until you hit the max.
     }
   }
   
-  assemblyCounter++;
-  const assemblyName = `Assembly-${assemblyCounter}`;
+  const assemblyName = await generateUniqueAssemblyName();
   const assembly: Assembly = {
     name: assemblyName,
-    characters,
+    characters: characters.map(c => c.id), // Store character IDs
     totalBP,
     totalCharacters,
   };
 
-  // Persist the generated objects
-  characters.forEach(character => {
-    fs.writeFileSync(path.join('./characters', `${character.name}.json`), JSON.stringify(character, null, 2));
-    fs.writeFileSync(path.join('./profiles', `${character.profile.name}.json`), JSON.stringify(character.profile, null, 2));
-  });
-  fs.writeFileSync(path.join('./assemblies', `${assemblyName}.json`), JSON.stringify(assembly, null, 2));
-
-  writeState(currentNameGenState);
+  // Persist the assembly
+  databaseService.assemblies.push(assembly);
+  await databaseService.write();
 
   return assembly;
 }

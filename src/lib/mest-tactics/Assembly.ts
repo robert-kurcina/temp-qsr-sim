@@ -1,8 +1,7 @@
-import { Character } from './Character';
 
 export interface Assembly {
   name: string;
-  characters: Character[];
+  characters: string[]; // Changed to store character IDs
   totalBP: number;
   totalCharacters: number;
 }

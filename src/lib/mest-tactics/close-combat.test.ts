@@ -17,7 +17,7 @@ describe('makeCloseCombatAttack', () => {
   let defender: Character;
   let attackerWeapon: Item;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const attackerArchetype = { name: "Veteran, Fighter", ...archetypes["Veteran, Fighter"] }; // CCA 4
     const defenderArchetype = { name: "Militia", ...archetypes["Militia"] }; // REF 3
 
@@ -25,11 +25,11 @@ describe('makeCloseCombatAttack', () => {
     const defenderWeapon = { name: "Axe", ...melee_weapons["Axe"] };
     const defenderArmor = { name: "Armor, Medium Mail", ...armors["Armor, Medium Mail"] };
 
-    const attackerProfile: Profile = { archetype: attackerArchetype, equipment: [attackerWeapon] };
-    const defenderProfile: Profile = { archetype: defenderArchetype, equipment: [defenderWeapon, defenderArmor] };
+    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] };
+    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderWeapon, defenderArmor] };
 
-    attacker = createCharacter(attackerProfile, 'Attacker');
-    defender = createCharacter(defenderProfile, 'Defender');
+    attacker = await createCharacter(attackerProfile);
+    defender = await createCharacter(defenderProfile);
   });
 
   afterEach(() => {

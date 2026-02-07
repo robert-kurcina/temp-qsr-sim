@@ -15,11 +15,11 @@ describe('makeIndirectRangedAttack', () => {
     let attacker: Character;
     let weapon: Item;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         const attackerArchetype = { name: 'Militia', ...archetypes['Militia'] }; // RCA 2
         weapon = { name: 'Grenade, HE', ...ranged_weapons['Grenade, HE'] };
-        const attackerProfile: Profile = { archetype: attackerArchetype, equipment: [weapon] };
-        attacker = createCharacter(attackerProfile, 'Attacker');
+        const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [weapon] };
+        attacker = await createCharacter(attackerProfile);
     });
 
     afterEach(() => {

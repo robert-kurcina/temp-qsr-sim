@@ -86,3 +86,20 @@ This phase introduces the concept of an "Assembly," a collection of characters g
 
 ### **Phase 9: Critical Bug Hunt & Resolution (Completed)**
 This phase was dedicated to identifying and resolving critical bugs in the core game mechanics to ensure the simulator is functioning as expected according to the established rules. The work involved a deep dive into the `indirect-ranged-combat.ts` module, correcting a misinterpretation of the automatic miss rule and fixing a bug in how hindrance penalties were applied. The debugging process was guided by our strict protocol of using extensive logging and iterative testing, which ultimately led to the successful resolution of all issues and a full suite of passing tests.
+
+### **Phase 10: Persistence Layer Implementation (LowDB) (In Progress)**
+The goal of this phase is to create a robust persistence layer using LowDB to store and manage all generated game data, including Profiles, Characters, and Assemblies.
+
+**The Plan:**
+
+1.  **Install Dependencies:** Add `lowdb` to the project.
+2.  **Database Service:** Create a centralized `database.ts` module to manage all interactions with the LowDB instance. This will encapsulate the logic for reading from and writing to the JSON database file.
+3.  **Update Factories for Persistence:**
+    *   Modify the `character-factory.ts` to automatically save every new `Character` and its associated `Profile` to the database.
+    *   Modify the `assembly-factory.ts` to save every new `Assembly` to the database.
+4.  **Implement Unique Naming:** Update the `character-factory.ts` to enforce the unique character naming convention (`[A-Z]-[0000-9999]`) as specified in `persistence.md`, checking the database for collisions before creating a new character.
+5.  **Create CLI Commands:**
+    *   **`query` command:** Build a new Node.js script that allows querying the database for specific objects (e.g., `node query.js --type Character --name A-0001`).
+    *   **`export` command:** Build a script to export the results of a query to a specified JSON file (e.g., `node export.js --type Assembly --name "My First Assembly" --out my-assembly.json`).
+6.  **Unit Testing:** Write a comprehensive suite of tests for the new `database.ts` service and the CLI commands to ensure data integrity and command functionality.
+7.  **Update Blueprint:** Once all steps are complete and tests are passing, mark this phase as completed in the `blueprint.md`.

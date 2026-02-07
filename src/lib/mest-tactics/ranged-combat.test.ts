@@ -17,15 +17,15 @@ describe('makeRangedCombatAttack', () => {
   let defender: Character;
   let attackerWeapon: Item;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const attackerArchetype = { name: "Marksman", ...archetypes["Marksman"] };
     const defenderArchetype = { name: "Militia", ...archetypes["Militia"] };
     attackerWeapon = { name: "Crossbow", ...ranged_weapons["Crossbow"] };
     const defenderArmor = { name: "Armor, Light Leather", ...armors["Armor, Light Leather"] };
-    const attackerProfile: Profile = { archetype: attackerArchetype, equipment: [attackerWeapon] };
-    const defenderProfile: Profile = { archetype: defenderArchetype, equipment: [defenderArmor] };
-    attacker = createCharacter(attackerProfile, 'Attacker');
-    defender = createCharacter(defenderProfile, 'Defender');
+    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] };
+    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderArmor] };
+    attacker = await createCharacter(attackerProfile);
+    defender = await createCharacter(defenderProfile);
   });
 
   afterEach(() => {

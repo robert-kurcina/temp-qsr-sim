@@ -4,6 +4,7 @@ import { createCharacter } from '../character-factory';
 import { resolveMoraleTest } from './morale-test';
 import { setRoller, resetRoller, DiceType } from '../dice-roller';
 import type { Character } from '../Character';
+import type { Profile } from '../Profile';
 import { gameData } from '../../data';
 
 const { archetypes } = gameData;
@@ -13,9 +14,10 @@ const { archetypes } = gameData;
 describe('resolveMoraleTest', () => {
   let character: Character;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const archetype = { name: "Militia", ...archetypes["Militia"] }; // Militia has POW 2
-    character = createCharacter({ archetype, equipment: [] }, 'Test Character');
+    const profile: Profile = { name: 'Test Profile', archetype, equipment: [] };
+    character = await createCharacter(profile);
     resetRoller();
   });
 

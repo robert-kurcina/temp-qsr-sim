@@ -17,14 +17,14 @@ describe('makeDisengageAction', () => {
     let defender: Character;
     let defenderWeapon: Item;
 
-    beforeEach(() => {
+    beforeEach(async () => {
         const disengagerArchetype = { name: 'Militia', ...archetypes['Militia'] }; // REF 3
         const defenderArchetype = { name: 'Veteran, Fighter', ...archetypes['Veteran, Fighter'] }; // CCA 4
         defenderWeapon = { name: 'Sword', ...melee_weapons['Sword'] };
-        const disengagerProfile: Profile = { archetype: disengagerArchetype, equipment: [] };
-        const defenderProfile: Profile = { archetype: defenderArchetype, equipment: [defenderWeapon] };
-        disengager = createCharacter(disengagerProfile, 'Disengager');
-        defender = createCharacter(defenderProfile, 'Defender');
+        const disengagerProfile: Profile = { name: 'Disengager Profile', archetype: disengagerArchetype, equipment: [] };
+        const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderWeapon] };
+        disengager = await createCharacter(disengagerProfile);
+        defender = await createCharacter(defenderProfile);
     });
 
     afterEach(() => {

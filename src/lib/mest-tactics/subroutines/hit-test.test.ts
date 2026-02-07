@@ -13,16 +13,16 @@ describe('resolveHitTest', () => {
   let defender: Character;
   let weapon: Item;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const attackerArchetype = { name: "Veteran, Fighter", ...gameData.archetypes["Veteran, Fighter"] };
     const defenderArchetype = { name: "Militia", ...gameData.archetypes["Militia"] };
     weapon = { name: "Sword, Broad", ...gameData.melee_weapons["Sword, Broad"] };
 
-    const attackerProfile: Profile = { archetype: attackerArchetype, equipment: [weapon] };
-    const defenderProfile: Profile = { archetype: defenderArchetype, equipment: [] };
+    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [weapon] };
+    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [] };
 
-    attacker = createCharacter(attackerProfile, 'Attacker');
-    defender = createCharacter(defenderProfile, 'Defender');
+    attacker = await createCharacter(attackerProfile);
+    defender = await createCharacter(defenderProfile);
   });
 
   it('should resolve a standard hit test without external modifiers', () => {
