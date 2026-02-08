@@ -23,7 +23,7 @@ function _calculateModifiers(
     defenderBonus: DicePool, 
     defenderPenalty: DicePool
 } {
-    let disengagerBonus: DicePool = {};
+    let disengagerBonus: DicePool = { [DiceType.Base]: 1 };
     let disengagerPenalty: DicePool = {};
     let defenderBonus: DicePool = {};
     let defenderPenalty: DicePool = {};

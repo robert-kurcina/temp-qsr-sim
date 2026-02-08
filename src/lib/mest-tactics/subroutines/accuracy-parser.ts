@@ -2,17 +2,17 @@
 import { DicePool, DiceType } from "../dice-roller";
 
 /**
- * Parses a weapon's accuracy string (e.g., "Acc(+1b)") into a DicePool object.
+ * Parses a weapon's accuracy string (e.g., "+1b") into a DicePool object.
  */
 export function parseAccuracy(accuracyString: string | undefined): { bonusDice: DicePool, penaltyDice: DicePool } {
     const bonusDice: DicePool = {};
     const penaltyDice: DicePool = {};
 
-    if (!accuracyString) {
+    if (!accuracyString || accuracyString === "-") {
         return { bonusDice, penaltyDice };
     }
 
-    const regex = /Acc\(([-+])(\d+)([bmw])\)/;
+    const regex = /([+-])(\d+)([bmw])/;
     const match = accuracyString.match(regex);
 
     if (match) {

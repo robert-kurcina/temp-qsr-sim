@@ -128,22 +128,29 @@ export function mergeDicePools(...pools: DicePool[]): DicePool {
 }
 
 export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: number[] | null = null, p2Rolls: number[] | null = null) {
+  console.log('--- resolveTest START ---');
+  console.log('p1 participant:', JSON.stringify(p1, null, 2));
+  console.log('p2 participant:', JSON.stringify(p2, null, 2));
+
   const p1Bonus = p1.bonusDice || {};
   const p1Penalty = p1.penaltyDice || {};
   const p2Bonus = p2.bonusDice || {};
   const p2Penalty = p2.penaltyDice || {};
 
   const p1Dice: DicePool = {
-      [DiceType.Base]: 2 + (p1Bonus[DiceType.Base] || 0) - (p1Penalty[DiceType.Base] || 0),
-      [DiceType.Modifier]: (p1Bonus[DiceType.Modifier] || 0) - (p1Penalty[DiceType.Modifier] || 0),
-      [DiceType.Wild]: (p1Bonus[DiceType.Wild] || 0) - (p1Penalty[DiceType.Wild] || 0),
+      [DiceType.Base]: 2 + (p1Bonus[DiceType.Base] || 0) + (p2Penalty[DiceType.Base] || 0),
+      [DiceType.Modifier]: (p1Bonus[DiceType.Modifier] || 0) + (p2Penalty[DiceType.Modifier] || 0),
+      [DiceType.Wild]: (p1Bonus[DiceType.Wild] || 0) + (p2Penalty[DiceType.Wild] || 0),
   };
 
   const p2Dice: DicePool = {
-      [DiceType.Base]: 2 + (p2Bonus[DiceType.Base] || 0) - (p2Penalty[DiceType.Base] || 0),
-      [DiceType.Modifier]: (p2Bonus[DiceType.Modifier] || 0) - (p2Penalty[DiceType.Modifier] || 0),
-      [DiceType.Wild]: (p2Bonus[DiceType.Wild] || 0) - (p2Penalty[DiceType.Wild] || 0),
+      [DiceType.Base]: 2 + (p2Bonus[DiceType.Base] || 0) + (p1Penalty[DiceType.Base] || 0),
+      [DiceType.Modifier]: (p2Bonus[DiceType.Modifier] || 0) + (p1Penalty[DiceType.Modifier] || 0),
+      [DiceType.Wild]: (p2Bonus[DiceType.Wild] || 0) + (p1Penalty[DiceType.Wild] || 0),
   };
+
+  console.log('p1 calculated dice pool:', JSON.stringify(p1Dice, null, 2));
+  console.log('p2 calculated dice pool:', JSON.stringify(p2Dice, null, 2));
 
   const p1TotalDice = Math.max(0, Object.values(p1Dice).reduce((a, b) => a + b, 0));
   const p2TotalDice = Math.max(0, Object.values(p2Dice).reduce((a, b) => a + b, 0));
@@ -166,12 +173,24 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
     p2FinalRolls = allRolls.slice(p1TotalDice, p1TotalDice + p2TotalDice);
   }
 
+  console.log('p1 rolls:', JSON.stringify(p1FinalRolls));
+  console.log('p2 rolls:', JSON.stringify(p2FinalRolls));
+
   const p1Result = performTest(p1Dice, p1FinalRolls);
   const p2Result = performTest(p2Dice, p2FinalRolls);
+
+  console.log('p1Result from performTest:', JSON.stringify(p1Result, null, 2));
+  console.log('p2Result from performTest:', JSON.stringify(p2Result, null, 2));
 
   const p1Score = p1.attributeValue + p1Result.score;
   const p2Score = p2.attributeValue + p2Result.score;
   const score = p1Score - p2Score;
+
+  console.log(`p1Score (attr: ${p1.attributeValue} + dice: ${p1Result.score}) = ${p1Score}`);
+  console.log(`p2Score (attr: ${p2.attributeValue} + dice: ${p2Result.score}) = ${p2Score}`);
+  console.log(`Final score (p1 - p2): ${score}`);
+  console.log(`Pass (score >= 0): ${score >= 0}`);
+  console.log('--- resolveTest END ---');
 
   const p1RollsArray = Array.isArray(p1FinalRolls) ? p1FinalRolls : [p1FinalRolls];
   const p2RollsArray = Array.isArray(p2FinalRolls) ? p2FinalRolls : [p2FinalRolls];

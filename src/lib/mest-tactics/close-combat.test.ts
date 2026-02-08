@@ -36,8 +36,8 @@ describe('makeCloseCombatAttack', () => {
     resetRoller();
   });
 
-  it('should force a successful hit and create a damage resolution', async () => {
-    setRoller(() => [6, 6, 6, 6]);
+  it('should force a successful hit and create a damage resolution', () => {
+    setRoller(() => [6, 6, 6, 6, 6, 6, 6, 6]);
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, { forceHit: true });
     expect(result.hit).toBe(true);
     expect(result.damageResolution).toBeDefined();
@@ -81,7 +81,7 @@ describe('makeCloseCombatAttack', () => {
   });
 
   it('should correctly apply impact modifier from assisting models', () => {
-    setRoller(() => [6, 6, 6, 6]);
+    setRoller(() => [6, 6, 6, 6, 6, 6, 6, 6]);
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, { forceHit: true, assistingModels: 2 });
     expect(result.damageResolution.impact).toBe(3);
   });

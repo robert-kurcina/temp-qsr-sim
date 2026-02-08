@@ -16,11 +16,21 @@ describe('makeDisengageAction', () => {
     let defenderWeapon: Item;
 
     beforeEach(async () => {
-        const disengagerArchetype = { name: 'Militia', ...archetypes['Militia'] };
-        const defenderArchetype = { name: 'Militia', ...archetypes['Militia'] };
+        const disengagerArchetype = archetypes['Militia'];
+        const defenderArchetype = archetypes['Militia'];
         defenderWeapon = { name: 'Sword, Broad', ...melee_weapons['Sword, Broad'] };
-        const disengagerProfile: Profile = { name: 'Disengager Profile', archetype: disengagerArchetype, equipment: [] };
-        const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderWeapon] };
+        
+        const disengagerProfile: any = { 
+            name: 'Disengager Profile', 
+            archetype: { 'Militia': disengagerArchetype },
+            items: [] 
+        };
+        const defenderProfile: any = { 
+            name: 'Defender Profile', 
+            archetype: { 'Militia': defenderArchetype }, 
+            items: [defenderWeapon] 
+        };
+
         disengager = await createCharacter(disengagerProfile);
         defender = await createCharacter(defenderProfile);
 
@@ -44,8 +54,16 @@ describe('makeDisengageAction', () => {
     });
 
     it('should apply a penalty to the disengager if flanked', () => {
-        const result = makeDisengageAction(disengager, defender, defenderWeapon, { isFlanked: true }, [], [1, 1]);
-        expect(result.testResult.p1Result.score).toBe(0);
+        // P1 (REF 2) is flanked -> P2 (CCA 1) gets +2 Base dice.
+        // P2 has a weapon with +1D accuracy -> +1 Modifier die.
+        // P1 Pool: 3 Base.
+        // P2 Pool: 2 Base (standard) + 2 Base (flank) + 1 Modifier (weapon) = 5 dice.
+        // P1 rolls [1,1,1] -> 0 successes. P1 score = 2 + 0 = 2.
+        // P2 rolls [6,6,6,6] on base, [6] on modifier -> 2*4 + 1 = 9 successes. P2 score = 1 + 9 = 10.
+        // Final score = 2 - 10 = -8
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { isFlanked: true }, [1, 1, 1], [6, 6, 6, 6, 6]);
+        expect(result.pass).toBe(false);
+        expect(result.score).toBe(-8);
     });
 
     it('should apply a bonus to the disengager for high ground', () => {
