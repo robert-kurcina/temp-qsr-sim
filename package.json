@@ -18,13 +18,17 @@
     "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "astro": "^5.16.4",
+    "d3-delaunay": "^6.0.4",
     "lowdb": "^7.0.1",
+    "pathfinding": "^0.4.18",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "three": "^0.182.0"
   },
   "devDependencies": {
     "@astrojs/tailwind": "^6.0.2",
+    "@types/d3-delaunay": "^6.0.4",
+    "@types/pathfinding": "^0.1.0",
     "@types/three": "^0.182.0",
     "autoprefixer": "^10.4.23",
     "jsdom": "^24.1.0",

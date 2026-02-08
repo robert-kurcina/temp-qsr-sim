@@ -36,6 +36,7 @@ This project is a **headless wargame simulator** designed to run in Firebase Stu
 *   **`mastery.md`**: This file contains the MEST Tactics QSR System Mastery instructions, serving as a primary guide for interaction.
 *   **`rules.md`**: This file contains the canonical game rules, definitions, and modifier tables as provided by the user. It serves as the primary source of truth for all game mechanic implementations.
 *   **`persistence.md`**: This file tracks the features to implement for the project's persistence layer.
+*   **`battlefield.md`**: This file details the architecture of the battlefield and spatial reasoning framework.
 
 ## Design and Features
 
@@ -56,6 +57,7 @@ This project is a **headless wargame simulator** designed to run in Firebase Stu
 *   **Unit Testing:** A comprehensive Vitest test suite validates all core logic.
 *   **Modular Combat System:** The combat logic is cleanly separated into high-level modules for `close-combat.ts` and `ranged-combat.ts`, which in turn use specialized subroutines for hit tests and damage resolution.
 *   **Morale & Compulsory Actions:** A system for handling character morale state (Nervous, Disordered, Panicked) and determining the compulsory actions they must take.
+*   **Persistence Layer:** A `database.ts` service manages data persistence using LowDB.
 
 ---
 ## Project Phases
@@ -87,19 +89,20 @@ This phase introduces the concept of an "Assembly," a collection of characters g
 ### **Phase 9: Critical Bug Hunt & Resolution (Completed)**
 This phase was dedicated to identifying and resolving critical bugs in the core game mechanics to ensure the simulator is functioning as expected according to the established rules. The work involved a deep dive into the `indirect-ranged-combat.ts` module, correcting a misinterpretation of the automatic miss rule and fixing a bug in how hindrance penalties were applied. The debugging process was guided by our strict protocol of using extensive logging and iterative testing, which ultimately led to the successful resolution of all issues and a full suite of passing tests.
 
-### **Phase 10: Persistence Layer Implementation (LowDB) (In Progress)**
-The goal of this phase is to create a robust persistence layer using LowDB to store and manage all generated game data, including Profiles, Characters, and Assemblies.
+### **Phase 10: Persistence Layer Implementation (LowDB) (Completed)**
+This phase created a robust persistence layer using LowDB to store and manage all generated game data, including Profiles, Characters, and Assemblies.
+
+### **Phase 11: Battlefield & Spatial Reasoning Framework (In Progress)**
+This phase will establish the foundational framework for the play area, including its dimensions, terrain, and the placement of characters. This is a critical prerequisite for implementing advanced spatial reasoning and tactical mechanics, as detailed in `battlefield.md`.
 
 **The Plan:**
 
-1.  **Install Dependencies:** Add `lowdb` to the project.
-2.  **Database Service:** Create a centralized `database.ts` module to manage all interactions with the LowDB instance. This will encapsulate the logic for reading from and writing to the JSON database file.
-3.  **Update Factories for Persistence:**
-    *   Modify the `character-factory.ts` to automatically save every new `Character` and its associated `Profile` to the database.
-    *   Modify the `assembly-factory.ts` to save every new `Assembly` to the database.
-4.  **Implement Unique Naming:** Update the `character-factory.ts` to enforce the unique character naming convention (`[A-Z]-[0000-9999]`) as specified in `persistence.md`, checking the database for collisions before creating a new character.
-5.  **Create CLI Commands:**
-    *   **`query` command:** Build a new Node.js script that allows querying the database for specific objects (e.g., `node query.js --type Character --name A-0001`).
-    *   **`export` command:** Build a script to export the results of a query to a specified JSON file (e.g., `node export.js --type Assembly --name "My First Assembly" --out my-assembly.json`).
-6.  **Unit Testing:** Write a comprehensive suite of tests for the new `database.ts` service and the CLI commands to ensure data integrity and command functionality.
-7.  **Update Blueprint:** Once all steps are complete and tests are passing, mark this phase as completed in the `blueprint.md`.
+1.  **Define Core Interfaces (`Position.ts`, `Terrain.ts`):** Create `src/lib/mest-tactics/battlefield/Position.ts` for 2D coordinates and `src/lib/mest-tactics/battlefield/Terrain.ts` to define terrain types (`Clear`, `Rough`, `Obstacle`) and an interface for polygonal `TerrainFeature` objects.
+2.  **Implement Grid Layer (`Grid.ts`):** Create a `Grid` class to manage a 2D array of `Cell` objects, where each cell tracks its position and occupying entities.
+3.  **Implement Battlefield Orchestrator (`Battlefield.ts`):** Create the main `Battlefield` class to manage the `Grid` and a list of `TerrainFeature` polygons. It will handle character placement and basic spatial queries.
+4.  **Install Pathfinding Libraries:** Run `npm install d3-delaunay pathfinding && npm install -D @types/d3-delaunay @types/pathfinding` to add the necessary dependencies for navigation mesh generation and A* pathfinding.
+5.  **Implement Navigation Mesh Generation:** In the `Battlefield` class, add a method to collect vertices from all `TerrainFeature` polygons and use `d3-delaunay` to generate a navigation mesh (a Delaunay triangulation).
+6.  **Implement A* Pathfinding (`Pathfinder.ts`):** Create a `Pathfinder` service that takes the navigation mesh as input and uses the `pathfinding` library's A* algorithm to find optimal paths between points on the battlefield.
+7.  **Implement Line of Sight (LOS):** In the `Battlefield` class, create a `hasLineOfSight(start, end)` method that checks for intersections between the line segment and any `Obstacle` terrain features.
+8.  **Create Test Suite (`battlefield.test.ts`):** Develop a comprehensive unit test suite in `src/lib/mest-tactics/battlefield/battlefield.test.ts` to validate all new functionality, including placement, LOS, and pathfinding.
+9.  **Update `blueprint.md`:** Once all steps are complete and tests are passing, mark this phase as completed.
