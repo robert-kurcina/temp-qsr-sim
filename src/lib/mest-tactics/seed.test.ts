@@ -8,10 +8,10 @@ describe('Seeded Database Content', () => {
     await databaseService.read();
   });
 
-  it('should contain 183 profiles', () => {
+  it('should contain 184 profiles', () => {
     console.log('Number of profiles found:', databaseService.profiles.length);
     console.log('Sample profiles:', JSON.stringify(databaseService.profiles.slice(0, 5), null, 2));
-    expect(databaseService.profiles.length).toBe(183);
+    expect(databaseService.profiles.length).toBe(184);
   });
 
   it('should contain 20 assemblies', () => {

@@ -1,6 +1,7 @@
 
 import { createProfiles } from '../src/lib/mest-tactics/profile-generator';
 import { gameData } from '../src/lib/data';
+import { Archetype } from '../src/lib/mest-tactics/Archetype';
 
 // Default values
 let archetypeName = 'Average';
@@ -24,7 +25,7 @@ if (itemsIndex !== -1) {
     }
 }
 
-const archetypeData = gameData.archetypes[archetypeName];
+const archetypeData = (gameData.archetypes as { [key: string]: Archetype })[archetypeName];
 
 if (!archetypeData) {
     console.error(`Archetype "${archetypeName}" not found.`);
@@ -34,6 +35,6 @@ if (!archetypeData) {
 try {
     const [profile] = createProfiles(archetypeName, archetypeData, [], itemNames);
     console.log(JSON.stringify(profile, null, 2));
-} catch (error) {
+} catch (error: any) {
     console.error(error.message);
 }

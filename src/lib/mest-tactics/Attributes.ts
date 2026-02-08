@@ -13,3 +13,7 @@ export interface Attributes {
   mov: number; // Movement
   siz: number; // Size
 }
+
+export type FinalAttributes = {
+    [K in keyof Attributes]: number;
+};

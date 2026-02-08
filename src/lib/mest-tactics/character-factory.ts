@@ -6,6 +6,7 @@ import { parseTrait } from './trait-parser';
 import { traitLogicRegistry } from './trait-logic-registry';
 import { Trait } from './Trait';
 import { databaseService } from './database';
+import { Attributes, FinalAttributes } from './Attributes';
 
 /**
  * Generates a unique character name based on the specified format.
@@ -43,24 +44,24 @@ async function generateUniqueCharacterName(): Promise<string> {
 export async function createCharacter(profile: Profile): Promise<Character> {
   await databaseService.read();
 
-  const primaryArchetype = profile.archetype;
+  const primaryArchetype = Object.values(profile.archetype)[0];
   if (!primaryArchetype) {
     throw new Error('Profile does not contain a valid primary archetype.');
   }
   
-  const equipment = profile.equipment || [];
+  const items = profile.items || [];
 
   // 1. Combine all raw trait strings from archetype and equipment.
   const rawTraits = [
     ...(primaryArchetype.traits || []),
-    ...equipment.flatMap(item => item.traits || []),
+    ...items.flatMap(item => item.traits || []),
   ];
 
   // 2. Parse all raw strings into structured Trait objects.
   const allTraits: Trait[] = rawTraits.map(parseTrait);
 
   // 3. Start with a deep copy of the base archetype attributes.
-  const finalAttributes = { ...primaryArchetype.attributes };
+  const finalAttributes: FinalAttributes = { ...primaryArchetype.attributes };
 
   // 4. Apply attribute-modifying trait logic.
   for (const trait of allTraits) {
@@ -72,7 +73,7 @@ export async function createCharacter(profile: Profile): Promise<Character> {
 
   // 5. Calculate armor state directly from the profile's equipment.
   const armorState: ArmorState = { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 };
-  for (const item of equipment) {
+  for (const item of items) {
     const itemTraits = (item.traits || []).map(parseTrait);
     const armorTrait = itemTraits.find(t => t.name.toLowerCase() === 'armor');
 
@@ -109,20 +110,24 @@ export async function createCharacter(profile: Profile): Promise<Character> {
   const characterName = await generateUniqueCharacterName();
 
   // 7. Assemble the final Character object.
-  const character: Character = {
+  const character: any = {
     id: Date.now().toString() + Math.random().toString(), // Basic unique ID
     name: characterName,
     profile,
     allTraits,
     finalAttributes,
     state: {
-      woundTokens: 0,
+      wounds: 0,
       delayTokens: 0,
       fearTokens: 0,
       isHidden: false,
       isWaiting: false,
       isDisordered: false,
       isDistracted: false,
+      isEngaged: false,
+      isInCover: false,
+      isKOd: false,
+      isEliminated: false,
       statusEffects: [],
       armor: armorState, // Assign the calculated armor state
     },

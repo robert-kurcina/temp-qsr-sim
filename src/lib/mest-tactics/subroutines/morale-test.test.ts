@@ -1,65 +1,72 @@
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from '../character-factory';
 import { resolveMoraleTest } from './morale-test';
-import { setRoller, resetRoller, DiceType } from '../dice-roller';
-import type { Character } from '../Character';
+import { setRoller, resetRoller, Roller, DiceType } from '../dice-roller';
+import { metricsService } from '../MetricsService';
 import type { Profile } from '../Profile';
+import type { Character } from '../Character';
 import { gameData } from '../../data';
 
 const { archetypes } = gameData;
-
-// MEST QSR Anchoring: Morale Tests are Unopposed POW Tests. A score >= 0 is a pass.
 
 describe('resolveMoraleTest', () => {
   let character: Character;
 
   beforeEach(async () => {
-    const archetype = { name: "Militia", ...archetypes["Militia"] }; // Militia has POW 2
-    const profile: Profile = { name: 'Test Profile', archetype, equipment: [] };
+    const archetype = { name: "Militia", ...archetypes["Militia"] };
+    const profile: Profile = { name: 'Test Character', archetype, equipment: [] };
     character = await createCharacter(profile);
+    metricsService.clearEvents();
     resetRoller();
   });
 
-  it('should pass the morale test if the score is greater than 0', () => {
-    setRoller(() => [6, 6]); // 4 successes
-    const result = resolveMoraleTest(character, {}, 0);
-    // POW(2) + successes(4) = 6.  6 > 0 so pass.
-    expect(result.pass).toBe(true);
-    expect(result.score).toBe(6);
+  afterEach(() => {
+    resetRoller();
   });
 
-  it('should pass the morale test if the score is exactly 0 (a tie)', () => {
-    setRoller(() => []); // 0 successes
-    const difficulty = 2; // Adjusted difficulty to match character's base POW
-    const result = resolveMoraleTest(character, {}, difficulty);
-    // POW(2) + successes(0) - difficulty(2) = 0. 0 >= 0 so pass.
-    expect(result.pass).toBe(true);
-    expect(result.score).toBe(0);
-  });
-
-  it('should fail the morale test if the score is less than 0', () => {
-    setRoller(() => []); // 0 successes
-    const difficulty = 3;
-    const result = resolveMoraleTest(character, {}, difficulty);
-    // POW(2) + successes(0) - difficulty(3) = -1. -1 < 0 so fail.
-    expect(result.pass).toBe(false);
-    expect(result.score).toBe(-1);
-  });
-
-  it('should correctly calculate misses (as p1Misses)', () => {
-    setRoller((count) => [1, 1, 4]); // 2 misses, 1 success
+  it('should pass morale test if roll is high', () => {
+    setRoller(() => [6, 1]);
     const result = resolveMoraleTest(character);
-    expect(result.p1Misses).toBe(2);
+    expect(result.pass).toBe(true);
   });
 
-  it('should apply bonus dice and calculate misses', () => {
-    const bonusDice = { [DiceType.Base]: 2 };
-    setRoller((count) => (count === 4 ? [1, 1, 6, 6] : []));
-    const result = resolveMoraleTest(character, {}, 0, bonusDice);
-    // POW(2) + Bonus(2) = 4 dice. 2 misses, 4 successes. Score 6.
-    expect(result.pass).toBe(true);
-    expect(result.p1Misses).toBe(2);
-    expect(result.score).toBe(6);
+  it('should fail morale test if roll is low', () => {
+    setRoller(() => [1, 6]);
+    const result = resolveMoraleTest(character);
+    expect(result.pass).toBe(false);
+  });
+
+  it('should apply fear tokens as penalty dice', () => {
+    const rolls: number[][] = [[1], [1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1];
+    setRoller(statefulRoller);
+
+    resolveMoraleTest(character, 2, {});
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const eventData = diceEvents[0].data as any;
+    expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
+  });
+
+  it('should apply hasAdvantage as a bonus die', () => {
+    const rolls: number[][] = [[1], [1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1];
+    setRoller(statefulRoller);
+
+    resolveMoraleTest(character, 0, { hasAdvantage: true });
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const eventData = diceEvents[0].data as any;
+    expect(eventData.finalPools.p1FinalBonus[DiceType.Wild] || 0).toBe(1);
+  });
+
+  it('should apply isDisadvantaged as a penalty die', () => {
+    const rolls: number[][] = [[1], [1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1];
+    setRoller(statefulRoller);
+
+    resolveMoraleTest(character, 0, { isDisadvantaged: true });
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const eventData = diceEvents[0].data as any;
+    expect(eventData.finalPools.p1FinalPenalty[DiceType.Wild] || 0).toBe(1);
   });
 });

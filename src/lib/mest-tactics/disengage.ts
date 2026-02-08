@@ -9,7 +9,7 @@ import { parseAccuracy } from './subroutines/accuracy-parser';
 export interface DisengageResult {
     pass: boolean;
     score: number;
-    testResult: TestResult;
+    testResult: any;
 }
 
 function _calculateModifiers(
@@ -28,20 +28,11 @@ function _calculateModifiers(
     let defenderBonus: DicePool = {};
     let defenderPenalty: DicePool = {};
 
-    // 1. Hindrance Penalties
-    const disengagerHindrance = calculateHindrancePenalty({ 
-        woundTokens: disengager.state.wounds, 
-        fearTokens: disengager.state.fearTokens, 
-        delayTokens: disengager.state.delayTokens 
-    });
-    if (disengagerHindrance > 0) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + disengagerHindrance;
-
-    const defenderHindrance = calculateHindrancePenalty({ 
-        woundTokens: defender.state.wounds, 
-        fearTokens: defender.state.fearTokens, 
-        delayTokens: defender.state.delayTokens 
-    });
-    if (defenderHindrance > 0) defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + defenderHindrance;
+    // 1. Disengager Hindrance
+    const hindrance = calculateHindrancePenalty(disengager.state);
+    if (hindrance > 0) {
+        disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + hindrance;
+    }
 
     // 2. Defender Weapon Accuracy
     const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(defenderWeapon.accuracy);
@@ -49,31 +40,34 @@ function _calculateModifiers(
     defenderPenalty = mergeDicePools(defenderPenalty, accPenalty);
 
     // 3. Contextual Modifiers
-    if (context.isDefending) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
-    if (context.isCornered) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
-    if (context.isFlanked) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
-    if (context.isOverreach) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
-    if (context.hasSuddenness) disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + 1;
-
-    if (context.hasHighGround) {
-        disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + 1;
+    if (context.isCornered) disengagerPenalty[DiceType.Wild] = (disengagerPenalty[DiceType.Wild] || 0) + 1;
+    if (context.isFlanked) disengagerPenalty[DiceType.Base] = (disengagerPenalty[DiceType.Base] || 0) + 2;
+    if (context.hasHighGround) disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + 1;
+    if (context.outnumberAdvantage && context.outnumberAdvantage > 0) {
+        disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
     }
+    if (context.outnumberAdvantage && context.outnumberAdvantage < 0) {
+        defenderBonus[DiceType.Wild] = (defenderBonus[DiceType.Wild] || 0) + Math.abs(context.outnumberAdvantage);
+    }
+    if (context.hasSuddenness) disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + 1;
 
-    if (context.outnumberAdvantage) {
-        if (context.outnumberAdvantage > 0) {
-            disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
-        } else {
-            defenderBonus[DiceType.Wild] = (defenderBonus[DiceType.Wild] || 0) + Math.abs(context.outnumberAdvantage);
+    // Defender Size Advantage
+    if (context.sizeAdvantage && context.sizeAdvantage > 0) {
+        const bonus = Math.floor(context.sizeAdvantage / 2);
+        if (bonus > 0) {
+            defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + bonus;
         }
     }
-    
-    if (context.sizeAdvantage) {
-        if (context.sizeAdvantage > 0) {
-            disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + context.sizeAdvantage;
-        } else {
-            defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + Math.abs(context.sizeAdvantage);
+
+    // Disengager Size Advantage
+    if (context.sizeAdvantage && context.sizeAdvantage < 0) {
+        const bonus = Math.floor(Math.abs(context.sizeAdvantage) / 2);
+        if (bonus > 0) {
+            disengagerBonus[DiceType.Base] = (disengagerBonus[DiceType.Base] || 0) + bonus;
         }
     }
+
+    if (context.isOverreach) defenderPenalty[DiceType.Wild] = (defenderPenalty[DiceType.Wild] || 0) + 1;
 
     return { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty };
 }
@@ -85,11 +79,13 @@ export function makeDisengageAction(
     disengager: Character,
     defender: Character,
     defenderWeapon: Item,
-    context: TestContext = {}
+    context: TestContext = {},
+    p1Rolls: number[] | null = null,
+    p2Rolls: number[] | null = null
 ): DisengageResult {
 
     if (context.isAutoPass) {
-        const testResult: TestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], p1Misses: 0, p2Misses: 0, finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+        const testResult: TestResult = { score: 99, carryOverDice: {} };
         return { pass: true, score: 99, testResult };
     }
 
@@ -107,10 +103,10 @@ export function makeDisengageAction(
         penaltyDice: defenderPenalty,
     };
 
-    const testResult = resolveTest(disengagerParticipant, defenderParticipant, 0, true);
+    const testResult = resolveTest(disengagerParticipant, defenderParticipant, p1Rolls, p2Rolls);
 
     return {
-        pass: testResult.pass,
+        pass: testResult.score >= 0,
         score: testResult.score,
         testResult,
     };

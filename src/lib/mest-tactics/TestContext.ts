@@ -41,4 +41,9 @@ export interface TestContext {
   isSafe?: boolean;         // For the +1w Safety bonus (Morale)
   isConfined?: boolean;     // For the -1m Confined penalty
   delayTokensAdded?: number; // For stun damage
+
+  // --- Test Overrides ---
+  isAutoPass?: boolean;
+  sizeAdvantage?: number;
+  hasSuddenness?: boolean;
 }

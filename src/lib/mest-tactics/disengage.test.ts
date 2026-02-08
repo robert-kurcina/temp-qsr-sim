@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from './character-factory';
 import { makeDisengageAction } from './disengage';
@@ -7,7 +6,6 @@ import { metricsService } from './MetricsService';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
 import type { Character } from './Character';
-import type { TestContext } from './TestContext';
 import { gameData } from '../data';
 
 const { archetypes, melee_weapons } = gameData;
@@ -18,17 +16,14 @@ describe('makeDisengageAction', () => {
     let defenderWeapon: Item;
 
     beforeEach(async () => {
-        const disengagerArchetype = { name: 'Militia', ...archetypes['Militia'] }; // REF 3
-        const defenderArchetype = { name: 'Veteran, Fighter', ...archetypes['Veteran, Fighter'] }; // CCA 4
-        defenderWeapon = { name: 'Sword', ...melee_weapons['Sword'] };
+        const disengagerArchetype = { name: 'Militia', ...archetypes['Militia'] };
+        const defenderArchetype = { name: 'Militia', ...archetypes['Militia'] };
+        defenderWeapon = { name: 'Sword, Broad', ...melee_weapons['Sword, Broad'] };
         const disengagerProfile: Profile = { name: 'Disengager Profile', archetype: disengagerArchetype, equipment: [] };
         const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderWeapon] };
         disengager = await createCharacter(disengagerProfile);
         defender = await createCharacter(defenderProfile);
-    });
 
-    afterEach(() => {
-        resetRoller();
         metricsService.clearEvents();
     });
 
@@ -38,85 +33,49 @@ describe('makeDisengageAction', () => {
     });
 
     it('should pass the disengage test when roll is high', () => {
-        // Disengager (REF:3) rolls 2 base dice. Defender (CCA:4) rolls 2 base dice.
-        const rolls = [[6, 6], [6, 6]];
-        const statefulRoller: Roller = () => rolls.shift() || [];
-        setRoller(statefulRoller);
-        const result = makeDisengageAction(disengager, defender, defenderWeapon, {});
-        // Disengager: 4 successes, Score 3+4=7. Defender: 4 successes, Score 4+4=8.
-        // Final score: 7-8 = -1. Fails. Wait, pass on tie is true. So a score of 0 should pass.
-        // Let's force a tie. Disengager has REF 3, 2 dice. Defender has CCA 4, 2 dice.
-        // Let's say disengager rolls 6,6 -> 4 successes. Score: 3+4=7
-        // Let's say defender rolls 6, 4 -> 3 successes. Score: 4+3=7
-        const tieRolls = [[6, 6], [6, 4]];
-        const tieRoller: Roller = () => tieRolls.shift() || [];
-        setRoller(tieRoller);
-        const tieResult = makeDisengageAction(disengager, defender, defenderWeapon, {});
-        expect(tieResult.pass).toBe(true);
-        expect(tieResult.score).toBe(0);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, {}, [6, 6, 6], [1, 1]);
+        expect(result.pass).toBe(true);
+        expect(result.score).toBe(7);
     });
 
     it('should apply a penalty to the disengager if cornered', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { isCornered: true });
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { isCornered: true }, [1,1], [1, 1]);
+        expect(result.testResult.p1Result.score).toBe(0);
     });
 
     it('should apply a penalty to the disengager if flanked', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { isFlanked: true });
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { isFlanked: true }, [], [1, 1]);
+        expect(result.testResult.p1Result.score).toBe(0);
     });
 
     it('should apply a bonus to the disengager for high ground', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { hasHighGround: true });
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { hasHighGround: true }, [6, 6], [1, 1]);
+        expect(result.testResult.p1Result.score).toBe(2);
     });
 
     it('should apply a bonus to the disengager for outnumbering', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { outnumberAdvantage: 2 });
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p1FinalBonus[DiceType.Wild] || 0).toBe(2);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { outnumberAdvantage: 1 }, [6, 6, 6], [1, 1]);
+        expect(result.testResult.p1Result.score).toBe(3);
     });
 
     it('should apply a bonus to the defender for outnumbering', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { outnumberAdvantage: -2 }); // Negative means defender has advantage
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p2FinalBonus[DiceType.Wild] || 0).toBe(2);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { outnumberAdvantage: -1 }, [1, 1], [6, 6, 6]);
+        expect(result.testResult.p2Result.score).toBe(3);
     });
 
     it('should apply a penalty for overreach', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { isOverreach: true });
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(1);
+        defenderWeapon.traits.push('Reach');
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { isOverreach: true }, [1, 1], [1]);
+        expect(result.testResult.p2Result.score).toBe(0);
     });
 
     it('should apply a bonus for size difference', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { sizeAdvantage: 1 });
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { sizeAdvantage: 2 }, [1, 1], [6, 6, 6]);
+        expect(result.testResult.p2Result.score).toBe(3);
     });
 
     it('should apply a bonus for suddenness', () => {
-        setRoller(() => [0]);
-        makeDisengageAction(disengager, defender, defenderWeapon, { hasSuddenness: true });
-        const diceEvents = metricsService.getEventsByName('diceTestResolved');
-        const hitEventData = diceEvents[0].data as any;
-        expect(hitEventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { hasSuddenness: true }, [6, 6, 6], [1, 1]);
+        expect(result.testResult.p1Result.score).toBe(3);
     });
 });

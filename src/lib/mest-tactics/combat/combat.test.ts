@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Character, CharacterAttributes } from '../character/Character';
 import { CombatEngine } from './CombatEngine';
 
@@ -11,43 +11,41 @@ describe('CombatEngine', () => {
     const defenderAttributes: CharacterAttributes = { CCA: 2, RCA: 2, REF: 2, INT: 2, POW: 2, STR: 2, FOR: 2, MOV: 2, SIZ: 3 };
     attacker = new Character('attacker', 'Attacker', { ...attackerAttributes }, { x: 0, y: 0 });
     defender = new Character('defender', 'Defender', { ...defenderAttributes }, { x: 1, y: 0 });
+    CombatEngine.testing_diceRolls = [];
   });
 
   it('should resolve a successful hit and wound', () => {
-    vi.spyOn(Math, 'random').mockReturnValue(0.9); // Ensure high rolls
+    // Attacker hits: Rolls 6, 6 (4 successes + 2 base carry) vs Defender rolls 1, 1 (0 successes)
+    // Attacker wounds: Rolls 6, 6, 6, 6 (8 successes from base, 2 from carry) vs Defender rolls 1, 1 (0 successes)
+    CombatEngine.testing_diceRolls = [6, 6, 1, 1, 6, 6, 6, 6, 1, 1];
 
     const result = CombatEngine.resolveCloseCombat(attacker, defender);
 
     expect(result.hit).toBe(true);
     expect(result.wound).toBe(true);
     expect(defender.wounds).toBe(1);
-
-    vi.spyOn(Math, 'random').mockRestore();
   });
 
   it('should resolve a successful hit and a failed wound', () => {
-    vi.spyOn(Math, 'random')
-      .mockReturnValueOnce(0.9) // High roll for hit
-      .mockReturnValueOnce(0.1); // Low roll for wound
+    // Attacker hits: Rolls 6, 6 (4 successes + 2 base carry) vs Defender rolls 1, 1 (0 successes)
+    // Attacker wounds: Rolls 1, 1, 1, 1 (0 successes) vs Defender rolls 6, 6 (4 successes)
+    CombatEngine.testing_diceRolls = [6, 6, 1, 1, 1, 1, 1, 1, 6, 6];
 
     const result = CombatEngine.resolveCloseCombat(attacker, defender);
 
     expect(result.hit).toBe(true);
     expect(result.wound).toBe(false);
     expect(defender.wounds).toBe(0);
-
-    vi.spyOn(Math, 'random').mockRestore();
   });
 
   it('should resolve a failed hit', () => {
-    vi.spyOn(Math, 'random').mockReturnValue(0.1); // Low roll
+    // Attacker hits: Rolls 1, 1 (0 successes) vs Defender rolls 6, 6 (4 successes)
+    CombatEngine.testing_diceRolls = [1, 1, 6, 6];
 
     const result = CombatEngine.resolveCloseCombat(attacker, defender);
 
     expect(result.hit).toBe(false);
     expect(result.wound).toBe(false);
     expect(defender.wounds).toBe(0);
-
-    vi.spyOn(Math, 'random').mockRestore();
   });
 });

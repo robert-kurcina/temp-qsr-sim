@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { Battlefield } from './Battlefield';
 import { Pathfinder } from './Pathfinder';
 import { TerrainType } from './Terrain';
+import { Character } from '../character/Character';
 
 describe('Battlefield Framework', () => {
   let battlefield: Battlefield;
@@ -13,16 +14,16 @@ describe('Battlefield Framework', () => {
   });
 
   it('should place and move a character', () => {
-    const charId = 'char1';
+    const char = new Character('char1', 'Test Character', { CCA: 1, RCA: 1, REF: 1, INT: 1, POW: 1, STR: 1, FOR: 1, MOV: 1, SIZ: 1 }, { x: 1, y: 1 });
     const startPos = { x: 1, y: 1 };
     const endPos = { x: 2, y: 2 };
 
-    expect(battlefield.placeCharacter(charId, startPos)).toBe(true);
-    expect(battlefield.grid.getCell(startPos)?.occupantId).toBe(charId);
+    expect(battlefield.placeCharacter(char)).toBe(true);
+    expect(battlefield.grid.getCell(startPos)?.occupant?.id).toBe(char.id);
 
-    expect(battlefield.moveCharacter(charId, startPos, endPos)).toBe(true);
-    expect(battlefield.grid.getCell(startPos)?.occupantId).toBe(null);
-    expect(battlefield.grid.getCell(endPos)?.occupantId).toBe(charId);
+    expect(battlefield.moveCharacter(char, endPos)).toBe(true);
+    expect(battlefield.grid.getCell(startPos)?.occupant).toBe(null);
+    expect(battlefield.grid.getCell(endPos)?.occupant?.id).toBe(char.id);
   });
 
   it('should block LOS with an obstacle', () => {

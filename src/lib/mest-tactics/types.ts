@@ -1,0 +1,16 @@
+export enum CharacterStatus {
+  Ready,
+  Done,
+  Waiting,
+  Attentive,
+  Distracted,
+  Revealed,
+  Hidden,
+  Wounded,
+  Nervous,
+  Disordered,
+  Panicked,
+  Stunned,
+  Delayed,
+  Hindered,
+}

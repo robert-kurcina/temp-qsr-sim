@@ -2,12 +2,11 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from './character-factory';
 import { makeRangedCombatAttack } from './ranged-combat';
-import { setRoller, resetRoller, DiceType } from './dice-roller';
+import { setRoller, resetRoller, DiceType, Roller } from './dice-roller';
 import { metricsService } from './MetricsService';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
 import type { Character } from './Character';
-import type { TestContext } from './TestContext';
 import { gameData } from '../data';
 
 const { archetypes, ranged_weapons, armors } = gameData;
@@ -18,50 +17,45 @@ describe('makeRangedCombatAttack', () => {
   let attackerWeapon: Item;
 
   beforeEach(async () => {
-    const attackerArchetype = { name: "Marksman", ...archetypes["Marksman"] };
+    const attackerArchetype = { name: "Veteran, Fighter", ...archetypes["Veteran, Fighter"] };
     const defenderArchetype = { name: "Militia", ...archetypes["Militia"] };
-    attackerWeapon = { name: "Crossbow", ...ranged_weapons["Crossbow"] };
-    const defenderArmor = { name: "Armor, Light Leather", ...armors["Armor, Light Leather"] };
+    attackerWeapon = { name: "Rifle, Light, Semi/A", ...ranged_weapons["Rifle, Light, Semi/A"] };
+    const defenderArmor = { name: "Armor, Medium Mail", ...armors["Armor, Medium Mail"] };
+
     const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] };
     const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderArmor] };
+
     attacker = await createCharacter(attackerProfile);
     defender = await createCharacter(defenderProfile);
+
+    metricsService.clearEvents();
+    resetRoller();
   });
 
   afterEach(() => {
     resetRoller();
-    metricsService.clearEvents();
   });
 
-  it('should force a successful hit and create a damage resolution', () => {
-    setRoller(() => [5, 1, 5, 1]);
-
-    const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, { forceHit: true });
-
+  it('should force a successful hit and create a damage resolution', async () => {
+    setRoller(() => [6, 6]);
+    const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { forceHit: true });
     expect(result.hit).toBe(true);
     expect(result.damageResolution).toBeDefined();
+    expect(result.damageResolution.woundsAdded).toBe(2);
   });
 
-  it('should force a miss and not create a damage resolution', () => {
-    setRoller(() => [1, 5]);
-
-    const result = makeRangedCombatAttack(attacker, {
-      ...defender,
-      attributeValue: 2,
-    }, attackerWeapon, {});
-
+  it('should force a miss and not create a damage resolution', async () => {
+    const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { forceMiss: true });
     expect(result.hit).toBe(false);
     expect(result.damageResolution).toBeUndefined();
   });
 
   it('should add a point-blank bonus for the attacker', () => {
-    setRoller(() => [0]);
-    const context: TestContext = { isPointBlank: true };
+    const rolls: number[][] = [[1, 1], [1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
 
-    makeRangedCombatAttack(attacker, {
-      ...defender,
-      attributeValue: 2,
-    }, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { isPointBlank: true });
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
@@ -70,13 +64,11 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a cover bonus for the defender with direct cover', () => {
-    setRoller(() => [0]);
-    const context: TestContext = { hasDirectCover: true };
+    const rolls: number[][] = [[1, 1], [1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
 
-    makeRangedCombatAttack(attacker, {
-      ...defender,
-      attributeValue: 2,
-    }, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { hasDirectCover: true });
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
@@ -85,13 +77,11 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a cover bonus for the defender with intervening cover', () => {
-    setRoller(() => [0]);
-    const context: TestContext = { hasInterveningCover: true };
+    const rolls: number[][] = [[1, 1], [1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
 
-    makeRangedCombatAttack(attacker, {
-      ...defender,
-      attributeValue: 2,
-    }, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { hasInterveningCover: true });
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
@@ -100,17 +90,15 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should apply an ORM penalty to the attacker', () => {
-    setRoller(() => [0]);
-    const context: TestContext = { orm: 2 }; // -2m penalty
+    const rolls: number[][] = [[1, 1], [1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
 
-    makeRangedCombatAttack(attacker, {
-      ...defender,
-      attributeValue: 2,
-    }, attackerWeapon, context);
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 2, {});
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
     const hitEventData = diceEvents[0].data as any;
-    expect(hitEventData.finalPools.p2FinalBonus[DiceType.Modifier] || 0).toBe(2);
+    expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
   });
 });

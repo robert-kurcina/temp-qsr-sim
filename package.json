@@ -11,7 +11,8 @@
     "astro": "astro",
     "test": "vitest",
     "random-profile": "tsx scripts/generate-random-profile.ts",
-    "generate-assembly": "tsx scripts/generate-assembly.ts"
+    "generate-assembly": "tsx scripts/generate-assembly.ts",
+    "cli": "tsx src/cli.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
@@ -31,7 +32,6 @@
     "@types/pathfinding": "^0.1.0",
     "@types/three": "^0.182.0",
     "autoprefixer": "^10.4.23",
-    "jsdom": "^24.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19",
     "tsx": "^4.21.0",

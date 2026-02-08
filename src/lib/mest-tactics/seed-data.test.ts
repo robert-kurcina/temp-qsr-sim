@@ -11,8 +11,8 @@ describe('Seeded Database Validation', () => {
     await databaseService.read();
   });
 
-  it('should contain 183 profiles', () => {
-    expect(databaseService.profiles.length).toBe(183);
+  it('should contain 184 profiles', () => {
+    expect(databaseService.profiles.length).toBe(184);
   });
 
   it('should contain 20 assemblies', () => {

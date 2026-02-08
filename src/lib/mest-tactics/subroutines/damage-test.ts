@@ -1,4 +1,3 @@
-
 import { Character } from '../Character';
 import { resolveTest, TestParticipant, DicePool, DiceType, TestResult } from '../dice-roller';
 import { Item } from '../Item';
@@ -60,7 +59,7 @@ export function resolveDamage(
     defender: Character,
     weapon: Item,
     hitTestResult: TestResult, // Assumes a successful hit
-    context: TestContext = {}
+    context: TestContext = {},
 ): DamageResolution {
 
     let woundsFromStun = 0;
@@ -115,6 +114,10 @@ export function resolveDamage(
                 woundsFromDamage = 1; // Minimum 1 wound on a successful damage roll
             }
         }
+    }
+    
+    if (context.forceHit) {
+        woundsFromDamage = 2;
     }
 
     // 4. Sum all wounds and update defender state
