@@ -37,33 +37,29 @@ describe('makeCloseCombatAttack', () => {
   });
 
   it('should force a successful hit and create a damage resolution', () => {
-    setRoller(() => [6, 6, 6, 6, 6, 6, 6, 6]);
-    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, { forceHit: true });
+    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, { forceHit: true }, [6, 6, 6, 6], [6, 6, 6, 6]);
     expect(result.hit).toBe(true);
     expect(result.damageResolution).toBeDefined();
     expect(result.damageResolution.woundsAdded).toBe(2);
   });
 
   it('should pass the hit test and create a damage resolution', () => {
-    setRoller(() => [6, 6, 1, 1, 6, 6, 6, 6]);
-    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {});
+    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {}, [6, 6], [1, 1]);
     expect(result.hit).toBe(true);
     expect(result.hitTestResult.score).toBe(4);
     expect(result.damageResolution).toBeDefined();
   });
 
   it('should fail the hit test and not create a damage resolution', () => {
-    setRoller(() => [1, 1, 6, 6]);
-    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {});
+    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, {}, [1, 1], [6, 6]);
     expect(result.hit).toBe(false);
     expect(result.hitTestResult.score).toBe(-4);
     expect(result.damageResolution).toBeUndefined();
   });
 
   it('should add a bonus die to the attacker for a Charge', () => {
-    setRoller(() => [1, 1, 1, 1, 1]);
     const context = { isCharge: true };
-    makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
+    makeCloseCombatAttack(attacker, defender, attackerWeapon, context, [1,1,1], [1,1]);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThan(0);
     const hitEventData = diceEvents[0].data as any;
@@ -71,9 +67,8 @@ describe('makeCloseCombatAttack', () => {
   });
 
   it('should add a bonus die to the defender for Defending', () => {
-    setRoller(() => [1, 1, 1, 1, 1]);
     const context = { isDefending: true };
-    makeCloseCombatAttack(attacker, defender, attackerWeapon, context);
+    makeCloseCombatAttack(attacker, defender, attackerWeapon, context, [1,1], [1,1,1]);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThan(0);
     const hitEventData = diceEvents[0].data as any;
@@ -81,8 +76,7 @@ describe('makeCloseCombatAttack', () => {
   });
 
   it('should correctly apply impact modifier from assisting models', () => {
-    setRoller(() => [6, 6, 6, 6, 6, 6, 6, 6]);
-    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, { forceHit: true, assistingModels: 2 });
+    const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, { forceHit: true, assistingModels: 2 }, [6, 6, 6, 6], [6, 6, 6, 6]);
     expect(result.damageResolution.impact).toBe(3);
   });
 });

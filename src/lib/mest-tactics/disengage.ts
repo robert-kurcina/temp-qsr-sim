@@ -40,8 +40,8 @@ function _calculateModifiers(
     defenderPenalty = mergeDicePools(defenderPenalty, accPenalty);
 
     // 3. Contextual Modifiers
-    if (context.isCornered) disengagerPenalty[DiceType.Wild] = (disengagerPenalty[DiceType.Wild] || 0) + 1;
-    if (context.isFlanked) disengagerPenalty[DiceType.Base] = (disengagerPenalty[DiceType.Base] || 0) + 2;
+    if (context.isCornered) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
+    if (context.isFlanked) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
     if (context.hasHighGround) disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + 1;
     if (context.outnumberAdvantage && context.outnumberAdvantage > 0) {
         disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
