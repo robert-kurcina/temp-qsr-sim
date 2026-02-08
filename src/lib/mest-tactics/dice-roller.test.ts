@@ -1,105 +1,43 @@
+import { describe, it, expect } from 'vitest';
+import { DieType, getDieSuccesses, performTest, TestDice } from './dice-roller';
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { resolveTest, setRoller, resetRoller, DiceType } from './dice-roller';
-import type { TestParticipant, Roller } from './dice-roller';
+describe('Dice Roller', () => {
+  describe('getDieSuccesses', () => {
+    it('should calculate Base die successes correctly', () => {
+      expect(getDieSuccesses(DieType.Base, 1)).toEqual({ successes: 0, carryOver: null });
+      expect(getDieSuccesses(DieType.Base, 4)).toEqual({ successes: 1, carryOver: null });
+      expect(getDieSuccesses(DieType.Base, 6)).toEqual({ successes: 2, carryOver: DieType.Base });
+    });
 
-describe('resolveTest', () => {
-  beforeEach(() => {
-    resetRoller();
+    it('should calculate Modifier die successes correctly', () => {
+      expect(getDieSuccesses(DieType.Modifier, 3)).toEqual({ successes: 0, carryOver: null });
+      expect(getDieSuccesses(DieType.Modifier, 5)).toEqual({ successes: 1, carryOver: null });
+      expect(getDieSuccesses(DieType.Modifier, 6)).toEqual({ successes: 1, carryOver: DieType.Modifier });
+    });
+
+    it('should calculate Wild die successes correctly', () => {
+      expect(getDieSuccesses(DieType.Wild, 3)).toEqual({ successes: 0, carryOver: null });
+      expect(getDieSuccesses(DieType.Wild, 4)).toEqual({ successes: 1, carryOver: DieType.Wild });
+      expect(getDieSuccesses(DieType.Wild, 6)).toEqual({ successes: 3, carryOver: DieType.Wild });
+    });
   });
 
-  it('should return a PASS result when P1 score is higher', () => {
-    const p1: TestParticipant = { attributeValue: 3 };
-    const p2: TestParticipant = { attributeValue: 1, isSystemPlayer: true };
-    setRoller(() => [4, 4]); // P1 rolls, 2 successes. Score = 3+2=5. P2 score=1. Final = 4.
-    const result = resolveTest(p1, p2);
-    expect(result.pass).toBe(true);
-    expect(result.score).toBe(4);
-  });
+  describe('performTest', () => {
+    it('should perform a test with various dice and return the correct score and carry-over', () => {
+      const dice: TestDice = { base: 2, modifier: 1, wild: 1 };
+      const attributeValue = 3;
+      const rolls = [4, 6, 5, 6]; // Base, Base, Modifier, Wild
 
-  it('should return a FAIL result when P1 score is lower', () => {
-    const p1: TestParticipant = { attributeValue: 1 };
-    const p2: TestParticipant = { attributeValue: 5, isSystemPlayer: true };
-    setRoller(() => [1, 2]); // P1 rolls, 0 successes. Score = 1. P2 score=5. Final = -4.
-    const result = resolveTest(p1, p2);
-    expect(result.pass).toBe(false);
-    expect(result.score).toBe(-4);
-  });
+      const result = performTest(dice, attributeValue, rolls);
 
-  it('should FAIL on a TIE by default', () => {
-    const p1: TestParticipant = { attributeValue: 2 };
-    const p2: TestParticipant = { attributeValue: 4, isSystemPlayer: true };
-    setRoller(() => [4, 4]); // P1 rolls, 2 successes. Score=2+2=4. P2 score=4. Final=0.
-    const result = resolveTest(p1, p2);
-    expect(result.pass).toBe(false);
-    expect(result.score).toBe(0);
-  });
-
-  it('should PASS on a TIE if passOnTie is true', () => {
-    const p1: TestParticipant = { attributeValue: 2 };
-    const p2: TestParticipant = { attributeValue: 4, isSystemPlayer: true };
-    setRoller(() => [4, 4]); // P1 rolls, 2 successes. Score=2+2=4. P2 score=4. Final=0.
-    const result = resolveTest(p1, p2, 0, true);
-    expect(result.pass).toBe(true);
-    expect(result.score).toBe(0);
-  });
-
-  it('should correctly apply a scoreModifier', () => {
-    const p1: TestParticipant = { attributeValue: 2 };
-    const p2: TestParticipant = { attributeValue: 4, isSystemPlayer: true };
-    setRoller(() => [4, 4]); // P1 rolls, 2 succ. Score=2+2+1(mod)=5. P2 score=4. Final=1.
-    const result = resolveTest(p1, p2, 1);
-    expect(result.pass).toBe(true);
-    expect(result.score).toBe(1);
-  });
-
-  it('should correctly calculate misses for both participants', () => {
-    const p1: TestParticipant = { attributeValue: 0 };
-    const p2: TestParticipant = { attributeValue: 0 };
-    
-    let isFirstRollerCall = true;
-    const roller: Roller = () => {
-      if (isFirstRollerCall) {
-        isFirstRollerCall = false;
-        return [1, 2, 3]; // P1 rolls, 1 miss
-      }
-      return [1, 1, 4]; // P2 rolls, 2 misses
-    };
-    setRoller(roller);
-    const result = resolveTest(p1, p2);
-    expect(result.p1Misses).toBe(1);
-    expect(result.p2Misses).toBe(2);
-  });
-
-  it('should correctly apply bonus dice', () => {
-    const p1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 2 } };
-    const p2: TestParticipant = { attributeValue: 1, isSystemPlayer: true };
-    // P1 has 2 base + 2 bonus = 4 dice. Rolls [6,6,1,1] -> 4 successes. Score=1+4=5. P2=1. Final=4.
-    setRoller(() => [6, 6, 1, 1]);
-    const result = resolveTest(p1, p2);
-    expect(result.score).toBe(4);
-    expect(result.participant1Score).toBe(5);
-  });
-
-  it('should award penalty dice to opponent and flatten', () => {
-    const p1: TestParticipant = { attributeValue: 1, bonusDice: { [DiceType.Base]: 2 } };
-    const p2: TestParticipant = { attributeValue: 1, penaltyDice: { [DiceType.Base]: 2 } };
-
-    let isFirstRollerCall = true;
-    const roller: Roller = (count) => {
-      if (isFirstRollerCall) {
-        isFirstRollerCall = false;
-        return [4, 4, 4, 4, 1, 1]; // P1 rolls 6 dice (2base+2bonus+2penalty->bonus), 4 successes
-      }
-      return [1, 1]; // P2 rolls 2 dice, 0 successes
-    };
-    setRoller(roller);
-    const result = resolveTest(p1, p2);
-    
-    // P1 score=1+4=5. P2 score=1+0=1. Final=4.
-    expect(result.score).toBe(4);
-    // P1 bonus:2, P2 penalty:2 -> P1 bonus pool: {base:4}. P2 bonus pool: {}. Flattening -> P1 final bonus:{base:4}.
-    expect(result.finalPools.p1FinalBonus[DiceType.Base]).toBe(4);
-    expect(result.finalPools.p2FinalBonus[DiceType.Base]).toBeUndefined();
+      // Base(4) = 1 success
+      // Base(6) = 2 successes, 1 base carry-over
+      // Modifier(5) = 1 success
+      // Wild(6) = 3 successes, 1 wild carry-over
+      // Total Successes = 1 + 2 + 1 + 3 = 7
+      // Score = 3 (attribute) + 7 (successes) = 10
+      expect(result.score).toBe(10);
+      expect(result.carryOverDice).toEqual({ base: 1, modifier: 0, wild: 1 });
+    });
   });
 });

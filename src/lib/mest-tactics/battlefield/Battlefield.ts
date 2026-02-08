@@ -1,16 +1,9 @@
+import { Character } from '../character/Character';
 import { Delaunay } from 'd3-delaunay';
 import { Grid } from './Grid';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './Terrain';
 
-/**
- * Checks if two line segments intersect.
- * @param p1 Start of line 1
- * @param q1 End of line 1
- * @param p2 Start of line 2
- * @param q2 End of line 2
- * @returns True if the lines intersect, false otherwise.
- */
 function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
     function orientation(p: Position, q: Position, r: Position): number {
         const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
@@ -50,22 +43,30 @@ export class Battlefield {
 
   addTerrain(feature: TerrainFeature): void {
     this.terrain.push(feature);
-    this.generateNavigationMesh(); // Regenerate mesh when terrain changes
+    this.generateNavigationMesh();
   }
 
-  placeCharacter(characterId: string, position: Position): boolean {
-    return this.grid.setOccupant(position, characterId);
-  }
-
-  moveCharacter(characterId: string, from: Position, to: Position): boolean {
-    const fromCell = this.grid.getCell(from);
-    if (fromCell && fromCell.occupantId === characterId) {
-      if (this.grid.setOccupant(to, characterId)) {
-        fromCell.occupantId = null;
+  placeCharacter(character: Character): boolean {
+    if (this.grid.setOccupant(character.position, character)) {
         return true;
-      }
     }
     return false;
+  }
+
+  moveCharacter(character: Character, to: Position): boolean {
+    const fromCell = this.grid.getCell(character.position);
+    if (fromCell && fromCell.occupant?.id === character.id) {
+        if (this.grid.setOccupant(to, character)) {
+            fromCell.occupant = null;
+            character.move(to);
+            return true;
+        }
+    }
+    return false;
+  }
+
+  getCharacterAt(position: Position): Character | null {
+    return this.grid.getCell(position)?.occupant || null;
   }
 
   public hasLineOfSight(start: Position, end: Position): boolean {
@@ -75,35 +76,30 @@ export class Battlefield {
           const p1 = feature.vertices[j];
           const p2 = feature.vertices[i];
           if (segmentsIntersect(start, end, p1, p2)) {
-            return false; // LOS is blocked by an obstacle
+            return false;
           }
         }
       }
     }
-    return true; // No obstacles block LOS
+    return true;
   }
 
   public generateNavigationMesh(): void {
     const points: Position[] = [];
-
-    // Add battlefield corners
     points.push({ x: 0, y: 0 });
     points.push({ x: this.width, y: 0 });
     points.push({ x: 0, y: this.height });
     points.push({ x: this.width, y: this.height });
 
-    // Add vertices from all terrain features that are not obstacles
     this.terrain.forEach(feature => {
       if (feature.type !== TerrainType.Obstacle) {
         points.push(...feature.vertices);
       }
     });
 
-    // Create the Delaunay triangulation from the points
     this.navigationMesh = Delaunay.from(points, p => p.x, p => p.y);
   }
 
-  // A getter to expose the mesh for pathfinding
   getNavMesh(): Delaunay<Position> | null {
       return this.navigationMesh;
   }
