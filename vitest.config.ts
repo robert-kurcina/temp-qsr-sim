@@ -1,8 +1,8 @@
-import { getViteConfig } from 'astro/config';
+import { defineConfig } from 'vitest/config';
 
-export default getViteConfig({
+export default defineConfig({
   test: {
-    /* for example, use 'jsdom' for browser-like environments */
-    environment: 'jsdom',
+    environment: 'node',
+    exclude: ['node_modules', 'dist'],
   },
 });

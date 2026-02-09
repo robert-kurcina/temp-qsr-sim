@@ -1,0 +1,1701 @@
+ 
+MEST
+Matter. Energy. Space. Time.
+
+QUICK START RULES
+Welcome to the MEST Tactics (“MEST”) miniatures rules system. MEST is an acronym meaning “matter, energy, space, and time”. 
+It is a “models-agnostic” toolkit miniatures gaming system.
+Overview
+These are the Quick Start Rules. They are just enough of the fundamentals to prepare players to learn the more complete set of rules for the MEST Tactics Core book. Rules for Firearms, Grenades, and Spells have been removed.
+This version of the QSR limits the rules to common battles waged by combatants of the Bronze Age (~2250 CE) up to the Renaissance Age (~1300 CE).
+Which Miniatures to Use?
+The players should gather 10 to 20 models. These should be of the common fantasy or medieval sculpts, and as such be armed with swords, daggers, spears, and even bows or crossbows. 
+Which Terrain to Use?
+The players can just gather some books, boxes, and other shapes to layout and stack together to form their “battlefields”.
+What is the Goal?
+For these QSR rules, the goal is; create an “assembly” of combatants for each player, learning the rules, and dealing out mayhem and death while resolving the default game “mission” known as the “Elimination”.
+How to Learn?
+Scan through the rules. Try them out. Make mistakes. Do it again. Afterwards, try out the Intermediate and Advanced rules which are marked with triangles () and ().
+
+ 
+Materials Required for Play
+Players need to provide various materials to begin a game.
+Dice
+Acquire at least 6 dice in each of the three (red, white, yellow) dice colors (18 dice total).
+	Commonly available regular six-sided dice with pips (dots) numbering 1 to 6 will be adequate.
+	Use red for Modifier dice, white as Base dice, and yellow for Wild dice. These are also known as m, b, and w dice.
+Have a few different colors of tiny utility six-side dice. These are used for various purposes such as for End-game dice, count-down timers, etc.
+Optionally use a very large six-sided dice to track the current game-turn “Turn”. These dice are big so that all players can see them at a distance if necessary.
+Models
+At least 4 models per player in a variety of sculpts. 
+We recommend 28MM or 1:56 scale figurines, but the game can support nearly any scale. These 1:56 scale models should be mounted upon 30MM (or use 1.25-inch) circular bases if human-sized (“Humanoid” SIZ 3).
+If the models are already based upon something different such as ovals, squares or hexagons, this is acceptable; just presume the rules are written for those bases.
+Battlefield
+Every battlefield will be dynamically configured by all players involved, using available terrain elements.
+	A play-area, or “battlefield” of at least 24" × 24" in dimensions. The ideal size is 48" × 48". Allow additional room for side-boarded cards, utilities, and play-aids. 
+	Lots of terrain representing trees, buildings, hills, walls, and clutter. Allow 1 to 4 Items per 12"×12" play-area.
+Tools
+	A pair of measuring sticks 8 MU long divided into 1 MU segments. Each measured unit (1 MU) is about 1" long, which is the width of a standard circular base. At one end should be a marking at 0.5 MU.
+	Markers and tokens of various colors; beads are extremely useful for this purpose.
+	A couple of gaming pawns to serve as reminders.
+	Paper and pencils or pens for record keeping. 
+	Although not necessary, it is very useful to have at least one laser-pointer to check “Line-of-Sight” [ LOS ] during game-play.
+	Another nice-to-have are tiny Japanese-style side-dish bowls for rolling dice in hand, or some dice-trays.
+Tokens
+During game-play a character will succumb to one or more common status effects. Such information could be recorded on paper, but it is much more useful to identify models by placing colored glass beads as tokens, or status markers next to them. 
+If using character cards, place the tokens upon those cards to keep the play-area clutter-free.
+Here are the colors and sizes that are recommended as the standard for play. 
+	Done 		— Largest & blue
+	Wait 		— Big & white or clear
+	Hidden 	— Small & dark
+	Wound 	— Small & red
+	Delay 	— Small & white or clear
+	Fear 		— Small & yellow
+Markers
+There should be some markers to indicate that a weapon (a bow or crossbow) is “Out-of-Ammo!” to represent that they must reload before using again. These are best represented using icons upon small chits, washers, or bingo chips which are about 20MM or 0.75” across.
+There are also tactical resource types such as “Initiative Points”. These will be held near a player as spendable resources. These are best represented using icons upon larger elements which are about 30MM or 1.25” across, or larger.
+Proxies
+Not every tabletop wargame enthusiast has all of the necessary game-pieces, models, and terrain elements to build a complete set for any tabletop wargame. For the most part, TTWGs can be played using proxies. Use cups and books for terrain, coins for models, or paper cut-outs for nearly everything. For models, good sources are the many available “dudes on a map” boardgames. 
+Having artful pieces representing each type of game element helps tremendously with immersion by putting less strain on the imagination, allowing players to focus on tactics and the rules which support that.
+ 
+BASIC GAME
+Learn these first and try out the Intermediate () and the Advanced Game () rules later. 
+Assemblies
+Players are given Build Points [ BP ] to purchase several characters and their weapons, armor, and equipment. Together these characters form what are known as Assemblies. Each player receives their own Assembly.
+Building an Assembly
+Before players build their Assemblies, they should agree on how big of a game to play, which genre, and which Mission. Afterwards they can choose which side [ Side ] their Assembly will represent. 
+Genres & Settings
+Genres are a collection of thematic rules and guidelines for containing specific settings. A setting specifies the technological period which limits available weapons, armor, and equipment. It may also limit what kinds of combatants (“archetypes”), be they orcs, marines, or androids, can appear.
+Essentially players using just this rule book can do the following whenever playing in a new gaming session:
+	Pick a genre and a setting within it. 
+	Agree as to which weapons and armors are available.
+	Agree to which archetypes (more below) are available.
+Choosing Sides
+	A game is played using at least two opposing sides with a single player for each Side. That’s usually two players.
+	Characters on the same Side are Friendly and if not then they are Opposing and are considered opponents.
+Game Size
+MEST Tactics games are usually rated as Small, Medium, or Large. This helps players estimate the time to play and is decided by the total number of models used for a game session. 
+In a game with two sides (“Sides”), the total number of models divided by two gives the rough Game Size. Game size determines the general amount of BP per Side. Experienced players may instead want to decide Game Size ahead of time, and limit models and BP as a result.
+For these QSR rules, presume that the Game Size will always be Small. This limits the number of models to 4 to 8 per Side, and the number of BP per Side is about 250 to 500. It should take between 30 to 60 minutes to play.
+ 
+Ad Hoc Game Size
+Players might not know how large of a game (“Game Size”) they’ll want to play, and so instead could agree to a minimum model count. 
+	Each Side forms their Assembly using the minimum model count. Afterwards determine the total BP for those Sides. 
+	Total the number of models and the BP for all Sides and divide each total by two. Find the Game Size by using the nearest “Models per Side” and then the “BP per Side” columns.
+Equivalent Forces
+Depending on the genre, the number of characters which could be purchased and equipped with 250 BP could be a dozen or maybe just one.
+	Be sure all Sides meet the minimum and maximum model count and the maximum BP allotment.
+	If either the allowed BP or the model count needs to be reconsidered, be sure to ask the other player(s) first.
+	If more BP is needed to have the minimum models, allot each Side the necessary BP amount, and round up to the nearest 50 BP. Repeat if necessary.
+	Try to keep the total BP spent by each Side ideally within 25 BP of each other and the BP allotment. A difference could be as high as 5 BP per 100 BP allotted to any Side and things will remain roughly competitive.
+Multiple Players
+	Three or more players can participate in a game session. 
+	In this case players should agree to the available sides and each player may then pick which Side their Assemblies will call their own. 
+Multiple Sides
+MEST Tactics can support three or more opposing sides (“Side”) but try to have even numbers of opposing sides in order to avoid “player bashing”.
+	A Side may support any number of players but try to keep them equivalent in order to maintain balance.
+	As a method to help keep games manageable in size when there are three or more sides; double the total number of BP and models available and divide them between all available sides. 
+ 
+Characters
+Each character is represented upon the game-play area (“battlefield”) using models. All Characters are represented with a name, 9 attributes, a handful of traits, and a Build Point [ BP ] cost.
+Here are the attributes in the standard order of presentation, and what each is used for:
+ Attribute	Description	Which tests? Which rules?
+ CCA	Close Combat Ability	Attacker Close Combat Hit. 
+Defender Close Combat Hit.
+Disengage.
+ RCA	Range Combat Ability	Attacker Range Combat Hit. 
+ REF	Reflexes	Defender Range Combat Hit.
+Disengage. Attacker Detect.
+Defender Detect. 
+Reactions and React Tests.
+ INT	Intellect	Initiative. Magic Link.
+ POW	Willpower	Morale. Magic Weave.
+ STR	Strength	Throw OR, and some Bow OR.
+Attacker Close Combat Damage.
+Attacker Range Combat Damage.
+ FOR	Fortitude	Defender Damage. Revive.
+ MOV	Movement	Movement rate, direction changes, Agility, React Tests.
+ SIZ	Size	Wounds, and may affect Hit Tests
+Attacker vs. Defender
+The Attacker is generally the character who is performing a Test against another character or model which is the Defender.
+Attribute Values
+The average attribute value for a human character is 2. Each point higher roughly doubles that attribute's effectiveness. 
+	The normal human attribute value range is from 1 to 3.
+	Exceptional humans, like those most often found in pulp action novels or science-fantasy movies, are at the peak of capability and are rated at a 4. 
+	Any attribute with a value of 5 and higher for “real life” humans is in the realm of superheroes, sci-fi, or high fantasy. 
+	When comparing the attribute values between any two characters, a difference of 1 is significant, 2 is outstanding, and 3 or more is often insurmountable.
+Reducing
+Whenever an Attribute value is “reduced”, it is lowered towards zero and no further. If an Attribute value is already below zero, reducing it will not affect it. So, reducing a value of 3 alters it to become a 2, but reducing a value of -1 has no effect and it remains as a -1.
+Dashed Attribute Values
+Some archetypes have attribute values showing dashes as in ‘-‘, ‘=’, or ‘≡’. These represent -1, -2, and -3 respectively.
+The SIZ Attribute
+The SIZ (“size”) attribute is used to represent how much physical punishment (“Damage”) a character can take before becoming KO’d (“Knocked-out”) or Eliminated. 
+	Most adult humanoid characters are SIZ 3.
+	SIZ increases by 1 for every doubling of a character’s mass in kilograms (“Kg of mass”). 
+	SIZ 1 is about 20 Kg of mass, SIZ 2 is about 50 Kg of mass, and SIZ of 3 is about 100 Kg. A SIZ 4 character is about 200 Kg, and SIZ 5 characters are about 500 Kg.
+	The largest practical model to use in battles is SIZ 6 which is about 1000 Kg; this is mostly to represent giants, horses, or very large monsters. Smallest is SIZ 1.
+Base-contact & Base-height
+When the bases of two models touch, they are in “base-contact”. Bases of models should not overlap those of other models especially between models of characters which are hostile to each other (“Opposing”).
+Having base-diameters vary with SIZ allows for models which are on smaller bases to greatly outnumber models of larger bases when in base-contact.
+A model’s base-height is its base-diameter if Humanoid, and Beasts are about half the normal base-height. 
+Cylindrical Volume
+The volume of a model is standardized as the imaginary cylinder created from its base-diameter and its base-height. This is necessary because some models are sculpted in a dynamic pose hopping over terrain, and others are sculpted leaning forward or perhaps slinking very low to the ground.
+Melee Range — A target is within Melee Range if its volume is in base-contact with an Opposing model's volume.
+ 
+Archetypes
+Archetypes are a sort of template used to quickly define what a character can or cannot do. It is a name followed by nine attributes, a list of traits, and a BP cost value. 
+Written Presentation
+Characters are presented in written form in a multiple of ways. The standard concise format displays the name of the archetype followed by its 9 attributes written as a “stat-line” of triplets between vertical lines like so:
+CCA RCA REF | INT POW STR | FOR MOV SIZ
+After the archetype and attributes line the format identifies the species and its BP cost, followed by all of its traits. 
+Here’s an example of the Average Common archetype with a stat-line showing 2 for all Attributes except for SIZ which is shown as a value of 3. It is Humanoid (representing a generic human-like species) and has no traits. It costs 30 BP.
+Average
+222|222|223
+Humanoid. 30 BP.
+See the Traits List section for more information regarding each Trait.
+Assigning Archetypes
+At the start of each MEST Tactics game session a given model can be assigned a different archetype than in a previous session. What could be assigned will change according to the needs of the controlling player. 
+	The basic premise is that the players shouldn’t become necessarily attached to what a model looks like and should concern themselves with what the archetypes assigned to a model could instead do. 
+	It is reasonable that the model in a previous session was assigned the Brawler archetype and now it is instead qualified as a Hero or Leader archetype.
+Any two nearly identical models with the same sex, uniform type and color, equipment, species, etc. should be given the same assigned Archetype within any given Mission. If they are different, be sure to identify them clearly and inform the other players.
+ 
+The Common Archetypes
+Common archetypes represent the majority of humanoid characters encountered in most genres. Unless identified elsewhere or made more obvious in its archetype naming, most archetypes are presumed to “Humanoid” with its species (“Species”) as Human.
+The Common archetypes are listed in increasing order of cost in BP below;
+	Untrained — This is for most civilians and other non-combatants. Ideal for bystanders and librarians.
+	Militia — Recruits, poorly trained soldiers, and conscripts. This can ideally represent teenagers drafted from war-torn cities, towns, and farmlands.
+	Average — This archetype represents the most encountered combatant or adventurer. 
+	Veteran — The grizzled professional soldier. They’ve seen combat enough to not be too stirred by it.
+	Elite — Representing the most highly trained combatants in any Assembly. Cinematic assassins.
+Common Archetype Comparisons
+Here are examples of Common archetypes written in the standard concise format:
+Untrained
+012|211|223
+Humanoid. 7 BP.
+
+Militia
+122|221|223
+Humanoid. 20 BP.
+
+Average
+222|222|223
+Humanoid. 30 BP.
+
+Veteran
+333|232|223
+Humanoid. 61 BP.
+Grit.
+
+Elite
+333|333|333
+Humanoid. 129 BP
+Grit. Fight. Shoot.
+The Elite Common archetype has a value of ‘3’ for all of its Attributes. At 129 BP it costs the equivalent of 2 Veterans, 4 Average, or 18 Untrained characters if none of them were to be assigned weapons. 
+However, most characters will be given some sort of weapon and armor which costs usually around 30 BP this makes each Untrained worth around 37 BP, Average at 60 BP, Veterans at 91 BP, and Elites at 159 BP. This would make the Elite archetype worth just about 1.75 Veterans, 2.5 or so Average, and slightly above 4 Untrained.
+Variant Archetypes
+Each of the Common archetypes have a few variants known either as Variant Common archetypes. 
+These variants are the standard Common archetypes plus one or more additional traits indicated by a small plus (+) sign before the addition. If an Archetype already has such a trait, the addition increases the trait level by one. 
+The Variant archetype name is primary archetype (such as Average or Untrained) plus its variant archetype.
+Here are some examples:
+	Average, Brawny — An Average archetype but with the addition of the Brawn trait to represent a big, strong, character. Brawn only aids in ways not involving causing Damage during combat.
+	Average, Archer — An Average archetype but with the addition of the Archery trait to represent the very rapid archery ability of ancient archers. Does not receive the Shoot trait.
+	Average, Cultist — Nearly all Cultists have the Insane trait which protects them from the Fear trait.
+	Marksman, Archer — The Marksman archetype which has the Shoot trait, and also the Archery trait.
+	Untrained, Scholarly — Represents the invaluable but nerdy professor; book-smart but not able to participate in combat too much. Receives the Scholar trait.
+ 
+Traits
+Traits are assigned to characters, weapons, armor, and equipment. Each trait is a set of one or more small rules that enhances the main set of rules or alter the effects of another trait. Near the back of this rules book is a Traits List section showing for how each modifies the game rules.
+Overview 
+	Something with a given trait can be referenced with that trait. So, a weapon with the [Flint] trait is a Flint weapon. If a trait states that there is a "target", this may refer to other models or to locations. Most traits are abilities that provide beneficial effects.
+	Some traits are disabilities which have penalty effects. Disabilities are identified within square brackets such as [Blinders], [Stub], or [Coward]. Related disabilities are written within the same bracket [Stub, Awkward].
+	Some trait entries are given an X such as Armor X or [Laden X]. These allow traits to be acquired at a certain level; the default level for such traits is always 1. 
+	Some traits have variations such as [Discard+] or [Discard!]. These are [Discard] but with extra clauses. 
+	Traits may have classifier keywords such as “Movement”, “AoE”, “Skill”, “Intrinsic”, “Asset”, “Attack Effect”, “Psychology”, “Natural Weapon”, or “Magic” which are hooks for other game rules.
+	Traits may have a “see” trait reference to another trait such as “Throwable — Asset. see [Discard]”. The referenced trait may also apply whenever using the main trait depending on the context of that trait. 
+	If a reference has an X in it such as “Stealthy X — see Night-vision X” it means that the referenced trait will be at the same level as the main trait.
+	Some traits have an arrow (“>”) which indicates that it is affected by whatever item or traits exist at the right of the arrow, such as Claws > Poison, or Fume > Smoke. 
+	Often what is on the right of the arrow is a dependency. Claws > Poison indicates that the Poison trait is active only when the Claws are used.
+	Sometimes what is on the right of the arrow is a list delimited by periods and written within curly-braces such as when using weapons with the ROF trait:
+ROF > {[Jitter, Feed, Jam]. Burst}
+ 
+Adding Trait Levels
+Whenever a trait with levels is acquired more than once to a given thing, be it a character, weapon, armor or equipment; the trait levels are added together for its default usage of that thing.
+For example; a character with the Medium Armor has 
+AR 4 [ “Armor Rating 4” ] which when combined with a Medium Shield that has AR 1 and so the total is AR 5.
+Reducing Trait Levels
+Whenever a trait mentions “reduce”, it will decrease the levels of something such as dice or a named trait by a certain amount for a very specific context. If this reduces that thing to zero or less, then regard that as not having any in-game effect for the duration of that context.
+Applying Traits
+Traits normally affect just that character, weapon, armor, or equipment to which they’ve been assigned.
+	Ability traits apply whenever desired by the player controlling the model, weapon, armor, or equipment.
+	Disability traits are applied according to their descriptions. All players should take note to always apply Disability traits as often as necessary.
+	Traits always over-ride non-Trait rules but most often augment each other. Conflicting traits should be decided in favor of the Active character. Or roll a die to decide.
+
+ 
+Purchasing Characters
+Players spend their allotted Build Points [ BP ] to assign their characters an archetype. 
+Archetype Rarity
+The Common archetypes should be adequate for most introductory games. These are Humans or humanoids.
+WYSIWYG
+MEST Tactics encourages frequent use of the WYSIWYG (wiz-ee-wig) rule or “What you see is what you get.” 
+	Try to use models that are sculpted to represent what they are to be. 
+	Want a werewolf? use a werewolf model. 
+	Want a thug with a sword? use a model with a sword. 
+	Want an assassin with a rifle? use a model with a rifle.
+	Acquiring physical models with very specific combinations of features sculpted into them for any player is hard to do. Players should be relatively flexible in interpreting what passes as WYSIWYG. 
+	A “sword” could be a Broadsword, a Longsword, a Machete, etc. A “pistol” in hand could be a Revolver, an Auto-pistol, or a Semi-automatic.
+	Some Items, such as Daggers or Torches, are assigned the Conceal or the Discrete traits which disregard the WYSIWYG limitations. Equipment is given Conceal by default.
+Character Profiles
+A profile (“Profile”) is an Archetype combined with all assigned Items of weapons, armor, and equipment. Profiles are identified with a name such as “Red shirt with sword”, or even “Mary Sue”. At this point, they’ll also become known as characters (“Characters”).
+Character Record Sheet
+Attached to the rules are “Character Record Sheets” which will aide in tracking information for each player’s Assembly. See the section on Additional Materials.
+Templates and Frames
+An Archetype representing the most basic elements of a species is a "template", such as the Common Average archetype for Humans. Frames are additions to an existing Archetype to make them Variants.
+ 
+Outfitting Characters
+Players may spend BP to purchase and assign Items (“Items”) to their characters, which are weapons, armors, and equipment.
+	Assign Items reasonably to characters according to how they are sculpted. 
+	All characters, weapons, armor, and equipment are rated with a BP cost. 
+For example; a Common Average character costs 30 BP and a Medium Revolver is 33 BP. Together this character when armed with the weapon is 63 BP. 
+For example; a Common Untrained character costs 7 BP and Daggers cost 6 BP. Together this costs 13 BP.
+	Characters and Items are also given traits which are little rules that alter or break the rules in the game. Most traits, the Ability traits, are beneficial, but Disability traits have penalty effects. See the Traits List section for more information.
+Available Hands
+A character is allowed a number of hands (“Hand”) equal to its model's sculpt, including prehensile tails and trunks, tentacles, or other. All Humanoid characters are presumed to have two Hands and can normally wield one Item each.
+	Items require a commitment of 1 or 2 hands, noted as [1H] and [2H]. These then become “In Hand”.
+	All Fiddle actions must commit 1 available Hand each.
+	A character may commit with one less available Hand, but this causes a penalty of -1 Base die for any Fiddle Tests, and for the very next Test performed when interrupted by a React.  
+See the list of Traits regarding the [1H] and [2H] traits for more information on how this affects game-play.
+A Common Example:
+The most common example is outfitting a character with a Shield [1H] and a Spear [2H]. 
+This would require three Hands, but most humanoid characters have just two. This character can use the Spear with one fewer Hand. However, if it is interrupted and attacked during a React it will suffer a -1 Base die penalty.
+Another Common Example:
+A character could be outfitted with multiple items requiring Hands. Such as having Longbow and a Dagger, or having two Spears. A player may decide that the additional items are stowed somewhere on their person. They may use the Fiddle action for each item or pair to switch out.
+ 
+Weapons
+The general rule for assigning weapons to a character is to examine the sculpt of the associated model; if it has a weapon, then it qualifies to have a weapon assigned to it. 
+	Each weapon type may have a variety of choices available; a player could decide that a model's over-large knife is a Dagger, a Saber, or maybe a Sword. 
+	Characters pay full BP value for the highest cost Range Combat (Bow, Firearm, Range, Support, Thrown, Throwable) and Close Combat (Daggers, Clubs, Swords, etc.) weapons; other weapons are half-cost. Round up to nearest BP.
+	Some models may have two or more weapons sculpted onto them; a player can choose to pay for just those intended for use. A weapon not paid-for can't be used. 
+	Models with no weapons in their sculpt may be created as having either Improvised or Unarmed, with Improvised as the default which costs zero BP.
+	Weapons with the Conceal or Discrete traits allow one purchase regardless of if the model has the proper sculpt. 
+Sample Weapon Entries:
+These are very common Weapons available for most game settings. They are extracted from the Basic Weapons list.
+Unarmed
+Natural. -3 BP.
+Acc -1m, Impact 0, Damage STR -1m
+[Stub]
+
+Improvised Melee
+Melee. 0 BP.
+OR STR + 1". Acc +0, Impact 0, Damage STR
+[1H][Stub]
+
+Improvised Thrown
+Thrown. 0 BP.
+OR STR + 0". Acc -1w, Impact 0, Damage STR -1b
+[1H][Discard!]
+
+Daggers
+Melee. 6 BP.
+OR STR + 0. Acc +0, Impact 1, Damage STR.
+[1H][Stub]. Discrete. Throwable.
+
+Club
+Melee. 4 BP.
+OR N/A. Acc +0, Impact +0, Damage STR.
+[1H]. Stun.
+
+Sword, Broad
+Melee. 17 BP.
+OR N/A. Acc +0, Impact 1, Damage STR + 2m
+[1H]. Parry. Cleave.
+
+Spear, Medium
+Melee. 30 BP.
+OR STR", Acc +0, Impact 2, Damage STR + 2m
+[2H]. Reach. Perimeter. Charge. Throwable.
+
+Bow, Medium
+Bow. 6 BP.
+OR STR+4", Acc +0, Impact 2, Damage STR + 1m
+[2H][Reload].
+ 
+Reading the Weapons List: 
+Any entries which have only a dash (-) are considered to either not be relevant (such as for OR) or be empty (such as for Traits). Each entry in the various Weapon lists is described with these properties:
+	Name — The name of the weapon. Some weapons have name modifiers such as “Small”, “Large”, or “Medium”. Weapons which have “Medium” as part of their name are the default and can be written without that modifier. Therefore, “Spear” and “Spear, Medium” are identical.
+	Class — The class of the weapon; usually either Thrown, Bow, or Melee. Also, Firearm, Natural, Range, and Support.
+	OR — Optimal Range. Used to attack targets at range. Melee weapons usually don’t have an OR entry unless they also have the Throwable trait, show as either ‘-‘ or N/A.
+	Acc — Accuracy. Used for Attacker Hit Tests. If listed in square brackets, the penalty shown is for Attacker Close Combat Hit Tests, and for Defender Close Combat Hit Tests.
+	Impact — Impact rating or “I”. Used for Attacker Damage Tests. Each Impact rating reduces 1 total Armor rating [ AR ] from the target if it wears Armor for Attacker Damage Test.
+	Damage — The Damage Rating used for the Attacker Damage Tests. This can be a “flat value” (such as STR or just ‘5’) and may also include dice (the “dice value” such as +2m or -1b). If empty, there is no Damage Test unless by traits.
+	STR — Items identified with STR for OR or Damage use a flat value equal to the character's STR attribute.
+	Traits — One or more traits may be listed and separated by periods. Disability Traits are listed in square brackets. 
+	BP — Build Points to purchase this Item. 
+Unarmed or Improvised
+A character is Unarmed by default unless it has at least one other weapon which it can use in Close Combat. Improvised weapons represent the use of some tool, rock, stick, or element of terrain. 
+	A weapon such as a Bow or Rifle can’t be normally used in Close Combat and becomes an Improvised Melee weapon automatically for that purpose. 
+	A Sword or Helmet, which can’t normally be used in Range Combat, becomes an Improvised Range weapon automatically when thrown and used for that purpose.
+ 
+Armor
+What can be considered armor varies greatly from genre to genre. The majority of genres have some equivalent of the Helm, and Gear types of armor. 
+	A character is allowed just one of each type of armor such as Helm, Gear, Shield, or Suit. 
+	Helm — Helms cover the head of a character and must be purchased separate from any Suit.
+	Gear — Represent small bits of armor and padding covering arms, shoulders, shins, or abdomen. 
+	Shield — Held in hand to help block and deflect.
+	For WYSIWYG consistency, “Suits” cover the body as;
+	Light — Light Armor is usually when just the front of the torso of a sculpt is covered, metal or otherwise. Or has a full torso covered in hide. Weighs about 5 kg.
+	Medium — Medium Armor has the front and back of the torso covered with hide or metal, and maybe the legs or arms though not entirely. Weighs about 10 kg.
+	Heavy — Heavy Armor is segmented and the entire body excluding the head and hands are covered in very thick hide or all metal with some padding. Weighs about 20 kg.
+Sample Armor Entries:
+These are very common Armor available for most game settings. They are extracted from the Basic Armors List shown at the back of these rules.
+Helmet, Common
+Helm. 3 BP.
+Protective.
+
+Armored Gear
+Gear. 5 BP.
+Conceal. Deflect. 
+
+Shield, Medium
+Shield. 10 BP.
+[1H][Laden]. Armor. Coverage. Deflect. 
+
+Armor, Light
+Suit. 8 BP.
+[Laden]. Armor 2. Deflect.
+
+Armor, Medium
+Suit. 13 BP.
+[Laden 2]. Armor 4. Deflect.
+
+Armor, Heavy
+Suit. 15 BP.
+[Laden 3][Lumbering]. Armor 6. Deflect.
+ 
+Reading the Armor List: 
+Any entries which have only a dash (-) are considered to either not be relevant (such as for AR), or be empty (such as for Traits). Each entry in the various Armor lists is described with these properties:
+	Name — The name of the armor. Some armors have name modifiers such as “Small”, “Large”, or “Medium”. Armors which have “Medium” as part of their name are the default and can be written without that modifier. Therefore, “Shield” and “Shield, Medium” are identical.
+	Type — The type of armor. Limits usage per the above rules.
+	AR — Armor rating [ AR ] via the Armor trait. Used for Defender Damage Tests. 
+Each AR reduces the Wound damage that a character receives from an attack by one. An Attacker’s weapon will have an Impact [ I ] rating which will normally reduce total AR by 1 each. Whenever an Attacker uses the Concentrate action, it reduces each Item that a target has by 3 AR.
+See the In Consideration of Armor section for more information.
+	Traits — One or more traits may be listed and separated by periods. Disability Traits are listed in square brackets. 
+	BP — Build Points to purchase this Item. 
+Reading the Equipment List:
+Any entries which have only a dash (-) are considered to either not be relevant or be empty (such as for Traits). Each entry in the various Equipment lists is described with these properties:
+	Name — The name of the equipment. 
+	Class — The class of the equipment; Accessory, Attachment, Gear, Helm, Medicine, Munitions, Suit, Tool, or Upgrade. If Helm, Gear, or Suit is identified; these count as being armor of that type.
+	Traits — One or more traits may be listed and separated by periods. Disability Traits are listed in square brackets. 
+	BP — Build Points to purchase this Item. 
+
+ 
+Performing Tests
+Dice & Modifiers
+MEST Tactics uses three kinds of dice for all Tests; Base, Modifier, and Wild dice. These are regular six-sided dice with faces numbered 1, 2, 3, 4, 5, and 6. Some dice have “pips” instead of numbers and these rules reference that.
+	Modifier dice are red. Face values 1, 2, 3 is zero successes, and 4, 5, 6 is one success. Modifier dice are specified as +1 or ˗1 Modifier die, or as +1m or ˗1m.
+	Base dice are white. Face values 1, 2, 3 is zero successes, and 4, 5, is one success, and 6 is two successes. Base dice are specified as +1 or ˗1 Base die, or as +1b or ˗1b. 
+	Wild dice are yellow. Face values 1, 2, 3 is zero successes, and 4, 5, is one success, and 6 is three successes. Wild dice are specified as +1 or ˗1 Wild die, or as +1w or ˗1w. 
+Types of Tests
+Tests are either Opposed or Unopposed; two players are always involved in scoring dice in both. Opposed tests are used when two characters are involved. Unopposed tests are for all else. Tests are “performed”, and completed Tests are “resolved”.
+	The character performing an action that requires a test is the Active character. The target of that action is usually one or more models, or perhaps a terrain element or location upon the playing area.
+	The player with the Active character performs the tests usually as the Attacker and the other player performs it on behalf of the target and is known as the Defender or Passive player.
+	Some tests are given a familiar name such as “Morale Test” to mean an Unopposed POW Test. 
+Opposed Tests
+Each player rolls two Base dice and adds their character’s value for the matching attribute. 
+If the test is identified with two Attributes; the player with the Active character adds the value for the first attribute and the other player adds the Passive character’s value for the second attribute. 
+	For example; RCA vs. REF Test indicates that the Active character uses RCA while the target character uses REF.
+	For example; Opposed INT Test indicates that both the Active character and the target use INT.
+Unopposed Tests
+If an Unopposed Test is identified, the Passive player merely rolls dice on behalf of the game system (“System”) and adds 2 to the total. 
+Have the Active player add any named Attribute values accordingly.
+Bonus and Penalty Dice
+Many traits will identify bonus and penalty dice to be used under specific Test conditions. Situational Test Modifiers associated with certain Actions will also identify dice.
+	Tests may identify bonus or penalty dice. Whenever a character is penalized a die, a “penalty die”, what this means is that the Opposing player is awarded the die instead. 
+For example; a +1m Combat Test provides +1 Modifier die to the Active character.
+For example; a ˗1m Attacker Close Combat Test awards the Defender character because penalty dice will award the other character instead. 
+	Bonus and penalty dice can be identified to affect more than one test. Notice how the wording on each of these changes how specific it is, and to which tests they may apply to:
+	+1m Attacker Range Combat Hit Test
+	+1m Attacker Combat Hit Test
+	+1m Attacker Combat Test
+	+1m Combat Test
+	+1m Test
+Flattening Dice
+To allow more extremes values, the concept of flattening dice is used which reduces the total number of dice rolled.
+	If both players receive the same kind of dice for tests, then they cancel each other out and are removed in equal numbers from each player.
+	Flattening always occurs last; after all dice have been assigned, awarded, or adjusted by traits.
+	The last two Base dice for each Player are never removed; they are not “flattened”. Tests are always performed with at least two Base dice for each player.
+ 
+Scoring Tests
+When scoring tests (Unopposed or Opposed), players roll their two Base dice plus any number of additional dice according to whichever traits, weapons or situational modifiers occur. Add a relevant Attribute value as well.
+	A die is scored as a single success when its face-value after rolling is 4 or higher. It is a miss otherwise.
+	Base dice score 2 successes if the face-value is 6. 
+	Wild dice always score 3 successes if the face-value is 6.
+	A player's test score, “Test Score”, is their character's Attribute value plus all successes scored by the dice. 
+	A Test is passed when the Active character has an equal to or greater Test Score than the other player. Otherwise, the test has failed.
+Ties
+As a general rule; Active characters always win ties.
+Cascades, Misses, and Carry-overs
+	Cascades are the difference in Test Scores in favor of the Active character. 
+	Misses are what would have been needed to pass. 
+	Active characters always win ties, receiving a cascade.
+	Carry-overs are dice that might become available as bonuses for the Active character in the next test for the current action. 
+	Modifier dice “carry-over” as bonus Modifier dice if the face-value of the die is 6. 
+	Base dice “carry-over” as bonus Base dice if the face-value of the die is 6. 
+	Wild dice scoring at least one success always “carry-over” as bonus Wild dice automatically. This is on a 4, 5, or 6.
+	Carry-overs are from Hit Tests into Damage Tests when performing Combat, and from Link Tests into Weave Tests when performing Magic. No other Tests qualify.
+	The System player never receives carry-overs.
+Difficulty Rating
+Some of the game rules, such as the Fiddle action, require or suggest that a character be subject to a Difficulty Rating [ DR ] adjustment of 1, 2, or 3. Add these to the System player’s or Opposing player’s Test Score.
+ 
+Situational Test Modifiers
+There are common situations which arise that will affect the ability of characters to pass Tests. These are known as Situational Test Modifiers, and they are listed in a set of tables at the right under their commonly referenced name. 
+These entries will be explained in the proper context in the later sections of the rules. For now, consider these to be a reference used during game-play as a reminder. 
+All of the terms used are described in the next few sections.
+	Penalties are listed as -1, -1m, -1b, or -1w, and bonuses are listed as +1, +1m, +1b, or +1w.
+	Modifiers usually are set for the Active or Attacker character unless they specify the target or Defender. Some modifiers apply to both models within a test.
+	Every Test, except for the Damage Tests, will always require use of these Situational Test Modifiers.
+	The most commonly applied Situation Test Modifiers will be for Hindrances.
+Adjusted Rules Note
+For these QSR Rules, the entries on the Situational Test Modifiers table have been adjusted by removing Snapshot and Suppression.
+ 
+Apply these during game play for various Tests.
+Close Combat & Disengage
++1	Assist. +1 Impact Attacker Damage Test per extra Attentive Friendly Ordered model with same target in Melee Range.
++1m	Charge. Attacker Hit Test if moved into base-contact with target, over Clear terrain from a Free position at least base-diameter.
++1m	High Ground. Disengage and Hit Tests to higher model if base is above half of the Opposing model’s base-height, and base-height is above the Opposing model’s volume.
++1m	Size. Disengage and Close Combat Hit Tests if in base-contact, and Opposing model is larger by 1, 2, 5, or 10 SIZ. Each is +1m.
++1b	Defend. Defender Hit Test if target chooses “Defend”. 
++1w	Outnumber. Disengage and Hit Tests for 1, 2, 5, or 10 more other Attentive Ordered Friendly models with the same target in Melee Range than the Opposing model. Each is +1w.
+-1m	Cornered. Disengage and Hit Tests if Engaged to the Opposing model on one side of this model and in base-contact on the other side with a wall, precipice, or degraded terrain.
+-1m	Flanked. Disengage and Hit Tests if Engaged to two Opposing models directly on either side of this model.
+-1	Overreach. Penalized -1 REF and -1 Attacker Close Combat Tests.
+Range Combat & Detect
++1m	Point-blank. Active model not Engaged to target receives +1 Modifier die for the Hit or Detect Tests if at half OR or less.
++1m	Elevation. Active character Hit or Detect Tests if higher than opponent by 1" for every 1" away.
++1m	Size. Range Combat Hit Test for every 3 SIZ difference to the smaller model if OR Multiple is at least 1.
+˗1m	Distance. Attacker Hit or Detect Test for ORM to the target.
+˗1m	Intervening Cover. Attacker Hit or Detect Test if target has Intervening Cover. 
+˗1m	Obscured. Attacker Hit or Detect Tests for 1, 2, 5, or 10 other models within LOF to the target, and for non-Opposing models beyond but within 1 MU of LOF. Each is -1 Modifier die.
+˗1b	Direct Cover. Attacker Hit or Detect Test if target in Direct Cover.
+-1b	Leaning. Penalize -1 Base die Detect and Range Combat Hit Tests if self or target is leaning from terrain in base-contact.
+-1w	Blind. Attacker Hit Test if this is a Blind Indirect Attack.
+-1w	Hard Cover. Attacker Damage Test if target behind Hard Cover. 
+Miscellaneous
++1	Waiting. All characters in Wait status receive +1 REF when qualifying for a React.
++1	Solo. A single model selected to perform React against a Group Action receives an effective +1 REF.
++1m	Suddenness. Hit Test if Hidden at start of Action.
++1m	Friendly. Morale Tests when an Attentive Ordered Friendly model is within Cohesion.
++1m	Help. Each Free Attentive Ordered Friendly model in base-contact with the target of a Fiddle action if given a Delay token.
++1w	Safety. Morale Tests if behind Cover or out of LOS, and not within 2 AP Movement of Opposing models.
++1w	Concentrate. For any Test associated with an Action if paired with the Concentrate action which itself requires 1 AP.
++1w	Focus. Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React.
+-1m	Hindrance. Characters are penalized every Test except Damage Tests for every Hindrance type assigned; Wound, Fear, or Delay.
+-1m	Confined. Penalize -1 Modifier die Close Combat Test or Defender Range Combat Hit Test if Confined by Terrain by any two; vertically, horizontally, or behind.
+ 
+General Terms
+MEST Tactics requires the use of many game-specific terminologies to make rules precise and clear.
+Common Terminology
+	Initiative — The character (its model and player) whose turn it is or was at the start of a Turn.
+	Target — A target is either a model, a battlefield location, or terrain elements such as a tree or building. 
+	Active — The character (its model and player) whose turn it is at the moment to complete an Action.
+	Passive — The character (its model and player) which is the target of an action by the Active character.
+	Attacker — The character (its model and player) performing an Attack action.
+	Defender — The character (its model and player) which is the target of an Attack action.
+	Scrum — A Scrum is when three or more Opposing models are Engaged or within Melee Range of others.
+	Outnumbers — A model Outnumbers its target if it has more Attentive Ordered Friendly models with the same Opposing model in Melee Range.
+	Agility — Agility is a feature of movement and can be used in combination with it. It is equal to half a character’s MOV, keeping fractions. See the section on Performing Movement under “Agility” for more information. 
+	Physicality & Durability— Physicality is the higher of SIZ or STR. Durability is the higher of SIZ or FOR.
+	base-contact — A model is in base-contact if its base touches and it is anywhere within the height of the other model. The bases of models should not be allowed to overlap. 
+	Facing — How a model faces or its “facing” is not a factor in game-play. 
+	Core Damage — This is a weapon’s flat value for Damage rating plus the number of dice it would roll. 
+For example; a Sword or Spear with a Damage rating of STR + 2m has a Core Damage 4, if STR were 2.
+For example; Throwing Knives have a Damage rating of STR -1w, and if STR were 2 this would be Core Damage 1.
+	Hindrance — Hindrances are status tokens such as Wound, Delay, and Fear. 
+	When assigned to a character, the character is of that status type, such “Wounded” (Wound), “Distracted” (Delay), or “Nervous” (Fear). 
+	Each type of Hindrance assigned to a character causes it to be penalized at -1 Modifier die all Tests except for the Damage Test.
+ 
+Standard Conditions
+Each of the Standard Conditions usually have a pairing. Friendly and Opposing are pairs, same as Hidden or Revealed. 
+Friendly — All models controlled by the same player, or by players of the same Side, are Friendly.	Opposing —Models which are not Friendly are Opposing.
+Ready — All models begin each Mission as Ready. 	Done — Characters that have completed all of their activities are Done. These models are marked with a Done token. KO’d characters are never Ready; always Done, and never Active.
+In-Play — A character that is not KO’d or Eliminated is In-Play.
+Out-of-Play — A character not In-Play. Usually KO’d or Eliminated.
+
+	KO’d — A model is KO’d when it has received Wound tokens matching its SIZ. KO’d models never cause Opposing models to be Engaged.
+Eliminated — Characters which have been removed from play are Eliminated. A character is Eliminated when it is no longer in play as result of movement, combat, fear, or other means. Exiting the battlefield is automatic Elimination.
+Revealed — Characters that are not Hidden are instead Revealed. 	Hidden — Some characters may become Hidden during the course of the game.
+Attentive — Characters are usually Attentive unless Knocked-out [ KO’d ]. 	Distracted — The opposite of Attentive is Distracted. Models with Delay tokens are Distracted. 
+Ordered — Characters which are not Disordered are instead Ordered.	Disordered — Characters with 2 or more Fear tokens are Disordered. 
+Free — Models that are not Engaged are Free.
+ 	Melee Range — A target is within Melee Range if its volume is in base-contact with an Opposing model's volume.
+Engaged — A model is considered Engaged if it is within the Melee Range of an Opposing model.
+ Delay, Fear, and Wound tokens are a Hindrance status type.
+
+ 
+Measuring
+One Measured Unit [ MU ] is equal to the base-diameter of a SIZ 3 model; the standard human-sized character.
+This is presumed to be a 30MM [ or 1.25-inch ] circular base for 1:64 to 1:48 scale [ 25MM to 33MM ] models. MU thus changes according to scale. Models on longer bases have a base-diameter equal to that longer length.
+An MU is also written as straight double-quotes and the notations are interchangeable. Therefore 1" and  2" being 1 MU and 2 MU respectively. MU (pronounced “em you”) is used interchangeably with “units”, “segments”, “spaces”, “sections”, but also “inches”.
+Overview
+	Acquire several 8" measuring sticks. These by definition are 8 MU each. 
+	Mark the stick with 1 MU segments. Also mark it with a 0.5-MU segment.
+	Players may use one ruler-length to measure angle and distance at any time during play from their own models to elsewhere.
+	Measuring from a model is from its base up to its height. This forms a cylindrical volume for which all Line-of-Sight [ LOS ] is to be traced towards or from. Its “visible area”.
+	Models sculpted or mounted in unusual positions, or raised bases, must be treated as though of normal height which for a SIZ 3 model is equal to its base-diameter. 
+	Long, flat, sprawling, overly tall, or spindly models can be regarded as tall as its tallest part. Have all players agree.
+	Imprecision — All measuring fractions round down to nearest 0.5". Positional adjustments up to 0.5" is allowed, favoring the Active model, if players agree. Games resolve faster this way.
+Game Scale
+Game scale is 2 meters or yards per 1", and about 5 seconds per Turn.
+	Game-turns with very little movement or activity can be considered upwards of 30 seconds long. 
+	A standard battlefield of 48" × 48" or nearly 100-meters by 100-meters. About the size of a small city-block.
+ 
+Visibility and Distance
+	MU — A Measured Unit. It is 1" , also 1 MU, and is equal to the base-diameter of a SIZ 3 model; the stand human-sized character.
+	LOS — Line-of-Sight [ LOS ] occurs if the line drawn between any point within the volume of the Active model and to within the volume of the target is not obstructed by Blocking terrain like walls, or even other models.
+	LOF — Line-of-Fire [ LOF ] is the line between two models and beyond the target but not necessarily in LOS.
+	OR — Optimal Range [ OR ] is a distance such as 6". If there are many ORs in effect, always use the smaller (the worst) one. 
+	ORM — An OR Multiple [ ORM ] is some multiple of the OR distance towards a target model or location. Each full multiple of an OR is a ˗1 Modifier die for Detect Tests and Range Attack Hit Tests. 
+	Max ORM — The maximum OR multiple is 3; no Test involving OR may exceed that under normal conditions.
+	Point-blank — Targets within half of any OR are “Point-blank”. This provides +1 Modifier die Range Combat Hit Test for attackers not Engaged to them.
+	Lighting — Lighting is either “Day, Clear” weather, or “Twilight, Overcast”. 
+	Visibility  — Visibility limits all other OR and limits all range values. Use Visibility OR 16" for “Day, Clear” and OR 8" is used for “Twilight, Overcast”.
+	Cohesion — Models are considered to be within Cohesion if they are range and LOS of another model. The range is at best equal to half Visibility rounded down, but no more than the higher of either 4 MU or the SIZ in MUs of either model.
+
+ Visibility may be altered by the use of Traits. Visibility may never be reduced by these adjustments to below 0.5 MU but has no upper limit.
+ Ranged Combat attacks will usually have two ORs; one for the Visibility and one for the weapon or method of attack. Use the smaller OR for determining any ORM penalties.
+For example; a Rifle has OR 12. If the Visibility is OR 8 and a target is at 24 MU then the ORM is 2 for the Rifle and 3 for Visibility. Using the lowest OR of 8 makes the ORM 3.
+ 
+Environment & Terrain
+These are the standard rules for setting up a Battlefield.
+A players’ first battlefield may just be a table or desk with books and cups strewn about. Or it could have lovingly crafted terrain for hills, trees, buildings, rivers. Regardless there are certain guidelines that should be followed to help keep the pace of a game quick and interesting.
+The Battlefield
+For these QSR rules, the battlefield will always be Small and measure 24 x 24 MU.
+Terrain Elements
+Battlefields comprise of a good surface area known as a “Field”. Place enough terrain to make the battlefield interesting with enough room to maneuver.
+	Provide numerous side-channels multiple paths for movement through the battlefield.
+	Limit open areas to no more 8" in length maximum otherwise range combat will dominate the game-play.
+	If the genre encourages lots of range combat or has characters with high movement rates; try using a larger battlefield or start deployment from the corners of the play-area instead.
+	If there are too many choke-points, game sessions will slow down if most of the characters use range combat.
+	Keep the width between terrain elements least 2" so that models may fit between, and for tall terrain at least 4" so that players hands may fit within them.
+Categories of Terrain
+Terrain is categorized in one or more of; Walls, Obstacles, Areas, or Fields.
+	Fields — Relatively smooth flat terrain upon the battlefield.
+	Walls — Terrain with large surfaces that rise vertically. 
+	Obstacles — Everything not Fields but small enough to navigate around.
+	Area — Areas of the battlefield that have an agreed general effect, usually to act as Cover terrain, to be Rough terrain, or even both.
+ 
+Configuring Terrain
+When a battlefield is configured for a Mission, players should clearly designate what sorts of Tricky Terrain exist for Fields, Areas, and terrain locations.
+Defaults
+The defaults for Fields are as follows:
+	Clear	—	This is the default for all fields
+	Rough	—	Rocky areas and fields, going up hill
+	Difficult	—	Rocky and going up hill
+	Impassable	—	Walls and cliff-faces
+Buildings
+Terrain may also include any number of buildings.
+	Buildings are large walled, usually enclosed areas of the battlefield normally decorated with windows, doors, and maybe a roof. 
+	These can be shacks, trailer homes, row houses, mansions, warehouses, gas stations, granaries, or even a laboratory, or a diner. As the genre changes, so does the kinds of buildings which appear upon the battlefield.
+	Buildings can be represented by large 3D game elements, 2.5D layouts, or even just a floor-plan map.
+	Buildings normally are used as decorative terrain, but players may agree to allow some to be entered. Agree on how the interior of these areas are represented.
+Navigating Buildings
+For these QSR rules, presume that buildings are merely giants blocks of terrain which can’t be entered. 
+ 
+Terrain Effects
+Terrain can affect how well models may traverse it, and whether models can hide or become obscured from view.
+Terrain Effects on Cover
+Cover is status for when a targeted model or location is partially obscured by terrain between it and an Active model. The term Cover includes concealment effects.
+	Cover is either Soft or Hard, and Intervening or Direct. 
+	Cover is graded as Clear  Soft  Hard  Blocking and degrades in that order. Clear being no Cover at all.
+	Blocking terrain prevents LOS and is likely to stop all Damage by a given attack. 
+	Trace LOS (a Line-of-Sight, a line) between the Active model’s visible area to the target’s visible area noting any terrain that line may cross.
+	The visible area of a model is its base-width by its base-height. This is a cylinder if the model has a circular base.
+	If the target is not a model but is a building or is terrain; its visible area is all of its front, facing the Active model.
+	If the LOS is unobstructed at all positions to the target from all positions of the Active model; then there is no Cover; it is a Clear LOS. Otherwise, there may be Cover.
+Cover & Cover Benefits
+	A target is behind Cover if, from the perspective of an Opposing model, it is partially obscured by about half of its visible area by one or more terrain elements. It must be closer and of same SIZ or lower than any Opposing model if this Cover affects only base-height.
+	One or more of these may apply, at most once each:
+	Direct Cover is any terrain element that is in base-contact with the target, allowing some room for imprecision.
+	Hard Cover is Direct Cover which could stop all of an attack’s damage if it was itself targeted directly. Anything that is not Hard Cover is by default Soft Cover.
+	Intervening Cover is any terrain element that partially obscures the target. This includes any terrain that serves as Direct Cover for the Attacker. LOF to a target which crosses the base of a Distracted model always cause Intervening Cover.
+	Intervening Cover — Penalize the Active character -1 Modifier die for the Attacker Hit or Detect Test if target has Intervening Cover.
+	Direct Cover — Penalize the Active character -1 Base die for the Attacker Hit or Detect Test if target has Direct Cover.
+	Hard Cover — Assign the target character +1 Wild die for the Defender Damage Test if it has Hard Cover.
+	Leaning ()— A character may establish LOS near its terrain, such as around a corner, or outside a window, etc. See Agility in the Performing Movement section.
+Terrain Effects on Movement
+	Terrain is graded as Clear  Rough  Difficult  Impassable and degrades in that order. 
+	Fields, by default, are Clear.
+	Walls, by default, are Impassable.
+	Models entering or starting within Difficult terrain must stop, or acquire a Delay token to continue movement.
+	Movement in Difficult or Rough terrain costs 2" for each 1" crossed. 
+	Most placed Terrain elements are at least Rough.
+	Hills, ramps, and staircases usually have a rise over run of 1 MU every 2 MU; this is the default and is Rough going up but Clear going down.
+	Ladders are Rough terrain going up or down. 
+	Characters can climb up ropes as Difficult terrain but down as Rough. 
+	Both require two Hands [2H] going up, and one Hand [1H] going down.
+	Doorways, doors, and windows:
+	Open doors and any doorways are Clear. If these are of half base-height or half base-diameter or smaller, then regard them as Rough. 
+	Open windows are Difficult, but Impassable if smaller than half base-diameter or base-height.
+	If a model can't lay flat upon a terrain element without slipping or falling, or if its base or the model itself doesn't fit into within a portion of a terrain element; then it shouldn't be placed there. Players should identify exceptions where necessary.
+Area Terrain ()
+Area Terrain are patches of terrain placed upon the battlefield representing either Rough, Difficult, or even Impassable terrain. Add keywords for Obscuring or Uneven. Additional terrain elements, such as Obstacles or Walls, can always be placed atop Area terrain.
+	Area terrain should be large enough to be significant. 
+	Area terrain must specify its Movement effect; Clear, Rough, or Difficult. Use Clear by default.
+	If necessary, demarcate the area of the terrain using buildings, trees, furniture, or something else.
+Obscuring X — Combine with any other Area terrain. If LOS crosses into at least 1 MU of any Obscuring terrain, the target receives +1 Modifier die Defender Range Combat Hit Test. 
+	For every 1 MU that a model is within this terrain, the Visibility OR to it is reduced by X MU. 
+	Models at higher elevation ignore the first 1" to a target into Area Terrain per 1" higher for every 1" distant.
+Uneven X — Combine with any other Area terrain.
+	Penalizes -1 Modifier die Close Combat Hit Tests.
+	The Surefooted trait has no benefit for Uneven terrain.
+Playing the Game
+Preparation
+There are several Standard Missions, and the default one described here is “Mission 1 > Elimination”.
+Agreement
+	Game Size — Games are either Small, Medium, or Large. This determines the number of Build Points [ BP ] each player is given to assemble their forces, the number of models allowed, and the size of the battlefield. 
+Game Size	BP per Side	Models per Side	Battlefield
+Small	500	4 to 8	24 × 24 MU
+Medium	750	6 to 12	36 × 36 MU
+Large	1000	8 to 16	48 × 48 MU
+	Mission Roles — Each player rolls a six-sided die, re-rolling until there no ties. The player with highest scoring die decides which Side is the Mission Attacker.
+Assemblies
+	Sides — Players form mutually opposing “Sides”. Each Side has at least one player and all of their models. 
+	Assemblies — Spend BP to build Assemblies of Characters purchased from the various archetypes. 
+	Equip — Assign weapons, armor, and equipment. Meet the minimum and maximum model limits, and the BP limit. Keep the final cost within 25 BP of each other.
+Battlefield
+	Terrain — Provide for enough terrain to make the game-play interesting. Terrain should be varied. 
+	There should be Soft Cover and Hard Cover, Blocking, Uneven, and Obscuring terrain, Rough, and many Walls or Obstacles. Buildings are a nice touch as well. If desired, place and identify other Area Terrain elements.
+	The battlefield should be created according to the rules identified in the Environment & Terrain section.
+	Environ — Mission Attacker picks Lighting as being “Day, Clear” or “Twilight, Overcast”, or “Night, Clear”. This gives Visibility OR of 16, 8, or 4 MU, respectively.
+	Starting Zones — The Mission Defender picks one of the Battlefield edges, and the Mission Attacker chooses the opposite edge.
+Deployment
+	The Mission Attacker decides who deploys first. 
+	The Mission Defender decides which battlefield edge they’ll deploy their own models. 
+	The Mission Attacker will normally be assigned the opposite battlefield edge. 
+	Deploy models within 2", 4", or 8" of their Battlefield edges for a Small, Medium, or Large game.
+	Each model not in LOS of any Opposing models, or behind Cover, may start as Hidden. 
+Start of Turn
+Games are played in Turns alternating activations of characters with each player taking a Round. One player in each Side at the start of the Turn will perform the Initiative Test, and starts the Initiative Order. 
+Readying
+	Be sure to have a large six-sided die or something to indicate the current Turn number. A “Turn Indicator”.
+	This begins at ‘1’.
+	Place it at the Mission Attacker’s battlefield edge.
+	At the start of each Turn, remove all Done tokens from all models; this makes all In-Play characters become Ready.
+Determine Initiative
+	Have players representing each Side identify an In-Play Ordered character as their temporary Designated Leader.
+	Perform an Initiative Test as an Opposed INT Test. 
+	If no characters qualify, assume that Side’s Test Score is zero.
+	Apply the “Hindrance” Situational Test Modifiers.
+	The Player with the highest Test Score is the winner and is awarded Initiative Points [ IP ] equal to the difference to the lowest Test Score. 
+	If there is a tie, break it with highest total pips shown on the dice. Re-roll these tie-breakers using a six-sided die until there are no ties.
+	All Players, except the winner, acquire an IP for each of their Base dice which have a carry-over.
+	The winner decides to go first or picks a player to go first.
+	The Mission Attacker may always choose to win the tie and the Initiative but as a result receive zero IPs.
+	Optimized — At the start of the first Turn, the Side with the least amount of BP spent building their Assembly is awarded +1 Base die for their Initiative Test.
+The Initiative Card ()
+There is a single Initiative card, and it is assigned to the Mission Attacker at the start of any Missions. The card can be a Joker or Ace from a standard Poker deck.
+	The Initiative card is automatically transferred to the winner of the Initiative Test. 
+	However, the player with the card may use it as follows:
+	As an option, automatically win any tied Initiative Test but receive zero cascades in return. This rule supersedes the rule allowing the Mission Attacker to have the choice.
+	Voluntarily transfer ownership to one of the involved Opposing players to re-roll any Test except for Initiative.
+	If the Initiative card is transferred back to a Side which already had the card for current Initiative, do not allow voluntary transfer again for the remainder of this Initiative. Assign a Delay token to a Friendly model.
+Situational Awareness ()
+Each Turn one or more members of a player’s Assembly may or may not be in the right position on the battlefield for a Designated Leader to make decisions. This is known as “Situational Awareness” and it simulates how a leader uses that information to issue verbal commands and issue hand-signals to guide fellow Assembly members in resolving a Mission.
+	This affects the Designated Leader character when performing the Initiative Test.
+	Always check Situational Awareness after a Side has been reduced to less than half its original model count. 
+	Do not check Situational Awareness on Turn 1.
+	Situational Awareness has a maximum Awareness range for any given Designated Leader up to Visibility × 3. Use Visibility × 1 if the Designated Leader is Distracted.
+	If the Designated Leader has less than half of its forces within LOS and Awareness range, counting itself, do not add its INT to the successes. 
+	Characters with INT less than zero always add their INT.
+	Friendly characters that are Hidden behind Cover from the Designated Leader are never counted.
+Spending Initiative Points
+IP received as a result of the Initiative Test can be spent at any time during a player’s own Round on Initiative Abilities as follows; 
+	Maintain Initiative — Pay 1 IP. Do not pass Initiative to another player; instead activate another Ready model.
+	Force Initiative — Pay 1 IP. Pass the Initiative to any other Opposing player. This is best used in multiplayer games to alter the order of Rounds until the end of the Turn.
+	Refresh — Pay 1 IP. When an Active model receives its Done token at the end of its Initiative, remove one of its Delay tokens. 
+ 
+During the Turn
+Players take Rounds in “Initiative Order” during a Turn which gives them opportunities to do something with one or more of their models.
+Start Initiative
+	The winner of the Initiative Test can decide to either go first, or forces another player on another Side to go first. That player receives the Initiative.
+	The Player with the Initiative executes a Round by activating a Ready character or model. 
+	That becomes the Active model, and it has the Initiative. The Player becomes the Active player, and all other players are Passive players.
+Activation
+	Players normally will be alternating activations for each of their models. The Passive Players will be able to perform React actions against Active characters.
+	When a character is activated, it receives 2 Action Points [ AP ] to spend on one or more Actions. 
+	This becomes an Activation and the current Action. 
+	If it has Delay tokens, those must first be removed by spending 1 AP each. 
+	See the Actions section for more information on how to deal with Actions.
+	Some Opposing characters during this time may want to interrupt with their own actions using Reacts. See the React Actions section for more information on this.
+End Round
+	After a character finishes its Initiative, mark it with a Done token; it is no longer Ready. 
+	The Initiative now passes; the next Side and one of its players then receives the Initiative and takes a Round.
+	In 3+ Side games, the Initiative player picks which Side goes next; keep this order until the end of the Turn. This becomes the Initiative Order. Distribute and use numbered cards if necessary.
+	Players on the same Side rotate taking activations each Round in which their Side receives the Initiative. 
+	Repeat these Rounds until all characters are marked with a Done token. If this is the case, the Turn ends.
+ 
+End of Turn
+After all models have been marked as Done status, the Turn has ended.
+	At the end of the Turn, all Initiative Points not spent are lost. 
+	If at the end of a Turn it is determined that more than half of a player's forces have been KO’d or Eliminated, “Breakpoint Morale” has been reached and a Bottle Test is required by that player. See section for Morale, Fear, and Rally Tests. 
+End of Game
+After the End of Turn is resolved, all players check to see if the game has ended. 
+End of Conflict
+If there are no remaining Opposing models, the game ends. This usually happens in a two-player game or a game with two Sides and all Opposing models have been Eliminated or KO’d.
+End-game Trigger
+An End-game Trigger represents a culminating event which forces the conclusion of a Mission. This will vary by which Mission played but it is usually that the Mission Attacker has received overwhelming reinforcements or that the Mission Defender has finished a delaying tactic.
+Use the Game Size per the total BP and adjust one row toward the total Models used to determine after which Turn the End-game Triggers are to be placed.
+Game Size	Models per Side	BP per Side	End-game Begins
+Small	4 to 8	500	4
+Medium	6 to 12	750	6
+Large	8 to 16	1000	8
+	At the end of each Turn, if there are End-game Trigger dice (“END die”); have the Mission Defender roll them. 
+	END dice are regular six-sided dice, numbered 1 to 6.
+	If any END die scores 1, 2, or 3 (a “miss”), then the game ends immediately.
+	If the game has ended, check Victory Conditions.
+	If the game has not ended:
+	Add an END die if it is Turn 4, 6, or 8 (for Small, Medium, or Large games) or later.
+	Increase the Turn number by 1 and repeat the game-play sequence at Start of Turn.
+ 
+Victory Conditions
+Each Mission will provide information on when a game will end and the way to determine the winner with a set of Victory conditions. 
+During the course of a game turn, and at the end of the game, all players check to see if they’ve acquired Resource Points [ RP ] and Victory Points [ VP ]. The highest VP total determine the winner of each game session; the player or Side with the highest VP total wins.
+Track RP and VP using counters or six-sided dice.
+Overview
+Unless specified otherwise, all game sessions use these default victory conditions for acquiring VPs named as Aggression, Bottled, Elimination, and Outnumbered.
+	Aggression — +1 VP if at least half of the Assembly’s models, by starting count, cross an imaginary line across the middle of the battlefield. Award +1 RP to the first model to cross.
+	Bottled — +1 VP if Opposing Side failed Bottle Test [ “Bottled Out” ] or has no Ordered characters. If there at least two Opposing Sides remaining in play, reward those sides each +3 Resource Points instead each time a Side “Bottled Out”.
+	Elimination — +1 VP if have most Opposing KO’d and Eliminated characters by BP total at game end. Doesn’t include models Bottled.
+	Outnumbered — +1 VP to the Side that is outnumbered 3:2 models or greater at start of game, but +2 if outnumbered 2:1 models or greater. If there are multiple Sides remaining at the end of the game, do not award this keyword.
+Resource Points
+Resource Points [ RPs ] are used as a secondary way to gain an additional VP and to also break ties in the highest VP totals. This can be a feature of some Victory Conditions or Missions, such as the Aggression keyword above.
+	+1 VP to the Side awarded the most Resource Points. Having double the RP of the next Opposing Side, but by at least 10 RPs more, is +2 VP instead.
+	If there is still a tie for VPs then the Side with the most total RPs win.
+Observation
+In the case where one Assembly outnumbers the other by 2:1 or greater, the smaller side already begins with +2 VP. 
+The Side with the larger Assembly would need to both cause the smaller side to “Bottle Out” and cause it to have a higher value of models Eliminated or KO’d in terms of BP just to merely have a tied game for most Missions.
+ 
+Actions
+Individual Actions
+Actions are classified as Simple, Special, Complex and their frequency of use follows that order. When learning these rules, learn actions by class in that same order.
+Initiative & Activation
+	When a player receives the Initiative, they begin their Round as the Active player and receive 2 Action Points 
+[ AP ] to spend on an In-Play Ready character of their choice. That character, and its model, becomes the Active character and model; it becomes Activated and receives the Initiative. 
+	A character receives the Initiative just once per Turn, but may become Activated and be the Active character many times in order to perform Actions. It may even become Active during another character’s Initiative.
+	When a character becomes Active but has Delay tokens, those must first be removed by spending 1 AP each. 
+	The controlling player can then announce and then spend the character’s remaining APs by picking from the available Simple, Special, or Complex actions shown in the following lists. Most Actions are 1 AP each.
+	Actions can be aborted before any Tests are performed.
+	After a character has finished its activations for its Initiative, mark it with a Done token.
+	Note that some traits and statuses may cause characters to have compulsory actions. See the section on Morale, Fear, and Rally Tests.
+Pushing
+Once per Initiative, at the option of the player; Active characters having no Delay tokens may use “Pushing” to push themselves to their limit and acquire 1 AP. They will also immediately acquire a Delay token.
+Reacts ()
+Individual Actions may be interrupted by Opposing models which use Reacts; allow each player time to announce any Reacts. See the section on Reacts for more information.
+Using Agility ()
+Agility is a feature of Movement actions which can be used during actions to navigate difficult or unusual terrain. A character normally has Agility equal to half of MOV in MU. 
+Agility can also be used for when determining LOS. 
+See the section on Performing Movement Actions on how to use Agility.
+ 
+Simple Actions
+	Move — If Free pay 1 AP. 
+	If Engaged, must pass a Disengage action.
+	If Free, move model up to its MOV + 2" acknowledging terrain and Agility limitations; stop if become Engaged with Attentive Opposing model. 
+	Must move in straight segments but may perform up to MOV direction changes during the course of movement. Allow an additional facing change before the use of any trait with the Movement keyword.
+	Allow models to use Swap Positions when qualified.
+	See the section on Performing Movement for more information.
+	Close Combat Attack — Pay 1 AP. Attack a model within Melee Range and LOS as the target. Unless using a Natural weapon, acquire a Delay token if this is not the character’s first attack this Initiative. 
+	Must use a weapon identified as “Melee” or “Natural”. Other Items can be used as an Improvised Melee weapon. 
+	Allow models to use Overreach when qualified.
+	Apply Situational Test Modifiers as necessary.
+	There is a Hit Test and upon passing, also a Damage Test.
+See the section on Performing Close Combat for more information.
+	Range Combat Attack — Pay 1 AP. If Free, attack a location or a model as the target, using a weapon that has an OR value. It must be within LOS if attacking directly, or within LOF if attacking indirectly (not covered in these QSR rules). Unless using a Natural weapon, acquire a Delay token if this is not the character’s first attack this Initiative. 
+	Must use a weapon identified with an OR value such as “Thrown”, “Bow”, “Firearm”, “Support”, or “Range”. Other Items can be used as Improvised Thrown weapon.
+	Thrown weapons, and weapons with the Throwable trait have an OR equal to the character's STR. 
+	Apply Situational Test Modifiers as necessary.
+	There is a Hit Test and upon passing, also a Damage Test. 
+See the section on Performing Direct Range Combat for more information.
+	Disengage — Pay 1 AP. If Engaged, perform this as a +1 Base die Close Combat Hit Test, but using REF vs. CCA instead, with an Ordered Opposing target to which this model is Engaged, as selected by the Opposing player. 
+	Apply Situational Test Modifiers as necessary.
+	Upon pass, reposition the Active model MOV × 1".
+	Presume the Active character is the Defender.
+See the section on Performing Disengage for more information.
+ 
+Special Actions
+	Concentrate — Pay 1 AP. Combine once with any other action. If that action has a Test, specify one Active Test to benefit as follows: 
+	Receive +1 Wild die for a specified Active Test such as the Attacker Hit Test, Attacker Damage Test, Active Rally Test, Attacker Link Test, etc. This choice must be declared before any Tests are performed.
+	If for the Attacker Hit Test, ignore the Maximum OR Multiple, and double all ORs used for the Action; Visibility, Range Attack, Rally, Cohesion, etc.
+	Rally — Pay 1 AP. If Free, a character may perform an Unopposed POW “Rally Test”, for itself or a Free Friendly model within Cohesion. The target becomes the Active model when scoring the Test.
+	Apply Situational Test Modifiers as necessary.
+	Upon pass, remove one Fear token for each cascade.
+	Characters may only benefit from Rally once per Turn.
+	“Friendly” — If an Attentive Ordered Friendly model in Cohesion receive +1m.
+	“Safety” — Receive +1 Wild die if behind Cover or out of LOS, and not within 2 AP Movement of Opposing models.
+	Fiddle — If Free, the first Fiddle action costs zero AP, unless specified as costing 1 AP. Otherwise 1 AP. Each Fiddle action requires one Hand [1H]. If Free, do something simple with an Item, object, switch, or target. 
+	If agreed between players, require an Unopposed Test, known as a Fiddle Test, using a specific attribute to accomplish something not covered by the rules. Apply a Difficulty Rating [ DR ] of 1, 2, or 3 as deemed appropriate. These Fiddle Tests always require 1 AP.
+	Apply Situational Test Modifiers as necessary.
+	“Help” — Each Free Attentive Ordered Friendly model in base-contact with the target may provide +1 Modifier die if given a Delay token.
+	Revive — Pay 1 AP. If Free, a character may perform an Unopposed FOR “Revive Test”, for itself or a Free Friendly model in base-contact. The target becomes the Active model when scoring the Test.
+	Apply Situational Test Modifiers as necessary.
+	Upon pass, spend cascades to remove Delay and Wounds.
+	If the target was KO’d, spend a cascade to right the model and identify it as Done. Assign it as many Delay tokens as its SIZ, but at least two. Replace all but two of the Delay tokens with Wound tokens. 
+	Spend 1 cascade to remove each Delay token, and spend 2 cascades to remove each Wound token. 
+	Characters may only benefit from Revive once per Turn.
+Combined () — Pay 2 AP. Perform a Move action and then perform any other Action or actions that total 1 AP or less at any time during that move. Allow use of Pushing during this action. Place a pawn as a reminder of the location where it started movement.
+ 
+Complex Actions
+	Hide — Pay 1 AP. If Free, mark model in LOS but behind Cover as Hidden. If not in LOS, it is zero AP. Using Hidden status requires vigilance from all players to recognize when it can be used or needs to be removed.
+	When Hidden; Visibility and Cohesion distance are halved unless not within Opposing LOS, and all Terrain is degraded except for that crossed using Agility. Ignore this rule if the entire path of movement is out of LOS from all Revealed Opposing models.
+	Passive models must lose Hidden status if without Cover during the Active model’s movement or use of Agility (such as Leaning, Jumping, or Climbing), or after it uses reposition. Allow them to first reposition up MOV × 1". 
+	If the Active model is without Cover at the start of its Initiative, it loses its Hidden status. Allow it to reposition. 
+	If the Active model and one or more Passive models become without Cover from each other, allow the Passive models to first reposition. All models must lose their Hidden status, but the Active model may not reposition.
+	The Active model may voluntarily remove Hidden status at the start or end of its Action. It must remove Hidden status when it is out of Cover. It will not reposition.
+	Models further than Visibility × 3 do not automatically lose Hidden status unless within LOS of Opposing models in in Wait status.
+	“Suddenness” — Models which were Hidden at the start of an action receive +1 Modifier die Combat Hit Tests. 
+See Performing Movement under Resolving Actions for more information regarding repositioning.
+	Detect — The first Detect costs zero AP. Otherwise 1 AP. If Free perform a Detect Test as an Opposed REF Test against a Hidden target within LOS to remove its Hidden status and make it Revealed.
+	Detect OR is equal to Visibility. 
+	Apply Situational Test Modifiers as necessary. 
+	Wait () — Pay 2 AP if not Outnumbered to acquire Wait status and marker. Remove at the start of this character's next Initiative. If already in Wait status at the start of Initiative, pay 1 AP to maintain if Free, otherwise must remove.
+	During Wait status, may remove it to perform a React. Even when in Done status.
+	While in Wait status, double Visibility OR. All Hidden Opposing models in LOS but not in Cover are immediately Revealed.
+	When in Wait status, and involuntarily acquire a Delay token, must remove both instead.
+	“Focus” — Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React.
+	“Waiting” — All characters in Wait status receive +1 REF when qualifying for a React.
+ 
+Resolving Actions
+There are several key Actions each player will continually perform with their characters during a Turn. These are Move and Attack and are covered here in detail:
+Performing Movement
+The Move action involves the MOV attribute to relocate a model across the battlefield. In regards to a model changing its location, this is a movement or a move.
+Overview
+	Allowance — A model that is Free may move up to its MOV + 2" acknowledging terrain and Agility limitations. This is its normal “Movement Allowance” per Action point.
+	Direction — A model moves in a straight line, but may change direction up to MOV times during movement.
+	Measuring — To move a model, measure from its base at a leading edge in the direction of movement to the same edge. 
+	Using a measuring stick with 1" segments to determine where any leading edge of the model could end. 
+	All models move in a straight line for each AP spent on Movement. 
+	Each MOV allows a single direction change during movement of any amount during this time. Allow an additional facing change before the use of any trait with the Movement keyword.
+	If there are obstacles in the way such as pits or hedges, the player may use the rules on Agility to jump across. 
+See the section on Agility for more information.
+	Interrupts — Whenever a model is interrupted via a React, temporarily place a pawn or some sort of indicator at that position for reference.
+	Engaged — An Active model that is not Free must first perform the Disengage action or they may not leave. Whenever any model becomes Engaged, it ends any Move action. If this is the Advanced Game, they may always leave, but are at risk of an Opportunity Attack!
+ 
+Moving Through Tight Spots
+	Models may cross between narrow areas at half their base-diameter, and cross atop narrow walls at half that. They must jump down if atop a Wall unless it is as wide as half a base-diameter.
+	Models may move through as crouched below low-ceiling obstacles no lower than to roughly half their base-height as degraded terrain.
+	Movement must stop if become Engaged with an Attentive Ordered Opposing model. 
+	Once per Initiative movement may cross bases of Opposing models that are Disordered or Distracted as degraded terrain.
+	Once per Initiative may cross bases of Friendly models as degraded Terrain unless they are Distracted or Engaged.
+	Movement may cross the bases of KO’d models as degraded terrain. Reposition models as needed.
+Using Agility ()
+Agility rating is MOV × ½". Keep fractions up to 0.5". 
+	A character may spend Agility during an Action, keeping track of fractions of 0.5 MU at any time, rounded up. 
+	Agility may also be used when repositioning a model. Agility spends from the repositioning allowed.
+	Any Agility spent, except for Bypass or Climb, does not affect a model’s Movement Allowance.
+	Bypass — Bypass Rough or Difficult terrain, or cut corners of an obstacle, up to Agility to make it Clear. In this case, Agility will be at least as much as half base-diameter or base-height.
+	Climb — If climbing, up or down, allow a model to reach across a gap that is higher or lower than it, to any ledge if that is within its base-height. End action or acquire a Delay token. Requires [2H] going up, and [1H] down.
+	Jump Up — If jumping up, up to half of Agility is Clear.
+	Jump Down — Allow up to Agility jumping down. Acquire a Wound if within the last 0.5 MU of Agility or more. See Falling for more information.
+	Jump Across — If Attentive, allow jumping down and across, up to Agility, as Clear. For every 1 MU down, allow up to +0.5 MU across. If there is a ledge to grab add an extra base-diameter, but acquire a Delay token. This requires two Hands [2H].
+	Running Jump — Receive bonus Agility equal to one-fourth the straight distance moved for a single Action, horizontal or downwards, for either a Jump Across or Jump Down. Allow reach upwards at base-height if a ledge is available there before the mid-point of the jump.
+	Leaning () — As a Fiddle action, the Active model may establish LOS from behind Cover using up to its Agility, no more than its base-diameter, for terrain in base-contact. 
+This is a -1 Base die for Detect and Range Combat Hit Tests for itself and others. Mark accordingly. The Leaning marker may be targeted. Leaning status is removed after the next Action performed against or by this model.
+ 
+Repositioning
+When a model is repositioned, it is relocated upon the battlefield however many MU identified as though it performed a Move action. 
+	This sort of movement, because of the keyword reposition; normally disallows other models to React against it.
+	Hidden — A Passive Hidden model that becomes Revealed may reposition. Pick another battlefield location that it could have been at within a radius of MOV × 1". 
+	It must be to a location that could have been reached if it were to have spent 2 AP, such as for Move and Fiddle actions.  
+	This location may be across any Obstacles and any Walls if there is a path for this leading around them. It can be into base-contact or LOS of the Active model.
+	The entire path to this repositioned location must either be behind Cover or not cross into LOS of Revealed Opposing models not involved with the action. 
+	Repositioning is disallowed through locked entry-ways, out of traps, or through Opposing models. Players should agree on exceptions. 
+
+ 
+Performing Close Combat
+Close Combat Attacks is an Attack action. Close Combat is furious, and each Hit Test resolved merely highlights one of perhaps several strikes, feints, parries, and dodges taken or attempted during the course of each Turn and Round.
+Overview
+Unless using a Natural weapon, the Active character acquires a Delay token if this is not its first attack this Initiative.
+	Each player announces a weapon to be used for their character. They must be armed with a weapon of class Melee or Natural, or have the Melee trait.
+	If it is not of class Melee or Natural, the weapon must be used as an “Improvised Melee” weapon. 
+	All characters are otherwise considered “Unarmed”.
+	Announce a Revealed model within Melee Range and LOS as the target for the Close Combat Attack. 
+	This target is the Passive character and the Defender for this attack. 
+	It can be a Friendly model, but have another player roll any dice for it.
+	Overreach () — As part of its first Action, a Free Attentive Attacker not using a Natural weapon nor a weapon with the [Stub] trait may optionally increase their Melee Range by +1 MU if declare “Overreach” with the attack. This is accompanied by a penalty of -1 REF and -1 Attacker Close Combat Tests.
+Resolving Close Combat Attacks
+	Resolve this attack by performing the Close Combat Hit Test using Opposed CCA. 
+	Apply any Situational Test Modifiers as necessary such as “Assist”, “Cornered”, “Defend”, “High Ground”, “Flanked”, “Hindrance”, “Outnumber”, “Overreach”, “Size”, or “Suddenness”.
+	Add weapon's Accuracy bonus. This appears as “Acc” on the weapon’s stat line on the Weapons list. 
+To the Damage Test
+If the Hit Test was passed, note cascades and carry-overs for the Damage Test. 
+	Perform the Close Combat Damage Test using the weapon’s Damage Rating vs. target FOR. Upon pass, the target is Wounded.
+	See the Damage section for more information.
+ 
+Performing Direct Range Combat
+Direct Range Attacks must be against Revealed targets which are characters that are within LOS. Range Combat is intense, and each Hit Test resolved merely highlights one of perhaps several aims, sweeps, ducks, and shots attempted or taken during the course of each Turn and Round.
+Overview
+Unless using a Natural weapon, the Active character acquires a Delay token if this is not its first attack this Initiative.
+	Announce a Ranged weapon to be used; the weapon must have an OR value, be a Thrown weapon, or have the Throwable trait. Otherwise, it must be used as an “Improvised Thrown” weapon.
+	Thrown or Bow weapon have an OR written as STR or STR + X" to indicate that is the equal to the Attacker’s STR.
+	If OR is zero it becomes 0.5 MU. If negative, disallow the Attack.
+	If the weapon has the [Reveal] trait, remove Attacker's Hidden status if in LOS. This is all Firearms weapons.
+	Thrown weapons always replenish after usage, but weapons with the Throwable trait do not and use the rules for the [Discard] trait when thrown. 
+	Announce a Revealed model within LOS as the target for the Range Combat Attack. 
+	This target is the Passive character and the Defender for this attack. 
+	It can be a Friendly model, but have another player roll any dice for it.
+	LOS to a target is blocked if it passes through the volume of a model of higher SIZ than the Active model or target.
+	To measure distances greater than a single measuring stick, use multiple sticks, or a measuring tape.
+Resolving Direct Range Attacks
+	Resolve this attack by performing the Range Combat Hit Test using Opposed RCA vs. REF. 
+	Apply any Situational Test Modifiers as necessary such as “Hindrance”, “Distance”, “Point-blank”, “Direct Cover” or “Intervening Cover”.
+	Add weapon's Accuracy bonus. This appears as “Acc” on the weapon’s stat line on the Weapons list. 
+To the Damage Test
+If the Hit Test was passed, note cascades and carry-overs for the Damage Test. 
+	Perform the Range Combat Damage Test using the weapon’s Damage Rating vs. target FOR. Upon pass, the target is Wounded.
+	See the Damage section for more information.
+ 
+Performing Disengage
+The Disengage action is performed when a character is Engaged during Close Combat with an Ordered Opposing target. It is performed similar to a Close Combat Attack action.
+Overview
+Unless using a Natural weapon, the Active character acquires a Delay token if this is not its first Disengage action this Initiative.
+	Announce a weapon to be used; the character must be armed with a weapon of class Melee or Natural, or have the Melee trait.
+	If it is not of class Melee or Natural the attack must be used as an “Improvised Melee” weapon. 
+	All characters are otherwise considered “Unarmed”.
+	Announce an Ordered Opposing model that has the Active model within Melee Range as the target. This target is the Passive character and the Defender for this action.
+	If the Active model has a higher Physicality than any of its Opposing models to which it is Engaged, then the first Disengage action this Initiative costs zero AP.
+	Automatic pass; do not perform Test if target is Outnumbered by use of a Friendly Attentive model which is not itself Outnumbered. The Disengage action costs zero AP.
+	Automatic pass; do not perform Test if there are no Ordered Opposing targets. The Disengage action costs zero AP.
+Resolving Disengage
+	Resolve the Disengage action as though performing a Close Combat Hit Test, but using Opposed REF versus CCA; REF for the Active character and CCA for the target character. This is the “Disengage Test”.
+	Presume that the Active character is the Defender.
+	Apply any Situational Test Modifiers as necessary such as “Assist”, “Cornered”, “Defend”, “High Ground”, “Flanked”, “Hindrance”, “Outnumber”, “Overreach”, “Size”, or “Suddenness”.
+	The target applies their weapon’s Accuracy bonus. This appears as “Acc” on the weapon’s stat line on the Weapons list. 
+Determine the Results
+	Upon failure, the Active character stays in place. Disallow Opposing model any Passive Player Options.
+	Upon pass, reposition the Active model up to MOV × 1".
+ 
+Damage
+Injury and Elimination
+A Combat Attack consists of two Tests; a Hit Test and a Damage Test. If either Test fails, no injury is caused to the target or targets of an attack. 
+Damage Test
+If the Hit Test passes, the Damage Test may be performed. This is an Opposed Damage rating vs. FOR Test, where the weapon used for an attack has a Damage rating. 
+	A weapon can be a Spell, a Trait, or an Item of class "Weapon" such as a Sword or a Pistol. In some cases, the weapon will have a Damage rating which will use a character's STR, POW, or INT attribute values to enhance the potential for injury.
+	Here are three very common weapons. Note the Damage ratings of both the Daggers and the Sword uses the Attacker's STR, but the Sword provides an additional +2 Modifier dice. In the case of the Crossbow shown, the Damage rating is 3 plus 1 Base die.
+Daggers
+Melee. 6 BP.
+OR STR + 0. Acc +0, Impact 1, Damage STR.
+[1H][Stub]. Discrete. Throwable.
+
+Sword, Broad
+Melee. 17 BP.
+OR N/A. Acc +0, Impact 1, Damage STR + 2m
+[1H]. Parry. Cleave.
+
+Crossbow, Medium
+Bow. 10 BP.
+OR 10", Acc +0, Impact 3, Damage 3 + 1b
+[2H][Reload 2, Clumsy][Laden]. Impale.
+Wound Damage
+After performing the Damage Test, if it passes, then the target becomes Wounded. Note the cascades;
+	If the cascades are greater than how many Wound tokens the target currently has, it now has as many Wound tokens as cascades.
+	Otherwise, the target acquires 1 Wound token. Characters with Wound tokens are Wounded.
+	Wound tokens are a Hindrance status type.
+	Hindrance — Assign a penalty of -1 Modifier die for every Test except the Damage Test for every Hindrance status type a character has such as; Wound, Fear, or Delay.
+ 
+Stun Damage
+Some traits assigned to an attack will Stun damage.  Often it is assigned as "Delay tokens as Stun damage".
+	A character is allowed to a number of Delay tokens equal to its AP allotment (by default 2). Any more than this amount automatically becomes Stun damage which converts to 1 Wound damage each.
+	A character is Stunned when it has as many Delay tokens as its AP allotment (again, usually default 2). 
+	Delay tokens are a Hindrance status type.
+Knocked-Out [ KO’d ]
+Characters with Wound tokens equal or greater than its SIZ are Knocked-out [ KO’d ]. To speed game sessions, players may agree that KO’d models are Eliminated.
+	Place the model face-down or mark it as KO’d. If atop an unstable precipice, it falls and may receive more Injury.
+	Remove all Hindrance markers, except for Acid, Burned, and Poisoned. Remove Done, Wait, and Hidden tokens.
+	No other model may occupy a KO’d model’s position and they are regarded as Rough terrain for moving across.
+	KO’d models block LOS for up to half their base-diameter and provide Cover for models SIZ - 3 or smaller as Obstacle terrain. 
+	KO’d models are not “In-Play” and are never considered Ready and may not perform actions. KO’d models never cause Opposing models to be Engaged.
+	All effects controlled by the KO’d model immediately halt at the end of the Initiative.
+Elimination
+A character is Eliminated whenever it receives Wound tokens when the total is equal or greater than its SIZ + 3.
+	Eliminated characters are not “In-Play”. They are removed from play with all its tokens and markers.
+	Resolve the “Damage, Wounds, and Elimination” step for all viable targets by all Attackers in the current action first prior to checking the next step (the “Morale, Fear, and Rally Tests” step, below).
+Armor vs. Impact
+Characters with an Armor rating [ AR ], from the Armor trait, reduce the amount of Damage received by 1 per Armor rating in total. 
+	Attackers using weapons with an Impact rating [ I ] will reduce any target’s Armor Rating by an equal amount.
+	Any Wound damage acquired from Stun damage or other forms of Damage is never stopped by the Armor trait.
+ 
+Morale, Fear, and Rally Tests
+Morale Tests are any tests that are Unopposed POW Tests. 
+There are a few specific variations such as Fear Tests, Rally Tests, and Sanity Tests. 
+Fear Tests
+	Fear Tests are a type of Morale Test. When failed they cause a character to gain Fear tokens and makes them become Nervous, Disordered, Panicked, or may even Eliminate that character.
+	A Fear Test is required at the end of an Action upon receiving a Wound token.
+	A Fear Test is required if Free or Distracted, and a Friendly model within Cohesion becomes either KO’d or Eliminated when not already KO’d.
+	Fear Tests are not required if a character is already Disordered or if Engaged, unless Distracted.
+	Characters are never required to perform more than one Fear Test per Turn. If necessary, identify them using tokens, and remove the tokens at the end of the Turn.
+	After performing the Fear Test, if there are cascades, the target will acquire Fear tokens. Note the cascades; 
+	If greater than how many Fear tokens the target currently has, it now has as many Fear tokens as misses.
+	Otherwise, the target acquires 1 Fear token.
+	Fear tokens are a Hindrance status type.
+	If multiple characters are required to perform Fear Tests, each Side alternates choosing a character and resolving its Fear Test.
+	If, as a result of Fear Tests, the number of characters required to perform Fear Tests grows, then resolve those in whatever order those players desire.
+Rally Tests
+Rally Tests are a type of Morale Test.
+	Rally Tests are Unopposed POW Tests. 
+	Fear tokens are removed upon passing of Rally Tests; remove one Fear token per cascade. 
+Situational Test Modifiers
+	Focus — Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React. 
+	Friendly — If an Attentive Ordered Friendly model in Cohesion receive +1m. 
+	Hindrance — Assign a penalty of -1 Modifier die for every Test except the Damage Test for every Hindrance status type a character has such as; Wound, Fear, or Delay.
+	Safety — Receive +1 Wild die if behind Cover or out of LOS, and not within 2 AP Movement of Opposing models.
+ 
+Compulsory Actions
+At the start of a character’s Initiative, its first actions may be compulsory if it is Disordered. Perform this list of Compulsory Actions in order using its available AP:
+	1. If Engaged, perform Disengage action until Free.
+	2. If Free, perform Move action until reach Safety.
+	3. If in Cover, perform a Rally action for itself.
+	Nervous — If the character has at least 1 Fear token it is Nervous. No compulsory action is required. 
+	Disordered — If the character has at least 2 Fear tokens it is Disordered. It is no longer Ordered.
+	When activated, it must first spend 1 AP on the Compulsory Action list. It must use Pushing if needed.
+	Safety for this character is defined as the nearest Cover or until out of LOS, that is not within 2 AP Movement of any Opposing models using their abilities.
+	Panicked — A character with 3 Fear tokens is Panicked and is regarded as Disordered. It is no longer Ordered.
+	When activated, it must first spend 2 AP on the Compulsory Action list. It must use Pushing if needed.
+	Safety for this character is defined as exiting the nearest Friendly battlefield entry edge as long as not moving towards any Attentive or Ordered Opposing character. Any other edge is otherwise acceptable.
+	Panicked characters never cause Opposing models to be Engaged.
+	Eliminated — A character is Eliminated when;
+	Whenever it receives 4 or more Fear tokens.
+	Whenever they exit the battlefield as a result of being Disordered or Panicked.
+Breakpoint Morale and Bottle Tests
+	Breakpoint Morale is when an Assembly has half or more of its models KO’d or Eliminated. Double Breakpoint is when it is down to a quarter or less.
+	A “Bottle Test” is required of a player at the end of every Turn for each Assembly that has reached Breakpoint Morale. Start with the Side with the Initiative card, or the Mission Attacker if no card is used.
+	Pick an Ordered character to perform a Morale Test; this is an Unopposed POW Test.
+	Apply DR 1 if at Double Breakpoint. Apply another DR 1 if outnumbered 2:1 or more total Opposing model count.
+	Upon failure or if that Assembly has no Ordered characters the game ends for it immediately. Remove all of its models from play; they have been Eliminated as a result of having been “bottled”. They have run away!
+	If no Opposing Assemblies remain In-play, the game ends.
+	Affected players must perform the Bottle Test. It is possible for multiple Assemblies to “Bottle Out”.
+	Forfeit — Instead of performing a “Bottle Test”, a player may always decide to forfeit and automatically fail.
+Other Actions
+Bonus Actions ()
+Bonus Actions are a key feature of MEST Tactics and enables the players to create a more dynamic response to the any situation involving two or more combatants. 
+Bonus Assignment
+During the current Initiative, an Active character is given a single Bonus Action to be used directly after a successful Disengage Test, or Combat Test (before applying any Damage) against any of its targets if it has not yet performed one during this Action.
+	The model spends cascades to pay for the Bonus Action. This doesn’t affect the cascades received for Damage.
+	If Distracted, receive one less cascade for Bonus Actions.
+	If the Bonus Action used for a Close Combat Hit Test causes the Active character to no longer have the target within Melee Range, do not perform the Damage Test.
+	The Active character performs any Bonus Action before removing their KO’d or Eliminated target.
+General Bonus Actions
+These are allowed once and cost 1 cascade each. May combine with spending for a Bonus Action for Close Combat when Attentive.
+	Hide — if Free; become Hidden if qualified. 
+	Refresh — if Free as a result of causing target to become KO’d or Eliminated, remove a Delay token. As an alternative, remove a Fear token if Attentive. Refresh may only be selected once each Initiative.
+	Reposition — if Free, reposition model up to MOV × 1". Allow +1 MU per 3 more cascades spent. 
+Close Combat Bonus Actions
+	Circle — if in Close Combat; rotate up to 180 degrees around target. Terrain must be Clear, and path can’t be through other models. Keep current separation. 
+	Disengage — if in Close Combat and Engaged Attentive, reposition up to Agility, but at least as much as the base-diameter of the larger model. Allow +1 MU per 3 more cascades spent.
+	Push-back — in Close Combat; reposition target away up to the Active model’s base-diameter. Allow +1 MU per 3 more cascades spent. Afterwards, allow the Active model to reposition up to base-contact with the target. If the target is pushed into wall, obstacle, degraded terrain, or resists being pushed across a ledge or off the battlefield; it receives a Delay token. Disallow into another character.
+	Pull-back — if in Close Combat; reposition the Active model away from the target the larger model’s base-diameter. Afterwards, allow the Active model to reposition up to base-contact with the target.
+	Reversal — if in Close Combat, switch positions with target. Keep current separation.
+Additional Clauses
+Some of the Bonus Actions have additional clauses. These clauses are identified with the diamond-star (), arrow () or () starburst symbols. The clauses may require spending cascades.
+ Circle, Push-back, Pull-back, Reversal
+Bonus Actions marked with a “diamond-star” are harder to perform unless in base-contact with the target. 
+	require an additional cascade unless in base-contact.
+	If there are not enough cascades to spend than what are available, then these Bonus Actions may not be used.
+ Push-back, Pull-back
+Bonus Actions marked with an “arrow” are harder for smaller SIZ or STR characters to perform against larger SIZ or STR characters. 
+	If Attacker’s Physicality (higher of STR or SIZ) is less than the target’s, the Bonus Action will require an additional cascade per difference less. 
+	If Attacker’s Physicality is greater than target’s SIZ, then spend target’s SIZ cascades to move target an additional base-diameter each.
+	If there are not enough cascades to spend than what are available, then these Bonus Actions may not be used.
+ Circle, Reversal
+Spend a cascade to adjust separation by up to the base-diameter of the larger model. If the Active model was Engaged and becomes Free, this requires two cascades.
+Leaving Engagement
+After performing a Bonus Action, one or both models may cause one or more Opposing models with which it had become Engaged or which it had within its own Melee Range to become newly Free. 
+	Shift — In alternating Side order, starting with the Passive player, newly Free Attentive Opposing models may acquire a Delay token to “Shift” and reposition up to a base-diameter to become Engaged with the Active model again.  
+	Bonus Actions never trigger an Opportunity Attack! per the Passive Player Options rules.   
+
+ 
+React Actions ()
+A React action occurs when an Opposing character temporarily interrupts (“Reacts”) and switches roles with an Active character so that it can perform its own Action. Reacts require use of Wait status. 
+Overview
+React actions involve use of the Wait token. Passive models in Wait status are given an opportunity to interrupt Active models about to perform an Action.
+	Opportunity — A React opportunity is allowed whenever an Active model is performing an action, and is limited to once per Action that the Active model performs.
+	A single model from each Opposing side is allowed to perform a React action for each of the opportunities if it is in Wait status while within LOS of the Active model. 
+	Reacts are either against a Move or a non-Move action.
+	Actions which cost zero AP do not provide an opportunity.
+	The Concentrate action, or any Action which is used in conjunction to enhance another Action, does not provide an opportunity.
+	A character may not React if it is already part of a React, or if it has already Reacted this Initiative.
+	Announce — Declare the intent to perform a React. 
+	This must occur before any Tests begin for the current action but can be at any time during the Active model’s movement.
+	If multiple players each have characters which qualify for React actions, resolve the React actions starting with the highest REF and then in Initiative Order.
+Reacting to Actions
+Reactions are against Move-only or Abrupt actions.
+	Repositions — Reacts are normally disallowed against models specifically relocated on the battlefield using the keyword reposition. Unless they make base-contact with the Passive model. If so, it is an Abrupt action.
+	Abrupt — Abrupt actions may also involve movement. 
+	Non-Move — Any non-movement actions.
+	Engaged — When the target makes base-contact. This is an Abrupt movement action.
+	Agility — When interrupting a model using Agility. Allow it to first use up to half Agility. This is an Abrupt movement action.
+	Leaning () — When the Active character uses leaning and is interrupted, this is treated as non-movement for any Reacts.  Reacts are allowed against the model at the leaning position as though it were the actual position. 
+A Detect action is required if the leaning model is in Hidden status; upon pass, reposition it to the leaning position.
+ 
+	Move-only — These are Reacts against Opposing models which perform a Move action, but not involving the use of Agility at the time of declaring the intent to interrupt. Interrupt the action anywhere along its movement. If it was Hidden, it is Revealed and may reposition. If that model makes base-contact, this will be an Abrupt action.
+Reacting to Abrupt Actions
+	Reacting to Abrupt actions which are not movement requires REF at least as high as Active model’s REF.
+	Reacting to Abrupt actions which are movement requires REF at least as high as Active model’s MOV.
+	Increase REF required by 1 if reacting to being Engaged.
+	Increase REF required by 1 if reacting to another React.
+Resolving Reacts
+Note the current position and activities surrounding the models involved. It will be useful to identify the Active character with a reminder pawn.
+	Swap Roles — The Active character temporarily swaps roles with the Reacting character to become the new Passive character. Its current Action is interrupted, but it may resume that after the Reacting character completes the React.
+	The newly Passive character may only use those Items it had “In Hand” when it was just previously Active.
+	The Reacting character becomes the new Active character and is allowed 1 AP to perform Actions. Remove its Wait token. 
+	It must pay 1 AP to remove each of its Delay tokens, and afterwards it may use Pushing if desired.
+	Perform Action — Have the Reacting character perform any Actions it can afford with its remaining AP, if any. It may use Pushing if Attentive.
+	Afterwards, if this is not the first React performed by the character this Turn, it acquires a Delay token.
+	Finally, return control, swap roles, and return Initiative to the prior character and let it complete its original Action if possible. If it can’t perform its intended Action, the AP it spent are lost.
+	Leaning () — Penalize -1 Base die Active Detect and Active Hit Tests if Leaning from terrain in base-contact. 
+	Suddenness — A character receives a bonus of +1 Modifier die for the Hit Test if it was Hidden at start of an Action.
+	Waiting — All characters in Wait status receive +1 REF when qualifying for a React.
+ 
+Additional Concerns
+This section details uncommon situations and concerns which may arise during game play. It also calls out to significant traits which are present in most game sessions.
+General Concerns
+Random Selection
+Whenever a player needs to perform a random selection against a table, use one or more six-sided dice.
+	Y/N — A “Yes” or “No” is checked using a single six-sided die or a MEST die. A pass (rolling a 4, 5, or 6) is a “Yes”. Else fail.
+	D6 — Sometimes written as “#”. A single six-sided die can be used against a table with just 6 entries. 
+	D66 — Also known as R+W or D66. A red six-sided die is rolled and used as the “tens” column and a white six-sided die is rolled and as the “ones” column. These can be rolled together.
+	D666 — Also known as RWY or D666. As before, the red six-sided die is read first and becomes the “hundreds” column, white is “tens”, and yellow is “ones”.
+Falling ()
+A model is considered falling if it goes downwards from a ledge for a distance further than its Agility. 
+	If within the last 0.5 MU of Agility or more, acquire a Wound token. If more than Agility, also acquire a Delay token.  
+	Perform a Falling Test as an Unopposed FOR Test DR SIZ and increase that DR by 1 per 4 MU beyond Agility fallen. Round to the nearest whole number.
+	If it fails, assign misses Delay tokens as Stun damage.
+	Collision — When falling into other models, the falling model may ignore one miss. The targets must then perform a Falling Test using the DR that was used for the falling model.
+ 
+For Positioning
+Charge ()
+Characters that move before causing an Opposing character to become within Melee Range may qualify for the “Charge Bonus” as follows; 
+	Charge — The Active character receives +1 Modifier die for the Attacker Close Combat Hit Test if it performed a Move action into base-contact with its target, over Clear terrain from a Free position in a relatively straight line.
+	Qualification — All of these conditions must be met:
+	The Move action must have cost at least 1 AP.
+	The Active character must start Free from at least its own base-diameter away before the distance of possibly becoming Engaged by the target character or having the target become within Melee Range. 
+	Movement must be directly into the target and make base-contact. Disallow direction changes during this Action.
+	The target must not be Hidden and be within LOS at the start of the Action, at no more than Visibility × 3 ORM.
+	Traits or Agility can make some terrain effectively Clear.
+Swap Positions ()
+This rule allows models to switch positions (“Swap”) in congested Scrum configurations, which is especially helpful within buildings or dense terrain locations. 
+	During movement, a model may swap positions with any Disordered Distracted models or Attentive Friendly Free models which are in base-contact. 
+	Afterwards apply a Delay token to one of the non-Opposing models if any model was Disordered.
+	The first Swap during an Initiative costs zero AP. Otherwise 1 AP each additional occurrence.
+	Do not allow Swap if the target model is Engaged to an Attentive Ordered Opposing model.
+Confinement ()
+A model in base-contact with or near certain terrain for any two directions; horizontally, vertically above, or behind, is Confined.
+	A model with the Reach trait, or with an Item “In Hand” with the Reach trait must have at least half the Reach ability clear of Terrain for those directions.
+	A model could be both Cornered and also Confined.
+	Models upon Difficult terrain, or in base-contact with Impassable terrain count towards being Confined.
+	Models near a precipice, with its base-diameter at or over the precipice are always regarded as Confined.
+	Confined — Penalize -1 Modifier die Close Combat Test or Defender Range Combat Hit Test if Confined by Terrain for any two; vertically, horizontally, or behind.
+ 
+For Attacks
+Friendly Fire ()
+	Whenever the target of a Direct Range Attack is missed; one randomly selected model, Opposing or Friendly, is subject to being attacked starting with those closest to the target as follows in this order;
+	if it is in base-contact with the target
+	if it is within 1" of the target
+	if it is within 1" of LOF to the target
+	Once the new target is determined, have the player of the new target perform an Unopposed REF Test as a Defender Hit Test DR misses from the failed Attack. 
+	Do not Reduce Armor Rating if a Concentrated attack.
+	Models in base-contact with the Attentive Ordered model performing a Direct Range Attack are never in risk of “Friendly Fire”.
+	Obscured — Penalize Attacker Hit or Detect Tests for 1, 2, 5, or 10 other models within LOF to the target, and for non-Opposing models beyond but within 1 MU of LOF. Each is -1 Modifier die.
+Improvised Weapons
+A weapon assigned to a character which is not a Natural weapon may require to be used as an Improvised weapon. 
+	Close Combat — An Attacker or Defender in Close Combat requires that a weapon in hand has either the Melee or [Awkward] traits, or be a Melee weapon.
+	Range Combat — An Attacker performing Range Combat requires a weapon that has either the Throwable trait, have an Optimal Range [ OR ] entry, or be a Bow, Thrown, Range, Firearm, Energy, or Beam weapon.
+	A weapon becomes an Improvised weapon when the requirements are not met. These become Large Improvised weapons if the original weapon had the [2H] trait.
+ 
+Natural Weapons ()
+The traits such as Bite, Claws, Gore, Lash, Quills, Slam, Stinger, Tentacles, or Trample are Natural weapons. Being Unarmed is also considered having a Natural weapon.
+	Natural Weapons — Are not penalized attacking more than once in a Turn.
+	All Natural weapons have the [Stub] trait. This is penalty of -1 Modifier die Attacker Close Combat Hit Test. 
+	May not use the Overreach option for attacking.
+	Many Natural Weapons require [2H]. This would cause a Swordfighter with Claws and a Sword to use [3H], which is usually a penalty when interrupted for a React.
+	Multiple Natural Weapons — An archetype (Animal, Beast, Sophont, etc.) may be identified as having multiple Natural weapons to receive the Multiple Weapons benefit as described in that heading.
+	Natural weapons benefit from this rule when explicitly written such as 2 × Claws or 3 × Bite. Each is a different “in hand” weapon for purposes of using this rule.
+	Characters with multiple Natural weapons, such as having both Bite and Claws, do qualify for the Multiple Weapons benefit. Each type counts as an “in hand” weapon.
+
+ 
+Multiple Weapons ()
+Characters benefit from the Multiple Weapons rule if their model is shown as sculpted showing this and the weapons are also purchased using BP. 
+	Qualification — Weapons in each hand must be all capable of Ranged attacks (being Bow, Thrown, etc.), or all capable of Melee attacks. 
+	Weapons are classified as either Melee or Ranged. Melee weapons with the Throwable trait count as Ranged weapons, and Ranged with [Awkward] count as Melee.
+	Natural weapons are their own sub-classification.
+	Improvised weapons do not count for this rule.
+	Assessment — Characters should be clearly sculpted with the weapon “in hand” unless the weapon has the Conceal or Discrete traits. 
+	Count each additional hand which is armed with a Ranged or Melee weapon. Models might for example have “in hand” Bite and Claws, or Trample and Gore.
+	Count each additional pair of claws or pair of fists, or additional independent tail, or additional independent mouth used for biting.
+For example; most Earth (Terran) animals, such as Bears or Tigers, have a single pair of claws. They’ll be assigned both “Claws” and “Bite” as weapons for Melee attacks.
+For example; though Dog (Canid) species have four limbs and a snout, they will usually be assigned Bite as a Natural weapon but would not normally receive Claws.
+	Benefit — When targeting the same model:
+	Each additional Ranged weapon “in hand” provides +1 Modifier die Attacker Range Combat Tests. 
+	Each additional Melee weapon “in hand” provides +1 Modifier die Close Combat Tests.
+	Penalty — Using the same weapon in consecutive Actions during an Initiative penalizes -1 Modifier die Attacker Combat Tests if there are others of the same classification already “in hand”.
+	Interruptions — A character that is using a specific weapon for an attack which is then interrupted, such as during Reacts or Passive Player Options, must use that weapon for defense as well. 
+	At the start of an Action, if it isn’t clear, both the target and the Attacker must specify which weapon is in Hand.
+	The choice for weapon used when interrupted affects React Actions, Bonus Actions, and Passive Player Options.
+Attacking KO’d Models ()
+For these QSR rules, when a KO’d model is attacked, this is a coupe-de-grace and causes them to become Eliminated.
+ 
+ADVANCED GAME ()
+These rules provide choices for deeper game play. 
+Passive Player Options ()
+Passive Player Options, named with an exclamation mark (!), are a limited form of React actions, and are classified similarly as “interrupts”. These options are given primarily to the target of a Close Combat or Range Combat attack by an Active model. 
+	This does not include targets of any Disengage Test, and are not available against Reacts, against Group Actions, nor against Bonus Actions.
+	The Passive character is allowed just one of these Passive Player Options per Action.
+Optional Responses
+When the Attacker has failed its Combat Hit Test, an Attentive Defender targeted by the attack is allowed one of these Optional Responses each Turn:
+	Counter-strike! — When an Attacker fails its Hit Test an Attentive Ordered Defender with the Attacker in Melee Range may immediately perform a Damage Test. 
+	It acquires a Delay token, but if it was in Wait status remove that instead.
+	Reverse roles, and have it perform a Close Combat Damage Test as the Active model. It receives any of its carry-overs from the Hit Test. Upon pass, allow it any Bonus Actions if qualified.
+	Counter-fire! — When an Attacker fails its Direct Range Combat Hit Test a Free Attentive Ordered Defender in Visibility may immediately perform a Damage Test.
+	The Attacker must have been Revealed and within LOS since the start of its Action.
+	The Defender must have an equal or higher REF.
+	It acquires a Delay token, but if it was in Wait status remove that instead.
+	Reverse roles, and have it perform a Range Combat Damage Test as the Active model. It receives any of its carry-overs from the Hit Test. Upon pass, allow it any Bonus Actions if qualified.
+	Counter-action! — Allow an Attentive Ordered Defender of any failed Close Combat Hit Test or Range Combat Hit Test to perform Bonus Actions. 
+	The Defender must have at least one carry-over, and must have equal or higher REF if this is Range Combat.
+	It acquires a Delay token, but if it was in Wait status remove that instead. 
+	Count the successes on any carry-overs as cascades for spending on Bonus Actions. Have it perform any Bonus Actions as the Active model.
+ 
+Optional Interrupts
+A Free Attentive Ordered Passive model that is within Visibility of an Active model is allowed one of these Optional Interrupts.
+	Counter-charge! — Allow a single Free Attentive Ordered Passive model to respond to a model that is concluding a Move after spending 2 AP, or is concluding a Combined Action after spending 2 AP.
+	If REF is higher, allow Counter-charge! after the target spends 1 AP spent for movement. 
+	The Passive model may only perform this Counter-charge if it can move so that either model becomes Engaged.
+	It acquires a Delay token, but if it was in Wait status remove that instead. 
+	Have it perform a 1 AP Move action, but regard it as having been repositioned.
+Optional Tactics
+An Attentive Opposing model is allowed one of these choices each Turn whenever targeted for an attack:
+	Opportunity Attack! — An Active model which was Engaged and leaves without performing a Disengage action or Disengage Bonus Action is subject to any Opportunity Attack by one of its Opposing models.
+	Allow one Close Combat Attack at zero AP cost by one of the Attentive Opposing Ordered models with which it had been Engaged. Apply all Situational Modifiers for Close Combat Hit Tests. Allow a Bonus Action if qualified.
+	If the Opportunity Attack fails the Hit Test or the Damage Test; allow the Active model to continue its reposition.
+	At the end of the Action, the Passive model acquires a Delay token. If it is in Wait status remove that instead. No Delay token if Outnumbers model, or first time this Turn.
+	Defend! — If the target of a Close Combat Hit Test is Attentive, its player may announce it will “Defend!”.
+	This choice awards +1 Base die Defender Hit Test.
+	Prior to performing the Close Combat Hit Test, the Active model receives one cascade plus one for each CCA higher than the Passive model to optionally perform a Bonus Action from a limited list of choices.
+	If the target was initially Free at the start of the Action, the Active player may reposition the target and also the Active model using the Push-back Bonus Action. 
+	Otherwise, the Active player may reposition the target and optionally the Active model as though using either the Reversal or Circle Bonus Actions. 
+	If afterwards no attack can occur, the AP spent is lost.
+	At the end of the Action, after resolving Tests, unless the Active model performed its Bonus Action, the target model acquires a Delay token. If it is in Wait status remove that instead.
+ 
+	Take Cover! — For Direct Range Combat, Free Attentive Ordered targets of the attack may “Take Cover!”.
+	All Free Attentive Ordered Passive models are potential targets and may “Take Cover!” if within LOS and Visibility of the Active model.
+	Each target must have REF equal or higher than Attacker. 
+	Reposition all targets up to MOV × 1" to behind Cover. 
+Any which become behind Cover, apply award a +1 Base die Defender Range Combat Hit Test. Resolve the attack afterwards.
+If the targets are no longer within LOS, the Active character recovers its 1 AP, but may only perform some other action instead.
+	At the end of the Action, those models which repositioned acquire a Delay token. If they were in Wait status remove that instead.
+
+
+ 
+REFERENCE
+This section contains information which will need to be referenced many times during game-play.
+Traits List
+[1H] — Asset. One-handed Weapons used with a Concentrate action always require two hands instead of just one. 
+An Item may be used with one less hand, but this causes a penalty of -1 Base die for any Fiddle Tests, and for the very next Test performed when interrupted by a React.  
+[2H] — Asset. Two-handed weapons used with two hands are disallowed to use Overreach. 
+An Item may be used with one less hand, but this causes a penalty of -1 Base die for any Fiddle Tests, and for the very next Test performed when interrupted by a React.  
+[Awkward] — Attack Effect. Costs an extra AP to perform Attacks while in base-contact with any Opposing model. When an Opposing model, if no smaller than SIZ minus 3, receives the Charge bonus against this model, this model acquires a Delay token before resolving the attack.
+[Blinders] — Intrinsic. Penalized ˗1 Modifier die in a Scrum. May not perform Bonus Actions unless Attentive. Ranged Attacks with Bow weapons are disallowed, and Thrown weapons are penalized -1 Modifier die.
+[Discard] — Asset. Limited used.
+	If [Discard!] do not use again. 
+	If [Discard+] then roll a die after each time it is used. If fail, then the next time is the last time it may be used. May not use more than three times in total.
+	Else, after the first time using this, roll a die. If fail, it may not be used again. Otherwise, it may be used just once more. 
+[Hafted] — Asset. Penalized ˗1 Modifier die for Defender Close Combat Hit Tests.
+[Laden X] — Asset. Compare total 1 + Laden X from everything equipped to the character’s Physicality. Physicality is the higher of STR or SIZ.
+Each above Physicality is a burden. For each burden:
+	Reduce MOV by 1 and recalculate Agility accordingly.
+	Reduce REF by 1 and CCA by 1 unless Attentive Ordered.
+	Reduce by 1 any Trait with the Movement keyword.
+[Lumbering] — Intrinsic. For Situational Test Modifiers, when this model is Flanked, Cornered, or Confined, the penalty is a Base die each instead of a Modifier die each.
+[Reload X] — Asset. See [1H]. After performing an action or a Test with this weapon and it is available for use; indicate that it needs to be reloaded using an Out-of-Ammo! marker. It remains unusable until after the character performs X Fiddle actions for 1 AP each. 
+[Stub] — Attack Effect. May not use Overreach when attacking.
+	Penalized -1 Modifier die Close Hit Tests unless in base-contact with only Opposing models using weapons with [Stub] for Close Combat. 
+	Passive characters in base-contact are not considered Engaged unless they also have [Stub]. 
+Acrobatic X — Genetic. Skill. Movement. Receive +X Wild dice Defender Close Combat Tests. 
+Armor X — Intrinsic. Reduce any Wound damage received by X; also known as +X “Armor Rating”; therefore +X AR. 
+	Weapon’s Impact rating [I] reduces total AR by an equivalent amount. 
+	If a character is attacked by a Concentrated Attack, reduce 3 AR from each Item Type with the Armor trait.
+Asset — This is a keyword. 
+Attack Effect — This is a keyword. Assign to a weapon.
+Bash — Asset. May use this as an Improvised Melee weapon. Receive +1 cascade for Bonus Actions after passing the Attacker Close Combat Test if used Charging and is in base-contact with the target.
+Brawl X — Skill. Whenever performing Bonus Actions for Close Combat, receives +X cascades. 
+	If Opposing model has Brawl trait, reduce both levels by the lower amount.
+	If Attentive and Engaged, acquire a Delay token to perform Bonus Actions despite failing the Attacker Close Combat Test; do this after a target’s Passive Player Options. 
+Brawn X — Genetic. Psychology. Skill. Receive +X STR except for Attacker Close Combat Damage Tests. 
+Charge — Attack Effect. When Attentive, receive +1 Wild die Attacker Damage Test and +1 Impact if this used with the “Charge” bonus. See Performing Movement Action for more information.
+Cleave X — Attack Effect. If target of the Attacker Damage Test is KO’d it is instead Eliminated. If X is two or more, presume target has first received an extra X ˗1 Wounds.
+Conceal — Asset. One of this Item may always be assigned to a model despite its sculpt.
+Coverage X — Asset. Skill. For each X ignore one Engaged Opposing model in a Scrum. When Attentive allow up to X Friendly models in base-contact and Engaged to the same Opposing model to benefit from this Item this Turn.
+Deflect X — Asset. Receives +X Modifier dice Defender Hit Tests. Disregard for Defender Range Hit Test when Engaged.
+This trait has been modified for these QSR rules.
+Detect X — Genetic. Skill. Receive +X Base dice performing Attacker Detect Tests. Maximum OR Multiple for Detect Tests increased by X.
+Discrete — Asset. Any number of this Item may always be assigned to a model despite its sculpt.
+Evasive X — Genetic. Skill. Movement. Receive +X Modifier dice per OR Multiple for Defender Range Combat Hit Tests. 
+	Once per Turn, if Attentive Free after being targeted for a Range Attack, may reposition X × 1" and allow use of any Agility for any or all of that distance
+	If combined with repositioning as a result of being Revealed, Agility can be used for just one or the other. 
+	If the attack has the option to use ROF, place those markers afterwards.
+Fight X — Skill. Reduces up to X penalty Modifier dice for Close Combat Hit Tests. 
+	When Attentive, for each level of Fight higher than the Opposing character, allow an additional Bonus Action for the Attack action. 
+	These additional Bonus Actions may not have already been performed during this Action.
+Genetic — This is a keyword.  
+Grit X — Psychology. Skill. Does not perform a Morale Test when a Friendly model is KO’d or Eliminated unless that model had higher POW. 
+	Reduce the first Fear token received when Attentive.
+	Whenever receiving Fear tokens optionally convert up to X of those Fear tokens into Delay tokens instead.
+
+Impale — Distracted targets are penalized -1 Base die Defender Damage Test plus 1 per 3 Impact remaining. Use the lowest amount of Impact remaining for Defender if it had multiple types of Armor.
+Insane — Psychology. Unless has one or more Hindrance tokens, is not affected by any trait with the Psychology keyword and does not perform any Morale Tests. Not affected by Hindrance penalties for Morale Tests.
+This trait has been modified for these QSR rules.
+Intrinsic — This is a keyword. 
+Knife-fighter X — Skill. When Attentive and in base-contact while using a weapon that has the [Stub] trait, receive +X Base dice and +X Impact Close Combat Tests.
+Leader — This is a keyword.  
+Leadership X — Psychology. Skill. Leader. Friendly models within Visibility of this character receives bonus +X Base dice for all Morale Tests. Those models may not receive such a bonus from more than one character with the Leadership trait per Test. 
+This trait has been modified for these QSR rules.
+Leap X — Genetic. Movement. Increase Agility by +X". Must be used at either the start or end of a Movement action or reposition.
+Melee — Attack Effect. This weapon may be used normally while Engaged but must resolve as a Close Combat Hit Tests by using Opposed CCA. The target must one which has this Engaged. When using this weapon for Defender Close Combat, it becomes an Improvised Melee Weapon.
+Movement — This is a keyword.  This trait provides benefits for Agility or Movement.
+Natural Weapon — This is a keyword.  This is a Melee Weapon to be used for the Close Combat Hit and Close Combat Damage Tests. 
+	Are not penalized for use in multiple attacks.
+	May not use Overreach when attacking.
+	Unless otherwise described, it is Accuracy +0, Impact +0, and uses STR for Damage. 
+Parry X — Intrinsic. Receives +X Modifier die for Defender Close Combat Tests.
+Perimeter — Intrinsic. While Attentive, Opposing models may only make base-contact if they are Attentive and use Agility. Receives +1 Modifier die Defending Close Combat while not in base-contact or when Opposing model moves into base-contact for the current Initiative.
+Protective X — Intrinsic. Discard X Delay tokens received as Stun damage from an attack.
+	Must be Attentive if targeted by a Concentrated Close Combat Attack.
+	Must be in Cover if targeted by a Concentrated Range Combat attack.
+Psychology — This is a keyword.  
+Shoot X — Skill. Reduce up to X penalty Modifier dice for Attacker Range Combat Hit Tests. Increase Maximum OR Multiple by X.
+Silent — This is a keyword. 
+Skill — This is a keyword. 
+Reach X — Intrinsic. The Melee Range of this character is extended up to X × 1 MU further than the default, which is typically measured from its base. 
+	When Attentive Ordered, Melee Range may extend through the base of a Friendly Attentive Ordered model, or a Distracted or Disordered Opposing model.  
+Sneaky X — Psychology. Skill. 
+	If Attentive, at the end of this character's Initiative automatically become Hidden at no cost if behind Cover or when not in LOS.
+	Receives +X Modifier dice when benefiting from Suddenness Situational Test Modifier.
+	Optionally begins any Mission as Hidden if behind Cover.
+Sprint X — Genetic. Movement. Receives X × 2" for Movement Allowance while moving in a relatively straight line. If also Attentive Free then receive X × 4" instead.
+Stun X — Attack Effect. If the Active character passes the Attacker Close Combat Damage Test, or if adding X causes the Test to pass, then there may be a Stun effect.
+	Add X to the number of successes scored by the Active character, and subtract the target’s Durability, which is the higher of its SIZ or FOR. This is the Stun Test. Note these cascades.  
+	The target acquires a Delay token as Stun damage if the Stun Test passes, and one more for every 3 additional cascades. This is the Stun effect.
+Surefooted X — Genetic. Movement. Upgrade Terrain effects on movement, and for Bonus Actions and Situational Test Modifiers. If X is 1 then Rough  Clear. If X is 2 then Difficult  Rough. If X is 3 then Difficult  Clear.
+Tactics X — Psychology. Skill. Leader. Receive +X Base dice when designated for Initiative Tests. Avoid X additional Turns requiring Situational Awareness, as Designated Leader and as Assembly member.
+Throwable — Asset. see [Discard+]. Use as Thrown weapon for Ranged Attacks but do not receive any Accuracy [ Acc ] bonus.
+Unarmed — Natural Weapon. Psychology. See [2H]. The character has no weapons in hand, and has no immediately useful Natural weapons assigned to it.
+	It may perform -1m Close Combat Hit Test, at STR -1m for the Close Combat Damage Test. 
+	Unarmed counts as having [Stub]. 
+	Unarmed characters may always acquire and use other weapons during game-play but then acquire [Discard] when using them and failing a Close Combat attack.
+ 
+Sample Characters
+Players may optionally choose to build their Assembly from the following selection of sample character Profiles. 
+Per the WYSIWYG (“what-you-see-is-what-you-get”) guidelines, be sure to choose models with sculpts demonstrating the correct weapon, the presence of a shield, and presence of a helmet as necessary.
+For each entry, if the total [Laden] experience by each character will affect them, they’ll be marked by a note.
+Swordfighter	Archetype	Weapon	Armor	Shield	Helm	BP
+Conscript	Militia	Sword	Medium	-	-	50 BP
+Regular	Average	Sword	Medium	-	-	60 BP
+Guard 	Veteran	Sword	Medium	Medium	-	101 BP
+Royal 	Elite	Sword	Medium	Medium	Helmet	145 BP
+Sargeant 	Average	Sword	Medium	-	-	69 BP
+Captain 	Veteran	Sword	Medium	Medium	-	141 BP
+Daggerfighter 	Archetype	Weapon	Armor	Shield	Helm	BP
+Standard	Average	2 × Daggers	Light	-	-	47 BP
+Skillful 	Average	2 × Daggers	Light	-	-	56 BP
+Skirmisher 	Average	2 × Daggers	Light	-	-	68 BP
+Veteran 	Veteran	2 × Daggers	Light	-	-	104 BP
+Tactician   	Veteran	2 × Daggers	Light	-	-	132 BP
+Spearfighter	Archetype	Weapon	Armor	Shield	Helm	BP
+Conscript	Militia	Spear	Medium	-	Helmet	66 BP
+Regular	Average	Spear	Medium	-	-	73 BP
+Guard 	Veteran	Spear	Medium	Medium	Helmet	114 BP
+Royal 	Elite	Spear	Medium	Medium	Helmet	182 BP
+Leader 	Average	Spear	Medium	-	-	82 BP
+Captain 	Veteran	Spear	Medium	Medium	Helmet	154 BP
+Axefighter	Archetype	Weapon	Armor	Shield	Helm	BP
+Conscript	Militia	Axe	Medium	-	-	48 BP
+Regular	Average	Axe	Medium	-	-	58 BP
+Leader 	Average	Axe	Medium	-	-	67 BP
+Bludgeoner	Archetype	Weapon	Armor	Shield	Helm	BP
+Conscript	Militia	Mace	Medium	Light	Helmet	55 BP
+Regular	Average	Hammer	Medium	Light	Helmet	81 BP
+Leader 	Average	Hammer	Medium	Light	Helmet	90 BP
+Tactician 	Average	Hammer	Medium	Light	Helmet	95 BP
+Archer	Archetype	Weapon	Armor	Shield	Helm	BP
+Guard	Average	Crossbow	Light	-	Helmet	54 BP
+Patrol	Average	Bow	Light	-	Helmet	51 BP
+Royal	Elite	Bow	Light	-	Helmet	150 BP
+Tactician 	Average	Crossbow	Light	-	Helmet	68 BP
+Movers	Archetype	Weapon	Armor	Shield	Helm	BP
+Ambusher 	Elite	Bow	Light	-	-	155 BP
+Gutter 	Elite	Sword	Light	-	-	175 BP
+Jumper 	Elite	Sword	Light	-	-	166 BP
+Skirmisher 	Elite	Sword	Light	-	-	160 BP
+Sprinter 	Elite	Bow	Light	-	-	164 BP
+ Each is also assigned Daggers as a weapon for Close Combat.
+ Affected by [Laden]; adjusts MOV, REF, and CCA.
+ These each have two Daggers, qualifying them for the Multiple Weapon bonus.
+ These have the Leadership trait.
+ These have the Tactics trait.
+ These have the Knife-fighter trait.
+ These have the Sprint trait
+ These have the Leap trait
+ These have the Surefooted trait 
+Assembly Record Sheet
+[ insert assembly record sheet here ] 
+Summary Information
+Included here are several useful charts and tables.
+Game Play Sequence
+See the Playing the Game section for a complete description.
+Start of Turn
+Players should be made aware of the Victory Conditions. Remind at the start of each Turn.
+	Ready all In-Play models by removing all Done tokens.
+	Check Initiative
+	Check Situational Awareness
+	Perform Initiative Test
+	Assign Initiative Points [IP]
+	Winner determines which player receives the Initiative.
+Take Round
+Initiative Points may be spent during an Initiative.
+	Player with the Initiative activates a Ready character and assigns it 2 AP, but removes 1 AP per Delay token it has.
+	Spend any number of its remaining AP on Actions.
+	If the character is not Distracted, it may use Pushing for an additional AP.
+	Mark the model with a Done token after it is done with all possible Actions the player wants to perform with it.
+	Next Player takes a Round.
+End of Round
+Manage any game-effects at the end of each Round.;
+End of Turn
+When all models have been marked with a Done token, the Turn has ended. Several in-game tasks must be checked as follows;
+	Discard all remaining IP.
+	Check Bottle Tests
+	Check for Victory Conditions
+End of Game
+Check if the game has ended by roll any End-game Trigger dice [ END ] and resolve that. If the game has not ended, add another END die, and then start a new Turn.
+
+ 
+Situational Test Modifiers
+Apply these during game play for various Tests.
+Close Combat & Disengage
++1	Assist. +1 Impact Attacker Damage Test per extra Attentive Friendly Ordered model with same target in Melee Range.
++1m	Charge. Attacker Hit Test if moved into base-contact with target, over Clear terrain from a Free position at least base-diameter.
++1m	High Ground. Disengage and Hit Tests to higher model if base is above half of the Opposing model’s base-height, and base-height is above the Opposing model’s volume.
++1m	Size. Disengage and Close Combat Hit Tests if in base-contact, and Opposing model is larger by 1, 2, 5, or 10 SIZ. Each is +1m.
++1b	Defend. Defender Hit Test if target chooses “Defend”. 
++1w	Outnumber. Disengage and Hit Tests for 1, 2, 5, or 10 more other Attentive Ordered Friendly models with the same target in Melee Range than the Opposing model. Each is +1w.
+-1m	Cornered. Disengage and Hit Tests if Engaged to the Opposing model on one side of this model and in base-contact on the other side with a wall, precipice, or degraded terrain.
+-1m	Flanked. Disengage and Hit Tests if Engaged to two Opposing models directly on either side of this model.
+-1	Overreach. Penalized -1 REF and -1 Attacker Close Combat Tests.
+Range Combat & Detect
++1m	Point-blank. Active model not Engaged to target receives +1 Modifier die for the Hit or Detect Tests if at half OR or less.
++1m	Elevation. Active character Hit or Detect Tests if higher than opponent by 1" for every 1" away.
++1m	Size. Range Combat Hit Test for every 3 SIZ difference to the smaller model if OR Multiple is at least 1.
+˗1m	Distance. Attacker Hit or Detect Test for ORM to the target.
+˗1m	Intervening Cover. Attacker Hit or Detect Test if target has Intervening Cover. 
+˗1m	Obscured. Attacker Hit or Detect Tests for 1, 2, 5, or 10 other models within LOF to the target, and for non-Opposing models beyond but within 1 MU of LOF. Each is -1 Modifier die.
+˗1b	Direct Cover. Attacker Hit or Detect Test if target in Direct Cover.
+-1b	Leaning. Penalize -1 Base die Detect and Range Combat Hit Tests if self or target is leaning from terrain in base-contact.
+-1w	Blind. Attacker Hit Test if this is a Blind Indirect Attack.
+-1w	Hard Cover. Attacker Damage Test if target behind Hard Cover. 
+Miscellaneous
++1	Waiting. All characters in Wait status receive +1 REF when qualifying for a React.
++1	Solo. A single model selected to perform React against a Group Action receives an effective +1 REF.
++1m	Suddenness. Hit Test if Hidden at start of Action.
++1m	Friendly. Morale Tests when an Attentive Ordered Friendly model is within Cohesion.
++1m	Help. Each Free Attentive Ordered Friendly model in base-contact with the target of a Fiddle action if given a Delay token.
++1w	Safety. Morale Tests if behind Cover or out of LOS, and not within 2 AP Movement of Opposing models.
++1w	Concentrate. For any Test associated with an Action if paired with the Concentrate action which itself requires 1 AP.
++1w	Focus. Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React.
+-1m	Hindrance. Characters are penalized every Test except Damage Tests for every Hindrance type assigned; Wound, Fear, or Delay.
+-1m	Confined. Penalize -1 Modifier die Close Combat Test or Defender Range Combat Hit Test if Confined by Terrain by any two; vertically, horizontally, or behind.
+ 
+ 
+Initiative Abilities
+Players with Initiative Points may spend them as follows;
+Basic Game
+	Maintain Initiative
+	Force Initiative
+	Refresh
+ 
+Lists of Actions
+Here’s the entire list of Actions which may be performed during a Round.
+Simple Actions
+These are the most common actions;
+	Move
+	Close Combat Attack
+	Range Combat Attack
+	Disengage
+Special Actions
+These are less common actions;
+	Concentrate
+	Rally
+	Fiddle
+	Revive
+	Combined ()
+Complex Actions
+These require good judgment to use correctly;
+	Hide
+	Detect
+	Wait ()
+Other Actions
+	Pushing
+	React ()
+	Swap ()
+	Over-reach ()
+ 
+Bonus Actions ()
+After either a successful Hit Test or Damage Test, allow one of these:
+	Circle
+	Disengage
+	Hide
+	Push-back
+	Pull-back
+	Reversal
+	Reposition
+	Refresh
+Passive Player Options ()
+The Opposing character of an Attack or Disengage action is allowed these;
+Optional Tactics
+	Defend!
+	Take Cover!
+	Opportunity Attack!
+Optional Responses
+	Counter-strike!
+	Counter-fire!
+	Counter-charge!
+	Counter-action!
+
+ 
+ 
+ 
+ 
+ 
+ARCHETYPES
+Common Archetypes	 
+Archetype	CCA	RCA	REF	INT	POW	STR	FOR	MOV	SIZ	Traits	BP
+Untrained	0	1	2	2	1	1	2	2	3	.	7
+Militia	1	2	2	2	2	1	2	2	3	.	20
+Average 	2	2	2	2	2	2	2	2	3	.	30
+Veteran 	3	3	3	2	3	2	2	2	3	Grit.	61
+Elite 	3	3	3	3	3	3	3	3	3	Grit. Fight. Shoot.	129
+ 
+Variant Common Archetypes
+Variant	Tweaks	BP
+Average		30
+Average, Acrobatic	+Acrobatic	36
+Average, Brawler	+Brawl	35
+Average, Brawny	+Brawn	33
+Average, Cultist	+Insane	49
+Average, Evasive	+Evasive	33
+Average, Fighter	+Fight	35
+Average, Grizzled	+Grit	40
+Average, Knife-fighter	+Knife-fighter	39
+Average, Loner	+[Solitary]	27
+Average, Shooter	+Shoot	35
+Average, Sneak	+Sneaky	40
+Average, Sprinter	+Sprint	42
+Average, Surefooted	+Surefooted	44
+Average, Tactician	+Tactics	44
+Average, Wise	+Leadership	39
+Elite		129
+Elite, Cultist	+Insane	175
+Elite, Grizzled	+Grit	144
+Elite, Leaper	+Leap	141
+Elite, Shooter	+Shoot	137
+Elite, Sprinter	+Sprint	150
+Elite, Sneak	+Sneaky	147
+Elite, Surefooted	+Surefooted	154
+Elite, Tactician	+Tactics	167
+Elite, Wise	+Leadership	146
+Militia		20
+Militia, Brawny	+Brawn	23
+Militia, Cultist	+Insane	37
+Militia, Fighter	+Fight	25
+Militia, Shooter	+Shoot	25
+Militia, Sneak	+Sneak	29
+Militia, Surefooted	+Surefooted	33
+Militia, Grizzled	+Grit	30
+
+
+	Variant	Tweaks	BP
+Untrained		7
+Untrained, Brawny	+Brawn	10
+Untrained, Cultist	+Insane	21
+Untrained, Loner	+[Solitary]	6
+Untrained, Sneak	+Sneaky	28
+Veteran		61
+Veteran, Cultist	+Insane	86
+Veteran, Fighter	+Fight	66
+Veteran, Grizzled	+Grit	72
+Veteran, Knife-fighter	+Knife-fighter	70
+Veteran, Knife-fighter Tactician	+Knife-fighter, +Tactics	92
+Veteran, Shooter	+Shoot	66
+Veteran, Sneak	+Sneaky	73
+Veteran, Surefooted	+Surefooted	78
+Veteran, Tactician Fighter	+Tactics, +Fight	87
+Veteran, Tactician Wise	+Tactics, +Leadership	101
+Veteran, Tactician	+Tactics	81
+Veteran, Warrior	+Fight, +Shoot	72
+Veteran, Wise	+Leadership	72
+
+ 
+ 
+WEAPONS, ARMOR & EQUIPMENT
+Generic Lists
+Basic Weapons List 
+This is a list of generic weapons for quick pick-up games and covers nearly all genres and settings.
+Weapon	Class 	OR	Acc	I	Damage	Traits	BP
+ 
+Axe 	Melee	STR"	-	1	STR + 1w	[1H][Hafted]. Cleave. Throwable.	15
+Axe, Long 	Melee	STR"	-	2	STR + 1w	[2H][Hafted]. Cleave 2. Throwable. Reach.	27
+Club 	Melee	-	-	-	STR	[1H]. Stun.	4
+Club, Mace	Melee	-	-	1	STR + 1b	[1H][Hafted]. Stun. 	9
+Club, Spiked Mace	Melee	-	-	2	STR + 1b	[1H][Hafted]. Stun.	11
+Daggers 	Melee	STR"	-	1	STR	[1H][Stub]. Discrete. Throwable.	6
+Hammer, War	Melee	-	-	2	STR + 1b	[1H][Hafted]. Stun 2. Impale.	25
+Knife, Medium 	Melee	STR"	-1m	1	STR + 1m	[1H][Stub]. Discrete. Throwable.	6
+Spear, Medium	Melee	STR"	-	2	STR + 2m	[2H]. Reach. Perimeter. Charge. Throwable.	30
+Staff	Melee	-	-	-	STR	[2H][Hafted]. Reach. Perimeter. Stun.	12
+Pole-arm, Halberd	Melee	-	-1m	1	STR + 1w	[2H][Hafted]. Reach. Perimeter. Charge. Cleave.	26
+Pole-arm, Glaive	Melee	-	-1m	1	STR + 3m	[2H][Awkward]. Reach. Perimeter. Charge.	17
+Sword, Saber 	Melee	-	+1m	2	STR + 1b	[1H]. Parry.	13
+Sword, (Broad) 	Melee	-	-	1	STR + 2m	[1H]. Parry. Cleave.	17
+Bow, Medium	Bow	STR + 4"	-	2	STR + 1m	[2H][Reload].	7
+Bow, Long 	Bow	STR + 8"	-	3	STR + 1w	[2H][Reload 2]. Impale.	13
+Crossbow, Pistol 	Bow	4"	+1m 	2	1 + 1b	[1H][Reload, Clumsy]. Melee.	2
+Crossbow, Medium	Bow	10"	- 	3	3 + 1b	[2H][Reload 2, Clumsy][Laden]. Impale.	10 
+Throwing Axes 	Thrown	STR + 2"	-	1	STR	[1H][Awkward][Stub][Hafted]. Conceal. Cleave.	14
+Throwing Knives 	Thrown	STR +3"	+1m	1	STR - 1w	[1H][Awkward][Stub]. Discrete.	8	
+Unarmed 	Natural	-	˗1m	-	STR - 1m	[Stub].	-3
+Improvised Melee 	Melee	STR - 1"	-	-	STR	[1H][Stub].	0
+Improvised Melee, Large 	Melee	STR - 2"	-1b	-	STR	[2H][Stub][Laden]. Reach.	0
+Improvised Thrown 	Thrown	STR"	˗1w	-	STR - 1b	[1H][Discard!].	0
+Improvised Thrown, Large 	Thrown	STR - 1"	-1w	-	STR - 1m	[2H][Discard!][Stub][Laden].	0
+	Commonly referred to as just “Sword”. 
+Basic Armors List
+Characters are allowed just one of each Type of armor listed. Be sure to adjust REF and Agility per the [Laden] trait.  
+Armor	Type		AR	Traits	BP
+Helmet	Helm 		-	Protective.	3
+Full Helm	Helm 		1	[Blinders]. Protective.	5
+Shield, Small	Shield	-	[1H]. Coverage. Deflect.	8
+Shield, Light	Shield	1	[1H]. Coverage.	8
+Shield, Medium	Shield 	1	[1H][Laden]. Coverage. Deflect.	10
+Armored Gear	Gear 	-	Conceal. Deflect.	5
+Armor, Light	Suit	2	[Laden]. Deflect.	8
+Armor, Medium	Suit	4	[Laden 2]. Deflect.	13
+Armor, Heavy 	Suit	6	[Laden 3][Lumbering]. Deflect.	15
+	This is an uncommon armor type because it is expensive to craft and fit to any character. Unless players agree; limit to 1 per 2 models each Side.
+Magical Ranged Weapons List 
+Assign either one of these weapon effects to a models’ weapon or helmet or presume it has a magical ring. 
+Weapon	Class 	OR	Acc	I	Damage	Traits	BP
+Blast, Minor 	Range	6"	.	3	3	.	30
+Blast, Major 	Range	12"	.	3	5	.	53
+Basic Equipment List
+All Equipment have the Conceal trait. Allow each character at most one Item listed.
+Equipment 	Type	Traits	BP
+Medicinal, Alcohol	Advantage	Grit.	17
+Medicinal, Stimulant	Advantage	Brawn.	11
+
+ 
+

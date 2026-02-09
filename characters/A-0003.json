@@ -1,0 +1,129 @@
+{
+  "id": "17703314726840.9715479939828542",
+  "name": "A-0003",
+  "profile": {
+    "name": "veteran-tactician-armored-gear-vaumbrace-loadout",
+    "archetype": {
+      "Veteran, Tactician": {
+        "attributes": {
+          "cca": 3,
+          "rca": 3,
+          "ref": 3,
+          "int": 2,
+          "pow": 3,
+          "str": 2,
+          "for": 2,
+          "mov": 2,
+          "siz": 3
+        },
+        "traits": [
+          "Grit",
+          "Tactics"
+        ],
+        "bp": 81,
+        "species": "Humanoid",
+        "class": "Variant Common"
+      }
+    },
+    "items": [
+      {
+        "name": "Armored Gear, Vaumbrace",
+        "class": "Armor - Gear",
+        "bp": 9,
+        "or": "-",
+        "accuracy": "-",
+        "impact": 0,
+        "dmg": "-",
+        "traits": [
+          "Deflect",
+          "Parry",
+          "Armor"
+        ],
+        "classification": "Armor",
+        "type": "Gear"
+      }
+    ],
+    "totalBp": 90,
+    "adjustedBp": 90,
+    "adjustedItemCosts": {
+      "meleeBp": [],
+      "rangedBp": [],
+      "equipmentBp": []
+    },
+    "physicality": 3,
+    "adjPhysicality": 3,
+    "durability": 3,
+    "adjDurability": 3,
+    "burden": {
+      "totalLaden": 0,
+      "totalBurden": 0
+    },
+    "totalHands": 0,
+    "totalDeflect": 1,
+    "totalAR": 1,
+    "finalTraits": [
+      "Grit",
+      "Tactics",
+      "Deflect",
+      "Parry",
+      "Armor"
+    ],
+    "allTraits": [
+      "Grit",
+      "Tactics",
+      "Deflect",
+      "Parry",
+      "Armor"
+    ]
+  },
+  "allTraits": [
+    {
+      "name": "Grit",
+      "source": "Grit"
+    },
+    {
+      "name": "Tactics",
+      "source": "Tactics"
+    },
+    {
+      "name": "Deflect",
+      "source": "Deflect"
+    },
+    {
+      "name": "Parry",
+      "source": "Parry"
+    },
+    {
+      "name": "Armor",
+      "source": "Armor"
+    }
+  ],
+  "finalAttributes": {
+    "cca": 3,
+    "rca": 3,
+    "ref": 3,
+    "int": 2,
+    "pow": 3,
+    "str": 2,
+    "for": 2,
+    "mov": 2,
+    "siz": 3
+  },
+  "state": {
+    "wounds": 0,
+    "delayTokens": 0,
+    "fearTokens": 0,
+    "isHidden": false,
+    "isWaiting": false,
+    "isDisordered": false,
+    "isDistracted": false,
+    "statusEffects": [],
+    "armor": {
+      "total": 0,
+      "suit": 0,
+      "gear": 0,
+      "shield": 0,
+      "helm": 0
+    }
+  }
+}
