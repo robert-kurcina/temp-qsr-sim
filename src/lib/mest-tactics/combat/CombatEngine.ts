@@ -25,12 +25,12 @@ export class CombatEngine {
     attackerDice: TestDice = { base: 2 },
     defenderDice: TestDice = { base: 2 }
   ): CombatResult {
-    // --- Hit Test (Opposed CCA vs CCA) ---
+    // --- Hit Test (Opposed cca vs cca) ---
     const attackerHitRolls = this.getRolls(attackerDice.base || 0);
     const defenderHitRolls = this.getRolls(defenderDice.base || 0);
 
-    const attackerHitTest = performTest(attackerDice, attacker.attributes.CCA, attackerHitRolls);
-    const defenderHitTest = performTest(defenderDice, defender.attributes.CCA, defenderHitRolls);
+    const attackerHitTest = performTest(attackerDice, attacker.attributes.cca, attackerHitRolls);
+    const defenderHitTest = performTest(defenderDice, defender.attributes.cca, defenderHitRolls);
 
     const hit = attackerHitTest.score >= defenderHitTest.score;
 

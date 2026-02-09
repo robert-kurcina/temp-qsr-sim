@@ -1,7 +1,6 @@
 
 import { Profile } from './Profile';
 import { Trait } from './Trait';
-import { Position } from './battlefield/Position';
 import { FinalAttributes, ArmorState } from './types';
 
 export class Character {
@@ -10,7 +9,6 @@ export class Character {
   profile: Profile;
   finalAttributes: FinalAttributes;
   allTraits: Trait[];
-  position: Position;
 
   state: {
     wounds: number;
@@ -28,13 +26,12 @@ export class Character {
     armor: ArmorState;
   };
 
-  constructor(id: string, name: string, profile: Profile, position: Position) {
+  constructor(id: string, name: string, profile: Profile) {
     this.id = id;
     this.name = name;
     this.profile = profile;
     this.finalAttributes = {};
     this.allTraits = [];
-    this.position = position;
 
     this.state = {
       wounds: 0,
@@ -59,9 +56,5 @@ export class Character {
 
   set wounds(value: number) {
     this.state.wounds = value;
-  }
-
-  move(newPosition: Position) {
-    this.position = newPosition;
   }
 }

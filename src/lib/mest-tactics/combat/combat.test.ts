@@ -9,10 +9,10 @@ describe('CombatEngine', () => {
   let defender: Character;
 
   beforeEach(() => {
-    const attackerAttributes: CharacterAttributes = { CCA: 3, RCA: 2, REF: 2, INT: 2, POW: 2, STR: 3, FOR: 2, MOV: 2, SIZ: 3 };
-    const defenderAttributes: CharacterAttributes = { CCA: 2, RCA: 2, REF: 2, INT: 2, POW: 2, STR: 2, FOR: 2, MOV: 2, SIZ: 3 };
-    attacker = new Character('attacker', 'Attacker', { ...attackerAttributes }, { x: 0, y: 0 });
-    defender = new Character('defender', 'Defender', { ...defenderAttributes }, { x: 1, y: 0 });
+    const attackerAttributes: CharacterAttributes = { cca: 3, rca: 2, ref: 2, int: 2, pow: 2, str: 3, for: 2, mov: 2, siz: 3 };
+    const defenderAttributes: CharacterAttributes = { cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 2, mov: 2, siz: 3 };
+    attacker = new Character('attacker', 'Attacker', { ...attackerAttributes });
+    defender = new Character('defender', 'Defender', { ...defenderAttributes });
     resetRoller();
   });
 

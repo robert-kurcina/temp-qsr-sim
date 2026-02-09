@@ -1,4 +1,4 @@
-import { Character } from '../character/Character';
+import { Character } from '../Character';
 import { Delaunay } from 'd3-delaunay';
 import { Grid } from './Grid';
 import { Position } from './Position';
@@ -36,6 +36,7 @@ export class Battlefield {
   public grid: Grid;
   public terrain: TerrainFeature[] = [];
   private navigationMesh: Delaunay<Position> | null = null;
+  private characterPositions: Map<string, Position> = new Map();
 
   constructor(public width: number, public height: number) {
     this.grid = new Grid(width, height);
@@ -46,23 +47,33 @@ export class Battlefield {
     this.generateNavigationMesh();
   }
 
-  placeCharacter(character: Character): boolean {
-    if (this.grid.setOccupant(character.position, character)) {
+  placeCharacter(character: Character, position: Position): boolean {
+    if (this.grid.setOccupant(position, character)) {
+        this.characterPositions.set(character.id, position);
         return true;
     }
     return false;
   }
 
   moveCharacter(character: Character, to: Position): boolean {
-    const fromCell = this.grid.getCell(character.position);
+    const from = this.characterPositions.get(character.id);
+    if (!from) {
+        return false;
+    }
+
+    const fromCell = this.grid.getCell(from);
     if (fromCell && fromCell.occupant?.id === character.id) {
         if (this.grid.setOccupant(to, character)) {
             fromCell.occupant = null;
-            character.move(to);
+            this.characterPositions.set(character.id, to);
             return true;
         }
     }
     return false;
+  }
+
+  getCharacterPosition(character: Character): Position | undefined {
+    return this.characterPositions.get(character.id);
   }
 
   getCharacterAt(position: Position): Character | null {

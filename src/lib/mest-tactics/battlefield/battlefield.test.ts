@@ -35,11 +35,11 @@ describe('Battlefield Framework', () => {
   });
 
   it('should place and move a character', () => {
-    const char = new Character('char1', 'Test Character', testProfile, { x: 1, y: 1 });
+    const char = new Character('char1', 'Test Character', testProfile);
     const startPos = { x: 1, y: 1 };
     const endPos = { x: 2, y: 2 };
 
-    expect(battlefield.placeCharacter(char)).toBe(true);
+    expect(battlefield.placeCharacter(char, startPos)).toBe(true);
     expect(battlefield.grid.getCell(startPos)?.occupant?.id).toBe(char.id);
 
     expect(battlefield.moveCharacter(char, endPos)).toBe(true);

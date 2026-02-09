@@ -1,4 +1,6 @@
 
+import { Character } from './Character';
+
 export enum DiceType {
   Base = 'base',
   Modifier = 'modifier',
@@ -110,10 +112,12 @@ export function resetRoller() {
 }
 
 export interface TestParticipant {
-  attributeValue: number;
-  bonusDice?: DicePool;
-  penaltyDice?: DicePool;
-  isSystemPlayer?: boolean; // For Unopposed tests
+    character?: Character;
+    attributeValue?: number;
+    attribute?: keyof Character['finalAttributes'];
+    bonusDice?: DicePool;
+    penaltyDice?: DicePool;
+    isSystemPlayer?: boolean; // For Unopposed tests
 }
 
 export interface ResolveTestResult {
@@ -145,6 +149,8 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   console.log('--- resolveTest START ---');
   console.log('p1 participant:', JSON.stringify(p1, null, 2));
   console.log('p2 participant:', JSON.stringify(p2, null, 2));
+  console.log('p1Rolls argument:', JSON.stringify(p1Rolls));
+  console.log('p2Rolls argument:', JSON.stringify(p2Rolls));
 
   // 1. Initialize dice pools. Each player starts with 2 base dice.
   const p1Pool: DicePool = { base: 2, modifier: 0, wild: 0 };
@@ -200,9 +206,11 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   console.log('p1Result from performTest:', JSON.stringify(p1Result, null, 2));
   console.log('p2Result from performTest:', JSON.stringify(p2Result, null, 2));
 
-  // 6. Calculate final score by adding attribute values. System player adds 2 for Unopposed tests.
-  const p2AttributeValue = p2.isSystemPlayer ? 2 : p2.attributeValue;
-  const p1FinalScore = p1Result.score + p1.attributeValue;
+  // 6. Calculate final score by adding attribute values.
+  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attributeValue : (p1.character && p1.attribute ? p1.character.finalAttributes[p1.attribute] || 0 : 0);
+  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue !== undefined ? p2.attributeValue : (p2.character && p2.attribute ? p2.character.finalAttributes[p2.attribute] || 0 : 0));
+  
+  const p1FinalScore = p1Result.score + p1AttributeValue;
   const p2FinalScore = p2Result.score + p2AttributeValue;
 
   const scoreDifference = p1FinalScore - p2FinalScore;

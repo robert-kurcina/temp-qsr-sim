@@ -1,6 +1,6 @@
 
 import { Character } from './Character';
-import { DicePool, DiceType, TestResult, resolveTest, TestParticipant, mergeDicePools } from './dice-roller';
+import { DicePool, DiceType, ResolveTestResult, resolveTest, TestParticipant, mergeDicePools } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
@@ -9,7 +9,7 @@ import { parseAccuracy } from './subroutines/accuracy-parser';
 export interface DisengageResult {
     pass: boolean;
     score: number;
-    testResult: any;
+    testResult: ResolveTestResult;
 }
 
 function _calculateModifiers(
@@ -85,20 +85,30 @@ export function makeDisengageAction(
 ): DisengageResult {
 
     if (context.isAutoPass) {
-        const testResult: TestResult = { score: 99, carryOverDice: {} };
+        const testResult: ResolveTestResult = { 
+            pass: true,
+            score: 99, 
+            cascades: 99,
+            p1FinalScore: 99, 
+            p2FinalScore: 0, 
+            p1Result: { score: 99, carryOverDice: {}},
+            p2Result: { score: 0, carryOverDice: {}},
+        };
         return { pass: true, score: 99, testResult };
     }
 
     const { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(disengager, defender, defenderWeapon, context);
 
     const disengagerParticipant: TestParticipant = {
-        attributeValue: disengager.finalAttributes.ref,
+        character: disengager,
+        attribute: 'ref',
         bonusDice: disengagerBonus,
         penaltyDice: disengagerPenalty,
     };
 
     const defenderParticipant: TestParticipant = {
-        attributeValue: defender.finalAttributes.cca,
+        character: defender,
+        attribute: 'cca',
         bonusDice: defenderBonus,
         penaltyDice: defenderPenalty,
     };
@@ -106,7 +116,7 @@ export function makeDisengageAction(
     const testResult = resolveTest(disengagerParticipant, defenderParticipant, p1Rolls, p2Rolls);
 
     return {
-        pass: testResult.score >= 0,
+        pass: testResult.pass,
         score: testResult.score,
         testResult,
     };
