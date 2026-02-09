@@ -1,3 +1,4 @@
+
 # Project Blueprint: MEST Tactics Simulator
 
 ## 1. Overview
@@ -35,7 +36,8 @@ My update process for this document is to **Read, Modify, and Write**. I will al
 
 1.  **Unit Testing as a Priority:** Every new feature, rule, or piece of logic must be accompanied by a comprehensive set of unit tests.
 2.  **Separation of Responsibilities (SOLID):** The codebase will adhere to SOLID design principles, with a strong emphasis on the Single Responsibility Principle. Complex processes will be broken down into smaller, modular, and independently testable subroutines.
-3.  **Debugging with Console Logs:** When unit tests fail, introduce `console.log` statements to the relevant code to help with debugging. These logs should be removed only after a successful `npm test` run.
+3.  **No Regular Expressions for Complex Parsing:** Avoid using regular expressions for parsing structured strings with multiple, potentially ambiguous parts (e.g., damage formulas). Instead, use simple, character-by-character string manipulation to ensure clarity, predictability, and ease of debugging. Regex should only be used for simple, well-defined pattern matching.
+4.  **Debugging with Console Logs:** When unit tests fail, introduce `console.log` statements to the relevant code to help with debugging. These logs should be removed only after a successful `npm test` run.
 
 ## 6. Testing and Debugging Methodology
 
@@ -76,13 +78,16 @@ To ensure a stable and predictable codebase, the following systematic approach w
 *   **`Character`**, **`Profile`**, **`Item`**.
 *   Game data is stored statically in `src/lib/data.ts`.
 
-## 10. Current Task: Fix Combat Simulation Tests
+## 10. Current Task: Implement Damage Subroutine
 
 ### Completed Steps
 
-1.  **Corrected `dice-roller.ts` and `dice-roller.test.ts`:** The core dice-rolling logic is now fixed and validated. All tests in `dice-roller.test.ts` are passing.
-2.  **Established `blueprint.md`:** This document has been created and refined to serve as our single source of truth for process and project state.
+1.  **Corrected `dice-roller.ts` and `dice-roller.test.ts`:** The core dice-rolling logic is now fixed and validated.
+2.  **Established `blueprint.md`:** This document has been created and refined to serve as our single source of truth.
+3.  **Corrected `hit-test.test.ts`:** All tests related to hit resolution are now passing.
+4.  **Implemented `damage-parser.ts`:** The damage formula parser has been rewritten to use robust string manipulation instead of regular expressions.
+5.  **Implemented `damage.ts` and `damage.test.ts`:** The core damage subroutine and its tests are now fully implemented and passing, ensuring correct wound calculation, status effects (KO/Elimination), and dice modifier handling.
 
 ### Next Steps
 
-1.  **Address `disengage.test.ts`:** Following the "Testing and Debugging Methodology" (Section 6), we will now address the failing tests in `disengage.test.ts`, one by one, starting with the least dependent failing test.
+The damage subroutine is complete. We are now ready for the next task.

@@ -44,12 +44,12 @@ async function generateUniqueCharacterName(): Promise<string> {
 export async function createCharacter(profile: Profile): Promise<Character> {
   await databaseService.read();
 
-  const primaryArchetype = Object.values(profile.archetype)[0];
+  const primaryArchetype = profile.archetype;
   if (!primaryArchetype) {
     throw new Error('Profile does not contain a valid primary archetype.');
   }
   
-  const items = profile.items || [];
+  const items = profile.equipment || [];
 
   // 1. Combine all raw trait strings from archetype and equipment.
   const rawTraits = [
