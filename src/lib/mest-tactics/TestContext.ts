@@ -44,6 +44,8 @@ export interface TestContext {
 
   // --- Test Overrides ---
   isAutoPass?: boolean;
+  forceHit?: boolean;
+  forceMiss?: boolean;
   sizeAdvantage?: number;
   hasSuddenness?: boolean;
 }

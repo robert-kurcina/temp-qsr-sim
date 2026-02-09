@@ -1,4 +1,5 @@
 import { Character } from './Character';
+import { metricsService } from './MetricsService';
 
 export enum DiceType {
   Base = 'base',
@@ -148,9 +149,12 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   p2Pool.modifier = (p2Pool.modifier || 0) + (p2Bonuses.modifier || 0);
   p2Pool.wild = (p2Pool.wild || 0) + (p2Bonuses.wild || 0);
 
-  const commonBase = Math.min(p1Pool.base || 0, p2Pool.base || 0);
-  p1Pool.base = (p1Pool.base || 0) - commonBase;
-  p2Pool.base = (p2Pool.base || 0) - commonBase;
+  // Only cancel dice above the base minimum of 2 for base dice
+  const basePart1 = Math.max(0, (p1Pool.base || 0) - 2);
+  const basePart2 = Math.max(0, (p2Pool.base || 0) - 2);
+  const commonBase = Math.min(basePart1, basePart2);
+  p1Pool.base = 2 + (basePart1 - commonBase);
+  p2Pool.base = 2 + (basePart2 - commonBase);
 
   const commonModifier = Math.min(p1Pool.modifier || 0, p2Pool.modifier || 0);
   p1Pool.modifier = (p1Pool.modifier || 0) - commonModifier;
@@ -180,6 +184,21 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
 
   const scoreDifference = p1FinalScore - p2FinalScore;
   const pass = p1FinalScore >= p2FinalScore;
+
+  // Log the test result with final pools for metrics
+  metricsService.logEvent('diceTestResolved', {
+    finalPools: {
+      p1FinalBonus: p1.bonusDice || {},
+      p1FinalPenalty: p1.penaltyDice || {},
+      p2FinalBonus: p2.bonusDice || {},
+      p2FinalPenalty: p2.penaltyDice || {},
+    },
+    p1Pool,
+    p2Pool,
+    p1Result,
+    p2Result,
+    scoreDifference,
+  });
 
   return {
     pass,

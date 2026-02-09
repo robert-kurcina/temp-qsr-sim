@@ -40,15 +40,5 @@ export function resolveMoraleTest(
 
   const result = resolveTest(participant, systemPlayer, p1Rolls);
 
-  metricsService.logEvent('diceTestResolved', {
-    finalPools: {
-      p1FinalBonus: participant.bonusDice,
-      p1FinalPenalty: participant.penaltyDice,
-      p2FinalBonus: systemPlayer.bonusDice,
-      p2FinalPenalty: systemPlayer.penaltyDice,
-    },
-    result,
-  });
-
   return result;
 }

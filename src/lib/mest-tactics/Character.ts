@@ -1,6 +1,7 @@
 import { Profile } from './Profile';
 import { Trait } from './Trait';
-import { FinalAttributes, ArmorState, Attributes } from './types';
+import { ArmorState } from './types';
+import { Attributes, FinalAttributes } from './Attributes';
 
 export class Character {
   id: string;
@@ -30,8 +31,28 @@ export class Character {
     this.id = profile.name; // For simplicity, using name as ID for now
     this.name = profile.name;
     this.profile = profile;
-    this.attributes = profile.attributes;
-    this.finalAttributes = profile.attributes;
+    
+    // Extract attributes from profile or archetype
+    let attributes = profile.attributes;
+    if (!attributes && profile.archetype) {
+      // Try to extract from archetype if it's an Archetype object
+      const archType = profile.archetype as any;
+      if (archType?.attributes) {
+        attributes = archType.attributes;
+      } else if (typeof archType === 'object' && !Array.isArray(archType)) {
+        // If archetype is a keyed object, get the first archetype's attributes
+        const firstKey = Object.keys(archType)[0];
+        if (firstKey && archType[firstKey]?.attributes) {
+          attributes = archType[firstKey].attributes;
+        }
+      }
+    }
+    
+    this.attributes = attributes || ({
+      cca: 0, rca: 0, ref: 0, int: 0, pow: 0,
+      str: 0, for: 0, mov: 0, siz: 0
+    });
+    this.finalAttributes = this.attributes as FinalAttributes;
     this.allTraits = [];
 
     this.state = {

@@ -53,16 +53,22 @@ export function makeRangedCombatAttack(
     attacker: Character,
     defender: Character,
     weapon: Item,
+    orm: number = 0,
     context: TestContext = {}
 ): AttackResult {
 
+    // Merge ORM into context
+    const fullContext = { ...context, orm };
+
     // 1. Calculate situational modifiers for the ranged attack.
-    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, context);
+    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, fullContext);
 
     // 2. Perform the Ranged Hit Test (RCA vs REF).
     let hitTestResult: TestResult;
-    if (context.forceHit) {
+    if (fullContext.forceHit) {
         hitTestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+    } else if (fullContext.forceMiss) {
+        hitTestResult = { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
     } else {
         hitTestResult = resolveRangedHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
     }
@@ -73,7 +79,7 @@ export function makeRangedCombatAttack(
 
     // 3. If the hit is successful, perform the standard Damage Resolution.
     // The damage phase is the same for both close and ranged combat.
-    const damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult, context);
+    const damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult, fullContext);
 
     // 4. Update the defender's state with the results.
     defender.state.wounds = damageResolution.defenderState.wounds;

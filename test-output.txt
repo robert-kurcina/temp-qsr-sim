@@ -1,0 +1,307 @@
+
+> out-out@0.0.1 test
+> vitest
+
+
+[1m[44m DEV [49m[22m [34mv4.0.18 [39m[90m/Users/kitrok/projects/temp-qsr-sim[39m
+
+ [31m❯[39m src/lib/mest-tactics/subroutines/hit-test.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m src/lib/mest-tactics/ranged-combat.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m src/lib/mest-tactics/subroutines/morale-test.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [31m❯[39m src/lib/mest-tactics/indirect-ranged-combat.test.ts [2m([22m[2m0 test[22m[2m)[22m
+ [32m✓[39m src/lib/mest-tactics/subroutines/accuracy-parser.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [31m❯[39m src/lib/mest-tactics/close-combat.test.ts [2m([22m[2m6 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[32m 10[2mms[22m[39m
+[31m     [31m×[31m should force a successful hit and create a damage resolution[39m[32m 6[2mms[22m[39m
+[31m     [31m×[31m should pass the hit test and create a damage resolution[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m should fail the hit test and not create a damage resolution[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m should add a bonus die to the attacker for a Charge[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m should add a bonus die to the defender for Defending[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m should correctly apply impact modifier from assisting models[39m[32m 0[2mms[22m[39m
+ [31m❯[39m src/lib/mest-tactics/disengage.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m9 failed[39m[2m)[22m[32m 13[2mms[22m[39m
+     [32m✓[39m should automatically pass if context.isAutoPass is true[32m 2[2mms[22m[39m
+[31m     [31m×[31m should pass the disengage test when roll is high[39m[32m 5[2mms[22m[39m
+[31m     [31m×[31m should apply a penalty to the disengager if cornered[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m should apply a penalty to the disengager if flanked[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m should apply a bonus to the disengager for high ground[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m should apply a bonus to the disengager for outnumbering[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m should apply a bonus to the defender for outnumbering[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m should apply a penalty for overreach[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m should apply a bonus for size difference[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m should apply a bonus for suddenness[39m[32m 0[2mms[22m[39m
+ [32m✓[39m src/lib/mest-tactics/trait-parser.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m src/lib/mest-tactics/profile-generator.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m src/lib/mest-tactics/battlefield/battlefield.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[31mCancelling test run. Press CTRL+c again to exit forcefully.
+[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Suites 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/indirect-ranged-combat.test.ts[2m [ src/lib/mest-tactics/indirect-ranged-combat.test.ts ][22m
+[31m[1mError[22m: Cannot find module './character-factory' imported from '/Users/kitrok/projects/temp-qsr-sim/src/lib/mest-tactics/indirect-ranged-combat.test.ts'[39m
+[36m [2m❯[22m src/lib/mest-tactics/indirect-ranged-combat.test.ts:[2m3:1[22m[39m
+    [90m  1| [39m
+    [90m  2| [39m[35mimport[39m { describe[33m,[39m it[33m,[39m expect[33m,[39m beforeEach[33m,[39m afterEach } [35mfrom[39m [32m'vitest'[39m[33m;[39m
+    [90m  3| [39m[35mimport[39m { createCharacter } [35mfrom[39m [32m'./character-factory'[39m[33m;[39m
+    [90m   | [39m[31m^[39m
+    [90m  4| [39m[35mimport[39m { makeIndirectRangedAttack } [35mfrom[39m [32m'./indirect-ranged-combat'[39m[33m;[39m
+    [90m  5| [39mimport { setRoller, resetRoller, DiceType, Roller } from './dice-rolle…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/ranged-combat.test.ts[2m [ src/lib/mest-tactics/ranged-combat.test.ts ][22m
+[31m[1mError[22m: Cannot find module './character-factory' imported from '/Users/kitrok/projects/temp-qsr-sim/src/lib/mest-tactics/ranged-combat.test.ts'[39m
+[36m [2m❯[22m src/lib/mest-tactics/ranged-combat.test.ts:[2m3:1[22m[39m
+    [90m  1| [39m
+    [90m  2| [39m[35mimport[39m { describe[33m,[39m it[33m,[39m expect[33m,[39m beforeEach[33m,[39m afterEach } [35mfrom[39m [32m'vitest'[39m[33m;[39m
+    [90m  3| [39m[35mimport[39m { createCharacter } [35mfrom[39m [32m'./character-factory'[39m[33m;[39m
+    [90m   | [39m[31m^[39m
+    [90m  4| [39m[35mimport[39m { makeRangedCombatAttack } [35mfrom[39m [32m'./ranged-combat'[39m[33m;[39m
+    [90m  5| [39mimport { setRoller, resetRoller, DiceType, Roller } from './dice-rolle…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/subroutines/hit-test.test.ts[2m [ src/lib/mest-tactics/subroutines/hit-test.test.ts ][22m
+[31m[1mError[22m: Cannot find module '../character-factory' imported from '/Users/kitrok/projects/temp-qsr-sim/src/lib/mest-tactics/subroutines/hit-test.test.ts'[39m
+[36m [2m❯[22m src/lib/mest-tactics/subroutines/hit-test.test.ts:[2m3:1[22m[39m
+    [90m  1| [39m
+    [90m  2| [39m[35mimport[39m { describe[33m,[39m it[33m,[39m expect[33m,[39m beforeEach } [35mfrom[39m [32m'vitest'[39m[33m;[39m
+    [90m  3| [39m[35mimport[39m { createCharacter } [35mfrom[39m [32m'../character-factory'[39m[33m;[39m
+    [90m   | [39m[31m^[39m
+    [90m  4| [39m[35mimport[39m { resolveHitTest } [35mfrom[39m [32m'./hit-test'[39m[33m;[39m
+    [90m  5| [39m[35mimport[39m { [33mDiceType[39m[33m,[39m [33mTestDice[39m } [35mfrom[39m [32m'../dice-roller'[39m[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/subroutines/morale-test.test.ts[2m [ src/lib/mest-tactics/subroutines/morale-test.test.ts ][22m
+[31m[1mError[22m: Cannot find module '../character-factory' imported from '/Users/kitrok/projects/temp-qsr-sim/src/lib/mest-tactics/subroutines/morale-test.test.ts'[39m
+[36m [2m❯[22m src/lib/mest-tactics/subroutines/morale-test.test.ts:[2m3:1[22m[39m
+    [90m  1| [39m
+    [90m  2| [39m[35mimport[39m { describe[33m,[39m it[33m,[39m expect[33m,[39m beforeEach[33m,[39m afterEach } [35mfrom[39m [32m'vitest'[39m[33m;[39m
+    [90m  3| [39m[35mimport[39m { createCharacter } [35mfrom[39m [32m'../character-factory'[39m[33m;[39m
+    [90m   | [39m[31m^[39m
+    [90m  4| [39m[35mimport[39m { resolveMoraleTest } [35mfrom[39m [32m'./morale-test'[39m[33m;[39m
+    [90m  5| [39mimport { setRoller, resetRoller, Roller, DiceType } from '../dice-roll…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/19]⎯[22m[39m
+
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 15 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/close-combat.test.ts[2m > [22mmakeCloseCombatAttack[2m > [22mshould force a successful hit and create a damage resolution
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'cca')[39m
+[36m [2m❯[22m resolveHitTest src/lib/mest-tactics/subroutines/hit-test.ts:[2m19:92[22m[39m
+    [90m 17| [39m)[33m:[39m [33mResolveTestResult[39m {
+    [90m 18| [39m    
+    [90m 19| [39m    const attackerAttribute = weapon.classification === 'Melee' ? atta…
+    [90m   | [39m                                                                                           [31m^[39m
+    [90m 20| [39m    const defenderAttribute = weapon.classification === 'Melee' ? defe…
+    [90m 21| [39m
+[90m [2m❯[22m makeCloseCombatAttack src/lib/mest-tactics/close-combat.ts:[2m67:27[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/close-combat.test.ts:[2m39:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/close-combat.test.ts[2m > [22mmakeCloseCombatAttack[2m > [22mshould pass the hit test and create a damage resolution
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'cca')[39m
+[36m [2m❯[22m resolveHitTest src/lib/mest-tactics/subroutines/hit-test.ts:[2m19:92[22m[39m
+    [90m 17| [39m)[33m:[39m [33mResolveTestResult[39m {
+    [90m 18| [39m    
+    [90m 19| [39m    const attackerAttribute = weapon.classification === 'Melee' ? atta…
+    [90m   | [39m                                                                                           [31m^[39m
+    [90m 20| [39m    const defenderAttribute = weapon.classification === 'Melee' ? defe…
+    [90m 21| [39m
+[90m [2m❯[22m makeCloseCombatAttack src/lib/mest-tactics/close-combat.ts:[2m67:27[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/close-combat.test.ts:[2m52:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/close-combat.test.ts[2m > [22mmakeCloseCombatAttack[2m > [22mshould fail the hit test and not create a damage resolution
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'cca')[39m
+[36m [2m❯[22m resolveHitTest src/lib/mest-tactics/subroutines/hit-test.ts:[2m19:92[22m[39m
+    [90m 17| [39m)[33m:[39m [33mResolveTestResult[39m {
+    [90m 18| [39m    
+    [90m 19| [39m    const attackerAttribute = weapon.classification === 'Melee' ? atta…
+    [90m   | [39m                                                                                           [31m^[39m
+    [90m 20| [39m    const defenderAttribute = weapon.classification === 'Melee' ? defe…
+    [90m 21| [39m
+[90m [2m❯[22m makeCloseCombatAttack src/lib/mest-tactics/close-combat.ts:[2m67:27[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/close-combat.test.ts:[2m65:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/close-combat.test.ts[2m > [22mmakeCloseCombatAttack[2m > [22mshould add a bonus die to the attacker for a Charge
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'cca')[39m
+[36m [2m❯[22m resolveHitTest src/lib/mest-tactics/subroutines/hit-test.ts:[2m19:92[22m[39m
+    [90m 17| [39m)[33m:[39m [33mResolveTestResult[39m {
+    [90m 18| [39m    
+    [90m 19| [39m    const attackerAttribute = weapon.classification === 'Melee' ? atta…
+    [90m   | [39m                                                                                           [31m^[39m
+    [90m 20| [39m    const defenderAttribute = weapon.classification === 'Melee' ? defe…
+    [90m 21| [39m
+[90m [2m❯[22m makeCloseCombatAttack src/lib/mest-tactics/close-combat.ts:[2m67:27[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/close-combat.test.ts:[2m78:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/close-combat.test.ts[2m > [22mmakeCloseCombatAttack[2m > [22mshould add a bonus die to the defender for Defending
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'cca')[39m
+[36m [2m❯[22m resolveHitTest src/lib/mest-tactics/subroutines/hit-test.ts:[2m19:92[22m[39m
+    [90m 17| [39m)[33m:[39m [33mResolveTestResult[39m {
+    [90m 18| [39m    
+    [90m 19| [39m    const attackerAttribute = weapon.classification === 'Melee' ? atta…
+    [90m   | [39m                                                                                           [31m^[39m
+    [90m 20| [39m    const defenderAttribute = weapon.classification === 'Melee' ? defe…
+    [90m 21| [39m
+[90m [2m❯[22m makeCloseCombatAttack src/lib/mest-tactics/close-combat.ts:[2m67:27[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/close-combat.test.ts:[2m89:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/close-combat.test.ts[2m > [22mmakeCloseCombatAttack[2m > [22mshould correctly apply impact modifier from assisting models
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'cca')[39m
+[36m [2m❯[22m resolveHitTest src/lib/mest-tactics/subroutines/hit-test.ts:[2m19:92[22m[39m
+    [90m 17| [39m)[33m:[39m [33mResolveTestResult[39m {
+    [90m 18| [39m    
+    [90m 19| [39m    const attackerAttribute = weapon.classification === 'Melee' ? atta…
+    [90m   | [39m                                                                                           [31m^[39m
+    [90m 20| [39m    const defenderAttribute = weapon.classification === 'Melee' ? defe…
+    [90m 21| [39m
+[90m [2m❯[22m makeCloseCombatAttack src/lib/mest-tactics/close-combat.ts:[2m67:27[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/close-combat.test.ts:[2m100:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould pass the disengage test when roll is high
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m36:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a penalty to the disengager if cornered
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m42:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a penalty to the disengager if flanked
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m47:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a bonus to the disengager for high ground
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m53:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a bonus to the disengager for outnumbering
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m58:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a bonus to the defender for outnumbering
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m63:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a penalty for overreach
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m68:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a bonus for size difference
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m73:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/19]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m src/lib/mest-tactics/disengage.test.ts[2m > [22mmakeDisengageAction[2m > [22mshould apply a bonus for suddenness
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'ref')[39m
+[36m [2m❯[22m resolveTest src/lib/mest-tactics/dice-roller.ts:[2m172:127[22m[39m
+    [90m170| [39m  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw n…
+    [90m171| [39m
+    [90m172| [39m  const p1AttributeValue = p1.attributeValue !== undefined ? p1.attrib…
+    [90m   | [39m                                                                                                                              [31m^[39m
+    [90m173| [39m  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue …
+    [90m174| [39m
+[90m [2m❯[22m makeDisengageAction src/lib/mest-tactics/disengage.ts:[2m116:24[22m[39m
+[90m [2m❯[22m src/lib/mest-tactics/disengage.test.ts:[2m78:24[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/19]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m6 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[90m (20)[39m
+[2m      Tests [22m [1m[31m15 failed[39m[22m[2m | [22m[1m[32m28 passed[39m[22m[90m (43)[39m
+[2m   Start at [22m 14:44:15
+[2m   Duration [22m 1.35s[2m (transform 1.29s, setup 0ms, import 1.41s, tests 60ms, environment 4ms)[22m
+
+[1m[41m FAIL [49m[22m [31mTests failed. Watching for file changes...[39m
+       [2mpress [22m[1mh[22m[2m to show help[22m[2m, [22m[2mpress [22m[1mq[22m[2m to quit[22m

@@ -30,6 +30,7 @@ export function resolveRangedHitTest(
         attributeValue: defenderAttribute,
         bonusDice: defenderBonus,
         penaltyDice: defenderPenalty,
+        isSystemPlayer: true,
     };
 
     return resolveTest(attackerParticipant, defenderParticipant);

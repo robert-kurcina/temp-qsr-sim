@@ -51,7 +51,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a point-blank bonus for the attacker', () => {
-    const rolls: number[][] = [[1, 1], [1, 1]];
+    const rolls: number[][] = [[1, 1, 1], [1, 1]];
     const statefulRoller: Roller = () => rolls.shift() || [1, 1];
     setRoller(statefulRoller);
 
@@ -64,7 +64,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a cover bonus for the defender with direct cover', () => {
-    const rolls: number[][] = [[1, 1], [1, 1]];
+    const rolls: number[][] = [[1, 1], [1, 1, 1]];
     const statefulRoller: Roller = () => rolls.shift() || [1, 1];
     setRoller(statefulRoller);
 
@@ -77,7 +77,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a cover bonus for the defender with intervening cover', () => {
-    const rolls: number[][] = [[1, 1], [1, 1]];
+    const rolls: number[][] = [[1, 1], [1, 1, 1]];
     const statefulRoller: Roller = () => rolls.shift() || [1, 1];
     setRoller(statefulRoller);
 
@@ -94,7 +94,7 @@ describe('makeRangedCombatAttack', () => {
     const statefulRoller: Roller = () => rolls.shift() || [1, 1];
     setRoller(statefulRoller);
 
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, 2, {});
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 1, {});
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);

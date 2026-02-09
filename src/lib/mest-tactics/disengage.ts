@@ -23,7 +23,7 @@ function _calculateModifiers(
     defenderBonus: TestDice, 
     defenderPenalty: TestDice
 } {
-    let disengagerBonus: TestDice = { [DiceType.Base]: 1 };
+    let disengagerBonus: TestDice = {};
     let disengagerPenalty: TestDice = {};
     let defenderBonus: TestDice = {};
     let defenderPenalty: TestDice = {};
@@ -51,23 +51,19 @@ function _calculateModifiers(
     }
     if (context.hasSuddenness) disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + 1;
 
-    // Defender Size Advantage
+    // Disengager Size Advantage (when sizeAdvantage > 0, disengager is larger)
+    // This gives the defender a penalty (not the disengager a bonus)
     if (context.sizeAdvantage && context.sizeAdvantage > 0) {
-        const bonus = Math.floor(context.sizeAdvantage / 2);
-        if (bonus > 0) {
-            defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + bonus;
-        }
+        defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
     }
 
-    // Disengager Size Advantage
+    // Defender Size Advantage (when sizeAdvantage < 0, defender is larger)
     if (context.sizeAdvantage && context.sizeAdvantage < 0) {
-        const bonus = Math.floor(Math.abs(context.sizeAdvantage) / 2);
-        if (bonus > 0) {
-            disengagerBonus[DiceType.Base] = (disengagerBonus[DiceType.Base] || 0) + bonus;
-        }
+        disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
     }
 
-    if (context.isOverreach) disengagerPenalty[DiceType.Wild] = (disengagerPenalty[DiceType.Wild] || 0) + 1;
+    // Overreach penalty: give defender a modifier bonus die
+    if (context.isOverreach) defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
 
     return { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty };
 }

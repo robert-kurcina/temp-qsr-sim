@@ -1,8 +1,4 @@
-/**
- * Represents the final, calculated attributes of a character after applying
- * all modifiers from their archetype and equipment.
- */
-export type FinalAttributes = Record<string, number>;
+import { FinalAttributes } from './Attributes';
 
 /**
  * Represents the state of a character's armor, broken down by type.
@@ -15,3 +11,6 @@ export interface ArmorState {
   shield: number;
   helm: number;
 }
+
+// Re-export FinalAttributes for convenience
+export { FinalAttributes };
