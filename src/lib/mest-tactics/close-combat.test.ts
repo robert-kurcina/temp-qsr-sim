@@ -1,11 +1,10 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createCharacter } from './character-factory';
 import { makeCloseCombatAttack } from './close-combat';
 import { DiceType } from './dice-roller';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
-import type { Character } from './Character';
+import { Character } from './Character';
 import { gameData } from '../data';
 
 const { archetypes, melee_weapons, armors } = gameData;
@@ -15,7 +14,7 @@ describe('makeCloseCombatAttack', () => {
   let defender: Character;
   let attackerWeapon: Item;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     const attackerArchetype = { name: "Veteran, Fighter", ...archetypes["Veteran, Fighter"] };
     const defenderArchetype = { name: "Militia", ...archetypes["Militia"] };
     attackerWeapon = { name: "Sword, Broad", ...melee_weapons["Sword, Broad"] };
@@ -24,8 +23,10 @@ describe('makeCloseCombatAttack', () => {
     const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] };
     const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderArmor] };
 
-    attacker = await createCharacter(attackerProfile);
-    defender = await createCharacter(defenderProfile);
+    attacker = new Character(attackerProfile);
+    attacker.finalAttributes = attacker.attributes;
+    defender = new Character(defenderProfile);
+    defender.finalAttributes = defender.attributes;
   });
 
   it('should force a successful hit and create a damage resolution', () => {

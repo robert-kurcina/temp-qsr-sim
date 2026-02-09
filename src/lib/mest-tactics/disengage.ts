@@ -1,6 +1,6 @@
 
 import { Character } from './Character';
-import { TestDice, DiceType, ResolveTestResult, resolveTest, TestParticipant, mergeTestDices } from './dice-roller';
+import { TestDice, DiceType, ResolveTestResult, resolveTest, TestParticipant, mergeTestDice } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
@@ -36,8 +36,8 @@ function _calculateModifiers(
 
     // 2. Defender Weapon Accuracy
     const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(defenderWeapon.accuracy);
-    defenderBonus = mergeTestDices(defenderBonus, accBonus);
-    defenderPenalty = mergeTestDices(defenderPenalty, accPenalty);
+    defenderBonus = mergeTestDice(defenderBonus, accBonus);
+    defenderPenalty = mergeTestDice(defenderPenalty, accPenalty);
 
     // 3. Contextual Modifiers
     if (context.isCornered) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;

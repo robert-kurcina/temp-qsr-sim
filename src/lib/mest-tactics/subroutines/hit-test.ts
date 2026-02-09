@@ -1,6 +1,6 @@
 
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, TestDice, ResolveTestResult, mergeTestDices } from '../dice-roller';
+import { resolveTest, TestParticipant, TestDice, ResolveTestResult, mergeTestDice } from '../dice-roller';
 import { Item } from '../Item';
 import { parseAccuracy } from './accuracy-parser';
 
@@ -23,8 +23,8 @@ export function resolveHitTest(
 
     const attackerParticipant: TestParticipant = {
         attributeValue: attackerAttribute,
-        bonusDice: mergeTestDices(attackerBonus, accBonus),
-        penaltyDice: mergeTestDices(attackerPenalty, accPenalty),
+        bonusDice: mergeTestDice(attackerBonus, accBonus),
+        penaltyDice: mergeTestDice(attackerPenalty, accPenalty),
     };
 
     const defenderParticipant: TestParticipant = {

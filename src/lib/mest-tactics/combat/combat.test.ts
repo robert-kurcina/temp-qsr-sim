@@ -19,14 +19,14 @@ describe('CombatEngine', () => {
   beforeEach(() => {
     const attackerProfile: Profile = {
       name: 'Attacker',
-      archetype: 'Average', // Corrected archetype name
+      archetype: 'Average',
       attributes: { cca: 3, rca: 2, ref: 2, int: 2, pow: 2, str: 3, for: 2, mov: 2, siz: 3 },
       traits: [],
       items: [],
     };
     const defenderProfile: Profile = {
       name: 'Defender',
-      archetype: 'Average', // Corrected archetype name
+      archetype: 'Average',
       attributes: { cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 3, mov: 2, siz: 3 },
       traits: [],
       items: [],
@@ -37,7 +37,10 @@ describe('CombatEngine', () => {
 
   it('should resolve a successful hit and wound', () => {
     // Attacker rolls high, defender rolls low for both hit and wound
-    CombatEngine.testing_diceRolls = [6, 6, 1, 1, 6, 6, 1, 1]; 
+    CombatEngine.testing_diceRolls = {
+      attackerRolls: [6, 6, 6, 6, 6, 6],
+      defenderRolls: [1, 1, 1, 1],
+    };
     const result: CombatResult = CombatEngine.resolveCloseCombat(attacker, defender);
     expect(result.hit).toBe(true);
     expect(result.wound).toBe(true);
@@ -46,7 +49,10 @@ describe('CombatEngine', () => {
 
   it('should resolve a successful hit and a failed wound', () => {
     // Attacker hits, but defender's FOR test is successful
-    CombatEngine.testing_diceRolls = [6, 6, 1, 1, 1, 1, 6, 6];
+    CombatEngine.testing_diceRolls = {
+        attackerRolls: [6, 6, 1, 1, 1, 1],
+        defenderRolls: [1, 1, 6, 6],
+    };
     const result: CombatResult = CombatEngine.resolveCloseCombat(attacker, defender);
     expect(result.hit).toBe(true);
     expect(result.wound).toBe(false);
@@ -55,7 +61,10 @@ describe('CombatEngine', () => {
 
   it('should resolve a failed hit', () => {
     // Attacker rolls low, defender rolls high for the hit test
-    CombatEngine.testing_diceRolls = [1, 1, 6, 6]; 
+    CombatEngine.testing_diceRolls = {
+        attackerRolls: [1, 1],
+        defenderRolls: [6, 6],
+    }; 
     const result: CombatResult = CombatEngine.resolveCloseCombat(attacker, defender);
     expect(result.hit).toBe(false);
     expect(result.wound).toBe(false);

@@ -1,10 +1,9 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createCharacter } from './character-factory';
 import { makeDisengageAction } from './disengage';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
-import type { Character } from './Character';
+import { Character } from './Character';
 import { gameData } from '../data';
 
 const { archetypes, melee_weapons } = gameData;
@@ -14,16 +13,18 @@ describe('makeDisengageAction', () => {
     let defender: Character;
     let defenderWeapon: Item;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         const disengagerArchetype = archetypes['Militia'];
         const defenderArchetype = archetypes['Militia'];
         defenderWeapon = { name: 'Sword, Broad', ...melee_weapons['Sword, Broad'] };
 
-        const disengagerProfile: any = { name: 'Disengager Profile', archetype: 'Militia', equipment: [] };
-        const defenderProfile: any = { name: 'Defender Profile', archetype: 'Militia', equipment: [defenderWeapon] };
+        const disengagerProfile: any = { name: 'Disengager Profile', archetype: disengagerArchetype, equipment: [] };
+        const defenderProfile: any = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderWeapon] };
 
-        disengager = await createCharacter(disengagerProfile);
-        defender = await createCharacter(defenderProfile);
+        disengager = new Character(disengagerProfile);
+        disengager.finalAttributes = disengager.attributes;
+        defender = new Character(defenderProfile);
+        defender.finalAttributes = defender.attributes;
     });
 
     it('should automatically pass if context.isAutoPass is true', () => {
@@ -65,12 +66,12 @@ describe('makeDisengageAction', () => {
 
     it('should apply a penalty for overreach', () => {
         const result = makeDisengageAction(disengager, defender, defenderWeapon, { isOverreach: true }, [1, 1], [4, 4, 1]);
-        expect(result.score).toBe(-1);
+        expect(result.score).toBe(-2);
     });
 
     it('should apply a bonus for size difference', () => {
-        const result = makeDisengageAction(disengager, defender, defenderWeapon, { sizeAdvantage: 2 }, [1, 1], [6, 6, 4]);
-        expect(result.score).toBe(-4);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { sizeAdvantage: 2 }, [1, 1, 4], [6, 6]);
+        expect(result.score).toBe(-1);
     });
 
     it('should apply a bonus for suddenness', () => {

@@ -4,7 +4,7 @@ import { TestDice, DiceType, ResolveTestResult } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
-import { resolveTest, TestParticipant, mergeTestDices } from './dice-roller';
+import { resolveTest, TestParticipant, mergeTestDice } from './dice-roller';
 import { parseAccuracy } from './subroutines/accuracy-parser';
 import { metricsService } from './MetricsService';
 
@@ -53,8 +53,8 @@ export function makeIndirectRangedAttack(
 
     const attackerParticipant: TestParticipant = {
         attributeValue: attackerAttribute,
-        bonusDice: mergeTestDices(attackerBonus, accBonus),
-        penaltyDice: mergeTestDices(attackerPenalty, accPenalty),
+        bonusDice: mergeTestDice(attackerBonus, accBonus),
+        penaltyDice: mergeTestDice(attackerPenalty, accPenalty),
     };
 
     const systemParticipant: TestParticipant = {

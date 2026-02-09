@@ -134,8 +134,8 @@ export function mergeTestDice(...pools: (TestDice | undefined)[]): TestDice {
 }
 
 export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: number[] | null = null, p2Rolls: number[] | null = null): ResolveTestResult {
-  const p1Pool: TestDice = { base: 2, modifier: 0, wild: 0 };
-  const p2Pool: TestDice = { base: 2, modifier: 0, wild: 0 };
+  let p1Pool: TestDice = { base: 2, modifier: 0, wild: 0 };
+  let p2Pool: TestDice = { base: 2, modifier: 0, wild: 0 };
 
   const p1Bonuses = mergeTestDice(p1.bonusDice, p2.penaltyDice);
   const p2Bonuses = mergeTestDice(p2.bonusDice, p1.penaltyDice);
@@ -148,9 +148,7 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   p2Pool.modifier = (p2Pool.modifier || 0) + (p2Bonuses.modifier || 0);
   p2Pool.wild = (p2Pool.wild || 0) + (p2Bonuses.wild || 0);
 
-  const flattenableP1Base = Math.max(0, (p1Pool.base || 0) - 2);
-  const flattenableP2Base = Math.max(0, (p2Pool.base || 0) - 2);
-  const commonBase = Math.min(flattenableP1Base, flattenableP2Base);
+  const commonBase = Math.min(p1Pool.base || 0, p2Pool.base || 0);
   p1Pool.base = (p1Pool.base || 0) - commonBase;
   p2Pool.base = (p2Pool.base || 0) - commonBase;
 
