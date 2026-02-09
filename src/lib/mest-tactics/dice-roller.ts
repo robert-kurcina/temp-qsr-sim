@@ -146,12 +146,6 @@ export function mergeDicePools(...pools: (DicePool | undefined)[]): DicePool {
  * Rewritten resolveTest function to correctly implement game rules.
  */
 export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: number[] | null = null, p2Rolls: number[] | null = null): ResolveTestResult {
-  console.log('--- resolveTest START ---');
-  console.log('p1 participant:', JSON.stringify(p1, null, 2));
-  console.log('p2 participant:', JSON.stringify(p2, null, 2));
-  console.log('p1Rolls argument:', JSON.stringify(p1Rolls));
-  console.log('p2Rolls argument:', JSON.stringify(p2Rolls));
-
   // 1. Initialize dice pools. Each player starts with 2 base dice.
   const p1Pool: DicePool = { base: 2, modifier: 0, wild: 0 };
   const p2Pool: DicePool = { base: 2, modifier: 0, wild: 0 };
@@ -183,9 +177,6 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   p1Pool.wild = (p1Pool.wild || 0) - commonWild;
   p2Pool.wild = (p2Pool.wild || 0) - commonWild;
 
-  console.log('p1 calculated dice pool:', JSON.stringify(p1Pool, null, 2));
-  console.log('p2 calculated dice pool:', JSON.stringify(p2Pool, null, 2));
-
   // 4. Determine rolls
   const p1TotalDice = (p1Pool.base || 0) + (p1Pool.modifier || 0) + (p1Pool.wild || 0);
   const p2TotalDice = (p2Pool.base || 0) + (p2Pool.modifier || 0) + (p2Pool.wild || 0);
@@ -193,18 +184,12 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   const p1FinalRolls = p1Rolls ?? roller(p1TotalDice);
   const p2FinalRolls = p2Rolls ?? (p2.isSystemPlayer ? [] : roller(p2TotalDice));
 
-  console.log('p1 rolls:', JSON.stringify(p1FinalRolls));
-  console.log('p2 rolls:', JSON.stringify(p2FinalRolls));
-
   if (p1FinalRolls.length < p1TotalDice) throw new Error('Not enough dice rolls provided for p1');
   if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw new Error('Not enough dice rolls provided for p2');
 
   // 5. Perform the test by rolling dice and getting successes
   const p1Result = performTest(p1Pool, p1FinalRolls);
   const p2Result = p2.isSystemPlayer ? { score: 0, carryOverDice: {} } : performTest(p2Pool, p2FinalRolls);
-
-  console.log('p1Result from performTest:', JSON.stringify(p1Result, null, 2));
-  console.log('p2Result from performTest:', JSON.stringify(p2Result, null, 2));
 
   // 6. Calculate final score by adding attribute values.
   const p1AttributeValue = p1.attributeValue !== undefined ? p1.attributeValue : (p1.character && p1.attribute ? p1.character.finalAttributes[p1.attribute] || 0 : 0);
@@ -215,12 +200,6 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
 
   const scoreDifference = p1FinalScore - p2FinalScore;
   const pass = p1FinalScore >= p2FinalScore;
-
-  console.log(`p1Score (dice successes + attribute): ${p1FinalScore}`);
-  console.log(`p2Score (dice successes + attribute): ${p2FinalScore}`);
-  console.log(`Final score (p1 - p2): ${scoreDifference}`);
-  console.log(`Pass (p1 >= p2): ${pass}`);
-  console.log('--- resolveTest END ---');
 
   return {
     pass,

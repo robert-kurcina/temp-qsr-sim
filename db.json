@@ -147005,6 +147005,8685 @@
           "helm": 0
         }
       }
+    },
+    {
+      "id": "17706225891610.9695337712857233",
+      "name": "Z-7569",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225893420.24749220179790576",
+      "name": "G-0761",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225894980.5233879385650606",
+      "name": "N-2287-a0",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225896330.05426940230894828",
+      "name": "Y-2515",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225898400.7829566335620093",
+      "name": "E-6412",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225899710.39789611936496216",
+      "name": "O-4789",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225901060.9021801957956168",
+      "name": "J-7448",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225902620.2254578222028345",
+      "name": "I-1385",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225904230.38338993840295443",
+      "name": "X-3773",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706225905980.20375833613054506",
+      "name": "M-5222",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228404970.36592316736836694",
+      "name": "F-4161",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228409190.621121582327304",
+      "name": "R-2959",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228412350.39286686957320227",
+      "name": "O-7632",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228416660.6648606981931005",
+      "name": "K-6910",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228419550.0062540717339272245",
+      "name": "Z-0398",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228422210.45889329560283243",
+      "name": "O-0122",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228425560.7360483035509109",
+      "name": "S-7053-a0",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228428500.4962392243953244",
+      "name": "I-4994",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228432710.8721255091483593",
+      "name": "V-0524",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228434840.3481600313518056",
+      "name": "Y-6837",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228437870.5771911449599825",
+      "name": "M-6820",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228440500.8081216430355007",
+      "name": "V-7105",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706228443200.740551097403328",
+      "name": "R-7746",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229908260.007798754751453529",
+      "name": "L-8599",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229911380.92678048655143",
+      "name": "J-5151",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229913840.74701794388364",
+      "name": "Q-4890",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229916160.04642322236253493",
+      "name": "W-8665",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229918580.43972095059049776",
+      "name": "I-5652",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229920990.262950743480453",
+      "name": "B-8944",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229923200.9167619875631086",
+      "name": "J-4825",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229925910.44260225059660785",
+      "name": "R-0269",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229928370.13449995556904226",
+      "name": "E-4090",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229930870.7154638770834587",
+      "name": "C-6805",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229932920.5145783053423616",
+      "name": "A-2152",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229935590.9182526053516584",
+      "name": "W-0937",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229942430.14259578530997352",
+      "name": "B-0491",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229944090.5815874713879254",
+      "name": "B-8397",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229945660.6123384538870507",
+      "name": "G-9044",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229946940.3998319013944365",
+      "name": "L-0067",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229948650.5446064101729176",
+      "name": "M-2764",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229950190.5047442059402543",
+      "name": "I-6098",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229951730.9268088940591273",
+      "name": "P-9429",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229953050.8982064034241468",
+      "name": "U-2798",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229954350.4729798394755633",
+      "name": "T-7019",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229955960.6818518546827115",
+      "name": "G-0082",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229957470.2110302788330618",
+      "name": "C-4192",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229958860.38181400039741886",
+      "name": "Y-4300",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229960290.8559399967977599",
+      "name": "H-5321",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229961640.5399895028734547",
+      "name": "X-1348",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229962990.5551898393631618",
+      "name": "O-9319",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229964400.997552786856851",
+      "name": "R-1082",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229965800.33894442062843266",
+      "name": "O-2229",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229967120.9855980359225365",
+      "name": "D-3072",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229968430.09246038352843322",
+      "name": "A-9928",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229970180.8134490497299671",
+      "name": "W-2313",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229975020.17743467504106492",
+      "name": "N-2548",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229976360.3367047176608964",
+      "name": "X-3647",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229977900.7921673866738754",
+      "name": "T-6543",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229979300.8214256862283589",
+      "name": "V-0932",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229981040.6889706489082796",
+      "name": "R-6979",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229982480.08319108091519922",
+      "name": "Y-7383",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229983810.18065474018792482",
+      "name": "V-2110",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229985380.7762748736746137",
+      "name": "D-4811",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229986980.9594005057201196",
+      "name": "U-9935",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229988190.967008121387902",
+      "name": "Z-1148",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229990170.4353764788765173",
+      "name": "A-9642",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229991600.8996166520829503",
+      "name": "L-8858",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229996400.029272134713581144",
+      "name": "G-2902",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229998120.1980969103066743",
+      "name": "I-2185",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706229999620.8133612250688735",
+      "name": "J-9411",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230001380.348184713845648",
+      "name": "K-1313",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230002970.539430372670606",
+      "name": "U-6952",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230004420.08216702917372687",
+      "name": "Y-0280",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230005840.16680346565917015",
+      "name": "B-8473",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230007280.004774757112349981",
+      "name": "F-6634",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Rifle, Light, Semi/A",
+            "class": "Firearm - Modern",
+            "bp": 30,
+            "or": "12",
+            "accuracy": "-",
+            "impact": 3,
+            "dmg": "3",
+            "traits": [
+              "ROF",
+              "[2H]"
+            ],
+            "classification": "Firearm",
+            "type": "Modern"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "ROF",
+          "source": "ROF"
+        },
+        {
+          "name": "2H",
+          "source": "[2H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230022700.8902940287080856",
+      "name": "B-4277",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230024210.6011784592247191",
+      "name": "Q-3227",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230025860.28980727875106815",
+      "name": "J-7191",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230027300.2536647301614179",
+      "name": "Y-2838",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230028710.23154463160887584",
+      "name": "B-0654",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230030350.22795877851215707",
+      "name": "O-4950",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230031870.5998609027346251",
+      "name": "J-1903",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230033310.9459162423995333",
+      "name": "V-6816",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230034700.5242839688828793",
+      "name": "E-0162",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230036930.9120372914207522",
+      "name": "G-5178",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230042430.9836836946034679",
+      "name": "X-9437",
+      "profile": {
+        "name": "Test Character",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230045990.4348671714239738",
+      "name": "T-5906",
+      "profile": {
+        "name": "Test Character",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230048440.0844508759911311",
+      "name": "J-2488",
+      "profile": {
+        "name": "Test Character",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230050760.44796262753798954",
+      "name": "L-8894",
+      "profile": {
+        "name": "Test Character",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230052210.5414365298531207",
+      "name": "F-4485",
+      "profile": {
+        "name": "Test Character",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230913040.5514751394378441",
+      "name": "N-7908",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230915030.7406022390070379",
+      "name": "U-6462",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230916610.808893315936424",
+      "name": "M-2866",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230918110.5588149588060078",
+      "name": "H-4205",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230919560.3878979790150596",
+      "name": "B-4040",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230920970.23280041107298088",
+      "name": "V-5389",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230922430.8752266953535346",
+      "name": "F-4860",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230924070.024325228056714776",
+      "name": "Z-1939",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230925820.7598355070670255",
+      "name": "H-6943",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230927690.6644238763253367",
+      "name": "N-3732",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230928950.5311401593824057",
+      "name": "E-2409",
+      "profile": {
+        "name": "Attacker Profile",
+        "archetype": {
+          "name": "Veteran, Fighter",
+          "attributes": {
+            "cca": 3,
+            "rca": 3,
+            "ref": 3,
+            "int": 2,
+            "pow": 3,
+            "str": 2,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [
+            "Grit",
+            "Fight"
+          ],
+          "bp": 66,
+          "species": "Humanoid",
+          "class": "Variant Common"
+        },
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Grit",
+          "source": "Grit"
+        },
+        {
+          "name": "Fight",
+          "source": "Fight"
+        },
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 3,
+        "rca": 3,
+        "ref": 3,
+        "int": 2,
+        "pow": 3,
+        "str": 2,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706230930450.2900388938824312",
+      "name": "A-8616",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "name": "Militia",
+          "attributes": {
+            "cca": 1,
+            "rca": 2,
+            "ref": 2,
+            "int": 2,
+            "pow": 2,
+            "str": 1,
+            "for": 2,
+            "mov": 2,
+            "siz": 3
+          },
+          "traits": [],
+          "bp": 20,
+          "species": "Humanoid",
+          "class": "Common"
+        },
+        "equipment": [
+          {
+            "name": "Armor, Medium Mail",
+            "class": "Armor - Suit",
+            "bp": 8,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 0,
+            "dmg": "-",
+            "traits": [
+              "Armor 4",
+              "[Laden 2]",
+              "Deflect",
+              "[Mail]"
+            ],
+            "classification": "Armor",
+            "type": "Suit"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Armor",
+          "source": "Armor 4",
+          "level": 4
+        },
+        {
+          "name": "Laden",
+          "source": "[Laden 2]",
+          "isDisability": true,
+          "level": 2
+        },
+        {
+          "name": "Deflect",
+          "source": "Deflect"
+        },
+        {
+          "name": "Mail",
+          "source": "[Mail]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 4,
+          "suit": 4,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
     }
   ],
   "assemblies": [
