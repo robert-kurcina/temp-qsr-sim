@@ -21,12 +21,16 @@ function _calculateModifiers(
     disengagerBonus: TestDice, 
     disengagerPenalty: TestDice, 
     defenderBonus: TestDice, 
-    defenderPenalty: TestDice
+    defenderPenalty: TestDice,
+    disengagerAttributeModifier: number,
+    defenderAttributeModifier: number
 } {
     let disengagerBonus: TestDice = {};
     let disengagerPenalty: TestDice = {};
     let defenderBonus: TestDice = {};
     let defenderPenalty: TestDice = {};
+    let disengagerAttributeModifier = 0;
+    let defenderAttributeModifier = 0;
 
     // 1. Disengager Hindrance
     const hindrance = calculateHindrancePenalty(disengager.state);
@@ -55,17 +59,22 @@ function _calculateModifiers(
     // This gives the defender a penalty (not the disengager a bonus)
     if (context.sizeAdvantage && context.sizeAdvantage > 0) {
         defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+        disengagerAttributeModifier += 1;
     }
 
     // Defender Size Advantage (when sizeAdvantage < 0, defender is larger)
     if (context.sizeAdvantage && context.sizeAdvantage < 0) {
         disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
+        defenderAttributeModifier += 1;
     }
 
     // Overreach penalty: give defender a modifier bonus die
-    if (context.isOverreach) defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
+    if (context.isOverreach) {
+        defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
+        disengagerAttributeModifier -= 1;
+    }
 
-    return { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty };
+    return { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty, disengagerAttributeModifier, defenderAttributeModifier };
 }
 
 /**
@@ -93,18 +102,23 @@ export function makeDisengageAction(
         return { pass: true, score: 99, testResult };
     }
 
-    const { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(disengager, defender, defenderWeapon, context);
+    const { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty, disengagerAttributeModifier, defenderAttributeModifier } = _calculateModifiers(disengager, defender, defenderWeapon, context);
+
+    const disengagerBaseAttribute = disengager.finalAttributes.ref || 0;
+    const defenderBaseAttribute = defender.finalAttributes.cca || 0;
+    const disengagerAttributeValue = disengagerBaseAttribute + disengagerAttributeModifier;
+    const defenderAttributeValue = defenderBaseAttribute + defenderAttributeModifier;
 
     const disengagerParticipant: TestParticipant = {
         character: disengager,
-        attribute: 'ref',
+        attributeValue: disengagerAttributeValue,
         bonusDice: disengagerBonus,
         penaltyDice: disengagerPenalty,
     };
 
     const defenderParticipant: TestParticipant = {
         character: defender,
-        attribute: 'cca',
+        attributeValue: defenderAttributeValue,
         bonusDice: defenderBonus,
         penaltyDice: defenderPenalty,
     };
