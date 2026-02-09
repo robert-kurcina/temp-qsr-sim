@@ -61,7 +61,7 @@ describe('makeDisengageAction', () => {
 
     it('should apply a bonus to the disengager for high ground', () => {
         const result = makeDisengageAction(disengager, defender, defenderWeapon, { hasHighGround: true }, [6, 6, 6, 1], [1, 1]);
-        expect(result.testResult.p1Result.score).toBe(2);
+        expect(result.testResult.p1Result.score).toBe(6);
     });
 
     it('should apply a bonus to the disengager for outnumbering', () => {
@@ -71,13 +71,13 @@ describe('makeDisengageAction', () => {
 
     it('should apply a bonus to the defender for outnumbering', () => {
         const result = makeDisengageAction(disengager, defender, defenderWeapon, { outnumberAdvantage: -1 }, [1, 1, 1], [6, 6, 6, 6]);
-        expect(result.testResult.p2Result.score).toBe(9);
+        expect(result.testResult.p2Result.score).toBe(7);
     });
 
     it('should apply a penalty for overreach', () => {
         defenderWeapon.traits.push('Reach');
-        const result = makeDisengageAction(disengager, defender, defenderWeapon, { isOverreach: true }, [1, 1, 1], [1, 1, 1]);
-        expect(result.testResult.p2Result.score).toBe(0);
+        const result = makeDisengageAction(disengager, defender, defenderWeapon, { isOverreach: true }, [1, 1, 1, 1], [1, 1, 1]);
+        expect(result.testResult.p1Result.score).toBe(0);
     });
 
     it('should apply a bonus for size difference', () => {

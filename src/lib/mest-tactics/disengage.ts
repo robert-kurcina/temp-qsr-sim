@@ -67,7 +67,7 @@ function _calculateModifiers(
         }
     }
 
-    if (context.isOverreach) defenderPenalty[DiceType.Wild] = (defenderPenalty[DiceType.Wild] || 0) + 1;
+    if (context.isOverreach) disengagerPenalty[DiceType.Wild] = (disengagerPenalty[DiceType.Wild] || 0) + 1;
 
     return { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty };
 }

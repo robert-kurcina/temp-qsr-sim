@@ -28602,6 +28602,4566 @@
           "helm": 0
         }
       }
+    },
+    {
+      "id": "17706027088920.1508752859139142",
+      "name": "D-6430",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027090210.6078477433307683",
+      "name": "W-2056",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027091240.20956799029718964",
+      "name": "M-9589",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027092090.05871248495422532",
+      "name": "J-3371",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027094010.3002350094893069",
+      "name": "H-8115",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027095050.7691956048830526",
+      "name": "M-8592",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027096270.9527251157992944",
+      "name": "R-8575",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027097120.7117231172449936",
+      "name": "P-0626",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027097990.03177293284094218",
+      "name": "E-5803",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027098990.0914196158324112",
+      "name": "J-1163",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027099910.2225550904163458",
+      "name": "J-0516",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027100900.05642835321176087",
+      "name": "S-9328",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027101700.9012766248696835",
+      "name": "M-8275",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027102600.007471372539864518",
+      "name": "V-7468",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027103890.5801721535691633",
+      "name": "Y-6296",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027105130.35894532317182115",
+      "name": "D-9053",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027105870.31028572398707044",
+      "name": "H-2815",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027106500.31412585107783597",
+      "name": "A-9391",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        },
+        {
+          "name": "Reach",
+          "source": "Reach"
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027107160.20366622555381264",
+      "name": "G-3331",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706027108080.692421074425646",
+      "name": "I-0792",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        },
+        {
+          "name": "Reach",
+          "source": "Reach"
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053912470.6579092279170871",
+      "name": "M-2899",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053913260.317706420415796",
+      "name": "O-2744",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053913910.6901471947002029",
+      "name": "C-9233",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053914450.11062036100650907",
+      "name": "A-7520",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053915240.024491515993103175",
+      "name": "X-3363",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053915890.7495096645300943",
+      "name": "H-2439",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053916990.8813591567827888",
+      "name": "J-7618",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053917990.4521896777852623",
+      "name": "G-7293",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053918560.7666290503142994",
+      "name": "L-1309",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053919240.7238591615265939",
+      "name": "M-9102",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053920060.9509275210626091",
+      "name": "A-7600",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053921170.10551916489228641",
+      "name": "W-0752",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053922340.8340682589172106",
+      "name": "U-7241",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053923080.4059703831743018",
+      "name": "P-6025",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053923840.8646588753783964",
+      "name": "X-4248",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053924390.9507088180642895",
+      "name": "N-9373",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053925270.6607426656449449",
+      "name": "M-8937",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053925980.19879820402527204",
+      "name": "T-4226",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        },
+        {
+          "name": "Reach",
+          "source": "Reach"
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053926440.5661061329770625",
+      "name": "Q-3586",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706053927070.46736468272984655",
+      "name": "B-4777",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        },
+        {
+          "name": "Reach",
+          "source": "Reach"
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056086220.8923421535296825",
+      "name": "D-2620",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056086990.3211927013149547",
+      "name": "C-9061",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056087580.6767605108995054",
+      "name": "X-9260",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056088390.20939094042043993",
+      "name": "A-7046",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056089390.1514639447351569",
+      "name": "B-5069",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056090350.6917446011388051",
+      "name": "P-3853",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056091160.6274571373181737",
+      "name": "N-8691",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056091770.32557782410330094",
+      "name": "F-8502",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056092480.5127028002715224",
+      "name": "V-6072",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056093170.27554244889736745",
+      "name": "T-8856",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056094090.5229755100018492",
+      "name": "F-2293",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056094670.23039422760114237",
+      "name": "E-7857",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056095290.8961344245161131",
+      "name": "D-6501",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056095990.030681655933261",
+      "name": "K-0470",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056096940.3753509881469854",
+      "name": "S-6053",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056097570.28870995826250834",
+      "name": "J-7210",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056098330.5577132066702497",
+      "name": "A-9414",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056099050.8343375856549204",
+      "name": "Y-8372",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        },
+        {
+          "name": "Reach",
+          "source": "Reach"
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056099660.49485163299006296",
+      "name": "O-6945",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": []
+      },
+      "allTraits": [],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706056100270.5412617411403204",
+      "name": "C-0037",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": {
+          "Militia": {
+            "attributes": {
+              "cca": 1,
+              "rca": 2,
+              "ref": 2,
+              "int": 2,
+              "pow": 2,
+              "str": 1,
+              "for": 2,
+              "mov": 2,
+              "siz": 3
+            },
+            "traits": [],
+            "bp": 20,
+            "species": "Humanoid",
+            "class": "Common"
+          }
+        },
+        "items": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]",
+              "Reach"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        },
+        {
+          "name": "Reach",
+          "source": "Reach"
+        }
+      ],
+      "finalAttributes": {
+        "cca": 1,
+        "rca": 2,
+        "ref": 2,
+        "int": 2,
+        "pow": 2,
+        "str": 1,
+        "for": 2,
+        "mov": 2,
+        "siz": 3
+      },
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
     }
   ],
   "assemblies": [
