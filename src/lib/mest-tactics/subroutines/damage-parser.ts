@@ -1,5 +1,5 @@
 
-import type { DicePool } from '../dice-roller';
+import type { TestDice } from '../dice-roller';
 import type { Attributes } from '../Character';
 
 /**
@@ -9,8 +9,8 @@ import type { Attributes } from '../Character';
  * @param attributes The character's attributes to resolve attribute-based damage.
  * @returns An object containing the base damage value and any bonus dice.
  */
-export function parseDamage(damage: string, attributes: Attributes): { value: number; dice: DicePool } {
-  const dice: DicePool = { base: 0, modifier: 0, wild: 0 };
+export function parseDamage(damage: string, attributes: Attributes): { value: number; dice: TestDice } {
+  const dice: TestDice = { base: 0, modifier: 0, wild: 0 };
   let value = 0;
 
   if (!damage) {

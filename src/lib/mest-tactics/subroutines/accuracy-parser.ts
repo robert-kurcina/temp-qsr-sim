@@ -1,12 +1,12 @@
 
-import { DicePool, DiceType } from "../dice-roller";
+import { TestDice, DiceType } from "../dice-roller";
 
 /**
- * Parses a weapon's accuracy string (e.g., "+1b") into a DicePool object.
+ * Parses a weapon's accuracy string (e.g., "+1b") into a TestDice object.
  */
-export function parseAccuracy(accuracyString: string | undefined): { bonusDice: DicePool, penaltyDice: DicePool } {
-    const bonusDice: DicePool = {};
-    const penaltyDice: DicePool = {};
+export function parseAccuracy(accuracyString: string | undefined): { bonusDice: TestDice, penaltyDice: TestDice } {
+    const bonusDice: TestDice = {};
+    const penaltyDice: TestDice = {};
 
     if (!accuracyString || accuracyString === "-") {
         return { bonusDice, penaltyDice };

@@ -1,12 +1,12 @@
-
 import { Profile } from './Profile';
 import { Trait } from './Trait';
-import { FinalAttributes, ArmorState } from './types';
+import { FinalAttributes, ArmorState, Attributes } from './types';
 
 export class Character {
   id: string;
   name: string;
   profile: Profile;
+  attributes: Attributes;
   finalAttributes: FinalAttributes;
   allTraits: Trait[];
 
@@ -26,11 +26,12 @@ export class Character {
     armor: ArmorState;
   };
 
-  constructor(id: string, name: string, profile: Profile) {
-    this.id = id;
-    this.name = name;
+  constructor(profile: Profile) {
+    this.id = profile.name; // For simplicity, using name as ID for now
+    this.name = profile.name;
     this.profile = profile;
-    this.finalAttributes = {};
+    this.attributes = profile.attributes;
+    this.finalAttributes = profile.attributes;
     this.allTraits = [];
 
     this.state = {

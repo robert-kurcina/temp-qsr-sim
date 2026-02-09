@@ -2,7 +2,7 @@
 import { Character } from '../Character';
 import { resolveTest, TestParticipant, ResolveTestResult, DiceType } from '../dice-roller';
 import { TestContext } from '../TestContext';
-import { DicePool } from '../dice-roller';
+import { TestDice } from '../dice-roller';
 import { metricsService } from '../MetricsService';
 
 export function resolveMoraleTest(
@@ -12,8 +12,8 @@ export function resolveMoraleTest(
   p1Rolls: number[] | null = null,
 ): ResolveTestResult {
 
-  const bonusDice: DicePool = {};
-  const penaltyDice: DicePool = {};
+  const bonusDice: TestDice = {};
+  const penaltyDice: TestDice = {};
 
   if (fearTokens > 0) {
     penaltyDice[DiceType.Modifier] = fearTokens;

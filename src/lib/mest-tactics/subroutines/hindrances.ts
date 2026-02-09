@@ -1,5 +1,5 @@
 
-import { DicePool, DiceType } from '../dice-roller';
+import { TestDice, DiceType } from '../dice-roller';
 
 export interface HindranceSources {
   woundTokens: number;

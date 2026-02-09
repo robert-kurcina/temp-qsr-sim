@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createCharacter } from '../character-factory';
 import { resolveHitTest } from './hit-test';
-import { DiceType, DicePool } from '../dice-roller';
+import { DiceType, TestDice } from '../dice-roller';
 import type { Profile } from '../Profile';
 import type { Item } from '../Item';
 import type { Character } from '../Character';
@@ -28,10 +28,10 @@ describe('resolveHitTest', () => {
   });
 
   it('should resolve a standard hit test without external modifiers', () => {
-    const attackerBonus: DicePool = {};
-    const attackerPenalty: DicePool = {};
-    const defenderBonus: DicePool = {};
-    const defenderPenalty: DicePool = {};
+    const attackerBonus: TestDice = {};
+    const attackerPenalty: TestDice = {};
+    const defenderBonus: TestDice = {};
+    const defenderPenalty: TestDice = {};
     const attackerRolls = [6, 1];
     const defenderRolls = [1, 1];
 
@@ -52,10 +52,10 @@ describe('resolveHitTest', () => {
   });
 
   it('should apply external bonus dice to the attacker', () => {
-    const attackerBonus: DicePool = { [DiceType.Base]: 1 };
-    const attackerPenalty: DicePool = {};
-    const defenderBonus: DicePool = {};
-    const defenderPenalty: DicePool = {};
+    const attackerBonus: TestDice = { [DiceType.Base]: 1 };
+    const attackerPenalty: TestDice = {};
+    const defenderBonus: TestDice = {};
+    const defenderPenalty: TestDice = {};
     const attackerRolls = [6, 1, 1];
     const defenderRolls = [1, 1];
     
@@ -76,10 +76,10 @@ describe('resolveHitTest', () => {
   });
 
   it('should apply external penalty dice to the defender', () => {
-    const attackerBonus: DicePool = {};
-    const attackerPenalty: DicePool = {};
-    const defenderBonus: DicePool = {};
-    const defenderPenalty: DicePool = { [DiceType.Base]: 1 };
+    const attackerBonus: TestDice = {};
+    const attackerPenalty: TestDice = {};
+    const defenderBonus: TestDice = {};
+    const defenderPenalty: TestDice = { [DiceType.Base]: 1 };
     const attackerRolls = [6, 1, 1];
     const defenderRolls = [1, 1];
 
@@ -101,10 +101,10 @@ describe('resolveHitTest', () => {
 
   it('should correctly parse and apply weapon accuracy modifiers', () => {
     weapon.accuracy = '+1b';
-    const attackerBonus: DicePool = {};
-    const attackerPenalty: DicePool = {};
-    const defenderBonus: DicePool = {};
-    const defenderPenalty: DicePool = {};
+    const attackerBonus: TestDice = {};
+    const attackerPenalty: TestDice = {};
+    const defenderBonus: TestDice = {};
+    const defenderPenalty: TestDice = {};
     const attackerRolls = [6, 1, 1];
     const defenderRolls = [1, 1];
 
@@ -126,10 +126,10 @@ describe('resolveHitTest', () => {
 
   it('should combine external modifiers and accuracy modifiers', () => {
     weapon.accuracy = '+1b';
-    const attackerBonus: DicePool = { [DiceType.Modifier]: 1 };
-    const attackerPenalty: DicePool = {};
-    const defenderBonus: DicePool = {};
-    const defenderPenalty: DicePool = {};
+    const attackerBonus: TestDice = { [DiceType.Modifier]: 1 };
+    const attackerPenalty: TestDice = {};
+    const defenderBonus: TestDice = {};
+    const defenderPenalty: TestDice = {};
     const attackerRolls = [6, 1, 1, 5];
     const defenderRolls = [1, 1];
 

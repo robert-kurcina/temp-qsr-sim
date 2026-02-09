@@ -1,21 +1,21 @@
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, DicePool, DiceType, TestResult } from '../dice-roller';
+import { resolveTest, TestParticipant, TestDice, DiceType, TestResult } from '../dice-roller';
 import { Item } from '../Item';
 import { TestContext } from '../TestContext';
 
 // --- Sub-functions for parsing --- //
 
-const parseDiceString = (diceString: string): DicePool => {
-    const dice: DicePool = {};
+const parseDiceString = (diceString: string): TestDice => {
+    const dice: TestDice = {};
     const value = parseInt(diceString.slice(1, -1), 10) || 1;
     const type = diceString.endsWith('m') ? DiceType.Modifier : diceString.endsWith('b') ? DiceType.Base : DiceType.Wild;
     dice[type] = value;
     return dice;
 };
 
-function parseDamageFormula(formula: string, attacker: Character): { value: number; dice: DicePool } {
+function parseDamageFormula(formula: string, attacker: Character): { value: number; dice: TestDice } {
     let value = 0;
-    const dice: DicePool = {};
+    const dice: TestDice = {};
     for (const part of formula.split('+')) {
         const upperPart = part.toUpperCase();
         if (upperPart === 'STR') value += attacker.finalAttributes.str;

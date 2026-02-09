@@ -1,6 +1,6 @@
 
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, DicePool, TestResult } from '../dice-roller';
+import { resolveTest, TestParticipant, TestDice, TestResult } from '../dice-roller';
 import { Item } from '../Item';
 import { parseAccuracy } from './accuracy-parser';
 
@@ -8,10 +8,10 @@ export function resolveRangedHitTest(
     attacker: Character,
     defender: Character,
     weapon: Item,
-    attackerBonus: DicePool = {},
-    attackerPenalty: DicePool = {},
-    defenderBonus: DicePool = {},
-    defenderPenalty: DicePool = {},
+    attackerBonus: TestDice = {},
+    attackerPenalty: TestDice = {},
+    defenderBonus: TestDice = {},
+    defenderPenalty: TestDice = {},
 ): TestResult {
     
     // Get the base attribute values for the test

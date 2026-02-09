@@ -43,6 +43,7 @@ My update process for this document is to **Read, Modify, and Write**. I will al
 2.  **Separation of Responsibilities (SOLID):** The codebase will adhere to SOLID design principles, with a strong emphasis on the Single Responsibility Principle. Complex processes will be broken down into smaller, modular, and independently testable subroutines.
 3.  **No Regular Expressions for Complex Parsing:** Avoid using regular expressions for parsing structured strings with multiple, potentially ambiguous parts (e.g., damage formulas). Instead, use simple, character-by-character string manipulation to ensure clarity, predictability, and ease of debugging. Regex should only be used for simple, well-defined pattern matching.
 4.  **Debugging with Console Logs:** When unit tests fail, introduce `console.log` statements to the relevant code to help with debugging. These logs should be removed only after a successful `npm test` run.
+5.  **Declare and Use Variables for Function Arguments:** Always declare variables for function arguments. Never pass a non-variable argument to a function.
 
 ## 6. Testing and Debugging Methodology
 

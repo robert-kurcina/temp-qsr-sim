@@ -1,10 +1,10 @@
 
 import { Character } from './Character';
-import { DicePool, DiceType, ResolveTestResult } from './dice-roller';
+import { TestDice, DiceType, ResolveTestResult } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
-import { resolveTest, TestParticipant, mergeDicePools } from './dice-roller';
+import { resolveTest, TestParticipant, mergeTestDices } from './dice-roller';
 import { parseAccuracy } from './subroutines/accuracy-parser';
 import { metricsService } from './MetricsService';
 
@@ -13,9 +13,9 @@ function _calculateModifiers(
     weapon: Item, 
     orm: number, 
     context: TestContext
-): { attackerBonus: DicePool, attackerPenalty: DicePool } {
-    const attackerBonus: DicePool = {};
-    const attackerPenalty: DicePool = {};
+): { attackerBonus: TestDice, attackerPenalty: TestDice } {
+    const attackerBonus: TestDice = {};
+    const attackerPenalty: TestDice = {};
 
     const hindrance = calculateHindrancePenalty(attacker.state);
     if (hindrance > 0) {
@@ -53,8 +53,8 @@ export function makeIndirectRangedAttack(
 
     const attackerParticipant: TestParticipant = {
         attributeValue: attackerAttribute,
-        bonusDice: mergeDicePools(attackerBonus, accBonus),
-        penaltyDice: mergeDicePools(attackerPenalty, accPenalty),
+        bonusDice: mergeTestDices(attackerBonus, accBonus),
+        penaltyDice: mergeTestDices(attackerPenalty, accPenalty),
     };
 
     const systemParticipant: TestParticipant = {

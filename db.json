@@ -155684,6 +155684,4408 @@
           "helm": 0
         }
       }
+    },
+    {
+      "id": "17706232009060.9139588145281232",
+      "name": "F-8961",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232011020.414789147458674",
+      "name": "C-9506",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232012820.3701290814539777",
+      "name": "R-1939",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232014290.6236642451101719",
+      "name": "W-6384",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232015920.4562023705467555",
+      "name": "A-6874",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232017630.44102781542467895",
+      "name": "Q-6532",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232018990.061921732175372224",
+      "name": "Z-8201",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232020790.26347866803058384",
+      "name": "U-7728",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232022530.041487078343039885",
+      "name": "F-9207",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232024250.8013196834604868",
+      "name": "D-3566",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232026200.2867701504817808",
+      "name": "P-7410",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232027680.9433510857251206",
+      "name": "H-7954",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232029180.26797705708415376",
+      "name": "E-0888",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232030940.955953619293018",
+      "name": "A-8496",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232032330.19144476639023877",
+      "name": "X-7942",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232033740.2978271472789067",
+      "name": "W-6394",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232035360.07564825333899838",
+      "name": "M-9318",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232036850.4314819613612222",
+      "name": "L-0432",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232038420.044360674181112225",
+      "name": "D-3932",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706232040350.5228287096298738",
+      "name": "R-2064",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235236680.01429632602869857",
+      "name": "M-1962",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235238490.22195615395909063",
+      "name": "X-9790",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235239940.75504270708044",
+      "name": "E-7342",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235241440.9214281283122165",
+      "name": "G-5549",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235243090.2845124880771748",
+      "name": "M-5620",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235244510.6961904840982471",
+      "name": "T-3850",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235246260.7364674505479307",
+      "name": "P-6213",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235248130.48829711157719324",
+      "name": "W-5770-a0",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235250000.2932249874645503",
+      "name": "Q-5645",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235251580.9049754179307863",
+      "name": "G-6417",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235253250.15592582304221514",
+      "name": "C-6572",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235254660.4176050979256227",
+      "name": "M-4048",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235256000.18412349171040465",
+      "name": "O-4131",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235257580.19871145505866417",
+      "name": "B-6393",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235259000.06779091655264091",
+      "name": "W-6162",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235261160.9096419784339647",
+      "name": "K-4725",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235262780.7326806808697617",
+      "name": "Y-3157",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235264230.9491993392318798",
+      "name": "X-2340",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235265670.7465806853647061",
+      "name": "Q-6579",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706235267010.17572790037073127",
+      "name": "Z-6716",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237036850.6528720341084202",
+      "name": "W-9259",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237038860.6441783398640326",
+      "name": "T-9649",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237040280.7341007377494211",
+      "name": "T-1796",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237041890.4811434000562713",
+      "name": "Y-7862",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237043570.6917221137981266",
+      "name": "Z-9045",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237044910.9398611449191328",
+      "name": "U-5623",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237046390.54220514021544",
+      "name": "Z-0926",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237048430.1811902066530542",
+      "name": "A-7130",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237049910.21873043390075697",
+      "name": "K-5227",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237051900.985399979902928",
+      "name": "V-0412",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237053400.010014651138690711",
+      "name": "G-7249",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237055020.06340379498346049",
+      "name": "H-7615",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237056330.5091837152606737",
+      "name": "O-5244",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237057830.10407454195864707",
+      "name": "T-1754",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237059770.40186355119491735",
+      "name": "D-5490",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237061230.4327386315186248",
+      "name": "L-6305",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237063070.4193541638581757",
+      "name": "B-8159",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237064660.2736414502112192",
+      "name": "V-3059-a0",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237066260.5889633462883215",
+      "name": "N-7398",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706237067870.044477153763687216",
+      "name": "N-9038",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238054090.2033901161373175",
+      "name": "G-5133",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238059760.6397188202539283",
+      "name": "A-7620",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238063530.5709261045594611",
+      "name": "E-9399",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238065410.527584755131211",
+      "name": "R-5224",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238067440.43930926231295464",
+      "name": "O-8157",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238069270.44231205702460663",
+      "name": "F-2404",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238071950.41574929830316054",
+      "name": "C-5843-a0",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238074790.3638222127759201",
+      "name": "Z-2879",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238077100.30847046022254077",
+      "name": "E-6416",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238079340.23661063422726825",
+      "name": "M-6033",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238081600.8672173007527437",
+      "name": "U-9106",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238084020.3703712152480789",
+      "name": "P-2288",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238086460.0368862076209171",
+      "name": "X-0034",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238089230.927967580119778",
+      "name": "L-8467",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238091260.0026217905973042743",
+      "name": "W-9454",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238093420.021494133669500703",
+      "name": "C-8051",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238095380.05831087076080088",
+      "name": "Q-6456",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238097590.04809910295661668",
+      "name": "G-7148",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238099980.2805951517842942",
+      "name": "D-8683",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706238102050.3010472928593029",
+      "name": "Y-1039",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241435030.2927819176809241",
+      "name": "O-4875",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241437870.1890910879062735",
+      "name": "G-0338",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241440270.9537793584087824",
+      "name": "M-6847",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241442210.6901916926807101",
+      "name": "T-9793",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241444510.2839394254358265",
+      "name": "J-6058",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241446630.535499151717763",
+      "name": "U-2099",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241448430.41275982420485113",
+      "name": "P-6844",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241450250.6429937397701944",
+      "name": "F-9520",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241453240.7581293423746533",
+      "name": "K-4606",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241454810.6859526608752633",
+      "name": "W-5436",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241457580.6431749754847773",
+      "name": "D-2259",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241460100.8208683317502212",
+      "name": "T-8072",
+      "profile": {
+        "name": "Defender Profile",
+        "archetype": "Militia",
+        "equipment": [
+          {
+            "name": "Sword, Broad",
+            "class": "Melee",
+            "bp": 17,
+            "or": "-",
+            "accuracy": "-",
+            "impact": 1,
+            "dmg": "2+2m",
+            "traits": [
+              "Parry",
+              "Cleave",
+              "[1H]"
+            ],
+            "classification": "Melee",
+            "type": "Melee"
+          }
+        ]
+      },
+      "allTraits": [
+        {
+          "name": "Parry",
+          "source": "Parry"
+        },
+        {
+          "name": "Cleave",
+          "source": "Cleave"
+        },
+        {
+          "name": "1H",
+          "source": "[1H]",
+          "isDisability": true
+        }
+      ],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
+    },
+    {
+      "id": "17706241464060.952335475781106",
+      "name": "B-0040",
+      "profile": {
+        "name": "Disengager Profile",
+        "archetype": "Militia",
+        "equipment": []
+      },
+      "allTraits": [],
+      "finalAttributes": {},
+      "state": {
+        "wounds": 0,
+        "delayTokens": 0,
+        "fearTokens": 0,
+        "isHidden": false,
+        "isWaiting": false,
+        "isDisordered": false,
+        "isDistracted": false,
+        "isEngaged": false,
+        "isInCover": false,
+        "isKOd": false,
+        "isEliminated": false,
+        "statusEffects": [],
+        "armor": {
+          "total": 0,
+          "suit": 0,
+          "gear": 0,
+          "shield": 0,
+          "helm": 0
+        }
+      }
     }
   ],
   "assemblies": [
@@ -155824,4 +160226,4 @@
       "totalCharacters": 0
     }
   ]
-}
+}}

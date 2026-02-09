@@ -1,6 +1,6 @@
 
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, DicePool, ResolveTestResult, mergeDicePools } from '../dice-roller';
+import { resolveTest, TestParticipant, TestDice, ResolveTestResult, mergeTestDices } from '../dice-roller';
 import { Item } from '../Item';
 import { parseAccuracy } from './accuracy-parser';
 
@@ -8,10 +8,10 @@ export function resolveHitTest(
     attacker: Character,
     defender: Character,
     weapon: Item,
-    attackerBonus: DicePool = {},
-    attackerPenalty: DicePool = {},
-    defenderBonus: DicePool = {},
-    defenderPenalty: DicePool = {},
+    attackerBonus: TestDice = {},
+    attackerPenalty: TestDice = {},
+    defenderBonus: TestDice = {},
+    defenderPenalty: TestDice = {},
     p1Rolls: number[] | null = null,
     p2Rolls: number[] | null = null,
 ): ResolveTestResult {
@@ -23,8 +23,8 @@ export function resolveHitTest(
 
     const attackerParticipant: TestParticipant = {
         attributeValue: attackerAttribute,
-        bonusDice: mergeDicePools(attackerBonus, accBonus),
-        penaltyDice: mergeDicePools(attackerPenalty, accPenalty),
+        bonusDice: mergeTestDices(attackerBonus, accBonus),
+        penaltyDice: mergeTestDices(attackerPenalty, accPenalty),
     };
 
     const defenderParticipant: TestParticipant = {

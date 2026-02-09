@@ -1,4 +1,4 @@
-import { Character } from '../character/Character';
+import { Character } from '../Character';
 import { performTest, TestDice } from '../dice-roller';
 
 export interface CombatResult {
@@ -29,8 +29,8 @@ export class CombatEngine {
     const attackerHitRolls = this.getRolls(attackerDice.base || 0);
     const defenderHitRolls = this.getRolls(defenderDice.base || 0);
 
-    const attackerHitTest = performTest(attackerDice, attacker.attributes.cca, attackerHitRolls);
-    const defenderHitTest = performTest(defenderDice, defender.attributes.cca, defenderHitRolls);
+    const attackerHitTest = performTest(attackerDice, attacker.profile.attributes.cca, attackerHitRolls);
+    const defenderHitTest = performTest(defenderDice, defender.profile.attributes.cca, defenderHitRolls);
 
     const hit = attackerHitTest.score >= defenderHitTest.score;
 
@@ -51,13 +51,13 @@ export class CombatEngine {
     );
     const defenderDamageRolls = this.getRolls(defenderDamageDice.base || 0);
 
-    const attackerDamageTest = performTest(attackerDamageDice, attacker.attributes.STR, attackerDamageRolls);
-    const defenderDamageTest = performTest(defenderDamageDice, defender.attributes.FOR, defenderDamageRolls);
+    const attackerDamageTest = performTest(attackerDamageDice, attacker.profile.attributes.str, attackerDamageRolls);
+    const defenderDamageTest = aperformTest(defenderDamageDice, defender.profile.attributes.for, defenderDamageRolls);
 
     const wound = attackerDamageTest.score >= defenderDamageTest.score;
 
     if (wound) {
-      defender.takeWound();
+      defender.wounds += 1;
     }
 
     return { hit: true, wound };

@@ -1,4 +1,3 @@
-
 import { Character } from './Character';
 
 export enum DiceType {
@@ -21,10 +20,6 @@ export function d6(): number {
   return Math.floor(Math.random() * 6) + 1;
 }
 
-/**
- * Correctly calculates successes and carry-overs based on the rules.
- * Modifier dice succeed on 4, 5, 6.
- */
 export function getDieSuccesses(type: DiceType, faceValue: number): RollResult {
   let successes = 0;
   let carryOver: DiceType | null = null;
@@ -38,7 +33,7 @@ export function getDieSuccesses(type: DiceType, faceValue: number): RollResult {
       }
       break;
     case DiceType.Modifier:
-      if (faceValue >= 4) successes = 1; // Corrected: 4, 5, 6 is one success
+      if (faceValue >= 4) successes = 1;
       if (faceValue === 6) {
         carryOver = DiceType.Modifier;
       }
@@ -55,7 +50,7 @@ export function getDieSuccesses(type: DiceType, faceValue: number): RollResult {
   return { successes, carryOver };
 }
 
-export interface DicePool {
+export interface TestDice {
   [DiceType.Base]?: number;
   [DiceType.Modifier]?: number;
   [DiceType.Wild]?: number;
@@ -63,17 +58,13 @@ export interface DicePool {
 
 export interface PerformTestResult {
   score: number;
-  carryOverDice: DicePool;
+  carryOverDice: TestDice;
 }
 
-/**
- * Calculates the score and carry-over dice from a given pool and rolls.
- * This function does not handle attribute values.
- */
-export function performTest(dice: DicePool, rolls: number[]): PerformTestResult {
+export function performTest(dice: TestDice, attributeValue: number, rolls: number[]): PerformTestResult {
   const allRolls = [...rolls];
   let totalSuccesses = 0;
-  const carryOverCounts: DicePool = { base: 0, modifier: 0, wild: 0 };
+  const carryOverCounts: TestDice = { base: 0, modifier: 0, wild: 0 };
 
   const rollAndProcess = (count: number, type: DiceType) => {
     for (let i = 0; i < count; i++) {
@@ -94,7 +85,7 @@ export function performTest(dice: DicePool, rolls: number[]): PerformTestResult 
   rollAndProcess(dice.wild || 0, DiceType.Wild);
 
   return {
-    score: totalSuccesses,
+    score: totalSuccesses + attributeValue,
     carryOverDice: carryOverCounts,
   };
 }
@@ -115,8 +106,8 @@ export interface TestParticipant {
     character?: Character;
     attributeValue?: number;
     attribute?: keyof Character['finalAttributes'];
-    bonusDice?: DicePool;
-    penaltyDice?: DicePool;
+    bonusDice?: TestDice;
+    penaltyDice?: TestDice;
     isSystemPlayer?: boolean; // For Unopposed tests
 }
 
@@ -130,8 +121,8 @@ export interface ResolveTestResult {
   pass: boolean;
 }
 
-export function mergeDicePools(...pools: (DicePool | undefined)[]): DicePool {
-  const merged: DicePool = { base: 0, modifier: 0, wild: 0 };
+export function mergeTestDice(...pools: (TestDice | undefined)[]): TestDice {
+  const merged: TestDice = { base: 0, modifier: 0, wild: 0 };
   for (const pool of pools) {
       if (!pool) continue;
       for (const key in pool) {
@@ -142,17 +133,12 @@ export function mergeDicePools(...pools: (DicePool | undefined)[]): DicePool {
   return merged;
 }
 
-/**
- * Rewritten resolveTest function to correctly implement game rules.
- */
 export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: number[] | null = null, p2Rolls: number[] | null = null): ResolveTestResult {
-  // 1. Initialize dice pools. Each player starts with 2 base dice.
-  const p1Pool: DicePool = { base: 2, modifier: 0, wild: 0 };
-  const p2Pool: DicePool = { base: 2, modifier: 0, wild: 0 };
+  const p1Pool: TestDice = { base: 2, modifier: 0, wild: 0 };
+  const p2Pool: TestDice = { base: 2, modifier: 0, wild: 0 };
 
-  // 2. Apply bonuses and penalties. Penalties for one are bonuses for the other.
-  const p1Bonuses = mergeDicePools(p1.bonusDice, p2.penaltyDice);
-  const p2Bonuses = mergeDicePools(p2.bonusDice, p1.penaltyDice);
+  const p1Bonuses = mergeTestDice(p1.bonusDice, p2.penaltyDice);
+  const p2Bonuses = mergeTestDice(p2.bonusDice, p1.penaltyDice);
 
   p1Pool.base = (p1Pool.base || 0) + (p1Bonuses.base || 0);
   p1Pool.modifier = (p1Pool.modifier || 0) + (p1Bonuses.modifier || 0);
@@ -162,7 +148,6 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   p2Pool.modifier = (p2Pool.modifier || 0) + (p2Bonuses.modifier || 0);
   p2Pool.wild = (p2Pool.wild || 0) + (p2Bonuses.wild || 0);
 
-  // 3. Flatten dice pools (except for the core 2 base dice).
   const flattenableP1Base = Math.max(0, (p1Pool.base || 0) - 2);
   const flattenableP2Base = Math.max(0, (p2Pool.base || 0) - 2);
   const commonBase = Math.min(flattenableP1Base, flattenableP2Base);
@@ -177,7 +162,6 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   p1Pool.wild = (p1Pool.wild || 0) - commonWild;
   p2Pool.wild = (p2Pool.wild || 0) - commonWild;
 
-  // 4. Determine rolls
   const p1TotalDice = (p1Pool.base || 0) + (p1Pool.modifier || 0) + (p1Pool.wild || 0);
   const p2TotalDice = (p2Pool.base || 0) + (p2Pool.modifier || 0) + (p2Pool.wild || 0);
 
@@ -187,16 +171,14 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   if (p1FinalRolls.length < p1TotalDice) throw new Error('Not enough dice rolls provided for p1');
   if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw new Error('Not enough dice rolls provided for p2');
 
-  // 5. Perform the test by rolling dice and getting successes
-  const p1Result = performTest(p1Pool, p1FinalRolls);
-  const p2Result = p2.isSystemPlayer ? { score: 0, carryOverDice: {} } : performTest(p2Pool, p2FinalRolls);
-
-  // 6. Calculate final score by adding attribute values.
   const p1AttributeValue = p1.attributeValue !== undefined ? p1.attributeValue : (p1.character && p1.attribute ? p1.character.finalAttributes[p1.attribute] || 0 : 0);
   const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue !== undefined ? p2.attributeValue : (p2.character && p2.attribute ? p2.character.finalAttributes[p2.attribute] || 0 : 0));
-  
-  const p1FinalScore = p1Result.score + p1AttributeValue;
-  const p2FinalScore = p2Result.score + p2AttributeValue;
+
+  const p1Result = performTest(p1Pool, p1AttributeValue, p1FinalRolls);
+  const p2Result = p2.isSystemPlayer ? { score: p2AttributeValue, carryOverDice: { base: 0, modifier: 0, wild: 0 } } : performTest(p2Pool, p2AttributeValue, p2FinalRolls);
+
+  const p1FinalScore = p1Result.score;
+  const p2FinalScore = p2Result.score;
 
   const scoreDifference = p1FinalScore - p2FinalScore;
   const pass = p1FinalScore >= p2FinalScore;
@@ -204,7 +186,7 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   return {
     pass,
     score: scoreDifference,
-    cascades: pass ? scoreDifference : 0,
+    cascades: pass ? Math.floor(scoreDifference) : 0,
     p1FinalScore,
     p2FinalScore,
     p1Result,

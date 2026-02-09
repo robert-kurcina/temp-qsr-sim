@@ -1,5 +1,5 @@
 import { Character } from './Character';
-import { DicePool, DiceType, TestResult } from './dice-roller';
+import { TestDice, DiceType, TestResult } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
@@ -17,12 +17,12 @@ export interface AttackResult {
 // --- Internal Modifier Calculation --- //
 
 function _calculateModifiers(attacker: Character, defender: Character, context: TestContext)
-    : { attackerBonus: DicePool, attackerPenalty: DicePool, defenderBonus: DicePool, defenderPenalty: DicePool } {
+    : { attackerBonus: TestDice, attackerPenalty: TestDice, defenderBonus: TestDice, defenderPenalty: TestDice } {
 
-    const attackerBonus: DicePool = {};
-    const attackerPenalty: DicePool = {};
-    const defenderBonus: DicePool = {};
-    const defenderPenalty: DicePool = {};
+    const attackerBonus: TestDice = {};
+    const attackerPenalty: TestDice = {};
+    const defenderBonus: TestDice = {};
+    const defenderPenalty: TestDice = {};
 
     // 1. Hindrance Penalties
     const attackerHindrance = calculateHindrancePenalty({ woundTokens: attacker.state.wounds, fearTokens: attacker.state.fearTokens, delayTokens: attacker.state.delayTokens });
