@@ -1,62 +1,17 @@
 
-import { Item } from './Item';
 import { Profile } from './Profile';
 import { Trait } from './Trait';
+import { Position } from './battlefield/Position';
+import { FinalAttributes, ArmorState } from './types';
 
-/**
- * Represents the final, calculated attributes of a character after applying
- * all modifiers from their archetype and equipment.
- */
-export type FinalAttributes = Record<string, number>;
-
-/**
- * Represents the state of a character's armor, broken down by type.
- * This is calculated from their equipped armor items.
- */
-export interface ArmorState {
-  total: number;
-  suit: number;
-  gear: number;
-  shield: number;
-  helm: number;
-}
-
-/**
- * Represents a single character in the game, combining their profile,
- * final attributes, and current game state.
- */
-export interface Character {
-  /**
-   * A unique identifier for the character instance.
-   */
+export class Character {
   id: string;
-
-  /**
-   * The character's name, e.g., "Grom the Fierce".
-   */
   name: string;
-
-  /**
-   * The base profile from which the character was created, including their
-   * archetype and equipment.
-   */
   profile: Profile;
-
-  /**
-   * The final, calculated attributes (e.g., CCA, STR, FOR) after all
-   * modifiers have been applied.
-   */
   finalAttributes: FinalAttributes;
-
-  /**
-   * The structured list of all traits the character possesses, parsed from both
-   * the archetype and all of its equipment.
-   */
   allTraits: Trait[];
+  position: Position;
 
-  /**
-   * Tracks the character's current state during a game.
-   */
   state: {
     wounds: number;
     delayTokens: number;
@@ -65,15 +20,48 @@ export interface Character {
     isWaiting: boolean;
     isDisordered: boolean;
     isDistracted: boolean;
-    isEngaged: boolean;      // New State: Is the character in base-to-base with an enemy?
-    isInCover: boolean;      // New State: Is the character receiving benefits of cover?
-    isKOd: boolean; 
-    isEliminated: boolean; 
-    statusEffects: string[]; // e.g., ['Confused']
-    
-    /**
-     * The character's current armor rating, calculated from their equipment.
-     */
+    isEngaged: boolean;
+    isInCover: boolean;
+    isKOd: boolean;
+    isEliminated: boolean;
+    statusEffects: string[];
     armor: ArmorState;
   };
+
+  constructor(id: string, name: string, profile: Profile, position: Position) {
+    this.id = id;
+    this.name = name;
+    this.profile = profile;
+    this.finalAttributes = {};
+    this.allTraits = [];
+    this.position = position;
+
+    this.state = {
+      wounds: 0,
+      delayTokens: 0,
+      fearTokens: 0,
+      isHidden: false,
+      isWaiting: false,
+      isDisordered: false,
+      isDistracted: false,
+      isEngaged: false,
+      isInCover: false,
+      isKOd: false,
+      isEliminated: false,
+      statusEffects: [],
+      armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 },
+    };
+  }
+
+  get wounds(): number {
+    return this.state.wounds;
+  }
+
+  set wounds(value: number) {
+    this.state.wounds = value;
+  }
+
+  move(newPosition: Position) {
+    this.position = newPosition;
+  }
 }

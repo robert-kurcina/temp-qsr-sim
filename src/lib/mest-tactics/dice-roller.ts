@@ -1,3 +1,4 @@
+
 export enum DiceType {
   Base = 'base',
   Modifier = 'modifier',
@@ -18,6 +19,10 @@ export function d6(): number {
   return Math.floor(Math.random() * 6) + 1;
 }
 
+/**
+ * Correctly calculates successes and carry-overs based on the rules.
+ * Modifier dice succeed on 4, 5, 6.
+ */
 export function getDieSuccesses(type: DiceType, faceValue: number): RollResult {
   let successes = 0;
   let carryOver: DiceType | null = null;
@@ -31,7 +36,7 @@ export function getDieSuccesses(type: DiceType, faceValue: number): RollResult {
       }
       break;
     case DiceType.Modifier:
-      if (faceValue >= 5) successes = 1;
+      if (faceValue >= 4) successes = 1; // Corrected: 4, 5, 6 is one success
       if (faceValue === 6) {
         carryOver = DiceType.Modifier;
       }
@@ -59,8 +64,12 @@ export interface PerformTestResult {
   carryOverDice: DicePool;
 }
 
-export function performTest(dice: DicePool, rolls: number[] | number): PerformTestResult {
-  const allRolls = Array.isArray(rolls) ? [...rolls] : [rolls];
+/**
+ * Calculates the score and carry-over dice from a given pool and rolls.
+ * This function does not handle attribute values.
+ */
+export function performTest(dice: DicePool, rolls: number[]): PerformTestResult {
+  const allRolls = [...rolls];
   let totalSuccesses = 0;
   const carryOverCounts: DicePool = { base: 0, modifier: 0, wild: 0 };
 
@@ -68,7 +77,7 @@ export function performTest(dice: DicePool, rolls: number[] | number): PerformTe
     for (let i = 0; i < count; i++) {
       const roll = allRolls.shift();
       if (roll === undefined) {
-        throw new Error('Not enough dice rolls provided for the test.');
+        throw new Error(`Not enough dice rolls provided for the test. Expected ${count} ${type} rolls, but ran out.`);
       }
       const result = getDieSuccesses(type, roll);
       totalSuccesses += result.successes;
@@ -84,11 +93,7 @@ export function performTest(dice: DicePool, rolls: number[] | number): PerformTe
 
   return {
     score: totalSuccesses,
-    carryOverDice: {
-      base: carryOverCounts.base,
-      modifier: carryOverCounts.modifier,
-      wild: carryOverCounts.wild,
-    },
+    carryOverDice: carryOverCounts,
   };
 }
 
@@ -108,19 +113,21 @@ export interface TestParticipant {
   attributeValue: number;
   bonusDice?: DicePool;
   penaltyDice?: DicePool;
+  isSystemPlayer?: boolean; // For Unopposed tests
 }
 
 export interface ResolveTestResult {
-  score: number;
-  p1Misses: number;
-  p2Misses: number;
+  score: number; // Final difference between p1 and p2 scores
+  p1FinalScore: number;
+  p2FinalScore: number;
+  cascades: number;
   p1Result: PerformTestResult;
   p2Result: PerformTestResult;
   pass: boolean;
 }
 
 export function mergeDicePools(...pools: (DicePool | undefined)[]): DicePool {
-  const merged: DicePool = {};
+  const merged: DicePool = { base: 0, modifier: 0, wild: 0 };
   for (const pool of pools) {
       if (!pool) continue;
       for (const key in pool) {
@@ -131,77 +138,89 @@ export function mergeDicePools(...pools: (DicePool | undefined)[]): DicePool {
   return merged;
 }
 
+/**
+ * Rewritten resolveTest function to correctly implement game rules.
+ */
 export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: number[] | null = null, p2Rolls: number[] | null = null): ResolveTestResult {
   console.log('--- resolveTest START ---');
   console.log('p1 participant:', JSON.stringify(p1, null, 2));
   console.log('p2 participant:', JSON.stringify(p2, null, 2));
 
-  // Combine participant penalties with opponent bonuses for the final dice pool calculation
-  const p1Dice: DicePool = {
-      [DiceType.Base]: p1.attributeValue + (p1.bonusDice?.[DiceType.Base] || 0) - (p1.penaltyDice?.[DiceType.Base] || 0),
-      [DiceType.Modifier]: (p1.bonusDice?.[DiceType.Modifier] || 0) - (p1.penaltyDice?.[DiceType.Modifier] || 0),
-      [DiceType.Wild]: (p1.bonusDice?.[DiceType.Wild] || 0) - (p1.penaltyDice?.[DiceType.Wild] || 0),
-  };
+  // 1. Initialize dice pools. Each player starts with 2 base dice.
+  const p1Pool: DicePool = { base: 2, modifier: 0, wild: 0 };
+  const p2Pool: DicePool = { base: 2, modifier: 0, wild: 0 };
 
-  const p2Dice: DicePool = {
-      [DiceType.Base]: p2.attributeValue + (p2.bonusDice?.[DiceType.Base] || 0) - (p2.penaltyDice?.[DiceType.Base] || 0),
-      [DiceType.Modifier]: (p2.bonusDice?.[DiceType.Modifier] || 0) - (p2.penaltyDice?.[DiceType.Modifier] || 0),
-      [DiceType.Wild]: (p2.bonusDice?.[DiceType.Wild] || 0) - (p2.penaltyDice?.[DiceType.Wild] || 0),
-  };
+  // 2. Apply bonuses and penalties. Penalties for one are bonuses for the other.
+  const p1Bonuses = mergeDicePools(p1.bonusDice, p2.penaltyDice);
+  const p2Bonuses = mergeDicePools(p2.bonusDice, p1.penaltyDice);
 
-  console.log('p1 calculated dice pool:', JSON.stringify(p1Dice, null, 2));
-  console.log('p2 calculated dice pool:', JSON.stringify(p2Dice, null, 2));
+  p1Pool.base = (p1Pool.base || 0) + (p1Bonuses.base || 0);
+  p1Pool.modifier = (p1Pool.modifier || 0) + (p1Bonuses.modifier || 0);
+  p1Pool.wild = (p1Pool.wild || 0) + (p1Bonuses.wild || 0);
 
-  const p1TotalDice = Math.max(0, Object.values(p1Dice).reduce((a, b) => a + b, 0));
-  const p2TotalDice = Math.max(0, Object.values(p2Dice).reduce((a, b) => a + b, 0));
+  p2Pool.base = (p2Pool.base || 0) + (p2Bonuses.base || 0);
+  p2Pool.modifier = (p2Pool.modifier || 0) + (p2Bonuses.modifier || 0);
+  p2Pool.wild = (p2Pool.wild || 0) + (p2Bonuses.wild || 0);
 
-  let p1FinalRolls: number[];
-  let p2FinalRolls: number[];
+  // 3. Flatten dice pools (except for the core 2 base dice).
+  const flattenableP1Base = Math.max(0, (p1Pool.base || 0) - 2);
+  const flattenableP2Base = Math.max(0, (p2Pool.base || 0) - 2);
+  const commonBase = Math.min(flattenableP1Base, flattenableP2Base);
+  p1Pool.base = (p1Pool.base || 0) - commonBase;
+  p2Pool.base = (p2Pool.base || 0) - commonBase;
 
-  if (p1Rolls && p2Rolls) {
-    p1FinalRolls = p1Rolls;
-    p2FinalRolls = p2Rolls;
-  } else if (p1Rolls && !p2Rolls) {
-    p1FinalRolls = p1Rolls;
-    p2FinalRolls = roller(p2TotalDice);
-  } else if (!p1Rolls && p2Rolls) {
-    p1FinalRolls = roller(p1TotalDice);
-    p2FinalRolls = p2Rolls;
-  } else {
-    const allRolls = roller(p1TotalDice + p2TotalDice);
-    p1FinalRolls = allRolls.slice(0, p1TotalDice);
-    p2FinalRolls = allRolls.slice(p1TotalDice, p1TotalDice + p2TotalDice);
-  }
+  const commonModifier = Math.min(p1Pool.modifier || 0, p2Pool.modifier || 0);
+  p1Pool.modifier = (p1Pool.modifier || 0) - commonModifier;
+  p2Pool.modifier = (p2Pool.modifier || 0) - commonModifier;
+
+  const commonWild = Math.min(p1Pool.wild || 0, p2Pool.wild || 0);
+  p1Pool.wild = (p1Pool.wild || 0) - commonWild;
+  p2Pool.wild = (p2Pool.wild || 0) - commonWild;
+
+  console.log('p1 calculated dice pool:', JSON.stringify(p1Pool, null, 2));
+  console.log('p2 calculated dice pool:', JSON.stringify(p2Pool, null, 2));
+
+  // 4. Determine rolls
+  const p1TotalDice = (p1Pool.base || 0) + (p1Pool.modifier || 0) + (p1Pool.wild || 0);
+  const p2TotalDice = (p2Pool.base || 0) + (p2Pool.modifier || 0) + (p2Pool.wild || 0);
+
+  const p1FinalRolls = p1Rolls ?? roller(p1TotalDice);
+  const p2FinalRolls = p2Rolls ?? (p2.isSystemPlayer ? [] : roller(p2TotalDice));
 
   console.log('p1 rolls:', JSON.stringify(p1FinalRolls));
   console.log('p2 rolls:', JSON.stringify(p2FinalRolls));
 
-  const p1Result = performTest(p1Dice, p1FinalRolls);
-  const p2Result = performTest(p2Dice, p2FinalRolls);
+  if (p1FinalRolls.length < p1TotalDice) throw new Error('Not enough dice rolls provided for p1');
+  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw new Error('Not enough dice rolls provided for p2');
+
+  // 5. Perform the test by rolling dice and getting successes
+  const p1Result = performTest(p1Pool, p1FinalRolls);
+  const p2Result = p2.isSystemPlayer ? { score: 0, carryOverDice: {} } : performTest(p2Pool, p2FinalRolls);
 
   console.log('p1Result from performTest:', JSON.stringify(p1Result, null, 2));
   console.log('p2Result from performTest:', JSON.stringify(p2Result, null, 2));
 
-  const score = p1Result.score - p2Result.score;
+  // 6. Calculate final score by adding attribute values. System player adds 2 for Unopposed tests.
+  const p2AttributeValue = p2.isSystemPlayer ? 2 : p2.attributeValue;
+  const p1FinalScore = p1Result.score + p1.attributeValue;
+  const p2FinalScore = p2Result.score + p2AttributeValue;
 
-  console.log(`p1Score (dice successes): ${p1Result.score}`);
-  console.log(`p2Score (dice successes): ${p2Result.score}`);
-  console.log(`Final score (p1 - p2): ${score}`);
-  console.log(`Pass (score > 0): ${score > 0}`);
+  const scoreDifference = p1FinalScore - p2FinalScore;
+  const pass = p1FinalScore >= p2FinalScore;
+
+  console.log(`p1Score (dice successes + attribute): ${p1FinalScore}`);
+  console.log(`p2Score (dice successes + attribute): ${p2FinalScore}`);
+  console.log(`Final score (p1 - p2): ${scoreDifference}`);
+  console.log(`Pass (p1 >= p2): ${pass}`);
   console.log('--- resolveTest END ---');
 
-  const p1RollsArray = Array.isArray(p1FinalRolls) ? p1FinalRolls : [p1FinalRolls];
-  const p2RollsArray = Array.isArray(p2FinalRolls) ? p2FinalRolls : [p2FinalRolls];
-
-  const p1Misses = p1RollsArray.filter(r => r < 4).length;
-  const p2Misses = p2RollsArray.filter(r => r < 4).length;
-
   return {
-      score,
-      p1Misses,
-      p2Misses,
-      p1Result,
-      p2Result,
-      pass: score > 0,
+    pass,
+    score: scoreDifference,
+    cascades: pass ? scoreDifference : 0,
+    p1FinalScore,
+    p2FinalScore,
+    p1Result,
+    p2Result,
   };
 }

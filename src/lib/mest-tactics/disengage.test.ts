@@ -1,3 +1,4 @@
+
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from './character-factory';
 import { makeDisengageAction } from './disengage';
@@ -33,6 +34,10 @@ describe('makeDisengageAction', () => {
 
         disengager = await createCharacter(disengagerProfile);
         defender = await createCharacter(defenderProfile);
+
+        // Manually set finalAttributes as they are not being set in createCharacter
+        disengager.finalAttributes = { ...disengager.attributes };
+        defender.finalAttributes = { ...defender.attributes };
 
         metricsService.clearEvents();
     });

@@ -1,6 +1,8 @@
+
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Character, CharacterAttributes } from '../character/Character';
+import { Character, CharacterAttributes } from '../Character';
 import { CombatEngine } from './CombatEngine';
+import { setRoller, resetRoller } from '../dice-roller';
 
 describe('CombatEngine', () => {
   let attacker: Character;
@@ -11,13 +13,14 @@ describe('CombatEngine', () => {
     const defenderAttributes: CharacterAttributes = { CCA: 2, RCA: 2, REF: 2, INT: 2, POW: 2, STR: 2, FOR: 2, MOV: 2, SIZ: 3 };
     attacker = new Character('attacker', 'Attacker', { ...attackerAttributes }, { x: 0, y: 0 });
     defender = new Character('defender', 'Defender', { ...defenderAttributes }, { x: 1, y: 0 });
-    CombatEngine.testing_diceRolls = [];
+    resetRoller();
   });
 
   it('should resolve a successful hit and wound', () => {
     // Attacker hits: Rolls 6, 6 (4 successes + 2 base carry) vs Defender rolls 1, 1 (0 successes)
     // Attacker wounds: Rolls 6, 6, 6, 6 (8 successes from base, 2 from carry) vs Defender rolls 1, 1 (0 successes)
-    CombatEngine.testing_diceRolls = [6, 6, 1, 1, 6, 6, 6, 6, 1, 1];
+    const rolls = [6, 6, 1, 1, 6, 6, 6, 6, 1, 1];
+    setRoller(() => rolls.shift() ? [rolls.shift() || 1] : [1]);
 
     const result = CombatEngine.resolveCloseCombat(attacker, defender);
 
@@ -29,7 +32,8 @@ describe('CombatEngine', () => {
   it('should resolve a successful hit and a failed wound', () => {
     // Attacker hits: Rolls 6, 6 (4 successes + 2 base carry) vs Defender rolls 1, 1 (0 successes)
     // Attacker wounds: Rolls 1, 1, 1, 1 (0 successes) vs Defender rolls 6, 6 (4 successes)
-    CombatEngine.testing_diceRolls = [6, 6, 1, 1, 1, 1, 1, 1, 6, 6];
+    const rolls = [6, 6, 1, 1, 1, 1, 1, 1, 6, 6];
+    setRoller(() => rolls.shift() ? [rolls.shift() || 1] : [1]);
 
     const result = CombatEngine.resolveCloseCombat(attacker, defender);
 
@@ -40,7 +44,8 @@ describe('CombatEngine', () => {
 
   it('should resolve a failed hit', () => {
     // Attacker hits: Rolls 1, 1 (0 successes) vs Defender rolls 6, 6 (4 successes)
-    CombatEngine.testing_diceRolls = [1, 1, 6, 6];
+    const rolls = [1, 1, 6, 6];
+    setRoller(() => rolls.shift() ? [rolls.shift() || 1] : [1]);
 
     const result = CombatEngine.resolveCloseCombat(attacker, defender);
 

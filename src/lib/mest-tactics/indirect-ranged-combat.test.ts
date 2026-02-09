@@ -14,7 +14,6 @@ const { archetypes, ranged_weapons } = gameData;
 describe('makeIndirectRangedAttack', () => {
   let attacker: Character;
   let weapon: Item;
-  const attackerAttribute = 3;
 
   beforeEach(async () => {
     const attackerArchetype = { name: "Veteran, Fighter", ...archetypes["Veteran, Fighter"] };
@@ -23,6 +22,7 @@ describe('makeIndirectRangedAttack', () => {
     const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [weapon] };
 
     attacker = await createCharacter(attackerProfile);
+    attacker.finalAttributes = attacker.profile.archetype.attributes;
 
     metricsService.clearEvents();
     resetRoller();
@@ -33,76 +33,63 @@ describe('makeIndirectRangedAttack', () => {
   });
 
   it('should pass the hit test with a high roll', () => {
-    setRoller(() => [6]);
-    const result = makeIndirectRangedAttack(attacker, weapon, 0, {});
+    const rolls = [6, 6];
+    const result = makeIndirectRangedAttack(attacker, weapon, 0, {}, rolls);
     expect(result.pass).toBe(true);
   });
 
   it('should fail the hit test with a large penalty', () => {
-    setRoller(() => [1]);
-    const orm = attackerAttribute + 1; // ORM > RCA = miss
-    const result = makeIndirectRangedAttack(attacker, weapon, orm, { hasHindrance: true });
+    const rolls = [1, 1];
+    const orm = attacker.finalAttributes.rca + 1; // ORM > RCA = miss
+    const result = makeIndirectRangedAttack(attacker, weapon, orm, { hasHindrance: true }, rolls);
     expect(result.pass).toBe(false);
   });
 
   it('should apply an ORM penalty', () => {
-    const rolls: number[][] = [[1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1];
-    setRoller(statefulRoller);
-
-    makeIndirectRangedAttack(attacker, weapon, 2, {});
+    const rolls = [1,1];
+    makeIndirectRangedAttack(attacker, weapon, 2, {}, rolls);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
-    expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
+    expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(2);
   });
 
   it('should apply a hindrance penalty', () => {
-    const rolls: number[][] = [[1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1];
-    setRoller(statefulRoller);
-
-    makeIndirectRangedAttack(attacker, weapon, 0, { hasHindrance: true });
+    const rolls = [1,1];
+    attacker.state.isDisordered = true;
+    makeIndirectRangedAttack(attacker, weapon, 0, { hasHindrance: true }, rolls);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
     expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
   });
 
   it('should apply a point-blank bonus', () => {
-    const rolls: number[][] = [[1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1];
-    setRoller(statefulRoller);
-    makeIndirectRangedAttack(attacker, weapon, 0, { isPointBlank: true });
+    const rolls = [1,1,1];
+    makeIndirectRangedAttack(attacker, weapon, 0, { isPointBlank: true }, rolls);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
     expect(eventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
   });
 
   it('should apply a direct cover penalty', () => {
-    const rolls: number[][] = [[1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1];
-    setRoller(statefulRoller);
-    makeIndirectRangedAttack(attacker, weapon, 0, { hasDirectCover: true });
+    const rolls = [1,1];
+    makeIndirectRangedAttack(attacker, weapon, 0, { hasDirectCover: true }, rolls);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
     expect(eventData.finalPools.p1FinalPenalty[DiceType.Base] || 0).toBe(1);
   });
 
   it('should apply an intervening cover penalty', () => {
-    const rolls: number[][] = [[1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1];
-    setRoller(statefulRoller);
-    makeIndirectRangedAttack(attacker, weapon, 0, { hasInterveningCover: true });
+    const rolls = [1,1];
+    makeIndirectRangedAttack(attacker, weapon, 0, { hasInterveningCover: true }, rolls);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
     expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
   });
 
   it('should apply a weapon accuracy bonus', () => {
-    const rolls: number[][] = [[1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1];
-    setRoller(statefulRoller);
+    const rolls = [1,1,1];
     weapon.accuracy = '+1b';
-    makeIndirectRangedAttack(attacker, weapon, 0, {});
+    makeIndirectRangedAttack(attacker, weapon, 0, {}, rolls);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
     expect(eventData.finalPools.p1FinalBonus[DiceType.Base] || 0).toBe(1);

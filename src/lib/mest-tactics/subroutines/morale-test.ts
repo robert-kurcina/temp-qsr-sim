@@ -1,43 +1,54 @@
 
 import { Character } from '../Character';
-import { resolveTest, TestParticipant, TestResult, DiceType, mergeDicePools } from '../dice-roller';
+import { resolveTest, TestParticipant, ResolveTestResult, DiceType } from '../dice-roller';
 import { TestContext } from '../TestContext';
 import { DicePool } from '../dice-roller';
+import { metricsService } from '../MetricsService';
 
-/**
- * Resolves a MEST Tactics Morale Test.
- * This is a canonically-defined Unopposed POW Test where a score >= 0 is a PASS.
- *
- * @param character The character making the test.
- * @param context The situational context (not used by base morale, but available for traits).
- * @param difficulty The target number for the unopposed test. This is the system's POW attribute.
- * @param bonusDice Optional bonus dice from traits or other effects.
- * @param penaltyDice Optional penalty dice from traits or other effects.
- * @returns The result of the Unopposed POW test.
- */
 export function resolveMoraleTest(
   character: Character,
+  fearTokens: number = 0,
   context: TestContext = {},
-  difficulty: number = 0,
-  bonusDice: DicePool = {},
-  penaltyDice: DicePool = {},
-): TestResult {
+  p1Rolls: number[] | null = null,
+): ResolveTestResult {
 
-  // As per MEST QSR, Morale Tests are Unopposed POW tests.
+  const bonusDice: DicePool = {};
+  const penaltyDice: DicePool = {};
+
+  if (fearTokens > 0) {
+    penaltyDice[DiceType.Modifier] = fearTokens;
+  }
+
+  if (context.hasAdvantage) {
+    bonusDice[DiceType.Wild] = 1;
+  }
+
+  if (context.isDisadvantaged) {
+    penaltyDice[DiceType.Wild] = 1;
+  }
+
   const participant: TestParticipant = {
     attributeValue: character.finalAttributes.pow,
-    bonusDice: bonusDice,
-    penaltyDice: penaltyDice,
+    bonusDice,
+    penaltyDice,
   };
 
-  // For an Unopposed Test, the difficulty IS the attribute of the opposing system player.
-  // The system player does not roll dice.
   const systemPlayer: TestParticipant = {
-    attributeValue: difficulty,
-    isSystemPlayer: true, 
+    attributeValue: 0,
+    isSystemPlayer: true,
   };
 
-  // The MEST QSR specifies that Morale Tests pass on a tie (score >= 0).
-  // Therefore, the passOnTie parameter for resolveTest must be true.
-  return resolveTest(participant, systemPlayer, 0, true);
+  const result = resolveTest(participant, systemPlayer, p1Rolls);
+
+  metricsService.logEvent('diceTestResolved', {
+    finalPools: {
+      p1FinalBonus: participant.bonusDice,
+      p1FinalPenalty: participant.penaltyDice,
+      p2FinalBonus: systemPlayer.bonusDice,
+      p2FinalPenalty: systemPlayer.penaltyDice,
+    },
+    result,
+  });
+
+  return result;
 }

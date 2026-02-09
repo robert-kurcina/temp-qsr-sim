@@ -1,11 +1,12 @@
 
 import { Character } from './Character';
-import { DicePool, DiceType, TestResult } from './dice-roller';
+import { DicePool, DiceType, ResolveTestResult } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveTest, TestParticipant, mergeDicePools } from './dice-roller';
 import { parseAccuracy } from './subroutines/accuracy-parser';
+import { metricsService } from './MetricsService';
 
 function _calculateModifiers(
     attacker: Character, 
@@ -36,13 +37,14 @@ export function makeIndirectRangedAttack(
     attacker: Character,
     weapon: Item,
     orm: number, // Optimal Range Multiple
-    context: TestContext = {}
-): TestResult {
+    context: TestContext = {},
+    p1Rolls: number[] | null = null
+): ResolveTestResult {
+    console.log('attacker in makeIndirectRangedAttack', attacker);
     const attackerAttribute = weapon.classification === 'Thrown' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
 
-    // Per rules.md, ORM > RCA is an automatic miss.
     if (orm > attackerAttribute) {
-        return { pass: false, score: -1, participant1Score: 0, participant2Score: 1, p1Rolls: [], p2Rolls: [], p1Misses: 1, p2Misses: 0, finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+        return { pass: false, score: -1, p1FinalScore: 0, p2FinalScore: 1, cascades: 0, p1Result: { score: 0, carryOverDice: {} }, p2Result: { score: 1, carryOverDice: {} } };
     }
 
     const { attackerBonus, attackerPenalty } = _calculateModifiers(attacker, weapon, orm, context);
@@ -61,6 +63,9 @@ export function makeIndirectRangedAttack(
         penaltyDice: {},
         isSystemPlayer: true
     };
+    
+    const result = resolveTest(attackerParticipant, systemParticipant, p1Rolls);
+    metricsService.logEvent('diceTestResolved', { finalPools: { p1FinalBonus: attackerParticipant.bonusDice, p1FinalPenalty: attackerParticipant.penaltyDice, p2FinalBonus: systemParticipant.bonusDice, p2FinalPenalty: systemParticipant.penaltyDice }, result: result });
 
-    return resolveTest(attackerParticipant, systemParticipant, 0, true);
+    return result;
 }

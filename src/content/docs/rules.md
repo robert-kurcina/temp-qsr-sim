@@ -16,6 +16,7 @@ Below is a list of the rule modules and their current implementation status.
 | 2 | [Characters & Attributes](./rules-characters-and-attributes) | `DONE`   | Details on character creation, attributes, and their functions.              |
 | 2 | [Tests & Checks](./rules-tests-and-checks)                 | `DONE`   | The core dice-rolling and resolution mechanics.                              |
 | 2 | [Traits](./rules-traits)                           | `DONE`   | Explanation of character and item traits.                                    |
+| 2 | [Data Concepts](./rules-archetypes-and-profiles)      | `DONE`   | The core data concepts for Archetypes, Profiles, and Characters.             |
 | 3 | [Items](./rules-items)                             | `DONE`   | Rules for weapons, armor, and equipment.                                     |
 | 3 | [Movement & Terrain](./rules-movement-and-terrain)         | `DONE`   | How characters move and interact with the battlefield environment.           |
 | 3 | [Situational Modifiers](./rules-situational-modifiers)       | `DONE`   | A reference for contextual modifiers to tests.                               |

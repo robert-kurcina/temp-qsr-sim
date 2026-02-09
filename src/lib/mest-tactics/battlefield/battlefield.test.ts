@@ -1,20 +1,41 @@
+
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Battlefield } from './Battlefield';
 import { Pathfinder } from './Pathfinder';
 import { TerrainType } from './Terrain';
-import { Character } from '../character/Character';
+import { Character } from '../Character';
+import { Profile } from '../Profile';
 
 describe('Battlefield Framework', () => {
   let battlefield: Battlefield;
   let pathfinder: Pathfinder;
+  let testProfile: Profile;
 
   beforeEach(() => {
     battlefield = new Battlefield(10, 10);
     pathfinder = new Pathfinder(battlefield);
+    testProfile = {
+      name: 'Test Profile',
+      archetype: {},
+      items: [],
+      totalBp: 0,
+      adjustedBp: 0,
+      adjustedItemCosts: { meleeBp: [], rangedBp: [], equipmentBp: [] },
+      physicality: 0,
+      adjPhysicality: 0,
+      durability: 0,
+      adjDurability: 0,
+      burden: { totalLaden: 0, totalBurden: 0 },
+      totalHands: 0,
+      totalDeflect: 0,
+      totalAR: 0,
+      finalTraits: [],
+      allTraits: [],
+    };
   });
 
   it('should place and move a character', () => {
-    const char = new Character('char1', 'Test Character', { CCA: 1, RCA: 1, REF: 1, INT: 1, POW: 1, STR: 1, FOR: 1, MOV: 1, SIZ: 1 }, { x: 1, y: 1 });
+    const char = new Character('char1', 'Test Character', testProfile, { x: 1, y: 1 });
     const startPos = { x: 1, y: 1 };
     const endPos = { x: 2, y: 2 };
 

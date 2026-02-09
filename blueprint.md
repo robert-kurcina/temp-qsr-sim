@@ -24,6 +24,11 @@ My update process for this document is to **Read, Modify, and Write**. I will al
 3.  **Filesystem First:** Before making any changes or additions to the codebase, the filesystem must be scanned to confirm the presence or absence of relevant files.
 4.  **Headless First Development:** All development must be focused on the core, headless simulation logic. UI-related files, dependencies (Astro, React, etc.), and configurations are to be ignored until explicitly commanded to work on them. The primary interface for the application is the command line.
 
+### Filesystem Integrity
+
+1.  **Always Audit Before Creating:** Before creating any new file, especially for a core module like `Character`, `Item`, or `DiceRoller`, I will **always** first list the files in the target directory to check for existing conflicts.
+2.  **Refactor = Move, Verify, THEN Delete:** When refactoring by moving files, I will now follow a strict "move, verify, delete" sequence. I will not consider the refactor complete until the old file is explicitly deleted and the system is tested again.
+
 ## 4. Development Environment & Toolchain
 
 *   **Testing Framework:** Vitest
@@ -49,6 +54,7 @@ To ensure a stable and predictable codebase, the following systematic approach w
 4.  **Incremental Progression:** Once the test passes, move to the next least dependent failing test and repeat the process until all tests in a file are passing.
 5.  **File-by-File Completion:** Once all tests in a file pass, move to the next file with failing tests and repeat the process.
 6.  **Full Suite Validation:** After all tests in all files pass, run the entire test suite one final time to confirm success.
+7.  **`TypeError` is a Structural Red Flag:** `TypeError` and `ReferenceError` will be treated not just as code errors, but as high-priority red flags for potential structural problems like duplicate modules. I will investigate the file system *before* the code logic in these cases.
 
 ## 7. Codebase Conventions & Standards
 
@@ -78,7 +84,7 @@ To ensure a stable and predictable codebase, the following systematic approach w
 *   **`Character`**, **`Profile`**, **`Item`**.
 *   Game data is stored statically in `src/lib/data.ts`.
 
-## 10. Current Task: Implement Damage Subroutine
+## 10. Current Task: Fix Test Suite Failures
 
 ### Completed Steps
 
@@ -87,7 +93,15 @@ To ensure a stable and predictable codebase, the following systematic approach w
 3.  **Corrected `hit-test.test.ts`:** All tests related to hit resolution are now passing.
 4.  **Implemented `damage-parser.ts`:** The damage formula parser has been rewritten to use robust string manipulation instead of regular expressions.
 5.  **Implemented `damage.ts` and `damage.test.ts`:** The core damage subroutine and its tests are now fully implemented and passing, ensuring correct wound calculation, status effects (KO/Elimination), and dice modifier handling.
+6.  **Refactored `Character.ts` to a class:** `Character.ts` is now a class that takes a `Profile` in its constructor.
+7.  **Created `types.ts`:** `FinalAttributes` and `ArmorState` are now in a separate file.
+8.  **Updated `battlefield.test.ts`:** The test now uses the new `Character` class structure.
 
 ### Next Steps
 
-The damage subroutine is complete. We are now ready for the next task.
+The test suite is still failing. The following steps will be taken to resolve the remaining issues:
+
+1.  **Fix `TypeError: rolls is not iterable`**: This error is present in `indirect-ranged-combat.test.ts` and `morale-test.test.ts`. It's caused by the mocked dice roller returning a single value instead of an array. I will correct the mock to return an array of numbers.
+2.  **Fix `TypeError: character.move is not a function`**: This error in `battlefield.test.ts` is a direct result of my previous refactoring of the `Character` class. I will add a `move` method to the `Character` class.
+3.  **Address `NaN` Scores in `disengage.test.ts`**: The `p1Score (dice successes + attribute): NaN` log indicates that the `attributeValue` is not being correctly calculated. I will investigate and fix the root cause of this issue.
+4.  **Resolve Data Seeding Failures**: The `seed.test.ts` and `seed-data.test.ts` files have multiple failures related to the number of profiles and the structure of assemblies. This points to a problem with the data generation or loading process. I will investigate and resolve these issues.
