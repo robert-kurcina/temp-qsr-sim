@@ -15,6 +15,7 @@ export interface SvgRenderOptions {
   gridResolution?: number;
   title?: string;
   layers?: SvgLayerToggle[];
+  deploymentZones?: { x: number; y: number; width: number; height: number; color: string; opacity?: number }[];
   models?: { id: string; position: Position; baseDiameter: number; color?: string; label?: string }[];
   paths?: { id: string; points: Position[]; color?: string; label?: string }[];
   vectors?: { from: Position; to: Position; color?: string; label?: string }[];
@@ -24,6 +25,7 @@ export interface SvgRenderOptions {
 }
 
 const defaultLayers: SvgLayerToggle[] = [
+  { id: 'deployment', label: 'Deployment Zones', enabled: true },
   { id: 'grid', label: '0.5 MU Grid', enabled: true },
   { id: 'delaunay', label: 'Delaunay Mesh', enabled: true },
   { id: 'area', label: 'Area Terrain', enabled: true },
@@ -110,6 +112,7 @@ ${categoryStyles}
 
     svgParts.push(`<text x="0.4" y="${options.height - 0.4}" class="label">${title}</text>`);
 
+    svgParts.push(this.renderDeploymentZones(options.deploymentZones ?? [], layers));
     svgParts.push(this.renderGrid(options.width, options.height, gridResolution, layers));
     svgParts.push(this.renderDelaunay(battlefield.getNavMesh(), layers));
     svgParts.push(this.renderTerrain(battlefield.terrain, layers));
@@ -137,6 +140,21 @@ ${categoryStyles}
     }
     lines.push(`</g>`);
     return lines.join('\n');
+  }
+
+  static renderDeploymentZones(
+    zones: { x: number; y: number; width: number; height: number; color: string; opacity?: number }[],
+    layers: SvgLayerToggle[]
+  ): string {
+    const layer = layers.find(item => item.id === 'deployment');
+    const hidden = layer?.enabled === false ? 'hidden' : '';
+    const items: string[] = [`<g id="layer-deployment" class="layer ${hidden}">`];
+    for (const zone of zones) {
+      const opacity = zone.opacity ?? 0.2;
+      items.push(`<rect x="${zone.x}" y="${zone.y}" width="${zone.width}" height="${zone.height}" fill="${zone.color}" opacity="${opacity}"/>`);
+    }
+    items.push(`</g>`);
+    return items.join('\n');
   }
 
   static renderDelaunay(mesh: Delaunay<Position> | null, layers: SvgLayerToggle[]): string {

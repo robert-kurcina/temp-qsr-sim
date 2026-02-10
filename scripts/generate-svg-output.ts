@@ -31,6 +31,131 @@ function randomPosition(min: number, max: number): Position {
   };
 }
 
+function deploymentZoneHeight(width: number, height: number): number {
+  const maxDimension = Math.max(width, height);
+  if (maxDimension <= 24) return 2;
+  if (maxDimension <= 36) return 4;
+  if (maxDimension <= 48) return 6;
+  return 8;
+}
+
+function buildDeploymentZones(width: number, height: number) {
+  const zoneHeight = deploymentZoneHeight(width, height);
+  return {
+    zoneHeight,
+    zones: [
+      { x: 0, y: height - zoneHeight, width, height: zoneHeight, color: '#ff0000', opacity: 0.2 },
+      { x: 0, y: 0, width, height: zoneHeight, color: '#0000ff', opacity: 0.2 },
+    ],
+  };
+}
+
+function segmentsIntersect(a: Position, b: Position, c: Position, d: Position): boolean {
+  const orientation = (p: Position, q: Position, r: Position) => {
+    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    if (Math.abs(val) < 1e-6) return 0;
+    return val > 0 ? 1 : 2;
+  };
+  const onSegment = (p: Position, q: Position, r: Position) => {
+    return (
+      q.x <= Math.max(p.x, r.x) + 1e-6 &&
+      q.x >= Math.min(p.x, r.x) - 1e-6 &&
+      q.y <= Math.max(p.y, r.y) + 1e-6 &&
+      q.y >= Math.min(p.y, r.y) - 1e-6
+    );
+  };
+  const o1 = orientation(a, b, c);
+  const o2 = orientation(a, b, d);
+  const o3 = orientation(c, d, a);
+  const o4 = orientation(c, d, b);
+  if (o1 !== o2 && o3 !== o4) return true;
+  if (o1 === 0 && onSegment(a, c, b)) return true;
+  if (o2 === 0 && onSegment(a, d, b)) return true;
+  if (o3 === 0 && onSegment(c, a, d)) return true;
+  if (o4 === 0 && onSegment(c, b, d)) return true;
+  return false;
+}
+
+function polygonsOverlap(a: Position[], b: Position[]): boolean {
+  for (let i = 0, j = a.length - 1; i < a.length; j = i++) {
+    for (let m = 0, n = b.length - 1; m < b.length; n = m++) {
+      if (segmentsIntersect(a[j], a[i], b[n], b[m])) {
+        return true;
+      }
+    }
+  }
+  for (const point of a) {
+    if (PathfindingEngine.isPointInPolygon(point, b)) {
+      return true;
+    }
+  }
+  for (const point of b) {
+    if (PathfindingEngine.isPointInPolygon(point, a)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function overlapsNonAreaTerrain(battlefield: Battlefield, element: TerrainElement): boolean {
+  const vertices = element.toFeature().vertices;
+  for (const feature of battlefield.terrain) {
+    if (feature.meta?.layer === 'area') continue;
+    if (polygonsOverlap(vertices, feature.vertices)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function findNonOverlappingPlacement(
+  battlefield: Battlefield,
+  elementName: string,
+  basePos: Position,
+  direction: Position
+): Position | null {
+  const element = new TerrainElement(elementName, basePos, 0);
+  const radius = element.getBoundingRadius();
+  const len = Math.hypot(direction.x, direction.y) || 1;
+  const dir = { x: direction.x / len, y: direction.y / len };
+  const perp = { x: -dir.y, y: dir.x };
+  const offsets = [0, 0.5, 1, 1.5, 2, 2.5, 3];
+
+  const candidates: Position[] = [];
+  for (const o of offsets) {
+    if (o === 0) {
+      candidates.push(basePos);
+      continue;
+    }
+    candidates.push({ x: basePos.x + dir.x * o, y: basePos.y + dir.y * o });
+    candidates.push({ x: basePos.x - dir.x * o, y: basePos.y - dir.y * o });
+    candidates.push({ x: basePos.x + perp.x * o, y: basePos.y + perp.y * o });
+    candidates.push({ x: basePos.x - perp.x * o, y: basePos.y - perp.y * o });
+  }
+
+  for (const o of offsets) {
+    for (const p of offsets) {
+      if (o === 0 || p === 0) continue;
+      candidates.push({ x: basePos.x + dir.x * o + perp.x * p, y: basePos.y + dir.y * o + perp.y * p });
+      candidates.push({ x: basePos.x + dir.x * o - perp.x * p, y: basePos.y + dir.y * o - perp.y * p });
+      candidates.push({ x: basePos.x - dir.x * o + perp.x * p, y: basePos.y - dir.y * o + perp.y * p });
+      candidates.push({ x: basePos.x - dir.x * o - perp.x * p, y: basePos.y - dir.y * o - perp.y * p });
+    }
+  }
+
+  for (const candidate of candidates) {
+    if (candidate.x < radius || candidate.y < radius || candidate.x > width - radius || candidate.y > height - radius) {
+      continue;
+    }
+    const wall = new TerrainElement(elementName, candidate, 0);
+    if (!overlapsNonAreaTerrain(battlefield, wall)) {
+      return candidate;
+    }
+  }
+
+  return null;
+}
+
 function isMovementBlocking(feature: { type: string; meta?: Record<string, any> }): boolean {
   if (feature.type === 'Obstacle' || feature.type === 'Impassable') {
     return true;
@@ -79,17 +204,25 @@ function findClearPosition(
 }
 
 function renderBattlefieldGridCases() {
+  const deployment = buildDeploymentZones(width, height);
   for (const density of densityValues) {
     for (const blockLos of blockValues) {
       const battlefield = BattlefieldFactory.create(width, height, {
         densityRatio: density,
         areaDensityRatio: 25,
         blockLos,
+        deploymentZone: {
+          side: 'both',
+          height: deployment.zoneHeight,
+          buffer: 3,
+          corridorWidth: 2,
+        },
       });
       const svg = SvgRenderer.render(battlefield, {
         width,
         height,
         title: `Battlefield 24x24 density ${density} blockLOS ${blockLos}`,
+        deploymentZones: deployment.zones,
       });
       const filename = `battlefield-24x24-${density}_${blockLos}.svg`;
       writeSvg(filename, svg);
@@ -100,10 +233,17 @@ function renderBattlefieldGridCases() {
 function renderPathfindingCases() {
   const densities = [50, 75, 100];
   densities.forEach((density, index) => {
+    const deployment = buildDeploymentZones(width, height);
     const battlefield = BattlefieldFactory.create(width, height, {
       densityRatio: density,
       areaDensityRatio: 25,
       blockLos: 25,
+      deploymentZone: {
+        side: 'both',
+        height: deployment.zoneHeight,
+        buffer: 3,
+        corridorWidth: 2,
+      },
     });
     const engine = new PathfindingEngine(battlefield);
 
@@ -122,6 +262,7 @@ function renderPathfindingCases() {
       width,
       height,
       title: `Pathfinding SIZ 3 density ${density} (len ${result.totalLength.toFixed(1)} MU)`,
+      deploymentZones: deployment.zones,
       models: [
         { id: 'start', position: start, baseDiameter: 1, color: '#5aa469', label: 'Start' },
         { id: 'end', position: end, baseDiameter: 1, color: '#d35d6e', label: 'End' },
@@ -149,10 +290,17 @@ function renderLOSBlockedCases() {
   ];
 
   cases.forEach((entry, index) => {
+    const deployment = buildDeploymentZones(width, height);
     const battlefield = BattlefieldFactory.create(width, height, {
       densityRatio: 25,
       areaDensityRatio: 25,
       blockLos: 50,
+      deploymentZone: {
+        side: 'both',
+        height: deployment.zoneHeight,
+        buffer: 3,
+        corridorWidth: 2,
+      },
     });
     const rays: { from: Position; to: Position; label: string; color: string }[] = [];
     const annotations: { position: Position; text: string; color?: string }[] = [];
@@ -166,8 +314,11 @@ function renderLOSBlockedCases() {
       const dy = end.y - start.y;
       const length = Math.hypot(dx, dy) || 1;
       const ratio = entry.wallDistance / length;
-      const wallPos = { x: start.x + dx * ratio, y: start.y + dy * ratio };
-      battlefield.addTerrainElement(new TerrainElement(wallType, wallPos, 0));
+      const basePos = { x: start.x + dx * ratio, y: start.y + dy * ratio };
+      const placement = findNonOverlappingPlacement(battlefield, wallType, basePos, { x: dx, y: dy });
+      if (placement) {
+        battlefield.addTerrainElement(new TerrainElement(wallType, placement, 0));
+      }
     }
 
     rays.push({ from: start, to: end, label: entry.label, color: entry.label === 'Unblocked' ? '#2d6a4f' : '#b02a37' });
@@ -176,6 +327,7 @@ function renderLOSBlockedCases() {
       width,
       height,
       title: `LOS Checks (SIZ 3) blockLOS 50 - ${entry.label}`,
+      deploymentZones: deployment.zones,
       models: [
         { id: 'los-model', position: start, baseDiameter: 1, color: '#f4a261', label: 'Model' },
       ],
@@ -190,10 +342,17 @@ function renderLOSBlockedCases() {
 function renderLOFCases() {
   const blockLosValues = [50, 75, 100];
   blockLosValues.forEach((blockLos, index) => {
+    const deployment = buildDeploymentZones(width, height);
     const battlefield = BattlefieldFactory.create(width, height, {
       densityRatio: 25,
       areaDensityRatio: 25,
       blockLos,
+      deploymentZone: {
+        side: 'both',
+        height: deployment.zoneHeight,
+        buffer: 3,
+        corridorWidth: 2,
+      },
     });
 
     let yRow = 12;
@@ -228,6 +387,7 @@ function renderLOFCases() {
       width,
       height,
       title: `LOF + Friendly Fire (blockLOS ${blockLos})`,
+      deploymentZones: deployment.zones,
       models: [
         { id: 'attacker', position: attacker.position, baseDiameter: attacker.baseDiameter, color: '#2a9d8f', label: 'Attacker' },
         { id: 'target', position: target.position, baseDiameter: target.baseDiameter, color: '#e76f51', label: 'Target' },
