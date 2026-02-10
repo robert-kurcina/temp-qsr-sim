@@ -1,7 +1,12 @@
-import { AStarFinder, Grid as PFGrid } from 'pathfinding';
+import pathfinding from 'pathfinding';
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { TerrainType } from './Terrain';
+
+const { AStarFinder, Grid: PFGrid } = pathfinding as {
+  AStarFinder: new (options: { diagonalMovement: number; heuristic: (dx: number, dy: number) => number }) => AStarFinder;
+  Grid: typeof import('pathfinding').Grid;
+};
 
 /**
  * Checks if a point is inside a polygon using the ray-casting algorithm.

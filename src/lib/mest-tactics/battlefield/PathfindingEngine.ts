@@ -1,7 +1,13 @@
-import { AStarFinder, Grid as PFGrid } from 'pathfinding';
+import pathfinding from 'pathfinding';
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './Terrain';
+import { LOSOperations } from './LOSOperations';
+
+const { AStarFinder, Grid: PFGrid } = pathfinding as {
+  AStarFinder: new (options: { diagonalMovement: number; heuristic: (dx: number, dy: number) => number }) => AStarFinder;
+  Grid: typeof import('pathfinding').Grid;
+};
 
 export interface PathVector {
   from: Position;
@@ -22,6 +28,7 @@ export interface PathfindingOptions {
   gridResolution?: number; // MU per cell
   footprintDiameter?: number; // MU
   useNavMesh?: boolean;
+  optimizeWithLOS?: boolean;
 }
 
 const defaultGridResolution = 0.5;
@@ -53,6 +60,7 @@ export class PathfindingEngine {
     const gridResolution = options.gridResolution ?? (footprintDiameter > 0 && footprintDiameter <= 0.5 ? 0.25 : defaultGridResolution);
     const footprintRadius = footprintDiameter > 0 ? footprintDiameter / 4 : 0; // middle 2/4 of model
     const useNavMesh = options.useNavMesh ?? true;
+    const optimizeWithLOS = options.optimizeWithLOS ?? true;
 
     const gridWidth = Math.max(1, Math.round(this.battlefield.width / gridResolution));
     const gridHeight = Math.max(1, Math.round(this.battlefield.height / gridResolution));
@@ -98,7 +106,12 @@ export class PathfindingEngine {
       gridPath.push(...segmentPath);
     }
 
-    const vectors = this.buildVectors(gridPath, gridResolution, terrainGrid);
+    const pathPoints = gridPath.map(node => this.fromGridCoordinate(node[0], node[1], gridResolution));
+    const optimizedPoints = optimizeWithLOS
+      ? this.optimizePathWithLOS(pathPoints)
+      : pathPoints;
+
+    const vectors = this.buildTerrainAwareVectors(optimizedPoints);
     const totals = this.computeTotals(vectors);
 
     return {
@@ -135,6 +148,70 @@ export class PathfindingEngine {
     }
 
     return vectors;
+  }
+
+  private optimizePathWithLOS(points: Position[]): Position[] {
+    if (points.length <= 2) return points;
+    const optimized: Position[] = [];
+    let i = 0;
+    while (i < points.length - 1) {
+      let j = points.length - 1;
+      while (j > i + 1) {
+        const result = LOSOperations.checkLOSBetweenPoints(this.battlefield, points[i], points[j]);
+        if (result.clear) break;
+        j--;
+      }
+      optimized.push(points[i]);
+      i = j;
+    }
+    optimized.push(points[points.length - 1]);
+    return optimized;
+  }
+
+  private buildTerrainAwareVectors(points: Position[]): PathVector[] {
+    if (points.length <= 1) return [];
+    const vectors: PathVector[] = [];
+    for (let i = 1; i < points.length; i++) {
+      const segmentVectors = this.splitSegmentByTerrain(points[i - 1], points[i]);
+      vectors.push(...segmentVectors);
+    }
+    return vectors;
+  }
+
+  private splitSegmentByTerrain(start: Position, end: Position): PathVector[] {
+    const vectors: PathVector[] = [];
+    const totalLength = PathfindingEngine.distance(start, end);
+    if (totalLength === 0) return vectors;
+
+    const step = Math.max(0.25, defaultGridResolution / 2);
+    const steps = Math.max(1, Math.ceil(totalLength / step));
+    let segmentStart = start;
+    let lastType = this.getTerrainTypeAt(start);
+
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      const point = {
+        x: start.x + (end.x - start.x) * t,
+        y: start.y + (end.y - start.y) * t,
+      };
+      const currentType = this.getTerrainTypeAt(point);
+
+      if (currentType !== lastType) {
+        vectors.push(this.buildVector(segmentStart, point, lastType));
+        segmentStart = point;
+        lastType = currentType;
+      }
+    }
+
+    vectors.push(this.buildVector(segmentStart, end, lastType));
+    return vectors;
+  }
+
+  private buildVector(from: Position, to: Position, terrain: TerrainType): PathVector {
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const length = Math.hypot(dx, dy);
+    return { from, to, dx, dy, length, terrain };
   }
 
   private computeTotals(vectors: PathVector[]): { totalLength: number; totalEffectMu: number } {
@@ -301,5 +378,11 @@ export class PathfindingEngine {
     }
     points.push(center);
     return points;
+  }
+
+  static distance(a: Position, b: Position): number {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx * dx + dy * dy);
   }
 }
