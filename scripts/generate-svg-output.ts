@@ -31,6 +31,53 @@ function randomPosition(min: number, max: number): Position {
   };
 }
 
+function isMovementBlocking(feature: { type: string; meta?: Record<string, any> }): boolean {
+  if (feature.type === 'Obstacle' || feature.type === 'Impassable') {
+    return true;
+  }
+  return feature.meta?.initialMovement === 'Impassable';
+}
+
+function isFootprintClear(battlefield: Battlefield, position: Position, baseDiameter: number): boolean {
+  const samples = LOSOperations.buildCircularPerimeterPoints(position, baseDiameter);
+  samples.push(position);
+  for (const feature of battlefield.terrain) {
+    if (!isMovementBlocking(feature)) continue;
+    for (const sample of samples) {
+      if (PathfindingEngine.isPointInPolygon(sample, feature.vertices)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+function findClearPosition(
+  battlefield: Battlefield,
+  desired: Position,
+  baseDiameter: number,
+  maxAttempts = 80
+): Position {
+  const radius = baseDiameter / 2;
+  const clamped = {
+    x: Math.max(radius, Math.min(width - radius, desired.x)),
+    y: Math.max(radius, Math.min(height - radius, desired.y)),
+  };
+  if (isFootprintClear(battlefield, clamped, baseDiameter)) {
+    return clamped;
+  }
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const candidate = {
+      x: radius + Math.random() * (width - radius * 2),
+      y: radius + Math.random() * (height - radius * 2),
+    };
+    if (isFootprintClear(battlefield, candidate, baseDiameter)) {
+      return candidate;
+    }
+  }
+  return clamped;
+}
+
 function renderBattlefieldGridCases() {
   for (const density of densityValues) {
     for (const blockLos of blockValues) {
@@ -60,13 +107,13 @@ function renderPathfindingCases() {
     });
     const engine = new PathfindingEngine(battlefield);
 
-    let start: Position = { x: 2, y: 2 };
-    let end: Position = { x: 22, y: 22 };
+    let start: Position = findClearPosition(battlefield, { x: 2, y: 2 }, 1);
+    let end: Position = findClearPosition(battlefield, { x: 22, y: 22 }, 1);
     let result = engine.findPath(start, end, { footprintDiameter: 1 });
     let attempts = 0;
     while (result.totalLength < 16 && attempts < 20) {
-      start = randomPosition(2, 6);
-      end = randomPosition(18, 22);
+      start = findClearPosition(battlefield, randomPosition(2, 6), 1);
+      end = findClearPosition(battlefield, randomPosition(18, 22), 1);
       result = engine.findPath(start, end, { footprintDiameter: 1 });
       attempts++;
     }
@@ -96,9 +143,9 @@ function renderPathfindingCases() {
 
 function renderLOSBlockedCases() {
   const cases = [
-    { label: 'Unblocked', start: { x: 3, y: 3 }, end: { x: 12, y: 3 } },
-    { label: 'Blocked ~4 MU', start: { x: 2, y: 8 }, end: { x: 10, y: 8 } },
-    { label: 'Blocked ~16 MU', start: { x: 2, y: 18 }, end: { x: 22, y: 18 } },
+    { label: 'Unblocked', start: { x: 3, y: 3 }, end: { x: 12, y: 3 }, wallDistance: 0 },
+    { label: 'Blocked ~4 MU', start: { x: 2, y: 8 }, end: { x: 10, y: 8 }, wallDistance: 4 },
+    { label: 'Blocked ~16 MU', start: { x: 2, y: 18 }, end: { x: 22, y: 18 }, wallDistance: 16 },
   ];
 
   cases.forEach((entry, index) => {
@@ -110,20 +157,27 @@ function renderLOSBlockedCases() {
     const rays: { from: Position; to: Position; label: string; color: string }[] = [];
     const annotations: { position: Position; text: string; color?: string }[] = [];
 
-    if (entry.label.includes('Blocked')) {
-      const wallType = index === 1 ? 'Short Wall' : 'Medium Wall';
-      const wallPos = index === 1 ? { x: 6, y: 8 } : { x: 18, y: 18 };
+    const start = findClearPosition(battlefield, entry.start, 1);
+    const end = findClearPosition(battlefield, entry.end, 1);
+
+    if (entry.wallDistance > 0) {
+      const wallType = entry.wallDistance <= 4 ? 'Short Wall' : 'Medium Wall';
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
+      const length = Math.hypot(dx, dy) || 1;
+      const ratio = entry.wallDistance / length;
+      const wallPos = { x: start.x + dx * ratio, y: start.y + dy * ratio };
       battlefield.addTerrainElement(new TerrainElement(wallType, wallPos, 0));
     }
 
-    rays.push({ from: entry.start, to: entry.end, label: entry.label, color: entry.label === 'Unblocked' ? '#2d6a4f' : '#b02a37' });
+    rays.push({ from: start, to: end, label: entry.label, color: entry.label === 'Unblocked' ? '#2d6a4f' : '#b02a37' });
 
     const svg = SvgRenderer.render(battlefield, {
       width,
       height,
       title: `LOS Checks (SIZ 3) blockLOS 50 - ${entry.label}`,
       models: [
-        { id: 'los-model', position: entry.start, baseDiameter: 1, color: '#f4a261', label: 'Model' },
+        { id: 'los-model', position: start, baseDiameter: 1, color: '#f4a261', label: 'Model' },
       ],
       losRays: rays,
       annotations,
@@ -142,11 +196,29 @@ function renderLOFCases() {
       blockLos,
     });
 
-    const attacker = { id: 'attacker', position: { x: 2, y: 12 }, baseDiameter: 1, isFriendly: true, isAttentive: true, isOrdered: true };
-    const target = { id: 'target', position: { x: 22, y: 12 }, baseDiameter: 1, isFriendly: false };
-    const s3 = { id: 's3', position: { x: 8, y: 12 }, baseDiameter: 1, isFriendly: true };
-    const s4 = { id: 's4', position: { x: 12, y: 12 }, baseDiameter: 1.5, isFriendly: false };
-    const s5 = { id: 's5', position: { x: 16, y: 12 }, baseDiameter: 2, isFriendly: false };
+    let yRow = 12;
+    let attempt = 0;
+    while (attempt < 40) {
+      const candidateY = 4 + Math.random() * 16;
+      const positions = [
+        { x: 2, y: candidateY, diameter: 1 },
+        { x: 22, y: candidateY, diameter: 1 },
+        { x: 8, y: candidateY, diameter: 1 },
+        { x: 12, y: candidateY, diameter: 1.5 },
+        { x: 16, y: candidateY, diameter: 2 },
+      ];
+      if (positions.every(pos => isFootprintClear(battlefield, { x: pos.x, y: pos.y }, pos.diameter))) {
+        yRow = candidateY;
+        break;
+      }
+      attempt++;
+    }
+
+    const attacker = { id: 'attacker', position: { x: 2, y: yRow }, baseDiameter: 1, isFriendly: true, isAttentive: true, isOrdered: true };
+    const target = { id: 'target', position: { x: 22, y: yRow }, baseDiameter: 1, isFriendly: false };
+    const s3 = { id: 's3', position: { x: 8, y: yRow }, baseDiameter: 1, isFriendly: true };
+    const s4 = { id: 's4', position: { x: 12, y: yRow }, baseDiameter: 1.5, isFriendly: false };
+    const s5 = { id: 's5', position: { x: 16, y: yRow }, baseDiameter: 2, isFriendly: false };
 
     const models = [attacker, target, s3, s4, s5];
     const lofModels = LOFOperations.getModelsAlongLOF(attacker.position, target.position, models);

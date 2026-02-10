@@ -58,20 +58,14 @@ function distance(a: Position, b: Position): number {
 }
 
 function minSpacing(category: string, otherCategory: string, densityRatio: number): number {
-  if (densityRatio === 100 && category === otherCategory && ['tree', 'rocks', 'shrub'].includes(category)) {
-    return 0;
-  }
   if (category === 'area' && otherCategory === 'area') {
     return 3;
   }
   if (category === 'area' || otherCategory === 'area') {
     return 0;
   }
-  if (category === 'wall' && (otherCategory === 'wall' || otherCategory === 'building')) {
-    return 1;
-  }
-  if (category === 'tree' && (otherCategory === 'wall' || otherCategory === 'building')) {
-    return 1;
+  if (category === otherCategory) {
+    return 0;
   }
   return 3;
 }

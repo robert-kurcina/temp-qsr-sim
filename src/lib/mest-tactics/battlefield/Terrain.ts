@@ -23,5 +23,6 @@ export interface TerrainFeature {
     distribution?: number;
     color?: string;
     layer?: string;
+    initialMovement?: string;
   };
 }

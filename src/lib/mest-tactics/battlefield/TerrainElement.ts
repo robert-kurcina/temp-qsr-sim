@@ -163,6 +163,7 @@ export class TerrainElement {
         category: this.info.category,
         distribution: this.info.distribution,
         color: this.info.color,
+        initialMovement: this.info.initialMovement,
         layer: this.info.category === 'area' ? 'area' : (this.info.los === 'Blocking' ? 'blocking' : 'terrain'),
       },
     };
