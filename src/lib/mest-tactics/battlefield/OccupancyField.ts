@@ -1,14 +1,18 @@
-import { Character } from './character/Character';
-import { Terrain, Coordinate } from './spatial';
+import { Terrain, Coordinate } from '../spatial';
 
-export class Battlefield {
-  public characters: Character[] = [];
+export interface Occupant {
+  position: Coordinate;
+  baseDiameter: number;
+}
+
+export class OccupancyField {
+  public occupants: Occupant[] = [];
   public terrain: Terrain[] = [];
 
   constructor(public width: number, public height: number) {}
 
-  public addCharacter(character: Character): void {
-    this.characters.push(character);
+  public addOccupant(occupant: Occupant): void {
+    this.occupants.push(occupant);
   }
 
   public addTerrain(terrain: Terrain): void {
@@ -17,9 +21,9 @@ export class Battlefield {
 
   public isOccupied(position: Coordinate): boolean {
     // This is a simplified check. A more robust implementation would use a proper collision detection algorithm.
-    for (const char of this.characters) {
-      const distance = Math.sqrt(Math.pow(char.position.x - position.x, 2) + Math.pow(char.position.y - position.y, 2));
-      if (distance < char.baseDiameter / 2) {
+    for (const occupant of this.occupants) {
+      const distance = Math.sqrt(Math.pow(occupant.position.x - position.x, 2) + Math.pow(occupant.position.y - position.y, 2));
+      if (distance < occupant.baseDiameter / 2) {
         return true;
       }
     }

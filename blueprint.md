@@ -64,8 +64,8 @@ To ensure a stable and predictable codebase, the following systematic approach w
 
 ## 8. Game Documentation
 
-*   [Mastery](src/content/docs/mastery.md)
-*   [Rules](src/content/docs/rules.md)
+*   [Mastery](src/guides/docs/mastery.md)
+*   [Rules](src/guides/docs/rules.md)
 
 ## 8.1 Context Anchors (Non-UI Docs)
 

@@ -34,16 +34,16 @@ All terrain is classified by its effect on movement. The primary classifications
 
 The following are standard terrain elements. For the initial implementation, all of these are considered **Impassable**.
 
-| Terrain Type | Dimensions | Shape |
+| Terrain Type | Dimensions | Shape | Color | Type | LOS
 | :--- | :--- | :--- |
-| Shrub | 1 MU Diameter | Circle |
-| Tree | 2 MU Diameter | Circle |
-| Small Rocks | 1 x 2 MU | Ellipse |
-| Medium Rocks | 2 x 4 MU | Ellipse |
-| Large Rocks | 3 x 6 MU | Ellipse |
-| Short Wall | 0.5 x 6 MU | Rectangle |
-| Medium Wall | 1 x 8 MU | Rectangle |
-| Large Wall | 2 x 12 MU | Rectangle |
-| Small Building | 3 x 4 MU | Rectangle |
-| Medium Building | 4 x 6 MU | Rectangle |
-| Large Building | 6 x 9 MU | Rectangle |
+| Shrub | 1 MU Diameter | Circle | Difficult | Soft
+| Tree | 2 MU Diameter | Circle | Difficult | Soft
+| Small Rocks | 1 x  MU | Ellipse | Rough | Hard
+| Medium Rocks | 2 x 4 MU | Ellipse | Rough | Hard
+| Large Rocks | 3 x 6 MU | Ellipse | Rough | Hard
+| Short Wall | 0.5 x 6 MU | Rectangle | Impassable | Blocking
+| Medium Wall | 1 x 8 MU | Rectangle | Impassable | Blocking
+| Large Wall | 2 x 12 MU | Rectangle | Impassable | Blocking
+| Small Building | 4 x 6 MU | Rectangle | Impassable | Blocking
+| Medium Building | 6 x 8 MU | Rectangle | Impassable | Blocking
+| Large Building | 8 x 10 MU | Rectangle | Impassable | Blocking
