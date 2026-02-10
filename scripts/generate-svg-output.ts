@@ -157,6 +157,9 @@ function findNonOverlappingPlacement(
 }
 
 function isMovementBlocking(feature: { type: string; meta?: Record<string, any> }): boolean {
+  if (feature.meta?.category === 'area' || feature.meta?.layer === 'area') {
+    return false;
+  }
   if (feature.type === 'Obstacle' || feature.type === 'Impassable') {
     return true;
   }
@@ -251,7 +254,7 @@ function renderPathfindingCases() {
     let end: Position = findClearPosition(battlefield, { x: 22, y: 22 }, 1);
     let result = engine.findPath(start, end, { footprintDiameter: 1 });
     let attempts = 0;
-    while (result.totalLength < 16 && attempts < 20) {
+    while (result.totalLength < 32 && attempts < 30) {
       start = findClearPosition(battlefield, randomPosition(2, 6), 1);
       end = findClearPosition(battlefield, randomPosition(18, 22), 1);
       result = engine.findPath(start, end, { footprintDiameter: 1 });
@@ -317,8 +320,12 @@ function renderLOSBlockedCases() {
       const basePos = { x: start.x + dx * ratio, y: start.y + dy * ratio };
       const placement = findNonOverlappingPlacement(battlefield, wallType, basePos, { x: dx, y: dy });
       if (placement) {
-        battlefield.addTerrainElement(new TerrainElement(wallType, placement, 0));
+        battlefield.addTerrainElement(new TerrainElement(wallType, placement, 0), true);
       }
+    }
+
+    if (entry.wallDistance > 0) {
+      battlefield.finalizeTerrain();
     }
 
     rays.push({ from: start, to: end, label: entry.label, color: entry.label === 'Unblocked' ? '#2d6a4f' : '#b02a37' });

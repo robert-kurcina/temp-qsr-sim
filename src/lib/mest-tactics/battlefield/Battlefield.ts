@@ -4,6 +4,7 @@ import { Grid } from './Grid';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './Terrain';
 import { TerrainElement } from './TerrainElement';
+import { ConstrainedNavMesh } from './ConstrainedNavMesh';
 
 function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
     function orientation(p: Position, q: Position, r: Position): number {
@@ -37,27 +38,30 @@ export class Battlefield {
   public grid: Grid;
   public terrain: TerrainFeature[] = [];
   private navigationMesh: Delaunay<Position> | null = null;
+  private constrainedNavMesh: ConstrainedNavMesh | null = null;
   private characterPositions: Map<string, Position> = new Map();
 
   constructor(public width: number, public height: number) {
     this.grid = new Grid(width, height);
   }
 
-  addTerrain(feature: TerrainFeature): void {
+  addTerrain(feature: TerrainFeature, deferNavMesh = false): void {
     this.terrain.push(feature);
-    this.generateNavigationMesh();
+    if (!deferNavMesh) {
+      this.finalizeTerrain();
+    }
   }
 
   removeTerrain(feature: TerrainFeature): void {
     const index = this.terrain.lastIndexOf(feature);
     if (index >= 0) {
       this.terrain.splice(index, 1);
-      this.generateNavigationMesh();
+      this.finalizeTerrain();
     }
   }
 
-  addTerrainElement(element: TerrainElement): void {
-    this.addTerrain(element.toFeature());
+  addTerrainElement(element: TerrainElement, deferNavMesh = false): void {
+    this.addTerrain(element.toFeature(), deferNavMesh);
   }
 
   placeCharacter(character: Character, position: Position): boolean {
@@ -116,15 +120,22 @@ export class Battlefield {
     points.push({ x: this.width, y: this.height });
 
     this.terrain.forEach(feature => {
-      if (feature.type !== TerrainType.Obstacle) {
-        points.push(...feature.vertices);
-      }
+      points.push(...feature.vertices);
     });
 
     this.navigationMesh = Delaunay.from(points, p => p.x, p => p.y);
   }
 
+  public finalizeTerrain(): void {
+    this.generateNavigationMesh();
+    this.constrainedNavMesh = ConstrainedNavMesh.build(this);
+  }
+
   getNavMesh(): Delaunay<Position> | null {
       return this.navigationMesh;
+  }
+
+  getConstrainedNavMesh(): ConstrainedNavMesh | null {
+    return this.constrainedNavMesh;
   }
 }

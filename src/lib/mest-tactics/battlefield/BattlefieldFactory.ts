@@ -207,7 +207,7 @@ export class BattlefieldFactory {
           if (tooClose) continue;
 
           const terrainElement = new TerrainElement(elementName, position);
-          battlefield.addTerrain(terrainElement.toFeature());
+          battlefield.addTerrain(terrainElement.toFeature(), true);
           placedList.push({ position, radius, category, rotation: 0, feature: terrainElement });
           placedAreaTotal += area;
           if (placedAreaTotal >= effectiveTargetArea) {
@@ -279,7 +279,7 @@ export class BattlefieldFactory {
 
           const terrainElement = new TerrainElement(elementName, position, wallRotation);
           const feature = terrainElement.toFeature();
-          battlefield.addTerrain(feature);
+          battlefield.addTerrain(feature, true);
 
           if (isBlocking) {
             const blockedFraction = LOSOperations.estimateBlockedFraction(battlefield, width, height);
@@ -304,6 +304,7 @@ export class BattlefieldFactory {
         }
       }
     }
+    battlefield.finalizeTerrain();
     return battlefield;
   }
 

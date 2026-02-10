@@ -55,7 +55,7 @@ export class PathfindingEngine {
     const gridResolution = options.gridResolution ?? (footprintDiameter > 0 && footprintDiameter <= 0.5 ? 0.25 : defaultGridResolution);
     const footprintRadius = footprintDiameter > 0 ? footprintDiameter / 4 : 0; // middle 2/4 of model
     const fullRadius = footprintDiameter > 0 ? footprintDiameter / 2 : 0;
-    const useNavMesh = options.useNavMesh ?? false;
+    const useNavMesh = options.useNavMesh ?? true;
     const useHierarchical = options.useHierarchical ?? true;
     const optimizeWithLOS = options.optimizeWithLOS ?? true;
     const clearancePenalty = options.clearancePenalty ?? 1.25;
@@ -95,31 +95,34 @@ export class PathfindingEngine {
     const endNode = this.toGridCoordinate(end, gridResolution, gridWidth, gridHeight);
 
     const gridPath: number[][] = [];
-    if (useHierarchical) {
-      const hierarchicalPath = this.findHierarchicalPath(
-        startNode,
-        endNode,
-        walkable,
-        terrainCost,
-        gridWidth,
-        gridHeight,
-        gridResolution,
-        {
-          ...options,
-          useTheta,
-          turnPenalty,
-        }
-      );
-      gridPath.push(...hierarchicalPath);
-    } else {
-      const waypoints = useNavMesh
-        ? this.findNavMeshWaypoints(start, end)
-        : [start, end];
+    const waypoints = useNavMesh
+      ? this.findNavMeshWaypoints(start, end, footprintDiameter)
+      : [start, end];
 
-      for (let i = 0; i < waypoints.length - 1; i++) {
-        const segmentStart = this.toGridCoordinate(waypoints[i], gridResolution, gridWidth, gridHeight);
-        const segmentEnd = this.toGridCoordinate(waypoints[i + 1], gridResolution, gridWidth, gridHeight);
-        const segmentPath = this.findWeightedPath(
+    for (let i = 0; i < waypoints.length - 1; i++) {
+      const segmentStart = this.toGridCoordinate(waypoints[i], gridResolution, gridWidth, gridHeight);
+      const segmentEnd = this.toGridCoordinate(waypoints[i + 1], gridResolution, gridWidth, gridHeight);
+      let segmentPath: number[][] = [];
+
+      if (useHierarchical) {
+        segmentPath = this.findHierarchicalPath(
+          segmentStart,
+          segmentEnd,
+          walkable,
+          terrainCost,
+          gridWidth,
+          gridHeight,
+          gridResolution,
+          {
+            ...options,
+            useTheta,
+            turnPenalty,
+          }
+        );
+      }
+
+      if (!useHierarchical || segmentPath.length === 0) {
+        segmentPath = this.findWeightedPath(
           segmentStart,
           segmentEnd,
           walkable,
@@ -136,14 +139,15 @@ export class PathfindingEngine {
             turnPenalty,
           }
         );
-        if (segmentPath.length === 0) {
-          continue;
-        }
-        if (gridPath.length > 0) {
-          gridPath.pop();
-        }
-        gridPath.push(...segmentPath);
       }
+
+      if (segmentPath.length === 0) {
+        continue;
+      }
+      if (gridPath.length > 0) {
+        gridPath.pop();
+      }
+      gridPath.push(...segmentPath);
     }
 
     const pathPoints = gridPath.map(node => this.fromGridCoordinate(node[0], node[1], gridResolution));
@@ -400,73 +404,24 @@ export class PathfindingEngine {
     return current;
   }
 
-  private findNavMeshWaypoints(start: Position, end: Position): Position[] {
-    const mesh = this.battlefield.getNavMesh();
+  private findNavMeshWaypoints(start: Position, end: Position, diameter: number): Position[] {
+    const mesh = this.battlefield.getConstrainedNavMesh();
     if (!mesh) {
-      this.battlefield.generateNavigationMesh();
+      this.battlefield.finalizeTerrain();
     }
-    const navMesh = this.battlefield.getNavMesh();
+    const navMesh = this.battlefield.getConstrainedNavMesh();
     if (!navMesh) {
       return [start, end];
     }
 
-    const voronoi = navMesh.voronoi([0, 0, this.battlefield.width, this.battlefield.height]);
-    const startIndex = navMesh.find(start.x, start.y);
-    const endIndex = navMesh.find(end.x, end.y);
-
-    if (startIndex === endIndex) {
+    const trianglePath = navMesh.findTrianglePath(start, end, diameter);
+    if (trianglePath.length === 0) {
       return [start, end];
     }
 
-    const queue: number[] = [startIndex];
-    const visited = new Set<number>([startIndex]);
-    const parent = new Map<number, number>();
-
-    while (queue.length > 0) {
-      const current = queue.shift();
-      if (current === undefined) break;
-      if (current === endIndex) break;
-      for (const neighbor of navMesh.neighbors(current)) {
-        if (visited.has(neighbor)) continue;
-        visited.add(neighbor);
-        parent.set(neighbor, current);
-        queue.push(neighbor);
-      }
-    }
-
-    if (!parent.has(endIndex)) {
-      return [start, end];
-    }
-
-    const indices: number[] = [];
-    let current = endIndex;
-    indices.push(current);
-    while (current !== startIndex) {
-      const prev = parent.get(current);
-      if (prev === undefined) break;
-      current = prev;
-      indices.push(current);
-    }
-    indices.reverse();
-
-    const waypoints: Position[] = [start];
-    for (const index of indices.slice(1, -1)) {
-      const cell = voronoi.cellPolygon(index);
-      if (!cell || cell.length === 0) continue;
-      let sumX = 0;
-      let sumY = 0;
-      for (const point of cell) {
-        sumX += point[0];
-        sumY += point[1];
-      }
-      const count = cell.length;
-      waypoints.push({
-        x: sumX / count,
-        y: sumY / count,
-      });
-    }
-    waypoints.push(end);
-    return waypoints;
+    const portals = navMesh.buildPortals(trianglePath);
+    const navPath = navMesh.funnelPath(start, end, portals);
+    return navPath.length > 1 ? navPath : [start, end];
   }
 
   private findHierarchicalPath(
@@ -760,6 +715,9 @@ export class PathfindingEngine {
   }
 
   private isMovementBlocking(feature: TerrainFeature): boolean {
+    if (feature.meta?.category === 'area' || feature.meta?.layer === 'area') {
+      return false;
+    }
     if (feature.type === TerrainType.Obstacle || feature.type === TerrainType.Impassable) {
       return true;
     }
