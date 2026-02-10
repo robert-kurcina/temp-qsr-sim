@@ -12511,44 +12511,117 @@ export const gameData = {
       "equipment": []
     }
   ],
-  "terrain": [
-    {
-      "name": "Wall",
-      "type": "blocking",
-      "height_mu": 1.2,
-      "material": "stone",
-      "color": "#7f8c8d"
+  "terrain_info": {
+    "Shrub": {
+      "shape": "circle",
+      "dimensions": {
+        "diameter": 1
+      },
+      "movement": "Difficult",
+      "los": "Soft",
+      "initialMovement": "Impassable"
     },
-    {
-      "name": "Woods",
-      "type": "blocking",
-      "height_mu": 7,
-      "material": "foliage",
-      "color": "#27ae60"
+    "Tree": {
+      "shape": "circle",
+      "dimensions": {
+        "diameter": 2
+      },
+      "movement": "Difficult",
+      "los": "Soft",
+      "initialMovement": "Impassable"
     },
-    {
-      "name": "Hill",
-      "type": "elevation",
-      "height_mu": 1.5,
-      "slope_ratio": 0.5,
-      "material": "earth",
-      "color": "#d35400"
+    "Small Rocks": {
+      "shape": "ellipse",
+      "dimensions": {
+        "width": 1,
+        "height": 2
+      },
+      "movement": "Rough",
+      "los": "Hard",
+      "initialMovement": "Impassable",
+      "dimensionsNote": "Height inferred from Medium/Large pattern in rules-terrain.md."
     },
-    {
-      "name": "Debris",
-      "type": "cover_only",
-      "height_mu": 0.5,
-      "material": "rubble",
-      "color": "#bdc3c7"
+    "Medium Rocks": {
+      "shape": "ellipse",
+      "dimensions": {
+        "width": 2,
+        "height": 4
+      },
+      "movement": "Rough",
+      "los": "Hard",
+      "initialMovement": "Impassable"
     },
-    {
-      "name": "Building",
-      "type": "blocking",
-      "height_mu": 2,
-      "material": "brick",
-      "color": "#8b6b45"
+    "Large Rocks": {
+      "shape": "ellipse",
+      "dimensions": {
+        "width": 3,
+        "height": 6
+      },
+      "movement": "Rough",
+      "los": "Hard",
+      "initialMovement": "Impassable"
+    },
+    "Short Wall": {
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 0.5,
+        "height": 6
+      },
+      "movement": "Impassable",
+      "los": "Blocking",
+      "initialMovement": "Impassable"
+    },
+    "Medium Wall": {
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 1,
+        "height": 8
+      },
+      "movement": "Impassable",
+      "los": "Blocking",
+      "initialMovement": "Impassable"
+    },
+    "Large Wall": {
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 2,
+        "height": 12
+      },
+      "movement": "Impassable",
+      "los": "Blocking",
+      "initialMovement": "Impassable"
+    },
+    "Small Building": {
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 4,
+        "height": 6
+      },
+      "movement": "Impassable",
+      "los": "Blocking",
+      "initialMovement": "Impassable"
+    },
+    "Medium Building": {
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 6,
+        "height": 8
+      },
+      "movement": "Impassable",
+      "los": "Blocking",
+      "initialMovement": "Impassable"
+    },
+    "Large Building": {
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 8,
+        "height": 10
+      },
+      "movement": "Impassable",
+      "los": "Blocking",
+      "initialMovement": "Impassable"
     }
-  ],
+  },
   "thrown_weapons": {
     "Blow-dart Gun": {
       "class": "Thrown",

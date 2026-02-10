@@ -1,0 +1,80 @@
+{
+  "Shrub": {
+    "shape": "circle",
+    "dimensions": { "diameter": 1 },
+    "movement": "Difficult",
+    "los": "Soft",
+    "initialMovement": "Impassable"
+  },
+  "Tree": {
+    "shape": "circle",
+    "dimensions": { "diameter": 2 },
+    "movement": "Difficult",
+    "los": "Soft",
+    "initialMovement": "Impassable"
+  },
+  "Small Rocks": {
+    "shape": "ellipse",
+    "dimensions": { "width": 1, "height": 2 },
+    "movement": "Rough",
+    "los": "Hard",
+    "initialMovement": "Impassable",
+    "dimensionsNote": "Height inferred from Medium/Large pattern in rules-terrain.md."
+  },
+  "Medium Rocks": {
+    "shape": "ellipse",
+    "dimensions": { "width": 2, "height": 4 },
+    "movement": "Rough",
+    "los": "Hard",
+    "initialMovement": "Impassable"
+  },
+  "Large Rocks": {
+    "shape": "ellipse",
+    "dimensions": { "width": 3, "height": 6 },
+    "movement": "Rough",
+    "los": "Hard",
+    "initialMovement": "Impassable"
+  },
+  "Short Wall": {
+    "shape": "rectangle",
+    "dimensions": { "width": 0.5, "height": 6 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Medium Wall": {
+    "shape": "rectangle",
+    "dimensions": { "width": 1, "height": 8 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Large Wall": {
+    "shape": "rectangle",
+    "dimensions": { "width": 2, "height": 12 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Small Building": {
+    "shape": "rectangle",
+    "dimensions": { "width": 4, "height": 6 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Medium Building": {
+    "shape": "rectangle",
+    "dimensions": { "width": 6, "height": 8 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Large Building": {
+    "shape": "rectangle",
+    "dimensions": { "width": 8, "height": 10 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  }
+}

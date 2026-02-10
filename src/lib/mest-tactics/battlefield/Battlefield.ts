@@ -3,6 +3,7 @@ import { Delaunay } from 'd3-delaunay';
 import { Grid } from './Grid';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './Terrain';
+import { TerrainElement } from './TerrainElement';
 
 function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
     function orientation(p: Position, q: Position, r: Position): number {
@@ -45,6 +46,10 @@ export class Battlefield {
   addTerrain(feature: TerrainFeature): void {
     this.terrain.push(feature);
     this.generateNavigationMesh();
+  }
+
+  addTerrainElement(element: TerrainElement): void {
+    this.addTerrain(element.toFeature());
   }
 
   placeCharacter(character: Character, position: Position): boolean {
