@@ -2,8 +2,8 @@
 import { gameData } from '../data';
 import { Archetype } from './Archetype';
 import { Item } from './Item';
-import { Trait } from './Trait';
-import { processTraits, formatTrait, parseTrait } from './trait-parser';
+import { Profile } from './Profile';
+import { processTraits, formatTrait } from './trait-parser';
 
 const itemDataMapping: {
     [key: string]: keyof typeof gameData | null
@@ -11,32 +11,22 @@ const itemDataMapping: {
     'Melee': 'melee_weapons',
     'Firearm': 'ranged_weapons',
     'Ordnance': 'ranged_weapons',
+    'Bow': 'bow_weapons',
+    'Thrown': 'thrown_weapons',
+    'Support': 'support_weapons',
+    'Grenade': 'grenade_weapons',
     'Armor': 'armors',
     'Equipment': 'equipment',
 };
 
-export interface Profile {
-    name: string;
-    archetype: { [key: string]: Archetype };
-    items: Item[];
-    totalBp: number;
-    adjustedBp: number;
-    adjustedItemCosts: { 
-        meleeBp: number[],
-        rangedBp: number[],
-        equipmentBp: number[]
-    };
-    physicality: number;
-    adjPhysicality: number;
-    durability: number;
-    adjDurability: number;
-    burden: { totalLaden: number; totalBurden: number; };
-    totalHands: number;
-    totalDeflect: number;
-    totalAR: number;
-    finalTraits: string[];
-    allTraits: string[];
-}
+const weaponDataKeys = new Set<string>([
+    'melee_weapons',
+    'ranged_weapons',
+    'bow_weapons',
+    'thrown_weapons',
+    'support_weapons',
+    'grenade_weapons',
+]);
 
 export function generateRandomProfile(): Profile {
     const archetypeNames = Object.keys(gameData.archetypes);
@@ -119,6 +109,9 @@ export function createProfiles(
     });
 
     const items: Item[] = [];
+    const weaponItems: Item[] = [];
+    const shieldItems: Item[] = [];
+    const equipmentItems: Item[] = [];
     const itemTraits: string[] = [];
     
     let meleeBp: number[] = [];
@@ -126,6 +119,7 @@ export function createProfiles(
     let equipmentBp: number[] = [];
 
     let totalHands = 0;
+    let weaponCount = 0;
     let equipmentCount = 0;
     let totalLaden = 0;
 
@@ -138,6 +132,19 @@ export function createProfiles(
                 items.push(item);
                 itemTraits.push(...(item.traits || []));
                 totalBp += item.bp;
+
+                if (weaponDataKeys.has(dataKey)) {
+                    weaponItems.push(item);
+                    weaponCount += 1;
+                }
+
+                if (item.class && item.class.includes('Shield')) {
+                    shieldItems.push(item);
+                }
+
+                if (dataKey === 'equipment') {
+                    equipmentItems.push(item);
+                }
 
                 const ladenTrait = item.traits.find(t => t.startsWith('[Laden'));
                 if (ladenTrait) {
@@ -175,6 +182,7 @@ export function createProfiles(
         throw new Error('Invalid loadout: Cannot wear more than one armor of the same type.');
     }
 
+    if (weaponCount > 3) throw new Error('Invalid loadout: A maximum of 3 weapons are allowed.');
     if (totalHands > 4) throw new Error('Invalid loadout: Exceeds maximum of 4 hands required.');
     if (equipmentCount > 3) throw new Error('Invalid loadout: A maximum of 3 equipment items are allowed.');
     
@@ -227,6 +235,8 @@ export function createProfiles(
         name: profileName + '-loadout',
         archetype,
         items,
+        inHandItems: [],
+        stowedItems: [],
         totalBp,
         adjustedBp,
         adjustedItemCosts: {
@@ -248,6 +258,61 @@ export function createProfiles(
         finalTraits: allCombinedTraits.map(formatTrait),
         allTraits: allCombinedTraits.map(formatTrait)
     };
+
+    const handsAvailable = 2;
+    let handsInUse = 0;
+    const inHandItems: Item[] = [];
+    const stowedItems: Item[] = [];
+
+    const getHandsRequired = (item: Item): number => {
+        const handTrait = item.traits.find(t => t.startsWith('[') && t.endsWith('H]'));
+        if (!handTrait) return 0;
+        if (handTrait.includes('2H')) return 2;
+        if (handTrait.includes('1H')) return 1;
+        return 0;
+    };
+
+    const tryEquipInHand = (item: Item): boolean => {
+        const handsRequired = getHandsRequired(item);
+        if (handsRequired === 0) {
+            inHandItems.push(item);
+            return true;
+        }
+        if (handsInUse + handsRequired <= handsAvailable) {
+            handsInUse += handsRequired;
+            inHandItems.push(item);
+            return true;
+        }
+        stowedItems.push(item);
+        return false;
+    };
+
+    const inHandCandidates = [...weaponItems, ...shieldItems];
+    inHandCandidates.forEach(item => {
+        tryEquipInHand(item);
+    });
+
+    equipmentItems.forEach(item => {
+        const handsRequired = getHandsRequired(item);
+        if (handsRequired === 0) {
+            stowedItems.push(item);
+            return;
+        }
+        if (handsInUse + handsRequired <= handsAvailable) {
+            handsInUse += handsRequired;
+            inHandItems.push(item);
+            return;
+        }
+        stowedItems.push(item);
+    });
+
+    items.forEach(item => {
+        if (inHandItems.includes(item) || stowedItems.includes(item)) return;
+        stowedItems.push(item);
+    });
+
+    profile.inHandItems = inHandItems;
+    profile.stowedItems = stowedItems;
 
     return [profile];
 }

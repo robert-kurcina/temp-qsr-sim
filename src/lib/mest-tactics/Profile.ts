@@ -9,6 +9,8 @@ export interface Profile {
     attributes?: Attributes;
     items?: Item[];
     equipment?: Item[];
+    inHandItems?: Item[];
+    stowedItems?: Item[];
     totalBp?: number;
     adjustedBp?: number;
     adjustedItemCosts?: { 

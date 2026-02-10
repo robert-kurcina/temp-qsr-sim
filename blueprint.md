@@ -98,6 +98,7 @@ To ensure a stable and predictable codebase, the following systematic approach w
 7.  **Created `types.ts`:** `FinalAttributes` and `ArmorState` are now in a separate file.
 8.  **Updated `battlefield.test.ts`:** The test now uses the new `Character` class structure.
 9.  **All unit tests passing:** Full suite is green.
+10. **Implemented profile/assembly pipeline:** Added profile builder and assembly creation helpers to turn archetypes + items into characters within an assembly.
 
 ### Next Steps
 
@@ -107,12 +108,7 @@ Define and implement the minimum game loop and spatial model required by the QSR
     Represent a battlefield with measurable MU distances, model base sizes (diameter/height), and model volumes for LOS checks. Support LOS/LOF rules, including blocking terrain, cover determination (direct/intervening), and visibility OR constraints.
 2.  **Terrain & Movement Rules**  
     Encode terrain categories (Clear, Rough, Difficult, Blocking) and movement costs, including base-contact constraints, engagement, and agility-based movement exceptions.
-3.  **Profiles, Items, and Assemblies**  
-    Implement a pipeline to:
-    - Build Profiles (archetype + items) from BP budgets.
-    - Instantiate Characters from Profiles.
-    - Group Characters into Assemblies and assign to Sides.
-4.  **Mission Setup & Game Size**  
+3.  **Mission Setup & Game Size**  
     Implement mission configuration for the default “Elimination” mission, including game size assumptions (Small), model count, and BP budget constraints.
-5.  **Turn & Action Loop (Playable Flow)**  
+4.  **Turn & Action Loop (Playable Flow)**  
     Implement turn structure with Ready/Done statuses, core actions (Move, Close Combat Attack, Ranged Attack, Disengage), and basic status token handling (Hidden, Wound, Delay, Fear, KO, Eliminated).
