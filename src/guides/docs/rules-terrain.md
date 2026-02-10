@@ -36,20 +36,20 @@ The following are standard terrain elements. For the initial implementation, all
 
 | Terrain Type | Dimensions | Shape | Color | Type | LOS | Distribution | Category
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Shrub | 1 MU Diameter | Circle | Dark Green | Difficult | Soft | 3 | Shrub |
-| Tree | 2 MU Diameter | Circle | Light Green | Difficult | Soft | 3 | Tree |
-| Small Rocks | 1 x  MU | Ellipse | Light Gray | Rough | Hard | 3 | Rocks |
-| Medium Rocks | 2 x 4 MU | Ellipse | Light Gray | Rough | Hard | 2 | Rocks |
-| Large Rocks | 3 x 6 MU | Ellipse | Light Gray | Rough | Hard | 1 | Rocks |
-| Short Wall | 0.5 x 6 MU | Rectangle | Dark Gray | Impassable | Blocking | 3 | Wall |
-| Medium Wall | 1 x 8 MU | Rectangle | Dark Gray | Impassable | Blocking | 2 | Wall |
-| Large Wall | 2 x 12 MU | Rectangle | Dark Gray | Impassable | Blocking | 1 | Wall |
-| Small Building | 4 x 6 MU | Rectangle | Black | Impassable | Blocking | 3 | Building |
-| Medium Building | 6 x 8 MU | Rectangle | Black | Impassable | Blocking | 2 | Building |
-| Large Building | 8 x 10 MU | Rectangle | Black | Impassable | Blocking | 1 | Building |
-| Small Rough Patch | 6 x 9 MU | Rectangle | Light Brown | Rough | Clear | 3 | Area |
-| Medium Rough Patch | 9 x 12 MU | Rectangle | Light Brown | Rough | Clear | 2 | Area |
-| Large Rough Patch | 12 x 15 MU | Rectangle | Light Brown | Rough | Clear | 1 | Area |
+| Shrub | 1 MU Diameter | Circle | #006400 | Difficult | Soft | 3 | Shrub |
+| Tree | 2 MU Diameter | Circle | #90EE90 | Difficult | Soft | 3 | Tree |
+| Small Rocks | 1 x  MU | Ellipse | #D3D3D3 | Rough | Hard | 3 | Rocks |
+| Medium Rocks | 2 x 4 MU | Ellipse | #D3D3D3 | Rough | Hard | 2 | Rocks |
+| Large Rocks | 3 x 6 MU | Ellipse | #D3D3D3 | Rough | Hard | 1 | Rocks |
+| Short Wall | 0.5 x 6 MU | Rectangle | #555555 | Impassable | Blocking | 3 | Wall |
+| Medium Wall | 1 x 8 MU | Rectangle | #555555 | Impassable | Blocking | 2 | Wall |
+| Large Wall | 2 x 12 MU | Rectangle | #555555 | Impassable | Blocking | 1 | Wall |
+| Small Building | 4 x 6 MU | Rectangle | #000000 | Impassable | Blocking | 3 | Building |
+| Medium Building | 6 x 8 MU | Rectangle | #000000 | Impassable | Blocking | 2 | Building |
+| Large Building | 8 x 10 MU | Rectangle | #000000 | Impassable | Blocking | 1 | Building |
+| Small Rough Patch | 6 x 9 MU | Rectangle | #C49A6C | Rough | Clear | 3 | Area |
+| Medium Rough Patch | 9 x 12 MU | Rectangle | #C49A6C | Rough | Clear | 2 | Area |
+| Large Rough Patch | 12 x 15 MU | Rectangle | #C49A6C | Rough | Clear | 1 | Area |
 
 ## Procedural Placement Rules
 

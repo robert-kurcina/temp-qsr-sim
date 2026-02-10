@@ -36,6 +36,7 @@ function renderBattlefieldGridCases() {
     for (const blockLos of blockValues) {
       const battlefield = BattlefieldFactory.create(width, height, {
         densityRatio: density,
+        areaDensityRatio: 25,
         blockLos,
       });
       const svg = SvgRenderer.render(battlefield, {
@@ -50,117 +51,129 @@ function renderBattlefieldGridCases() {
 }
 
 function renderPathfindingCases() {
-  const battlefield = BattlefieldFactory.create(width, height, {
-    densityRatio: 50,
-    blockLos: 25,
+  const densities = [50, 75, 100];
+  densities.forEach((density, index) => {
+    const battlefield = BattlefieldFactory.create(width, height, {
+      densityRatio: density,
+      areaDensityRatio: 25,
+      blockLos: 25,
+    });
+    const engine = new PathfindingEngine(battlefield);
+
+    let start: Position = { x: 2, y: 2 };
+    let end: Position = { x: 22, y: 22 };
+    let result = engine.findPath(start, end, { footprintDiameter: 1 });
+    let attempts = 0;
+    while (result.totalLength < 16 && attempts < 20) {
+      start = randomPosition(2, 6);
+      end = randomPosition(18, 22);
+      result = engine.findPath(start, end, { footprintDiameter: 1 });
+      attempts++;
+    }
+
+    const svg = SvgRenderer.render(battlefield, {
+      width,
+      height,
+      title: `Pathfinding SIZ 3 density ${density} (len ${result.totalLength.toFixed(1)} MU)`,
+      models: [
+        { id: 'start', position: start, baseDiameter: 1, color: '#5aa469', label: 'Start' },
+        { id: 'end', position: end, baseDiameter: 1, color: '#d35d6e', label: 'End' },
+      ],
+      paths: [
+        { id: 'path', points: [start, ...result.vectors.map(v => v.to)], color: '#1144aa', label: 'Path' },
+      ],
+      vectors: result.vectors.map((vector, idx) => ({
+        from: vector.from,
+        to: vector.to,
+        color: vector.terrain === 'Rough' ? '#c97b2f' : vector.terrain === 'Difficult' ? '#a15c1f' : '#2d6a4f',
+        label: idx === 0 ? vector.terrain : undefined,
+      })),
+    });
+
+    writeSvg(`battlefield-24x24-pathfinding-${index + 1}.svg`, svg);
   });
-  const engine = new PathfindingEngine(battlefield);
-
-  let start: Position = { x: 2, y: 2 };
-  let end: Position = { x: 22, y: 22 };
-  let result = engine.findPath(start, end, { footprintDiameter: 1 });
-  let attempts = 0;
-  while (result.totalLength < 16 && attempts < 20) {
-    start = randomPosition(2, 6);
-    end = randomPosition(18, 22);
-    result = engine.findPath(start, end, { footprintDiameter: 1 });
-    attempts++;
-  }
-
-  const svg = SvgRenderer.render(battlefield, {
-    width,
-    height,
-    title: `Pathfinding SIZ 3 (len ${result.totalLength.toFixed(1)} MU)`,
-    models: [
-      { id: 'start', position: start, baseDiameter: 1, color: '#5aa469', label: 'Start' },
-      { id: 'end', position: end, baseDiameter: 1, color: '#d35d6e', label: 'End' },
-    ],
-    paths: [
-      { id: 'path', points: [start, ...result.vectors.map(v => v.to)], color: '#1144aa', label: 'Path' },
-    ],
-    vectors: result.vectors.map((vector, index) => ({
-      from: vector.from,
-      to: vector.to,
-      color: vector.terrain === 'Rough' ? '#c97b2f' : vector.terrain === 'Difficult' ? '#a15c1f' : '#2d6a4f',
-      label: index === 0 ? vector.terrain : undefined,
-    })),
-  });
-
-  writeSvg('battlefield-24x24-pathfinding-1.svg', svg);
 }
 
 function renderLOSBlockedCases() {
-  const battlefield = BattlefieldFactory.create(width, height, {
-    densityRatio: 25,
-    blockLos: 50,
+  const cases = [
+    { label: 'Unblocked', start: { x: 3, y: 3 }, end: { x: 12, y: 3 } },
+    { label: 'Blocked ~4 MU', start: { x: 2, y: 8 }, end: { x: 10, y: 8 } },
+    { label: 'Blocked ~16 MU', start: { x: 2, y: 18 }, end: { x: 22, y: 18 } },
+  ];
+
+  cases.forEach((entry, index) => {
+    const battlefield = BattlefieldFactory.create(width, height, {
+      densityRatio: 25,
+      areaDensityRatio: 25,
+      blockLos: 50,
+    });
+    const rays: { from: Position; to: Position; label: string; color: string }[] = [];
+    const annotations: { position: Position; text: string; color?: string }[] = [];
+
+    if (entry.label.includes('Blocked')) {
+      const wallType = index === 1 ? 'Short Wall' : 'Medium Wall';
+      const wallPos = index === 1 ? { x: 6, y: 8 } : { x: 18, y: 18 };
+      battlefield.addTerrainElement(new TerrainElement(wallType, wallPos, 0));
+    }
+
+    rays.push({ from: entry.start, to: entry.end, label: entry.label, color: entry.label === 'Unblocked' ? '#2d6a4f' : '#b02a37' });
+
+    const svg = SvgRenderer.render(battlefield, {
+      width,
+      height,
+      title: `LOS Checks (SIZ 3) blockLOS 50 - ${entry.label}`,
+      models: [
+        { id: 'los-model', position: entry.start, baseDiameter: 1, color: '#f4a261', label: 'Model' },
+      ],
+      losRays: rays,
+      annotations,
+    });
+
+    writeSvg(`battlefield-24x24-los-${index + 1}.svg`, svg);
   });
-
-  const rays: { from: Position; to: Position; label: string; color: string }[] = [];
-  const annotations: { position: Position; text: string; color?: string }[] = [];
-
-  const start: Position = { x: 3, y: 3 };
-  const unblockedEnd: Position = { x: 12, y: 3 };
-  rays.push({ from: start, to: unblockedEnd, label: 'Unblocked', color: '#2d6a4f' });
-
-  const blocked4 = { x: 2, y: 8 };
-  const blocked4End = { x: 10, y: 8 };
-  const blockingElement = new TerrainElement('Short Wall', { x: 6, y: 8 }, 0);
-  battlefield.addTerrainElement(blockingElement);
-  rays.push({ from: blocked4, to: blocked4End, label: 'Blocked ~4 MU', color: '#b02a37' });
-
-  const blocked16 = { x: 2, y: 18 };
-  const blocked16End = { x: 22, y: 18 };
-  const blockingElement2 = new TerrainElement('Medium Wall', { x: 18, y: 18 }, 0);
-  battlefield.addTerrainElement(blockingElement2);
-  rays.push({ from: blocked16, to: blocked16End, label: 'Blocked ~16 MU', color: '#b02a37' });
-
-  const svg = SvgRenderer.render(battlefield, {
-    width,
-    height,
-    title: 'LOS Checks (SIZ 3) blockLOS 50',
-    models: [
-      { id: 'los-model', position: start, baseDiameter: 1, color: '#f4a261', label: 'Model' },
-    ],
-    losRays: rays,
-    annotations,
-  });
-
-  writeSvg('battlefield-24x24-los-1.svg', svg);
 }
 
 function renderLOFCases() {
-  const battlefield = new Battlefield(width, height);
-  const attacker = { id: 'attacker', position: { x: 2, y: 12 }, baseDiameter: 1, isFriendly: true, isAttentive: true, isOrdered: true };
-  const target = { id: 'target', position: { x: 22, y: 12 }, baseDiameter: 1, isFriendly: false };
-  const s3 = { id: 's3', position: { x: 8, y: 12 }, baseDiameter: 1, isFriendly: true };
-  const s4 = { id: 's4', position: { x: 12, y: 12 }, baseDiameter: 1.5, isFriendly: false };
-  const s5 = { id: 's5', position: { x: 16, y: 12 }, baseDiameter: 2, isFriendly: false };
+  const blockLosValues = [50, 75, 100];
+  blockLosValues.forEach((blockLos, index) => {
+    const battlefield = BattlefieldFactory.create(width, height, {
+      densityRatio: 25,
+      areaDensityRatio: 25,
+      blockLos,
+    });
 
-  const models = [attacker, target, s3, s4, s5];
-  const lofModels = LOFOperations.getModelsAlongLOF(attacker.position, target.position, models);
-  const friendlyFire = LOFOperations.resolveFriendlyFire(attacker, target, models);
+    const attacker = { id: 'attacker', position: { x: 2, y: 12 }, baseDiameter: 1, isFriendly: true, isAttentive: true, isOrdered: true };
+    const target = { id: 'target', position: { x: 22, y: 12 }, baseDiameter: 1, isFriendly: false };
+    const s3 = { id: 's3', position: { x: 8, y: 12 }, baseDiameter: 1, isFriendly: true };
+    const s4 = { id: 's4', position: { x: 12, y: 12 }, baseDiameter: 1.5, isFriendly: false };
+    const s5 = { id: 's5', position: { x: 16, y: 12 }, baseDiameter: 2, isFriendly: false };
 
-  const svg = SvgRenderer.render(battlefield, {
-    width,
-    height,
-    title: 'LOF + Friendly Fire',
-    models: [
-      { id: 'attacker', position: attacker.position, baseDiameter: attacker.baseDiameter, color: '#2a9d8f', label: 'Attacker' },
-      { id: 'target', position: target.position, baseDiameter: target.baseDiameter, color: '#e76f51', label: 'Target' },
-      { id: 's3', position: s3.position, baseDiameter: s3.baseDiameter, color: '#f4a261', label: 'SIZ 3' },
-      { id: 's4', position: s4.position, baseDiameter: s4.baseDiameter, color: '#e9c46a', label: 'SIZ 4' },
-      { id: 's5', position: s5.position, baseDiameter: s5.baseDiameter, color: '#cdb4db', label: 'SIZ 5' },
-    ],
-    lofRays: [
-      { from: attacker.position, to: target.position, color: '#264653', label: 'LOF' },
-    ],
-    annotations: [
-      { position: { x: 3, y: 13 }, text: `LOF models: ${lofModels.map(m => m.id).join(', ')}` },
-      { position: { x: 3, y: 14 }, text: `Friendly fire: ${friendlyFire.selected?.id ?? 'none'}` },
-    ],
+    const models = [attacker, target, s3, s4, s5];
+    const lofModels = LOFOperations.getModelsAlongLOF(attacker.position, target.position, models);
+    const friendlyFire = LOFOperations.resolveFriendlyFire(attacker, target, models);
+
+    const svg = SvgRenderer.render(battlefield, {
+      width,
+      height,
+      title: `LOF + Friendly Fire (blockLOS ${blockLos})`,
+      models: [
+        { id: 'attacker', position: attacker.position, baseDiameter: attacker.baseDiameter, color: '#2a9d8f', label: 'Attacker' },
+        { id: 'target', position: target.position, baseDiameter: target.baseDiameter, color: '#e76f51', label: 'Target' },
+        { id: 's3', position: s3.position, baseDiameter: s3.baseDiameter, color: '#f4a261', label: 'SIZ 3' },
+        { id: 's4', position: s4.position, baseDiameter: s4.baseDiameter, color: '#e9c46a', label: 'SIZ 4' },
+        { id: 's5', position: s5.position, baseDiameter: s5.baseDiameter, color: '#cdb4db', label: 'SIZ 5' },
+      ],
+      lofRays: [
+        { from: attacker.position, to: target.position, color: '#264653', label: 'LOF' },
+      ],
+      annotations: [
+        { position: { x: 3, y: 13 }, text: `LOF models: ${lofModels.map(m => m.id).join(', ')}` },
+        { position: { x: 3, y: 14 }, text: `Friendly fire: ${friendlyFire.selected?.id ?? 'none'}` },
+      ],
+    });
+
+    writeSvg(`battlefield-24x24-lof-${index + 1}.svg`, svg);
   });
-
-  writeSvg('battlefield-24x24-lof-1.svg', svg);
 }
 
 renderBattlefieldGridCases();

@@ -27,6 +27,11 @@ const defaultLayers: SvgLayerToggle[] = [
   { id: 'grid', label: '0.5 MU Grid', enabled: true },
   { id: 'delaunay', label: 'Delaunay Mesh', enabled: true },
   { id: 'area', label: 'Area Terrain', enabled: true },
+  { id: 'building', label: 'Buildings', enabled: true },
+  { id: 'wall', label: 'Walls', enabled: true },
+  { id: 'tree', label: 'Trees', enabled: true },
+  { id: 'rocks', label: 'Rocks', enabled: true },
+  { id: 'shrub', label: 'Shrubs', enabled: true },
   { id: 'terrain', label: 'Other Terrain', enabled: true },
   { id: 'models', label: 'Models', enabled: true },
   { id: 'paths', label: 'Paths', enabled: true },
@@ -47,6 +52,8 @@ export class SvgRenderer {
         `width="${options.width * 40}" height="${options.height * 40}" font-family="Arial" font-size="0.6">`
     );
 
+    const { styles: categoryStyles, presentCategories } = SvgRenderer.buildCategoryStyles(battlefield.terrain);
+
     svgParts.push(`<defs>
   <style><![CDATA[
     .layer { display: inline; }
@@ -55,31 +62,39 @@ export class SvgRenderer {
     .delaunay-line { stroke: #4a6fa5; stroke-width: 0.03; opacity: 0.3; }
     .terrain-area { stroke: #000; stroke-width: 0.05; }
     .terrain-solid { stroke: #000; stroke-width: 0.05; }
-    .model { stroke: #000; stroke-width: 0.05; }
+    .model { stroke: #ff0000; stroke-width: 2; vector-effect: non-scaling-stroke; }
     .path { fill: none; stroke-width: 0.12; }
     .vector { stroke-width: 0.1; }
     .los-ray { stroke-width: 0.08; stroke-dasharray: 0.2 0.2; }
     .lof-ray { stroke-width: 0.08; stroke-dasharray: 0.3 0.15; }
-    .label { fill: #111; font-size: 0.6px; }
+    .label { fill: #111 !important; font-size: 0.6px; }
     .toggle { cursor: pointer; }
+    .toggle.disabled { cursor: default; }
+    .toggle.disabled rect { stroke: #ccc; fill: #fff; }
+    .toggle.disabled text { fill: #ccc; }
+${categoryStyles}
   ]]></style>
 </defs>`);
 
     svgParts.push(`<rect x="0" y="0" width="${options.width}" height="${options.height}" fill="#ffffff" stroke="#111" stroke-width="0.05"/>`);
 
-    svgParts.push(`<g id="legend">`);
+    const legendParts: string[] = [`<g id="legend">`];
     let legendY = 0.6;
     for (const layer of layers) {
+      const isCategory = ['area', 'building', 'wall', 'tree', 'rocks', 'shrub'].includes(layer.id);
+      const isPresent = !isCategory || presentCategories.has(layer.id);
       const enabled = layer.enabled !== false;
-      svgParts.push(
-        `<g class="toggle" onclick="toggleLayer('${layer.id}')">` +
+      const isDisabled = !isPresent;
+      const toggleClass = isDisabled ? 'toggle disabled' : 'toggle';
+      legendParts.push(
+        `<g class="${toggleClass}"${isDisabled ? '' : ` onclick="toggleLayer('${layer.id}')"`}>` +
           `<rect x="0.4" y="${legendY - 0.45}" width="0.4" height="0.4" fill="${enabled ? '#222' : '#fff'}" stroke="#222" stroke-width="0.05"/>` +
           `<text x="1.0" y="${legendY - 0.05}" class="label">${layer.label}</text>` +
         `</g>`
       );
       legendY += 0.8;
     }
-    svgParts.push(`</g>`);
+    legendParts.push(`</g>`);
 
     svgParts.push(`<script><![CDATA[
       function toggleLayer(id) {
@@ -104,6 +119,7 @@ export class SvgRenderer {
     svgParts.push(this.renderRays(options.losRays ?? [], 'los', 'los-ray', layers));
     svgParts.push(this.renderRays(options.lofRays ?? [], 'lof', 'lof-ray', layers));
     svgParts.push(this.renderAnnotations(options.annotations ?? []));
+    svgParts.push(legendParts.join('\n'));
 
     svgParts.push(`</svg>`);
     return svgParts.join('\n');
@@ -148,28 +164,69 @@ export class SvgRenderer {
 
   static renderTerrain(terrain: TerrainFeature[], layers: SvgLayerToggle[]): string {
     const areaLayer = layers.find(item => item.id === 'area');
+    const buildingLayer = layers.find(item => item.id === 'building');
+    const wallLayer = layers.find(item => item.id === 'wall');
+    const treeLayer = layers.find(item => item.id === 'tree');
+    const rocksLayer = layers.find(item => item.id === 'rocks');
+    const shrubLayer = layers.find(item => item.id === 'shrub');
     const terrainLayer = layers.find(item => item.id === 'terrain');
     const areaHidden = areaLayer?.enabled === false ? 'hidden' : '';
+    const buildingHidden = buildingLayer?.enabled === false ? 'hidden' : '';
+    const wallHidden = wallLayer?.enabled === false ? 'hidden' : '';
+    const treeHidden = treeLayer?.enabled === false ? 'hidden' : '';
+    const rocksHidden = rocksLayer?.enabled === false ? 'hidden' : '';
+    const shrubHidden = shrubLayer?.enabled === false ? 'hidden' : '';
     const terrainHidden = terrainLayer?.enabled === false ? 'hidden' : '';
 
     const area: string[] = [`<g id="layer-area" class="layer ${areaHidden}">`];
+    const building: string[] = [`<g id="layer-building" class="layer ${buildingHidden}">`];
+    const wall: string[] = [`<g id="layer-wall" class="layer ${wallHidden}">`];
+    const tree: string[] = [`<g id="layer-tree" class="layer ${treeHidden}">`];
+    const rocks: string[] = [`<g id="layer-rocks" class="layer ${rocksHidden}">`];
+    const shrub: string[] = [`<g id="layer-shrub" class="layer ${shrubHidden}">`];
     const other: string[] = [`<g id="layer-terrain" class="layer ${terrainHidden}">`];
 
     for (const feature of terrain) {
       const color = feature.meta?.color ?? '#bbb';
       const layer = feature.meta?.layer ?? 'terrain';
+      const category = feature.meta?.category ?? 'terrain';
       const points = feature.vertices.map(point => `${point.x},${point.y}`).join(' ');
-      const polygon = `<polygon points="${points}" fill="${color}" class="${layer === 'area' ? 'terrain-area' : 'terrain-solid'}"/>`;
+      const polygon = `<polygon points="${points}" class="${layer === 'area' ? 'terrain-area' : 'terrain-solid'}"/>`;
+      const centroid = SvgRenderer.calculateCentroid(feature.vertices);
+      const colorLabel = `<text x="${centroid.x}" y="${centroid.y}" class="label">${color}</text>`;
       if (layer === 'area') {
-        area.push(polygon);
+        area.push(polygon, colorLabel);
+      } else if (category === 'building') {
+        building.push(polygon, colorLabel);
+      } else if (category === 'wall') {
+        wall.push(polygon, colorLabel);
+      } else if (category === 'tree') {
+        tree.push(polygon, colorLabel);
+      } else if (category === 'rocks') {
+        rocks.push(polygon, colorLabel);
+      } else if (category === 'shrub') {
+        shrub.push(polygon, colorLabel);
       } else {
-        other.push(polygon);
+        other.push(polygon, colorLabel);
       }
     }
 
     area.push(`</g>`);
+    building.push(`</g>`);
+    wall.push(`</g>`);
+    tree.push(`</g>`);
+    rocks.push(`</g>`);
+    shrub.push(`</g>`);
     other.push(`</g>`);
-    return area.join('\n') + '\n' + other.join('\n');
+    return [
+      area.join('\n'),
+      building.join('\n'),
+      wall.join('\n'),
+      tree.join('\n'),
+      rocks.join('\n'),
+      shrub.join('\n'),
+      other.join('\n'),
+    ].join('\n');
   }
 
   static renderModels(models: SvgRenderOptions['models'], layers: SvgLayerToggle[]): string {
@@ -248,5 +305,34 @@ export class SvgRenderer {
     }
     items.push(`</g>`);
     return items.join('\n');
+  }
+
+  static calculateCentroid(vertices: Position[]): Position {
+    if (vertices.length === 0) return { x: 0, y: 0 };
+    let x = 0;
+    let y = 0;
+    for (const vertex of vertices) {
+      x += vertex.x;
+      y += vertex.y;
+    }
+    return { x: x / vertices.length, y: y / vertices.length };
+  }
+
+  static buildCategoryStyles(terrain: TerrainFeature[]): { styles: string; presentCategories: Set<string> } {
+    const categoryColors = new Map<string, string>();
+    for (const feature of terrain) {
+      const category = feature.meta?.category;
+      const color = feature.meta?.color;
+      if (!category || !color) continue;
+      if (!categoryColors.has(category)) {
+        categoryColors.set(category, color);
+      }
+    }
+
+    const lines: string[] = [];
+    for (const [category, color] of categoryColors.entries()) {
+      lines.push(`#layer-${category} { fill: ${color}; }`);
+    }
+    return { styles: lines.join('\n'), presentCategories: new Set(categoryColors.keys()) };
   }
 }

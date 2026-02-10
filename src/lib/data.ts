@@ -12573,7 +12573,7 @@ export const gameData = {
     "Shrub": {
       "category": "shrub",
       "distribution": 3,
-      "color": "Dark Green",
+      "color": "#006400",
       "shape": "circle",
       "dimensions": {
         "diameter": 1
@@ -12585,7 +12585,7 @@ export const gameData = {
     "Tree": {
       "category": "tree",
       "distribution": 3,
-      "color": "Light Green",
+      "color": "#90EE90",
       "shape": "circle",
       "dimensions": {
         "diameter": 2
@@ -12597,7 +12597,7 @@ export const gameData = {
     "Small Rocks": {
       "category": "rocks",
       "distribution": 3,
-      "color": "Light Gray",
+      "color": "#D3D3D3",
       "shape": "ellipse",
       "dimensions": {
         "width": 1,
@@ -12611,7 +12611,7 @@ export const gameData = {
     "Medium Rocks": {
       "category": "rocks",
       "distribution": 2,
-      "color": "Light Gray",
+      "color": "#D3D3D3",
       "shape": "ellipse",
       "dimensions": {
         "width": 2,
@@ -12624,7 +12624,7 @@ export const gameData = {
     "Large Rocks": {
       "category": "rocks",
       "distribution": 1,
-      "color": "Light Gray",
+      "color": "#D3D3D3",
       "shape": "ellipse",
       "dimensions": {
         "width": 3,
@@ -12637,7 +12637,7 @@ export const gameData = {
     "Short Wall": {
       "category": "wall",
       "distribution": 3,
-      "color": "Dark Gray",
+      "color": "#555555",
       "shape": "rectangle",
       "dimensions": {
         "width": 0.5,
@@ -12650,7 +12650,7 @@ export const gameData = {
     "Medium Wall": {
       "category": "wall",
       "distribution": 2,
-      "color": "Dark Gray",
+      "color": "#555555",
       "shape": "rectangle",
       "dimensions": {
         "width": 1,
@@ -12663,7 +12663,7 @@ export const gameData = {
     "Large Wall": {
       "category": "wall",
       "distribution": 1,
-      "color": "Dark Gray",
+      "color": "#555555",
       "shape": "rectangle",
       "dimensions": {
         "width": 2,
@@ -12676,7 +12676,7 @@ export const gameData = {
     "Small Building": {
       "category": "building",
       "distribution": 3,
-      "color": "Black",
+      "color": "#000000",
       "shape": "rectangle",
       "dimensions": {
         "width": 4,
@@ -12689,7 +12689,7 @@ export const gameData = {
     "Medium Building": {
       "category": "building",
       "distribution": 2,
-      "color": "Black",
+      "color": "#000000",
       "shape": "rectangle",
       "dimensions": {
         "width": 6,
@@ -12702,7 +12702,7 @@ export const gameData = {
     "Large Building": {
       "category": "building",
       "distribution": 1,
-      "color": "Black",
+      "color": "#000000",
       "shape": "rectangle",
       "dimensions": {
         "width": 8,
@@ -12715,7 +12715,7 @@ export const gameData = {
     "Small Rough Patch": {
       "category": "area",
       "distribution": 3,
-      "color": "Light Brown",
+      "color": "#C49A6C",
       "shape": "rectangle",
       "dimensions": {
         "width": 6,
@@ -12728,7 +12728,7 @@ export const gameData = {
     "Medium Rough Patch": {
       "category": "area",
       "distribution": 2,
-      "color": "Light Brown",
+      "color": "#C49A6C",
       "shape": "rectangle",
       "dimensions": {
         "width": 9,
@@ -12741,7 +12741,7 @@ export const gameData = {
     "Large Rough Patch": {
       "category": "area",
       "distribution": 1,
-      "color": "Light Brown",
+      "color": "#C49A6C",
       "shape": "rectangle",
       "dimensions": {
         "width": 12,

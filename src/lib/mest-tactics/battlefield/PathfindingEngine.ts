@@ -1,13 +1,7 @@
-import pathfinding from 'pathfinding';
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './Terrain';
 import { LOSOperations } from './LOSOperations';
-
-const { AStarFinder, Grid: PFGrid } = pathfinding as {
-  AStarFinder: new (options: { diagonalMovement: number; heuristic: (dx: number, dy: number) => number }) => AStarFinder;
-  Grid: typeof import('pathfinding').Grid;
-};
 
 export interface PathVector {
   from: Position;
@@ -35,14 +29,9 @@ const defaultGridResolution = 0.5;
 
 export class PathfindingEngine {
   private battlefield: Battlefield;
-  private finder: AStarFinder;
 
   constructor(battlefield: Battlefield) {
     this.battlefield = battlefield;
-    this.finder = new AStarFinder({
-      diagonalMovement: 2,
-      heuristic: (dx, dy) => Math.hypot(dx, dy),
-    });
   }
 
   /**
@@ -64,7 +53,8 @@ export class PathfindingEngine {
 
     const gridWidth = Math.max(1, Math.round(this.battlefield.width / gridResolution));
     const gridHeight = Math.max(1, Math.round(this.battlefield.height / gridResolution));
-    const pfGrid = new PFGrid(gridWidth, gridHeight);
+    const walkable: boolean[][] = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(true));
+    const terrainCost: number[][] = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(1));
 
     const terrainGrid: TerrainType[][] = [];
     for (let y = 0; y < gridHeight; y++) {
@@ -78,8 +68,11 @@ export class PathfindingEngine {
         row.push(terrainType);
 
         if (!this.isWalkable(center, footprintRadius)) {
-          pfGrid.setWalkableAt(x, y, false);
+          walkable[y][x] = false;
+          continue;
         }
+        const weight = terrainType === TerrainType.Rough || terrainType === TerrainType.Difficult ? 2 : 1;
+        terrainCost[y][x] = weight;
       }
       terrainGrid.push(row);
     }
@@ -95,8 +88,15 @@ export class PathfindingEngine {
     for (let i = 0; i < waypoints.length - 1; i++) {
       const segmentStart = this.toGridCoordinate(waypoints[i], gridResolution, gridWidth, gridHeight);
       const segmentEnd = this.toGridCoordinate(waypoints[i + 1], gridResolution, gridWidth, gridHeight);
-      const gridBackup = pfGrid.clone();
-      const segmentPath = this.finder.findPath(segmentStart.x, segmentStart.y, segmentEnd.x, segmentEnd.y, gridBackup);
+      const segmentPath = this.findWeightedPath(
+        segmentStart,
+        segmentEnd,
+        walkable,
+        terrainCost,
+        gridWidth,
+        gridHeight,
+        gridResolution
+      );
       if (segmentPath.length === 0) {
         continue;
       }
@@ -158,7 +158,13 @@ export class PathfindingEngine {
       let j = points.length - 1;
       while (j > i + 1) {
         const result = LOSOperations.checkLOSBetweenPoints(this.battlefield, points[i], points[j]);
-        if (result.clear) break;
+        if (result.clear) {
+          const directEffect = this.computeEffectForSegment(points[i], points[j]);
+          const originalEffect = this.computeEffectForPath(points.slice(i, j + 1));
+          if (directEffect <= originalEffect) {
+            break;
+          }
+        }
         j--;
       }
       optimized.push(points[i]);
@@ -212,6 +218,21 @@ export class PathfindingEngine {
     const dy = to.y - from.y;
     const length = Math.hypot(dx, dy);
     return { from, to, dx, dy, length, terrain };
+  }
+
+  private computeEffectForSegment(start: Position, end: Position): number {
+    const vectors = this.splitSegmentByTerrain(start, end);
+    const totals = this.computeTotals(vectors);
+    return totals.totalEffectMu;
+  }
+
+  private computeEffectForPath(points: Position[]): number {
+    if (points.length <= 1) return 0;
+    let effect = 0;
+    for (let i = 1; i < points.length; i++) {
+      effect += this.computeEffectForSegment(points[i - 1], points[i]);
+    }
+    return effect;
   }
 
   private computeTotals(vectors: PathVector[]): { totalLength: number; totalEffectMu: number } {
@@ -345,6 +366,88 @@ export class PathfindingEngine {
       x: x * gridResolution,
       y: y * gridResolution,
     };
+  }
+
+  private findWeightedPath(
+    start: { x: number; y: number },
+    end: { x: number; y: number },
+    walkable: boolean[][],
+    terrainCost: number[][],
+    gridWidth: number,
+    gridHeight: number,
+    gridResolution: number
+  ): number[][] {
+    const open: { x: number; y: number; f: number; g: number }[] = [];
+    const cameFrom = new Map<string, { x: number; y: number }>();
+    const gScore = new Map<string, number>();
+
+    const startKey = `${start.x},${start.y}`;
+    gScore.set(startKey, 0);
+    open.push({ x: start.x, y: start.y, f: this.heuristic(start, end), g: 0 });
+
+    const neighbors = [
+      { dx: 1, dy: 0 },
+      { dx: -1, dy: 0 },
+      { dx: 0, dy: 1 },
+      { dx: 0, dy: -1 },
+      { dx: 1, dy: 1 },
+      { dx: 1, dy: -1 },
+      { dx: -1, dy: 1 },
+      { dx: -1, dy: -1 },
+    ];
+
+    while (open.length > 0) {
+      open.sort((a, b) => a.f - b.f);
+      const current = open.shift();
+      if (!current) break;
+
+      if (current.x === end.x && current.y === end.y) {
+        return this.reconstructPath(cameFrom, current);
+      }
+
+      for (const neighbor of neighbors) {
+        const nx = current.x + neighbor.dx;
+        const ny = current.y + neighbor.dy;
+        if (nx < 0 || ny < 0 || nx >= gridWidth || ny >= gridHeight) continue;
+        if (!walkable[ny][nx]) continue;
+
+        const stepDistance = Math.hypot(neighbor.dx, neighbor.dy) * gridResolution;
+        const cost = terrainCost[ny][nx] ?? 1;
+        const tentativeG = current.g + stepDistance * cost;
+
+        const key = `${nx},${ny}`;
+        const existingG = gScore.get(key);
+        if (existingG !== undefined && tentativeG >= existingG) {
+          continue;
+        }
+
+        cameFrom.set(key, { x: current.x, y: current.y });
+        gScore.set(key, tentativeG);
+        const f = tentativeG + this.heuristic({ x: nx, y: ny }, end);
+        open.push({ x: nx, y: ny, f, g: tentativeG });
+      }
+    }
+
+    return [];
+  }
+
+  private reconstructPath(
+    cameFrom: Map<string, { x: number; y: number }>,
+    current: { x: number; y: number }
+  ): number[][] {
+    const path: number[][] = [[current.x, current.y]];
+    let key = `${current.x},${current.y}`;
+    while (cameFrom.has(key)) {
+      const prev = cameFrom.get(key);
+      if (!prev) break;
+      path.push([prev.x, prev.y]);
+      key = `${prev.x},${prev.y}`;
+    }
+    return path.reverse();
+  }
+
+  private heuristic(a: { x: number; y: number }, b: { x: number; y: number }): number {
+    return Math.hypot(a.x - b.x, a.y - b.y);
   }
 
   static isPointInPolygon(point: Position, polygon: Position[]): boolean {
