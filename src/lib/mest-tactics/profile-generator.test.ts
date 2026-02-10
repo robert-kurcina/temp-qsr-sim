@@ -82,6 +82,58 @@ describe('createProfiles', () => {
 
   it('should throw an error if total hands required exceeds 4', () => {
     const itemNames = ['Rifle, Medium, Semi/A', 'Rifle, Medium, Semi/A', 'Rifle, Medium, Semi/A']; // 3 x [2H] = 6 hands
-    expect(() => createProfiles(veteranArchetypeName, veteranArchetypeData, [], itemNames)).toThrow('Invalid loadout: Exceeds maximum of 4 hands required.');
+    const create = () => createProfiles(veteranArchetypeName, veteranArchetypeData, [], itemNames);
+    expect(create).toThrow('Invalid loadout: Exceeds maximum of 4 hands required.');
+  });
+
+  it('should throw an error if total weapons exceeds 3', () => {
+    const bowName = Object.keys(gameData.bow_weapons)[0];
+    const weaponNames = [
+      'Sword, Broad',
+      'Pistol, Medium, Auto',
+      'Rifle, Medium, Semi/A',
+      bowName
+    ];
+    const create = () => createProfiles(veteranArchetypeName, veteranArchetypeData, [], weaponNames);
+    expect(create).toThrow('Invalid loadout: A maximum of 3 weapons are allowed.');
+  });
+
+  it('should prioritize 2H weapons for in-hand items', () => {
+    const equipmentName = Object.keys(gameData.equipment)[0];
+    const itemNames = [
+      'Rifle, Medium, Semi/A',
+      'Pistol, Medium, Auto',
+      'Shield, Medium',
+      equipmentName
+    ];
+    const profiles = createProfiles(veteranArchetypeName, veteranArchetypeData, [], itemNames);
+    const profile = profiles[0];
+
+    expect(profile.inHandItems?.length).toBe(1);
+    expect(profile.inHandItems?.[0].name).toBe('Rifle, Medium, Semi/A');
+    expect(profile.stowedItems?.map(item => item.name)).toEqual(expect.arrayContaining([
+      'Pistol, Medium, Auto',
+      'Shield, Medium',
+      equipmentName
+    ]));
+  });
+
+  it('should place 1H weapons before shields in hand', () => {
+    const itemNames = [
+      'Pistol, Medium, Auto',
+      'Shield, Medium',
+      'Sword, Broad'
+    ];
+    const profiles = createProfiles(veteranArchetypeName, veteranArchetypeData, [], itemNames);
+    const profile = profiles[0];
+
+    expect(profile.inHandItems?.length).toBe(2);
+    expect(profile.inHandItems?.map(item => item.name)).toEqual([
+      'Pistol, Medium, Auto',
+      'Sword, Broad'
+    ]);
+    expect(profile.stowedItems?.map(item => item.name)).toEqual(expect.arrayContaining([
+      'Shield, Medium'
+    ]));
   });
 });

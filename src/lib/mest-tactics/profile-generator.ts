@@ -231,6 +231,14 @@ export function createProfiles(
         throw new Error('Invalid loadout: Exceeds maximum burden of 2.');
     }
 
+    const getHandsRequired = (item: Item): number => {
+        const handTrait = item.traits.find(t => t.startsWith('[') && t.endsWith('H]'));
+        if (!handTrait) return 0;
+        if (handTrait.includes('2H')) return 2;
+        if (handTrait.includes('1H')) return 1;
+        return 0;
+    };
+
     const profile: Profile = {
         name: profileName + '-loadout',
         archetype,
@@ -264,14 +272,6 @@ export function createProfiles(
     const inHandItems: Item[] = [];
     const stowedItems: Item[] = [];
 
-    const getHandsRequired = (item: Item): number => {
-        const handTrait = item.traits.find(t => t.startsWith('[') && t.endsWith('H]'));
-        if (!handTrait) return 0;
-        if (handTrait.includes('2H')) return 2;
-        if (handTrait.includes('1H')) return 1;
-        return 0;
-    };
-
     const tryEquipInHand = (item: Item): boolean => {
         const handsRequired = getHandsRequired(item);
         if (handsRequired === 0) {
@@ -287,8 +287,17 @@ export function createProfiles(
         return false;
     };
 
-    const inHandCandidates = [...weaponItems, ...shieldItems];
-    inHandCandidates.forEach(item => {
+    const weaponsTwoHanded = weaponItems.filter(item => getHandsRequired(item) === 2);
+    const weaponsOneHanded = weaponItems.filter(item => getHandsRequired(item) === 1);
+    const shieldsOneHanded = shieldItems.filter(item => getHandsRequired(item) === 1);
+    const shieldsOther = shieldItems.filter(item => getHandsRequired(item) !== 1);
+
+    [
+        ...weaponsTwoHanded,
+        ...weaponsOneHanded,
+        ...shieldsOneHanded,
+        ...shieldsOther
+    ].forEach(item => {
         tryEquipInHand(item);
     });
 
