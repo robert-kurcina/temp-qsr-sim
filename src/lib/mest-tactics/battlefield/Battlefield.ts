@@ -48,6 +48,14 @@ export class Battlefield {
     this.generateNavigationMesh();
   }
 
+  removeTerrain(feature: TerrainFeature): void {
+    const index = this.terrain.lastIndexOf(feature);
+    if (index >= 0) {
+      this.terrain.splice(index, 1);
+      this.generateNavigationMesh();
+    }
+  }
+
   addTerrainElement(element: TerrainElement): void {
     this.addTerrain(element.toFeature());
   }

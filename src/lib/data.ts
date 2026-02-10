@@ -5565,32 +5565,50 @@ export const gameData = {
     "description": "Final BP totals must be within 25 BP of each other"
   },
   "game_sizes": {
-    "small": {
+    "VERY_SMALL": {
+      "name": "Very Small",
+      "minBP": 125,
+      "maxBP": 250,
+      "minModels": 2,
+      "maxModels": 4,
+      "battlefieldWidthMU": 18,
+      "battlefieldHeightMU": 24
+    },
+    "SMALL": {
       "name": "Small",
       "minBP": 250,
       "maxBP": 500,
       "minModels": 4,
       "maxModels": 8,
-      "battlefieldSizeMU": 24,
-      "endGameThreshold": 4
+      "battlefieldWidthMU": 24,
+      "battlefieldHeightMU": 24
     },
-    "medium": {
+    "MEDIUM": {
       "name": "Medium",
       "minBP": 500,
       "maxBP": 750,
       "minModels": 6,
       "maxModels": 12,
-      "battlefieldSizeMU": 36,
-      "endGameThreshold": 6
+      "battlefieldWidthMU": 36,
+      "battlefieldHeightMU": 36
     },
-    "large": {
+    "LARGE": {
       "name": "Large",
       "minBP": 750,
       "maxBP": 1000,
       "minModels": 8,
-      "maxModels": 16,
-      "battlefieldSizeMU": 48,
-      "endGameThreshold": 8
+      "maxModels": 12,
+      "battlefieldWidthMU": 48,
+      "battlefieldHeightMU": 48
+    },
+    "VERY_LARGE": {
+      "name": "Very Large",
+      "minBP": 1000,
+      "maxBP": 1250,
+      "minModels": 10,
+      "maxModels": 20,
+      "battlefieldWidthMU": 72,
+      "battlefieldHeightMU": 48
     }
   },
   "grenade_weapons": {
@@ -8750,6 +8768,46 @@ export const gameData = {
       ],
       "classification": "Melee",
       "type": "Melee"
+    }
+  },
+  "missions": {
+    "Elimination": {
+      "name": "Elimination",
+      "description": "Default mission: eliminate opposing models.",
+      "gameSize": "VERY_SMALL",
+      "sideA": {
+        "name": "Side A",
+        "deployment": "standard",
+        "ai": false
+      },
+      "sideB": {
+        "name": "Side B",
+        "deployment": "standard",
+        "ai": false
+      },
+      "objectives": [
+        {
+          "type": "eliminate",
+          "points": 1,
+          "side": "both",
+          "description": "Score by eliminating opposing models."
+        }
+      ],
+      "victoryConditions": {
+        "sideA": {
+          "primary": [
+            "Eliminate opposing models"
+          ]
+        },
+        "sideB": {
+          "primary": [
+            "Eliminate opposing models"
+          ]
+        }
+      },
+      "specialRules": {
+        "turnLimit": 10
+      }
     }
   },
   "page_content": {
@@ -12513,6 +12571,9 @@ export const gameData = {
   ],
   "terrain_info": {
     "Shrub": {
+      "category": "shrub",
+      "distribution": 3,
+      "color": "Dark Green",
       "shape": "circle",
       "dimensions": {
         "diameter": 1
@@ -12522,6 +12583,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Tree": {
+      "category": "tree",
+      "distribution": 3,
+      "color": "Light Green",
       "shape": "circle",
       "dimensions": {
         "diameter": 2
@@ -12531,6 +12595,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Small Rocks": {
+      "category": "rocks",
+      "distribution": 3,
+      "color": "Light Gray",
       "shape": "ellipse",
       "dimensions": {
         "width": 1,
@@ -12542,6 +12609,9 @@ export const gameData = {
       "dimensionsNote": "Height inferred from Medium/Large pattern in rules-terrain.md."
     },
     "Medium Rocks": {
+      "category": "rocks",
+      "distribution": 2,
+      "color": "Light Gray",
       "shape": "ellipse",
       "dimensions": {
         "width": 2,
@@ -12552,6 +12622,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Large Rocks": {
+      "category": "rocks",
+      "distribution": 1,
+      "color": "Light Gray",
       "shape": "ellipse",
       "dimensions": {
         "width": 3,
@@ -12562,6 +12635,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Short Wall": {
+      "category": "wall",
+      "distribution": 3,
+      "color": "Dark Gray",
       "shape": "rectangle",
       "dimensions": {
         "width": 0.5,
@@ -12572,6 +12648,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Medium Wall": {
+      "category": "wall",
+      "distribution": 2,
+      "color": "Dark Gray",
       "shape": "rectangle",
       "dimensions": {
         "width": 1,
@@ -12582,6 +12661,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Large Wall": {
+      "category": "wall",
+      "distribution": 1,
+      "color": "Dark Gray",
       "shape": "rectangle",
       "dimensions": {
         "width": 2,
@@ -12592,6 +12674,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Small Building": {
+      "category": "building",
+      "distribution": 3,
+      "color": "Black",
       "shape": "rectangle",
       "dimensions": {
         "width": 4,
@@ -12602,6 +12687,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Medium Building": {
+      "category": "building",
+      "distribution": 2,
+      "color": "Black",
       "shape": "rectangle",
       "dimensions": {
         "width": 6,
@@ -12612,6 +12700,9 @@ export const gameData = {
       "initialMovement": "Impassable"
     },
     "Large Building": {
+      "category": "building",
+      "distribution": 1,
+      "color": "Black",
       "shape": "rectangle",
       "dimensions": {
         "width": 8,
@@ -12619,6 +12710,45 @@ export const gameData = {
       },
       "movement": "Impassable",
       "los": "Blocking",
+      "initialMovement": "Impassable"
+    },
+    "Small Rough Patch": {
+      "category": "area",
+      "distribution": 3,
+      "color": "Light Brown",
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 6,
+        "height": 9
+      },
+      "movement": "Rough",
+      "los": "Clear",
+      "initialMovement": "Impassable"
+    },
+    "Medium Rough Patch": {
+      "category": "area",
+      "distribution": 2,
+      "color": "Light Brown",
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 9,
+        "height": 12
+      },
+      "movement": "Rough",
+      "los": "Clear",
+      "initialMovement": "Impassable"
+    },
+    "Large Rough Patch": {
+      "category": "area",
+      "distribution": 1,
+      "color": "Light Brown",
+      "shape": "rectangle",
+      "dimensions": {
+        "width": 12,
+        "height": 15
+      },
+      "movement": "Rough",
+      "los": "Clear",
       "initialMovement": "Impassable"
     }
   },

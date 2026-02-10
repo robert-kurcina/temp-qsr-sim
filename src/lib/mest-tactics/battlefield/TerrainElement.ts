@@ -5,6 +5,9 @@ import { TerrainFeature, TerrainType } from './Terrain';
 export type TerrainShape = 'circle' | 'ellipse' | 'rectangle';
 
 export interface TerrainElementInfo {
+  category: string;
+  distribution: number;
+  color: string;
   shape: TerrainShape;
   dimensions: Record<string, number>;
   movement: string;
@@ -16,7 +19,11 @@ export interface TerrainElementInfo {
 export class TerrainElement {
   public info: TerrainElementInfo;
 
-  constructor(public name: string, public position: Position) {
+  constructor(
+    public name: string,
+    public position: Position,
+    public rotationDegrees: number = 0
+  ) {
     const info = (gameData.terrain_info as Record<string, TerrainElementInfo>)[name];
     if (!info) {
       throw new Error(`Unknown terrain element: ${name}`);
@@ -65,6 +72,60 @@ export class TerrainElement {
     ];
   }
 
+  private rotateVertices(vertices: Position[]): Position[] {
+    if (!this.rotationDegrees) return vertices;
+    const angle = (this.rotationDegrees * Math.PI) / 180;
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return vertices.map(vertex => {
+      const dx = vertex.x - this.position.x;
+      const dy = vertex.y - this.position.y;
+      return {
+        x: this.position.x + dx * cos - dy * sin,
+        y: this.position.y + dx * sin + dy * cos,
+      };
+    });
+  }
+
+  public getArea(): number {
+    const { shape, dimensions } = this.info;
+    if (shape === 'circle') {
+      const diameter = dimensions.diameter;
+      if (!diameter) throw new Error(`Terrain "${this.name}" missing diameter.`);
+      const radius = diameter / 2;
+      return Math.PI * radius * radius;
+    }
+    if (shape === 'ellipse') {
+      const width = dimensions.width;
+      const height = dimensions.height;
+      if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
+      return Math.PI * (width / 2) * (height / 2);
+    }
+    const width = dimensions.width;
+    const height = dimensions.height;
+    if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
+    return width * height;
+  }
+
+  public getBoundingRadius(): number {
+    const { shape, dimensions } = this.info;
+    if (shape === 'circle') {
+      const diameter = dimensions.diameter;
+      if (!diameter) throw new Error(`Terrain "${this.name}" missing diameter.`);
+      return diameter / 2;
+    }
+    if (shape === 'ellipse') {
+      const width = dimensions.width;
+      const height = dimensions.height;
+      if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
+      return Math.max(width, height) / 2;
+    }
+    const width = dimensions.width;
+    const height = dimensions.height;
+    if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
+    return Math.sqrt((width / 2) ** 2 + (height / 2) ** 2);
+  }
+
   public toFeature(): TerrainFeature {
     const type = this.resolveTerrainType();
     const { shape, dimensions } = this.info;
@@ -86,6 +147,8 @@ export class TerrainElement {
       vertices = this.rectangleVertices(width, height);
     }
 
+    vertices = this.rotateVertices(vertices);
+
     return {
       id: this.name,
       type,
@@ -96,6 +159,11 @@ export class TerrainElement {
         los: this.info.los,
         shape: this.info.shape,
         dimensions: this.info.dimensions,
+        rotationDegrees: this.rotationDegrees,
+        category: this.info.category,
+        distribution: this.info.distribution,
+        color: this.info.color,
+        layer: this.info.category === 'area' ? 'area' : (this.info.los === 'Blocking' ? 'blocking' : 'terrain'),
       },
     };
   }

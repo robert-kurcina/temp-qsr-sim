@@ -18,5 +18,10 @@ export interface TerrainFeature {
     los: string;
     shape: string;
     dimensions: Record<string, number>;
+    rotationDegrees?: number;
+    category?: string;
+    distribution?: number;
+    color?: string;
+    layer?: string;
   };
 }

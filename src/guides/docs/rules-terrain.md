@@ -34,16 +34,66 @@ All terrain is classified by its effect on movement. The primary classifications
 
 The following are standard terrain elements. For the initial implementation, all of these are considered **Impassable**.
 
-| Terrain Type | Dimensions | Shape | Color | Type | LOS
-| :--- | :--- | :--- |
-| Shrub | 1 MU Diameter | Circle | Difficult | Soft
-| Tree | 2 MU Diameter | Circle | Difficult | Soft
-| Small Rocks | 1 x  MU | Ellipse | Rough | Hard
-| Medium Rocks | 2 x 4 MU | Ellipse | Rough | Hard
-| Large Rocks | 3 x 6 MU | Ellipse | Rough | Hard
-| Short Wall | 0.5 x 6 MU | Rectangle | Impassable | Blocking
-| Medium Wall | 1 x 8 MU | Rectangle | Impassable | Blocking
-| Large Wall | 2 x 12 MU | Rectangle | Impassable | Blocking
-| Small Building | 4 x 6 MU | Rectangle | Impassable | Blocking
-| Medium Building | 6 x 8 MU | Rectangle | Impassable | Blocking
-| Large Building | 8 x 10 MU | Rectangle | Impassable | Blocking
+| Terrain Type | Dimensions | Shape | Color | Type | LOS | Distribution | Category
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Shrub | 1 MU Diameter | Circle | Dark Green | Difficult | Soft | 3 | Shrub |
+| Tree | 2 MU Diameter | Circle | Light Green | Difficult | Soft | 3 | Tree |
+| Small Rocks | 1 x  MU | Ellipse | Light Gray | Rough | Hard | 3 | Rocks |
+| Medium Rocks | 2 x 4 MU | Ellipse | Light Gray | Rough | Hard | 2 | Rocks |
+| Large Rocks | 3 x 6 MU | Ellipse | Light Gray | Rough | Hard | 1 | Rocks |
+| Short Wall | 0.5 x 6 MU | Rectangle | Dark Gray | Impassable | Blocking | 3 | Wall |
+| Medium Wall | 1 x 8 MU | Rectangle | Dark Gray | Impassable | Blocking | 2 | Wall |
+| Large Wall | 2 x 12 MU | Rectangle | Dark Gray | Impassable | Blocking | 1 | Wall |
+| Small Building | 4 x 6 MU | Rectangle | Black | Impassable | Blocking | 3 | Building |
+| Medium Building | 6 x 8 MU | Rectangle | Black | Impassable | Blocking | 2 | Building |
+| Large Building | 8 x 10 MU | Rectangle | Black | Impassable | Blocking | 1 | Building |
+| Small Rough Patch | 6 x 9 MU | Rectangle | Light Brown | Rough | Clear | 3 | Area |
+| Medium Rough Patch | 9 x 12 MU | Rectangle | Light Brown | Rough | Clear | 2 | Area |
+| Large Rough Patch | 12 x 15 MU | Rectangle | Light Brown | Rough | Clear | 1 | Area |
+
+## Procedural Placement Rules
+
+Terrain placement can be procedurally generated using weighted categories and a density ratio.
+
+### Categories and Weights
+
+Supported terrain categories:
+- `area`
+- `shrub`
+- `tree`
+- `rocks`
+- `wall`
+- `building`
+
+Each category is assigned a weight (0–100). The density ratio (10–100, default 25) indicates how much of the battlefield area should be covered by terrain elements.
+BlockLOS (0–100, default 25) indicates how much of the battlefield should be blocked for clear LOS segments (1 MU wide, 8 MU long). A value of 0 means the battlefield remains entirely clear; 100 means no clear LOS segments remain.
+
+### Count Formula
+
+For each terrain element, compute the count as:
+
+```
+count = floor((battlefieldArea * densityRatio/100) * (weight/100) / (3 * distribution * elementArea))
+```
+
+Where:
+- `distribution` is 1–3 and is defined per terrain element.
+- `elementArea` is the MU area of the element’s footprint.
+
+### Placement Order and Spacing
+
+Placement order and minimum spacing:
+- Area terrain first. Minimum spacing: 3 MU from other Area terrain. This is a separate layer.
+- Buildings next. Minimum spacing: 3 MU from other elements.
+- Walls next. Minimum spacing: 1 MU from buildings or other walls; otherwise 3 MU.
+- Trees next. Minimum spacing: 1 MU from buildings or walls; otherwise 3 MU.
+- Rocks next. Minimum spacing: 3 MU.
+- Shrubs last. Minimum spacing: 3 MU.
+
+Area terrain is placed on its own layer. Other terrain types may be placed atop area terrain.
+
+BlockLOS is evaluated after each non-area blocking placement. If the blocked fraction exceeds the configured BlockLOS target, the placement is rejected.
+
+### Rotation
+
+Terrain elements can be rotated from 0–360 degrees in 15-degree increments. Walls should align with the closest building or be perpendicular, or align to an existing wall when possible.

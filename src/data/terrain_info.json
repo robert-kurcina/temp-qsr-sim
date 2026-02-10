@@ -1,5 +1,8 @@
 {
   "Shrub": {
+    "category": "shrub",
+    "distribution": 3,
+    "color": "Dark Green",
     "shape": "circle",
     "dimensions": { "diameter": 1 },
     "movement": "Difficult",
@@ -7,6 +10,9 @@
     "initialMovement": "Impassable"
   },
   "Tree": {
+    "category": "tree",
+    "distribution": 3,
+    "color": "Light Green",
     "shape": "circle",
     "dimensions": { "diameter": 2 },
     "movement": "Difficult",
@@ -14,6 +20,9 @@
     "initialMovement": "Impassable"
   },
   "Small Rocks": {
+    "category": "rocks",
+    "distribution": 3,
+    "color": "Light Gray",
     "shape": "ellipse",
     "dimensions": { "width": 1, "height": 2 },
     "movement": "Rough",
@@ -22,6 +31,9 @@
     "dimensionsNote": "Height inferred from Medium/Large pattern in rules-terrain.md."
   },
   "Medium Rocks": {
+    "category": "rocks",
+    "distribution": 2,
+    "color": "Light Gray",
     "shape": "ellipse",
     "dimensions": { "width": 2, "height": 4 },
     "movement": "Rough",
@@ -29,6 +41,9 @@
     "initialMovement": "Impassable"
   },
   "Large Rocks": {
+    "category": "rocks",
+    "distribution": 1,
+    "color": "Light Gray",
     "shape": "ellipse",
     "dimensions": { "width": 3, "height": 6 },
     "movement": "Rough",
@@ -36,6 +51,9 @@
     "initialMovement": "Impassable"
   },
   "Short Wall": {
+    "category": "wall",
+    "distribution": 3,
+    "color": "Dark Gray",
     "shape": "rectangle",
     "dimensions": { "width": 0.5, "height": 6 },
     "movement": "Impassable",
@@ -43,6 +61,9 @@
     "initialMovement": "Impassable"
   },
   "Medium Wall": {
+    "category": "wall",
+    "distribution": 2,
+    "color": "Dark Gray",
     "shape": "rectangle",
     "dimensions": { "width": 1, "height": 8 },
     "movement": "Impassable",
@@ -50,6 +71,9 @@
     "initialMovement": "Impassable"
   },
   "Large Wall": {
+    "category": "wall",
+    "distribution": 1,
+    "color": "Dark Gray",
     "shape": "rectangle",
     "dimensions": { "width": 2, "height": 12 },
     "movement": "Impassable",
@@ -57,6 +81,9 @@
     "initialMovement": "Impassable"
   },
   "Small Building": {
+    "category": "building",
+    "distribution": 3,
+    "color": "Black",
     "shape": "rectangle",
     "dimensions": { "width": 4, "height": 6 },
     "movement": "Impassable",
@@ -64,6 +91,9 @@
     "initialMovement": "Impassable"
   },
   "Medium Building": {
+    "category": "building",
+    "distribution": 2,
+    "color": "Black",
     "shape": "rectangle",
     "dimensions": { "width": 6, "height": 8 },
     "movement": "Impassable",
@@ -71,10 +101,43 @@
     "initialMovement": "Impassable"
   },
   "Large Building": {
+    "category": "building",
+    "distribution": 1,
+    "color": "Black",
     "shape": "rectangle",
     "dimensions": { "width": 8, "height": 10 },
     "movement": "Impassable",
     "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Small Rough Patch": {
+    "category": "area",
+    "distribution": 3,
+    "color": "Light Brown",
+    "shape": "rectangle",
+    "dimensions": { "width": 6, "height": 9 },
+    "movement": "Rough",
+    "los": "Clear",
+    "initialMovement": "Impassable"
+  },
+  "Medium Rough Patch": {
+    "category": "area",
+    "distribution": 2,
+    "color": "Light Brown",
+    "shape": "rectangle",
+    "dimensions": { "width": 9, "height": 12 },
+    "movement": "Rough",
+    "los": "Clear",
+    "initialMovement": "Impassable"
+  },
+  "Large Rough Patch": {
+    "category": "area",
+    "distribution": 1,
+    "color": "Light Brown",
+    "shape": "rectangle",
+    "dimensions": { "width": 12, "height": 15 },
+    "movement": "Rough",
+    "los": "Clear",
     "initialMovement": "Impassable"
   }
 }

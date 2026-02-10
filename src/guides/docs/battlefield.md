@@ -20,6 +20,27 @@ This document outlines the architecture for the 2D battlefield, which will serve
     *   `blocksLOS`: (boolean)
     *   `isDifficult`: (boolean)
 
+### 2.1 Battlefield Factory (Procedural Placement)
+
+Terrain placement can be generated using weighted categories and a density ratio (default 25):
+- Weights for `area`, `shrub`, `tree`, `rocks`, `wall`, `building`
+- `blockLOS` (default 25) controls how much of the battlefield blocks a clear LOS segment (1 MU wide, 8 MU long)
+- `densityRatio` from 10–100 determines total terrain coverage as a proportion of battlefield area
+
+Placement rules:
+- Area terrain first (separate layer; other terrain may be placed atop it)
+- Buildings next
+- Walls next, aligned to the closest building (or perpendicular) or aligned to an existing wall
+- Trees next (can be placed within 1 MU of buildings or walls)
+- Rocks next
+- Shrubs last
+
+Minimum spacing between elements is 3 MU by default, except:
+- Walls may be within 1 MU of buildings or other walls
+- Trees may be within 1 MU of buildings or walls
+
+Terrain elements may be rotated in 15-degree increments.
+
 ### 3. Delaunay Triangulation (Navigation Mesh)
 
 *   **Technology:** We will use a TypeScript library for Delaunay triangulation (e.g., `d3-delaunay`) to generate a navigation mesh.
