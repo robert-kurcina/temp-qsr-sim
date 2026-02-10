@@ -67,6 +67,10 @@ To ensure a stable and predictable codebase, the following systematic approach w
 *   [Mastery](src/content/docs/mastery.md)
 *   [Rules](src/content/docs/rules.md)
 
+## 8.1 Context Anchors (Non-UI Docs)
+
+The project includes markdown files that serve as **AI context anchors** to narrow behavior and ensure consistent rule interpretation. These are **not** UI content and are **not** intended to be treated as Astro content collections or rendered in any interface. They may be stored outside `src/content` to avoid Astro content-collection warnings.
+
 ## 9. Project Implementation Details
 
 ### Core Mechanics
