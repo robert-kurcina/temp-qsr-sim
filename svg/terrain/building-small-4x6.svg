@@ -25,15 +25,33 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="0.55292896"
      inkscape:cx="251.38853"
-     inkscape:cy="283.94245"
+     inkscape:cy="283.94244"
      inkscape:window-width="1269"
      inkscape:window-height="797"
      inkscape:window-x="388"
-     inkscape:window-y="80"
+     inkscape:window-y="52"
      inkscape:window-maximized="0"
-     inkscape:current-layer="svg1" />
-  <path
-     id="rect2"
-     style="fill:#000000;stroke-width:0.0279067"
-     d="M 0 -0.02175293 L 0 13.521753 L 0.54371338 13.521753 L 0.54371338 13.5 L 8.4562866 13.5 L 9 13.5 L 9 12.956287 L 9 -0.02175293 L 8.4562866 -0.02175293 L 8.4562866 0 L 2.9322144 0 L 2.9322144 0.54371338 L 8.4562866 0.54371338 L 8.4562866 12.956287 L 0.54371338 12.956287 L 0.54371338 -0.02175293 L 0 -0.02175293 z " />
+     inkscape:current-layer="layer4" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="floor">
+    <rect
+       style="fill:#281d1d;fill-opacity:0.493243;stroke-width:0.075"
+       id="rect1"
+       width="9"
+       height="13.5"
+       x="0"
+       y="0" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer6"
+     inkscape:label="walls">
+    <path
+       id="rect2"
+       style="fill:#000000;stroke-width:0.0278618"
+       d="M 0,0 V 13.5 H 0.54371338 V 13.47832 H 8.4562866 9 V 12.936351 0 H 8.4562866 V 0.02168305 H 2.9322144 V 0.56364986 H 8.4562866 V 12.936351 H 0.54371338 V 0 Z"
+       inkscape:label="walls" />
+  </g>
 </svg>

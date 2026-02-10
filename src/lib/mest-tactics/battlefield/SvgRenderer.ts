@@ -22,6 +22,7 @@ export interface SvgRenderOptions {
   losRays?: { from: Position; to: Position; color?: string; label?: string }[];
   lofRays?: { from: Position; to: Position; color?: string; label?: string }[];
   annotations?: { position: Position; text: string; color?: string }[];
+  coverageLabel?: { text: string; secondaryText?: string; color?: string };
 }
 
 const defaultLayers: SvgLayerToggle[] = [
@@ -62,7 +63,9 @@ export class SvgRenderer {
     .layer.hidden { display: none; }
     .grid-line { stroke: #999; stroke-width: 0.02; opacity: 0.2; }
     .delaunay-line { stroke: #4a6fa5; stroke-width: 0.03; opacity: 0.3; }
-    .terrain-area { stroke: #000; stroke-width: 0.05; }
+    #layer-area { opacity: 0.8; }
+    #layer-building, #layer-wall, #layer-tree, #layer-rocks, #layer-shrub, #layer-terrain { opacity: 0.8; }
+    .terrain-area { stroke: none; }
     .terrain-solid { stroke: #000; stroke-width: 0.05; }
     .model { stroke: #ff0000; stroke-width: 2; vector-effect: non-scaling-stroke; }
     .path { fill: none; stroke-width: 0.12; }
@@ -122,6 +125,9 @@ ${categoryStyles}
     svgParts.push(this.renderRays(options.losRays ?? [], 'los', 'los-ray', layers));
     svgParts.push(this.renderRays(options.lofRays ?? [], 'lof', 'lof-ray', layers));
     svgParts.push(this.renderAnnotations(options.annotations ?? []));
+    if (options.coverageLabel) {
+      svgParts.push(this.renderCoverageLabel(options.coverageLabel, options.width));
+    }
     svgParts.push(legendParts.join('\n'));
 
     svgParts.push(`</svg>`);
@@ -155,6 +161,20 @@ ${categoryStyles}
     }
     items.push(`</g>`);
     return items.join('\n');
+  }
+
+  static renderCoverageLabel(label: { text: string; secondaryText?: string; color?: string }, width: number): string {
+    const color = label.color ?? '#111';
+    const lines = [label.text, label.secondaryText].filter(Boolean) as string[];
+    const startY = 0.8;
+    const lineHeight = 0.7;
+    const parts: string[] = [`<g id="coverage-label">`];
+    lines.forEach((line, index) => {
+      const y = startY + index * lineHeight;
+      parts.push(`<text x="${width - 0.4}" y="${y}" text-anchor="end" fill="${color}" class="label">${line}</text>`);
+    });
+    parts.push(`</g>`);
+    return parts.join('\n');
   }
 
   static renderDelaunay(mesh: Delaunay<Position> | null, layers: SvgLayerToggle[]): string {

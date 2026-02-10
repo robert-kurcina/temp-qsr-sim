@@ -46,41 +46,14 @@
 
     <script>
       const svgFiles = [
-        "battlefield-24x24-0_0.svg",
-        "battlefield-24x24-0_25.svg",
-        "battlefield-24x24-0_50.svg",
-        "battlefield-24x24-0_75.svg",
-        "battlefield-24x24-0_100.svg",
-        "battlefield-24x24-25_0.svg",
-        "battlefield-24x24-25_25.svg",
-        "battlefield-24x24-25_50.svg",
-        "battlefield-24x24-25_75.svg",
-        "battlefield-24x24-25_100.svg",
-        "battlefield-24x24-50_0.svg",
-        "battlefield-24x24-50_25.svg",
-        "battlefield-24x24-50_50.svg",
-        "battlefield-24x24-50_75.svg",
-        "battlefield-24x24-50_100.svg",
-        "battlefield-24x24-75_0.svg",
-        "battlefield-24x24-75_25.svg",
-        "battlefield-24x24-75_50.svg",
-        "battlefield-24x24-75_75.svg",
-        "battlefield-24x24-75_100.svg",
-        "battlefield-24x24-100_0.svg",
-        "battlefield-24x24-100_25.svg",
-        "battlefield-24x24-100_50.svg",
-        "battlefield-24x24-100_75.svg",
-        "battlefield-24x24-100_100.svg",
-        "battlefield-24x24-pathfinding-1.svg",
-        "battlefield-24x24-pathfinding-2.svg",
-        "battlefield-24x24-pathfinding-3.svg",
-        "battlefield-24x24-los-1.svg",
-        "battlefield-24x24-los-2.svg",
-        "battlefield-24x24-los-3.svg",
-        "battlefield-24x24-lof-1.svg",
-        "battlefield-24x24-lof-2.svg",
-        "battlefield-24x24-lof-3.svg"
-      ];
+  "battlefield-24x24-0.svg",
+  "battlefield-24x24-25.svg",
+  "battlefield-24x24-50.svg",
+  "battlefield-24x24-75.svg",
+  "battlefield-24x24-100.svg",
+  "battlefield-24x24-pathfinding-1.svg",
+  "battlefield-24x24-pathfinding-2.svg"
+];
 
       const select = document.getElementById("svgSelect");
       const frame = document.getElementById("svgFrame");
@@ -98,8 +71,10 @@
 
       select.addEventListener("change", () => loadSvg(select.value));
 
-      select.value = svgFiles[0];
-      loadSvg(svgFiles[0]);
+      if (svgFiles.length > 0) {
+        select.value = svgFiles[0];
+        loadSvg(svgFiles[0]);
+      }
     </script>
   </body>
 </html>

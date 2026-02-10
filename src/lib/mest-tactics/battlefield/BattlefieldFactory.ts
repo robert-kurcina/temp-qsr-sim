@@ -3,6 +3,7 @@ import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { TerrainElement, TerrainElementInfo } from './TerrainElement';
 import { LOSOperations } from './LOSOperations';
+import { PathfindingEngine } from './PathfindingEngine';
 
 export interface TerrainWeights {
   area: number;
@@ -26,6 +27,10 @@ export interface BattlefieldFactoryConfig {
   areaDensityRatio?: number; // 0 to 100
   blockLos?: number; // 0 to 100
   deploymentZone?: DeploymentZoneConfig;
+  maxNonAreaSpacing?: number; // MU cap for non-area spacing
+  maxPlacementAttempts?: number; // per category
+  maxFillerAttempts?: number;
+  maxPlacementMs?: number; // time budget per battlefield
 }
 
 const defaultTerrainWeights: TerrainWeights = {
@@ -65,17 +70,85 @@ function distance(a: Position, b: Position): number {
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-function minSpacing(category: string, otherCategory: string, densityRatio: number): number {
+function shufflePositions(positions: Position[]): Position[] {
+  const result = [...positions];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+function bandWeight(position: Position, height: number): number {
+  const topMax = height * 0.25;
+  const bottomMin = height * 0.75;
+  const middleMin = height * 0.125;
+  const middleMax = height * 0.875;
+  let weight = 0;
+  if (position.y <= topMax) weight += 0.25;
+  if (position.y >= bottomMin) weight += 0.25;
+  if (position.y >= middleMin && position.y <= middleMax) weight += 0.5;
+  return weight;
+}
+
+function orderPositionsByBandWeight(positions: Position[], height: number): Position[] {
+  const scored = positions.map(position => {
+    const weight = Math.max(0.0001, bandWeight(position, height));
+    const key = -Math.log(Math.random()) / weight;
+    return { position, key };
+  });
+  scored.sort((a, b) => a.key - b.key);
+  return scored.map(entry => entry.position);
+}
+
+function isEcological(category: string): boolean {
+  return category === 'tree' || category === 'rocks' || category === 'shrub';
+}
+
+function scaleSpacingForDensity(base: number, densityRatio: number): number {
+  if (base <= 0) return base;
+  const clamped = clamp(densityRatio, 10, 100);
+  if (clamped <= 50) return base;
+  if (clamped >= 100) return 0;
+  const t = (clamped - 50) / 50;
+  return base * (1 - t);
+}
+
+function minSpacing(
+  category: string,
+  otherCategory: string,
+  densityRatio: number,
+  maxNonAreaSpacing?: number
+): number {
   if (category === 'area' && otherCategory === 'area') {
     return 3;
   }
   if (category === 'area' || otherCategory === 'area') {
-    return 0;
+    return -1;
   }
-  if (category === otherCategory) {
-    return 0;
+
+  const hasWall = category === 'wall' || otherCategory === 'wall';
+  const hasBuilding = category === 'building' || otherCategory === 'building';
+  const hasTree = category === 'tree' || otherCategory === 'tree';
+
+  let spacing = 3;
+  if (hasWall && hasBuilding) {
+    spacing = 1;
+  } else if (hasTree && (hasWall || hasBuilding)) {
+    spacing = 1;
+  } else if (category === otherCategory && category === 'wall') {
+    spacing = 1;
   }
-  return 3;
+
+  if (isEcological(category) && isEcological(otherCategory)) {
+    spacing = scaleSpacingForDensity(spacing, densityRatio);
+  }
+
+  if (maxNonAreaSpacing !== undefined && maxNonAreaSpacing >= 0) {
+    spacing = Math.min(spacing, maxNonAreaSpacing);
+  }
+
+  return spacing;
 }
 
 function pickWallRotation(
@@ -114,12 +187,17 @@ export class BattlefieldFactory {
     const battlefield = new Battlefield(width, height);
     const densityRatio = clamp(config.densityRatio ?? 25, 10, 100);
     const areaDensityRatio = clamp(config.areaDensityRatio ?? 25, 0, 100);
-    const blockLos = clamp(config.blockLos ?? 25, 0, 100);
     const deployment = BattlefieldFactory.resolveDeploymentZone(width, height, config.deploymentZone);
     const weights: TerrainWeights = {
       ...defaultTerrainWeights,
       ...(config.terrain || {}),
     };
+    const maxNonAreaSpacing = config.maxNonAreaSpacing;
+    const maxPlacementAttempts = Math.max(1, config.maxPlacementAttempts ?? 2000);
+    const maxFillerAttempts = Math.max(1, config.maxFillerAttempts ?? 4000);
+    const maxPlacementMs = Math.max(0, config.maxPlacementMs ?? 0);
+    const startTime = Date.now();
+    const timeExceeded = () => maxPlacementMs > 0 && Date.now() - startTime > maxPlacementMs;
 
     const terrainInfo = gameData.terrain_info as Record<string, TerrainElementInfo>;
     const elementsByCategory: Record<string, string[]> = {};
@@ -132,7 +210,7 @@ export class BattlefieldFactory {
     }
 
     const battlefieldArea = width * height;
-    const nonAreaCoverageRatio = densityRatio === 100 ? 0.8 : 1;
+    const nonAreaCoverageRatio = densityRatio === 100 ? 0.5 : 1;
     const targetArea = battlefieldArea * (densityRatio / 100) * nonAreaCoverageRatio;
     const areaTargetArea = battlefieldArea * (areaDensityRatio / 100);
 
@@ -142,11 +220,78 @@ export class BattlefieldFactory {
 
     const placedArea: { position: Position; radius: number; category: string; rotation: number; feature: TerrainElement }[] = [];
     const placedNonArea: { position: Position; radius: number; category: string; rotation: number; feature: TerrainElement }[] = [];
-    let blockingTargetReached = blockLos <= 0;
+    let totalNonAreaPlaced = 0;
+    let remainingNonAreaTarget = targetArea;
 
     const candidateCache = new Map<string, Position[]>();
 
+    const tryPlaceElement = (elementName: string, category: string, rotationOverride?: number): { placed: boolean; area: number } => {
+      if (timeExceeded()) {
+        return { placed: false, area: 0 };
+      }
+      const info = terrainInfo[elementName];
+      const element = new TerrainElement(elementName, { x: 0, y: 0 });
+      const area = element.getArea();
+      const radius = element.getBoundingRadius();
+      const rotation = rotationOverride ?? (category === 'wall'
+        ? pickWallRotation({ x: width / 2, y: height / 2 }, placedNonArea)
+        : randomRotation());
+
+      if (!candidateCache.has(elementName)) {
+        const group = BattlefieldFactory.categoryGroup(category);
+        const spacing = Math.max(0, minSpacing(category, category, densityRatio, maxNonAreaSpacing));
+        const useHex = group === 'ecological'
+          && spacing <= 1
+          && terrainInfo[elementName].shape === 'circle';
+        let candidates = BattlefieldFactory.generateCandidatePositions(width, height, radius, spacing, useHex, false);
+        candidates = category === 'area'
+          ? shufflePositions(candidates)
+          : orderPositionsByBandWeight(candidates, height);
+        candidateCache.set(elementName, candidates);
+      }
+
+      const candidatePositions = candidateCache.get(elementName) || [];
+      for (const position of candidatePositions) {
+        if (timeExceeded()) {
+          return { placed: false, area };
+        }
+        const wallRotation = category === 'wall'
+          ? pickWallRotation(position, placedNonArea)
+          : rotation;
+
+        const placedList = category === 'area' ? placedArea : placedNonArea;
+        const tooClose = placedList.some(existing => {
+          const spacing = minSpacing(category, existing.category, densityRatio, maxNonAreaSpacing);
+          if (spacing < 0) {
+            return false;
+          }
+          if (spacing === 0) {
+            const centerDistance = distance(position, existing.position);
+            return centerDistance < radius + existing.radius - DISTANCE_EPSILON;
+          }
+          const newFeature = new TerrainElement(elementName, position, wallRotation);
+          const distanceBetween = BattlefieldFactory.polygonsDistance(
+            newFeature.toFeature().vertices,
+            existing.feature.toFeature().vertices
+          );
+          return distanceBetween < spacing - DISTANCE_EPSILON;
+        });
+
+        if (tooClose) continue;
+
+        const terrainElement = new TerrainElement(elementName, position, wallRotation);
+        const feature = terrainElement.toFeature();
+        battlefield.addTerrain(feature, true);
+
+        placedList.push({ position, radius, category, rotation: wallRotation, feature: terrainElement });
+        return { placed: true, area };
+      }
+
+      return { placed: false, area };
+    };
+
     for (const category of categoryOrder) {
+      if (timeExceeded()) break;
       const weight = clamp(weights[category] ?? 0, 0, 100);
       if (weight <= 0) continue;
       const categoryElements = elementsByCategory[category] || [];
@@ -155,7 +300,9 @@ export class BattlefieldFactory {
       const categoryTargetArea = category === 'area'
         ? areaTargetArea
         : (totalNonAreaWeight > 0 ? targetArea * (weight / totalNonAreaWeight) : 0);
-      const effectiveTargetArea = categoryTargetArea;
+      const effectiveTargetArea = category === 'area'
+        ? categoryTargetArea
+        : Math.min(categoryTargetArea, remainingNonAreaTarget);
 
       const elementsByArea = [...categoryElements].sort((a, b) => {
         const areaA = new TerrainElement(a, { x: 0, y: 0 }).getArea();
@@ -164,7 +311,7 @@ export class BattlefieldFactory {
       });
 
       let placedAreaTotal = 0;
-      const maxAttempts = 2000;
+      const maxAttempts = maxPlacementAttempts;
       let attempts = 0;
       const placedList = category === 'area' ? placedArea : placedNonArea;
 
@@ -178,30 +325,29 @@ export class BattlefieldFactory {
         const element = new TerrainElement(elementName, { x: 0, y: 0 });
         const area = element.getArea();
         const radius = element.getBoundingRadius();
-        const positions = BattlefieldFactory.generateCandidatePositions(width, height, radius, 0, true, false);
+        const spacing = Math.max(0, minSpacing(category, category, densityRatio, maxNonAreaSpacing));
+        let positions = BattlefieldFactory.generateCandidatePositions(width, height, radius, spacing, true, false);
+        positions = category === 'area'
+          ? shufflePositions(positions)
+          : orderPositionsByBandWeight(positions, height);
 
         for (const position of positions) {
-          if (category !== 'area' && BattlefieldFactory.isInDeploymentExclusion(position, radius, deployment)) {
-            continue;
-          }
+          if (timeExceeded()) break;
           const tooClose = placedList.some(existing => {
-            const spacing = category === 'area'
-              ? 3
-              : minSpacing(category, existing.category, densityRatio);
-            const minDistance = existing.radius + radius + spacing;
-            if (distance(existing.position, position) < minDistance - DISTANCE_EPSILON) {
-              return true;
+            const spacing = minSpacing(category, existing.category, densityRatio, maxNonAreaSpacing);
+            if (spacing < 0) {
+              return false;
             }
-            if (category !== 'area') {
-              if (terrainInfo[elementName].shape !== 'circle' || existing.feature.toFeature().meta?.shape !== 'circle') {
-                const newFeature = new TerrainElement(elementName, position);
-                return BattlefieldFactory.polygonsOverlap(
-                  newFeature.toFeature().vertices,
-                  existing.feature.toFeature().vertices
-                );
-              }
+            if (spacing === 0) {
+              const centerDistance = distance(position, existing.position);
+              return centerDistance < radius + existing.radius - DISTANCE_EPSILON;
             }
-            return false;
+            const newFeature = new TerrainElement(elementName, position);
+            const distanceBetween = BattlefieldFactory.polygonsDistance(
+              newFeature.toFeature().vertices,
+              existing.feature.toFeature().vertices
+            );
+            return distanceBetween < spacing - DISTANCE_EPSILON;
           });
 
           if (tooClose) continue;
@@ -218,94 +364,152 @@ export class BattlefieldFactory {
       }
 
       while (placedAreaTotal < effectiveTargetArea && attempts < maxAttempts) {
+        if (timeExceeded()) break;
         const elementName = elementsByArea[attempts % elementsByArea.length];
-        const info = terrainInfo[elementName];
-        const element = new TerrainElement(elementName, { x: 0, y: 0 });
-        const area = element.getArea();
-        const isBlocking = info.los === 'Blocking';
-
-        if (isBlocking && blockingTargetReached) {
-          attempts++;
-          continue;
+        const result = tryPlaceElement(elementName, category);
+        if (result.placed) {
+          placedAreaTotal += result.area;
         }
-
-        const rotation = category === 'wall'
-          ? pickWallRotation({ x: width / 2, y: height / 2 }, placedNonArea)
-          : randomRotation();
-        const radius = element.getBoundingRadius();
-        let placedElement = false;
-
-        if (!candidateCache.has(elementName)) {
-          const spacing = category === 'area'
-            ? 3
-            : (densityRatio === 100 && ['tree', 'rocks', 'shrub'].includes(category) ? 0 : 1);
-          const useHex = spacing === 0 && ['tree', 'rocks', 'shrub'].includes(category);
-          candidateCache.set(
-            elementName,
-            BattlefieldFactory.generateCandidatePositions(width, height, radius, spacing, useHex, true)
-          );
-        }
-
-        const candidatePositions = candidateCache.get(elementName) || [];
-
-        for (let index = attempts % candidatePositions.length; index < candidatePositions.length; index++) {
-          const position = candidatePositions[index];
-          if (category !== 'area' && BattlefieldFactory.isInDeploymentExclusion(position, radius, deployment)) {
-            continue;
-          }
-          const wallRotation = category === 'wall'
-            ? pickWallRotation(position, placedNonArea)
-            : rotation;
-
-          const tooClose = placedList.some(existing => {
-            const spacing = category === 'area'
-              ? 3
-              : minSpacing(category, existing.category, densityRatio);
-            const minDistance = existing.radius + radius + spacing;
-            if (distance(existing.position, position) < minDistance - DISTANCE_EPSILON) {
-              return true;
-            }
-            if (category !== 'area') {
-              const newFeature = new TerrainElement(elementName, position, wallRotation);
-              return BattlefieldFactory.polygonsOverlap(
-                newFeature.toFeature().vertices,
-                existing.feature.toFeature().vertices
-              );
-            }
-            return false;
-          });
-
-          if (tooClose) continue;
-
-          const terrainElement = new TerrainElement(elementName, position, wallRotation);
-          const feature = terrainElement.toFeature();
-          battlefield.addTerrain(feature, true);
-
-          if (isBlocking) {
-            const blockedFraction = LOSOperations.estimateBlockedFraction(battlefield, width, height);
-            if (blockedFraction >= blockLos / 100) {
-              blockingTargetReached = true;
-            }
-            if (blockedFraction > blockLos / 100 && blockLos < 100) {
-              battlefield.removeTerrain(feature);
-              continue;
-            }
-          }
-
-          placedList.push({ position, radius, category, rotation: wallRotation, feature: terrainElement });
-          placedAreaTotal += area;
-          placedElement = true;
-          break;
-        }
-
         attempts++;
-        if (!placedElement) {
-          continue;
+      }
+
+      if (category !== 'area') {
+        totalNonAreaPlaced += placedAreaTotal;
+        remainingNonAreaTarget = Math.max(0, remainingNonAreaTarget - placedAreaTotal);
+      }
+    }
+
+    if (remainingNonAreaTarget > 0) {
+      const fillerOrder: (keyof TerrainWeights)[] = ['tree', 'shrub', 'rocks'];
+      let fillerAttempts = 0;
+      const fillerMaxAttempts = maxFillerAttempts;
+      while (remainingNonAreaTarget > 0 && fillerAttempts < fillerMaxAttempts) {
+        if (timeExceeded()) break;
+        for (const category of fillerOrder) {
+          if (remainingNonAreaTarget <= 0) break;
+          const categoryElements = elementsByCategory[category] || [];
+          if (categoryElements.length === 0) continue;
+          const smallest = [...categoryElements].sort((a, b) => {
+            const areaA = new TerrainElement(a, { x: 0, y: 0 }).getArea();
+            const areaB = new TerrainElement(b, { x: 0, y: 0 }).getArea();
+            return areaA - areaB;
+          })[0];
+          const result = tryPlaceElement(smallest, category);
+          if (result.placed) {
+            totalNonAreaPlaced += result.area;
+            remainingNonAreaTarget = Math.max(0, remainingNonAreaTarget - result.area);
+          }
+        }
+        fillerAttempts++;
+      }
+    }
+    BattlefieldFactory.ensureDeploymentClearance(battlefield, deployment, width, height, timeExceeded);
+    battlefield.finalizeTerrain();
+    return battlefield;
+  }
+
+  private static categoryGroup(category: string): 'area' | 'artificial' | 'ecological' | 'other' {
+    if (category === 'area') return 'area';
+    if (category === 'building' || category === 'wall') return 'artificial';
+    if (category === 'tree' || category === 'rocks' || category === 'shrub') return 'ecological';
+    return 'other';
+  }
+
+  private static estimateDeploymentRequirement(width: number, height: number): number {
+    const maxDimension = Math.max(width, height);
+    if (maxDimension <= 24) {
+      return 16;
+    }
+    return 0;
+  }
+
+  private static ensureDeploymentClearance(
+    battlefield: Battlefield,
+    deployment: { zones: { x: number; y: number; width: number; height: number }[] },
+    width: number,
+    height: number,
+    timeExceeded?: () => boolean
+  ): void {
+    const required = BattlefieldFactory.estimateDeploymentRequirement(width, height);
+    if (required <= 0) return;
+    const modelDiameter = 1;
+    const tolerance = 0.5;
+    const expandedDiameter = modelDiameter + tolerance * 2;
+    const spacing = modelDiameter + tolerance;
+
+    let removed = false;
+
+    for (const zone of deployment.zones) {
+      if (timeExceeded?.()) break;
+      let available = BattlefieldFactory.countDeploymentSlots(
+        battlefield,
+        zone,
+        modelDiameter,
+        expandedDiameter,
+        spacing
+      );
+      let attempts = 0;
+      while (available < required && attempts < 200) {
+        if (timeExceeded?.()) break;
+        const blockers = battlefield.terrain
+          .filter(feature => feature.meta?.category !== 'area' && feature.meta?.layer !== 'area')
+          .filter(feature => BattlefieldFactory.featureIntersectsRect(feature.vertices, zone));
+        if (blockers.length === 0) break;
+        blockers.sort((a, b) => BattlefieldFactory.polygonArea(b.vertices) - BattlefieldFactory.polygonArea(a.vertices));
+        battlefield.removeTerrain(blockers[0], true);
+        removed = true;
+        available = BattlefieldFactory.countDeploymentSlots(
+          battlefield,
+          zone,
+          modelDiameter,
+          expandedDiameter,
+          spacing
+        );
+        attempts++;
+      }
+    }
+
+    if (removed) {
+      battlefield.finalizeTerrain();
+    }
+  }
+
+  private static countDeploymentSlots(
+    battlefield: Battlefield,
+    zone: { x: number; y: number; width: number; height: number },
+    modelDiameter: number,
+    expandedDiameter: number,
+    spacing: number
+  ): number {
+    const radius = modelDiameter / 2;
+    let count = 0;
+    for (let y = zone.y + radius; y <= zone.y + zone.height - radius + DISTANCE_EPSILON; y += spacing) {
+      for (let x = zone.x + radius; x <= zone.x + zone.width - radius + DISTANCE_EPSILON; x += spacing) {
+        const position = { x, y };
+        if (BattlefieldFactory.isModelClear(battlefield, position, expandedDiameter)) {
+          count++;
         }
       }
     }
-    battlefield.finalizeTerrain();
-    return battlefield;
+    return count;
+  }
+
+  private static isModelClear(
+    battlefield: Battlefield,
+    position: Position,
+    expandedDiameter: number
+  ): boolean {
+    const samples = LOSOperations.buildCircularPerimeterPoints(position, expandedDiameter);
+    samples.push(position);
+    for (const feature of battlefield.terrain) {
+      if (feature.meta?.category === 'area' || feature.meta?.layer === 'area') continue;
+      for (const sample of samples) {
+        if (PathfindingEngine.isPointInPolygon(sample, feature.vertices)) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   private static resolveDeploymentZone(
@@ -338,6 +542,98 @@ export class BattlefieldFactory {
     }
 
     return { zones, buffer, corridors };
+  }
+
+  private static polygonArea(points: Position[]): number {
+    let area = 0;
+    for (let i = 0, j = points.length - 1; i < points.length; j = i++) {
+      area += (points[j].x + points[i].x) * (points[j].y - points[i].y);
+    }
+    return Math.abs(area) / 2;
+  }
+
+  private static featureIntersectsRect(
+    polygon: Position[],
+    rect: { x: number; y: number; width: number; height: number }
+  ): boolean {
+    const rx1 = rect.x;
+    const ry1 = rect.y;
+    const rx2 = rect.x + rect.width;
+    const ry2 = rect.y + rect.height;
+
+    for (const point of polygon) {
+      if (point.x >= rx1 && point.x <= rx2 && point.y >= ry1 && point.y <= ry2) {
+        return true;
+      }
+    }
+
+    const rectPoints: Position[] = [
+      { x: rx1, y: ry1 },
+      { x: rx2, y: ry1 },
+      { x: rx2, y: ry2 },
+      { x: rx1, y: ry2 },
+    ];
+
+    for (const point of rectPoints) {
+      if (BattlefieldFactory.pointInPolygon(point, polygon)) {
+        return true;
+      }
+    }
+
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const p1 = polygon[j];
+      const p2 = polygon[i];
+      for (let m = 0; m < rectPoints.length; m++) {
+        const n = (m + 1) % rectPoints.length;
+        if (BattlefieldFactory.segmentIntersection(p1, p2, rectPoints[m], rectPoints[n])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private static polygonsDistance(a: Position[], b: Position[]): number {
+    if (a.length === 0 || b.length === 0) return Infinity;
+    if (BattlefieldFactory.polygonsOverlap(a, b)) return 0;
+    let min = Infinity;
+    for (let i = 0, j = a.length - 1; i < a.length; j = i++) {
+      const a1 = a[j];
+      const a2 = a[i];
+      for (let m = 0, n = b.length - 1; m < b.length; n = m++) {
+        const b1 = b[n];
+        const b2 = b[m];
+        const dist = BattlefieldFactory.segmentDistance(a1, a2, b1, b2);
+        if (dist < min) min = dist;
+        if (min <= 0) return 0;
+      }
+    }
+    return min;
+  }
+
+  private static segmentDistance(a1: Position, a2: Position, b1: Position, b2: Position): number {
+    if (BattlefieldFactory.segmentIntersection(a1, a2, b1, b2)) return 0;
+    return Math.min(
+      BattlefieldFactory.pointToSegmentDistance(a1, b1, b2),
+      BattlefieldFactory.pointToSegmentDistance(a2, b1, b2),
+      BattlefieldFactory.pointToSegmentDistance(b1, a1, a2),
+      BattlefieldFactory.pointToSegmentDistance(b2, a1, a2)
+    );
+  }
+
+  private static pointToSegmentDistance(point: Position, segStart: Position, segEnd: Position): number {
+    const dx = segEnd.x - segStart.x;
+    const dy = segEnd.y - segStart.y;
+    if (Math.abs(dx) < DISTANCE_EPSILON && Math.abs(dy) < DISTANCE_EPSILON) {
+      return Math.hypot(point.x - segStart.x, point.y - segStart.y);
+    }
+    const t = ((point.x - segStart.x) * dx + (point.y - segStart.y) * dy) / (dx * dx + dy * dy);
+    if (t <= 0) return Math.hypot(point.x - segStart.x, point.y - segStart.y);
+    if (t >= 1) return Math.hypot(point.x - segEnd.x, point.y - segEnd.y);
+    const projX = segStart.x + t * dx;
+    const projY = segStart.y + t * dy;
+    return Math.hypot(point.x - projX, point.y - projY);
   }
 
   private static isInDeploymentExclusion(

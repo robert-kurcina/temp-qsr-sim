@@ -52,11 +52,13 @@ export class Battlefield {
     }
   }
 
-  removeTerrain(feature: TerrainFeature): void {
+  removeTerrain(feature: TerrainFeature, deferNavMesh = false): void {
     const index = this.terrain.lastIndexOf(feature);
     if (index >= 0) {
       this.terrain.splice(index, 1);
-      this.finalizeTerrain();
+      if (!deferNavMesh) {
+        this.finalizeTerrain();
+      }
     }
   }
 

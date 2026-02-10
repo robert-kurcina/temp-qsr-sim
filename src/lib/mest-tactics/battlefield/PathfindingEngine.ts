@@ -17,9 +17,23 @@ export interface PathResult {
   totalEffectMu: number;
 }
 
+export interface PathLimitedResult extends PathResult {
+  points: Position[];
+  reachedEnd: boolean;
+  usedMu: number;
+  remainingMu: number;
+}
+
+export interface PathSegmentedResult {
+  segments: PathLimitedResult[];
+  reachedEnd: boolean;
+}
+
 export interface PathfindingOptions {
   gridResolution?: number; // MU per cell
   footprintDiameter?: number; // MU
+  tightSpotFraction?: number; // fraction of base diameter allowed in tight spots (0.5 = half diameter)
+  movementMetric?: 'length' | 'effect'; // how to measure MU when limiting movement
   useNavMesh?: boolean;
   optimizeWithLOS?: boolean;
   useHierarchical?: boolean;
@@ -41,10 +55,11 @@ export class PathfindingEngine {
   /**
    * Finds a path using obstacle inflation + hierarchical grid search.
    *
-   * Heuristic: if footprintDiameter <= 0.5 MU and gridResolution is not provided,
+   * Heuristic: if the effective diameter (tight-spot allowance) <= 0.5 MU and gridResolution is not provided,
    * automatically use a finer grid of 0.25 MU to better model small bases.
    * Clearance: when a cell is only traversable at half-width, apply a penalty so
    * paths prefer full-footprint clearance when available.
+   * Tight spots: clearance checks use a fraction of the base diameter (default 0.5).
    */
   findPath(
     start: Position,
@@ -52,13 +67,15 @@ export class PathfindingEngine {
     options: PathfindingOptions = {}
   ): PathResult {
     const footprintDiameter = options.footprintDiameter ?? 0;
-    const gridResolution = options.gridResolution ?? (footprintDiameter > 0 && footprintDiameter <= 0.5 ? 0.25 : defaultGridResolution);
-    const footprintRadius = footprintDiameter > 0 ? footprintDiameter / 4 : 0; // middle 2/4 of model
+    const tightSpotDiameter = this.resolveTightSpotDiameter(footprintDiameter, options.tightSpotFraction);
+    const effectiveDiameter = tightSpotDiameter || footprintDiameter;
+    const gridResolution = options.gridResolution ?? (effectiveDiameter > 0 && effectiveDiameter <= 0.5 ? 0.25 : defaultGridResolution);
+    const footprintRadius = tightSpotDiameter > 0 ? tightSpotDiameter / 2 : 0; // tight-spot radius
     const fullRadius = footprintDiameter > 0 ? footprintDiameter / 2 : 0;
     const useNavMesh = options.useNavMesh ?? true;
     const useHierarchical = options.useHierarchical ?? true;
     const optimizeWithLOS = options.optimizeWithLOS ?? true;
-    const clearancePenalty = options.clearancePenalty ?? 1.25;
+    const clearancePenalty = options.clearancePenalty ?? 1;
     const useTheta = options.useTheta ?? true;
     const turnPenalty = options.turnPenalty ?? 0.1;
 
@@ -96,7 +113,7 @@ export class PathfindingEngine {
 
     const gridPath: number[][] = [];
     const waypoints = useNavMesh
-      ? this.findNavMeshWaypoints(start, end, footprintDiameter)
+      ? this.findNavMeshWaypoints(start, end, tightSpotDiameter)
       : [start, end];
 
     for (let i = 0; i < waypoints.length - 1; i++) {
@@ -169,6 +186,66 @@ export class PathfindingEngine {
     };
   }
 
+  findPathWithMaxMu(
+    start: Position,
+    end: Position,
+    options: PathfindingOptions,
+    maxMu: number
+  ): PathLimitedResult {
+    const full = this.findPath(start, end, options);
+    const limit = Math.max(0, maxMu);
+    const limited = this.limitVectorsByMu(full.vectors, limit, this.muMetric(options));
+    const totals = this.computeTotals(limited.vectors);
+    return {
+      vectors: limited.vectors,
+      totalLength: totals.totalLength,
+      totalEffectMu: totals.totalEffectMu,
+      points: this.buildPointsFromVectors(limited.vectors, start),
+      reachedEnd: limited.reachedEnd,
+      usedMu: limited.usedMu,
+      remainingMu: Math.max(0, limit - limited.usedMu),
+    };
+  }
+
+  findPathSegmentsByMu(
+    start: Position,
+    end: Position,
+    options: PathfindingOptions,
+    maxMuPerSegment: number,
+    segmentCount: number
+  ): PathSegmentedResult {
+    const full = this.findPath(start, end, options);
+    const limit = Math.max(0, maxMuPerSegment);
+    const maxSegments = Math.max(0, Math.floor(segmentCount));
+    if (full.vectors.length === 0 || limit === 0 || maxSegments === 0) {
+      return { segments: [], reachedEnd: full.vectors.length === 0 };
+    }
+
+    const metric = this.muMetric(options);
+    const split = this.splitVectorsByMu(full.vectors, limit, maxSegments, metric);
+    const endPoint = full.vectors[full.vectors.length - 1]?.to ?? end;
+    const segments = split.map(segmentVectors => {
+      const totals = this.computeTotals(segmentVectors);
+      const usedMu = segmentVectors.reduce((sum, vector) => sum + this.vectorMu(vector, metric), 0);
+      const fallbackStart = segmentVectors[0]?.from ?? start;
+      const points = this.buildPointsFromVectors(segmentVectors, fallbackStart);
+      const lastPoint = points[points.length - 1] ?? start;
+      const reachedEnd = this.pointsClose(lastPoint, endPoint);
+      return {
+        vectors: segmentVectors,
+        totalLength: totals.totalLength,
+        totalEffectMu: totals.totalEffectMu,
+        points,
+        reachedEnd,
+        usedMu,
+        remainingMu: Math.max(0, limit - usedMu),
+      };
+    });
+
+    const reachedEnd = segments.some(segment => segment.reachedEnd);
+    return { segments, reachedEnd };
+  }
+
   private buildVectors(
     path: number[][],
     gridResolution: number,
@@ -196,6 +273,136 @@ export class PathfindingEngine {
     }
 
     return vectors;
+  }
+
+  private muMetric(options: PathfindingOptions): 'length' | 'effect' {
+    return options.movementMetric === 'effect' ? 'effect' : 'length';
+  }
+
+  private vectorMu(vector: PathVector, metric: 'length' | 'effect'): number {
+    if (metric === 'length') return vector.length;
+    const weight = vector.terrain === TerrainType.Rough || vector.terrain === TerrainType.Difficult ? 2 : 1;
+    return vector.length * weight;
+  }
+
+  private limitVectorsByMu(
+    vectors: PathVector[],
+    maxMu: number,
+    metric: 'length' | 'effect'
+  ): { vectors: PathVector[]; usedMu: number; reachedEnd: boolean } {
+    if (vectors.length === 0 || maxMu <= 0) {
+      return { vectors: [], usedMu: 0, reachedEnd: vectors.length === 0 };
+    }
+    const limited: PathVector[] = [];
+    let usedMu = 0;
+    let reachedEnd = true;
+    for (const vector of vectors) {
+      const cost = this.vectorMu(vector, metric);
+      if (usedMu + cost <= maxMu + 1e-6) {
+        limited.push(vector);
+        usedMu += cost;
+        continue;
+      }
+      const remaining = maxMu - usedMu;
+      if (remaining > 1e-6 && cost > 0) {
+        const ratio = Math.max(0, Math.min(1, remaining / cost));
+        const split = this.splitVector(vector, ratio);
+        limited.push(split.head);
+        usedMu = maxMu;
+      }
+      reachedEnd = false;
+      break;
+    }
+    return { vectors: limited, usedMu, reachedEnd };
+  }
+
+  private splitVectorsByMu(
+    vectors: PathVector[],
+    maxMu: number,
+    maxSegments: number,
+    metric: 'length' | 'effect'
+  ): PathVector[][] {
+    const segments: PathVector[][] = [];
+    if (vectors.length === 0 || maxMu <= 0 || maxSegments <= 0) return segments;
+    let current: PathVector[] = [];
+    let remainingMu = maxMu;
+
+    for (const vector of vectors) {
+      let currentVector: PathVector | null = vector;
+      while (currentVector) {
+        const cost = this.vectorMu(currentVector, metric);
+        if (cost <= remainingMu + 1e-6) {
+          current.push(currentVector);
+          remainingMu -= cost;
+          currentVector = null;
+          continue;
+        }
+
+        if (remainingMu <= 1e-6) {
+          segments.push(current);
+          if (segments.length >= maxSegments) return segments;
+          current = [];
+          remainingMu = maxMu;
+          continue;
+        }
+
+        const ratio = Math.max(0, Math.min(1, remainingMu / cost));
+        const split = this.splitVector(currentVector, ratio);
+        current.push(split.head);
+        segments.push(current);
+        if (segments.length >= maxSegments) return segments;
+        current = [];
+        remainingMu = maxMu;
+        currentVector = split.tail ?? null;
+      }
+    }
+
+    if (current.length > 0 && segments.length < maxSegments) {
+      segments.push(current);
+    }
+    return segments;
+  }
+
+  private splitVector(vector: PathVector, ratio: number): { head: PathVector; tail?: PathVector } {
+    const clamped = Math.max(0, Math.min(1, ratio));
+    const dx = vector.dx * clamped;
+    const dy = vector.dy * clamped;
+    const headTo = { x: vector.from.x + dx, y: vector.from.y + dy };
+    const head: PathVector = {
+      from: vector.from,
+      to: headTo,
+      dx,
+      dy,
+      length: Math.hypot(dx, dy),
+      terrain: vector.terrain,
+    };
+    if (clamped >= 1 || vector.length <= 0) {
+      return { head };
+    }
+    const tailDx = vector.dx - dx;
+    const tailDy = vector.dy - dy;
+    const tail: PathVector = {
+      from: headTo,
+      to: vector.to,
+      dx: tailDx,
+      dy: tailDy,
+      length: Math.hypot(tailDx, tailDy),
+      terrain: vector.terrain,
+    };
+    return { head, tail };
+  }
+
+  private buildPointsFromVectors(vectors: PathVector[], fallbackStart: Position): Position[] {
+    if (vectors.length === 0) return [fallbackStart];
+    const points: Position[] = [vectors[0].from];
+    for (const vector of vectors) {
+      points.push(vector.to);
+    }
+    return points;
+  }
+
+  private pointsClose(a: Position, b: Position): boolean {
+    return Math.hypot(a.x - b.x, a.y - b.y) <= 1e-3;
   }
 
   private optimizePathWithLOS(
@@ -457,7 +664,7 @@ export class PathfindingEngine {
         gridResolution,
         undefined,
         {
-          halfRadius: options.footprintDiameter ? options.footprintDiameter / 4 : 0,
+          halfRadius: this.resolveTightSpotRadius(options),
           fullRadius: options.footprintDiameter ? options.footprintDiameter / 2 : 0,
           clearancePenalty: options.clearancePenalty ?? 1.25,
           useTheta: options.useTheta ?? true,
@@ -486,7 +693,7 @@ export class PathfindingEngine {
         gridResolution,
         bounds,
         {
-          halfRadius: options.footprintDiameter ? options.footprintDiameter / 4 : 0,
+          halfRadius: this.resolveTightSpotRadius(options),
           fullRadius: options.footprintDiameter ? options.footprintDiameter / 2 : 0,
           clearancePenalty: options.clearancePenalty ?? 1.25,
           useTheta: options.useTheta ?? true,
@@ -501,14 +708,14 @@ export class PathfindingEngine {
           terrainCost,
           gridWidth,
           gridHeight,
-          gridResolution,
-          undefined,
-          {
-            halfRadius: options.footprintDiameter ? options.footprintDiameter / 4 : 0,
-            fullRadius: options.footprintDiameter ? options.footprintDiameter / 2 : 0,
-            clearancePenalty: options.clearancePenalty ?? 1.25,
-            useTheta: options.useTheta ?? true,
-            turnPenalty: options.turnPenalty ?? 0.1,
+        gridResolution,
+        undefined,
+        {
+          halfRadius: this.resolveTightSpotRadius(options),
+          fullRadius: options.footprintDiameter ? options.footprintDiameter / 2 : 0,
+          clearancePenalty: options.clearancePenalty ?? 1.25,
+          useTheta: options.useTheta ?? true,
+          turnPenalty: options.turnPenalty ?? 0.1,
           }
         );
       }
@@ -888,6 +1095,20 @@ export class PathfindingEngine {
       key = `${prev.x},${prev.y}`;
     }
     return path.reverse();
+  }
+
+  private resolveTightSpotDiameter(footprintDiameter: number, tightSpotFraction?: number): number {
+    if (footprintDiameter <= 0) return 0;
+    const fraction = tightSpotFraction ?? 0.5;
+    const clamped = Math.max(0, Math.min(1, fraction));
+    return footprintDiameter * clamped;
+  }
+
+  private resolveTightSpotRadius(options: PathfindingOptions): number {
+    const diameter = options.footprintDiameter ?? 0;
+    if (diameter <= 0) return 0;
+    const tightSpotDiameter = this.resolveTightSpotDiameter(diameter, options.tightSpotFraction);
+    return tightSpotDiameter / 2;
   }
 
   private heuristic(a: { x: number; y: number }, b: { x: number; y: number }): number {

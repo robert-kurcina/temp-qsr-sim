@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
 import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/BattlefieldFactory';
 import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/SvgRenderer';
@@ -12,16 +12,173 @@ import { Position } from '../src/lib/mest-tactics/battlefield/Position';
 const outputDir = path.join(process.cwd(), 'svg-output');
 const width = 24;
 const height = 24;
+const maxNonAreaSpacing = 0.5;
+const maxPlacementAttempts = 1000;
+const maxFillerAttempts = 1000;
+const maxPlacementMs = 30000;
+const watchdogSeconds = Math.max(0, Number(process.env.SVG_WATCHDOG_SECONDS ?? 5));
+const runTimeoutSeconds = Math.max(0, Number(process.env.SVG_RUN_TIMEOUT_SECONDS ?? 180));
 
-const densityValues = [0, 25, 50, 75, 100];
-const blockValues = [0, 25, 50, 75, 100];
+let watchdogTimer: ReturnType<typeof setTimeout> | null = null;
+let runTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
+const runDeadline = runTimeoutSeconds > 0 ? Date.now() + runTimeoutSeconds * 1000 : 0;
+let runTimedOut = false;
 
-if (!fs.existsSync(outputDir)) {
-  fs.mkdirSync(outputDir, { recursive: true });
+function armWatchdog(): void {
+  if (watchdogSeconds <= 0) return;
+  if (watchdogTimer) {
+    clearTimeout(watchdogTimer);
+  }
+  watchdogTimer = setTimeout(() => {
+    process.exit(0);
+  }, watchdogSeconds * 1000);
 }
 
-function writeSvg(name: string, svg: string) {
-  fs.writeFileSync(path.join(outputDir, name), svg, 'utf8');
+function armRunTimeout(): void {
+  if (runTimeoutSeconds <= 0) return;
+  if (runTimeoutTimer) {
+    clearTimeout(runTimeoutTimer);
+  }
+  runTimeoutTimer = setTimeout(() => {
+    if (!runTimedOut) {
+      runTimedOut = true;
+      console.error(`[generate:svg] Timeout after ${runTimeoutSeconds}s. Exiting.`);
+    }
+    writeIndexHtml()
+      .catch(err => {
+        console.error('Failed to write index.html on timeout:', err);
+      })
+      .finally(() => {
+        process.exit(124);
+      });
+  }, runTimeoutSeconds * 1000);
+}
+
+function checkRunTimeout(context: string): boolean {
+  if (runDeadline <= 0) return false;
+  if (Date.now() <= runDeadline) return false;
+  if (!runTimedOut) {
+    runTimedOut = true;
+    console.error(`[generate:svg] Timeout after ${runTimeoutSeconds}s at ${context}.`);
+  }
+  return true;
+}
+
+function yieldToEventLoop(): Promise<void> {
+  return new Promise(resolve => setImmediate(resolve));
+}
+
+const densityValues = [0, 25, 50, 75, 100];
+
+function effectiveDensityRatio(density: number): number {
+  return density === 100 ? 50 : density;
+}
+
+await fs.mkdir(outputDir, { recursive: true });
+
+async function writeSvg(name: string, svg: string) {
+  await fs.writeFile(path.join(outputDir, name), svg, 'utf8');
+}
+
+function sortSvgFiles(a: string, b: string): number {
+  const key = (name: string): [number, number, string] => {
+    const gridMatch = name.match(/^battlefield-24x24-(\d+)\.svg$/);
+    if (gridMatch) return [0, Number(gridMatch[1]), name];
+    const pathMatch = name.match(/^battlefield-24x24-pathfinding-(\d+)\.svg$/);
+    if (pathMatch) return [1, Number(pathMatch[1]), name];
+    const losMatch = name.match(/^battlefield-24x24-los-(\d+)\.svg$/);
+    if (losMatch) return [2, Number(losMatch[1]), name];
+    const lofMatch = name.match(/^battlefield-24x24-lof-(\d+)\.svg$/);
+    if (lofMatch) return [3, Number(lofMatch[1]), name];
+    return [4, 0, name];
+  };
+  const [groupA, numA, nameA] = key(a);
+  const [groupB, numB, nameB] = key(b);
+  if (groupA !== groupB) return groupA - groupB;
+  if (numA !== numB) return numA - numB;
+  return nameA.localeCompare(nameB);
+}
+
+async function writeIndexHtml() {
+  const svgFiles = (await fs.readdir(outputDir))
+    .filter(file => file.endsWith('.svg'))
+    .sort(sortSvgFiles);
+
+  const html = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MEST Battlefield SVG Gallery</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 16px;
+        color: #111;
+      }
+      .controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      select {
+        font-size: 14px;
+        padding: 4px 8px;
+      }
+      iframe {
+        width: 100%;
+        height: 900px;
+        border: 1px solid #222;
+      }
+      .note {
+        font-size: 12px;
+        color: #444;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MEST Battlefield SVG Gallery</h1>
+    <div class="controls">
+      <label for="svgSelect">Select render:</label>
+      <select id="svgSelect"></select>
+    </div>
+    <iframe id="svgFrame" title="SVG Render"></iframe>
+    <div class="note">
+      Layer toggles are embedded inside each SVG (click the checkbox labels in the SVG).
+    </div>
+
+    <script>
+      const svgFiles = ${JSON.stringify(svgFiles, null, 2)};
+
+      const select = document.getElementById("svgSelect");
+      const frame = document.getElementById("svgFrame");
+
+      svgFiles.forEach(file => {
+        const option = document.createElement("option");
+        option.value = file;
+        option.textContent = file;
+        select.appendChild(option);
+      });
+
+      function loadSvg(file) {
+        frame.src = file;
+      }
+
+      select.addEventListener("change", () => loadSvg(select.value));
+
+      if (svgFiles.length > 0) {
+        select.value = svgFiles[0];
+        loadSvg(svgFiles[0]);
+      }
+    </script>
+  </body>
+</html>
+`;
+
+  await fs.writeFile(path.join(outputDir, 'index.html'), html, 'utf8');
 }
 
 function randomPosition(min: number, max: number): Position {
@@ -106,6 +263,66 @@ function overlapsNonAreaTerrain(battlefield: Battlefield, element: TerrainElemen
     }
   }
   return false;
+}
+
+const maxCoverageRatio = 0.8;
+
+function estimateCoverageRatio(
+  battlefield: Battlefield,
+  width: number,
+  height: number,
+  step: number,
+  includeFeature: (feature: { meta?: Record<string, any>; vertices: Position[] }) => boolean
+): number {
+  const total = width * height;
+  if (total <= 0) return 0;
+  const features = battlefield.terrain.filter(includeFeature);
+  if (features.length === 0) return 0;
+  const halfStep = step / 2;
+  let hits = 0;
+  let samples = 0;
+  for (let y = halfStep; y < height; y += step) {
+    for (let x = halfStep; x < width; x += step) {
+      samples += 1;
+      const point = { x, y };
+      for (const feature of features) {
+        if (PathfindingEngine.isPointInPolygon(point, feature.vertices)) {
+          hits += 1;
+          break;
+        }
+      }
+    }
+  }
+  return samples > 0 ? hits / samples : 0;
+}
+
+function buildCoverageLabel(battlefield: Battlefield): { text: string; secondaryText: string } {
+  const step = 0.1;
+  const nonAreaCoverage = estimateCoverageRatio(
+    battlefield,
+    width,
+    height,
+    step,
+    feature => feature.meta?.category !== 'area' && feature.meta?.layer !== 'area'
+  );
+  const totalCoverage = estimateCoverageRatio(
+    battlefield,
+    width,
+    height,
+    step,
+    () => true
+  );
+
+  const coveragePercent = Math.round(nonAreaCoverage * 100);
+  const densityRatio = Math.round((nonAreaCoverage / maxCoverageRatio) * 100);
+
+  const totalPercent = Math.round(totalCoverage * 100);
+  const totalDensityRatio = Math.round((totalCoverage / maxCoverageRatio) * 100);
+
+  return {
+    text: `coverage (densityRatio): ${coveragePercent}% (${densityRatio})`,
+    secondaryText: `coverage with area terrain (densityRatio): ${totalPercent}% (${totalDensityRatio})`,
+  };
 }
 
 function findNonOverlappingPlacement(
@@ -206,41 +423,66 @@ function findClearPosition(
   return clamped;
 }
 
-function renderBattlefieldGridCases() {
+async function renderBattlefieldGridCases() {
+  const existing = await fs.readdir(outputDir);
+  for (const file of existing) {
+    if (/^battlefield-24x24-\d+_\d+\.svg$/.test(file)) {
+      await fs.unlink(path.join(outputDir, file));
+    }
+  }
   const deployment = buildDeploymentZones(width, height);
   for (const density of densityValues) {
-    for (const blockLos of blockValues) {
-      const battlefield = BattlefieldFactory.create(width, height, {
-        densityRatio: density,
-        areaDensityRatio: 25,
-        blockLos,
-        deploymentZone: {
-          side: 'both',
-          height: deployment.zoneHeight,
-          buffer: 3,
-          corridorWidth: 2,
-        },
-      });
-      const svg = SvgRenderer.render(battlefield, {
-        width,
-        height,
-        title: `Battlefield 24x24 density ${density} blockLOS ${blockLos}`,
-        deploymentZones: deployment.zones,
-      });
-      const filename = `battlefield-24x24-${density}_${blockLos}.svg`;
-      writeSvg(filename, svg);
-    }
+    if (checkRunTimeout(`grid ${density}`)) break;
+    await yieldToEventLoop();
+    console.log(`[generate:svg] grid density ${density}...`);
+    const started = Date.now();
+    const effectiveDensity = effectiveDensityRatio(density);
+    const battlefield = BattlefieldFactory.create(width, height, {
+      densityRatio: effectiveDensity,
+      areaDensityRatio: 25,
+      blockLos: 100,
+      maxNonAreaSpacing,
+      maxPlacementAttempts,
+      maxFillerAttempts,
+      maxPlacementMs,
+      deploymentZone: {
+        side: 'both',
+        height: deployment.zoneHeight,
+        buffer: 3,
+        corridorWidth: 2,
+      },
+    });
+    const svg = SvgRenderer.render(battlefield, {
+      width,
+      height,
+      title: `Battlefield 24x24 density ${density} (effective ${effectiveDensity})`,
+      coverageLabel: buildCoverageLabel(battlefield),
+      deploymentZones: deployment.zones,
+    });
+    const filename = `battlefield-24x24-${density}.svg`;
+    await writeSvg(filename, svg);
+    console.log(`[generate:svg] wrote ${filename} in ${Date.now() - started}ms`);
   }
 }
 
-function renderPathfindingCases() {
+async function renderPathfindingCases() {
   const densities = [50, 75, 100];
-  densities.forEach((density, index) => {
+  for (let index = 0; index < densities.length; index++) {
+    const density = densities[index];
+    if (checkRunTimeout(`pathfinding ${density}`)) break;
+    await yieldToEventLoop();
+    console.log(`[generate:svg] pathfinding density ${density}...`);
+    const started = Date.now();
+    const effectiveDensity = effectiveDensityRatio(density);
     const deployment = buildDeploymentZones(width, height);
     const battlefield = BattlefieldFactory.create(width, height, {
-      densityRatio: density,
+      densityRatio: effectiveDensity,
       areaDensityRatio: 25,
       blockLos: 25,
+      maxNonAreaSpacing,
+      maxPlacementAttempts,
+      maxFillerAttempts,
+      maxPlacementMs,
       deploymentZone: {
         side: 'both',
         height: deployment.zoneHeight,
@@ -252,19 +494,21 @@ function renderPathfindingCases() {
 
     let start: Position = findClearPosition(battlefield, { x: 2, y: 2 }, 1);
     let end: Position = findClearPosition(battlefield, { x: 22, y: 22 }, 1);
-    let result = engine.findPath(start, end, { footprintDiameter: 1 });
+    let result = engine.findPath(start, end, { footprintDiameter: 1, tightSpotFraction: 0.5, clearancePenalty: 1 });
     let attempts = 0;
     while (result.totalLength < 32 && attempts < 30) {
+      if (checkRunTimeout(`pathfinding ${density} attempt ${attempts + 1}`)) break;
       start = findClearPosition(battlefield, randomPosition(2, 6), 1);
       end = findClearPosition(battlefield, randomPosition(18, 22), 1);
-      result = engine.findPath(start, end, { footprintDiameter: 1 });
+      result = engine.findPath(start, end, { footprintDiameter: 1, tightSpotFraction: 0.5, clearancePenalty: 1 });
       attempts++;
     }
 
     const svg = SvgRenderer.render(battlefield, {
       width,
       height,
-      title: `Pathfinding SIZ 3 density ${density} (len ${result.totalLength.toFixed(1)} MU)`,
+      title: `Pathfinding SIZ 3 density ${density} (effective ${effectiveDensity}) (len ${result.totalLength.toFixed(1)} MU)`,
+      coverageLabel: buildCoverageLabel(battlefield),
       deploymentZones: deployment.zones,
       models: [
         { id: 'start', position: start, baseDiameter: 1, color: '#5aa469', label: 'Start' },
@@ -281,23 +525,33 @@ function renderPathfindingCases() {
       })),
     });
 
-    writeSvg(`battlefield-24x24-pathfinding-${index + 1}.svg`, svg);
-  });
+    await writeSvg(`battlefield-24x24-pathfinding-${index + 1}.svg`, svg);
+    console.log(`[generate:svg] wrote battlefield-24x24-pathfinding-${index + 1}.svg in ${Date.now() - started}ms`);
+  }
 }
 
-function renderLOSBlockedCases() {
+async function renderLOSBlockedCases() {
   const cases = [
     { label: 'Unblocked', start: { x: 3, y: 3 }, end: { x: 12, y: 3 }, wallDistance: 0 },
     { label: 'Blocked ~4 MU', start: { x: 2, y: 8 }, end: { x: 10, y: 8 }, wallDistance: 4 },
     { label: 'Blocked ~16 MU', start: { x: 2, y: 18 }, end: { x: 22, y: 18 }, wallDistance: 16 },
   ];
 
-  cases.forEach((entry, index) => {
+  for (let index = 0; index < cases.length; index++) {
+    const entry = cases[index];
+    if (checkRunTimeout(`los ${entry.label}`)) break;
+    await yieldToEventLoop();
+    console.log(`[generate:svg] LOS case ${entry.label}...`);
+    const started = Date.now();
     const deployment = buildDeploymentZones(width, height);
     const battlefield = BattlefieldFactory.create(width, height, {
       densityRatio: 25,
       areaDensityRatio: 25,
       blockLos: 50,
+      maxNonAreaSpacing,
+      maxPlacementAttempts,
+      maxFillerAttempts,
+      maxPlacementMs,
       deploymentZone: {
         side: 'both',
         height: deployment.zoneHeight,
@@ -334,6 +588,7 @@ function renderLOSBlockedCases() {
       width,
       height,
       title: `LOS Checks (SIZ 3) blockLOS 50 - ${entry.label}`,
+      coverageLabel: buildCoverageLabel(battlefield),
       deploymentZones: deployment.zones,
       models: [
         { id: 'los-model', position: start, baseDiameter: 1, color: '#f4a261', label: 'Model' },
@@ -342,18 +597,28 @@ function renderLOSBlockedCases() {
       annotations,
     });
 
-    writeSvg(`battlefield-24x24-los-${index + 1}.svg`, svg);
-  });
+    await writeSvg(`battlefield-24x24-los-${index + 1}.svg`, svg);
+    console.log(`[generate:svg] wrote battlefield-24x24-los-${index + 1}.svg in ${Date.now() - started}ms`);
+  }
 }
 
-function renderLOFCases() {
+async function renderLOFCases() {
   const blockLosValues = [50, 75, 100];
-  blockLosValues.forEach((blockLos, index) => {
+  for (let index = 0; index < blockLosValues.length; index++) {
+    const blockLos = blockLosValues[index];
+    if (checkRunTimeout(`lof ${blockLos}`)) break;
+    await yieldToEventLoop();
+    console.log(`[generate:svg] LOF blockLOS ${blockLos}...`);
+    const started = Date.now();
     const deployment = buildDeploymentZones(width, height);
     const battlefield = BattlefieldFactory.create(width, height, {
       densityRatio: 25,
       areaDensityRatio: 25,
       blockLos,
+      maxNonAreaSpacing,
+      maxPlacementAttempts,
+      maxFillerAttempts,
+      maxPlacementMs,
       deploymentZone: {
         side: 'both',
         height: deployment.zoneHeight,
@@ -394,6 +659,7 @@ function renderLOFCases() {
       width,
       height,
       title: `LOF + Friendly Fire (blockLOS ${blockLos})`,
+      coverageLabel: buildCoverageLabel(battlefield),
       deploymentZones: deployment.zones,
       models: [
         { id: 'attacker', position: attacker.position, baseDiameter: attacker.baseDiameter, color: '#2a9d8f', label: 'Attacker' },
@@ -411,11 +677,37 @@ function renderLOFCases() {
       ],
     });
 
-    writeSvg(`battlefield-24x24-lof-${index + 1}.svg`, svg);
-  });
+    await writeSvg(`battlefield-24x24-lof-${index + 1}.svg`, svg);
+    console.log(`[generate:svg] wrote battlefield-24x24-lof-${index + 1}.svg in ${Date.now() - started}ms`);
+  }
 }
 
-renderBattlefieldGridCases();
-renderPathfindingCases();
-renderLOSBlockedCases();
-renderLOFCases();
+let sigintHandled = false;
+process.on('SIGINT', () => {
+  if (sigintHandled) return;
+  sigintHandled = true;
+  writeIndexHtml()
+    .catch(err => {
+      console.error('Failed to write index.html after SIGINT:', err);
+    })
+    .finally(() => {
+      process.exit(130);
+    });
+});
+
+armRunTimeout();
+
+try {
+  await renderBattlefieldGridCases();
+  await writeIndexHtml();
+  await renderPathfindingCases();
+  await writeIndexHtml();
+  await renderLOSBlockedCases();
+  await writeIndexHtml();
+  await renderLOFCases();
+} catch (err) {
+  console.error('generate:svg failed:', err);
+} finally {
+  await writeIndexHtml();
+  armWatchdog();
+}
