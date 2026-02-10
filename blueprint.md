@@ -85,7 +85,7 @@ To ensure a stable and predictable codebase, the following systematic approach w
 *   **`Character`**, **`Profile`**, **`Item`**.
 *   Game data is stored statically in `src/lib/data.ts`.
 
-## 10. Current Task: Fix Test Suite Failures
+## 10. Current Task: Capture Spatially Aware Game Requirements
 
 ### Completed Steps
 
@@ -97,12 +97,22 @@ To ensure a stable and predictable codebase, the following systematic approach w
 6.  **Refactored `Character.ts` to a class:** `Character.ts` is now a class that takes a `Profile` in its constructor.
 7.  **Created `types.ts`:** `FinalAttributes` and `ArmorState` are now in a separate file.
 8.  **Updated `battlefield.test.ts`:** The test now uses the new `Character` class structure.
+9.  **All unit tests passing:** Full suite is green.
 
 ### Next Steps
 
-The test suite is still failing. The following steps will be taken to resolve the remaining issues:
+Define and implement the minimum game loop and spatial model required by the QSR to make the simulator "spatially aware" and playable:
 
-1.  **Fix `TypeError: rolls is not iterable`**: This error is present in `indirect-ranged-combat.test.ts` and `morale-test.test.ts`. It's caused by the mocked dice roller returning a single value instead of an array. I will correct the mock to return an array of numbers.
-2.  **Fix `TypeError: character.move is not a function`**: This error in `battlefield.test.ts` is a direct result of my previous refactoring of the `Character` class. I will add a `move` method to the `Character` class.
-3.  **Address `NaN` Scores in `disengage.test.ts`**: The `p1Score (dice successes + attribute): NaN` log indicates that the `attributeValue` is not being correctly calculated. I will investigate and fix the root cause of this issue.
-4.  **Resolve Data Seeding Failures**: The `seed.test.ts` and `seed-data.test.ts` files have multiple failures related to the number of profiles and the structure of assemblies. This points to a problem with the data generation or loading process. I will investigate and resolve these issues.
+1.  **Battlefield Model (Spatial Awareness Core)**  
+    Represent a battlefield with measurable MU distances, model base sizes (diameter/height), and model volumes for LOS checks. Support LOS/LOF rules, including blocking terrain, cover determination (direct/intervening), and visibility OR constraints.
+2.  **Terrain & Movement Rules**  
+    Encode terrain categories (Clear, Rough, Difficult, Blocking) and movement costs, including base-contact constraints, engagement, and agility-based movement exceptions.
+3.  **Profiles, Items, and Assemblies**  
+    Implement a pipeline to:
+    - Build Profiles (archetype + items) from BP budgets.
+    - Instantiate Characters from Profiles.
+    - Group Characters into Assemblies and assign to Sides.
+4.  **Mission Setup & Game Size**  
+    Implement mission configuration for the default “Elimination” mission, including game size assumptions (Small), model count, and BP budget constraints.
+5.  **Turn & Action Loop (Playable Flow)**  
+    Implement turn structure with Ready/Done statuses, core actions (Move, Close Combat Attack, Ranged Attack, Disengage), and basic status token handling (Hidden, Wound, Delay, Fear, KO, Eliminated).
