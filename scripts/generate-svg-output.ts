@@ -265,8 +265,6 @@ function overlapsNonAreaTerrain(battlefield: Battlefield, element: TerrainElemen
   return false;
 }
 
-const maxCoverageRatio = 0.8;
-
 function estimateCoverageRatio(
   battlefield: Battlefield,
   width: number,
@@ -296,7 +294,11 @@ function estimateCoverageRatio(
   return samples > 0 ? hits / samples : 0;
 }
 
-function buildCoverageLabel(battlefield: Battlefield): { text: string; secondaryText: string } {
+function buildCoverageLabel(
+  battlefield: Battlefield,
+  maxCoverageRatio: number
+): { text: string; secondaryText: string } {
+  const safeMax = Math.max(0.0001, maxCoverageRatio);
   const step = 0.1;
   const nonAreaCoverage = estimateCoverageRatio(
     battlefield,
@@ -314,10 +316,10 @@ function buildCoverageLabel(battlefield: Battlefield): { text: string; secondary
   );
 
   const coveragePercent = Math.round(nonAreaCoverage * 100);
-  const densityRatio = Math.round((nonAreaCoverage / maxCoverageRatio) * 100);
+  const densityRatio = Math.round((nonAreaCoverage / safeMax) * 100);
 
   const totalPercent = Math.round(totalCoverage * 100);
-  const totalDensityRatio = Math.round((totalCoverage / maxCoverageRatio) * 100);
+  const totalDensityRatio = Math.round((totalCoverage / safeMax) * 100);
 
   return {
     text: `coverage (densityRatio): ${coveragePercent}% (${densityRatio})`,
@@ -456,7 +458,7 @@ async function renderBattlefieldGridCases() {
       width,
       height,
       title: `Battlefield 24x24 density ${density} (effective ${effectiveDensity})`,
-      coverageLabel: buildCoverageLabel(battlefield),
+      coverageLabel: buildCoverageLabel(battlefield, effectiveDensity / 100),
       deploymentZones: deployment.zones,
     });
     const filename = `battlefield-24x24-${density}.svg`;
@@ -508,7 +510,7 @@ async function renderPathfindingCases() {
       width,
       height,
       title: `Pathfinding SIZ 3 density ${density} (effective ${effectiveDensity}) (len ${result.totalLength.toFixed(1)} MU)`,
-      coverageLabel: buildCoverageLabel(battlefield),
+      coverageLabel: buildCoverageLabel(battlefield, effectiveDensity / 100),
       deploymentZones: deployment.zones,
       models: [
         { id: 'start', position: start, baseDiameter: 1, color: '#5aa469', label: 'Start' },
@@ -588,7 +590,7 @@ async function renderLOSBlockedCases() {
       width,
       height,
       title: `LOS Checks (SIZ 3) blockLOS 50 - ${entry.label}`,
-      coverageLabel: buildCoverageLabel(battlefield),
+      coverageLabel: buildCoverageLabel(battlefield, 0.25),
       deploymentZones: deployment.zones,
       models: [
         { id: 'los-model', position: start, baseDiameter: 1, color: '#f4a261', label: 'Model' },
@@ -659,7 +661,7 @@ async function renderLOFCases() {
       width,
       height,
       title: `LOF + Friendly Fire (blockLOS ${blockLos})`,
-      coverageLabel: buildCoverageLabel(battlefield),
+      coverageLabel: buildCoverageLabel(battlefield, 0.25),
       deploymentZones: deployment.zones,
       models: [
         { id: 'attacker', position: attacker.position, baseDiameter: attacker.baseDiameter, color: '#2a9d8f', label: 'Attacker' },

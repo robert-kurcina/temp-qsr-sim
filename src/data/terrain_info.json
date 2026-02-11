@@ -24,7 +24,7 @@
     "distribution": 3,
     "color": "#D3D3D3",
     "shape": "ellipse",
-    "dimensions": { "width": 1, "height": 2 },
+    "dimensions": { "width": 1, "length": 2 },
     "movement": "Rough",
     "los": "Hard",
     "initialMovement": "Impassable",
@@ -35,7 +35,7 @@
     "distribution": 2,
     "color": "#D3D3D3",
     "shape": "ellipse",
-    "dimensions": { "width": 2, "height": 4 },
+    "dimensions": { "width": 2, "length": 4 },
     "movement": "Rough",
     "los": "Hard",
     "initialMovement": "Impassable"
@@ -45,7 +45,7 @@
     "distribution": 1,
     "color": "#D3D3D3",
     "shape": "ellipse",
-    "dimensions": { "width": 3, "height": 6 },
+    "dimensions": { "width": 3, "length": 6 },
     "movement": "Rough",
     "los": "Hard",
     "initialMovement": "Impassable"
@@ -55,7 +55,7 @@
     "distribution": 3,
     "color": "#555555",
     "shape": "rectangle",
-    "dimensions": { "width": 0.5, "height": 6 },
+    "dimensions": { "width": 0.5, "length": 6 },
     "movement": "Impassable",
     "los": "Blocking",
     "initialMovement": "Impassable"
@@ -65,7 +65,7 @@
     "distribution": 2,
     "color": "#555555",
     "shape": "rectangle",
-    "dimensions": { "width": 1, "height": 8 },
+    "dimensions": { "width": 1, "length": 8 },
     "movement": "Impassable",
     "los": "Blocking",
     "initialMovement": "Impassable"
@@ -75,7 +75,7 @@
     "distribution": 1,
     "color": "#555555",
     "shape": "rectangle",
-    "dimensions": { "width": 2, "height": 12 },
+    "dimensions": { "width": 2, "length": 12 },
     "movement": "Impassable",
     "los": "Blocking",
     "initialMovement": "Impassable"
@@ -85,7 +85,7 @@
     "distribution": 3,
     "color": "#000000",
     "shape": "rectangle",
-    "dimensions": { "width": 4, "height": 6 },
+    "dimensions": { "width": 4, "length": 6 },
     "movement": "Impassable",
     "los": "Blocking",
     "initialMovement": "Impassable"
@@ -95,7 +95,7 @@
     "distribution": 2,
     "color": "#000000",
     "shape": "rectangle",
-    "dimensions": { "width": 6, "height": 8 },
+    "dimensions": { "width": 6, "length": 8 },
     "movement": "Impassable",
     "los": "Blocking",
     "initialMovement": "Impassable"
@@ -105,7 +105,7 @@
     "distribution": 1,
     "color": "#000000",
     "shape": "rectangle",
-    "dimensions": { "width": 8, "height": 10 },
+    "dimensions": { "width": 8, "length": 10 },
     "movement": "Impassable",
     "los": "Blocking",
     "initialMovement": "Impassable"
@@ -115,7 +115,7 @@
     "distribution": 3,
     "color": "#C49A6C",
     "shape": "rectangle",
-    "dimensions": { "width": 6, "height": 9 },
+    "dimensions": { "width": 6, "length": 9 },
     "movement": "Rough",
     "los": "Clear",
     "initialMovement": "Impassable"
@@ -125,7 +125,7 @@
     "distribution": 2,
     "color": "#C49A6C",
     "shape": "rectangle",
-    "dimensions": { "width": 9, "height": 12 },
+    "dimensions": { "width": 9, "length": 12 },
     "movement": "Rough",
     "los": "Clear",
     "initialMovement": "Impassable"
@@ -135,7 +135,7 @@
     "distribution": 1,
     "color": "#C49A6C",
     "shape": "rectangle",
-    "dimensions": { "width": 12, "height": 15 },
+    "dimensions": { "width": 12, "length": 15 },
     "movement": "Rough",
     "los": "Clear",
     "initialMovement": "Impassable"

@@ -12601,7 +12601,7 @@ export const gameData = {
       "shape": "ellipse",
       "dimensions": {
         "width": 1,
-        "height": 2
+        "length": 2
       },
       "movement": "Rough",
       "los": "Hard",
@@ -12615,7 +12615,7 @@ export const gameData = {
       "shape": "ellipse",
       "dimensions": {
         "width": 2,
-        "height": 4
+        "length": 4
       },
       "movement": "Rough",
       "los": "Hard",
@@ -12628,7 +12628,7 @@ export const gameData = {
       "shape": "ellipse",
       "dimensions": {
         "width": 3,
-        "height": 6
+        "length": 6
       },
       "movement": "Rough",
       "los": "Hard",
@@ -12641,7 +12641,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 0.5,
-        "height": 6
+        "length": 6
       },
       "movement": "Impassable",
       "los": "Blocking",
@@ -12654,7 +12654,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 1,
-        "height": 8
+        "length": 8
       },
       "movement": "Impassable",
       "los": "Blocking",
@@ -12667,7 +12667,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 2,
-        "height": 12
+        "length": 12
       },
       "movement": "Impassable",
       "los": "Blocking",
@@ -12680,7 +12680,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 4,
-        "height": 6
+        "length": 6
       },
       "movement": "Impassable",
       "los": "Blocking",
@@ -12693,7 +12693,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 6,
-        "height": 8
+        "length": 8
       },
       "movement": "Impassable",
       "los": "Blocking",
@@ -12706,7 +12706,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 8,
-        "height": 10
+        "length": 10
       },
       "movement": "Impassable",
       "los": "Blocking",
@@ -12719,7 +12719,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 6,
-        "height": 9
+        "length": 9
       },
       "movement": "Rough",
       "los": "Clear",
@@ -12732,7 +12732,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 9,
-        "height": 12
+        "length": 12
       },
       "movement": "Rough",
       "los": "Clear",
@@ -12745,7 +12745,7 @@ export const gameData = {
       "shape": "rectangle",
       "dimensions": {
         "width": 12,
-        "height": 15
+        "length": 15
       },
       "movement": "Rough",
       "los": "Clear",

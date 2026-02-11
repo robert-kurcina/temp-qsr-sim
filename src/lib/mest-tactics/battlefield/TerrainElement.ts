@@ -87,43 +87,50 @@ export class TerrainElement {
     });
   }
 
+  private resolveDimension(
+    dimensions: Record<string, number>,
+    primary: string,
+    fallback?: string
+  ): number {
+    const value = dimensions[primary] ?? (fallback ? dimensions[fallback] : undefined);
+    if (!value) {
+      const suffix = fallback ? `/${fallback}` : '';
+      throw new Error(`Terrain "${this.name}" missing ${primary}${suffix}.`);
+    }
+    return value;
+  }
+
   public getArea(): number {
     const { shape, dimensions } = this.info;
     if (shape === 'circle') {
-      const diameter = dimensions.diameter;
-      if (!diameter) throw new Error(`Terrain "${this.name}" missing diameter.`);
+      const diameter = this.resolveDimension(dimensions, 'diameter');
       const radius = diameter / 2;
       return Math.PI * radius * radius;
     }
     if (shape === 'ellipse') {
-      const width = dimensions.width;
-      const height = dimensions.height;
-      if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
-      return Math.PI * (width / 2) * (height / 2);
+      const width = this.resolveDimension(dimensions, 'width');
+      const length = this.resolveDimension(dimensions, 'length', 'height');
+      return Math.PI * (width / 2) * (length / 2);
     }
-    const width = dimensions.width;
-    const height = dimensions.height;
-    if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
-    return width * height;
+    const width = this.resolveDimension(dimensions, 'width');
+    const length = this.resolveDimension(dimensions, 'length', 'height');
+    return width * length;
   }
 
   public getBoundingRadius(): number {
     const { shape, dimensions } = this.info;
     if (shape === 'circle') {
-      const diameter = dimensions.diameter;
-      if (!diameter) throw new Error(`Terrain "${this.name}" missing diameter.`);
+      const diameter = this.resolveDimension(dimensions, 'diameter');
       return diameter / 2;
     }
     if (shape === 'ellipse') {
-      const width = dimensions.width;
-      const height = dimensions.height;
-      if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
-      return Math.max(width, height) / 2;
+      const width = this.resolveDimension(dimensions, 'width');
+      const length = this.resolveDimension(dimensions, 'length', 'height');
+      return Math.max(width, length) / 2;
     }
-    const width = dimensions.width;
-    const height = dimensions.height;
-    if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
-    return Math.sqrt((width / 2) ** 2 + (height / 2) ** 2);
+    const width = this.resolveDimension(dimensions, 'width');
+    const length = this.resolveDimension(dimensions, 'length', 'height');
+    return Math.sqrt((width / 2) ** 2 + (length / 2) ** 2);
   }
 
   public toFeature(): TerrainFeature {
@@ -132,19 +139,16 @@ export class TerrainElement {
 
     let vertices: Position[];
     if (shape === 'circle') {
-      const diameter = dimensions.diameter;
-      if (!diameter) throw new Error(`Terrain "${this.name}" missing diameter.`);
+      const diameter = this.resolveDimension(dimensions, 'diameter');
       vertices = this.circleVertices(diameter / 2);
     } else if (shape === 'ellipse') {
-      const width = dimensions.width;
-      const height = dimensions.height;
-      if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
-      vertices = this.ellipseVertices(width / 2, height / 2);
+      const width = this.resolveDimension(dimensions, 'width');
+      const length = this.resolveDimension(dimensions, 'length', 'height');
+      vertices = this.ellipseVertices(width / 2, length / 2);
     } else {
-      const width = dimensions.width;
-      const height = dimensions.height;
-      if (!width || !height) throw new Error(`Terrain "${this.name}" missing width/height.`);
-      vertices = this.rectangleVertices(width, height);
+      const width = this.resolveDimension(dimensions, 'width');
+      const length = this.resolveDimension(dimensions, 'length', 'height');
+      vertices = this.rectangleVertices(width, length);
     }
 
     vertices = this.rotateVertices(vertices);
