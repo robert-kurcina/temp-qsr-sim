@@ -13,6 +13,9 @@ const maxAttempts = Number(process.env.ATTEMPTS ?? 20);
 const minLen = Number(process.env.MIN_LEN ?? 30);
 const maxLen = Number(process.env.MAX_LEN ?? 34);
 const targetLen = Number(process.env.TARGET_LEN ?? 32);
+const directMin = Number(process.env.DIRECT_MIN ?? minLen);
+const directMax = Number(process.env.DIRECT_MAX ?? maxLen);
+const maxMu = process.env.MAX_MU ? Number(process.env.MAX_MU) : null;
 const baseDiameter = 1;
 
 const options = {
@@ -99,7 +102,7 @@ function pickStartEnd(
     const start = findClearPosition(battlefield, randomPosition(0.5, width - 0.5), diameter);
     const end = findClearPosition(battlefield, randomPosition(0.5, width - 0.5), diameter);
     const direct = distance(start, end);
-    if (direct >= minLen && direct <= maxLen) {
+    if (direct >= directMin && direct <= directMax) {
       return { start, end };
     }
   }
@@ -142,7 +145,9 @@ for (let run = 0; run < paths; run++) {
     const { start, end } = pickStartEnd(battlefield, baseDiameter);
 
     const t0 = performance.now();
-    const result = engine.findPath(start, end, options);
+    const result = maxMu !== null
+      ? engine.findPathWithMaxMu(start, end, options, maxMu)
+      : engine.findPath(start, end, options);
     const t1 = performance.now();
     const length = result.totalLength;
     const time = t1 - t0;
