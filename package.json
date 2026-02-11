@@ -11,6 +11,7 @@
     "astro": "astro",
     "test": "vitest",
     "generate:svg": "node --import tsx scripts/generate-svg-output.ts",
+    "generate:portraits": "node --import tsx scripts/generate-portraits-index.ts",
     "cli": "tsx src/cli.ts"
   },
   "dependencies": {

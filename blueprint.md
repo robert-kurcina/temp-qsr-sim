@@ -116,3 +116,32 @@ Define and implement the minimum game loop and spatial model required by the QSR
     Implement mission configuration for the default “Elimination” mission, including game size assumptions (Small), model count, and BP budget constraints.
 4.  **Turn & Action Loop (Playable Flow)**  
     Implement turn structure with Ready/Done statuses, core actions (Move, Close Combat Attack, Ranged Attack, Disengage), and basic status token handling (Hidden, Wound, Delay, Fear, KO, Eliminated).
+
+### Spatial Awareness Priorities (2D Footprint Placeholder)
+
+Model volume is temporarily treated as a 2D footprint (base circle/mesh). Priorities are ordered from least-dependent to most-dependent:
+
+1.  **Model registry + measurement utilities**
+2.  **Engagement + melee range checks**
+3.  **LOS + LOF integration (2D footprint)**
+4.  **Cover classification (direct/intervening, hard/soft/blocking)**
+5.  **Cohesion + situational awareness**
+6.  **Safety + compulsory actions**
+7.  **Hidden/Detect/Wait spatial interactions**
+
+### Mission Side Wiring (Near-Term Plan)
+
+1.  **MissionSide bindings**  
+    Establish a side-level container that binds Assemblies to a Side and assigns portrait call signs, model slots, positions, and per-character status. This is the primary home for side-specific state.
+2.  **Assembly merge builder**  
+    Provide a helper to combine multiple Assemblies into a single composite roster (e.g., 250 BP + 500 BP → 750 BP) before assigning to a Side.
+3.  **Side assignment flow**  
+    Allow multiple Assemblies to be assigned to a Side (with or without merging) and maintain a single roster with consistent identifiers.
+
+### Future UI Flow (Non-Blocking)
+
+At some point a UI will be needed to:
+- Build Profiles
+- Build Characters from Profiles
+- Build Assemblies from Characters
+- Assign Assemblies to Mission Sides

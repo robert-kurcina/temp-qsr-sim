@@ -69,6 +69,26 @@ const gameSizeDefaults: Record<GameSize, Required<AssemblyConfig>> = {
   },
 };
 
+function resolveAssemblyConfig(config: AssemblyConfig): Required<AssemblyConfig> {
+  const requestedConfig = config;
+  const gameSize = requestedConfig.gameSize ?? GameSize.VERY_SMALL;
+  const defaults = gameSizeDefaults[gameSize];
+  const resolvedConfig: Required<AssemblyConfig> = {
+    bpLimitMin: requestedConfig.bpLimitMin ?? defaults.bpLimitMin,
+    bpLimitMax: requestedConfig.bpLimitMax ?? defaults.bpLimitMax,
+    characterLimitMin: requestedConfig.characterLimitMin ?? defaults.characterLimitMin,
+    characterLimitMax: requestedConfig.characterLimitMax ?? defaults.characterLimitMax,
+    gameSize,
+  };
+
+  return resolvedConfig;
+}
+
+function hasConfigOverrides(config: AssemblyConfig): boolean {
+  const entries = Object.entries(config);
+  return entries.length > 0;
+}
+
 export function buildProfile(
   primaryArchetypeName: string,
   options: BuildProfileOptions = {}
@@ -102,15 +122,7 @@ export function buildAssembly(
   profiles: Profile[],
   config: AssemblyConfig = {}
 ): AssemblyRoster {
-  const gameSize = config.gameSize ?? GameSize.VERY_SMALL;
-  const defaults = gameSizeDefaults[gameSize];
-  const resolvedConfig: Required<AssemblyConfig> = {
-    bpLimitMin: config.bpLimitMin ?? defaults.bpLimitMin,
-    bpLimitMax: config.bpLimitMax ?? defaults.bpLimitMax,
-    characterLimitMin: config.characterLimitMin ?? defaults.characterLimitMin,
-    characterLimitMax: config.characterLimitMax ?? defaults.characterLimitMax,
-    gameSize,
-  };
+  const resolvedConfig = resolveAssemblyConfig(config);
 
   const characters = profiles.map(profile => new Character(profile));
   const totalBP = profiles.reduce((sum, profile) => {
@@ -124,6 +136,66 @@ export function buildAssembly(
     totalBP,
     totalCharacters: characters.length,
     config: resolvedConfig,
+  };
+
+  return {
+    assembly,
+    characters,
+    profiles,
+  };
+}
+
+export function mergeAssemblyRosters(
+  name: string,
+  rosters: AssemblyRoster[],
+  config: AssemblyConfig = {}
+): AssemblyRoster {
+  const assemblyName = name;
+  const rosterList = rosters;
+  const configOverrides = config;
+  const assemblies = rosterList.map(roster => roster.assembly);
+  const characters = rosterList.flatMap(roster => roster.characters);
+  const profiles = rosterList.flatMap(roster => roster.profiles);
+  const totalBP = assemblies.reduce((sum, assembly) => sum + assembly.totalBP, 0);
+  const totalCharacters = characters.length;
+  const characterIds = characters.map(character => character.id);
+  const hasOverrides = hasConfigOverrides(configOverrides);
+  const allHaveConfig = assemblies.length > 0 && assemblies.every(assembly => Boolean(assembly.config));
+
+  let mergedConfig: Assembly['config'] | undefined;
+  if (hasOverrides) {
+    mergedConfig = resolveAssemblyConfig(configOverrides);
+  } else if (allHaveConfig) {
+    const initial = 0;
+    const summed = assemblies.reduce(
+      (sum, assembly) => {
+        const configValue = assembly.config as NonNullable<Assembly['config']>;
+        return {
+          bpLimitMin: sum.bpLimitMin + configValue.bpLimitMin,
+          bpLimitMax: sum.bpLimitMax + configValue.bpLimitMax,
+          characterLimitMin: sum.characterLimitMin + configValue.characterLimitMin,
+          characterLimitMax: sum.characterLimitMax + configValue.characterLimitMax,
+        };
+      },
+      {
+        bpLimitMin: initial,
+        bpLimitMax: initial,
+        characterLimitMin: initial,
+        characterLimitMax: initial,
+      }
+    );
+    mergedConfig = {
+      ...summed,
+      gameSize: 'MERGED',
+    };
+  }
+
+  const assembly: Assembly = {
+    name: assemblyName,
+    characters: characterIds,
+    totalBP,
+    totalCharacters,
+    config: mergedConfig,
   };
 
   return {

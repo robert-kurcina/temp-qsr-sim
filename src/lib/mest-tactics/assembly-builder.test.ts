@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { buildAssembly, buildProfile, GameSize } from './assembly-builder';
+import { buildAssembly, buildProfile, GameSize, mergeAssemblyRosters } from './assembly-builder';
 import { gameData } from '../data';
 
 describe('assembly-builder', () => {
@@ -20,8 +20,10 @@ describe('assembly-builder', () => {
     const swordName = 'Sword, Broad';
     const rifleName = 'Rifle, Medium, Semi/A';
 
-    const profileOne = buildProfile(archetypeName, { itemNames: [swordName] });
-    const profileTwo = buildProfile(archetypeName, { itemNames: [rifleName] });
+    const profileOneOptions = { itemNames: [swordName] };
+    const profileTwoOptions = { itemNames: [rifleName] };
+    const profileOne = buildProfile(archetypeName, profileOneOptions);
+    const profileTwo = buildProfile(archetypeName, profileTwoOptions);
     const profiles = [profileOne, profileTwo];
 
     const name = 'Test Assembly';
@@ -45,8 +47,14 @@ describe('assembly-builder', () => {
   });
 
   it('buildAssembly should honor gameSize defaults', () => {
-    const profile = buildProfile('Veteran', { itemNames: ['Sword, Broad'] });
-    const roster = buildAssembly('Sized Assembly', [profile], { gameSize: GameSize.SMALL });
+    const archetypeName = 'Veteran';
+    const itemName = 'Sword, Broad';
+    const profileOptions = { itemNames: [itemName] };
+    const profile = buildProfile(archetypeName, profileOptions);
+    const assemblyName = 'Sized Assembly';
+    const profiles = [profile];
+    const config = { gameSize: GameSize.SMALL };
+    const roster = buildAssembly(assemblyName, profiles, config);
 
     expect(roster.assembly.config).toEqual({
       bpLimitMin: 250,
@@ -58,14 +66,20 @@ describe('assembly-builder', () => {
   });
 
   it('buildAssembly should allow config overrides', () => {
-    const profile = buildProfile('Veteran', { itemNames: ['Sword, Broad'] });
-    const roster = buildAssembly('Override Assembly', [profile], {
+    const archetypeName = 'Veteran';
+    const itemName = 'Sword, Broad';
+    const profileOptions = { itemNames: [itemName] };
+    const profile = buildProfile(archetypeName, profileOptions);
+    const assemblyName = 'Override Assembly';
+    const profiles = [profile];
+    const config = {
       bpLimitMin: 300,
       bpLimitMax: 600,
       characterLimitMin: 3,
       characterLimitMax: 7,
       gameSize: GameSize.MEDIUM,
-    });
+    };
+    const roster = buildAssembly(assemblyName, profiles, config);
 
     expect(roster.assembly.config).toEqual({
       bpLimitMin: 300,
@@ -73,6 +87,41 @@ describe('assembly-builder', () => {
       characterLimitMin: 3,
       characterLimitMax: 7,
       gameSize: GameSize.MEDIUM,
+    });
+  });
+
+  it('mergeAssemblyRosters should combine totals and configs', () => {
+    const archetypeName = 'Veteran';
+    const swordName = 'Sword, Broad';
+    const rifleName = 'Rifle, Medium, Semi/A';
+    const profileOneOptions = { itemNames: [swordName] };
+    const profileTwoOptions = { itemNames: [rifleName] };
+    const profileOne = buildProfile(archetypeName, profileOneOptions);
+    const profileTwo = buildProfile(archetypeName, profileTwoOptions);
+    const firstRosterName = 'Alpha';
+    const secondRosterName = 'Bravo';
+    const firstRosterProfiles = [profileOne];
+    const secondRosterProfiles = [profileTwo];
+    const firstRoster = buildAssembly(firstRosterName, firstRosterProfiles);
+    const secondRoster = buildAssembly(secondRosterName, secondRosterProfiles);
+    const rosters = [firstRoster, secondRoster];
+    const mergedName = 'Combined';
+
+    const merged = mergeAssemblyRosters(mergedName, rosters);
+
+    const expectedTotalBp = (profileOne.adjustedBp ?? profileOne.totalBp ?? 0)
+      + (profileTwo.adjustedBp ?? profileTwo.totalBp ?? 0);
+
+    expect(merged.assembly.name).toBe(mergedName);
+    expect(merged.assembly.totalCharacters).toBe(2);
+    expect(merged.assembly.totalBP).toBe(expectedTotalBp);
+    expect(merged.characters.length).toBe(2);
+    expect(merged.assembly.config).toEqual({
+      bpLimitMin: 250,
+      bpLimitMax: 500,
+      characterLimitMin: 4,
+      characterLimitMax: 8,
+      gameSize: 'MERGED',
     });
   });
 });

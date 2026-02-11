@@ -1,17 +1,9 @@
-<<<<<<< Updated upstream
-import { Character, CharacterAttributes } from './lib/mest-tactics/character/Character';
-import { CombatEngine } from './lib/mest-tactics/combat/CombatEngine';
-import * as readline from 'readline';
-
-const characters: Character[] = [
-  new Character('1', 'Aris', { CCA: 4, RCA: 2, REF: 3, INT: 2, POW: 2, STR: 3, FOR: 3, MOV: 3, SIZ: 3 }, { x: 0, y: 0 }),
-  new Character('2', 'Kaelen', { CCA: 3, RCA: 4, REF: 4, INT: 3, POW: 2, STR: 2, FOR: 2, MOV: 4, SIZ: 2 }, { x: 0, y: 0 }),
-  new Character('3', 'Roric', { CCA: 3, RCA: 2, REF: 2, INT: 2, POW: 3, STR: 4, FOR: 4, MOV: 2, SIZ: 4 }, { x: 0, y: 0 }),
-=======
 import { Character } from './lib/mest-tactics/Character';
 import { CombatEngine } from './lib/mest-tactics/combat/CombatEngine';
 import * as readline from 'readline';
 import { Profile } from './lib/mest-tactics/Profile';
+import { buildAssembly, buildProfile } from './lib/mest-tactics/assembly-builder';
+import { buildMissionSide, formatMissionSideSummary, formatMissionSideCompactSummary } from './lib/mest-tactics/MissionSideBuilder';
 
 const arisProfile: Profile = {
   name: 'Aris',
@@ -41,61 +33,164 @@ const characters: Character[] = [
   new Character(arisProfile),
   new Character(kaelenProfile),
   new Character(roricProfile),
->>>>>>> Stashed changes
 ];
 
-const rl = readline.createInterface({
+const rlOptions = {
   input: process.stdin,
-  output: process.stdout
-});
+  output: process.stdout,
+};
 
-function displayCharacters() {
-  console.log('\nAvailable Characters:\n');
+const rl = readline.createInterface(rlOptions);
+
+function displayCharacters(): void {
+  const header = '\nAvailable Characters:\n';
+  console.log(header);
   characters.forEach((char, index) => {
-    console.log(`${index + 1}. ${char.name}`);
+    const number = index + 1;
+    const line = `${number}. ${char.name}`;
+    console.log(line);
   });
-  console.log();
+  const spacer = '';
+  console.log(spacer);
 }
 
-<<<<<<< Updated upstream
-function selectCharacter(prompt: string): Promise<Character> {
-  return new Promise((resolve, reject) => {
-    rl.question(prompt, (answer) => {
-=======
 function selectCharacter(promptText: string): Promise<Character> {
+  const promptValue = promptText;
   return new Promise((resolve, reject) => {
-    rl.question(promptText, (answer) => {
->>>>>>> Stashed changes
-      const index = parseInt(answer, 10) - 1;
-      if (index >= 0 && index < characters.length) {
+    rl.question(promptValue, (answer) => {
+      const base = 10;
+      const index = parseInt(answer, base) - 1;
+      const isValid = index >= 0 && index < characters.length;
+      if (isValid) {
         resolve(characters[index]);
       } else {
-        reject(new Error('Invalid character selection.'));
+        const errorMessage = 'Invalid character selection.';
+        reject(new Error(errorMessage));
       }
     });
   });
 }
 
-async function runCombatSimulator() {
+async function runCombatSimulator(): Promise<void> {
   displayCharacters();
 
   try {
-    const attacker = await selectCharacter('Select an attacker (enter number): ');
-    const defender = await selectCharacter('Select a defender (enter number): ');
+    const attackerPrompt = 'Select an attacker (enter number): ';
+    const defenderPrompt = 'Select a defender (enter number): ';
+    const attacker = await selectCharacter(attackerPrompt);
+    const defender = await selectCharacter(defenderPrompt);
 
     const result = CombatEngine.resolveCloseCombat(attacker, defender);
 
-    console.log('\n--- Combat Result ---\n');
-    console.log(`${attacker.name} vs. ${defender.name}`);
-    console.log(`Hit: ${result.hit ? 'Yes' : 'No'}`);
-    console.log(`Wound: ${result.wound ? 'Yes' : 'No'}`);
-    console.log();
-
+    const resultHeader = '\n--- Combat Result ---\n';
+    console.log(resultHeader);
+    const matchup = `${attacker.name} vs. ${defender.name}`;
+    console.log(matchup);
+    const hitLine = `Hit: ${result.hit ? 'Yes' : 'No'}`;
+    console.log(hitLine);
+    const woundLine = `Wound: ${result.wound ? 'Yes' : 'No'}`;
+    console.log(woundLine);
+    const spacer = '';
+    console.log(spacer);
   } catch (error: any) {
-    console.error(error.message);
+    const errorMessage = error.message;
+    console.error(errorMessage);
   } finally {
     rl.close();
   }
 }
 
-runCombatSimulator();
+type SideOutputFormat = 'full' | 'summary' | 'compact';
+
+function resolveSideOutputFormat(args: string[]): SideOutputFormat {
+  const sideArgs = args;
+  const summaryFlag = '--summary';
+  const fullFlag = '--full';
+  const compactFlag = '--compact';
+  const formatPrefix = '--format=';
+  const hasSummary = sideArgs.includes(summaryFlag);
+  const hasFull = sideArgs.includes(fullFlag);
+  const hasCompact = sideArgs.includes(compactFlag);
+  if (hasSummary && !hasFull && !hasCompact) {
+    return 'summary';
+  }
+  if (hasFull && !hasSummary && !hasCompact) {
+    return 'full';
+  }
+  if (hasCompact && !hasSummary && !hasFull) {
+    return 'compact';
+  }
+
+  const formatPredicate = (arg: string) => arg.startsWith(formatPrefix);
+  const formatArg = sideArgs.find(formatPredicate);
+  if (formatArg) {
+    const formatValue = formatArg.slice(formatPrefix.length);
+    if (formatValue === 'summary') {
+      return 'summary';
+    }
+    if (formatValue === 'full') {
+      return 'full';
+    }
+    if (formatValue === 'compact') {
+      return 'compact';
+    }
+  }
+
+  return 'full';
+}
+
+function runMissionSideDemo(args: string[]): void {
+  const archetypeName = 'Veteran';
+  const swordName = 'Sword, Broad';
+  const rifleName = 'Rifle, Medium, Semi/A';
+  const profileOneOptions = { itemNames: [swordName] };
+  const profileTwoOptions = { itemNames: [rifleName] };
+  const profileOne = buildProfile(archetypeName, profileOneOptions);
+  const profileTwo = buildProfile(archetypeName, profileTwoOptions);
+  const firstAssemblyName = 'Assembly Alpha';
+  const secondAssemblyName = 'Assembly Bravo';
+  const firstRosterProfiles = [profileOne];
+  const secondRosterProfiles = [profileTwo];
+  const firstRoster = buildAssembly(firstAssemblyName, firstRosterProfiles);
+  const secondRoster = buildAssembly(secondAssemblyName, secondRosterProfiles);
+  const rosters = [firstRoster, secondRoster];
+  const sideName = 'Demo Side';
+  const sideOptions = { mergeAssemblies: true };
+  const side = buildMissionSide(sideName, rosters, sideOptions);
+
+  const jsonReplacer = null;
+  const jsonSpacing = 2;
+  const outputFormat = resolveSideOutputFormat(args);
+  const outputPayload = outputFormat === 'summary'
+    ? formatMissionSideSummary(side)
+    : outputFormat === 'compact'
+      ? formatMissionSideCompactSummary(side)
+      : side;
+  const jsonOutput = JSON.stringify(outputPayload, jsonReplacer, jsonSpacing);
+  console.log(jsonOutput);
+  rl.close();
+}
+
+const sliceStart = 2;
+const args = process.argv.slice(sliceStart);
+const command = args[0] ?? 'combat';
+const combatCommand = 'combat';
+const sideCommand = 'side';
+
+if (command === sideCommand) {
+  const sideArgsStart = 1;
+  const sideArgs = args.slice(sideArgsStart);
+  runMissionSideDemo(sideArgs);
+} else if (command === combatCommand) {
+  runCombatSimulator();
+} else {
+  const helpLines = [
+    'Usage:',
+    '  npm run cli -- combat   # interactive combat demo',
+    '  npm run cli -- side [--summary|--full|--compact|--format=summary|--format=full|--format=compact]  # build a merged side demo',
+  ];
+  const newline = '\n';
+  const helpText = helpLines.join(newline);
+  console.log(helpText);
+  rl.close();
+}
