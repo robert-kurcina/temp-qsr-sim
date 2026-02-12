@@ -2,6 +2,8 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import {
   CLIP_EXAMPLE,
+  EXAMPLE_CELL_WIDTH,
+  EXAMPLE_CELL_HEIGHT,
   PORTRAIT_SHEET_COLUMNS,
   PORTRAIT_SHEET_ROWS,
 } from '../src/lib/portraits/portrait-clip';
@@ -129,6 +131,10 @@ const html = `<!doctype html>
     const DEFAULT_SHEET = ${JSON.stringify(firstSheet)};
     const GRID = { columns: ${PORTRAIT_SHEET_COLUMNS}, rows: ${PORTRAIT_SHEET_ROWS} };
     const CLIP_EXAMPLE = { cx: ${CLIP_EXAMPLE.cx}, cy: ${CLIP_EXAMPLE.cy}, r: ${CLIP_EXAMPLE.r} };
+    const EXAMPLE_CELL_WIDTH = ${EXAMPLE_CELL_WIDTH};
+    const EXAMPLE_CELL_HEIGHT = ${EXAMPLE_CELL_HEIGHT};
+    const EXAMPLE_CANVAS_WIDTH = 1920;
+    const EXAMPLE_CANVAS_HEIGHT = 1920;
 
     const sheetSelectId = 'sheet-select';
     const colInputId = 'col-input';
@@ -163,6 +169,7 @@ const html = `<!doctype html>
     const defaultColumn = 0;
     const defaultRow = 0;
     const precision = 2;
+    const OUTPUT_PX = 220; // matches .clip-output CSS width/height
 
     const sheetSelect = document.getElementById(sheetSelectId);
     const colInput = document.getElementById(colInputId);
@@ -187,18 +194,18 @@ const html = `<!doctype html>
       const height = sheetHeight;
       const col = column;
       const rowIndex = row;
-      const columns = GRID.columns;
-      const rows = GRID.rows;
-      const cellWidth = width / columns;
-      const cellHeight = height / rows;
-      const baseX = CLIP_EXAMPLE.cx;
-      const baseY = CLIP_EXAMPLE.cy;
-      const colOffset = col * cellWidth;
-      const rowOffset = rowIndex * cellHeight;
-      const centerX = baseX + colOffset;
-      const centerY = baseY + rowOffset;
-      const radius = CLIP_EXAMPLE.r;
+
+      const scaleX = width / EXAMPLE_CANVAS_WIDTH;
+      const scaleY = height / EXAMPLE_CANVAS_HEIGHT;
+
+      const centerX = (CLIP_EXAMPLE.cx + col * EXAMPLE_CELL_WIDTH) * scaleX;
+      const centerY = (CLIP_EXAMPLE.cy + rowIndex * EXAMPLE_CELL_HEIGHT) * scaleY;
+
+      const radius = CLIP_EXAMPLE.r * (0.5 * (scaleX + scaleY));
       const diameter = radius * 2;
+
+      const cellWidth = EXAMPLE_CELL_WIDTH * scaleX;
+      const cellHeight = EXAMPLE_CELL_HEIGHT * scaleY;
 
       return {
         center: { x: centerX, y: centerY },
@@ -220,8 +227,8 @@ const html = `<!doctype html>
       const svgNs = svgNamespace;
       const svg = document.createElementNS(svgNs, svgTag);
       const viewBox = '0 0 ' + viewSize + ' ' + viewSize;
-      const widthValue = String(viewSize);
-      const heightValue = String(viewSize);
+      const widthValue = String(OUTPUT_PX);
+      const heightValue = String(OUTPUT_PX);
       svg.setAttribute(viewBoxAttr, viewBox);
       svg.setAttribute(widthAttr, widthValue);
       svg.setAttribute(heightAttr, heightValue);
@@ -259,8 +266,8 @@ const html = `<!doctype html>
       const rowRaw = parseNumber(rowInput.value, defaultRow);
       const minColumn = defaultColumn;
       const minRow = defaultRow;
-      const maxColumn = GRID.columns;
-      const maxRow = GRID.rows;
+      const maxColumn = GRID.columns - 1;
+      const maxRow = GRID.rows - 1;
       const col = clamp(colRaw, minColumn, maxColumn);
       const row = clamp(rowRaw, minRow, maxRow);
       const selected = sheetSelect.value || DEFAULT_SHEET;

@@ -110,7 +110,11 @@
 ];
     const DEFAULT_SHEET = "alef-akrunai-auldfaran-male.jpg";
     const GRID = { columns: 8, rows: 6 };
-    const CLIP_EXAMPLE = { cx: 169.50751, cy: 456.80441, r: 94.130051 };
+    const CLIP_EXAMPLE = { cx: 168.47746, cy: 456.87289, r: 94.130058 };
+    const EXAMPLE_CELL_WIDTH = 225.00734;
+    const EXAMPLE_CELL_HEIGHT = 223.54691;
+    const EXAMPLE_CANVAS_WIDTH = 1920;
+    const EXAMPLE_CANVAS_HEIGHT = 1920;
 
     const sheetSelectId = 'sheet-select';
     const colInputId = 'col-input';
@@ -145,6 +149,7 @@
     const defaultColumn = 0;
     const defaultRow = 0;
     const precision = 2;
+    const OUTPUT_PX = 220; // matches .clip-output CSS width/height
 
     const sheetSelect = document.getElementById(sheetSelectId);
     const colInput = document.getElementById(colInputId);
@@ -169,18 +174,18 @@
       const height = sheetHeight;
       const col = column;
       const rowIndex = row;
-      const columns = GRID.columns;
-      const rows = GRID.rows;
-      const cellWidth = width / columns;
-      const cellHeight = height / rows;
-      const baseX = CLIP_EXAMPLE.cx;
-      const baseY = CLIP_EXAMPLE.cy;
-      const colOffset = col * cellWidth;
-      const rowOffset = rowIndex * cellHeight;
-      const centerX = baseX + colOffset;
-      const centerY = baseY + rowOffset;
-      const radius = CLIP_EXAMPLE.r;
+
+      const scaleX = width / EXAMPLE_CANVAS_WIDTH;
+      const scaleY = height / EXAMPLE_CANVAS_HEIGHT;
+
+      const centerX = (CLIP_EXAMPLE.cx + col * EXAMPLE_CELL_WIDTH) * scaleX;
+      const centerY = (CLIP_EXAMPLE.cy + rowIndex * EXAMPLE_CELL_HEIGHT) * scaleY;
+
+      const radius = CLIP_EXAMPLE.r * (0.5 * (scaleX + scaleY));
       const diameter = radius * 2;
+
+      const cellWidth = EXAMPLE_CELL_WIDTH * scaleX;
+      const cellHeight = EXAMPLE_CELL_HEIGHT * scaleY;
 
       return {
         center: { x: centerX, y: centerY },
@@ -202,8 +207,8 @@
       const svgNs = svgNamespace;
       const svg = document.createElementNS(svgNs, svgTag);
       const viewBox = '0 0 ' + viewSize + ' ' + viewSize;
-      const widthValue = String(viewSize);
-      const heightValue = String(viewSize);
+      const widthValue = String(OUTPUT_PX);
+      const heightValue = String(OUTPUT_PX);
       svg.setAttribute(viewBoxAttr, viewBox);
       svg.setAttribute(widthAttr, widthValue);
       svg.setAttribute(heightAttr, heightValue);
@@ -241,8 +246,8 @@
       const rowRaw = parseNumber(rowInput.value, defaultRow);
       const minColumn = defaultColumn;
       const minRow = defaultRow;
-      const maxColumn = GRID.columns;
-      const maxRow = GRID.rows;
+      const maxColumn = GRID.columns - 1;
+      const maxRow = GRID.rows - 1;
       const col = clamp(colRaw, minColumn, maxColumn);
       const row = clamp(rowRaw, minRow, maxRow);
       const selected = sheetSelect.value || DEFAULT_SHEET;
