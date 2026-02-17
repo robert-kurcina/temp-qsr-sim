@@ -24,4 +24,7 @@ Below is a list of the rule modules and their current implementation status.
 | 5 | [Combat](./rules-combat)                           | `DONE`   | Detailed rules for resolving close-quarters and ranged combat.               |
 | 6 | [Damage & Morale](./rules-damage-and-morale)             | `DONE`   | Rules for taking damage, injuries, and morale checks.                        |
 | 7 | [Advanced Rules](./rules-advanced)                   | `DONE`   | Optional, more complex rules like reactions for experienced players.         |
-| 8 | [Reference](./rules-reference)                       | `DONE`   | Quick-reference sheets, tables, and summaries.                               |
+| 8 | [Missions: QAI Pack](./rules-missions-qai)            | `DONE`   | QAI mission set with scenario rules and victory conditions.                  |
+| 8 | [Mission Keys](./rules-mission-keys)                 | `DONE`   | Mission elements, objective markers, and keys to victory.                    |
+| 8 | [Objective Markers](./rules-objective-markers)        | `DONE`   | Objective marker types, actions, and scoring concerns.                       |
+| 9 | [Reference](./rules-reference)                       | `DONE`   | Quick-reference sheets, tables, and summaries.                               |
