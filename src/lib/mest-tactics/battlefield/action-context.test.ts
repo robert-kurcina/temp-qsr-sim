@@ -40,7 +40,7 @@ describe('buildRangedActionContext', () => {
       optimalRangeMu: 8,
     });
 
-    expect(context.hasDirectCover).toBe(false);
+    expect(context.hasDirectCover).toBe(true);
   });
 
   it('should snap into base contact when within threshold and toggle enabled', () => {

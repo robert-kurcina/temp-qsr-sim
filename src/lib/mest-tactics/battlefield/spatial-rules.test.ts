@@ -16,26 +16,26 @@ describe('SpatialRules', () => {
     expect(SpatialRules.getEngagedModels(a, [b, c]).map(model => model.id)).toEqual(['b']);
   });
 
-  it('should block LOS when defender overlaps cover terrain', () => {
+  it('should block LOS when defender overlaps cover terrain for smaller models', () => {
     const battlefield = new Battlefield(12, 12);
     const tree = new TerrainElement('Tree', { x: 6, y: 6 });
     battlefield.addTerrain(tree.toFeature());
 
-    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2 };
-    const defender = { id: 'defender', position: { x: 6, y: 6 }, baseDiameter: 2 };
+    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 3 };
+    const defender = { id: 'defender', position: { x: 6, y: 6 }, baseDiameter: 2, siz: 3 };
 
     const cover = SpatialRules.getCoverResult(battlefield, attacker, defender);
     expect(cover.hasLOS).toBe(false);
     expect(cover.blockingFeature).toBeTruthy();
   });
 
-  it('should block LOS when cover terrain sits between attacker and defender', () => {
+  it('should block LOS when cover terrain sits between attacker and defender for smaller models', () => {
     const battlefield = new Battlefield(12, 12);
     const tree = new TerrainElement('Tree', { x: 5, y: 6 });
     battlefield.addTerrain(tree.toFeature());
 
-    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2 };
-    const defender = { id: 'defender', position: { x: 9, y: 6 }, baseDiameter: 2 };
+    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 3 };
+    const defender = { id: 'defender', position: { x: 9, y: 6 }, baseDiameter: 2, siz: 3 };
 
     const cover = SpatialRules.getCoverResult(battlefield, attacker, defender);
     expect(cover.hasLOS).toBe(false);
@@ -57,17 +57,16 @@ describe('SpatialRules', () => {
     expect(cover.hasInterveningCover).toBe(false);
   });
 
-  it('should block LOS for cover terrain like trees', () => {
+  it('should allow LOS for cover terrain when models exceed cover SIZ', () => {
     const battlefield = new Battlefield(12, 12);
     const tree = new TerrainElement('Tree', { x: 6, y: 6 });
     battlefield.addTerrain(tree.toFeature());
 
-    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2 };
-    const defender = { id: 'defender', position: { x: 10, y: 6 }, baseDiameter: 2 };
+    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 13 };
+    const defender = { id: 'defender', position: { x: 10, y: 6 }, baseDiameter: 2, siz: 13 };
 
     const cover = SpatialRules.getCoverResult(battlefield, attacker, defender);
-    expect(cover.hasLOS).toBe(false);
-    expect(cover.blockingFeature).toBeTruthy();
+    expect(cover.hasLOS).toBe(true);
   });
 
   it('should grant direct cover just beyond the cover footprint', () => {

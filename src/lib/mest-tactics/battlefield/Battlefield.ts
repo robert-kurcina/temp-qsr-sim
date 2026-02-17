@@ -104,6 +104,10 @@ export class Battlefield {
     return this.grid.getCell(position)?.occupant || null;
   }
 
+  getCharacterById(id: string): Character | null {
+    return this.characterRegistry.get(id) ?? null;
+  }
+
   getModelBlockers(excludeIds: string[] = []): { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] {
     const excluded = new Set(excludeIds);
     const blockers: { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] = [];
@@ -125,9 +129,8 @@ export class Battlefield {
 
   public hasLineOfSight(start: Position, end: Position): boolean {
     for (const feature of this.terrain) {
-      // TODO: Review LOS blocker classification for higher-fidelity RAW (Soft/Hard may not always fully block LOS).
       const los = feature.meta?.los ?? 'Clear';
-      if (feature.type === TerrainType.Obstacle || los === 'Soft' || los === 'Hard') {
+      if (feature.type === TerrainType.Obstacle || los === 'Blocking') {
         for (let i = 0, j = feature.vertices.length - 1; i < feature.vertices.length; j = i++) {
           const p1 = feature.vertices[j];
           const p2 = feature.vertices[i];

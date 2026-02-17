@@ -44,7 +44,10 @@ export class SpatialRules {
   }
 
   static hasLineOfSight(battlefield: Battlefield, source: SpatialModel, target: SpatialModel): boolean {
-    return LOSOperations.checkLOSFromModelToModel(battlefield, source, target).clear;
+    if (!LOSOperations.checkLOSFromModelToModel(battlefield, source, target).clear) {
+      return false;
+    }
+    return !SpatialRules.findBlockingModel(battlefield, source, target);
   }
 
   static getCoverResult(
@@ -81,13 +84,15 @@ export class SpatialRules {
       hasInterveningCover = true;
     }
 
-    const coverBlocker = SpatialRules.findBlockingCoverFeature(source, target, coverFeatures);
-    if (coverBlocker) {
+    const overlapBlocker = targetDirectCover.find(feature =>
+      LOSOperations.isLosBlockingForSizes(feature, source.siz, target.siz)
+    );
+    if (overlapBlocker) {
       return {
         hasLOS: false,
         hasDirectCover: false,
         hasInterveningCover: false,
-        blockingFeature: coverBlocker,
+        blockingFeature: overlapBlocker,
         coveringModelId: modelCoverId ?? undefined,
         coverFeatures: [],
       };
@@ -150,21 +155,6 @@ export class SpatialRules {
       return COVER_EXTENSION_MU;
     }
     return 0;
-  }
-
-  private static findBlockingCoverFeature(
-    source: SpatialModel,
-    target: SpatialModel,
-    coverFeatures: TerrainFeature[]
-  ): TerrainFeature | null {
-    const targetRadius = target.baseDiameter / 2;
-    for (const feature of coverFeatures) {
-      const extension = SpatialRules.coverExtension(feature);
-      if (SpatialRules.segmentIntersectsFeature(source.position, target.position, feature, targetRadius, extension)) {
-        return feature;
-      }
-    }
-    return null;
   }
 
   private static findBlockingModel(

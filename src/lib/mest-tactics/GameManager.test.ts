@@ -1,6 +1,6 @@
 import { GameManager } from './GameManager';
 import { Character } from './Character';
-import { CharacterStatus } from './types';
+import { CharacterStatus, TurnPhase } from './types';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Profile } from './Profile';
 
@@ -92,6 +92,21 @@ describe('GameManager', () => {
     expect(gameManager.getCharacterStatus(character.id)).toBe(CharacterStatus.Waiting);
     gameManager.endActivation(characters[1]);
     expect(gameManager.isTurnOver()).toBe(true);
+  });
+
+  it('should advance phases through a turn', () => {
+    expect(gameManager.phase).toBe(TurnPhase.Setup);
+    gameManager.advancePhase({ roller: () => 0 });
+    expect(gameManager.phase).toBe(TurnPhase.Activation);
+    const first = gameManager.getNextToActivate();
+    if (first) gameManager.endActivation(first);
+    const second = gameManager.getNextToActivate();
+    if (second) gameManager.endActivation(second);
+    expect(gameManager.isTurnOver()).toBe(true);
+    gameManager.advancePhase();
+    expect(gameManager.phase).toBe(TurnPhase.TurnEnd);
+    gameManager.advancePhase({ roller: () => 0 });
+    expect(gameManager.phase).toBe(TurnPhase.Activation);
   });
 
   it('should eliminate a side that fails a bottle test', () => {

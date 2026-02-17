@@ -18,5 +18,12 @@ export enum CharacterStatus {
   Waiting = 'Waiting',
 }
 
+export enum TurnPhase {
+  Setup = 'Setup',
+  Activation = 'Activation',
+  RoundEnd = 'RoundEnd',
+  TurnEnd = 'TurnEnd',
+}
+
 // Re-export FinalAttributes for convenience
 export type { FinalAttributes };

@@ -22,6 +22,8 @@ export class Character {
     isDistracted: boolean;
     isEngaged: boolean;
     isInCover: boolean;
+    isAttentive: boolean;
+    isOrdered: boolean;
     isKOd: boolean;
     isEliminated: boolean;
     statusEffects: string[];
@@ -68,6 +70,8 @@ export class Character {
       isDistracted: false,
       isEngaged: false,
       isInCover: false,
+      isAttentive: true,
+      isOrdered: true,
       isKOd: false,
       isEliminated: false,
       statusEffects: [],

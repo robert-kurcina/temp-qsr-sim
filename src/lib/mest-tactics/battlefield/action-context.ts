@@ -54,8 +54,8 @@ export function buildRangedActionContext(input: ActionContextInput): TestContext
       position: model.position,
       baseDiameter: model.baseDiameter,
       isFriendly: false,
-      isAttentive: true,
-      isOrdered: true,
+      isAttentive: input.battlefield.getCharacterById(model.id)?.state?.isAttentive ?? true,
+      isOrdered: input.battlefield.getCharacterById(model.id)?.state?.isOrdered ?? true,
     })),
     { lofWidth }
   );

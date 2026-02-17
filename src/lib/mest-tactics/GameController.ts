@@ -5,6 +5,8 @@ import { Position } from './battlefield/Position';
 import { Item } from './Item';
 import { getBaseDiameterFromSiz } from './battlefield/size-utils';
 import { buildLOSResultContext, ActionContextInput } from './battlefield/action-context';
+import { TurnPhase } from './types';
+import { getCharacterTraitLevel } from './status-system';
 
 export interface ControllerLogEntry {
   turn: number;
@@ -17,6 +19,8 @@ export interface ControllerLogEntry {
 export interface SkirmishConfig {
   maxTurns?: number;
   rng?: () => number;
+  roundsPerTurn?: number;
+  enableTransfix?: boolean;
 }
 
 export class GameController {
@@ -32,10 +36,22 @@ export class GameController {
   runSkirmish(sideA: Character[], sideB: Character[], config: SkirmishConfig = {}): ControllerLogEntry[] {
     const maxTurns = config.maxTurns ?? 3;
     const rng = config.rng ?? Math.random;
-    this.manager.rollInitiative(rng);
+    const enableTransfix = config.enableTransfix ?? false;
+    this.manager.roundsPerTurn = config.roundsPerTurn ?? this.manager.roundsPerTurn;
+    this.manager.phase = TurnPhase.Setup;
 
-    for (let turn = 1; turn <= maxTurns; turn++) {
-      this.log.push({ turn, round: this.manager.currentRound, actor: '-', action: 'TurnStart' });
+    while (this.manager.currentTurn <= maxTurns) {
+      if (this.manager.phase === TurnPhase.Setup || this.manager.phase === TurnPhase.TurnEnd) {
+        this.manager.advancePhase({ roller: rng, roundsPerTurn: this.manager.roundsPerTurn });
+        if (this.manager.currentTurn > maxTurns) break;
+        this.log.push({ turn: this.manager.currentTurn, round: this.manager.currentRound, actor: '-', action: 'TurnStart' });
+      }
+
+      if (this.manager.phase !== TurnPhase.Activation) {
+        this.manager.advancePhase({ roller: rng, roundsPerTurn: this.manager.roundsPerTurn });
+        continue;
+      }
+
       while (!this.manager.isTurnOver()) {
         const active = this.manager.getNextToActivate();
         if (!active) break;
@@ -63,6 +79,24 @@ export class GameController {
           continue;
         }
 
+        if (enableTransfix) {
+          const transfixLevel = getCharacterTraitLevel(active, 'Transfix');
+          if (transfixLevel > 0) {
+            const results = this.manager.executeTransfixAction(active, sideEnemies, { rating: transfixLevel });
+            const applied = results.filter(result => result.misses > 0);
+            if (applied.length > 0) {
+              const detail = applied.map(result => `${result.targetId} misses=${result.misses}`).join(', ');
+              this.log.push({
+                turn: this.manager.currentTurn,
+                round: this.manager.currentRound,
+                actor: active.name,
+                action: 'Transfix',
+                detail,
+              });
+            }
+          }
+        }
+
         const { target, position: targetPos } = targetInfo;
         const rangedWeapon = this.findWeapon(active, 'ranged');
         const meleeWeapon = this.findWeapon(active, 'melee');
@@ -73,7 +107,7 @@ export class GameController {
         if (rangedWeapon && los.hasLOS && this.manager.spendAp(active, 1)) {
           const result = this.manager.executeRangedAttack(active, target, rangedWeapon, spatial);
           this.log.push({
-            turn,
+            turn: this.manager.currentTurn,
             round: this.manager.currentRound,
             actor: active.name,
             action: 'RangedAttack',
@@ -92,7 +126,7 @@ export class GameController {
             }).filter(Boolean) as any,
           });
           this.log.push({
-            turn,
+            turn: this.manager.currentTurn,
             round: this.manager.currentRound,
             actor: active.name,
             action: 'CloseCombat',
@@ -102,7 +136,7 @@ export class GameController {
           const step = this.stepToward(activePos, targetPos);
           const moved = this.manager.moveCharacter(active, step);
           this.log.push({
-            turn,
+            turn: this.manager.currentTurn,
             round: this.manager.currentRound,
             actor: active.name,
             action: 'Move',
@@ -112,6 +146,7 @@ export class GameController {
 
         this.manager.endActivation(active);
       }
+
       const bottleResults = this.manager.resolveBottleTests([
         {
           id: 'SideA',
@@ -128,10 +163,11 @@ export class GameController {
       ]);
       for (const [sideId, result] of Object.entries(bottleResults)) {
         if (result.bottledOut) {
-          this.log.push({ turn, round: this.manager.currentRound, actor: sideId, action: 'BottleOut' });
+          this.log.push({ turn: this.manager.currentTurn, round: this.manager.currentRound, actor: sideId, action: 'BottleOut' });
         }
       }
-      this.manager.nextTurn();
+
+      this.manager.advancePhase({ roller: rng, roundsPerTurn: this.manager.roundsPerTurn });
     }
 
     return this.log;
@@ -204,7 +240,11 @@ export class GameController {
   }
 
   private pickOrderedCandidate(characters: Character[]): Character | null {
-    // TODO: Tighten ordered/attentive requirements once those statuses are fully modeled.
-    return characters.find(char => !char.state.isEliminated && !char.state.isKOd) ?? null;
+    return characters.find(char =>
+      !char.state.isEliminated
+      && !char.state.isKOd
+      && char.state.isOrdered
+      && char.state.isAttentive
+    ) ?? null;
   }
 }

@@ -1,6 +1,12 @@
 import { Character } from './Character';
 import { gameData } from '../data';
-import { ResolveTestResult, resolveTest, TestParticipant } from './dice-roller';
+import { ResolveTestResult, resolveTest, TestParticipant, TestDice, DiceType } from './dice-roller';
+import { Battlefield } from './battlefield/Battlefield';
+import { Position } from './battlefield/Position';
+import { SpatialRules, SpatialModel } from './battlefield/spatial-rules';
+import { getBaseDiameterFromSiz } from './battlefield/size-utils';
+import { parseTrait } from './trait-parser';
+import type { Item } from './Item';
 
 export interface StatusDefinition {
   name: string;
@@ -108,10 +114,60 @@ export interface StatusTraitResolution {
   testResult?: ResolveTestResult;
 }
 
+export function getCharacterTraitLevel(character: Character, traitName: string): number {
+  const nameLower = traitName.toLowerCase();
+  const traitPool: string[] = [];
+  if (character.profile?.finalTraits) traitPool.push(...character.profile.finalTraits);
+  if (character.profile?.allTraits) traitPool.push(...character.profile.allTraits);
+  if (character.allTraits?.length) {
+    for (const trait of character.allTraits) {
+      if (trait?.name) traitPool.push(trait.source ?? trait.name);
+    }
+  }
+
+  let best = 0;
+  for (const raw of traitPool) {
+    if (!raw) continue;
+    const parsed = parseTrait(raw);
+    if (parsed.name.toLowerCase() !== nameLower) continue;
+    const level = parsed.level ?? 1;
+    if (level > best) best = level;
+  }
+  return best;
+}
+
+function getNaturalPoisonRating(character: Character): number {
+  const items: Item[] = [];
+  if (character.profile?.equipment) items.push(...character.profile.equipment);
+  if (character.profile?.items) items.push(...character.profile.items);
+  if (character.profile?.inHandItems) items.push(...character.profile.inHandItems);
+  if (character.profile?.stowedItems) items.push(...character.profile.stowedItems);
+
+  let best = 0;
+  for (const item of items) {
+    if (!item) continue;
+    const classification = (item.classification || item.class || '').toLowerCase();
+    if (!classification.includes('natural')) continue;
+    for (const trait of item.traits || []) {
+      const parsed = parseTrait(trait);
+      if (parsed.name.toLowerCase() !== 'poison') continue;
+      const level = parsed.level ?? 1;
+      if (level > best) best = level;
+    }
+  }
+  return best;
+}
+
 export function applyStatusTraitOnHit(
   defender: Character,
   traitName: string,
-  options: { cascades?: number; rating?: number; testRolls?: number[] | null } = {}
+  options: {
+    cascades?: number;
+    rating?: number;
+    testRolls?: number[] | null;
+    impact?: number;
+    effectiveArmor?: number;
+  } = {}
 ): StatusTraitResolution {
   if (traitName === 'Confuse X') {
     const attributeValue = Math.max(defender.finalAttributes.int, defender.finalAttributes.pow);
@@ -126,9 +182,155 @@ export function applyStatusTraitOnHit(
     return { applied: Boolean(status), status: status ?? undefined, testResult: result };
   }
 
+  const rating = Math.max(1, options.rating ?? 1);
   const cascades = options.cascades ?? 0;
+  const impact = options.impact ?? 0;
+  const armorTotal = defender.state.armor?.total ?? 0;
+  const effectiveArmor = options.effectiveArmor ?? (armorTotal - impact);
+  const siz = Math.max(1, defender.finalAttributes.siz ?? defender.attributes.siz ?? 1);
+  const fortitude = Math.max(1, defender.finalAttributes.for ?? defender.attributes.for ?? 1);
+
+  if (traitName === 'Burn X') {
+    const tokens = Math.max(1, Math.floor(rating / siz));
+    const status = applyStatusFromTrait(defender, traitName, 0, { baseTokens: tokens, perCascades: 0 });
+    return { applied: Boolean(status), status: status ?? undefined };
+  }
+
+  if (traitName === 'Acid X') {
+    if (effectiveArmor > 0) {
+      return { applied: false };
+    }
+    const tokens = 1 + Math.floor(rating / siz);
+    const status = applyStatusFromTrait(defender, traitName, 0, { baseTokens: tokens, perCascades: 0 });
+    return { applied: Boolean(status), status: status ?? undefined };
+  }
+
+  if (traitName === 'Poison X') {
+    if (effectiveArmor > 0) {
+      return { applied: false };
+    }
+    const naturalPoison = getNaturalPoisonRating(defender);
+    const reduction = Math.min(rating, naturalPoison);
+    const effectiveRating = Math.max(0, rating - reduction);
+    if (effectiveRating <= 0) {
+      return { applied: false };
+    }
+    const tokens = Math.max(1, Math.floor(effectiveRating / fortitude));
+    const status = applyStatusFromTrait(defender, traitName, 0, { baseTokens: tokens, perCascades: 0 });
+    return { applied: Boolean(status), status: status ?? undefined };
+  }
+
   const status = applyStatusFromTrait(defender, traitName, cascades);
   return { applied: Boolean(status), status: status ?? undefined };
+}
+
+export interface TransfixTarget {
+  character: Character;
+  position: Position;
+  baseDiameter?: number;
+}
+
+export interface TransfixResult {
+  targetId: string;
+  inRange: boolean;
+  hasLOS: boolean;
+  effectiveX: number;
+  misses: number;
+}
+
+export function resolveTransfixEffect(
+  battlefield: Battlefield,
+  source: SpatialModel & { character: Character },
+  targets: TransfixTarget[],
+  options: { rating?: number; testRolls?: Record<string, number[]> } = {}
+): TransfixResult[] {
+  const rating = Math.max(0, options.rating ?? getCharacterTraitLevel(source.character, 'Transfix'));
+  if (rating <= 0) return [];
+
+  const results: TransfixResult[] = [];
+  const sourceBase = source.baseDiameter ?? getBaseDiameterFromSiz(source.siz ?? source.character.finalAttributes.siz ?? 3);
+  const sourceModel: SpatialModel = {
+    id: source.id,
+    position: source.position,
+    baseDiameter: sourceBase,
+    siz: source.siz ?? source.character.finalAttributes.siz,
+  };
+
+  for (const target of targets) {
+    const targetBase = target.baseDiameter ?? getBaseDiameterFromSiz(target.character.finalAttributes.siz ?? 3);
+    const targetModel: SpatialModel = {
+      id: target.character.id,
+      position: target.position,
+      baseDiameter: targetBase,
+      siz: target.character.finalAttributes.siz,
+    };
+
+    const distance = SpatialRules.distanceEdgeToEdge(sourceModel, targetModel);
+    const beyondBase = Math.max(0, distance - sourceBase);
+    let effectiveX = rating - Math.floor(beyondBase);
+    if (effectiveX <= 0) {
+      results.push({
+        targetId: target.character.id,
+        inRange: false,
+        hasLOS: false,
+        effectiveX: 0,
+        misses: 0,
+      });
+      continue;
+    }
+
+    const targetTransfix = getCharacterTraitLevel(target.character, 'Transfix');
+    if (targetTransfix > 0) {
+      const reduction = Math.min(rating, targetTransfix);
+      effectiveX = Math.max(0, effectiveX - reduction);
+    }
+
+    if (effectiveX <= 0) {
+      results.push({
+        targetId: target.character.id,
+        inRange: false,
+        hasLOS: false,
+        effectiveX: 0,
+        misses: 0,
+      });
+      continue;
+    }
+
+    const hasLOS = SpatialRules.hasLineOfSight(battlefield, sourceModel, targetModel);
+    if (!hasLOS) {
+      results.push({
+        targetId: target.character.id,
+        inRange: true,
+        hasLOS: false,
+        effectiveX,
+        misses: 0,
+      });
+      continue;
+    }
+
+    const penaltyDice: TestDice = { [DiceType.Modifier]: effectiveX };
+    const participant: TestParticipant = {
+      attributeValue: target.character.finalAttributes.int ?? 0,
+      penaltyDice,
+    };
+    const systemPlayer: TestParticipant = { isSystemPlayer: true };
+    const testRolls = options.testRolls?.[target.character.id] ?? null;
+    const result = resolveTest(participant, systemPlayer, testRolls);
+    const misses = Math.max(0, result.p2FinalScore - result.p1FinalScore);
+    if (misses > 0) {
+      addStatusToken(target.character, 'Transfixed', misses);
+    }
+
+    results.push({
+      targetId: target.character.id,
+      inRange: true,
+      hasLOS: true,
+      effectiveX,
+      misses,
+    });
+  }
+
+  return results;
 }
 
 export function parseStatusTrait(trait: string): { traitName: string; rating: number } | null {

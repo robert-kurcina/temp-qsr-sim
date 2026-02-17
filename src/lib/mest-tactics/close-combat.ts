@@ -80,7 +80,11 @@ export function makeCloseCombatAttack(
         for (const trait of weapon.traits) {
             const parsed = parseStatusTrait(trait);
             if (!parsed) continue;
-            applyStatusTraitOnHit(defender, parsed.traitName, { cascades, rating: parsed.rating });
+            applyStatusTraitOnHit(defender, parsed.traitName, {
+                cascades,
+                rating: parsed.rating,
+                impact: weapon.impact ?? 0,
+            });
         }
     }
 

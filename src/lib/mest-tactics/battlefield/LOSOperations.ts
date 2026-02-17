@@ -17,14 +17,36 @@ export interface LOSModelFootprint {
   id?: string;
   position: Position;
   baseDiameter: number;
+  siz?: number;
 }
 
 export class LOSOperations {
+  // TODO: Replace size-gated 2D LOS blocking with 3D height-based logic when height is modeled.
+  private static readonly COVER_SIZE_BY_CATEGORY: Record<string, number> = {
+    shrub: 2,
+    rocks: 4,
+    tree: 12,
+  };
+
   // TODO: Review LOS blocker classification for higher-fidelity RAW (Soft/Hard may not always fully block LOS).
   static isLosBlocking(feature: TerrainFeature): boolean {
     if (feature.type === TerrainType.Obstacle) return true;
     const los = feature.meta?.los ?? 'Clear';
-    return los === 'Soft' || los === 'Hard';
+    return los === 'Blocking';
+  }
+
+  static isLosBlockingForSizes(
+    feature: TerrainFeature,
+    sourceSiz?: number,
+    targetSiz?: number
+  ): boolean {
+    if (LOSOperations.isLosBlocking(feature)) return true;
+    const category = feature.meta?.category?.toLowerCase?.() ?? '';
+    const coverSize = LOSOperations.COVER_SIZE_BY_CATEGORY[category];
+    if (!coverSize) return false;
+    const maxSiz = Math.max(sourceSiz ?? 0, targetSiz ?? 0);
+    if (maxSiz <= 0) return false;
+    return maxSiz <= coverSize;
   }
 
   static checkLOSBetweenPoints(battlefield: Battlefield, start: Position, end: Position): LOSResult {
@@ -58,12 +80,15 @@ export class LOSOperations {
   ): LOSResult {
     const perimeter = LOSOperations.buildCircularPerimeterPoints(model.position, model.baseDiameter);
     let nearestBlocked: { feature: TerrainFeature; distance: number } | null = null;
+    const blockers = battlefield.terrain.filter(feature =>
+      LOSOperations.isLosBlockingForSizes(feature, model.siz, model.siz)
+    );
 
     for (const point of perimeter) {
       const hit = LOSOperations.findNearestBlockingElement(
         point,
         target,
-        battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature))
+        blockers
       );
       if (!hit) {
         return { clear: true };
@@ -84,12 +109,15 @@ export class LOSOperations {
   ): LOSResult {
     const perimeter = LOSOperations.buildCircularPerimeterPoints(targetModel.position, targetModel.baseDiameter);
     let nearestBlocked: { feature: TerrainFeature; distance: number } | null = null;
+    const blockers = battlefield.terrain.filter(feature =>
+      LOSOperations.isLosBlockingForSizes(feature, targetModel.siz, targetModel.siz)
+    );
 
     for (const point of perimeter) {
       const hit = LOSOperations.findNearestBlockingElement(
         start,
         point,
-        battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature))
+        blockers
       );
       if (!hit) {
         return { clear: true };
@@ -114,7 +142,9 @@ export class LOSOperations {
 
     let visibleCount = 0;
     let nearestBlocked: { feature: TerrainFeature; distance: number } | null = null;
-    const blockers = battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature));
+    const blockers = battlefield.terrain.filter(feature =>
+      LOSOperations.isLosBlockingForSizes(feature, source.siz, target.siz)
+    );
 
     for (const targetPoint of targetPerimeter) {
       let targetVisible = false;

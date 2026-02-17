@@ -94,7 +94,11 @@ export function makeIndirectRangedAttack(
         for (const trait of weapon.traits) {
             const parsed = parseStatusTrait(trait);
             if (!parsed) continue;
-            applyStatusTraitOnHit(target, parsed.traitName, { cascades, rating: parsed.rating });
+            applyStatusTraitOnHit(target, parsed.traitName, {
+                cascades,
+                rating: parsed.rating,
+                impact: weapon.impact ?? 0,
+            });
         }
     }
 

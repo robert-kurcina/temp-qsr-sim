@@ -108,4 +108,113 @@ describe('status-system', () => {
     applyStatusTraitOnHit(character, 'Confuse X', { rating: 2, testRolls: [1, 1] });
     expect(getStatusTokenCount(character, 'Confused')).toBe(0);
   });
+
+  it('should apply Burn tokens based on SIZ cascades', () => {
+    const profile: Profile = {
+      name: 'Burn Tester',
+      archetype: { attributes: { cca: 0, rca: 0, ref: 0, int: 0, pow: 0, str: 0, for: 0, mov: 0, siz: 3 } },
+      items: [],
+      totalBp: 0,
+      adjustedBp: 0,
+      adjustedItemCosts: { meleeBp: [], rangedBp: [], equipmentBp: [] },
+      physicality: 0,
+      adjPhysicality: 0,
+      durability: 0,
+      adjDurability: 0,
+      burden: { totalLaden: 0, totalBurden: 0 },
+      totalHands: 0,
+      totalDeflect: 0,
+      totalAR: 0,
+      finalTraits: [],
+      allTraits: [],
+    };
+    const character = new Character(profile);
+    applyStatusTraitOnHit(character, 'Burn X', { rating: 6 });
+    expect(getStatusTokenCount(character, 'Burn')).toBe(2);
+  });
+
+  it('should apply Acid tokens when effective armor is zero', () => {
+    const profile: Profile = {
+      name: 'Acid Tester',
+      archetype: { attributes: { cca: 0, rca: 0, ref: 0, int: 0, pow: 0, str: 0, for: 0, mov: 0, siz: 2 } },
+      items: [],
+      totalBp: 0,
+      adjustedBp: 0,
+      adjustedItemCosts: { meleeBp: [], rangedBp: [], equipmentBp: [] },
+      physicality: 0,
+      adjPhysicality: 0,
+      durability: 0,
+      adjDurability: 0,
+      burden: { totalLaden: 0, totalBurden: 0 },
+      totalHands: 0,
+      totalDeflect: 0,
+      totalAR: 0,
+      finalTraits: [],
+      allTraits: [],
+    };
+    const character = new Character(profile);
+    character.state.armor.total = 0;
+    applyStatusTraitOnHit(character, 'Acid X', { rating: 4, impact: 0 });
+    expect(getStatusTokenCount(character, 'Acid')).toBe(3);
+  });
+
+  it('should apply Poison tokens when effective armor is zero', () => {
+    const profile: Profile = {
+      name: 'Poison Tester',
+      archetype: { attributes: { cca: 0, rca: 0, ref: 0, int: 0, pow: 0, str: 0, for: 2, mov: 0, siz: 3 } },
+      items: [],
+      totalBp: 0,
+      adjustedBp: 0,
+      adjustedItemCosts: { meleeBp: [], rangedBp: [], equipmentBp: [] },
+      physicality: 0,
+      adjPhysicality: 0,
+      durability: 0,
+      adjDurability: 0,
+      burden: { totalLaden: 0, totalBurden: 0 },
+      totalHands: 0,
+      totalDeflect: 0,
+      totalAR: 0,
+      finalTraits: [],
+      allTraits: [],
+    };
+    const character = new Character(profile);
+    character.state.armor.total = 0;
+    applyStatusTraitOnHit(character, 'Poison X', { rating: 5, impact: 0 });
+    expect(getStatusTokenCount(character, 'Poison')).toBe(2);
+  });
+
+  it('should reduce Poison rating when target has a natural poison weapon', () => {
+    const profile: Profile = {
+      name: 'Natural Poison',
+      archetype: { attributes: { cca: 0, rca: 0, ref: 0, int: 0, pow: 0, str: 0, for: 2, mov: 0, siz: 3 } },
+      equipment: [
+        {
+          name: 'Venom Claw',
+          class: 'Natural',
+          classification: 'Natural',
+          type: 'Natural',
+          bp: 0,
+          traits: ['Poison 2'],
+        },
+      ],
+      items: [],
+      totalBp: 0,
+      adjustedBp: 0,
+      adjustedItemCosts: { meleeBp: [], rangedBp: [], equipmentBp: [] },
+      physicality: 0,
+      adjPhysicality: 0,
+      durability: 0,
+      adjDurability: 0,
+      burden: { totalLaden: 0, totalBurden: 0 },
+      totalHands: 0,
+      totalDeflect: 0,
+      totalAR: 0,
+      finalTraits: [],
+      allTraits: [],
+    };
+    const character = new Character(profile);
+    character.state.armor.total = 0;
+    applyStatusTraitOnHit(character, 'Poison X', { rating: 2, impact: 0 });
+    expect(getStatusTokenCount(character, 'Poison')).toBe(0);
+  });
 });

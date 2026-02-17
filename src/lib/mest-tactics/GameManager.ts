@@ -1,5 +1,5 @@
 import { Character } from './Character';
-import { CharacterStatus } from './types';
+import { CharacterStatus, TurnPhase } from './types';
 import { Battlefield } from './battlefield/Battlefield';
 import { Position } from './battlefield/Position';
 import { Item } from './Item';
@@ -28,6 +28,7 @@ import {
 } from './concealment';
 import { applyFearFromWounds, applyFearFromAllyKO, MoraleOptions } from './morale';
 import { resolveBottleForSide, BottleTestResult } from './bottle-tests';
+import { resolveTransfixEffect, TransfixTarget } from './status-system';
 
 export class GameManager {
   public characters: Character[];
@@ -36,6 +37,8 @@ export class GameManager {
   public currentRound: number = 1;
   public activationOrder: Character[] = [];
   public apPerActivation: number = 2;
+  public roundsPerTurn: number = 1;
+  public phase: TurnPhase = TurnPhase.Setup;
 
   private characterStatus: Map<string, CharacterStatus> = new Map();
   private activeCharacterId: string | null = null;
@@ -70,7 +73,12 @@ export class GameManager {
     for (const character of this.characters) {
       character.initiative = Math.floor(roller() * 10) + 1 + character.attributes.ref;
     }
-    this.activationOrder = [...this.characters].sort((a, b) => b.initiative - a.initiative);
+    this.activationOrder = [...this.characters].sort((a, b) => {
+      if (b.initiative !== a.initiative) return b.initiative - a.initiative;
+      const refDiff = (b.attributes.ref ?? 0) - (a.attributes.ref ?? 0);
+      if (refDiff !== 0) return refDiff;
+      return a.name.localeCompare(b.name);
+    });
   }
 
   public getNextToActivate(): Character | undefined {
@@ -100,6 +108,7 @@ export class GameManager {
     this.currentRound = 1;
     this.initializeCharacterStatus();
     this.rollInitiative(roller);
+    this.phase = TurnPhase.Activation;
   }
 
   public startRound(): void {
@@ -114,6 +123,7 @@ export class GameManager {
       }
       this.apRemaining.set(character.id, this.apPerActivation);
     }
+    this.phase = TurnPhase.Activation;
   }
 
   public beginActivation(character: Character): number {
@@ -162,6 +172,45 @@ export class GameManager {
   public nextTurn(): void {
     this.currentTurn += 1;
     this.startTurn();
+  }
+
+  public endRound(): void {
+    this.phase = TurnPhase.RoundEnd;
+  }
+
+  public endTurn(): void {
+    this.phase = TurnPhase.TurnEnd;
+  }
+
+  public advancePhase(options: { roller?: () => number; roundsPerTurn?: number } = {}): TurnPhase {
+    const roundsPerTurn = Math.max(1, options.roundsPerTurn ?? this.roundsPerTurn);
+    const roller = options.roller ?? Math.random;
+
+    switch (this.phase) {
+      case TurnPhase.Setup:
+        this.startTurn(roller);
+        return this.phase;
+      case TurnPhase.Activation:
+        if (!this.isTurnOver()) {
+          return this.phase;
+        }
+        if (this.currentRound >= roundsPerTurn) {
+          this.endTurn();
+          return this.phase;
+        }
+        this.endRound();
+        this.startRound();
+        return this.phase;
+      case TurnPhase.RoundEnd:
+        this.startRound();
+        return this.phase;
+      case TurnPhase.TurnEnd:
+        this.nextTurn();
+        return this.phase;
+      default:
+        this.startTurn(roller);
+        return this.phase;
+    }
   }
 
   public isTurnOver(): boolean {
@@ -218,8 +267,8 @@ export class GameManager {
           baseDiameter: getBaseDiameterFromSiz(character.finalAttributes.siz),
           siz: character.finalAttributes.siz,
           isFriendly: false,
-          isAttentive: true,
-          isOrdered: true,
+          isAttentive: character.state.isAttentive,
+          isOrdered: character.state.isOrdered,
         };
       })
     );
@@ -285,6 +334,48 @@ export class GameManager {
     const context = buildRangedActionContext(spatial);
     const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
     return makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial, options.targetCharacter);
+  }
+
+  public executeTransfixAction(
+    source: Character,
+    targets: Character[],
+    options: { rating?: number; testRolls?: Record<string, number[]>; spendDelay?: boolean } = {}
+  ) {
+    if (!this.battlefield) {
+      throw new Error('Battlefield not set.');
+    }
+    const sourcePos = this.getCharacterPosition(source);
+    if (!sourcePos) {
+      throw new Error('Missing source position.');
+    }
+    if (options.spendDelay ?? true) {
+      source.state.delayTokens += 1;
+    }
+
+    const targetModels: TransfixTarget[] = targets
+      .map(target => {
+        const pos = this.getCharacterPosition(target);
+        if (!pos) return null;
+        return {
+          character: target,
+          position: pos,
+          baseDiameter: getBaseDiameterFromSiz(target.finalAttributes.siz),
+        };
+      })
+      .filter(Boolean) as TransfixTarget[];
+
+    return resolveTransfixEffect(
+      this.battlefield,
+      {
+        id: source.id,
+        character: source,
+        position: sourcePos,
+        baseDiameter: getBaseDiameterFromSiz(source.finalAttributes.siz),
+        siz: source.finalAttributes.siz,
+      },
+      targetModels,
+      { rating: options.rating, testRolls: options.testRolls }
+    );
   }
 
   public executeCloseCombatAttack(

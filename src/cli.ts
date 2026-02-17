@@ -182,6 +182,7 @@ const command = args[0] ?? 'combat';
 const combatCommand = 'combat';
 const sideCommand = 'side';
 const skirmishCommand = 'skirmish';
+const transfixCommand = 'transfix';
 
 function runSkirmishDemo(): void {
   const battlefield = new Battlefield(12, 12);
@@ -230,12 +231,44 @@ function runSkirmishDemo(): void {
   }
 }
 
+function runTransfixDemo(): void {
+  const battlefield = new Battlefield(10, 10);
+  const sourceProfile: Profile = {
+    name: 'Transfixer',
+    archetype: 'Average',
+    attributes: { cca: 2, rca: 2, ref: 2, int: 3, pow: 2, str: 2, for: 2, mov: 2, siz: 3 },
+    items: [],
+    finalTraits: ['Transfix 2'],
+  };
+  const targetProfile: Profile = {
+    name: 'Target',
+    archetype: 'Average',
+    attributes: { cca: 2, rca: 2, ref: 2, int: 1, pow: 1, str: 2, for: 2, mov: 2, siz: 3 },
+    items: [],
+  };
+
+  const source = new Character(sourceProfile);
+  const target = new Character(targetProfile);
+  const manager = new GameManager([source, target], battlefield);
+  manager.placeCharacter(source, { x: 2, y: 2 });
+  manager.placeCharacter(target, { x: 4, y: 2 });
+
+  console.log('--- Transfix Demo ---');
+  const results = manager.executeTransfixAction(source, [target], { rating: 2 });
+  for (const result of results) {
+    const line = `${result.targetId}: inRange=${result.inRange} los=${result.hasLOS} misses=${result.misses}`;
+    console.log(line);
+  }
+}
+
 if (command === sideCommand) {
   const sideArgsStart = 1;
   const sideArgs = args.slice(sideArgsStart);
   runMissionSideDemo(sideArgs);
 } else if (command === skirmishCommand) {
   runSkirmishDemo();
+} else if (command === transfixCommand) {
+  runTransfixDemo();
 } else if (command === combatCommand) {
   runCombatSimulator();
 } else {
@@ -244,6 +277,7 @@ if (command === sideCommand) {
     '  npm run cli -- combat   # interactive combat demo',
     '  npm run cli -- side [--summary|--full|--compact|--format=summary|--format=full|--format=compact]  # build a merged side demo',
     '  npm run cli -- skirmish # simple automated skirmish demo',
+    '  npm run cli -- transfix # transfix status demo',
   ];
   const newline = '\n';
   const helpText = helpLines.join(newline);
