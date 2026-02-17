@@ -35,7 +35,7 @@ describe('makeIndirectRangedAttack', () => {
   });
 
   it('should pass the hit test with a high roll', () => {
-    const rolls = [6, 6];
+    const rolls = Array(20).fill(6);
     const result = makeIndirectRangedAttack(attacker, weapon, 0, {}, rolls);
     expect(result.pass).toBe(true);
   });
@@ -113,5 +113,22 @@ describe('makeIndirectRangedAttack', () => {
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
     expect(eventData.finalPools.p1FinalPenalty[DiceType.Base] || 0).toBe(0);
+  });
+
+  it('should apply status traits when a target character is provided', async () => {
+    const targetArchetype = { name: "Militia", ...archetypes["Militia"] };
+    const targetProfile: Profile = { name: 'Target Profile', archetype: targetArchetype, equipment: [] };
+    const target = await createCharacter(targetProfile);
+    target.finalAttributes = target.profile.archetype.attributes;
+
+    weapon = { name: "Deceptor Rifle", ...ranged_weapons["Deceptor Rifle"] };
+    const rolls = Array(20).fill(6);
+
+    const roller: Roller = () => [6, 6];
+    setRoller(roller);
+
+    const result = makeIndirectRangedAttack(attacker, weapon, 0, {}, rolls, undefined, target);
+    expect(result.pass).toBe(true);
+    expect(target.state.statusTokens.Confused || 0).toBeGreaterThan(0);
   });
 });

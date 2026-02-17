@@ -93,4 +93,23 @@ describe('GameManager', () => {
     gameManager.endActivation(characters[1]);
     expect(gameManager.isTurnOver()).toBe(true);
   });
+
+  it('should eliminate a side that fails a bottle test', () => {
+    const character = characters[0];
+    const other = characters[1];
+    character.finalAttributes = character.attributes;
+    other.finalAttributes = other.attributes;
+    character.state.isKOd = true;
+    other.finalAttributes.pow = 1;
+    gameManager.resolveBottleTests([
+      {
+        id: 'SideA',
+        characters: [character, other],
+        orderedCandidate: other,
+        opposingCount: 4,
+        rolls: [1, 1],
+      },
+    ]);
+    expect(other.state.isEliminated).toBe(true);
+  });
 });

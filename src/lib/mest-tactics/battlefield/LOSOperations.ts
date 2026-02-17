@@ -36,6 +36,21 @@ export class LOSOperations {
     return { clear: true };
   }
 
+  static hasBlockingBetweenPoints(
+    battlefield: Battlefield,
+    start: Position,
+    end: Position,
+    blockersOverride?: TerrainFeature[]
+  ): boolean {
+    const blockers = blockersOverride ?? battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature));
+    for (const feature of blockers) {
+      if (LOSOperations.segmentIntersectsFeature(start, end, feature)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   static checkLOSFromModelToPoint(
     battlefield: Battlefield,
     model: LOSModelFootprint,
@@ -193,18 +208,46 @@ export class LOSOperations {
     let nearest: { feature: TerrainFeature; distance: number } | null = null;
 
     for (const feature of blockers) {
-      const vertices = feature.vertices;
-      for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
-        const intersection = LOSOperations.segmentIntersection(start, end, vertices[j], vertices[i]);
-        if (!intersection) continue;
-        const distance = LOSOperations.distance(start, intersection);
-        if (!nearest || distance < nearest.distance) {
-          nearest = { feature, distance };
-        }
+      const hit = LOSOperations.findNearestIntersectionOnFeature(start, end, feature);
+      if (!hit) continue;
+      if (!nearest || hit.distance < nearest.distance) {
+        nearest = { feature, distance: hit.distance };
       }
     }
 
     return nearest ? nearest.feature : null;
+  }
+
+  private static segmentIntersectsFeature(
+    start: Position,
+    end: Position,
+    feature: TerrainFeature
+  ): boolean {
+    const vertices = feature.vertices;
+    for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+      if (LOSOperations.segmentIntersection(start, end, vertices[j], vertices[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static findNearestIntersectionOnFeature(
+    start: Position,
+    end: Position,
+    feature: TerrainFeature
+  ): { distance: number } | null {
+    let nearestDistance = Infinity;
+    const vertices = feature.vertices;
+    for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
+      const intersection = LOSOperations.segmentIntersection(start, end, vertices[j], vertices[i]);
+      if (!intersection) continue;
+      const distance = LOSOperations.distance(start, intersection);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+      }
+    }
+    return Number.isFinite(nearestDistance) ? { distance: nearestDistance } : null;
   }
 
   static segmentIntersection(

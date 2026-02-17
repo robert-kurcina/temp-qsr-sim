@@ -44,7 +44,6 @@ describe('BattlefieldFactory coverage', () => {
     const coveredArea = treeCount * treeArea;
     const targetArea = width * height * 0.5;
 
-    console.log(width, height, targetArea, coveredArea);
     expect(coveredArea).toBeGreaterThanOrEqual(targetArea);
   });
 

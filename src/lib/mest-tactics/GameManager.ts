@@ -26,6 +26,8 @@ import {
   DetectOptions,
   RevealExposureOptions,
 } from './concealment';
+import { applyFearFromWounds, applyFearFromAllyKO, MoraleOptions } from './morale';
+import { resolveBottleForSide, BottleTestResult } from './bottle-tests';
 
 export class GameManager {
   public characters: Character[];
@@ -173,7 +175,7 @@ export class GameManager {
     attacker: Character,
     defender: Character,
     weapon: Item,
-    options: Partial<ActionContextInput> & { optimalRangeMu?: number; orm?: number; context?: TestContext } = {}
+    options: Partial<ActionContextInput> & { optimalRangeMu?: number; orm?: number; context?: TestContext; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ) {
     if (!this.battlefield) {
       throw new Error('Battlefield not set.');
@@ -238,6 +240,15 @@ export class GameManager {
         attacker.state.isHidden = false;
       }
     }
+    if (result.damageResolution) {
+      const woundsAdded = result.damageResolution.woundsAdded + result.damageResolution.stunWoundsAdded;
+      applyFearFromWounds(defender, woundsAdded);
+      if (result.damageResolution.defenderState.isKOd || result.damageResolution.defenderState.isEliminated) {
+        if (this.battlefield && options.moraleAllies) {
+          applyFearFromAllyKO(this.battlefield, defender, options.moraleAllies, options.moraleOptions);
+        }
+      }
+    }
     return { result, context: mergedContext, friendlyFire };
   }
 
@@ -245,7 +256,7 @@ export class GameManager {
     attacker: Character,
     weapon: Item,
     orm: number,
-    options: Partial<ActionContextInput> & { context?: TestContext } = {}
+    options: Partial<ActionContextInput> & { context?: TestContext; targetCharacter?: Character } = {}
   ) {
     if (!this.battlefield) {
       throw new Error('Battlefield not set.');
@@ -273,14 +284,14 @@ export class GameManager {
 
     const context = buildRangedActionContext(spatial);
     const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
-    return makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial);
+    return makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial, options.targetCharacter);
   }
 
   public executeCloseCombatAttack(
     attacker: Character,
     defender: Character,
     weapon: Item,
-    options: Partial<CloseCombatContextInput> & { context?: TestContext } = {}
+    options: Partial<CloseCombatContextInput> & { context?: TestContext; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ) {
     if (!this.battlefield) {
       throw new Error('Battlefield not set.');
@@ -327,6 +338,15 @@ export class GameManager {
     const result = makeCloseCombatAttack(attacker, defender, weapon, mergedContext);
     if (weapon.traits?.includes('[Reveal]')) {
       attacker.state.isHidden = false;
+    }
+    if (result.damageResolution) {
+      const woundsAdded = result.damageResolution.woundsAdded + result.damageResolution.stunWoundsAdded;
+      applyFearFromWounds(defender, woundsAdded);
+      if (result.damageResolution.defenderState.isKOd || result.damageResolution.defenderState.isEliminated) {
+        if (this.battlefield && options.moraleAllies) {
+          applyFearFromAllyKO(this.battlefield, defender, options.moraleAllies, options.moraleOptions);
+        }
+      }
     }
     return result;
   }
@@ -385,5 +405,28 @@ export class GameManager {
       throw new Error('Battlefield not set.');
     }
     return resolveWaitReveal(this.battlefield, waitingCharacter, opponents, options);
+  }
+
+  public resolveBottleTests(
+    sides: Array<{
+      id: string;
+      characters: Character[];
+      orderedCandidate: Character | null;
+      opposingCount: number;
+      rolls?: number[];
+    }>
+  ): Record<string, BottleTestResult> {
+    const results: Record<string, BottleTestResult> = {};
+    for (const side of sides) {
+      const result = resolveBottleForSide(side.characters, side.orderedCandidate, side.opposingCount, side.rolls);
+      results[side.id] = result;
+      if (result.bottledOut) {
+        for (const character of side.characters) {
+          character.state.isEliminated = true;
+          this.setCharacterStatus(character.id, CharacterStatus.Done);
+        }
+      }
+    }
+    return results;
   }
 }

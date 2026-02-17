@@ -16,6 +16,5 @@ export class Move extends Action {
 
     // For now, we'll just update the position directly
     this.character.move(newPosition);
-    console.log(`${this.character.name} moves to (${newPosition.x}, ${newPosition.y})`);
   }
 }

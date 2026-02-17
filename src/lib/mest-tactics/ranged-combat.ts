@@ -7,6 +7,7 @@ import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveRangedHitTest } from './subroutines/ranged-hit-test'; // Correct hit test for ranged
 import { resolveDamage, DamageResolution } from './subroutines/damage-test';
 import { SpatialAttackContext, SpatialRules } from './battlefield/spatial-rules';
+import { applyStatusTraitOnHit, parseStatusTrait } from './status-system';
 
 // --- Main Attack Result Interface ---
 
@@ -96,6 +97,15 @@ export function makeRangedCombatAttack(
 
     if (!hitTestResult.pass) {
         return { hit: false, hitTestResult };
+    }
+
+    if (weapon.traits?.length) {
+        const cascades = hitTestResult.cascades ?? 0;
+        for (const trait of weapon.traits) {
+            const parsed = parseStatusTrait(trait);
+            if (!parsed) continue;
+            applyStatusTraitOnHit(defender, parsed.traitName, { cascades, rating: parsed.rating });
+        }
     }
 
     // 3. If the hit is successful, perform the standard Damage Resolution.

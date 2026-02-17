@@ -5,6 +5,7 @@ import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveHitTest } from './subroutines/hit-test';
 import { resolveDamage, DamageResolution } from './subroutines/damage-test';
+import { applyStatusTraitOnHit, parseStatusTrait } from './status-system';
 
 // --- Main Attack Result Interface --- //
 
@@ -72,6 +73,15 @@ export function makeCloseCombatAttack(
 
     if (!isHit) {
         return { hit: false, hitTestResult };
+    }
+
+    if (weapon.traits?.length) {
+        const cascades = hitTestResult.cascades ?? 0;
+        for (const trait of weapon.traits) {
+            const parsed = parseStatusTrait(trait);
+            if (!parsed) continue;
+            applyStatusTraitOnHit(defender, parsed.traitName, { cascades, rating: parsed.rating });
+        }
     }
 
     // 3. If the hit is successful (or forced), perform the Damage Resolution.

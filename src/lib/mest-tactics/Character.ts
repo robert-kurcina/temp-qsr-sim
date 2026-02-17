@@ -25,6 +25,7 @@ export class Character {
     isKOd: boolean;
     isEliminated: boolean;
     statusEffects: string[];
+    statusTokens: Record<string, number>;
     armor: ArmorState;
   };
 
@@ -70,6 +71,7 @@ export class Character {
       isKOd: false,
       isEliminated: false,
       statusEffects: [],
+      statusTokens: {},
       armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 },
     };
   }

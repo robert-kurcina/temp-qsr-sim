@@ -112,6 +112,25 @@ export class GameController {
 
         this.manager.endActivation(active);
       }
+      const bottleResults = this.manager.resolveBottleTests([
+        {
+          id: 'SideA',
+          characters: sideA,
+          orderedCandidate: this.pickOrderedCandidate(sideA),
+          opposingCount: this.countRemaining(sideB),
+        },
+        {
+          id: 'SideB',
+          characters: sideB,
+          orderedCandidate: this.pickOrderedCandidate(sideB),
+          opposingCount: this.countRemaining(sideA),
+        },
+      ]);
+      for (const [sideId, result] of Object.entries(bottleResults)) {
+        if (result.bottledOut) {
+          this.log.push({ turn, round: this.manager.currentRound, actor: sideId, action: 'BottleOut' });
+        }
+      }
       this.manager.nextTurn();
     }
 
@@ -178,5 +197,14 @@ export class GameController {
     const stepX = dx === 0 ? 0 : dx > 0 ? 1 : -1;
     const stepY = dy === 0 ? 0 : dy > 0 ? 1 : -1;
     return { x: start.x + stepX, y: start.y + stepY };
+  }
+
+  private countRemaining(characters: Character[]): number {
+    return characters.filter(char => !char.state.isEliminated && !char.state.isKOd).length;
+  }
+
+  private pickOrderedCandidate(characters: Character[]): Character | null {
+    // TODO: Tighten ordered/attentive requirements once those statuses are fully modeled.
+    return characters.find(char => !char.state.isEliminated && !char.state.isKOd) ?? null;
   }
 }

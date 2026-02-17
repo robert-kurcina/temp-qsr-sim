@@ -8,6 +8,7 @@ import { resolveTest, TestParticipant, mergeTestDice } from './dice-roller';
 import { parseAccuracy } from './subroutines/accuracy-parser';
 import { metricsService } from './MetricsService';
 import { SpatialAttackContext, SpatialRules } from './battlefield/spatial-rules';
+import { applyStatusTraitOnHit, parseStatusTrait } from './status-system';
 
 function _calculateModifiers(
     attacker: Character, 
@@ -57,9 +58,9 @@ export function makeIndirectRangedAttack(
     orm: number, // Optimal Range Multiple
     context: TestContext = {},
     p1Rolls: number[] | null = null,
-    spatial?: SpatialAttackContext
+    spatial?: SpatialAttackContext,
+    target?: Character
 ): ResolveTestResult {
-    console.log('attacker in makeIndirectRangedAttack', attacker);
     const attackerAttribute = weapon.classification === 'Thrown' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
 
     if (orm > attackerAttribute) {
@@ -87,6 +88,15 @@ export function makeIndirectRangedAttack(
     
     const result = resolveTest(attackerParticipant, systemParticipant, p1Rolls);
     metricsService.logEvent('diceTestResolved', { finalPools: { p1FinalBonus: attackerParticipant.bonusDice, p1FinalPenalty: attackerParticipant.penaltyDice, p2FinalBonus: systemParticipant.bonusDice, p2FinalPenalty: systemParticipant.penaltyDice }, result: result });
+
+    if (result.pass && target && weapon.traits?.length) {
+        const cascades = result.cascades ?? 0;
+        for (const trait of weapon.traits) {
+            const parsed = parseStatusTrait(trait);
+            if (!parsed) continue;
+            applyStatusTraitOnHit(target, parsed.traitName, { cascades, rating: parsed.rating });
+        }
+    }
 
     return result;
 }

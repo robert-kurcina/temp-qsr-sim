@@ -33,6 +33,7 @@ export interface BattlefieldFactoryConfig {
   maxFillerAttempts?: number;
   maxPlacementMs?: number; // time budget per battlefield
   fitnessRetries?: number; // additional attempts to minimize open LOS chunks
+  opennessMaxPairs?: number; // cap LOS pair checks to keep fitness sampling fast
 }
 
 const defaultTerrainWeights: TerrainWeights = {
@@ -241,6 +242,7 @@ export class BattlefieldFactory {
     let remainingNonAreaTarget = targetArea;
 
     const candidateCache = new Map<string, Position[]>();
+    const candidateCursor = new Map<string, number>();
 
     const tryPlaceElement = (elementName: string, category: string, rotationOverride?: number): { placed: boolean; area: number } => {
       if (timeExceeded()) {
@@ -268,7 +270,9 @@ export class BattlefieldFactory {
       }
 
       const candidatePositions = candidateCache.get(elementName) || [];
-      for (const position of candidatePositions) {
+      const startIndex = candidateCursor.get(elementName) ?? 0;
+      for (let index = startIndex; index < candidatePositions.length; index++) {
+        const position = candidatePositions[index];
         if (timeExceeded()) {
           return { placed: false, area };
         }
@@ -301,9 +305,11 @@ export class BattlefieldFactory {
         battlefield.addTerrain(feature, true);
 
         placedList.push({ position, radius, category, rotation: wallRotation, feature: terrainElement });
+        candidateCursor.set(elementName, index + 1);
         return { placed: true, area };
       }
 
+      candidateCursor.set(elementName, candidatePositions.length);
       return { placed: false, area };
     };
 
@@ -430,7 +436,12 @@ export class BattlefieldFactory {
     }
     BattlefieldFactory.ensureDeploymentClearance(battlefield, deployment, width, height, timeExceeded);
     battlefield.finalizeTerrain();
-    battlefield.opennessStats = BattlefieldFactory.computeOpennessStats(battlefield);
+    battlefield.opennessStats = BattlefieldFactory.computeOpennessStats(
+      battlefield,
+      undefined,
+      undefined,
+      config.opennessMaxPairs
+    );
     return battlefield;
   }
 
@@ -807,7 +818,8 @@ export class BattlefieldFactory {
   private static computeOpennessStats(
     battlefield: Battlefield,
     chunkSize = 4,
-    losThreshold = 8
+    losThreshold = 8,
+    maxPairs = 200
   ): BattlefieldOpennessStats {
     const chunkCols = Math.ceil(battlefield.width / chunkSize);
     const chunkRows = Math.ceil(battlefield.height / chunkSize);
@@ -829,9 +841,17 @@ export class BattlefieldFactory {
     const perChunkClear = new Array<number>(chunkCount).fill(0);
     let totalPairs = 0;
     let longLosPairs = 0;
+    const blockers = battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature));
+
+    let capped = false;
+    const pairLimit = Math.max(0, Math.floor(maxPairs));
 
     for (let i = 0; i < chunkCount; i++) {
       for (let j = i + 1; j < chunkCount; j++) {
+        if (pairLimit > 0 && totalPairs >= pairLimit) {
+          capped = true;
+          break;
+        }
         const a = chunkPoints[i];
         const b = chunkPoints[j];
         const dist = LOSOperations.distance(a, b);
@@ -841,12 +861,13 @@ export class BattlefieldFactory {
         totalPairs++;
         perChunkPossible[i]++;
         perChunkPossible[j]++;
-        if (LOSOperations.checkLOSBetweenPoints(battlefield, a, b).clear) {
+        if (!LOSOperations.hasBlockingBetweenPoints(battlefield, a, b, blockers)) {
           longLosPairs++;
           perChunkClear[i]++;
           perChunkClear[j]++;
         }
       }
+      if (capped) break;
     }
 
     let meanChunkLongLosRatio = 0;
