@@ -21,6 +21,8 @@ export interface CoverResult {
   hasLOS: boolean;
   hasDirectCover: boolean;
   hasInterveningCover: boolean;
+  directCoverFeatures: TerrainFeature[];
+  interveningCoverFeatures: TerrainFeature[];
   blockingFeature?: TerrainFeature;
   blockingModelId?: string;
   coveringModelId?: string;
@@ -64,7 +66,7 @@ export class SpatialRules {
     );
 
     let hasDirectCover = targetDirectCover.length > 0;
-    let hasInterveningCover = coverFeatures.some(feature => {
+    const interveningCoverFeatures = coverFeatures.filter(feature => {
       if (targetDirectCover.includes(feature)) return false;
       return SpatialRules.segmentIntersectsFeature(
         source.position,
@@ -74,6 +76,7 @@ export class SpatialRules {
         SpatialRules.coverExtension(feature)
       );
     });
+    let hasInterveningCover = interveningCoverFeatures.length > 0;
 
     if (sourceDirectCover.length > 0) {
       hasInterveningCover = true;
@@ -92,6 +95,8 @@ export class SpatialRules {
         hasLOS: false,
         hasDirectCover: false,
         hasInterveningCover: false,
+        directCoverFeatures: [],
+        interveningCoverFeatures: [],
         blockingFeature: overlapBlocker,
         coveringModelId: modelCoverId ?? undefined,
         coverFeatures: [],
@@ -104,6 +109,8 @@ export class SpatialRules {
         hasLOS: false,
         hasDirectCover: false,
         hasInterveningCover: false,
+        directCoverFeatures: [],
+        interveningCoverFeatures: [],
         blockingModelId: modelBlocker.id,
         coveringModelId: modelCoverId ?? undefined,
         coverFeatures: [],
@@ -116,6 +123,8 @@ export class SpatialRules {
         hasLOS: false,
         hasDirectCover: false,
         hasInterveningCover: false,
+        directCoverFeatures: [],
+        interveningCoverFeatures: [],
         blockingFeature: losResult.blockedBy,
         coveringModelId: modelCoverId ?? undefined,
         coverFeatures: [],
@@ -126,6 +135,11 @@ export class SpatialRules {
       hasLOS: true,
       hasDirectCover,
       hasInterveningCover,
+      directCoverFeatures: targetDirectCover,
+      interveningCoverFeatures: [
+        ...interveningCoverFeatures,
+        ...sourceDirectCover.filter(feature => !interveningCoverFeatures.includes(feature)),
+      ],
       coveringModelId: modelCoverId ?? undefined,
       coverFeatures,
     };
@@ -135,7 +149,7 @@ export class SpatialRules {
     context: SpatialAttackContext
   ): Partial<TestContext> {
     const cover = SpatialRules.getCoverResult(context.battlefield, context.attacker, context.target);
-    const hasHardCover = cover.coverFeatures.some(feature => feature.meta?.los === 'Hard');
+    const hasHardCover = cover.directCoverFeatures.some(feature => feature.meta?.los === 'Hard');
     return {
       hasDirectCover: cover.hasDirectCover,
       hasInterveningCover: cover.hasInterveningCover,

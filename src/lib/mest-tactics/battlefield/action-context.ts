@@ -39,7 +39,7 @@ export interface ChargeSnapOptions {
 
 export function buildRangedActionContext(input: ActionContextInput): TestContext {
   const cover = SpatialRules.getCoverResult(input.battlefield, input.attacker, input.target);
-  const hasHardCover = cover.coverFeatures.some(feature => feature.meta?.los === 'Hard');
+  const hasHardCover = cover.directCoverFeatures.some(feature => feature.meta?.los === 'Hard');
   const engaged = input.attackerEngagedOverride ?? SpatialRules.isEngaged(input.attacker, input.target);
   const edgeDistance = LOFOperations.distanceEdgeToEdge(input.attacker, input.target);
   const distance = Math.max(0, edgeDistance);
@@ -86,7 +86,7 @@ export function buildRangedActionContext(input: ActionContextInput): TestContext
 
 export function buildLOSResultContext(input: ActionContextInput): Pick<TestContext, 'hasDirectCover' | 'hasInterveningCover' | 'hasHardCover'> & { hasLOS: boolean } {
   const cover = SpatialRules.getCoverResult(input.battlefield, input.attacker, input.target);
-  const hasHardCover = cover.coverFeatures.some(feature => feature.meta?.los === 'Hard');
+  const hasHardCover = cover.directCoverFeatures.some(feature => feature.meta?.los === 'Hard');
   return {
     hasLOS: cover.hasLOS,
     hasDirectCover: cover.hasDirectCover,

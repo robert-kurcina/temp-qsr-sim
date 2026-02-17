@@ -43,6 +43,31 @@ describe('buildRangedActionContext', () => {
     expect(context.hasDirectCover).toBe(true);
   });
 
+  it('should only grant hard cover for direct hard cover', () => {
+    const battlefield = new Battlefield(12, 12);
+    const rock = new TerrainElement('Small Rocks', { x: 6, y: 6 });
+    battlefield.addTerrain(rock.toFeature());
+
+    const directContext = buildRangedActionContext({
+      battlefield,
+      attacker: { id: 'a', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 6 },
+      target: { id: 'b', position: { x: 6, y: 6 }, baseDiameter: 2, siz: 6 },
+    });
+
+    expect(directContext.hasDirectCover).toBe(true);
+    expect(directContext.hasHardCover).toBe(true);
+
+    const interveningContext = buildRangedActionContext({
+      battlefield,
+      attacker: { id: 'a', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 6 },
+      target: { id: 'b', position: { x: 10, y: 6 }, baseDiameter: 2, siz: 6 },
+    });
+
+    expect(interveningContext.hasDirectCover).toBe(false);
+    expect(interveningContext.hasInterveningCover).toBe(true);
+    expect(interveningContext.hasHardCover).toBe(false);
+  });
+
   it('should snap into base contact when within threshold and toggle enabled', () => {
     const attacker = { id: 'a', position: { x: 0, y: 0 }, baseDiameter: 2 };
     const target = { id: 'b', position: { x: 2.5, y: 0 }, baseDiameter: 2 };
