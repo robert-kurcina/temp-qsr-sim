@@ -106,6 +106,8 @@ describe('passive-options', () => {
       ...attackerProfile,
       name: 'Defender',
       archetype: { attributes: { cca: 0, rca: 0, ref: 2, int: 0, pow: 0, str: 0, for: 0, mov: 2, siz: 3 } },
+      finalTraits: ['Counter-strike!'],
+      allTraits: ['Counter-strike!'],
     };
     const attacker = new Character(attackerProfile);
     const defender = new Character(defenderProfile);
@@ -145,7 +147,12 @@ describe('passive-options', () => {
       allTraits: [],
     };
     const attacker = new Character({ ...profile, name: 'Attacker' });
-    const defender = new Character({ ...profile, name: 'Defender' });
+    const defender = new Character({
+      ...profile,
+      name: 'Defender',
+      finalTraits: ['Counter-strike!'],
+      allTraits: ['Counter-strike!'],
+    });
     battlefield.placeCharacter(attacker, { x: 1, y: 1 });
     battlefield.placeCharacter(defender, { x: 6, y: 1 });
 

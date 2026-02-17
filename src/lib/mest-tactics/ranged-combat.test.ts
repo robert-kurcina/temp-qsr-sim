@@ -111,8 +111,8 @@ describe('makeRangedCombatAttack', () => {
 
     const spatial = {
       battlefield,
-      attacker: { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2 },
-      target: { id: 'defender', position: { x: 6, y: 6 }, baseDiameter: 2 },
+      attacker: { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 3 },
+      target: { id: 'defender', position: { x: 6, y: 6 }, baseDiameter: 2, siz: 3 },
     };
 
     const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {}, spatial);

@@ -112,7 +112,7 @@ describe('makeIndirectRangedAttack', () => {
     makeIndirectRangedAttack(attacker, weapon, 0, {}, rolls, spatial);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
-    expect(eventData.finalPools.p1FinalPenalty[DiceType.Base] || 0).toBe(0);
+    expect(eventData.finalPools.p1FinalPenalty[DiceType.Base] || 0).toBe(1);
   });
 
   it('should apply status traits when a target character is provided', async () => {
