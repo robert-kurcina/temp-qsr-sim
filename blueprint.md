@@ -145,3 +145,59 @@ At some point a UI will be needed to:
 - Build Characters from Profiles
 - Build Assemblies from Characters
 - Assign Assemblies to Mission Sides
+
+## 11. Mission Engine Roadmap
+
+### Scope Summary
+
+Full mission implementation includes: a data-driven mission engine, objective marker system, POI control, VIP logic, mission keys, and mission-specific triggers integrated into `GameController` and `mission-flow`, with unit tests.
+
+### Priority Order (Least Impact First)
+
+1.  **QAI Mission 1: Elimination**
+2.  **QAI Mission 12: Engagement**
+3.  **QAI Mission 14: Beacon**
+4.  **QAI Mission 16: Exfil**
+5.  **QAI Mission 15: Extraction Point**
+6.  **QAI Mission 13: Sabotage**
+7.  **QAI Mission 18: Ghost Protocol**
+8.  **QAI Mission 20: Switchback**
+9.  **QAI Mission 17: Triad**
+10. **QAI Mission 19: Last Stand**
+
+### Shared Feature Modules (Engine Work)
+
+These modules unlock multiple missions and should be built before mission-specific logic.
+
+1.  **Core mission engine (data-driven)**
+2.  **Mission keys/scoring extensions** (Dominance, Courier, Sanctuary, First Blood, Catalyst, Collection, POI, Targeted, etc.)
+3.  **POI / zone control**
+4.  **Objective Markers (OM) system**
+5.  **VIP system**
+6.  **Reinforcements system**
+7.  **Mission event hooks** (end-of-turn triggers, immediate win conditions)
+
+### Estimated Token Budget (Implementation + Tests)
+
+These are rough estimates for implementation + tests + wiring.
+
+**Shared Feature Modules**
+1.  Core mission engine: 3,500–5,000
+2.  POI / zone control: 1,800–2,600
+3.  Objective Markers system: 3,500–5,500
+4.  VIP system: 2,200–3,200
+5.  Reinforcements: 2,000–3,000
+6.  Mission keys/scoring extensions: 2,800–4,200
+7.  Mission event hooks: 1,500–2,500
+
+**Mission Implementations**
+1.  Elimination: 800–1,200
+2.  Engagement: 2,500–3,600
+3.  Beacon: 1,800–2,800
+4.  Exfil: 3,000–4,500
+5.  Extraction Point: 4,000–6,000
+6.  Sabotage: 3,500–5,000
+7.  Ghost Protocol: 4,500–6,500
+8.  Switchback: 3,500–5,000
+9.  Triad: 4,500–6,500
+10. Last Stand: 5,500–8,000
