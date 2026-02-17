@@ -28,6 +28,7 @@ export interface CoverResult {
 }
 
 const DISTANCE_EPSILON = 1e-6;
+const COVER_EXTENSION_MU = 0.5;
 
 export class SpatialRules {
   static isEngaged(a: SpatialModel, b: SpatialModel): boolean {
@@ -52,8 +53,12 @@ export class SpatialRules {
     target: SpatialModel
   ): CoverResult {
     const coverFeatures = battlefield.terrain.filter(feature => SpatialRules.isCoverFeature(feature));
-    const sourceDirectCover = coverFeatures.filter(feature => SpatialRules.modelOverlapsFeature(source, feature));
-    const targetDirectCover = coverFeatures.filter(feature => SpatialRules.modelOverlapsFeature(target, feature));
+    const sourceDirectCover = coverFeatures.filter(feature =>
+      SpatialRules.modelOverlapsFeature(source, feature, SpatialRules.coverExtension(feature))
+    );
+    const targetDirectCover = coverFeatures.filter(feature =>
+      SpatialRules.modelOverlapsFeature(target, feature, SpatialRules.coverExtension(feature))
+    );
 
     let hasDirectCover = targetDirectCover.length > 0;
     let hasInterveningCover = coverFeatures.some(feature => {
@@ -62,7 +67,8 @@ export class SpatialRules {
         source.position,
         target.position,
         feature,
-        target.baseDiameter / 2
+        target.baseDiameter / 2,
+        SpatialRules.coverExtension(feature)
       );
     });
 
@@ -73,6 +79,18 @@ export class SpatialRules {
     const modelCoverId = SpatialRules.findCoveringModel(battlefield, source, target);
     if (modelCoverId) {
       hasInterveningCover = true;
+    }
+
+    const coverBlocker = SpatialRules.findBlockingCoverFeature(source, target, coverFeatures);
+    if (coverBlocker) {
+      return {
+        hasLOS: false,
+        hasDirectCover: false,
+        hasInterveningCover: false,
+        blockingFeature: coverBlocker,
+        coveringModelId: modelCoverId ?? undefined,
+        coverFeatures: [],
+      };
     }
 
     const modelBlocker = SpatialRules.findBlockingModel(battlefield, source, target);
@@ -126,6 +144,29 @@ export class SpatialRules {
     return los === 'Soft' || los === 'Hard';
   }
 
+  private static coverExtension(feature: TerrainFeature): number {
+    const los = feature.meta?.los ?? 'Clear';
+    if (los === 'Soft' || los === 'Hard') {
+      return COVER_EXTENSION_MU;
+    }
+    return 0;
+  }
+
+  private static findBlockingCoverFeature(
+    source: SpatialModel,
+    target: SpatialModel,
+    coverFeatures: TerrainFeature[]
+  ): TerrainFeature | null {
+    const targetRadius = target.baseDiameter / 2;
+    for (const feature of coverFeatures) {
+      const extension = SpatialRules.coverExtension(feature);
+      if (SpatialRules.segmentIntersectsFeature(source.position, target.position, feature, targetRadius, extension)) {
+        return feature;
+      }
+    }
+    return null;
+  }
+
   private static findBlockingModel(
     battlefield: Battlefield,
     source: SpatialModel,
@@ -172,7 +213,11 @@ export class SpatialRules {
     return null;
   }
 
-  private static modelOverlapsFeature(model: SpatialModel, feature: TerrainFeature): boolean {
+  private static modelOverlapsFeature(
+    model: SpatialModel,
+    feature: TerrainFeature,
+    buffer = 0
+  ): boolean {
     const radius = model.baseDiameter / 2;
     const samples = LOSOperations.buildCircularPerimeterPoints(model.position, model.baseDiameter);
     samples.push(model.position);
@@ -182,23 +227,32 @@ export class SpatialRules {
       }
     }
     const closest = SpatialRules.closestDistanceToPolygon(model.position, feature.vertices);
-    return closest <= radius + DISTANCE_EPSILON;
+    return closest <= radius + buffer + DISTANCE_EPSILON;
   }
 
   private static segmentIntersectsFeature(
     start: Position,
     end: Position,
     feature: TerrainFeature,
-    targetRadius: number
+    targetRadius: number,
+    buffer = 0
   ): boolean {
-    const intersections = SpatialRules.segmentPolygonIntersections(start, end, feature.vertices);
-    if (intersections.length === 0) {
+    const clipped = SpatialRules.clipSegmentEnd(start, end, targetRadius);
+    if (!clipped) {
       return false;
     }
-    const targetDistance = LOSOperations.distance(start, end);
+    const intersections = SpatialRules.segmentPolygonIntersections(clipped.start, clipped.end, feature.vertices);
+    if (intersections.length === 0) {
+      if (buffer <= 0) {
+        return false;
+      }
+      const distance = SpatialRules.segmentDistanceToPolygon(clipped.start, clipped.end, feature.vertices);
+      return distance <= buffer + DISTANCE_EPSILON;
+    }
+    const targetDistance = LOSOperations.distance(clipped.start, clipped.end);
     for (const hit of intersections) {
-      const hitDistance = LOSOperations.distance(start, hit);
-      if (hitDistance <= targetDistance - targetRadius - DISTANCE_EPSILON) {
+      const hitDistance = LOSOperations.distance(clipped.start, hit);
+      if (hitDistance <= targetDistance + DISTANCE_EPSILON) {
         return true;
       }
     }
@@ -216,6 +270,87 @@ export class SpatialRules {
       if (hit) intersections.push(hit);
     }
     return intersections;
+  }
+
+  private static clipSegmentEnd(
+    start: Position,
+    end: Position,
+    clipDistance: number
+  ): { start: Position; end: Position } | null {
+    if (clipDistance <= 0) return { start, end };
+    const length = LOSOperations.distance(start, end);
+    if (length <= clipDistance + DISTANCE_EPSILON) return null;
+    const ratio = (length - clipDistance) / length;
+    return {
+      start,
+      end: {
+        x: start.x + (end.x - start.x) * ratio,
+        y: start.y + (end.y - start.y) * ratio,
+      },
+    };
+  }
+
+  private static segmentDistanceToPolygon(
+    start: Position,
+    end: Position,
+    polygon: Position[]
+  ): number {
+    let min = Infinity;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const distance = SpatialRules.segmentToSegmentDistance(start, end, polygon[j], polygon[i]);
+      if (distance < min) min = distance;
+      if (min <= 0) return 0;
+    }
+    return min;
+  }
+
+  private static segmentToSegmentDistance(
+    a1: Position,
+    a2: Position,
+    b1: Position,
+    b2: Position
+  ): number {
+    if (SpatialRules.segmentsIntersect(a1, a2, b1, b2)) return 0;
+    return Math.min(
+      SpatialRules.pointToSegmentDistance(a1, b1, b2),
+      SpatialRules.pointToSegmentDistance(a2, b1, b2),
+      SpatialRules.pointToSegmentDistance(b1, a1, a2),
+      SpatialRules.pointToSegmentDistance(b2, a1, a2)
+    );
+  }
+
+  private static segmentsIntersect(
+    p1: Position,
+    p2: Position,
+    p3: Position,
+    p4: Position
+  ): boolean {
+    const o1 = SpatialRules.orientation(p1, p2, p3);
+    const o2 = SpatialRules.orientation(p1, p2, p4);
+    const o3 = SpatialRules.orientation(p3, p4, p1);
+    const o4 = SpatialRules.orientation(p3, p4, p2);
+
+    if (o1 !== o2 && o3 !== o4) return true;
+    if (o1 === 0 && SpatialRules.onSegment(p1, p3, p2)) return true;
+    if (o2 === 0 && SpatialRules.onSegment(p1, p4, p2)) return true;
+    if (o3 === 0 && SpatialRules.onSegment(p3, p1, p4)) return true;
+    if (o4 === 0 && SpatialRules.onSegment(p3, p2, p4)) return true;
+    return false;
+  }
+
+  private static orientation(p: Position, q: Position, r: Position): number {
+    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    if (Math.abs(val) < DISTANCE_EPSILON) return 0;
+    return val > 0 ? 1 : 2;
+  }
+
+  private static onSegment(p: Position, q: Position, r: Position): boolean {
+    return (
+      q.x <= Math.max(p.x, r.x) + DISTANCE_EPSILON &&
+      q.x >= Math.min(p.x, r.x) - DISTANCE_EPSILON &&
+      q.y <= Math.max(p.y, r.y) + DISTANCE_EPSILON &&
+      q.y >= Math.min(p.y, r.y) - DISTANCE_EPSILON
+    );
   }
 
   private static closestDistanceToPolygon(point: Position, polygon: Position[]): number {

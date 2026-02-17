@@ -20,8 +20,15 @@ export interface LOSModelFootprint {
 }
 
 export class LOSOperations {
+  // TODO: Review LOS blocker classification for higher-fidelity RAW (Soft/Hard may not always fully block LOS).
+  static isLosBlocking(feature: TerrainFeature): boolean {
+    if (feature.type === TerrainType.Obstacle) return true;
+    const los = feature.meta?.los ?? 'Clear';
+    return los === 'Soft' || los === 'Hard';
+  }
+
   static checkLOSBetweenPoints(battlefield: Battlefield, start: Position, end: Position): LOSResult {
-    const blockers = battlefield.terrain.filter(feature => feature.type === TerrainType.Obstacle);
+    const blockers = battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature));
     const hit = LOSOperations.findNearestBlockingElement(start, end, blockers);
     if (hit) {
       return { clear: false, blockedBy: hit };
@@ -41,7 +48,7 @@ export class LOSOperations {
       const hit = LOSOperations.findNearestBlockingElement(
         point,
         target,
-        battlefield.terrain.filter(feature => feature.type === TerrainType.Obstacle)
+        battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature))
       );
       if (!hit) {
         return { clear: true };
@@ -67,7 +74,7 @@ export class LOSOperations {
       const hit = LOSOperations.findNearestBlockingElement(
         start,
         point,
-        battlefield.terrain.filter(feature => feature.type === TerrainType.Obstacle)
+        battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature))
       );
       if (!hit) {
         return { clear: true };
@@ -92,7 +99,7 @@ export class LOSOperations {
 
     let visibleCount = 0;
     let nearestBlocked: { feature: TerrainFeature; distance: number } | null = null;
-    const blockers = battlefield.terrain.filter(feature => feature.type === TerrainType.Obstacle);
+    const blockers = battlefield.terrain.filter(feature => LOSOperations.isLosBlocking(feature));
 
     for (const targetPoint of targetPerimeter) {
       let targetVisible = false;

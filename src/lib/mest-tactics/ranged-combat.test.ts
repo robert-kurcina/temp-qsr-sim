@@ -104,14 +104,10 @@ describe('makeRangedCombatAttack', () => {
     expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
   });
 
-  it('should apply cover from spatial context', () => {
+  it('should miss when LOS is blocked by spatial context', () => {
     const battlefield = new Battlefield(12, 12);
     const tree = new TerrainElement('Tree', { x: 6, y: 6 });
     battlefield.addTerrain(tree.toFeature());
-
-    const rolls: number[][] = [[1, 1], [1, 1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
-    setRoller(statefulRoller);
 
     const spatial = {
       battlefield,
@@ -119,11 +115,20 @@ describe('makeRangedCombatAttack', () => {
       target: { id: 'defender', position: { x: 6, y: 6 }, baseDiameter: 2 },
     };
 
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {}, spatial);
+    const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {}, spatial);
+    expect(result.hit).toBe(false);
+  });
+
+  it('should add a suddenness bonus for the attacker', () => {
+    const rolls: number[][] = [[1, 1, 1], [1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
+
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { hasSuddenness: true });
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
     const hitEventData = diceEvents[0].data as any;
-    expect(hitEventData.finalPools.p2FinalBonus[DiceType.Base] || 0).toBe(1);
+    expect(hitEventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
   });
 });

@@ -92,38 +92,28 @@ export function resolveDamage(
 
         const { value: damageValue, dice: damageDice } = parseDamageFormula(damageFormula, attacker);
         
-        const damagePenalty: TestDice = {};
-        if (context.hasHardCover) {
-            damagePenalty[DiceType.Wild] = (damagePenalty[DiceType.Wild] || 0) + 1;
-        }
-
         const damageTestAttacker: TestParticipant = {
             attributeValue: damageValue,
             bonusDice: { ...damageDice, ...hitTestResult.carryOverDice },
-            penaltyDice: damagePenalty,
         };
         
         const damageTestDefender: TestParticipant = {
             attributeValue: defender.finalAttributes.for,
+            bonusDice: context.hasHardCover ? { [DiceType.Wild]: 1 } : undefined,
         };
       
         damageTestResult = resolveTest(damageTestAttacker, damageTestDefender);
 
         // 3. Calculate Wounds from the roll (if it passed)
         if (damageTestResult.pass) {
+            const cascades = damageTestResult.cascades || 0;
             const effectiveAR = Math.max(0, defender.state.armor.total - totalImpact);
-            const netScore = Math.max(0, (damageTestResult.score || 0) - effectiveAR);
-
-            if (netScore > defender.finalAttributes.for) {
-                woundsFromDamage = netScore - defender.finalAttributes.for;
-            } else {
-                woundsFromDamage = 1; // Minimum 1 wound on a successful damage roll
-            }
+            woundsFromDamage = Math.max(0, cascades - effectiveAR);
         }
     }
     
     if (context.forceHit) {
-        woundsFromDamage = 2;
+        woundsFromDamage = Math.max(woundsFromDamage, 2);
     }
 
     // 4. Sum all wounds and update defender state

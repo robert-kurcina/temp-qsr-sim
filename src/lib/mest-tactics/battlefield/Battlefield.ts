@@ -38,6 +38,7 @@ function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Positio
 export class Battlefield {
   public grid: Grid;
   public terrain: TerrainFeature[] = [];
+  public opennessStats?: BattlefieldOpennessStats;
   private navigationMesh: Delaunay<Position> | null = null;
   private constrainedNavMesh: ConstrainedNavMesh | null = null;
   private characterPositions: Map<string, Position> = new Map();
@@ -124,7 +125,9 @@ export class Battlefield {
 
   public hasLineOfSight(start: Position, end: Position): boolean {
     for (const feature of this.terrain) {
-      if (feature.type === TerrainType.Obstacle) {
+      // TODO: Review LOS blocker classification for higher-fidelity RAW (Soft/Hard may not always fully block LOS).
+      const los = feature.meta?.los ?? 'Clear';
+      if (feature.type === TerrainType.Obstacle || los === 'Soft' || los === 'Hard') {
         for (let i = 0, j = feature.vertices.length - 1; i < feature.vertices.length; j = i++) {
           const p1 = feature.vertices[j];
           const p2 = feature.vertices[i];
@@ -163,4 +166,14 @@ export class Battlefield {
   getConstrainedNavMesh(): ConstrainedNavMesh | null {
     return this.constrainedNavMesh;
   }
+}
+
+export interface BattlefieldOpennessStats {
+  chunkSize: number;
+  losThreshold: number;
+  totalChunks: number;
+  totalPairs: number;
+  longLosPairs: number;
+  longLosPairRatio: number;
+  meanChunkLongLosRatio: number;
 }

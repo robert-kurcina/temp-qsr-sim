@@ -31,6 +31,7 @@ function _calculateModifiers(
     if (context.isLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isTargetLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isPointBlank) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
+    if (context.hasSuddenness || context.isSudden) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasDirectCover) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.hasInterveningCover) attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
 

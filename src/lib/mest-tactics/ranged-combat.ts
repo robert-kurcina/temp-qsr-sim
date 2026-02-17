@@ -36,6 +36,7 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     if (context.isLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isTargetLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isPointBlank) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
+    if (context.hasSuddenness || context.isSudden) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasDirectCover) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
     if (context.hasInterveningCover) defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
 
@@ -72,7 +73,13 @@ export function makeRangedCombatAttack(
 
     const spatialContext = spatial ? SpatialRules.buildRangedContextFromSpatial(spatial) : {};
     // Merge ORM into context, explicit context wins over spatial defaults.
-    const fullContext = { ...spatialContext, ...context, orm };
+    const fullContext: TestContext = { ...spatialContext, ...context, orm };
+    if (spatial) {
+        const cover = SpatialRules.getCoverResult(spatial.battlefield, spatial.attacker, spatial.target);
+        if (!cover.hasLOS && !fullContext.forceHit) {
+            fullContext.forceMiss = true;
+        }
+    }
 
     // 1. Calculate situational modifiers for the ranged attack.
     const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, fullContext);

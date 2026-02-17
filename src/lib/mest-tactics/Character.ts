@@ -10,6 +10,7 @@ export class Character {
   attributes: Attributes;
   finalAttributes: FinalAttributes;
   allTraits: Trait[];
+  initiative: number;
 
   state: {
     wounds: number;
@@ -54,6 +55,7 @@ export class Character {
     });
     this.finalAttributes = this.attributes as FinalAttributes;
     this.allTraits = [];
+    this.initiative = 0;
 
     this.state = {
       wounds: 0,

@@ -1,4 +1,4 @@
-import { FinalAttributes } from './Attributes';
+import type { FinalAttributes } from './Attributes';
 
 /**
  * Represents the state of a character's armor, broken down by type.
@@ -15,7 +15,8 @@ export interface ArmorState {
 export enum CharacterStatus {
   Ready = 'Ready',
   Done = 'Done',
+  Waiting = 'Waiting',
 }
 
 // Re-export FinalAttributes for convenience
-export { FinalAttributes };
+export type { FinalAttributes };

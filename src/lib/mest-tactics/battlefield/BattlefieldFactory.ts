@@ -1,9 +1,10 @@
 import { gameData } from '../../data';
-import { Battlefield } from './Battlefield';
+import { Battlefield, BattlefieldOpennessStats } from './Battlefield';
 import { Position } from './Position';
 import { TerrainElement, TerrainElementInfo } from './TerrainElement';
 import { LOSOperations } from './LOSOperations';
 import { PathfindingEngine } from './PathfindingEngine';
+import { TerrainType } from './Terrain';
 
 export interface TerrainWeights {
   area: number;
@@ -31,6 +32,7 @@ export interface BattlefieldFactoryConfig {
   maxPlacementAttempts?: number; // per category
   maxFillerAttempts?: number;
   maxPlacementMs?: number; // time budget per battlefield
+  fitnessRetries?: number; // additional attempts to minimize open LOS chunks
 }
 
 const defaultTerrainWeights: TerrainWeights = {
@@ -184,6 +186,21 @@ function pickWallRotation(
 
 export class BattlefieldFactory {
   static create(width: number, height: number, config: BattlefieldFactoryConfig = {}): Battlefield {
+    const retries = Math.max(0, config.fitnessRetries ?? 2);
+    let best: Battlefield | null = null;
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      const battlefield = BattlefieldFactory.createOnce(width, height, config);
+      const score = battlefield.opennessStats?.meanChunkLongLosRatio ?? Number.POSITIVE_INFINITY;
+      if (!best || score < bestScore) {
+        best = battlefield;
+        bestScore = score;
+      }
+    }
+    return best ?? BattlefieldFactory.createOnce(width, height, config);
+  }
+
+  private static createOnce(width: number, height: number, config: BattlefieldFactoryConfig = {}): Battlefield {
     const battlefield = new Battlefield(width, height);
     const densityRatio = clamp(config.densityRatio ?? 25, 10, 100);
     const areaDensityRatio = clamp(config.areaDensityRatio ?? 25, 0, 100);
@@ -413,6 +430,7 @@ export class BattlefieldFactory {
     }
     BattlefieldFactory.ensureDeploymentClearance(battlefield, deployment, width, height, timeExceeded);
     battlefield.finalizeTerrain();
+    battlefield.opennessStats = BattlefieldFactory.computeOpennessStats(battlefield);
     return battlefield;
   }
 
@@ -785,4 +803,146 @@ export class BattlefieldFactory {
   }
 
   // LOS sampling moved to LOSOperations.
+
+  private static computeOpennessStats(
+    battlefield: Battlefield,
+    chunkSize = 4,
+    losThreshold = 8
+  ): BattlefieldOpennessStats {
+    const chunkCols = Math.ceil(battlefield.width / chunkSize);
+    const chunkRows = Math.ceil(battlefield.height / chunkSize);
+    const chunkPoints: Position[] = [];
+
+    for (let row = 0; row < chunkRows; row++) {
+      for (let col = 0; col < chunkCols; col++) {
+        const x = col * chunkSize;
+        const y = row * chunkSize;
+        const width = Math.min(chunkSize, battlefield.width - x);
+        const height = Math.min(chunkSize, battlefield.height - y);
+        const point = BattlefieldFactory.selectChunkOpenPoint(battlefield, x, y, width, height);
+        chunkPoints.push(point);
+      }
+    }
+
+    const chunkCount = chunkPoints.length;
+    const perChunkPossible = new Array<number>(chunkCount).fill(0);
+    const perChunkClear = new Array<number>(chunkCount).fill(0);
+    let totalPairs = 0;
+    let longLosPairs = 0;
+
+    for (let i = 0; i < chunkCount; i++) {
+      for (let j = i + 1; j < chunkCount; j++) {
+        const a = chunkPoints[i];
+        const b = chunkPoints[j];
+        const dist = LOSOperations.distance(a, b);
+        if (dist < losThreshold) {
+          continue;
+        }
+        totalPairs++;
+        perChunkPossible[i]++;
+        perChunkPossible[j]++;
+        if (LOSOperations.checkLOSBetweenPoints(battlefield, a, b).clear) {
+          longLosPairs++;
+          perChunkClear[i]++;
+          perChunkClear[j]++;
+        }
+      }
+    }
+
+    let meanChunkLongLosRatio = 0;
+    for (let i = 0; i < chunkCount; i++) {
+      const possible = perChunkPossible[i];
+      const ratio = possible > 0 ? perChunkClear[i] / possible : 0;
+      meanChunkLongLosRatio += ratio;
+    }
+    meanChunkLongLosRatio = chunkCount > 0 ? meanChunkLongLosRatio / chunkCount : 0;
+
+    const longLosPairRatio = totalPairs > 0 ? longLosPairs / totalPairs : 0;
+
+    return {
+      chunkSize,
+      losThreshold,
+      totalChunks: chunkCount,
+      totalPairs,
+      longLosPairs,
+      longLosPairRatio,
+      meanChunkLongLosRatio,
+    };
+  }
+
+  private static selectChunkOpenPoint(
+    battlefield: Battlefield,
+    chunkX: number,
+    chunkY: number,
+    chunkWidth: number,
+    chunkHeight: number
+  ): Position {
+    const candidates = BattlefieldFactory.sampleChunkPoints(chunkX, chunkY, chunkWidth, chunkHeight);
+    let bestClear: Position | null = null;
+    let bestClearDistance = -Infinity;
+    let bestAny: Position | null = null;
+    let bestAnyDistance = -Infinity;
+
+    for (const point of candidates) {
+      const distanceToBlocker = BattlefieldFactory.distanceToNearestBlocking(battlefield, point);
+      if (BattlefieldFactory.isPointClear(battlefield, point)) {
+        if (distanceToBlocker > bestClearDistance) {
+          bestClear = point;
+          bestClearDistance = distanceToBlocker;
+        }
+      }
+      if (distanceToBlocker > bestAnyDistance) {
+        bestAny = point;
+        bestAnyDistance = distanceToBlocker;
+      }
+    }
+
+    return bestClear ?? bestAny ?? {
+      x: chunkX + chunkWidth / 2,
+      y: chunkY + chunkHeight / 2,
+    };
+  }
+
+  private static sampleChunkPoints(
+    chunkX: number,
+    chunkY: number,
+    chunkWidth: number,
+    chunkHeight: number
+  ): Position[] {
+    const samplesPerSide = 3;
+    const stepX = chunkWidth / samplesPerSide;
+    const stepY = chunkHeight / samplesPerSide;
+    const positions: Position[] = [];
+    for (let y = 0; y < samplesPerSide; y++) {
+      for (let x = 0; x < samplesPerSide; x++) {
+        positions.push({
+          x: chunkX + (x + 0.5) * stepX,
+          y: chunkY + (y + 0.5) * stepY,
+        });
+      }
+    }
+    return positions;
+  }
+
+  private static isPointClear(battlefield: Battlefield, point: Position): boolean {
+    for (const feature of battlefield.terrain) {
+      if (!PathfindingEngine.isPointInPolygon(point, feature.vertices)) continue;
+      if (feature.type !== TerrainType.Clear) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private static distanceToNearestBlocking(battlefield: Battlefield, point: Position): number {
+    let min = Infinity;
+    for (const feature of battlefield.terrain) {
+      if (feature.type !== TerrainType.Obstacle) continue;
+      const distance = PathfindingEngine.distancePointToPolygon(point, feature.vertices);
+      if (distance < min) {
+        min = distance;
+      }
+    }
+    return min;
+  }
 }

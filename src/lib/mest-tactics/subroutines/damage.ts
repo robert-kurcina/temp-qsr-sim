@@ -27,7 +27,8 @@ export function resolveDamageTest(
   const damageResult: DamageResult = { wounds: 0, stun: 0, effects: [] };
 
   // 1. Determine Damage Rating from weapon
-  const { value: damageValue, dice: damageDice } = parseDamage(weapon.damage, attacker.finalAttributes);
+  const damageSpec = weapon.dmg ?? (weapon as unknown as { damage?: string }).damage ?? '';
+  const { value: damageValue, dice: damageDice } = parseDamage(damageSpec, attacker.finalAttributes);
 
   // 2. Calculate effective Armor Rating (AR)
   const totalAR = defender.state.armor?.total || 0;
@@ -40,7 +41,7 @@ export function resolveDamageTest(
     bonusDice: damageDice,
     carryOverDice: { base: hitCascades, modifier: 0, wild: 0 } // Use hit cascades as carry-over
   }, {
-    attributeValue: defender.finalAttributes.FOR,
+    attributeValue: defender.finalAttributes.for,
   });
 
   // 4. Calculate and apply wounds if the test passes
@@ -56,7 +57,7 @@ export function resolveDamageTest(
   }
 
   // 5. Update KO and Elimination status based on the new total wounds
-  const size = defender.finalAttributes.SIZ;
+  const size = defender.finalAttributes.siz;
   if (defender.state.wounds >= size) {
     defender.state.isKOd = true;
     damageResult.effects.push('KOd');

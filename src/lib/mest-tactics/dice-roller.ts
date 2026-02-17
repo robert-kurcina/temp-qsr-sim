@@ -184,6 +184,7 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
 
   const scoreDifference = p1FinalScore - p2FinalScore;
   const pass = p1FinalScore >= p2FinalScore;
+  const cascades = pass ? Math.max(1, Math.floor(scoreDifference)) : 0;
 
   // Log the test result with final pools for metrics
   metricsService.logEvent('diceTestResolved', {
@@ -203,7 +204,7 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   return {
     pass,
     score: scoreDifference,
-    cascades: pass ? Math.floor(scoreDifference) : 0,
+    cascades,
     p1FinalScore,
     p2FinalScore,
     p1Result,
