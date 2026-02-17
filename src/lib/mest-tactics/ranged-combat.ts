@@ -6,6 +6,7 @@ import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveRangedHitTest } from './subroutines/ranged-hit-test'; // Correct hit test for ranged
 import { resolveDamage, DamageResolution } from './subroutines/damage-test';
+import { SpatialAttackContext, SpatialRules } from './battlefield/spatial-rules';
 
 // --- Main Attack Result Interface ---
 
@@ -32,9 +33,20 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     // Note: Defender hindrance doesn't apply to the REF roll for being hit.
 
     // 2. Ranged-Specific Contextual Modifiers
+    if (context.isLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
+    if (context.isTargetLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isPointBlank) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasDirectCover) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
     if (context.hasInterveningCover) defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
+
+    if (context.obscuringModels && context.obscuringModels > 0) {
+        const thresholds = [1, 2, 5, 10];
+        let obscuredPenalty = 0;
+        for (const threshold of thresholds) {
+            if (context.obscuringModels >= threshold) obscuredPenalty += 1;
+        }
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + obscuredPenalty;
+    }
     
     // Distance Penalty (ORM)
     if (context.orm && context.orm > 0) {
@@ -54,11 +66,13 @@ export function makeRangedCombatAttack(
     defender: Character,
     weapon: Item,
     orm: number = 0,
-    context: TestContext = {}
+    context: TestContext = {},
+    spatial?: SpatialAttackContext
 ): AttackResult {
 
-    // Merge ORM into context
-    const fullContext = { ...context, orm };
+    const spatialContext = spatial ? SpatialRules.buildRangedContextFromSpatial(spatial) : {};
+    // Merge ORM into context, explicit context wins over spatial defaults.
+    const fullContext = { ...spatialContext, ...context, orm };
 
     // 1. Calculate situational modifiers for the ranged attack.
     const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, fullContext);

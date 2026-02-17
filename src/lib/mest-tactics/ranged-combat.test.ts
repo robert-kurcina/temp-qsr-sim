@@ -8,6 +8,8 @@ import type { Profile } from './Profile';
 import type { Item } from './Item';
 import type { Character } from './Character';
 import { gameData } from '../data';
+import { Battlefield } from './battlefield/Battlefield';
+import { TerrainElement } from './battlefield/TerrainElement';
 
 const { archetypes, ranged_weapons, armors } = gameData;
 
@@ -100,5 +102,28 @@ describe('makeRangedCombatAttack', () => {
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
     const hitEventData = diceEvents[0].data as any;
     expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
+  });
+
+  it('should apply cover from spatial context', () => {
+    const battlefield = new Battlefield(12, 12);
+    const tree = new TerrainElement('Tree', { x: 6, y: 6 });
+    battlefield.addTerrain(tree.toFeature());
+
+    const rolls: number[][] = [[1, 1], [1, 1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
+
+    const spatial = {
+      battlefield,
+      attacker: { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2 },
+      target: { id: 'defender', position: { x: 6, y: 6 }, baseDiameter: 2 },
+    };
+
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {}, spatial);
+
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    expect(diceEvents.length).toBeGreaterThanOrEqual(1);
+    const hitEventData = diceEvents[0].data as any;
+    expect(hitEventData.finalPools.p2FinalBonus[DiceType.Base] || 0).toBe(1);
   });
 });

@@ -297,12 +297,20 @@ export class BattlefieldFactory {
       const categoryElements = elementsByCategory[category] || [];
       if (categoryElements.length === 0) continue;
 
+      const fillToCapacity = densityRatio === 100
+        && category !== 'area'
+        && areaDensityRatio === 0
+        && weight > 0
+        && totalNonAreaWeight === weight;
+
       const categoryTargetArea = category === 'area'
         ? areaTargetArea
         : (totalNonAreaWeight > 0 ? targetArea * (weight / totalNonAreaWeight) : 0);
-      const effectiveTargetArea = category === 'area'
-        ? categoryTargetArea
-        : Math.min(categoryTargetArea, remainingNonAreaTarget);
+      const effectiveTargetArea = fillToCapacity
+        ? Number.POSITIVE_INFINITY
+        : (category === 'area'
+          ? categoryTargetArea
+          : Math.min(categoryTargetArea, remainingNonAreaTarget));
 
       const elementsByArea = [...categoryElements].sort((a, b) => {
         const areaA = new TerrainElement(a, { x: 0, y: 0 }).getArea();

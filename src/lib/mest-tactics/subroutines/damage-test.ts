@@ -92,9 +92,15 @@ export function resolveDamage(
 
         const { value: damageValue, dice: damageDice } = parseDamageFormula(damageFormula, attacker);
         
+        const damagePenalty: TestDice = {};
+        if (context.hasHardCover) {
+            damagePenalty[DiceType.Wild] = (damagePenalty[DiceType.Wild] || 0) + 1;
+        }
+
         const damageTestAttacker: TestParticipant = {
             attributeValue: damageValue,
             bonusDice: { ...damageDice, ...hitTestResult.carryOverDice },
+            penaltyDice: damagePenalty,
         };
         
         const damageTestDefender: TestParticipant = {

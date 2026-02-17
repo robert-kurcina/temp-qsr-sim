@@ -1,5 +1,5 @@
 import { GameManager } from './GameManager';
-import { Character } from './character/Character';
+import { Character } from './Character';
 import { CharacterStatus } from './types';
 import { describe, it, expect, beforeEach } from 'vitest';
 

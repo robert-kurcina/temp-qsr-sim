@@ -8,6 +8,8 @@ import type { Profile } from './Profile';
 import type { Item } from './Item';
 import type { Character } from './Character';
 import { gameData } from '../data';
+import { Battlefield } from './battlefield/Battlefield';
+import { TerrainElement } from './battlefield/TerrainElement';
 
 const { archetypes, ranged_weapons } = gameData;
 
@@ -93,5 +95,23 @@ describe('makeIndirectRangedAttack', () => {
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
     expect(eventData.finalPools.p1FinalBonus[DiceType.Base] || 0).toBe(1);
+  });
+
+  it('should apply cover from spatial context', () => {
+    const battlefield = new Battlefield(12, 12);
+    const tree = new TerrainElement('Tree', { x: 6, y: 6 });
+    battlefield.addTerrain(tree.toFeature());
+
+    const rolls = [1, 1];
+    const spatial = {
+      battlefield,
+      attacker: { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2 },
+      target: { id: 'defender', position: { x: 6, y: 6 }, baseDiameter: 2 },
+    };
+
+    makeIndirectRangedAttack(attacker, weapon, 0, {}, rolls, spatial);
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const eventData = diceEvents[0].data as any;
+    expect(eventData.finalPools.p1FinalPenalty[DiceType.Base] || 0).toBe(1);
   });
 });

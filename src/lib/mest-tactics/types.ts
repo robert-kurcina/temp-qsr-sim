@@ -12,5 +12,10 @@ export interface ArmorState {
   helm: number;
 }
 
+export enum CharacterStatus {
+  Ready = 'Ready',
+  Done = 'Done',
+}
+
 // Re-export FinalAttributes for convenience
 export { FinalAttributes };

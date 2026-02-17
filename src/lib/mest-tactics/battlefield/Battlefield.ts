@@ -5,6 +5,7 @@ import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './Terrain';
 import { TerrainElement } from './TerrainElement';
 import { ConstrainedNavMesh } from './ConstrainedNavMesh';
+import { getBaseDiameterFromSiz } from './size-utils';
 
 function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
     function orientation(p: Position, q: Position, r: Position): number {
@@ -40,6 +41,7 @@ export class Battlefield {
   private navigationMesh: Delaunay<Position> | null = null;
   private constrainedNavMesh: ConstrainedNavMesh | null = null;
   private characterPositions: Map<string, Position> = new Map();
+  private characterRegistry: Map<string, Character> = new Map();
 
   constructor(public width: number, public height: number) {
     this.grid = new Grid(width, height);
@@ -69,6 +71,7 @@ export class Battlefield {
   placeCharacter(character: Character, position: Position): boolean {
     if (this.grid.setOccupant(position, character)) {
         this.characterPositions.set(character.id, position);
+        this.characterRegistry.set(character.id, character);
         return true;
     }
     return false;
@@ -82,9 +85,10 @@ export class Battlefield {
 
     const fromCell = this.grid.getCell(from);
     if (fromCell && fromCell.occupant?.id === character.id) {
-        if (this.grid.setOccupant(to, character)) {
+      if (this.grid.setOccupant(to, character)) {
             fromCell.occupant = null;
             this.characterPositions.set(character.id, to);
+            this.characterRegistry.set(character.id, character);
             return true;
         }
     }
@@ -97,6 +101,25 @@ export class Battlefield {
 
   getCharacterAt(position: Position): Character | null {
     return this.grid.getCell(position)?.occupant || null;
+  }
+
+  getModelBlockers(excludeIds: string[] = []): { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] {
+    const excluded = new Set(excludeIds);
+    const blockers: { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] = [];
+    for (const [id, character] of this.characterRegistry.entries()) {
+      if (excluded.has(id)) continue;
+      const position = this.characterPositions.get(id);
+      if (!position) continue;
+      const siz = character.finalAttributes?.siz ?? character.attributes?.siz ?? 3;
+      blockers.push({
+        id,
+        position,
+        baseDiameter: getBaseDiameterFromSiz(siz),
+        siz,
+        isKOd: character.state?.isKOd ?? false,
+      });
+    }
+    return blockers;
   }
 
   public hasLineOfSight(start: Position, end: Position): boolean {

@@ -7,6 +7,7 @@ import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveTest, TestParticipant, mergeTestDice } from './dice-roller';
 import { parseAccuracy } from './subroutines/accuracy-parser';
 import { metricsService } from './MetricsService';
+import { SpatialAttackContext, SpatialRules } from './battlefield/spatial-rules';
 
 function _calculateModifiers(
     attacker: Character, 
@@ -27,9 +28,20 @@ function _calculateModifiers(
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
     }
 
+    if (context.isLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
+    if (context.isTargetLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isPointBlank) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasDirectCover) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.hasInterveningCover) attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+
+    if (context.obscuringModels && context.obscuringModels > 0) {
+        const thresholds = [1, 2, 5, 10];
+        let obscuredPenalty = 0;
+        for (const threshold of thresholds) {
+            if (context.obscuringModels >= threshold) obscuredPenalty += 1;
+        }
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + obscuredPenalty;
+    }
     
     if (orm > 0) {
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + orm;
@@ -43,7 +55,8 @@ export function makeIndirectRangedAttack(
     weapon: Item,
     orm: number, // Optimal Range Multiple
     context: TestContext = {},
-    p1Rolls: number[] | null = null
+    p1Rolls: number[] | null = null,
+    spatial?: SpatialAttackContext
 ): ResolveTestResult {
     console.log('attacker in makeIndirectRangedAttack', attacker);
     const attackerAttribute = weapon.classification === 'Thrown' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
@@ -52,7 +65,9 @@ export function makeIndirectRangedAttack(
         return { pass: false, score: -1, p1FinalScore: 0, p2FinalScore: 1, cascades: 0, p1Result: { score: 0, carryOverDice: {} }, p2Result: { score: 1, carryOverDice: {} } };
     }
 
-    const { attackerBonus, attackerPenalty } = _calculateModifiers(attacker, weapon, orm, context);
+    const spatialContext = spatial ? SpatialRules.buildRangedContextFromSpatial(spatial) : {};
+    const fullContext = { ...spatialContext, ...context, orm };
+    const { attackerBonus, attackerPenalty } = _calculateModifiers(attacker, weapon, orm, fullContext);
 
     const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(weapon.accuracy);
 
