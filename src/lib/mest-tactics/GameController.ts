@@ -7,6 +7,10 @@ import { getBaseDiameterFromSiz } from './battlefield/size-utils';
 import { buildLOSResultContext, ActionContextInput } from './battlefield/action-context';
 import { TurnPhase } from './types';
 import { getCharacterTraitLevel } from './status-system';
+import { MissionSide } from './MissionSide';
+import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissionOutcome, initMissionFlow, recordBottleResults } from './mission-flow';
+import { MissionScoreResult } from './mission-scoring';
+import { BottleTestResult } from './bottle-tests';
 
 export interface ControllerLogEntry {
   turn: number;
@@ -24,6 +28,16 @@ export interface SkirmishConfig {
   enableTakeCover?: boolean;
 }
 
+export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
+  endDieRolls?: number[];
+}
+
+export interface MissionRunResult {
+  log: ControllerLogEntry[];
+  state: MissionFlowState;
+  outcome: MissionScoreResult;
+}
+
 export class GameController {
   private manager: GameManager;
   private battlefield: Battlefield;
@@ -35,6 +49,45 @@ export class GameController {
   }
 
   runSkirmish(sideA: Character[], sideB: Character[], config: SkirmishConfig = {}): ControllerLogEntry[] {
+    this.runTurns([sideA, sideB], config, undefined, ['SideA', 'SideB']);
+    return this.log;
+  }
+
+  runMission(sides: MissionSide[], config: MissionRunConfig = {}): MissionRunResult {
+    if (sides.length < 2 || sides.length > 4) {
+      throw new Error('runMission supports 2-4 sides.');
+    }
+    const sideCharacters = sides.map(side => side.members.map(member => member.character));
+    let state = initMissionFlow(sides, config);
+    let ended = false;
+
+    this.runTurns(sideCharacters, config, bottleResults => {
+      state = recordBottleResults(state, bottleResults);
+      const advance = advanceEndGameState(state, config.endDieRolls);
+      state = advance.state;
+      if (advance.ended) {
+        this.log.push({
+          turn: this.manager.currentTurn,
+          round: this.manager.currentRound,
+          actor: '-',
+          action: 'EndGame',
+          detail: advance.reason ?? 'end-die',
+        });
+      }
+      ended = advance.ended;
+      return ended;
+    }, sides.map(side => side.id));
+
+    const outcome = computeMissionOutcome(sides, state);
+    return { log: this.log, state, outcome };
+  }
+
+  private runTurns(
+    sides: Character[][],
+    config: SkirmishConfig,
+    onTurnEnd?: (bottleResults: Record<string, BottleTestResult>) => boolean,
+    sideIds: string[] = []
+  ): void {
     const maxTurns = config.maxTurns ?? 3;
     const rng = config.rng ?? Math.random;
     const enableTransfix = config.enableTransfix ?? false;
@@ -68,7 +121,10 @@ export class GameController {
           continue;
         }
 
-        const sideEnemies = sideA.some(member => member.id === active.id) ? sideB : sideA;
+        const activeSideIndex = sides.findIndex(side => side.some(member => member.id === active.id));
+        const sideEnemies = sides
+          .filter((_, index) => index !== activeSideIndex)
+          .flat();
         const activePos = this.manager.getCharacterPosition(active);
         if (!activePos) {
           this.manager.endActivation(active);
@@ -156,30 +212,26 @@ export class GameController {
         this.manager.endActivation(active);
       }
 
-      const bottleResults = this.manager.resolveBottleTests([
-        {
-          id: 'SideA',
-          characters: sideA,
-          orderedCandidate: this.pickOrderedCandidate(sideA),
-          opposingCount: this.countRemaining(sideB),
-        },
-        {
-          id: 'SideB',
-          characters: sideB,
-          orderedCandidate: this.pickOrderedCandidate(sideB),
-          opposingCount: this.countRemaining(sideA),
-        },
-      ]);
+      const bottleResults = this.manager.resolveBottleTests(
+        sides.map((side, index) => ({
+          id: sideIds[index] ?? `Side${index + 1}`,
+          characters: side,
+          orderedCandidate: this.pickOrderedCandidate(side),
+          opposingCount: this.countRemaining(sides.filter((_, i) => i !== index).flat()),
+        }))
+      );
       for (const [sideId, result] of Object.entries(bottleResults)) {
         if (result.bottledOut) {
           this.log.push({ turn: this.manager.currentTurn, round: this.manager.currentRound, actor: sideId, action: 'BottleOut' });
         }
       }
 
+      if (onTurnEnd?.(bottleResults)) {
+        break;
+      }
+
       this.manager.advancePhase({ roller: rng, roundsPerTurn: this.manager.roundsPerTurn });
     }
-
-    return this.log;
   }
 
   private pickClosestTarget(start: Position, enemies: Character[]): { target: Character; position: Position; distance: number } | null {

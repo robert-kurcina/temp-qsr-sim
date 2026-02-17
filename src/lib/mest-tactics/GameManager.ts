@@ -4,16 +4,7 @@ import { Battlefield } from './battlefield/Battlefield';
 import { Position } from './battlefield/Position';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
-import { resolveRangedCombatHitTest } from './ranged-combat';
-import { makeIndirectRangedAttack } from './indirect-ranged-combat';
-import { resolveCloseCombatHitTest } from './close-combat';
-import {
-  ActionContextInput,
-  CloseCombatContextInput,
-  buildRangedActionContext,
-  buildCloseCombatActionContext,
-  resolveFriendlyFire,
-} from './battlefield/action-context';
+import { ActionContextInput, CloseCombatContextInput } from './battlefield/action-context';
 import { getBaseDiameterFromSiz } from './battlefield/size-utils';
 import { SpatialRules, type SpatialModel } from './battlefield/spatial-rules';
 import { LOSOperations } from './battlefield/LOSOperations';
@@ -29,15 +20,45 @@ import {
   DetectOptions,
   RevealExposureOptions,
 } from './concealment';
-import { applyFearFromWounds, applyFearFromAllyKO, MoraleOptions } from './morale';
-import { resolveBottleForSide, BottleTestResult } from './bottle-tests';
-import { resolveTransfixEffect, TransfixTarget, promotePendingStatusTokens, getCharacterTraitLevel, applyStatusTraitOnHit, parseStatusTrait } from './status-system';
-import { buildActiveToggleOptions, buildPassiveOptions, PassiveEvent, ActiveToggleOption, PassiveOption } from './passive-options';
-import { resolveDamage, DamageResolution } from './subroutines/damage-test';
-import { makeDisengageAction } from './disengage';
-import { buildBonusActionOptions, applyBonusAction, BonusActionSelection, BonusActionOutcome } from './bonus-actions';
-import { buildReactOptions, ReactEvent, ReactOption, sortReactOptions } from './react-actions';
-import { GroupAction, createGroupAction, buildGroupActionContext } from './group-actions';
+import { MoraleOptions } from './morale';
+import { BottleTestResult } from './bottle-tests';
+import { getCharacterTraitLevel } from './status-system';
+import { PassiveEvent, ActiveToggleOption, PassiveOption } from './passive-options';
+import { DamageResolution } from './subroutines/damage-test';
+import { BonusActionSelection } from './bonus-actions';
+import { ReactEvent, ReactOption } from './react-actions';
+import { GroupAction } from './group-actions';
+import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction } from './actions/simple-actions';
+import { getActiveToggleOptions, getBonusActionOptions, getPassiveOptions, getReactOptions, getReactOptionsSorted } from './actions/option-builders';
+import { executeMoveAction } from './actions/move-action';
+import { createGroupActionWrapper, executeGroupCloseCombatAttack, executeGroupRangedAttack } from './actions/group-actions';
+import { hasItemTrait, hasItemTraitOnWeapon } from './items/item-traits';
+import {
+  executeCloseCombatAttack as runCloseCombatAttack,
+  executeIndirectAttack as runIndirectAttack,
+  executeRangedAttack as runRangedAttack,
+} from './actions/combat-actions';
+import { executeOverwatchReact as runOverwatchReact, executeReactAction as runReactAction } from './actions/react-actions';
+import { executeDisengageAction } from './actions/disengage-action';
+import { executeCombinedAction as runCombinedAction } from './actions/combined-action';
+import { executeTransfixAction as runTransfixAction } from './actions/transfix-action';
+import { resolveBottleTests as runBottleTests } from './actions/bottle-tests';
+import {
+  executeCounterAction as runCounterAction,
+  executeCounterCharge as runCounterCharge,
+  executeCounterFire as runCounterFire,
+  executeCounterStrike as runCounterStrike,
+} from './actions/counter-actions';
+import { applyInterruptCost as runInterruptCost, applyPassiveOptionCost as runPassiveCost, applyRefresh as runRefresh } from './actions/interrupt-costs';
+import { applyKOCleanup as runKOCleanup, applyOngoingStatusEffects as runOngoingStatus } from './actions/status-cleanup';
+import { buildSpatialModel as runBuildSpatialModel, normalizeVector as runNormalizeVector, resolveEngagePosition as runResolveEngage } from './battlefield/spatial-helpers';
+import {
+  beginActivation as runBeginActivation,
+  endActivation as runEndActivation,
+  getApRemaining as runGetApRemaining,
+  setWaiting as runSetWaiting,
+  spendAp as runSpendAp,
+} from './actions/activation';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -183,46 +204,23 @@ export class GameManager {
   }
 
   public beginActivation(character: Character): number {
-    const status = this.getCharacterStatus(character.id);
-    if (status !== CharacterStatus.Ready) {
-      return 0;
-    }
-    this.activeCharacterId = character.id;
-    this.transfixUsed.delete(character.id);
-    this.freeFiddleUsed.delete(character.id);
-    this.applyOngoingStatusEffects(character);
-    if (character.state.isWaiting) {
-      character.state.isWaiting = false;
-    }
-
-    const delayTokens = character.state.delayTokens;
-    const apAvailable = Math.max(0, this.apPerActivation - delayTokens);
-    const remainingDelay = Math.max(0, delayTokens - this.apPerActivation);
-    character.state.delayTokens = remainingDelay;
-    character.refreshStatusFlags();
-    this.apRemaining.set(character.id, apAvailable);
-    return apAvailable;
+    return runBeginActivation(this.activationDeps(), character);
   }
 
   public endActivation(character: Character): void {
-    this.activeCharacterId = null;
-    this.characterStatus.set(character.id, CharacterStatus.Done);
+    runEndActivation(this.activationDeps(), character);
   }
 
   public setWaiting(character: Character): void {
-    character.state.isWaiting = true;
-    this.characterStatus.set(character.id, CharacterStatus.Waiting);
+    runSetWaiting(this.activationDeps(), character);
   }
 
   public getApRemaining(character: Character): number {
-    return this.apRemaining.get(character.id) ?? 0;
+    return runGetApRemaining(this.activationDeps(), character);
   }
 
   public spendAp(character: Character, amount: number): boolean {
-    const current = this.getApRemaining(character);
-    if (amount <= 0 || current < amount) return false;
-    this.apRemaining.set(character.id, current - amount);
-    return true;
+    return runSpendAp(this.activationDeps(), character, amount);
   }
 
   public nextRound(): void {
@@ -298,225 +296,31 @@ export class GameManager {
       bonusActionOpponents?: Character[];
     } = {}
   ) {
-    if (!this.battlefield) {
-      throw new Error('Battlefield not set.');
-    }
-    const attackerPos = options.attacker?.position ?? this.getCharacterPosition(attacker);
-    let defenderPos = options.target?.position ?? this.getCharacterPosition(defender);
-    if (!attackerPos || !defenderPos) {
-      throw new Error('Missing attacker or defender position.');
-    }
-
-    let spatial: ActionContextInput = {
-      battlefield: this.battlefield,
-      attacker: {
-        id: attacker.id,
-        position: attackerPos,
-        baseDiameter: getBaseDiameterFromSiz(attacker.finalAttributes.siz),
-        siz: attacker.finalAttributes.siz,
-      },
-      target: {
-        id: defender.id,
-        position: defenderPos,
-        baseDiameter: getBaseDiameterFromSiz(defender.finalAttributes.siz),
-        siz: defender.finalAttributes.siz,
-      },
-      optimalRangeMu: options.optimalRangeMu,
-      orm: options.orm,
-      attackerEngagedOverride: options.attackerEngagedOverride,
-      isLeaning: options.isLeaning,
-      isTargetLeaning: options.isTargetLeaning,
-      lofWidthMu: options.lofWidthMu,
-    };
-
-    let takeCoverResult: { applied: boolean; cancelled: boolean; moved: boolean } | null = null;
-    if (options.allowTakeCover && options.takeCoverPosition) {
-      const engaged = SpatialRules.isEngaged(spatial.attacker, spatial.target);
-      const defenderRef = defender.finalAttributes.ref ?? defender.attributes.ref ?? 0;
-      const attackerRef = attacker.finalAttributes.ref ?? attacker.attributes.ref ?? 0;
-      if (!engaged && defender.state.isAttentive && defender.state.isOrdered && defenderRef >= attackerRef) {
-        const moveLimit = defender.finalAttributes.mov ?? defender.attributes.mov ?? 0;
-        const moveDistance = LOSOperations.distance(defenderPos, options.takeCoverPosition);
-        if (moveDistance <= moveLimit) {
-          const moved = this.moveCharacter(defender, options.takeCoverPosition);
-          if (moved) {
-            defenderPos = options.takeCoverPosition;
-            spatial = {
-              ...spatial,
-              target: {
-                ...spatial.target,
-                position: defenderPos,
-              },
-            };
-            const coverAfter = SpatialRules.getCoverResult(this.battlefield, spatial.attacker, spatial.target);
-            const behindCover = coverAfter.hasDirectCover || coverAfter.hasInterveningCover || !coverAfter.hasLOS;
-            takeCoverResult = { applied: behindCover, cancelled: behindCover && !coverAfter.hasLOS, moved: true };
-          }
-        }
-      }
-    }
-
-    const friendlyFire = resolveFriendlyFire(
-      spatial,
-      this.characters.map(character => {
-        const pos = this.getCharacterPosition(character);
-        return {
-          id: character.id,
-          position: pos ?? attackerPos,
-          baseDiameter: getBaseDiameterFromSiz(character.finalAttributes.siz),
-          siz: character.finalAttributes.siz,
-          isFriendly: false,
-          isAttentive: character.state.isAttentive,
-          isOrdered: character.state.isOrdered,
-        };
-      })
-    );
-
-    const context = buildRangedActionContext(spatial);
-    const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
-    if (!attacker.state.isAttentive) {
-      mergedContext.isOverreach = false;
-      mergedContext.isLeaning = false;
-    }
-    if (!defender.state.isAttentive) {
-      mergedContext.isTargetLeaning = false;
-    }
-    if (attacker.state.isHidden && mergedContext.hasSuddenness !== false) {
-      mergedContext.hasSuddenness = true;
-    }
-    if (defender.state.isHidden && !mergedContext.forceHit) {
-      mergedContext.forceMiss = true;
-    }
-
-    if (takeCoverResult?.cancelled) {
-      mergedContext.forceMiss = true;
-    }
-
-    if (options.defend && defender.state.isAttentive) {
-      mergedContext.isDefending = true;
-    }
-
-    const { hitTestResult, context: resolvedContext } = resolveRangedCombatHitTest(
-      attacker,
-      defender,
-      weapon,
-      options.orm ?? 0,
-      mergedContext,
-      spatial
-    );
-
-    if (!hitTestResult.pass) {
-      if (options.defend && defender.state.isAttentive) {
-        this.applyPassiveOptionCost(defender);
-      }
-      return {
-        result: { hit: false, hitTestResult },
-        context: resolvedContext,
-        friendlyFire,
-        takeCover: takeCoverResult,
-      };
-    }
-
-    if (weapon.traits?.length) {
-      const cascades = hitTestResult.cascades ?? 0;
-      for (const trait of weapon.traits) {
-        const parsed = parseStatusTrait(trait);
-        if (!parsed) continue;
-        applyStatusTraitOnHit(defender, parsed.traitName, {
-          cascades,
-          rating: parsed.rating,
-          impact: weapon.impact ?? 0,
-        });
-      }
-    }
-
-    let bonusActionOptions: ReturnType<typeof buildBonusActionOptions> | undefined;
-    let bonusActionOutcome: BonusActionOutcome | undefined;
-    const allowBonusActions = options.allowBonusActions ?? true;
-    if (allowBonusActions) {
-      bonusActionOptions = buildBonusActionOptions({
-        battlefield: this.battlefield,
-        attacker,
-        target: defender,
-        cascades: hitTestResult.cascades ?? 0,
-        isCloseCombat: false,
-      });
-      if (options.bonusAction) {
-        bonusActionOutcome = applyBonusAction(
-          {
-            battlefield: this.battlefield,
-            attacker,
-            target: defender,
-            cascades: hitTestResult.cascades ?? 0,
-            isCloseCombat: false,
-          },
-          { ...options.bonusAction, opponents: options.bonusActionOpponents }
-        );
-        if (bonusActionOutcome.refreshApplied) {
-          this.applyRefresh(attacker);
-        }
-      }
-    }
-
-    const damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult as unknown as ResolveTestResult, resolvedContext);
-    defender.state.wounds = damageResolution.defenderState.wounds;
-    defender.state.delayTokens = damageResolution.defenderState.delayTokens;
-    defender.state.isKOd = damageResolution.defenderState.isKOd;
-    defender.state.isEliminated = damageResolution.defenderState.isEliminated;
-
-    if (weapon.traits?.includes('[Reveal]')) {
-      const cover = SpatialRules.getCoverResult(spatial.battlefield, spatial.attacker, spatial.target);
-      if (cover.hasLOS) {
-        attacker.state.isHidden = false;
-      }
-    }
-    if (damageResolution) {
-      const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-      applyFearFromWounds(defender, woundsAdded);
-      if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
-        if (this.battlefield && options.moraleAllies) {
-          applyFearFromAllyKO(this.battlefield, defender, options.moraleAllies, options.moraleOptions);
-        }
-      }
-      this.applyKOCleanup(defender);
-    }
-
-    if (options.defend && defender.state.isAttentive && !bonusActionOutcome?.executed) {
-      this.applyPassiveOptionCost(defender);
-    }
-
-    return {
-      result: { hit: true, hitTestResult, damageResolution },
-      context: resolvedContext,
-      friendlyFire,
-      takeCover: takeCoverResult,
-      bonusActionOptions,
-      bonusActionOutcome,
-    };
+    return runRangedAttack(this.combatActionDeps(), attacker, defender, weapon, options);
   }
 
   public getPassiveOptions(event: PassiveEvent): PassiveOption[] {
-    return buildPassiveOptions(event);
+    return getPassiveOptions(event);
   }
 
   public getActiveToggleOptions(params: { attacker: Character; weapon?: Item; isEngaged?: boolean }): ActiveToggleOption[] {
-    return buildActiveToggleOptions(params);
+    return getActiveToggleOptions(params);
   }
 
   public getBonusActionOptions(context: Parameters<typeof buildBonusActionOptions>[0]) {
-    return buildBonusActionOptions(context);
+    return getBonusActionOptions(context);
   }
 
   public getReactOptions(event: ReactEvent): ReactOption[] {
-    return buildReactOptions(event);
+    return getReactOptions(event);
   }
 
   public getReactOptionsSorted(event: ReactEvent): ReactOption[] {
-    return sortReactOptions(buildReactOptions(event));
+    return getReactOptionsSorted(event);
   }
 
   public createGroupAction(leader: Character, members: Character[]): GroupAction {
-    return createGroupAction(leader, members);
+    return createGroupActionWrapper(leader, members);
   }
 
   public executeGroupRangedAttack(
@@ -525,11 +329,16 @@ export class GameManager {
     weapon: Item,
     options: Parameters<GameManager['executeRangedAttack']>[3] = {}
   ) {
-    const context = buildGroupActionContext(options.context ?? {});
-    return this.executeRangedAttack(group.leader, defender, weapon, {
-      ...options,
-      context,
-    });
+    return executeGroupRangedAttack(
+      {
+        executeRangedAttack: (attacker: Character, target: Character, rangedWeapon: Item, actionOptions) =>
+          this.executeRangedAttack(attacker, target, rangedWeapon, actionOptions as any),
+      },
+      group,
+      defender,
+      weapon,
+      options
+    );
   }
 
   public executeGroupCloseCombatAttack(
@@ -538,11 +347,16 @@ export class GameManager {
     weapon: Item,
     options: Parameters<GameManager['executeCloseCombatAttack']>[3] = {}
   ) {
-    const context = buildGroupActionContext(options.context ?? {});
-    return this.executeCloseCombatAttack(group.leader, defender, weapon, {
-      ...options,
-      context,
-    });
+    return executeGroupCloseCombatAttack(
+      {
+        executeCloseCombatAttack: (attacker: Character, target: Character, meleeWeapon: Item, actionOptions) =>
+          this.executeCloseCombatAttack(attacker, target, meleeWeapon, actionOptions as any),
+      },
+      group,
+      defender,
+      weapon,
+      options
+    );
   }
 
   public executeOverwatchReact(
@@ -551,76 +365,14 @@ export class GameManager {
     weapon: Item,
     options: { context?: TestContext; visibilityOrMu?: number } = {}
   ) {
-    if (!this.battlefield) {
-      throw new Error('Battlefield not set.');
-    }
-    if (!reactor.state.isWaiting) {
-      return { executed: false, reason: 'Requires Wait status.' };
-    }
-    if (this.reactingNow.has(reactor.id)) {
-      return { executed: false, reason: 'Already reacting.' };
-    }
-    if (this.reactedThisTurn.has(reactor.id)) {
-      return { executed: false, reason: 'Already reacted this turn.' };
-    }
-
-    const reactorPos = this.getCharacterPosition(reactor);
-    const targetPos = this.getCharacterPosition(target);
-    if (!reactorPos || !targetPos) {
-      return { executed: false, reason: 'Missing positions.' };
-    }
-
-    const reactorModel = {
-      id: reactor.id,
-      position: reactorPos,
-      baseDiameter: getBaseDiameterFromSiz(reactor.finalAttributes.siz ?? reactor.attributes.siz ?? 3),
-      siz: reactor.finalAttributes.siz ?? reactor.attributes.siz ?? 3,
-    };
-    const targetModel = {
-      id: target.id,
-      position: targetPos,
-      baseDiameter: getBaseDiameterFromSiz(target.finalAttributes.siz ?? target.attributes.siz ?? 3),
-      siz: target.finalAttributes.siz ?? target.attributes.siz ?? 3,
-    };
-    if (!SpatialRules.hasLineOfSight(this.battlefield, reactorModel, targetModel)) {
-      return { executed: false, reason: 'Requires LOS.' };
-    }
-
-    this.reactingNow.add(reactor.id);
-    this.applyInterruptCost(reactor);
-    this.reactedThisTurn.add(reactor.id);
-
-    const result = this.executeRangedAttack(reactor, target, weapon, {
-      attacker: reactorModel,
-      target: targetModel,
-      context: options.context,
-    });
-
-    this.reactingNow.delete(reactor.id);
-    return { executed: true, result };
+    return runOverwatchReact(this.reactActionDeps(), reactor, target, weapon, options);
   }
 
   public executeReactAction(
     reactor: Character,
     action: () => unknown
   ) {
-    if (!reactor.state.isWaiting) {
-      return { executed: false, reason: 'Requires Wait status.' };
-    }
-    if (this.reactingNow.has(reactor.id)) {
-      return { executed: false, reason: 'Already reacting.' };
-    }
-    if (this.reactedThisTurn.has(reactor.id)) {
-      return { executed: false, reason: 'Already reacted this turn.' };
-    }
-
-    this.reactingNow.add(reactor.id);
-    this.applyInterruptCost(reactor);
-    this.reactedThisTurn.add(reactor.id);
-
-    const result = action();
-    this.reactingNow.delete(reactor.id);
-    return { executed: true, result };
+    return runReactAction(this.reactActionDeps(), reactor, action);
   }
 
   public executeDisengage(
@@ -635,64 +387,18 @@ export class GameManager {
       bonusActionOpponents?: Character[];
     } = {}
   ) {
-    if (!this.battlefield) {
-      throw new Error('Battlefield not set.');
-    }
-    if (!defender.state.isOrdered) {
-      return { pass: false, reason: 'Defender must be Ordered.' };
-    }
-    const result = makeDisengageAction(disengager, defender, defenderWeapon, options.context ?? {});
-    if (!result.pass) {
-      return { pass: false, result };
-    }
-
-    const disengagerPos = this.getCharacterPosition(disengager);
-    const defenderPos = this.getCharacterPosition(defender);
-    if (!disengagerPos || !defenderPos) {
-      return { pass: true, result, moved: false };
-    }
-    const mov = disengager.finalAttributes.mov ?? disengager.attributes.mov ?? 0;
-    const direction = this.normalizeVector({
-      x: disengagerPos.x - defenderPos.x,
-      y: disengagerPos.y - defenderPos.y,
-    });
-    const destination = options.moveEnd ?? (direction ? {
-      x: disengagerPos.x + direction.x * mov,
-      y: disengagerPos.y + direction.y * mov,
-    } : disengagerPos);
-    const moved = this.moveCharacter(disengager, destination);
-
-    let bonusActionOptions: ReturnType<typeof buildBonusActionOptions> | undefined;
-    let bonusActionOutcome: BonusActionOutcome | undefined;
-    const allowBonusActions = options.allowBonusActions ?? true;
-    if (allowBonusActions) {
-      bonusActionOptions = buildBonusActionOptions({
+    return executeDisengageAction(
+      {
         battlefield: this.battlefield,
-        attacker: disengager,
-        target: defender,
-        cascades: result.testResult.cascades ?? 0,
-        isCloseCombat: true,
-        engaged: false,
-      });
-      if (options.bonusAction) {
-        bonusActionOutcome = applyBonusAction(
-          {
-            battlefield: this.battlefield,
-            attacker: disengager,
-            target: defender,
-            cascades: result.testResult.cascades ?? 0,
-            isCloseCombat: true,
-            engaged: false,
-          },
-          { ...options.bonusAction, opponents: options.bonusActionOpponents }
-        );
-        if (bonusActionOutcome.refreshApplied) {
-          this.applyRefresh(disengager);
-        }
-      }
-    }
-
-    return { pass: true, result, moved, moveEnd: moved ? destination : undefined, bonusActionOptions, bonusActionOutcome };
+        getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+        moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
+        applyRefresh: (character: Character) => this.applyRefresh(character),
+      },
+      disengager,
+      defender,
+      defenderWeapon,
+      options
+    );
   }
 
   public executeMove(
@@ -703,42 +409,17 @@ export class GameManager {
     if (!this.battlefield) {
       throw new Error('Battlefield not set.');
     }
-    const start = this.getCharacterPosition(mover);
-    if (!start) {
-      throw new Error('Missing mover position.');
-    }
-    const moved = this.moveCharacter(mover, destination);
-    if (!moved) {
-      return { moved: false };
-    }
-
-    let opportunity: { attacker: Character; result: ReturnType<GameManager['executeCloseCombatAttack']> } | null = null;
-    if (options.allowOpportunityAttack && options.opponents?.length && options.opportunityWeapon) {
-      for (const opponent of options.opponents) {
-        if (!opponent.state.isAttentive || !opponent.state.isOrdered) continue;
-        const opponentPos = this.getCharacterPosition(opponent);
-        if (!opponentPos) continue;
-        const wasEngaged = SpatialRules.isEngaged(
-          { id: mover.id, position: start, baseDiameter: getBaseDiameterFromSiz(mover.finalAttributes.siz), siz: mover.finalAttributes.siz },
-          { id: opponent.id, position: opponentPos, baseDiameter: getBaseDiameterFromSiz(opponent.finalAttributes.siz), siz: opponent.finalAttributes.siz }
-        );
-        const nowEngaged = SpatialRules.isEngaged(
-          { id: mover.id, position: destination, baseDiameter: getBaseDiameterFromSiz(mover.finalAttributes.siz), siz: mover.finalAttributes.siz },
-          { id: opponent.id, position: opponentPos, baseDiameter: getBaseDiameterFromSiz(opponent.finalAttributes.siz), siz: opponent.finalAttributes.siz }
-        );
-        if (wasEngaged && !nowEngaged) {
-          const result = this.executeCloseCombatAttack(opponent, mover, options.opportunityWeapon, {
-            attacker: { id: opponent.id, position: opponentPos, baseDiameter: getBaseDiameterFromSiz(opponent.finalAttributes.siz), siz: opponent.finalAttributes.siz },
-            target: { id: mover.id, position: destination, baseDiameter: getBaseDiameterFromSiz(mover.finalAttributes.siz), siz: mover.finalAttributes.siz },
-            allowBonusActions: true,
-          });
-          opportunity = { attacker: opponent, result };
-          break;
-        }
-      }
-    }
-
-    return { moved: true, opportunityAttack: opportunity };
+    return executeMoveAction(
+      {
+        getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+        moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
+        executeCloseCombatAttack: (attacker: Character, defender: Character, weapon: Item, actionOptions) =>
+          this.executeCloseCombatAttack(attacker, defender, weapon, actionOptions as any),
+      },
+      mover,
+      destination,
+      options
+    );
   }
 
   public executeRally(
@@ -746,18 +427,7 @@ export class GameManager {
     target: Character,
     options: { context?: TestContext; rolls?: number[] } = {}
   ) {
-    if (this.rallyUsed.has(target.id)) {
-      return { success: false, reason: 'Target already rallied this turn.' };
-    }
-    const result = resolveTest({ character: target, attribute: 'pow', bonusDice: options.context?.isFocusing ? { wild: 1 } : undefined }, { isSystemPlayer: true }, options.rolls ?? null);
-    if (!result.pass) {
-      return { success: false, result };
-    }
-    const cascades = result.cascades ?? 0;
-    target.state.fearTokens = Math.max(0, target.state.fearTokens - cascades);
-    target.refreshStatusFlags();
-    this.rallyUsed.add(target.id);
-    return { success: true, result, fearRemoved: cascades };
+    return executeRallyAction(this.simpleActionDeps(), actor, target, options);
   }
 
   public executeRevive(
@@ -765,35 +435,7 @@ export class GameManager {
     target: Character,
     options: { context?: TestContext; rolls?: number[] } = {}
   ) {
-    if (this.reviveUsed.has(target.id)) {
-      return { success: false, reason: 'Target already revived this turn.' };
-    }
-    const result = resolveTest({ character: target, attribute: 'for' }, { isSystemPlayer: true }, options.rolls ?? null);
-    if (!result.pass) {
-      return { success: false, result };
-    }
-    let cascades = result.cascades ?? 0;
-    if (target.state.isKOd) {
-      const siz = target.finalAttributes.siz ?? target.attributes.siz ?? 3;
-      const delayTokens = Math.max(2, siz);
-      target.state.isKOd = false;
-      target.state.isEliminated = false;
-      target.state.delayTokens = 2;
-      target.state.wounds += Math.max(0, delayTokens - 2);
-      this.setCharacterStatus(target.id, CharacterStatus.Done);
-    }
-
-    while (cascades > 0 && target.state.delayTokens > 0) {
-      target.state.delayTokens -= 1;
-      cascades -= 1;
-    }
-    while (cascades >= 2 && target.state.wounds > 0) {
-      target.state.wounds -= 1;
-      cascades -= 2;
-    }
-    target.refreshStatusFlags();
-    this.reviveUsed.add(target.id);
-    return { success: true, result };
+    return executeReviveAction(this.simpleActionDeps(), actor, target, options);
   }
 
   public executeFiddle(
@@ -807,37 +449,11 @@ export class GameManager {
       usesOneLessHand?: boolean;
     } = {}
   ) {
-    const free = !this.freeFiddleUsed.has(actor.id);
-    const apCost = free ? 0 : 1;
-    if (options.spendAp ?? true) {
-      if (apCost > 0 && !this.spendAp(actor, apCost)) {
-        return { success: false, reason: 'Not enough AP.' };
-      }
-    }
-    this.freeFiddleUsed.add(actor.id);
-    if (!options.attribute || options.difficulty === undefined) {
-      return { success: true };
-    }
-    const attributeValue = actor.finalAttributes[options.attribute] ?? 0;
-    const penaltyDice = options.usesOneLessHand ? { base: 1 } : undefined;
-    const result = resolveTest(
-      { attributeValue, penaltyDice },
-      { attributeValue: options.difficulty },
-      options.rolls ?? null,
-      options.opponentRolls ?? null
-    );
-    return { success: result.pass, result };
+    return executeFiddleAction(this.simpleActionDeps(), actor, options);
   }
 
   public executeWait(actor: Character, options: { spendAp?: boolean; maintain?: boolean } = {}) {
-    const cost = options.maintain ? 1 : 2;
-    if (options.spendAp ?? true) {
-      if (!this.spendAp(actor, cost)) {
-        return { success: false, reason: 'Not enough AP.' };
-      }
-    }
-    this.setWaiting(actor);
-    return { success: true };
+    return executeWaitAction(this.simpleActionDeps(), actor, options);
   }
 
   public buildConcentrateContext(target: 'hit' | 'damage' | 'any' = 'hit'): TestContext {
@@ -846,7 +462,7 @@ export class GameManager {
 
   public getAttackApCost(attacker: Character, weapon: Item): number {
     if (!this.battlefield) return 1;
-    if (!this.hasItemTraitOnWeapon(weapon, 'Awkward')) return 1;
+    if (!hasItemTraitOnWeapon(weapon, 'Awkward')) return 1;
     const attackerPos = this.getCharacterPosition(attacker);
     if (!attackerPos) return 1;
     const attackerModel = {
@@ -868,17 +484,16 @@ export class GameManager {
     action: () => unknown,
     options: { spendAp?: boolean } = {}
   ) {
-    if (options.spendAp ?? true) {
-      if (!this.spendAp(actor, 2)) {
-        return { success: false, reason: 'Not enough AP.' };
-      }
-    }
-    const moved = this.moveCharacter(actor, moveEnd);
-    if (!moved) {
-      return { success: false, reason: 'Move failed.' };
-    }
-    const actionResult = action();
-    return { success: true, moved: true, actionResult };
+    return runCombinedAction(
+      {
+        spendAp: (character: Character, amount: number) => this.spendAp(character, amount),
+        moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
+      },
+      actor,
+      moveEnd,
+      action,
+      options
+    );
   }
 
   public executeIndirectAttack(
@@ -887,33 +502,7 @@ export class GameManager {
     orm: number,
     options: Partial<ActionContextInput> & { context?: TestContext; targetCharacter?: Character } = {}
   ) {
-    if (!this.battlefield) {
-      throw new Error('Battlefield not set.');
-    }
-    const attackerPos = options.attacker?.position ?? this.getCharacterPosition(attacker);
-    if (!attackerPos || !options.target?.position) {
-      throw new Error('Missing attacker or target position.');
-    }
-    const spatial: ActionContextInput = {
-      battlefield: this.battlefield,
-      attacker: {
-        id: attacker.id,
-        position: attackerPos,
-        baseDiameter: getBaseDiameterFromSiz(attacker.finalAttributes.siz),
-        siz: attacker.finalAttributes.siz,
-      },
-      target: options.target,
-      optimalRangeMu: options.optimalRangeMu,
-      orm,
-      attackerEngagedOverride: options.attackerEngagedOverride,
-      isLeaning: options.isLeaning,
-      isTargetLeaning: options.isTargetLeaning,
-      lofWidthMu: options.lofWidthMu,
-    };
-
-    const context = buildRangedActionContext(spatial);
-    const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
-    return makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial, options.targetCharacter);
+    return runIndirectAttack(this.combatActionDeps(), attacker, weapon, orm, options);
   }
 
   public executeTransfixAction(
@@ -921,48 +510,15 @@ export class GameManager {
     targets: Character[],
     options: { rating?: number; testRolls?: Record<string, number[]>; spendDelay?: boolean } = {}
   ) {
-    if (!this.battlefield) {
-      throw new Error('Battlefield not set.');
-    }
-    const sourcePos = this.getCharacterPosition(source);
-    if (!sourcePos) {
-      throw new Error('Missing source position.');
-    }
-    if (!source.state.isAttentive || !source.state.isOrdered) {
-      return [];
-    }
-    if (this.transfixUsed.has(source.id)) {
-      return [];
-    }
-    if (options.spendDelay ?? true) {
-      source.state.delayTokens += 1;
-      source.refreshStatusFlags();
-    }
-    this.transfixUsed.add(source.id);
-
-    const targetModels: TransfixTarget[] = targets
-      .map(target => {
-        const pos = this.getCharacterPosition(target);
-        if (!pos) return null;
-        return {
-          character: target,
-          position: pos,
-          baseDiameter: getBaseDiameterFromSiz(target.finalAttributes.siz),
-        };
-      })
-      .filter(Boolean) as TransfixTarget[];
-
-    return resolveTransfixEffect(
-      this.battlefield,
+    return runTransfixAction(
       {
-        id: source.id,
-        character: source,
-        position: sourcePos,
-        baseDiameter: getBaseDiameterFromSiz(source.finalAttributes.siz),
-        siz: source.finalAttributes.siz,
+        battlefield: this.battlefield,
+        getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+        transfixUsed: this.transfixUsed,
       },
-      targetModels,
-      { rating: options.rating, testRolls: options.testRolls }
+      source,
+      targets,
+      options
     );
   }
 
@@ -980,166 +536,7 @@ export class GameManager {
       bonusActionOpponents?: Character[];
     } = {}
   ) {
-    if (!this.battlefield) {
-      throw new Error('Battlefield not set.');
-    }
-    const attackerPos = options.attacker?.position ?? this.getCharacterPosition(attacker);
-    const defenderPos = options.target?.position ?? this.getCharacterPosition(defender);
-    if (!attackerPos || !defenderPos) {
-      throw new Error('Missing attacker or defender position.');
-    }
-    const spatial: CloseCombatContextInput = {
-      battlefield: this.battlefield,
-      attacker: {
-        id: attacker.id,
-        position: attackerPos,
-        baseDiameter: getBaseDiameterFromSiz(attacker.finalAttributes.siz),
-        siz: attacker.finalAttributes.siz,
-      },
-      target: {
-        id: defender.id,
-        position: defenderPos,
-        baseDiameter: getBaseDiameterFromSiz(defender.finalAttributes.siz),
-        siz: defender.finalAttributes.siz,
-      },
-      moveStart: options.moveStart,
-      moveEnd: options.moveEnd,
-      movedOverClear: options.movedOverClear,
-      wasFreeAtStart: options.wasFreeAtStart,
-      imprecisionMu: options.imprecisionMu,
-      attackerElevationMu: options.attackerElevationMu,
-      targetElevationMu: options.targetElevationMu,
-      attackerBaseHeightMu: options.attackerBaseHeightMu,
-      targetBaseHeightMu: options.targetBaseHeightMu,
-      opposingModels: options.opposingModels,
-    };
-
-    const context = buildCloseCombatActionContext(spatial);
-    const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
-    if (!attacker.state.isAttentive) {
-      mergedContext.isOverreach = false;
-      mergedContext.isLeaning = false;
-    }
-    if (!defender.state.isAttentive) {
-      mergedContext.isTargetLeaning = false;
-      mergedContext.isDefending = false;
-    }
-    if (options.defend && defender.state.isAttentive) {
-      mergedContext.isDefending = true;
-    }
-    if (attacker.state.isHidden && mergedContext.hasSuddenness !== false) {
-      mergedContext.hasSuddenness = true;
-    }
-    if (defender.state.isHidden && !mergedContext.forceHit) {
-      mergedContext.forceMiss = true;
-    }
-    if (mergedContext.isCharge && this.hasItemTrait(defender, 'Awkward')) {
-      const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
-      const defenderSiz = defender.finalAttributes.siz ?? defender.attributes.siz ?? 3;
-      if (attackerSiz >= defenderSiz - 3) {
-        defender.state.delayTokens += 1;
-        defender.refreshStatusFlags();
-      }
-    }
-    const hitTestResult = resolveCloseCombatHitTest(attacker, defender, weapon, mergedContext);
-    const forcedMiss = mergedContext.forceMiss && !mergedContext.forceHit;
-    const hit = (hitTestResult.score > 0 || mergedContext.forceHit) && !forcedMiss;
-    if (!hit) {
-      if (options.defend && defender.state.isAttentive) {
-        this.applyPassiveOptionCost(defender);
-      }
-      return { hit: false, hitTestResult };
-    }
-
-    if (weapon.traits?.length) {
-      const cascades = hitTestResult.cascades ?? 0;
-      for (const trait of weapon.traits) {
-        const parsed = parseStatusTrait(trait);
-        if (!parsed) continue;
-        applyStatusTraitOnHit(defender, parsed.traitName, {
-          cascades,
-          rating: parsed.rating,
-          impact: weapon.impact ?? 0,
-        });
-      }
-    }
-
-    let bonusActionOptions: ReturnType<typeof buildBonusActionOptions> | undefined;
-    let bonusActionOutcome: BonusActionOutcome | undefined;
-    const allowBonusActions = options.allowBonusActions ?? true;
-    if (allowBonusActions) {
-      const attackerModel = this.buildSpatialModel(attacker);
-      const defenderModel = this.buildSpatialModel(defender);
-      const engaged = attackerModel && defenderModel ? SpatialRules.isEngaged(attackerModel, defenderModel) : false;
-      bonusActionOptions = buildBonusActionOptions({
-        battlefield: this.battlefield,
-        attacker,
-        target: defender,
-        cascades: hitTestResult.cascades ?? 0,
-        isCloseCombat: true,
-        isCharge: mergedContext.isCharge,
-        engaged,
-      });
-      if (options.bonusAction) {
-        bonusActionOutcome = applyBonusAction(
-          {
-            battlefield: this.battlefield,
-            attacker,
-            target: defender,
-            cascades: hitTestResult.cascades ?? 0,
-            isCloseCombat: true,
-            isCharge: mergedContext.isCharge,
-            engaged,
-          },
-          { ...options.bonusAction, opponents: options.bonusActionOpponents }
-        );
-        if (bonusActionOutcome.refreshApplied) {
-          this.applyRefresh(attacker);
-        }
-      }
-    }
-
-    let allowDamage = true;
-    const updatedAttacker = this.buildSpatialModel(attacker);
-    const updatedDefender = this.buildSpatialModel(defender);
-    if (updatedAttacker && updatedDefender) {
-      allowDamage = SpatialRules.isEngaged(updatedAttacker, updatedDefender);
-    }
-
-    let damageResolution: DamageResolution | undefined;
-    if (allowDamage) {
-      damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult as unknown as ResolveTestResult, mergedContext);
-      defender.state.wounds = damageResolution.defenderState.wounds;
-      defender.state.delayTokens = damageResolution.defenderState.delayTokens;
-      defender.state.isKOd = damageResolution.defenderState.isKOd;
-      defender.state.isEliminated = damageResolution.defenderState.isEliminated;
-    }
-
-    if (weapon.traits?.includes('[Reveal]')) {
-      attacker.state.isHidden = false;
-    }
-    if (damageResolution) {
-      const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-      applyFearFromWounds(defender, woundsAdded);
-      if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
-        if (this.battlefield && options.moraleAllies) {
-          applyFearFromAllyKO(this.battlefield, defender, options.moraleAllies, options.moraleOptions);
-        }
-      }
-      this.applyKOCleanup(defender);
-    }
-
-    if (options.defend && defender.state.isAttentive && !bonusActionOutcome?.executed) {
-      this.applyPassiveOptionCost(defender);
-    }
-
-    return {
-      hit: true,
-      hitTestResult,
-      damageResolution,
-      bonusActionOptions,
-      bonusActionOutcome,
-    };
+    return runCloseCombatAttack(this.combatActionDeps(), attacker, defender, weapon, options);
   }
 
   public executeCounterStrike(
@@ -1149,58 +546,7 @@ export class GameManager {
     hitTestResult: ResolveTestResult,
     options: { context?: TestContext; requireTrait?: boolean; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ): CounterStrikeResult {
-    if (!this.battlefield) {
-      return { executed: false, reason: 'Battlefield not set.' };
-    }
-    if (!defender.state.isAttentive || !defender.state.isOrdered) {
-      return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
-    }
-    const requireTrait = options.requireTrait ?? true;
-    const hasTrait = getCharacterTraitLevel(defender, 'Counter-strike!') > 0
-      || getCharacterTraitLevel(defender, 'Counter-strike') > 0;
-    if (requireTrait && !hasTrait) {
-      return { executed: false, reason: 'Requires Counter-strike! trait.' };
-    }
-    if (hitTestResult.score > 0) {
-      return { executed: false, reason: 'Hit Test did not fail.' };
-    }
-
-    const defenderModel = this.buildSpatialModel(defender);
-    const attackerModel = this.buildSpatialModel(attacker);
-    if (!defenderModel || !attackerModel) {
-      return { executed: false, reason: 'Missing positions.' };
-    }
-    if (!SpatialRules.isEngaged(attackerModel, defenderModel)) {
-      return { executed: false, reason: 'Requires melee engagement.' };
-    }
-
-    const cost = this.applyInterruptCost(defender);
-    const carryOverDice = hitTestResult.p2Result?.carryOverDice ?? {};
-    const counterHitResult = { carryOverDice } as unknown as ResolveTestResult;
-
-    const damageResolution = resolveDamage(defender, attacker, weapon, counterHitResult, options.context ?? {});
-    attacker.state.wounds = damageResolution.defenderState.wounds;
-    attacker.state.delayTokens = damageResolution.defenderState.delayTokens;
-    attacker.state.isKOd = damageResolution.defenderState.isKOd;
-    attacker.state.isEliminated = damageResolution.defenderState.isEliminated;
-    if (damageResolution) {
-      const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-      applyFearFromWounds(attacker, woundsAdded);
-      if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
-        if (this.battlefield && options.moraleAllies) {
-          applyFearFromAllyKO(this.battlefield, attacker, options.moraleAllies, options.moraleOptions);
-        }
-      }
-      this.applyKOCleanup(attacker);
-    }
-
-    return {
-      executed: true,
-      damageResolution,
-      bonusActionEligible: Boolean(damageResolution.damageTestResult?.pass),
-      removedWait: cost.removedWait,
-      delayAdded: cost.delayAdded,
-    };
+    return runCounterStrike(this.counterActionDeps(), defender, attacker, weapon, hitTestResult, options);
   }
 
   public executeCounterFire(
@@ -1210,68 +556,7 @@ export class GameManager {
     hitTestResult: ResolveTestResult,
     options: { context?: TestContext; visibilityOrMu?: number; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ): CounterFireResult {
-    if (!this.battlefield) {
-      return { executed: false, reason: 'Battlefield not set.' };
-    }
-    if (!defender.state.isAttentive || !defender.state.isOrdered) {
-      return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
-    }
-    if (hitTestResult.score > 0) {
-      return { executed: false, reason: 'Hit Test did not fail.' };
-    }
-    const defenderModel = this.buildSpatialModel(defender);
-    const attackerModel = this.buildSpatialModel(attacker);
-    if (!defenderModel || !attackerModel) {
-      return { executed: false, reason: 'Missing positions.' };
-    }
-    if (SpatialRules.isEngaged(attackerModel, defenderModel)) {
-      return { executed: false, reason: 'Requires defender to be Free.' };
-    }
-    if (attacker.state.isHidden) {
-      return { executed: false, reason: 'Requires Revealed attacker.' };
-    }
-    const hasLOS = SpatialRules.hasLineOfSight(this.battlefield, defenderModel, attackerModel);
-    if (!hasLOS) {
-      return { executed: false, reason: 'Requires LOS.' };
-    }
-    const visibilityOrMu = options.visibilityOrMu ?? 16;
-    const edgeDistance = SpatialRules.distanceEdgeToEdge(defenderModel, attackerModel);
-    if (edgeDistance > visibilityOrMu) {
-      return { executed: false, reason: 'Requires target within Visibility.' };
-    }
-    const defenderRef = defender.finalAttributes.ref ?? defender.attributes.ref ?? 0;
-    const attackerRef = attacker.finalAttributes.ref ?? attacker.attributes.ref ?? 0;
-    if (defenderRef < attackerRef) {
-      return { executed: false, reason: 'Requires defender REF >= attacker REF.' };
-    }
-
-    const cost = this.applyInterruptCost(defender);
-    const carryOverDice = hitTestResult.p2Result?.carryOverDice ?? {};
-    const counterHitResult = { carryOverDice } as unknown as ResolveTestResult;
-
-    const damageResolution = resolveDamage(defender, attacker, weapon, counterHitResult, options.context ?? {});
-    attacker.state.wounds = damageResolution.defenderState.wounds;
-    attacker.state.delayTokens = damageResolution.defenderState.delayTokens;
-    attacker.state.isKOd = damageResolution.defenderState.isKOd;
-    attacker.state.isEliminated = damageResolution.defenderState.isEliminated;
-    if (damageResolution) {
-      const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-      applyFearFromWounds(attacker, woundsAdded);
-      if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
-        if (this.battlefield && options.moraleAllies) {
-          applyFearFromAllyKO(this.battlefield, attacker, options.moraleAllies, options.moraleOptions);
-        }
-      }
-      this.applyKOCleanup(attacker);
-    }
-
-    return {
-      executed: true,
-      damageResolution,
-      bonusActionEligible: Boolean(damageResolution.damageTestResult?.pass),
-      removedWait: cost.removedWait,
-      delayAdded: cost.delayAdded,
-    };
+    return runCounterFire(this.counterActionDeps(), defender, attacker, weapon, hitTestResult, options);
   }
 
   public executeCounterAction(
@@ -1280,35 +565,7 @@ export class GameManager {
     hitTestResult: ResolveTestResult,
     options: { attackType?: 'melee' | 'ranged'; carryOverRolls?: number[] } = {}
   ): CounterActionResult {
-    if (!defender.state.isAttentive || !defender.state.isOrdered) {
-      return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
-    }
-    if (hitTestResult.score > 0) {
-      return { executed: false, reason: 'Hit Test did not fail.' };
-    }
-    const carryOverDice = hitTestResult.p2Result?.carryOverDice ?? {};
-    const carryOverCount = this.countDice(carryOverDice);
-    if (carryOverCount <= 0) {
-      return { executed: false, reason: 'Requires carry-over from the failed Hit Test.', carryOverDice };
-    }
-    if (options.attackType === 'ranged') {
-      const defenderRef = defender.finalAttributes.ref ?? defender.attributes.ref ?? 0;
-      const attackerRef = attacker.finalAttributes.ref ?? attacker.attributes.ref ?? 0;
-      if (defenderRef < attackerRef) {
-        return { executed: false, reason: 'Requires defender REF >= attacker REF.', carryOverDice };
-      }
-    }
-
-    const cost = this.applyInterruptCost(defender);
-    const bonusActionCascades = this.resolveCarryOverSuccesses(carryOverDice, options.carryOverRolls);
-
-    return {
-      executed: true,
-      bonusActionCascades,
-      carryOverDice,
-      removedWait: cost.removedWait,
-      delayAdded: cost.delayAdded,
-    };
+    return runCounterAction(this.counterActionDeps(), defender, attacker, hitTestResult, options);
   }
 
   public executeCounterCharge(
@@ -1316,133 +573,35 @@ export class GameManager {
     target: Character,
     options: { visibilityOrMu?: number; moveApSpent?: number; moveEnd?: Position } = {}
   ): CounterChargeResult {
-    if (!this.battlefield) {
-      return { executed: false, reason: 'Battlefield not set.' };
-    }
-    if (!observer.state.isAttentive || !observer.state.isOrdered) {
-      return { executed: false, reason: 'Requires Attentive+Ordered observer.' };
-    }
-    const observerModel = this.buildSpatialModel(observer);
-    const targetModel = this.buildSpatialModel(target);
-    if (!observerModel || !targetModel) {
-      return { executed: false, reason: 'Missing positions.' };
-    }
-    const hasLOS = SpatialRules.hasLineOfSight(this.battlefield, observerModel, targetModel);
-    if (!hasLOS) {
-      return { executed: false, reason: 'Requires LOS.' };
-    }
-    const visibilityOrMu = options.visibilityOrMu ?? 16;
-    const edgeDistance = SpatialRules.distanceEdgeToEdge(observerModel, targetModel);
-    if (edgeDistance > visibilityOrMu) {
-      return { executed: false, reason: 'Requires target within Visibility.' };
-    }
-
-    const observerRef = observer.finalAttributes.ref ?? observer.attributes.ref ?? 0;
-    const targetMov = target.finalAttributes.mov ?? target.attributes.mov ?? 0;
-    const requiredAp = observerRef > targetMov ? 1 : 2;
-    const moveApSpent = options.moveApSpent ?? 2;
-    if (moveApSpent < requiredAp) {
-      return { executed: false, reason: 'Requires target to spend enough AP on movement.' };
-    }
-
-    const moveLimit = observer.finalAttributes.mov ?? observer.attributes.mov ?? 0;
-    const desiredPosition = options.moveEnd ?? this.resolveEngagePosition(observerModel, targetModel, moveLimit);
-    if (!desiredPosition) {
-      return { executed: false, reason: 'Unable to reach engagement.' };
-    }
-    const moved = this.moveCharacter(observer, desiredPosition);
-    if (!moved) {
-      return { executed: false, reason: 'Move blocked.' };
-    }
-
-    const updatedObserver = this.buildSpatialModel(observer);
-    if (!updatedObserver || !SpatialRules.isEngaged(updatedObserver, targetModel)) {
-      return { executed: false, reason: 'Move did not engage target.' };
-    }
-
-    const cost = this.applyInterruptCost(observer);
-    return {
-      executed: true,
-      moved: true,
-      newPosition: desiredPosition,
-      removedWait: cost.removedWait,
-      delayAdded: cost.delayAdded,
-    };
+    return runCounterCharge(this.counterActionDeps(), observer, target, options);
   }
 
   private buildSpatialModel(character: Character): SpatialModel | null {
-    if (!this.battlefield) return null;
-    const position = this.getCharacterPosition(character);
-    if (!position) return null;
-    const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
-    return {
-      id: character.id,
-      position,
-      baseDiameter: getBaseDiameterFromSiz(siz),
-      siz,
-    };
+    return runBuildSpatialModel(this.battlefield, (target: Character) => this.getCharacterPosition(target), character);
   }
 
   private applyInterruptCost(character: Character): { removedWait: boolean; delayAdded: boolean } {
-    if (character.state.isWaiting) {
-      character.state.isWaiting = false;
-      this.characterStatus.set(character.id, CharacterStatus.Done);
-      character.refreshStatusFlags();
-      return { removedWait: true, delayAdded: false };
-    }
-    character.state.delayTokens += 1;
-    character.refreshStatusFlags();
-    return { removedWait: false, delayAdded: true };
+    return runInterruptCost(this.interruptDeps(), character);
   }
 
   private applyPassiveOptionCost(character: Character): { removedWait: boolean; delayAdded: boolean } {
-    if (character.state.isWaiting) {
-      character.state.isWaiting = false;
-      this.characterStatus.set(character.id, CharacterStatus.Done);
-      character.refreshStatusFlags();
-      return { removedWait: true, delayAdded: false };
-    }
-    character.state.delayTokens += 1;
-    character.refreshStatusFlags();
-    return { removedWait: false, delayAdded: true };
+    return runPassiveCost(this.interruptDeps(), character);
   }
 
   private applyRefresh(character: Character): boolean {
-    if (this.refreshUsed.has(character.id)) {
-      return false;
-    }
-    if (character.state.delayTokens > 0) {
-      character.state.delayTokens = Math.max(0, character.state.delayTokens - 1);
-    } else if (character.state.isAttentive && character.state.fearTokens > 0) {
-      character.state.fearTokens = Math.max(0, character.state.fearTokens - 1);
-    } else {
-      return false;
-    }
-    character.refreshStatusFlags();
-    this.refreshUsed.add(character.id);
-    return true;
+    return runRefresh(this.interruptDeps(), character);
   }
 
   private normalizeVector(vec: { x: number; y: number }): { x: number; y: number } | null {
-    const length = Math.hypot(vec.x, vec.y);
-    if (length <= 1e-6) return null;
-    return { x: vec.x / length, y: vec.y / length };
+    return runNormalizeVector(vec);
   }
 
   private hasItemTrait(character: Character, trait: string): boolean {
-    const items = [
-      ...(character.profile?.equipment ?? []),
-      ...(character.profile?.items ?? []),
-      ...(character.profile?.inHandItems ?? []),
-      ...(character.profile?.stowedItems ?? []),
-    ];
-    const needle = trait.toLowerCase();
-    return items.some(item => item?.traits?.some(t => t.toLowerCase().includes(needle)));
+    return hasItemTrait(character, trait);
   }
 
   private hasItemTraitOnWeapon(weapon: Item, trait: string): boolean {
-    const needle = trait.toLowerCase();
-    return weapon?.traits?.some(t => t.toLowerCase().includes(needle)) ?? false;
+    return hasItemTraitOnWeapon(weapon, trait);
   }
 
   private resolveEngagePosition(
@@ -1450,23 +609,7 @@ export class GameManager {
     target: SpatialModel,
     moveLimit: number
   ): Position | null {
-    const distance = LOSOperations.distance(mover.position, target.position);
-    const baseContact = (mover.baseDiameter + target.baseDiameter) / 2;
-    const requiredMove = Math.max(0, distance - baseContact);
-    if (requiredMove > moveLimit || distance === 0) {
-      return null;
-    }
-    const dx = target.position.x - mover.position.x;
-    const dy = target.position.y - mover.position.y;
-    const length = Math.hypot(dx, dy);
-    if (length === 0) {
-      return mover.position;
-    }
-    const ratio = requiredMove / length;
-    return {
-      x: mover.position.x + dx * ratio,
-      y: mover.position.y + dy * ratio,
-    };
+    return runResolveEngage(mover, target, moveLimit);
   }
 
   private countDice(dice: TestDice): number {
@@ -1482,53 +625,95 @@ export class GameManager {
   }
 
   private applyKOCleanup(character: Character): void {
-    if (!character.state.isKOd && !character.state.isEliminated) {
-      character.refreshStatusFlags();
-      return;
-    }
-    if (character.state.isKOd) {
-      character.state.delayTokens = 0;
-      character.state.fearTokens = 0;
-      character.state.isWaiting = false;
-      character.state.isHidden = false;
-      this.characterStatus.set(character.id, CharacterStatus.Done);
-    }
-    if (character.state.isEliminated) {
-      character.state.delayTokens = 0;
-      character.state.fearTokens = 0;
-      character.state.isWaiting = false;
-      character.state.isHidden = false;
-      character.state.statusTokens = {};
-      character.state.statusEffects = [];
-      this.characterStatus.set(character.id, CharacterStatus.Done);
-    }
-    character.refreshStatusFlags();
+    runKOCleanup(this.statusCleanupDeps(), character);
   }
 
   private applyOngoingStatusEffects(character: Character): void {
-    if (character.state.isKOd || character.state.isEliminated) {
-      character.refreshStatusFlags();
-      return;
-    }
-    promotePendingStatusTokens(character);
-    const poison = character.state.statusTokens.Poison ?? 0;
-    const burn = character.state.statusTokens.Burn ?? 0;
-    const acid = character.state.statusTokens.Acid ?? 0;
-    const totalWounds = poison + burn + acid;
-    if (totalWounds <= 0) {
-      character.refreshStatusFlags();
-      return;
-    }
+    runOngoingStatus(this.statusCleanupDeps(), character);
+  }
 
-    character.state.wounds += totalWounds;
-    const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
-    if (character.state.wounds >= siz) {
-      character.state.isKOd = true;
-    }
-    if (character.state.wounds >= siz + 3) {
-      character.state.isEliminated = true;
-    }
-    this.applyKOCleanup(character);
+  private counterActionDeps() {
+    return {
+      battlefield: this.battlefield,
+      buildSpatialModel: (character: Character) => this.buildSpatialModel(character),
+      resolveEngagePosition: (mover: SpatialModel, target: SpatialModel, moveLimit: number) =>
+        this.resolveEngagePosition(mover, target, moveLimit),
+      moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
+      applyInterruptCost: (character: Character) => this.applyInterruptCost(character),
+      applyKOCleanup: (character: Character) => this.applyKOCleanup(character),
+      countDice: (dice: TestDice) => this.countDice(dice),
+      resolveCarryOverSuccesses: (dice: TestDice, rolls?: number[]) => this.resolveCarryOverSuccesses(dice, rolls),
+    };
+  }
+
+  private interruptDeps() {
+    return {
+      setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
+      refreshUsed: this.refreshUsed,
+    };
+  }
+
+  private statusCleanupDeps() {
+    return {
+      setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
+    };
+  }
+
+  private activationDeps() {
+    return {
+      apPerActivation: this.apPerActivation,
+      getCharacterStatus: (characterId: string) => this.getCharacterStatus(characterId),
+      setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
+      setActiveCharacterId: (characterId: string | null) => { this.activeCharacterId = characterId; },
+      applyOngoingStatusEffects: (character: Character) => this.applyOngoingStatusEffects(character),
+      clearTransfixUsed: (characterId: string) => { this.transfixUsed.delete(characterId); },
+      clearFiddleUsed: (characterId: string) => { this.freeFiddleUsed.delete(characterId); },
+      getApRemaining: (characterId: string) => this.apRemaining.get(characterId) ?? 0,
+      setApRemaining: (characterId: string, value: number) => { this.apRemaining.set(characterId, value); },
+    };
+  }
+
+  private simpleActionDeps() {
+    return {
+      spendAp: (character: Character, cost: number) => this.spendAp(character, cost),
+      setWaiting: (character: Character) => this.setWaiting(character),
+      setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
+      markRallyUsed: (characterId: string) => { this.rallyUsed.add(characterId); },
+      markReviveUsed: (characterId: string) => { this.reviveUsed.add(characterId); },
+      markFiddleUsed: (characterId: string) => { this.freeFiddleUsed.add(characterId); },
+      hasRallyUsed: (characterId: string) => this.rallyUsed.has(characterId),
+      hasReviveUsed: (characterId: string) => this.reviveUsed.has(characterId),
+      hasFiddleUsed: (characterId: string) => this.freeFiddleUsed.has(characterId),
+    };
+  }
+
+  private combatActionDeps() {
+    return {
+      battlefield: this.battlefield,
+      characters: this.characters,
+      getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+      moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
+      buildSpatialModel: (character: Character) => this.buildSpatialModel(character),
+      applyPassiveOptionCost: (character: Character) => this.applyPassiveOptionCost(character),
+      applyRefresh: (character: Character) => this.applyRefresh(character),
+      applyKOCleanup: (character: Character) => this.applyKOCleanup(character),
+    };
+  }
+
+  private reactActionDeps() {
+    return {
+      battlefield: this.battlefield,
+      reactingNow: this.reactingNow,
+      reactedThisTurn: this.reactedThisTurn,
+      getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+      applyInterruptCost: (character: Character) => this.applyInterruptCost(character),
+      executeRangedAttack: (
+        attacker: Character,
+        defender: Character,
+        weapon: Item,
+        actionOptions: { attacker: SpatialModel; target: SpatialModel; context?: TestContext }
+      ) => this.executeRangedAttack(attacker, defender, weapon, actionOptions as any),
+    };
   }
 
   public evaluateHide(
@@ -1596,17 +781,11 @@ export class GameManager {
       rolls?: number[];
     }>
   ): Record<string, BottleTestResult> {
-    const results: Record<string, BottleTestResult> = {};
-    for (const side of sides) {
-      const result = resolveBottleForSide(side.characters, side.orderedCandidate, side.opposingCount, side.rolls);
-      results[side.id] = result;
-      if (result.bottledOut) {
-        for (const character of side.characters) {
-          character.state.isEliminated = true;
-          this.setCharacterStatus(character.id, CharacterStatus.Done);
-        }
-      }
-    }
-    return results;
+    return runBottleTests(
+      {
+        setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
+      },
+      sides
+    );
   }
 }
