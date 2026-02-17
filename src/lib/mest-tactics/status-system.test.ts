@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { Character } from './Character';
 import type { Profile } from './Profile';
-import { addStatusToken, applyStatusFromTrait, applyStatusTraitOnHit, getStatusDefinitions, getStatusTokenCount, removeStatusToken } from './status-system';
+import { addStatusToken, applyStatusFromTrait, applyStatusTraitOnHit, getStatusDefinitions, getStatusTokenCount, removeStatusToken, getPendingStatusTokenCount, promotePendingStatusTokens } from './status-system';
 
 describe('status-system', () => {
   it('should track status tokens on a character', () => {
@@ -180,6 +180,8 @@ describe('status-system', () => {
     const character = new Character(profile);
     character.state.armor.total = 0;
     applyStatusTraitOnHit(character, 'Poison X', { rating: 5, impact: 0 });
+    expect(getPendingStatusTokenCount(character, 'Poison')).toBe(2);
+    promotePendingStatusTokens(character);
     expect(getStatusTokenCount(character, 'Poison')).toBe(2);
   });
 
@@ -215,6 +217,6 @@ describe('status-system', () => {
     const character = new Character(profile);
     character.state.armor.total = 0;
     applyStatusTraitOnHit(character, 'Poison X', { rating: 2, impact: 0 });
-    expect(getStatusTokenCount(character, 'Poison')).toBe(0);
+    expect(getPendingStatusTokenCount(character, 'Poison')).toBe(0);
   });
 });

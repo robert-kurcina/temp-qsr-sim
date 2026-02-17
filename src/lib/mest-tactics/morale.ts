@@ -78,7 +78,7 @@ export function applyFearFromAllyKO(
 }
 
 export function updateFearState(character: Character): void {
-  character.state.isDisordered = character.state.fearTokens >= 2;
+  character.refreshStatusFlags();
 }
 
 function defaultCohesionRange(character: Character): number {

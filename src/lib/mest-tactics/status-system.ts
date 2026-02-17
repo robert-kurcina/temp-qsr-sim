@@ -76,6 +76,14 @@ export function addStatusToken(character: Character, status: string, count = 1):
   character.state.statusTokens[name] += Math.max(0, count);
 }
 
+export function addPendingStatusToken(character: Character, status: string, count = 1): void {
+  const name = normalizeStatusName(status);
+  if (!character.state.statusPendingTokens[name]) {
+    character.state.statusPendingTokens[name] = 0;
+  }
+  character.state.statusPendingTokens[name] += Math.max(0, count);
+}
+
 export function removeStatusToken(character: Character, status: string, count = 1): void {
   const name = normalizeStatusName(status);
   if (!character.state.statusTokens[name]) return;
@@ -88,6 +96,29 @@ export function removeStatusToken(character: Character, status: string, count = 
 export function getStatusTokenCount(character: Character, status: string): number {
   const name = normalizeStatusName(status);
   return character.state.statusTokens[name] ?? 0;
+}
+
+export function getPendingStatusTokenCount(character: Character, status: string): number {
+  const name = normalizeStatusName(status);
+  return character.state.statusPendingTokens[name] ?? 0;
+}
+
+export function promotePendingStatusTokens(character: Character, status?: string): void {
+  if (status) {
+    const name = normalizeStatusName(status);
+    const pending = character.state.statusPendingTokens[name] ?? 0;
+    if (pending > 0) {
+      addStatusToken(character, name, pending);
+      delete character.state.statusPendingTokens[name];
+    }
+    return;
+  }
+  for (const [name, pending] of Object.entries(character.state.statusPendingTokens)) {
+    if (pending > 0) {
+      addStatusToken(character, name, pending);
+    }
+  }
+  character.state.statusPendingTokens = {};
 }
 
 export function applyStatusFromTrait(
@@ -216,8 +247,8 @@ export function applyStatusTraitOnHit(
       return { applied: false };
     }
     const tokens = Math.max(1, Math.floor(effectiveRating / fortitude));
-    const status = applyStatusFromTrait(defender, traitName, 0, { baseTokens: tokens, perCascades: 0 });
-    return { applied: Boolean(status), status: status ?? undefined };
+    addPendingStatusToken(defender, 'Poison', tokens);
+    return { applied: tokens > 0, status: 'Poison' };
   }
 
   const status = applyStatusFromTrait(defender, traitName, cascades);

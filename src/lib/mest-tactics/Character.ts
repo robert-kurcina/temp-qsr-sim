@@ -28,6 +28,7 @@ export class Character {
     isEliminated: boolean;
     statusEffects: string[];
     statusTokens: Record<string, number>;
+    statusPendingTokens: Record<string, number>;
     armor: ArmorState;
   };
 
@@ -76,8 +77,18 @@ export class Character {
       isEliminated: false,
       statusEffects: [],
       statusTokens: {},
+      statusPendingTokens: {},
       armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 },
     };
+    this.refreshStatusFlags();
+  }
+
+  refreshStatusFlags(): void {
+    const koOrElim = this.state.isKOd || this.state.isEliminated;
+    this.state.isDistracted = this.state.delayTokens > 0;
+    this.state.isDisordered = this.state.fearTokens >= 2;
+    this.state.isAttentive = !koOrElim && !this.state.isDistracted;
+    this.state.isOrdered = !koOrElim && !this.state.isDisordered;
   }
 
   get wounds(): number {

@@ -222,7 +222,7 @@ function runSkirmishDemo(): void {
   const log = controller.runSkirmish(
     sideA.members.map(member => member.character),
     sideB.members.map(member => member.character),
-    { maxTurns: 3 }
+    { maxTurns: 3, enableTakeCover: true }
   );
 
   for (const entry of log) {

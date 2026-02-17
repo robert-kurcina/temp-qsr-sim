@@ -15,7 +15,10 @@ import {
   resolveFriendlyFire,
 } from './battlefield/action-context';
 import { getBaseDiameterFromSiz } from './battlefield/size-utils';
-import { SpatialRules } from './battlefield/spatial-rules';
+import { SpatialRules, type SpatialModel } from './battlefield/spatial-rules';
+import { LOSOperations } from './battlefield/LOSOperations';
+import { d6, performTest } from './dice-roller';
+import type { ResolveTestResult, TestDice } from './dice-roller';
 import {
   attemptHide,
   attemptDetect,
@@ -28,7 +31,45 @@ import {
 } from './concealment';
 import { applyFearFromWounds, applyFearFromAllyKO, MoraleOptions } from './morale';
 import { resolveBottleForSide, BottleTestResult } from './bottle-tests';
-import { resolveTransfixEffect, TransfixTarget } from './status-system';
+import { resolveTransfixEffect, TransfixTarget, promotePendingStatusTokens, getCharacterTraitLevel } from './status-system';
+import { buildActiveToggleOptions, buildPassiveOptions, PassiveEvent, ActiveToggleOption, PassiveOption } from './passive-options';
+import { resolveDamage, DamageResolution } from './subroutines/damage-test';
+
+export interface CounterStrikeResult {
+  executed: boolean;
+  reason?: string;
+  damageResolution?: DamageResolution;
+  bonusActionEligible?: boolean;
+  removedWait?: boolean;
+  delayAdded?: boolean;
+}
+
+export interface CounterFireResult {
+  executed: boolean;
+  reason?: string;
+  damageResolution?: DamageResolution;
+  bonusActionEligible?: boolean;
+  removedWait?: boolean;
+  delayAdded?: boolean;
+}
+
+export interface CounterActionResult {
+  executed: boolean;
+  reason?: string;
+  bonusActionCascades?: number;
+  carryOverDice?: TestDice;
+  removedWait?: boolean;
+  delayAdded?: boolean;
+}
+
+export interface CounterChargeResult {
+  executed: boolean;
+  reason?: string;
+  moved?: boolean;
+  newPosition?: Position;
+  removedWait?: boolean;
+  delayAdded?: boolean;
+}
 
 export class GameManager {
   public characters: Character[];
@@ -43,6 +84,7 @@ export class GameManager {
   private characterStatus: Map<string, CharacterStatus> = new Map();
   private activeCharacterId: string | null = null;
   private apRemaining: Map<string, number> = new Map();
+  private transfixUsed: Set<string> = new Set();
 
   constructor(characters: Character[], battlefield: Battlefield | null = null) {
     this.characters = characters;
@@ -52,7 +94,7 @@ export class GameManager {
 
   private initializeCharacterStatus(): void {
     for (const character of this.characters) {
-      if (character.state.isEliminated) {
+      if (character.state.isEliminated || character.state.isKOd) {
         this.characterStatus.set(character.id, CharacterStatus.Done);
       } else {
         this.characterStatus.set(character.id, CharacterStatus.Ready);
@@ -114,7 +156,7 @@ export class GameManager {
   public startRound(): void {
     this.currentRound += 1;
     for (const character of this.characters) {
-      if (character.state.isEliminated) {
+      if (character.state.isEliminated || character.state.isKOd) {
         this.characterStatus.set(character.id, CharacterStatus.Done);
         continue;
       }
@@ -132,6 +174,8 @@ export class GameManager {
       return 0;
     }
     this.activeCharacterId = character.id;
+    this.transfixUsed.delete(character.id);
+    this.applyOngoingStatusEffects(character);
     if (character.state.isWaiting) {
       character.state.isWaiting = false;
     }
@@ -140,6 +184,7 @@ export class GameManager {
     const apAvailable = Math.max(0, this.apPerActivation - delayTokens);
     const remainingDelay = Math.max(0, delayTokens - this.apPerActivation);
     character.state.delayTokens = remainingDelay;
+    character.refreshStatusFlags();
     this.apRemaining.set(character.id, apAvailable);
     return apAvailable;
   }
@@ -224,18 +269,26 @@ export class GameManager {
     attacker: Character,
     defender: Character,
     weapon: Item,
-    options: Partial<ActionContextInput> & { optimalRangeMu?: number; orm?: number; context?: TestContext; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
+    options: Partial<ActionContextInput> & {
+      optimalRangeMu?: number;
+      orm?: number;
+      context?: TestContext;
+      moraleAllies?: Character[];
+      moraleOptions?: MoraleOptions;
+      allowTakeCover?: boolean;
+      takeCoverPosition?: Position;
+    } = {}
   ) {
     if (!this.battlefield) {
       throw new Error('Battlefield not set.');
     }
     const attackerPos = options.attacker?.position ?? this.getCharacterPosition(attacker);
-    const defenderPos = options.target?.position ?? this.getCharacterPosition(defender);
+    let defenderPos = options.target?.position ?? this.getCharacterPosition(defender);
     if (!attackerPos || !defenderPos) {
       throw new Error('Missing attacker or defender position.');
     }
 
-    const spatial: ActionContextInput = {
+    let spatial: ActionContextInput = {
       battlefield: this.battlefield,
       attacker: {
         id: attacker.id,
@@ -257,6 +310,33 @@ export class GameManager {
       lofWidthMu: options.lofWidthMu,
     };
 
+    let takeCoverResult: { applied: boolean; cancelled: boolean; moved: boolean } | null = null;
+    if (options.allowTakeCover && options.takeCoverPosition) {
+      const engaged = SpatialRules.isEngaged(spatial.attacker, spatial.target);
+      const defenderRef = defender.finalAttributes.ref ?? defender.attributes.ref ?? 0;
+      const attackerRef = attacker.finalAttributes.ref ?? attacker.attributes.ref ?? 0;
+      if (!engaged && defender.state.isAttentive && defender.state.isOrdered && defenderRef >= attackerRef) {
+        const moveLimit = defender.finalAttributes.mov ?? defender.attributes.mov ?? 0;
+        const moveDistance = LOSOperations.distance(defenderPos, options.takeCoverPosition);
+        if (moveDistance <= moveLimit) {
+          const moved = this.moveCharacter(defender, options.takeCoverPosition);
+          if (moved) {
+            defenderPos = options.takeCoverPosition;
+            spatial = {
+              ...spatial,
+              target: {
+                ...spatial.target,
+                position: defenderPos,
+              },
+            };
+            const coverAfter = SpatialRules.getCoverResult(this.battlefield, spatial.attacker, spatial.target);
+            const behindCover = coverAfter.hasDirectCover || coverAfter.hasInterveningCover || !coverAfter.hasLOS;
+            takeCoverResult = { applied: behindCover, cancelled: behindCover && !coverAfter.hasLOS, moved: true };
+          }
+        }
+      }
+    }
+
     const friendlyFire = resolveFriendlyFire(
       spatial,
       this.characters.map(character => {
@@ -275,10 +355,21 @@ export class GameManager {
 
     const context = buildRangedActionContext(spatial);
     const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
+    if (!attacker.state.isAttentive) {
+      mergedContext.isOverreach = false;
+      mergedContext.isLeaning = false;
+    }
+    if (!defender.state.isAttentive) {
+      mergedContext.isTargetLeaning = false;
+    }
     if (attacker.state.isHidden && mergedContext.hasSuddenness !== false) {
       mergedContext.hasSuddenness = true;
     }
     if (defender.state.isHidden && !mergedContext.forceHit) {
+      mergedContext.forceMiss = true;
+    }
+
+    if (takeCoverResult?.cancelled) {
       mergedContext.forceMiss = true;
     }
 
@@ -297,8 +388,17 @@ export class GameManager {
           applyFearFromAllyKO(this.battlefield, defender, options.moraleAllies, options.moraleOptions);
         }
       }
+      this.applyKOCleanup(defender);
     }
-    return { result, context: mergedContext, friendlyFire };
+    return { result, context: mergedContext, friendlyFire, takeCover: takeCoverResult };
+  }
+
+  public getPassiveOptions(event: PassiveEvent): PassiveOption[] {
+    return buildPassiveOptions(event);
+  }
+
+  public getActiveToggleOptions(params: { attacker: Character; weapon?: Item; isEngaged?: boolean }): ActiveToggleOption[] {
+    return buildActiveToggleOptions(params);
   }
 
   public executeIndirectAttack(
@@ -348,9 +448,17 @@ export class GameManager {
     if (!sourcePos) {
       throw new Error('Missing source position.');
     }
+    if (!source.state.isAttentive || !source.state.isOrdered) {
+      return [];
+    }
+    if (this.transfixUsed.has(source.id)) {
+      return [];
+    }
     if (options.spendDelay ?? true) {
       source.state.delayTokens += 1;
+      source.refreshStatusFlags();
     }
+    this.transfixUsed.add(source.id);
 
     const targetModels: TransfixTarget[] = targets
       .map(target => {
@@ -420,6 +528,14 @@ export class GameManager {
 
     const context = buildCloseCombatActionContext(spatial);
     const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
+    if (!attacker.state.isAttentive) {
+      mergedContext.isOverreach = false;
+      mergedContext.isLeaning = false;
+    }
+    if (!defender.state.isAttentive) {
+      mergedContext.isTargetLeaning = false;
+      mergedContext.isDefending = false;
+    }
     if (attacker.state.isHidden && mergedContext.hasSuddenness !== false) {
       mergedContext.hasSuddenness = true;
     }
@@ -438,8 +554,348 @@ export class GameManager {
           applyFearFromAllyKO(this.battlefield, defender, options.moraleAllies, options.moraleOptions);
         }
       }
+      this.applyKOCleanup(defender);
     }
     return result;
+  }
+
+  public executeCounterStrike(
+    defender: Character,
+    attacker: Character,
+    weapon: Item,
+    hitTestResult: ResolveTestResult,
+    options: { context?: TestContext; requireTrait?: boolean; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
+  ): CounterStrikeResult {
+    if (!this.battlefield) {
+      return { executed: false, reason: 'Battlefield not set.' };
+    }
+    if (!defender.state.isAttentive || !defender.state.isOrdered) {
+      return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
+    }
+    const requireTrait = options.requireTrait ?? true;
+    const hasTrait = getCharacterTraitLevel(defender, 'Counter-strike!') > 0
+      || getCharacterTraitLevel(defender, 'Counter-strike') > 0;
+    if (requireTrait && !hasTrait) {
+      return { executed: false, reason: 'Requires Counter-strike! trait.' };
+    }
+    if (hitTestResult.score > 0) {
+      return { executed: false, reason: 'Hit Test did not fail.' };
+    }
+
+    const defenderModel = this.buildSpatialModel(defender);
+    const attackerModel = this.buildSpatialModel(attacker);
+    if (!defenderModel || !attackerModel) {
+      return { executed: false, reason: 'Missing positions.' };
+    }
+    if (!SpatialRules.isEngaged(attackerModel, defenderModel)) {
+      return { executed: false, reason: 'Requires melee engagement.' };
+    }
+
+    const cost = this.applyInterruptCost(defender);
+    const carryOverDice = hitTestResult.p2Result?.carryOverDice ?? {};
+    const counterHitResult = { carryOverDice } as unknown as ResolveTestResult;
+
+    const damageResolution = resolveDamage(defender, attacker, weapon, counterHitResult, options.context ?? {});
+    attacker.state.wounds = damageResolution.defenderState.wounds;
+    attacker.state.delayTokens = damageResolution.defenderState.delayTokens;
+    attacker.state.isKOd = damageResolution.defenderState.isKOd;
+    attacker.state.isEliminated = damageResolution.defenderState.isEliminated;
+    if (damageResolution) {
+      const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
+      applyFearFromWounds(attacker, woundsAdded);
+      if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
+        if (this.battlefield && options.moraleAllies) {
+          applyFearFromAllyKO(this.battlefield, attacker, options.moraleAllies, options.moraleOptions);
+        }
+      }
+      this.applyKOCleanup(attacker);
+    }
+
+    return {
+      executed: true,
+      damageResolution,
+      bonusActionEligible: Boolean(damageResolution.damageTestResult?.pass),
+      removedWait: cost.removedWait,
+      delayAdded: cost.delayAdded,
+    };
+  }
+
+  public executeCounterFire(
+    defender: Character,
+    attacker: Character,
+    weapon: Item,
+    hitTestResult: ResolveTestResult,
+    options: { context?: TestContext; visibilityOrMu?: number; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
+  ): CounterFireResult {
+    if (!this.battlefield) {
+      return { executed: false, reason: 'Battlefield not set.' };
+    }
+    if (!defender.state.isAttentive || !defender.state.isOrdered) {
+      return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
+    }
+    if (hitTestResult.score > 0) {
+      return { executed: false, reason: 'Hit Test did not fail.' };
+    }
+    const defenderModel = this.buildSpatialModel(defender);
+    const attackerModel = this.buildSpatialModel(attacker);
+    if (!defenderModel || !attackerModel) {
+      return { executed: false, reason: 'Missing positions.' };
+    }
+    if (SpatialRules.isEngaged(attackerModel, defenderModel)) {
+      return { executed: false, reason: 'Requires defender to be Free.' };
+    }
+    if (attacker.state.isHidden) {
+      return { executed: false, reason: 'Requires Revealed attacker.' };
+    }
+    const hasLOS = SpatialRules.hasLineOfSight(this.battlefield, defenderModel, attackerModel);
+    if (!hasLOS) {
+      return { executed: false, reason: 'Requires LOS.' };
+    }
+    const visibilityOrMu = options.visibilityOrMu ?? 16;
+    const edgeDistance = SpatialRules.distanceEdgeToEdge(defenderModel, attackerModel);
+    if (edgeDistance > visibilityOrMu) {
+      return { executed: false, reason: 'Requires target within Visibility.' };
+    }
+    const defenderRef = defender.finalAttributes.ref ?? defender.attributes.ref ?? 0;
+    const attackerRef = attacker.finalAttributes.ref ?? attacker.attributes.ref ?? 0;
+    if (defenderRef < attackerRef) {
+      return { executed: false, reason: 'Requires defender REF >= attacker REF.' };
+    }
+
+    const cost = this.applyInterruptCost(defender);
+    const carryOverDice = hitTestResult.p2Result?.carryOverDice ?? {};
+    const counterHitResult = { carryOverDice } as unknown as ResolveTestResult;
+
+    const damageResolution = resolveDamage(defender, attacker, weapon, counterHitResult, options.context ?? {});
+    attacker.state.wounds = damageResolution.defenderState.wounds;
+    attacker.state.delayTokens = damageResolution.defenderState.delayTokens;
+    attacker.state.isKOd = damageResolution.defenderState.isKOd;
+    attacker.state.isEliminated = damageResolution.defenderState.isEliminated;
+    if (damageResolution) {
+      const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
+      applyFearFromWounds(attacker, woundsAdded);
+      if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
+        if (this.battlefield && options.moraleAllies) {
+          applyFearFromAllyKO(this.battlefield, attacker, options.moraleAllies, options.moraleOptions);
+        }
+      }
+      this.applyKOCleanup(attacker);
+    }
+
+    return {
+      executed: true,
+      damageResolution,
+      bonusActionEligible: Boolean(damageResolution.damageTestResult?.pass),
+      removedWait: cost.removedWait,
+      delayAdded: cost.delayAdded,
+    };
+  }
+
+  public executeCounterAction(
+    defender: Character,
+    attacker: Character,
+    hitTestResult: ResolveTestResult,
+    options: { attackType?: 'melee' | 'ranged'; carryOverRolls?: number[] } = {}
+  ): CounterActionResult {
+    if (!defender.state.isAttentive || !defender.state.isOrdered) {
+      return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
+    }
+    if (hitTestResult.score > 0) {
+      return { executed: false, reason: 'Hit Test did not fail.' };
+    }
+    const carryOverDice = hitTestResult.p2Result?.carryOverDice ?? {};
+    const carryOverCount = this.countDice(carryOverDice);
+    if (carryOverCount <= 0) {
+      return { executed: false, reason: 'Requires carry-over from the failed Hit Test.', carryOverDice };
+    }
+    if (options.attackType === 'ranged') {
+      const defenderRef = defender.finalAttributes.ref ?? defender.attributes.ref ?? 0;
+      const attackerRef = attacker.finalAttributes.ref ?? attacker.attributes.ref ?? 0;
+      if (defenderRef < attackerRef) {
+        return { executed: false, reason: 'Requires defender REF >= attacker REF.', carryOverDice };
+      }
+    }
+
+    const cost = this.applyInterruptCost(defender);
+    const bonusActionCascades = this.resolveCarryOverSuccesses(carryOverDice, options.carryOverRolls);
+
+    return {
+      executed: true,
+      bonusActionCascades,
+      carryOverDice,
+      removedWait: cost.removedWait,
+      delayAdded: cost.delayAdded,
+    };
+  }
+
+  public executeCounterCharge(
+    observer: Character,
+    target: Character,
+    options: { visibilityOrMu?: number; moveApSpent?: number; moveEnd?: Position } = {}
+  ): CounterChargeResult {
+    if (!this.battlefield) {
+      return { executed: false, reason: 'Battlefield not set.' };
+    }
+    if (!observer.state.isAttentive || !observer.state.isOrdered) {
+      return { executed: false, reason: 'Requires Attentive+Ordered observer.' };
+    }
+    const observerModel = this.buildSpatialModel(observer);
+    const targetModel = this.buildSpatialModel(target);
+    if (!observerModel || !targetModel) {
+      return { executed: false, reason: 'Missing positions.' };
+    }
+    const hasLOS = SpatialRules.hasLineOfSight(this.battlefield, observerModel, targetModel);
+    if (!hasLOS) {
+      return { executed: false, reason: 'Requires LOS.' };
+    }
+    const visibilityOrMu = options.visibilityOrMu ?? 16;
+    const edgeDistance = SpatialRules.distanceEdgeToEdge(observerModel, targetModel);
+    if (edgeDistance > visibilityOrMu) {
+      return { executed: false, reason: 'Requires target within Visibility.' };
+    }
+
+    const observerRef = observer.finalAttributes.ref ?? observer.attributes.ref ?? 0;
+    const targetMov = target.finalAttributes.mov ?? target.attributes.mov ?? 0;
+    const requiredAp = observerRef > targetMov ? 1 : 2;
+    const moveApSpent = options.moveApSpent ?? 2;
+    if (moveApSpent < requiredAp) {
+      return { executed: false, reason: 'Requires target to spend enough AP on movement.' };
+    }
+
+    const moveLimit = observer.finalAttributes.mov ?? observer.attributes.mov ?? 0;
+    const desiredPosition = options.moveEnd ?? this.resolveEngagePosition(observerModel, targetModel, moveLimit);
+    if (!desiredPosition) {
+      return { executed: false, reason: 'Unable to reach engagement.' };
+    }
+    const moved = this.moveCharacter(observer, desiredPosition);
+    if (!moved) {
+      return { executed: false, reason: 'Move blocked.' };
+    }
+
+    const updatedObserver = this.buildSpatialModel(observer);
+    if (!updatedObserver || !SpatialRules.isEngaged(updatedObserver, targetModel)) {
+      return { executed: false, reason: 'Move did not engage target.' };
+    }
+
+    const cost = this.applyInterruptCost(observer);
+    return {
+      executed: true,
+      moved: true,
+      newPosition: desiredPosition,
+      removedWait: cost.removedWait,
+      delayAdded: cost.delayAdded,
+    };
+  }
+
+  private buildSpatialModel(character: Character): SpatialModel | null {
+    if (!this.battlefield) return null;
+    const position = this.getCharacterPosition(character);
+    if (!position) return null;
+    const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+    return {
+      id: character.id,
+      position,
+      baseDiameter: getBaseDiameterFromSiz(siz),
+      siz,
+    };
+  }
+
+  private applyInterruptCost(character: Character): { removedWait: boolean; delayAdded: boolean } {
+    if (character.state.isWaiting) {
+      character.state.isWaiting = false;
+      this.characterStatus.set(character.id, CharacterStatus.Done);
+      character.refreshStatusFlags();
+      return { removedWait: true, delayAdded: false };
+    }
+    character.state.delayTokens += 1;
+    character.refreshStatusFlags();
+    return { removedWait: false, delayAdded: true };
+  }
+
+  private resolveEngagePosition(
+    mover: SpatialModel,
+    target: SpatialModel,
+    moveLimit: number
+  ): Position | null {
+    const distance = LOSOperations.distance(mover.position, target.position);
+    const baseContact = (mover.baseDiameter + target.baseDiameter) / 2;
+    const requiredMove = Math.max(0, distance - baseContact);
+    if (requiredMove > moveLimit || distance === 0) {
+      return null;
+    }
+    const dx = target.position.x - mover.position.x;
+    const dy = target.position.y - mover.position.y;
+    const length = Math.hypot(dx, dy);
+    if (length === 0) {
+      return mover.position;
+    }
+    const ratio = requiredMove / length;
+    return {
+      x: mover.position.x + dx * ratio,
+      y: mover.position.y + dy * ratio,
+    };
+  }
+
+  private countDice(dice: TestDice): number {
+    return (dice.base ?? 0) + (dice.modifier ?? 0) + (dice.wild ?? 0);
+  }
+
+  private resolveCarryOverSuccesses(dice: TestDice, rolls?: number[]): number {
+    const total = this.countDice(dice);
+    if (total <= 0) return 0;
+    const finalRolls = rolls ?? Array.from({ length: total }, d6);
+    const result = performTest(dice, 0, finalRolls);
+    return result.score;
+  }
+
+  private applyKOCleanup(character: Character): void {
+    if (!character.state.isKOd && !character.state.isEliminated) {
+      character.refreshStatusFlags();
+      return;
+    }
+    if (character.state.isKOd) {
+      character.state.delayTokens = 0;
+      character.state.fearTokens = 0;
+      character.state.isWaiting = false;
+      character.state.isHidden = false;
+      this.characterStatus.set(character.id, CharacterStatus.Done);
+    }
+    if (character.state.isEliminated) {
+      character.state.delayTokens = 0;
+      character.state.fearTokens = 0;
+      character.state.isWaiting = false;
+      character.state.isHidden = false;
+      character.state.statusTokens = {};
+      character.state.statusEffects = [];
+      this.characterStatus.set(character.id, CharacterStatus.Done);
+    }
+    character.refreshStatusFlags();
+  }
+
+  private applyOngoingStatusEffects(character: Character): void {
+    if (character.state.isKOd || character.state.isEliminated) {
+      character.refreshStatusFlags();
+      return;
+    }
+    promotePendingStatusTokens(character);
+    const poison = character.state.statusTokens.Poison ?? 0;
+    const burn = character.state.statusTokens.Burn ?? 0;
+    const acid = character.state.statusTokens.Acid ?? 0;
+    const totalWounds = poison + burn + acid;
+    if (totalWounds <= 0) {
+      character.refreshStatusFlags();
+      return;
+    }
+
+    character.state.wounds += totalWounds;
+    const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+    if (character.state.wounds >= siz) {
+      character.state.isKOd = true;
+    }
+    if (character.state.wounds >= siz + 3) {
+      character.state.isEliminated = true;
+    }
+    this.applyKOCleanup(character);
   }
 
   public evaluateHide(

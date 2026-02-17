@@ -3,6 +3,8 @@ import { Character } from './Character';
 import { CharacterStatus, TurnPhase } from './types';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Profile } from './Profile';
+import { Battlefield } from './battlefield/Battlefield';
+import { TerrainElement } from './battlefield/TerrainElement';
 
 describe('GameManager', () => {
   let characters: Character[];
@@ -126,5 +128,50 @@ describe('GameManager', () => {
       },
     ]);
     expect(other.state.isEliminated).toBe(true);
+  });
+
+  it('should allow take cover to cancel a ranged attack when LOS is broken', () => {
+    const battlefield = new Battlefield(12, 12);
+    battlefield.addTerrain(new TerrainElement('Tree', { x: 8, y: 5 }).toFeature());
+
+    const attacker = characters[0];
+    const defender = characters[1];
+    attacker.finalAttributes.mov = 6;
+    defender.finalAttributes.mov = 10;
+
+    gameManager.setBattlefield(battlefield);
+    gameManager.placeCharacter(attacker, { x: 2, y: 2 });
+    gameManager.placeCharacter(defender, { x: 8, y: 2 });
+
+    const weapon = {
+      name: 'Test Rifle',
+      class: 'Range',
+      classification: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      or: 8,
+      accuracy: '-',
+      impact: 0,
+      dmg: '1',
+      traits: [],
+    };
+
+    const outcome = gameManager.executeRangedAttack(attacker, defender, weapon as any, {
+      allowTakeCover: true,
+      takeCoverPosition: { x: 8, y: 5 },
+    });
+
+    expect(outcome.takeCover?.cancelled).toBe(true);
+    expect(outcome.result.hit).toBe(false);
+  });
+
+  it('should apply ongoing status tokens as wounds at activation start', () => {
+    const character = characters[0];
+    character.state.statusPendingTokens.Poison = 2;
+    character.state.statusTokens.Burn = 1;
+    character.finalAttributes.siz = 5;
+    const ap = gameManager.beginActivation(character);
+    expect(ap).toBeGreaterThan(0);
+    expect(character.state.wounds).toBe(3);
   });
 });

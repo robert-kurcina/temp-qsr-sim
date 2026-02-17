@@ -21,6 +21,7 @@ export interface SkirmishConfig {
   rng?: () => number;
   roundsPerTurn?: number;
   enableTransfix?: boolean;
+  enableTakeCover?: boolean;
 }
 
 export class GameController {
@@ -37,6 +38,7 @@ export class GameController {
     const maxTurns = config.maxTurns ?? 3;
     const rng = config.rng ?? Math.random;
     const enableTransfix = config.enableTransfix ?? false;
+    const enableTakeCover = config.enableTakeCover ?? false;
     this.manager.roundsPerTurn = config.roundsPerTurn ?? this.manager.roundsPerTurn;
     this.manager.phase = TurnPhase.Setup;
 
@@ -105,7 +107,14 @@ export class GameController {
         const los = buildLOSResultContext(spatial);
 
         if (rangedWeapon && los.hasLOS && this.manager.spendAp(active, 1)) {
-          const result = this.manager.executeRangedAttack(active, target, rangedWeapon, spatial);
+          const takeCoverPosition = enableTakeCover
+            ? this.findTakeCoverPosition(target, active, targetPos, spatial)
+            : null;
+          const result = this.manager.executeRangedAttack(active, target, rangedWeapon, {
+            ...spatial,
+            allowTakeCover: Boolean(takeCoverPosition),
+            takeCoverPosition: takeCoverPosition ?? undefined,
+          });
           this.log.push({
             turn: this.manager.currentTurn,
             round: this.manager.currentRound,
@@ -233,6 +242,56 @@ export class GameController {
     const stepX = dx === 0 ? 0 : dx > 0 ? 1 : -1;
     const stepY = dy === 0 ? 0 : dy > 0 ? 1 : -1;
     return { x: start.x + stepX, y: start.y + stepY };
+  }
+
+  private findTakeCoverPosition(
+    defender: Character,
+    attacker: Character,
+    defenderPos: Position,
+    spatial: ActionContextInput
+  ): Position | null {
+    if (!defender.state.isAttentive || !defender.state.isOrdered) return null;
+    const moveLimit = defender.finalAttributes.mov ?? defender.attributes.mov ?? 0;
+    if (moveLimit <= 0) return null;
+
+    const directions: Position[] = [
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: -1 },
+      { x: 1, y: 1 },
+      { x: 1, y: -1 },
+      { x: -1, y: 1 },
+      { x: -1, y: -1 },
+    ];
+
+    const scale = Math.min(1, moveLimit);
+    let best: Position | null = null;
+    let bestCover = 0;
+
+    for (const dir of directions) {
+      const candidate = {
+        x: defenderPos.x + dir.x * scale,
+        y: defenderPos.y + dir.y * scale,
+      };
+      if (candidate.x < 0 || candidate.y < 0 || candidate.x > this.battlefield.width || candidate.y > this.battlefield.height) {
+        continue;
+      }
+      const cover = buildLOSResultContext({
+        ...spatial,
+        target: {
+          ...spatial.target,
+          position: candidate,
+        },
+      });
+      const coverScore = (cover.hasDirectCover ? 2 : 0) + (cover.hasInterveningCover ? 1 : 0) + (!cover.hasLOS ? 3 : 0);
+      if (coverScore > bestCover) {
+        bestCover = coverScore;
+        best = candidate;
+      }
+    }
+
+    return bestCover > 0 ? best : null;
   }
 
   private countRemaining(characters: Character[]): number {
