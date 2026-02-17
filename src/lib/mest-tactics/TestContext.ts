@@ -13,6 +13,7 @@ export interface TestContext {
   isFocusing?: boolean;     // For the +1w Focus bonus
   isBlindAttack?: boolean;  // For the -1w Blind penalty
   isFiddle?: boolean;       // For the +1m Help bonus
+  concentrateTarget?: 'hit' | 'damage' | 'any';
 
   // --- Close Combat Spatial Modifiers ---
   assistingModels?: number; // For the +1 Assist bonus (per model)
@@ -41,6 +42,8 @@ export interface TestContext {
   isSafe?: boolean;         // For the +1w Safety bonus (Morale)
   isConfined?: boolean;     // For the -1m Confined penalty
   delayTokensAdded?: number; // For stun damage
+  blindersThrownPenalty?: number;
+  reactPenaltyBase?: number;
 
   // --- Test Overrides ---
   isAutoPass?: boolean;

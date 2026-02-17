@@ -5,6 +5,7 @@ import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { parseAccuracy } from './subroutines/accuracy-parser';
+import { getCharacterTraitLevel } from './status-system';
 
 export interface DisengageResult {
     pass: boolean;
@@ -44,8 +45,15 @@ function _calculateModifiers(
     defenderPenalty = mergeTestDice(defenderPenalty, accPenalty);
 
     // 3. Contextual Modifiers
-    if (context.isCornered) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
-    if (context.isFlanked) disengagerPenalty[DiceType.Modifier] = (disengagerPenalty[DiceType.Modifier] || 0) + 1;
+    const disengagerHasLumbering = getCharacterTraitLevel(disengager, 'Lumbering') > 0;
+    if (context.isCornered) {
+        const key = disengagerHasLumbering ? DiceType.Base : DiceType.Modifier;
+        disengagerPenalty[key] = (disengagerPenalty[key] || 0) + 1;
+    }
+    if (context.isFlanked) {
+        const key = disengagerHasLumbering ? DiceType.Base : DiceType.Modifier;
+        disengagerPenalty[key] = (disengagerPenalty[key] || 0) + 1;
+    }
     if (context.hasHighGround) disengagerBonus[DiceType.Modifier] = (disengagerBonus[DiceType.Modifier] || 0) + 1;
     if (context.outnumberAdvantage && context.outnumberAdvantage > 0) {
         disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
@@ -54,6 +62,15 @@ function _calculateModifiers(
         defenderBonus[DiceType.Wild] = (defenderBonus[DiceType.Wild] || 0) + Math.abs(context.outnumberAdvantage);
     }
     if (context.hasSuddenness) disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + 1;
+    if (context.isConcentrating && (context.concentrateTarget ?? 'hit') !== 'damage') {
+        disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.isFocusing) {
+        disengagerBonus[DiceType.Wild] = (disengagerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.reactPenaltyBase) {
+        disengagerPenalty[DiceType.Base] = (disengagerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
+    }
 
     // Disengager Size Advantage (when sizeAdvantage > 0, disengager is larger)
     // This gives the defender a penalty (not the disengager a bonus)

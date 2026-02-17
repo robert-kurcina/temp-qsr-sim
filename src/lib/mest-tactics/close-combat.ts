@@ -5,7 +5,7 @@ import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveHitTest } from './subroutines/hit-test';
 import { resolveDamage, DamageResolution } from './subroutines/damage-test';
-import { applyStatusTraitOnHit, parseStatusTrait } from './status-system';
+import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from './status-system';
 
 // --- Main Attack Result Interface --- //
 
@@ -39,8 +39,24 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     if (context.outnumberAdvantage) attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
     if (context.hasHighGround) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasSuddenness || context.isSudden) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
-    if (context.isCornered) defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
-    if (context.isFlanked) defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + 1;
+    const defenderHasLumbering = getCharacterTraitLevel(defender, 'Lumbering') > 0;
+    if (context.isCornered) {
+        const key = defenderHasLumbering ? DiceType.Base : DiceType.Modifier;
+        defenderPenalty[key] = (defenderPenalty[key] || 0) + 1;
+    }
+    if (context.isFlanked) {
+        const key = defenderHasLumbering ? DiceType.Base : DiceType.Modifier;
+        defenderPenalty[key] = (defenderPenalty[key] || 0) + 1;
+    }
+    if (context.isConcentrating && (context.concentrateTarget ?? 'hit') !== 'damage') {
+        attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.isFocusing) {
+        attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.reactPenaltyBase) {
+        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
+    }
 
     return { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty };
 }
@@ -102,4 +118,16 @@ export function makeCloseCombatAttack(
         damageResolution,
         hitTestResult,
     };
+}
+
+export function resolveCloseCombatHitTest(
+    attacker: Character,
+    defender: Character,
+    weapon: Item,
+    context: TestContext = {},
+    p1Rolls: number[] | null = null,
+    p2Rolls: number[] | null = null,
+) {
+    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, context);
+    return resolveHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty, p1Rolls, p2Rolls);
 }

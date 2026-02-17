@@ -174,4 +174,91 @@ describe('GameManager', () => {
     expect(ap).toBeGreaterThan(0);
     expect(character.state.wounds).toBe(3);
   });
+
+  it('should add delay tokens when charging an Awkward defender', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const attacker = characters[0];
+    const defender = characters[1];
+    defender.profile.items = [
+      {
+        name: 'Awkward Shield',
+        class: 'Melee',
+        classification: 'Melee',
+        type: 'Shield',
+        bp: 0,
+        traits: ['Awkward'],
+      },
+    ];
+
+    gameManager.placeCharacter(attacker, { x: 0, y: 0 });
+    gameManager.placeCharacter(defender, { x: 2, y: 0 });
+
+    const weapon = {
+      name: 'Test Blade',
+      class: 'Melee',
+      classification: 'Melee',
+      type: 'Melee',
+      bp: 0,
+      traits: [],
+    };
+
+    expect(defender.state.delayTokens).toBe(0);
+    gameManager.executeCloseCombatAttack(attacker, defender, weapon as any, {
+      moveStart: { x: 0, y: 0 },
+      moveEnd: { x: 1, y: 0 },
+      movedOverClear: true,
+      wasFreeAtStart: true,
+    });
+    expect(defender.state.delayTokens).toBe(1);
+  });
+
+  it('should apply Awkward AP cost only when engaged', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const attacker = characters[0];
+    const defender = characters[1];
+
+    gameManager.placeCharacter(attacker, { x: 0, y: 0 });
+    gameManager.placeCharacter(defender, { x: 1, y: 0 });
+
+    const weapon = {
+      name: 'Awkward Hammer',
+      class: 'Melee',
+      classification: 'Melee',
+      type: 'Melee',
+      bp: 0,
+      traits: ['Awkward'],
+    };
+
+    expect(gameManager.getAttackApCost(attacker, weapon as any)).toBe(2);
+    gameManager.moveCharacter(defender, { x: 5, y: 0 });
+    expect(gameManager.getAttackApCost(attacker, weapon as any)).toBe(1);
+  });
+
+  it('should penalize fiddling when using one less hand', () => {
+    const actor = characters[0];
+    actor.finalAttributes.int = 0;
+
+    const baseResult = gameManager.executeFiddle(actor, {
+      attribute: 'int',
+      difficulty: 0,
+      spendAp: false,
+      rolls: [6, 6],
+      opponentRolls: [6, 6],
+    });
+    expect(baseResult.success).toBe(true);
+
+    const penalizedResult = gameManager.executeFiddle(actor, {
+      attribute: 'int',
+      difficulty: 0,
+      spendAp: false,
+      rolls: [6, 6],
+      opponentRolls: [6, 6, 6],
+      usesOneLessHand: true,
+    });
+    expect(penalizedResult.success).toBe(false);
+  });
 });

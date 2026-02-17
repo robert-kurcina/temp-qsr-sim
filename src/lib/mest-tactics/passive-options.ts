@@ -14,7 +14,9 @@ export type PassiveOptionType =
   | 'CounterCharge'
   | 'React'
   | 'HiddenReposition'
-  | 'BonusAction';
+  | 'BonusAction'
+  | 'Defend'
+  | 'OpportunityAttack';
 
 export interface PassiveOption {
   id: string;
@@ -29,6 +31,13 @@ export interface PassiveOption {
 export type PassiveEvent =
   | {
       kind: 'RangedAttackDeclared';
+      attacker: Character;
+      defender: Character;
+      battlefield: Battlefield;
+      weapon?: Item;
+    }
+  | {
+      kind: 'CloseCombatAttackDeclared';
       attacker: Character;
       defender: Character;
       battlefield: Battlefield;
@@ -50,6 +59,12 @@ export type PassiveEvent =
       battlefield?: Battlefield;
       moveApSpent?: number;
       visibilityOrMu?: number;
+    }
+  | {
+      kind: 'EngagementBroken';
+      mover: Character;
+      opponents: Character[];
+      battlefield?: Battlefield;
     }
   | {
       kind: 'HiddenExposure';
@@ -122,6 +137,34 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
         maxMove: defender.finalAttributes.mov ?? defender.attributes.mov ?? 0,
         requiresLOS: true,
       },
+    });
+    const canDefend = defender.state.isAttentive;
+    options.push({
+      id: `${defender.id}:Defend`,
+      type: 'Defend',
+      actorId: defender.id,
+      targetId: attacker.id,
+      available: canDefend,
+      reason: canDefend ? undefined : 'Requires Attentive defender.',
+    });
+    return options;
+  }
+
+  if (event.kind === 'CloseCombatAttackDeclared') {
+    const { attacker, defender, battlefield } = event;
+    const options: PassiveOption[] = [];
+    const attackerModel = buildSpatialModel(attacker, battlefield);
+    const defenderModel = buildSpatialModel(defender, battlefield);
+    if (!attackerModel || !defenderModel) return options;
+    const engaged = SpatialRules.isEngaged(attackerModel, defenderModel);
+    const canDefend = defender.state.isAttentive && engaged;
+    options.push({
+      id: `${defender.id}:Defend`,
+      type: 'Defend',
+      actorId: defender.id,
+      targetId: attacker.id,
+      available: canDefend,
+      reason: canDefend ? undefined : 'Requires Attentive defender engaged in melee.',
     });
     return options;
   }
@@ -273,6 +316,43 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       });
     }
 
+    return options;
+  }
+
+  if (event.kind === 'EngagementBroken') {
+    const options: PassiveOption[] = [];
+    const battlefield = event.battlefield;
+    if (!battlefield) {
+      for (const opponent of event.opponents) {
+        options.push({
+          id: `${opponent.id}:OpportunityAttack`,
+          type: 'OpportunityAttack',
+          actorId: opponent.id,
+          targetId: event.mover.id,
+          available: false,
+          reason: 'Battlefield context required to evaluate Opportunity Attack.',
+        });
+      }
+      return options;
+    }
+
+    const moverModel = buildSpatialModel(event.mover, battlefield);
+    if (!moverModel) return options;
+
+    for (const opponent of event.opponents) {
+      const opponentModel = buildSpatialModel(opponent, battlefield);
+      if (!opponentModel) continue;
+      const wasEngaged = SpatialRules.isEngaged(moverModel, opponentModel);
+      const canReact = opponent.state.isAttentive && opponent.state.isOrdered;
+      options.push({
+        id: `${opponent.id}:OpportunityAttack`,
+        type: 'OpportunityAttack',
+        actorId: opponent.id,
+        targetId: event.mover.id,
+        available: canReact && wasEngaged,
+        reason: canReact && wasEngaged ? undefined : 'Requires Attentive+Ordered opponent engaged with mover.',
+      });
+    }
     return options;
   }
 

@@ -89,6 +89,21 @@ export class Character {
     this.state.isDisordered = this.state.fearTokens >= 2;
     this.state.isAttentive = !koOrElim && !this.state.isDistracted;
     this.state.isOrdered = !koOrElim && !this.state.isDisordered;
+    this.applyLadenEffects();
+  }
+
+  private applyLadenEffects(): void {
+    const base = this.attributes;
+    const burden = this.profile?.burden?.totalBurden ?? 0;
+    const final: FinalAttributes = { ...base };
+    if (burden > 0) {
+      final.mov = Math.max(0, (base.mov ?? 0) - burden);
+      if (!(this.state.isAttentive && this.state.isOrdered)) {
+        final.ref = Math.max(0, (base.ref ?? 0) - burden);
+        final.cca = Math.max(0, (base.cca ?? 0) - burden);
+      }
+    }
+    this.finalAttributes = final;
   }
 
   get wounds(): number {

@@ -1,7 +1,8 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { makeCloseCombatAttack } from './close-combat';
+import { makeCloseCombatAttack, resolveCloseCombatHitTest } from './close-combat';
 import { DiceType } from './dice-roller';
+import { metricsService } from './MetricsService';
 import type { Profile } from './Profile';
 import type { Item } from './Item';
 import { Character } from './Character';
@@ -27,6 +28,7 @@ describe('makeCloseCombatAttack', () => {
     attacker.finalAttributes = attacker.attributes;
     defender = new Character(defenderProfile);
     defender.finalAttributes = defender.attributes;
+    metricsService.clearEvents();
   });
 
   it('should force a successful hit and create a damage resolution', () => {
@@ -99,5 +101,14 @@ describe('makeCloseCombatAttack', () => {
 
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context, attackerHitRolls, defenderHitRolls, attackerDamageRolls, defenderDamageRolls);
     expect(result.damageResolution.impact).toBe(3);
+  });
+
+  it('should apply Lumbering penalty as base dice when cornered', () => {
+    defender.profile.finalTraits = ['Lumbering'];
+    defender.profile.allTraits = ['Lumbering'];
+    resolveCloseCombatHitTest(attacker, defender, attackerWeapon, { isCornered: true });
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const hitEventData = diceEvents[0].data as any;
+    expect(hitEventData.finalPools.p2FinalPenalty[DiceType.Base] || 0).toBe(1);
   });
 });

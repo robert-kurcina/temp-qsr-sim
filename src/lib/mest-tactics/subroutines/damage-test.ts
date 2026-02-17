@@ -92,9 +92,17 @@ export function resolveDamage(
 
         const { value: damageValue, dice: damageDice } = parseDamageFormula(damageFormula, attacker);
         
+        const bonusDice = { ...damageDice, ...hitTestResult.carryOverDice };
+        if (context.isConcentrating && (context.concentrateTarget ?? 'hit') === 'damage') {
+            bonusDice[DiceType.Wild] = (bonusDice[DiceType.Wild] || 0) + 1;
+        }
+        if (context.isFocusing) {
+            bonusDice[DiceType.Wild] = (bonusDice[DiceType.Wild] || 0) + 1;
+        }
+
         const damageTestAttacker: TestParticipant = {
             attributeValue: damageValue,
-            bonusDice: { ...damageDice, ...hitTestResult.carryOverDice },
+            bonusDice,
         };
         
         const damageTestDefender: TestParticipant = {

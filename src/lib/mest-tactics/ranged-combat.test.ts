@@ -131,4 +131,29 @@ describe('makeRangedCombatAttack', () => {
     const hitEventData = diceEvents[0].data as any;
     expect(hitEventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
   });
+
+  it('should force a miss for Blinders using bow weapons', async () => {
+    attacker.profile.finalTraits = ['Blinders'];
+    attacker.profile.allTraits = ['Blinders'];
+    attacker.allTraits = [];
+    const bowWeapon = { ...attackerWeapon, classification: 'Bow', class: 'Bow' };
+    setRoller(() => [6, 6]);
+    const result = makeRangedCombatAttack(attacker, defender, bowWeapon, 0, {});
+    expect(result.hit).toBe(false);
+  });
+
+  it('should apply a thrown penalty for Blinders', () => {
+    attacker.profile.finalTraits = ['Blinders'];
+    attacker.profile.allTraits = ['Blinders'];
+    attacker.allTraits = [];
+    const thrownWeapon = { ...attackerWeapon, classification: 'Thrown', class: 'Thrown' };
+    const rolls: number[][] = [[1, 1], [1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
+
+    makeRangedCombatAttack(attacker, defender, thrownWeapon, 0, {});
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const hitEventData = diceEvents[0].data as any;
+    expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
+  });
 });

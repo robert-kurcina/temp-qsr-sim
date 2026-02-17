@@ -7,7 +7,7 @@ import { calculateHindrancePenalty } from './subroutines/hindrances';
 import { resolveRangedHitTest } from './subroutines/ranged-hit-test'; // Correct hit test for ranged
 import { resolveDamage, DamageResolution } from './subroutines/damage-test';
 import { SpatialAttackContext, SpatialRules } from './battlefield/spatial-rules';
-import { applyStatusTraitOnHit, parseStatusTrait } from './status-system';
+import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from './status-system';
 
 // --- Main Attack Result Interface ---
 
@@ -40,6 +40,19 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     if (context.hasSuddenness || context.isSudden) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasDirectCover) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
     if (context.hasInterveningCover) defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
+    if (context.isDefending) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
+    if (context.isConcentrating && (context.concentrateTarget ?? 'hit') !== 'damage') {
+        attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.isFocusing) {
+        attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.blindersThrownPenalty) {
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + context.blindersThrownPenalty;
+    }
+    if (context.reactPenaltyBase) {
+        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
+    }
 
     if (context.obscuringModels && context.obscuringModels > 0) {
         const thresholds = [1, 2, 5, 10];
@@ -75,6 +88,17 @@ export function makeRangedCombatAttack(
     const spatialContext = spatial ? SpatialRules.buildRangedContextFromSpatial(spatial) : {};
     // Merge ORM into context, explicit context wins over spatial defaults.
     const fullContext: TestContext = { ...spatialContext, ...context, orm };
+    if (getCharacterTraitLevel(attacker, 'Blinders') > 0) {
+        const classification = (weapon.classification || weapon.class || '').toLowerCase();
+        if (classification.includes('bow')) {
+            if (!fullContext.forceHit) {
+                fullContext.forceMiss = true;
+            }
+        } else if (classification.includes('thrown')) {
+            fullContext.blindersThrownPenalty = 1;
+        }
+    }
+
     if (spatial) {
         const cover = SpatialRules.getCoverResult(spatial.battlefield, spatial.attacker, spatial.target);
         if (!cover.hasLOS && !fullContext.forceHit) {
@@ -127,4 +151,35 @@ export function makeRangedCombatAttack(
         damageResolution,
         hitTestResult,
     };
+}
+
+export function resolveRangedCombatHitTest(
+    attacker: Character,
+    defender: Character,
+    weapon: Item,
+    orm: number = 0,
+    context: TestContext = {},
+    spatial?: SpatialAttackContext
+) {
+    const spatialContext = spatial ? SpatialRules.buildRangedContextFromSpatial(spatial) : {};
+    const fullContext: TestContext = { ...spatialContext, ...context, orm };
+    if (spatial) {
+        const cover = SpatialRules.getCoverResult(spatial.battlefield, spatial.attacker, spatial.target);
+        if (!cover.hasLOS && !fullContext.forceHit) {
+            fullContext.forceMiss = true;
+        }
+    }
+
+    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, fullContext);
+
+    let hitTestResult: TestResult;
+    if (fullContext.forceHit) {
+        hitTestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+    } else if (fullContext.forceMiss) {
+        hitTestResult = { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+    } else {
+        hitTestResult = resolveRangedHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
+    }
+
+    return { hitTestResult, context: fullContext };
 }

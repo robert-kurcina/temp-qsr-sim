@@ -8,7 +8,7 @@ import { resolveTest, TestParticipant, mergeTestDice } from './dice-roller';
 import { parseAccuracy } from './subroutines/accuracy-parser';
 import { metricsService } from './MetricsService';
 import { SpatialAttackContext, SpatialRules } from './battlefield/spatial-rules';
-import { applyStatusTraitOnHit, parseStatusTrait } from './status-system';
+import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from './status-system';
 
 function _calculateModifiers(
     attacker: Character, 
@@ -35,6 +35,18 @@ function _calculateModifiers(
     if (context.hasSuddenness || context.isSudden) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
     if (context.hasDirectCover) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.hasInterveningCover) attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+    if (context.isConcentrating && (context.concentrateTarget ?? 'hit') !== 'damage') {
+        attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.isFocusing) {
+        attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + 1;
+    }
+    if (context.blindersThrownPenalty) {
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + context.blindersThrownPenalty;
+    }
+    if (context.reactPenaltyBase) {
+        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
+    }
 
     if (context.obscuringModels && context.obscuringModels > 0) {
         const thresholds = [1, 2, 5, 10];
@@ -69,6 +81,16 @@ export function makeIndirectRangedAttack(
 
     const spatialContext = spatial ? SpatialRules.buildRangedContextFromSpatial(spatial) : {};
     const fullContext = { ...spatialContext, ...context, orm };
+    if (getCharacterTraitLevel(attacker, 'Blinders') > 0) {
+        const classification = (weapon.classification || weapon.class || '').toLowerCase();
+        if (classification.includes('bow')) {
+            if (!fullContext.forceHit) {
+                fullContext.forceMiss = true;
+            }
+        } else if (classification.includes('thrown')) {
+            fullContext.blindersThrownPenalty = 1;
+        }
+    }
     const { attackerBonus, attackerPenalty } = _calculateModifiers(attacker, weapon, orm, fullContext);
 
     const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(weapon.accuracy);
