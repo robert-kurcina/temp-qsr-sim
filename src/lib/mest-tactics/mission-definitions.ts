@@ -1,205 +1,388 @@
-import { GameSize } from './mission-scoring';
+import {
+  EventTriggerType,
+  EventConditionType,
+  EventEffectType,
+  EventCondition,
+  EventEffect,
+  createVictoryConditionHook,
+  createTurnEventHook,
+  createEndTurnEventHook,
+} from './mission-event-hooks';
+import { MissionSide } from './MissionSide';
 
-export type MissionKey =
-  | 'Elimination'
-  | 'Bottled'
-  | 'Outnumbered'
-  | 'Dominance'
-  | 'FirstBlood'
-  | 'Courier'
-  | 'Sanctuary'
-  | 'Sabotage'
-  | 'Harvest'
-  | 'POI'
-  | 'Catalyst'
-  | 'VIP'
-  | 'Targeted'
-  | 'Collection'
-  | 'Acquisition'
-  | 'Encroachment'
-  | 'Exit'
-  | 'Flawless';
-
-export interface MissionSizeConfig {
-  endGameTurn: number;
-  dominanceWinVp?: number;
-  courierWinVp?: number;
-  sanctuaryWinVp?: number;
-  objectiveWinVp?: number;
-}
-
+/**
+ * Mission definition interface
+ */
 export interface MissionDefinition {
+  /** Unique mission identifier */
   id: string;
+  /** Display name */
   name: string;
-  sidesMin: number;
-  sidesMax: number;
-  keys: MissionKey[];
-  sizes: Record<GameSize, MissionSizeConfig>;
-  notes?: string[];
+  /** Mission description */
+  description: string;
+  /** Minimum number of sides required */
+  minSides: number;
+  /** Maximum number of sides allowed */
+  maxSides: number;
+  /** Default game size */
+  defaultGameSize: string;
+  /** Victory conditions (OR'd - any can win) */
+  victoryConditions: VictoryCondition[];
+  /** Scoring rules */
+  scoring: ScoringRule[];
+  /** Special rules for this mission */
+  specialRules: SpecialRule[];
+  /** Turn limit (0 = unlimited) */
+  turnLimit: number;
+  /** End game die roll enabled */
+  endGameDieRoll: boolean;
+  /** End game die roll starts at turn */
+  endGameDieStart: number;
+  /** Mission keys/scoring features enabled */
+  keys: string[];
+  /** Scoring configuration by game size */
+  sizes: Record<string, {
+    dominanceVP?: number;
+    sanctuaryVP?: number;
+    courierVP?: number;
+    collectionVP?: number;
+    poiVP?: number;
+  }>;
 }
 
-export const MISSION_DEFINITIONS: Record<string, MissionDefinition> = {
-  QAI_1: {
-    id: 'QAI_1',
-    name: 'Elimination',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Elimination', 'Bottled', 'Outnumbered'],
-    sizes: {
-      Small: { endGameTurn: 4 },
-      Medium: { endGameTurn: 6 },
-      Large: { endGameTurn: 8 },
-    },
-  },
-  QAI_12: {
-    id: 'QAI_12',
-    name: 'Engagement',
-    sidesMin: 2,
-    sidesMax: 4,
-    keys: ['Dominance', 'Elimination', 'Bottled', 'FirstBlood'],
-    sizes: {
-      Small: { endGameTurn: 4, dominanceWinVp: 3 },
-      Medium: { endGameTurn: 6, dominanceWinVp: 4 },
-      Large: { endGameTurn: 8, dominanceWinVp: 5 },
-    },
-    notes: [
-      'Power Nodes (POI) at center with cover nearby.',
-      'Reinforcements: groups A/B/C by BP with reinforcement dice.',
-      'Anti-kingmaking targeting restriction.',
-      'Early elimination bonus when a third side is eliminated.',
-    ],
-  },
-  QAI_13: {
-    id: 'QAI_13',
-    name: 'Sabotage',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Sabotage', 'Elimination', 'POI', 'Bottled'],
-    sizes: {
-      Small: { endGameTurn: 4 },
-      Medium: { endGameTurn: 6 },
-      Large: { endGameTurn: 8 },
-    },
-    notes: [
-      'Sabotage Points (POI) with cover nearby.',
-      'Attacker reinforcements and defender reinforcements.',
-      'Time pressure end condition.',
-    ],
-  },
-  QAI_14: {
-    id: 'QAI_14',
-    name: 'Beacon',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Dominance', 'Courier', 'Sanctuary', 'Elimination', 'Bottled'],
-    sizes: {
-      Small: { endGameTurn: 4, dominanceWinVp: 3 },
-      Medium: { endGameTurn: 6, dominanceWinVp: 4 },
-      Large: { endGameTurn: 8, dominanceWinVp: 5 },
-    },
-    notes: [
-      'Beacon zones at center.',
-      'Courier designation with sustained VP.',
-      'Sanctuary zone scoring.',
-    ],
-  },
-  QAI_15: {
-    id: 'QAI_15',
-    name: 'Extraction Point',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Harvest', 'Sanctuary', 'Catalyst', 'Elimination'],
-    sizes: {
-      Small: { endGameTurn: 4 },
-      Medium: { endGameTurn: 6 },
-      Large: { endGameTurn: 8 },
-    },
-    notes: [
-      'Intelligence Caches (OM) with hidden starts.',
-      'Security level escalation and extraction thresholds.',
-    ],
-  },
-  QAI_16: {
-    id: 'QAI_16',
-    name: 'Exfil',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Courier', 'Sanctuary', 'VIP', 'Dominance'],
-    sizes: {
-      Small: { endGameTurn: 4, sanctuaryWinVp: 3 },
-      Medium: { endGameTurn: 6, sanctuaryWinVp: 4 },
-      Large: { endGameTurn: 8, sanctuaryWinVp: 5 },
-    },
-    notes: [
-      'VIP extraction zone and VIP abilities.',
-      'Catalyst reinforcement timing for defender.',
-    ],
-  },
-  QAI_17: {
-    id: 'QAI_17',
-    name: 'Triad',
-    sidesMin: 3,
-    sidesMax: 3,
-    keys: ['Dominance', 'Harvest', 'Targeted', 'Sanctuary', 'Bottled'],
-    sizes: {
-      Small: { endGameTurn: 4, dominanceWinVp: 4 },
-      Medium: { endGameTurn: 6, dominanceWinVp: 4 },
-      Large: { endGameTurn: 8, dominanceWinVp: 4 },
-    },
-    notes: [
-      'Power Nodes (POI), Neutral Assets, and Commander abilities.',
-      'Anti-kingmaking and early elimination bonus.',
-    ],
-  },
-  QAI_18: {
-    id: 'QAI_18',
-    name: 'Ghost Protocol',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Courier', 'Elimination', 'Catalyst'],
-    sizes: {
-      Small: { endGameTurn: 4 },
-      Medium: { endGameTurn: 6 },
-      Large: { endGameTurn: 8 },
-    },
-    notes: [
-      'Data Core OM, alarm level, lockdown threshold.',
-      'Specialist action and decoy outcome.',
-    ],
-  },
-  QAI_19: {
-    id: 'QAI_19',
-    name: 'Last Stand',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Dominance', 'Elimination'],
-    sizes: {
-      Small: { endGameTurn: 4, dominanceWinVp: 3 },
-      Medium: { endGameTurn: 6, dominanceWinVp: 4 },
-      Large: { endGameTurn: 8, dominanceWinVp: 5 },
-    },
-    notes: [
-      'Sanctum zone, reinforcement lanes, breakthrough markers, Sally Forth.',
-    ],
-  },
-  QAI_20: {
-    id: 'QAI_20',
-    name: 'Switchback',
-    sidesMin: 2,
-    sidesMax: 2,
-    keys: ['Courier', 'Dominance', 'Elimination'],
-    sizes: {
-      Small: { endGameTurn: 4, dominanceWinVp: 3 },
-      Medium: { endGameTurn: 6, dominanceWinVp: 4 },
-      Large: { endGameTurn: 8, dominanceWinVp: 5 },
-    },
-    notes: [
-      'Switch OMs and exit corridor gating.',
-      'Wait status visibility boost and reposition action.',
-    ],
-  },
-};
+/**
+ * Victory condition definition
+ */
+export interface VictoryCondition {
+  /** Condition type */
+  type: VictoryConditionType;
+  /** Side this applies to (or 'any') */
+  side: string;
+  /** Threshold value */
+  threshold?: number;
+  /** Victory points awarded (if not instant win) */
+  victoryPoints?: number;
+  /** Is this an instant win condition? */
+  instantWin?: boolean;
+  /** Description */
+  description: string;
+}
 
-export function getMissionDefinition(id: string): MissionDefinition | null {
-  return MISSION_DEFINITIONS[id] ?? null;
+/**
+ * Victory condition types
+ */
+export enum VictoryConditionType {
+  /** All enemy models eliminated */
+  AllEnemiesEliminated = 'AllEnemiesEliminated',
+  /** Control N zones */
+  ControlZones = 'ControlZones',
+  /** Have N victory points */
+  VictoryPoints = 'VictoryPoints',
+  /** VIP extracted */
+  VIPExtracted = 'VIPExtracted',
+  /** VIP survived */
+  VIPSurvived = 'VIPSurvived',
+  /** Hold objective for N turns */
+  HoldObjective = 'HoldObjective',
+  /** First to N points */
+  FirstToPoints = 'FirstToPoints',
+  /** Most points at game end */
+  MostPoints = 'MostPoints',
+}
+
+/**
+ * Scoring rule definition
+ */
+export interface ScoringRule {
+  /** Scoring type */
+  type: ScoringType;
+  /** When this scoring is applied */
+  timing: ScoringTiming;
+  /** VP amount or multiplier */
+  value: number;
+  /** Target (zone, marker, etc.) */
+  target?: string;
+  /** Description */
+  description: string;
+}
+
+/**
+ * Scoring types
+ */
+export enum ScoringType {
+  /** VP per enemy eliminated */
+  PerElimination = 'PerElimination',
+  /** VP per zone controlled at turn end */
+  PerZoneControlled = 'PerZoneControlled',
+  /** VP per marker controlled */
+  PerMarkerControlled = 'PerMarkerControlled',
+  /** VP for first control of zone */
+  FirstControl = 'FirstControl',
+  /** VP for VIP extraction */
+  VIPExtraction = 'VIPExtraction',
+  /** VP for holding objective */
+  HoldObjective = 'HoldObjective',
+  /** Flat VP bonus */
+  Bonus = 'Bonus',
+}
+
+/**
+ * When scoring is applied
+ */
+export enum ScoringTiming {
+  /** Score immediately when condition met */
+  Immediate = 'Immediate',
+  /** Score at end of turn */
+  EndTurn = 'EndTurn',
+  /** Score at end of game */
+  EndGame = 'EndGame',
+}
+
+/**
+ * Special rule definition
+ */
+export interface SpecialRule {
+  /** Rule identifier */
+  id: string;
+  /** Rule name */
+  name: string;
+  /** Rule description */
+  description: string;
+  /** When rule applies */
+  trigger?: string;
+  /** Rule effect */
+  effect: string;
+}
+
+/**
+ * Create event hooks for a mission definition
+ */
+export function createMissionEventHooks(
+  mission: MissionDefinition,
+  sides: MissionSide[]
+): Array<{ id: string; hook: ReturnType<typeof createVictoryConditionHook> | ReturnType<typeof createTurnEventHook> | ReturnType<typeof createEndTurnEventHook> }> {
+  const hooks: Array<{ id: string; hook: ReturnType<typeof createVictoryConditionHook> | ReturnType<typeof createTurnEventHook> | ReturnType<typeof createEndTurnEventHook> }> = [];
+
+  // Create victory condition hooks
+  for (const condition of mission.victoryConditions) {
+    const hook = createVictoryConditionForCondition(condition, sides);
+    if (hook) {
+      hooks.push({ id: `victory-${condition.type}`, hook });
+    }
+  }
+
+  // Create scoring hooks
+  for (const scoring of mission.scoring) {
+    if (scoring.timing === ScoringTiming.EndTurn) {
+      const hook = createScoringHookForRule(scoring, sides);
+      if (hook) {
+        hooks.push({ id: `scoring-${scoring.type}`, hook });
+      }
+    }
+  }
+
+  return hooks;
+}
+
+/**
+ * Create victory condition hook from victory condition
+ */
+function createVictoryConditionForCondition(
+  condition: VictoryCondition,
+  sides: MissionSide[]
+): ReturnType<typeof createVictoryConditionHook> | null {
+  switch (condition.type) {
+    case VictoryConditionType.AllEnemiesEliminated:
+      return createEliminationVictoryCondition(condition, sides);
+
+    case VictoryConditionType.VictoryPoints:
+      return createVPVictoryCondition(condition);
+
+    case VictoryConditionType.FirstToPoints:
+      return createFirstToPointsCondition(condition);
+
+    default:
+      return null;
+  }
+}
+
+/**
+ * Create elimination victory condition
+ */
+function createEliminationVictoryCondition(
+  condition: VictoryCondition,
+  sides: MissionSide[]
+): ReturnType<typeof createVictoryConditionHook> {
+  // For each side, check if all enemies are eliminated
+  const conditions: EventCondition[] = [];
+
+  for (const side of sides) {
+    // Check that this side has at least 1 model remaining
+    conditions.push({
+      type: EventConditionType.ModelsRemaining,
+      sideId: side.id,
+      threshold: 1,
+    });
+
+    // Check that all other sides have 0 models
+    for (const otherSide of sides) {
+      if (otherSide.id !== side.id) {
+        conditions.push({
+          type: EventConditionType.ModelsRemaining,
+          sideId: otherSide.id,
+          threshold: 1,
+          invert: true,
+        });
+      }
+    }
+  }
+
+  return createVictoryConditionHook(
+    conditions,
+    condition.side === 'any' ? sides[0]?.id ?? '' : condition.side,
+    {
+      name: `Elimination Victory - ${condition.description}`,
+      vpAward: condition.victoryPoints,
+    }
+  );
+}
+
+/**
+ * Create VP-based victory condition
+ */
+function createVPVictoryCondition(
+  condition: VictoryCondition
+): ReturnType<typeof createVictoryConditionHook> {
+  return createVictoryConditionHook(
+    [
+      {
+        type: EventConditionType.VictoryPoints,
+        sideId: condition.side,
+        threshold: condition.threshold,
+      },
+    ],
+    condition.side,
+    {
+      name: `VP Victory - ${condition.description}`,
+      instantWin: condition.instantWin,
+    }
+  );
+}
+
+/**
+ * Create first-to-points victory condition
+ */
+function createFirstToPointsCondition(
+  condition: VictoryCondition
+): ReturnType<typeof createVictoryConditionHook> {
+  return createVictoryConditionHook(
+    [
+      {
+        type: EventConditionType.VictoryPoints,
+        sideId: condition.side,
+        threshold: condition.threshold,
+      },
+    ],
+    condition.side,
+    {
+      name: `First to ${condition.threshold} VP`,
+      instantWin: true,
+    }
+  );
+}
+
+/**
+ * Create scoring hook from scoring rule
+ */
+function createScoringHookForRule(
+  scoring: ScoringRule,
+  sides: MissionSide[]
+): ReturnType<typeof createEndTurnEventHook> | null {
+  switch (scoring.type) {
+    case ScoringType.PerElimination:
+      // This is handled immediately, not at end of turn
+      return null;
+
+    case ScoringType.PerZoneControlled:
+      return createEndTurnEventHook(
+        sides.map(side => ({
+          type: EventEffectType.AwardVP,
+          sideId: side.id,
+          vpAmount: scoring.value,
+        })),
+        {
+          name: `Zone Control Scoring - ${scoring.description}`,
+          repeatable: true,
+        }
+      );
+
+    default:
+      return null;
+  }
+}
+
+/**
+ * Get immediate scoring effects (for elimination, etc.)
+ */
+export function getImmediateScoringEffects(
+  scoring: ScoringRule,
+  context: {
+    sideId: string;
+    eliminatedModelSideId?: string;
+  }
+): EventEffect[] {
+  const effects: EventEffect[] = [];
+
+  switch (scoring.type) {
+    case ScoringType.PerElimination:
+      if (context.eliminatedModelSideId !== context.sideId) {
+        effects.push({
+          type: EventEffectType.AwardVP,
+          sideId: context.sideId,
+          vpAmount: scoring.value,
+        });
+      }
+      break;
+  }
+
+  return effects;
+}
+
+/**
+ * Get a mission definition by ID
+ */
+export function getMissionDefinition(missionId: string): MissionDefinition | null {
+  if (isEliminationMission(missionId)) {
+    return getEliminationMission();
+  }
+
+  // TODO: Add more mission definitions as they are implemented
+  // QAI_12: Engagement
+  // QAI_13: Sabotage
+  // QAI_14: Beacon
+  // QAI_15: Extraction Point
+  // QAI_16: Exfil
+  // QAI_17: Triad
+  // QAI_18: Ghost Protocol
+  // QAI_19: Last Stand
+  // QAI_20: Switchback
+
+  return null;
+}
+
+/**
+ * Get all available mission definitions
+ */
+export function getAllMissionDefinitions(): MissionDefinition[] {
+  return [
+    getEliminationMission(),
+    // Add more missions as they are implemented
+  ];
+}
+
+/**
+ * Check if a mission ID is valid
+ */
+export function isValidMission(missionId: string): boolean {
+  return getMissionDefinition(missionId) !== null;
 }

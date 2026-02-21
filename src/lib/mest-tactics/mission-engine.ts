@@ -1,4 +1,5 @@
-import { MissionDefinition, getMissionDefinition } from './mission-definitions';
+import { MissionDefinition } from './mission-definitions';
+import { getMissionDefinition } from './mission-registry';
 import {
   MissionZone,
   MissionModel,
