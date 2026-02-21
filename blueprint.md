@@ -3,7 +3,13 @@
 
 ## 1. Overview
 
-This project is a headless wargame simulator designed to run in Firebase Studio. The goal is to create a flexible and performant simulator that can be easily extended with new rules and scenarios, with all interactions occurring via terminal scripts.
+This project is a wargame simulator designed to run in Firebase Studio. The goal is to create a flexible and performant simulator that can be easily extended with new rules and scenarios.
+
+**Project Evolution:**
+- **Phase 1 (Complete):** Headless simulation engine with spatial awareness
+- **Phase 2 (Complete):** Mission system with 4 of 10 missions implemented
+- **Phase 3 (Planned):** Web UI for local play
+- **Phase 4 (Planned):** Online multiplayer platform with authentication, social features, and cloud deployment
 
 ## 2. The Blueprint: Our Shared Source of Truth
 
@@ -191,13 +197,269 @@ These are rough estimates for implementation + tests + wiring.
 7.  Mission event hooks: 1,500–2,500
 
 **Mission Implementations**
-1.  Elimination: 800–1,200
-2.  Engagement: 2,500–3,600
-3.  Beacon: 1,800–2,800
-4.  Exfil: 3,000–4,500
-5.  Extraction Point: 4,000–6,000
-6.  Sabotage: 3,500–5,000
-7.  Ghost Protocol: 4,500–6,500
-8.  Switchback: 3,500–5,000
-9.  Triad: 4,500–6,500
-10. Last Stand: 5,500–8,000
+1.  Elimination: 800–1,200 ✅ **Complete**
+2.  Engagement: 2,500–3,600 ✅ **Complete**
+3.  Beacon: 1,800–2,800 ✅ **Complete**
+4.  Exfil: 3,000–4,500 🔲 Remaining
+5.  Extraction Point: 4,000–6,000 🔲 Remaining
+6.  Sabotage: 3,500–5,000 ✅ **Complete**
+7.  Ghost Protocol: 4,500–6,500 🔲 Remaining
+8.  Switchback: 3,500–5,000 🔲 Remaining
+9.  Triad: 4,500–6,500 🔲 Remaining
+10. Last Stand: 5,500–8,000 🔲 Remaining
+
+---
+
+## 12. Online Multiplayer Platform
+
+### Vision
+
+Transform the headless simulator into a full-featured online gaming platform where players can:
+- Create accounts and manage profiles
+- Play games against other players online
+- Track statistics and rankings
+- Share results and connect with friends
+
+### Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      Frontend (Astro + React)                   │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────────┐   │
+│  │  Lobby   │ │  Game    │ │  Profile │ │  Social/Dashboard│   │
+│  │  Screen  │ │  Board   │ │  Screen  │ │  (Leaderboards)  │   │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Backend Services (Node.js)                   │
+│  ┌──────────────┐ ┌──────────────┐ ┌────────────────────────┐   │
+│  │  Game Server │ │  Auth Server │ │  Social API Service    │   │
+│  │  (WebSocket) │ │  (OAuth/JWT) │ │  (Leaderboards, etc.)  │   │
+│  └──────────────┘ └──────────────┘ └────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      Data Layer (Firebase)                      │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────────┐   │
+│  │Firestore │ │  Auth    │ │  Storage │ │  Realtime DB     │   │
+│  │  (DB)    │ │  (Users) │ │(Avatars) │ │  (Presence)      │   │
+│  └──────────┘ └──────────┘ └──────────┘ └──────────────────┘   │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### Phase 4A: Core Platform (Priority 1 - Foundation)
+
+#### 1. Authentication & Account Management
+**Token Budget: 8,000–12,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **OAuth Integration** | Google, GitHub, Discord login | 2,500–3,500 | P0 |
+| **Email/Password Auth** | Traditional account creation | 1,500–2,000 | P0 |
+| **MFA (TOTP)** | Time-based one-time passwords | 2,000–3,000 | P1 |
+| **Account Management** | Profile edit, password reset, delete | 1,500–2,500 | P0 |
+| **Session Management** | JWT tokens, refresh tokens, logout | 500–1,000 | P0 |
+
+#### 2. Player Profiles & Avatars
+**Token Budget: 5,000–8,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Player Profiles** | Username, bio, stats, preferences | 1,500–2,500 | P0 |
+| **Avatar System** | Upload, crop, store avatar images | 2,000–3,000 | P1 |
+| **Player Names** | Unique names, name history, changes | 500–1,000 | P0 |
+| **Privacy Settings** | Public/private profiles, visibility | 500–1,000 | P1 |
+| **Linked Accounts** | Connect Discord, Slack, email | 500–1,000 | P2 |
+
+#### 3. Game Lobby & Matchmaking
+**Token Budget: 10,000–15,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Lobby System** | Create/join game rooms | 2,500–4,000 | P0 |
+| **Player Selection** | Number of players (1-4), sides | 1,000–1,500 | P0 |
+| **Bot Configuration** | AI difficulty, bot names | 1,500–2,500 | P0 |
+| **Human Player Slots** | Open/closed slots, invites | 1,500–2,500 | P0 |
+| **Game Settings** | Mission selection, house rules | 1,500–2,500 | P1 |
+| **Ready System** | Ready/not-ready, host controls | 1,000–1,500 | P0 |
+| **Matchmaking** | Quick play, ranked, casual | 2,000–3,000 | P2 |
+
+---
+
+### Phase 4B: Online Play (Priority 2 - Core Experience)
+
+#### 4. Real-Time Game Coordination
+**Token Budget: 15,000–22,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **WebSocket Server** | Real-time bidirectional communication | 3,000–5,000 | P0 |
+| **Game State Sync** | Sync board state across players | 3,000–4,000 | P0 |
+| **Turn Management** | Turn timers, notifications, AFK handling | 2,500–4,000 | P0 |
+| **Action Validation** | Server-side move validation | 2,000–3,000 | P0 |
+| **Reconnection** | Resume disconnected games | 2,000–3,000 | P1 |
+| **Game History** | Save/load game state | 1,500–2,500 | P1 |
+| **Spectator Mode** | Watch ongoing games | 1,000–2,000 | P2 |
+
+#### 5. Central Coordination Service
+**Token Budget: 8,000–12,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Game Orchestration** | Start/end games, cleanup | 2,000–3,000 | P0 |
+| **Presence System** | Online/offline status | 1,000–1,500 | P0 |
+| **Notification Service** | Push notifications, emails | 2,000–3,000 | P1 |
+| **Rate Limiting** | API throttling, anti-abuse | 1,000–1,500 | P0 |
+| **Logging & Metrics** | Game analytics, error tracking | 1,500–2,500 | P1 |
+| **Health Monitoring** | Service health, alerts | 500–1,000 | P1 |
+
+---
+
+### Phase 4C: Social Features (Priority 3 - Engagement)
+
+#### 6. Leaderboards & Statistics
+**Token Budget: 6,000–9,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Global Leaderboards** | ELO, wins, rankings | 2,000–3,000 | P1 |
+| **Player Statistics** | Win/loss, favorite missions, stats | 1,500–2,500 | P1 |
+| **Seasonal Rankings** | Monthly/seasonal leaderboards | 1,500–2,500 | P2 |
+| **Achievements** | Badges, milestones, unlocks | 1,000–1,500 | P2 |
+
+#### 7. Game History & Sharing
+**Token Budget: 5,000–8,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Game History** | Past games, replays, results | 2,000–3,000 | P1 |
+| **Share Button** | Share results to social media | 1,000–1,500 | P1 |
+| **Game Replays** | Watch past games | 1,500–2,500 | P2 |
+| **Export Data** | Download game logs, stats | 500–1,000 | P2 |
+
+#### 8. Chat & Communication
+**Token Budget: 8,000–12,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **In-Game Chat** | Text chat during games | 2,500–4,000 | P1 |
+| **Lobby Chat** | Pre-game communication | 1,500–2,500 | P1 |
+| **Direct Messages** | Player-to-player messaging | 2,000–3,000 | P2 |
+| **Chat Moderation** | Filters, reporting, blocking | 1,500–2,500 | P1 |
+| **Emotes/Reactions** | Quick reactions, emotes | 500–1,000 | P2 |
+
+#### 9. Third-Party Integrations
+**Token Budget: 6,000–10,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Discord Integration** | OAuth, server linking, bots | 2,500–4,000 | P1 |
+| **Slack Integration** | Workspace linking, notifications | 2,000–3,000 | P2 |
+| **Webhooks** | External event notifications | 1,000–2,000 | P2 |
+| **API for Bots** | Discord bot API | 500–1,000 | P2 |
+
+---
+
+### Phase 4D: Cloud Deployment (Priority 0 - Infrastructure)
+
+#### 10. Cloud Infrastructure
+**Token Budget: 10,000–15,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Firebase Setup** | Firestore, Auth, Storage, Functions | 2,500–4,000 | P0 |
+| **Cloud Deployment** | Vercel/Netlify for frontend | 1,500–2,500 | P0 |
+| **WebSocket Hosting** | Railway/Render for game servers | 2,000–3,000 | P0 |
+| **CDN Configuration** | Asset delivery, caching | 1,000–1,500 | P1 |
+| **Environment Config** | Dev/staging/prod environments | 1,000–1,500 | P0 |
+| **CI/CD Pipeline** | Automated testing, deployment | 2,000–3,000 | P1 |
+
+#### 11. Security & Compliance
+**Token Budget: 8,000–12,000**
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Data Encryption** | At-rest and in-transit encryption | 2,000–3,000 | P0 |
+| **GDPR Compliance** | Data export, deletion, consent | 2,000–3,000 | P1 |
+| **COPPA Compliance** | Age verification, parental consent | 1,500–2,500 | P2 |
+| **Security Audits** | Penetration testing, vulnerability scans | 1,500–2,500 | P1 |
+| **Backup & Recovery** | Automated backups, disaster recovery | 1,000–1,500 | P0 |
+
+---
+
+### Implementation Priority Summary
+
+| Phase | Features | Total Tokens | Cumulative |
+|-------|----------|--------------|------------|
+| **4A** | Auth, Profiles, Lobby | 23,000–35,000 | 23,000–35,000 |
+| **4B** | Real-Time Play, Coordination | 23,000–34,000 | 46,000–69,000 |
+| **4C** | Social, Leaderboards, Chat | 25,000–39,000 | 71,000–108,000 |
+| **4D** | Cloud, Security | 18,000–27,000 | 89,000–135,000 |
+
+**Total Estimated Token Budget: 89,000–135,000 tokens**
+
+---
+
+### Technical Stack Recommendations
+
+| Layer | Technology | Rationale |
+|-------|------------|-----------|
+| **Frontend** | Astro + React | Existing setup, SSR + interactivity |
+| **Backend** | Node.js + Express | Consistent with existing codebase |
+| **Real-Time** | Socket.io or ws | WebSocket abstraction, rooms |
+| **Database** | Firebase Firestore | Real-time sync, offline support |
+| **Auth** | Firebase Auth + OAuth | Built-in providers, MFA support |
+| **Storage** | Firebase Storage | Avatars, game replays |
+| **Hosting** | Vercel (FE) + Railway (BE) | Easy deployment, scaling |
+| **Email** | SendGrid or Resend | Transactional emails |
+| **Analytics** | PostHog or Mixpanel | User behavior tracking |
+
+---
+
+### Risk Assessment
+
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| **Scope Creep** | High | High | Phase features strictly, MVP first |
+| **Security Breach** | Critical | Medium | Security audits, best practices |
+| **Latency Issues** | High | Medium | Edge deployment, optimization |
+| **Cost Overrun** | Medium | Medium | Monitor usage, set budgets |
+| **Low Adoption** | High | Medium | Community building, marketing |
+
+---
+
+### Success Metrics
+
+| Metric | Target | Timeline |
+|--------|--------|----------|
+| **Registered Users** | 1,000 | 3 months post-launch |
+| **Daily Active Users** | 100 | 3 months post-launch |
+| **Games Played/Day** | 50 | 3 months post-launch |
+| **User Retention (D7)** | 40% | 3 months post-launch |
+| **Average Session** | 20 minutes | 3 months post-launch |
+
+---
+
+## 13. Current Status
+
+### Completed (Phases 1-2)
+- ✅ Spatial awareness system (model registry, LOS, engagement, cover)
+- ✅ Mission Side wiring (assemblies, positions, status)
+- ✅ Objective Markers system
+- ✅ VIP system
+- ✅ POI/Zone Control system
+- ✅ Reinforcements system
+- ✅ Mission Event Hooks
+- ✅ 4 of 10 missions implemented (Elimination, Engagement, Sabotage, Beacon)
+
+### In Progress
+- 🔲 Remaining 6 missions
+
+### Planned (Phases 3-4)
+- 🔲 Web UI for local play (Phase 3)
+- 🔲 Online multiplayer platform (Phase 4)

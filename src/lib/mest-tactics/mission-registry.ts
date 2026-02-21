@@ -1,5 +1,14 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from './mission-definitions';
 import { getEliminationMission, isEliminationMission } from './missions/elimination';
+import { getEngagementMission, isEngagementMission } from './missions/engagement';
+import { getSabotageMission, isSabotageMission } from './missions/sabotage';
+import { getBeaconMission, isBeaconMission } from './missions/beacon';
+import { getExtractionPointMission, isExtractionPointMission } from './missions/extraction-point';
+import { getExfilMission, isExfilMission } from './missions/exfil';
+import { getTriadMission, isTriadMission } from './missions/triad';
+import { getGhostProtocolMission, isGhostProtocolMission } from './missions/ghost-protocol';
+import { getLastStandMission, isLastStandMission } from './missions/last-stand';
+import { getSwitchbackMission, isSwitchbackMission } from './missions/switchback';
 
 /**
  * Mission registry - maps mission IDs to their definitions
@@ -9,76 +18,32 @@ const missionRegistry: Map<string, () => MissionDefinition> = new Map();
 // Register Elimination mission
 missionRegistry.set('QAI_1', getEliminationMission);
 
-// Stub missions for testing (to be replaced with real implementations)
-missionRegistry.set('QAI_13', () => ({
-  id: 'QAI_13',
-  name: 'Sabotage (Stub)',
-  description: 'Sabotage mission stub for testing',
-  minSides: 2,
-  maxSides: 4,
-  defaultGameSize: 'SMALL',
-  victoryConditions: [],
-  scoring: [],
-  specialRules: [],
-  turnLimit: 10,
-  endGameDieRoll: false,
-  endGameDieStart: 6,
-  keys: ['Sabotage', 'Harvest'],
-  sizes: {
-    SMALL: { collectionVP: 1, poiVP: 1 },
-  },
-}));
+// Register Engagement mission
+missionRegistry.set('QAI_12', getEngagementMission);
 
-missionRegistry.set('QAI_14', () => ({
-  id: 'QAI_14',
-  name: 'Beacon (Stub)',
-  description: 'Beacon mission stub for testing',
-  minSides: 2,
-  maxSides: 4,
-  defaultGameSize: 'SMALL',
-  victoryConditions: [],
-  scoring: [],
-  specialRules: [],
-  turnLimit: 10,
-  endGameDieRoll: false,
-  endGameDieStart: 6,
-  keys: ['Dominance', 'Sanctuary', 'POI'],
-  sizes: {
-    SMALL: { 
-      dominanceVP: 1, 
-      sanctuaryVP: 1, 
-      poiVP: 2,
-      dominanceWinVp: 5,
-      sanctuaryWinVp: 5,
-    },
-    Small: { 
-      dominanceVP: 1, 
-      sanctuaryVP: 1, 
-      poiVP: 2,
-      dominanceWinVp: 5,
-      sanctuaryWinVp: 5,
-    },
-  },
-}));
+// Register Sabotage mission
+missionRegistry.set('QAI_13', getSabotageMission);
 
-missionRegistry.set('QAI_15', () => ({
-  id: 'QAI_15',
-  name: 'Extraction Point (Stub)',
-  description: 'Extraction Point mission stub for testing',
-  minSides: 2,
-  maxSides: 4,
-  defaultGameSize: 'SMALL',
-  victoryConditions: [],
-  scoring: [],
-  specialRules: [],
-  turnLimit: 10,
-  endGameDieRoll: false,
-  endGameDieStart: 6,
-  keys: ['Exit', 'Flawless'],
-  sizes: {
-    SMALL: { collectionVP: 1 },
-  },
-}));
+// Register Beacon mission
+missionRegistry.set('QAI_14', getBeaconMission);
+
+// Register Extraction Point mission
+missionRegistry.set('QAI_15', getExtractionPointMission);
+
+// Register Exfil mission
+missionRegistry.set('QAI_16', getExfilMission);
+
+// Register Triad mission
+missionRegistry.set('QAI_17', getTriadMission);
+
+// Register Ghost Protocol mission
+missionRegistry.set('QAI_18', getGhostProtocolMission);
+
+// Register Last Stand mission
+missionRegistry.set('QAI_19', getLastStandMission);
+
+// Register Switchback mission
+missionRegistry.set('QAI_20', getSwitchbackMission);
 
 /**
  * Get a mission definition by ID
