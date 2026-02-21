@@ -8,6 +8,7 @@ import {
   NamedPortraitAssignment,
   createPortraitAssignmentFromIndex,
 } from '../portraits/portrait-naming';
+import { ObjectiveMarkerManager, ObjectiveMarker } from './objective-markers';
 
 /**
  * Model slot status for tracking model state on the battlefield
@@ -94,6 +95,8 @@ export interface MissionSide {
     /** Mission-specific state (flexible for different mission types) */
     missionState: Record<string, unknown>;
   };
+  /** Objective marker manager for this side */
+  objectiveMarkerManager: ObjectiveMarkerManager;
 }
 
 /**
@@ -177,6 +180,7 @@ export function createMissionSide(
       victoryPoints: 0,
       missionState: {},
     },
+    objectiveMarkerManager: new ObjectiveMarkerManager(),
   };
 }
 
@@ -381,4 +385,124 @@ export function getDeploymentPositions(side: MissionSide): Map<string, Position>
     }
   }
   return positions;
+}
+
+/**
+ * Add an objective marker to the side's manager
+ */
+export function addSideMarker(side: MissionSide, marker: ObjectiveMarker): void {
+  side.objectiveMarkerManager.addMarker(marker);
+}
+
+/**
+ * Get a marker from the side's manager
+ */
+export function getSideMarker(side: MissionSide, markerId: string): ObjectiveMarker | undefined {
+  return side.objectiveMarkerManager.getMarker(markerId);
+}
+
+/**
+ * Get all markers from the side's manager
+ */
+export function getAllSideMarkers(side: MissionSide): ObjectiveMarker[] {
+  return side.objectiveMarkerManager.getAllMarkers();
+}
+
+/**
+ * Pick up a marker with a member
+ */
+export function memberPickUpMarker(
+  side: MissionSide,
+  memberId: string,
+  markerId: string
+): { success: boolean; reason?: string } {
+  const member = side.members.find(m => m.id === memberId);
+  if (!member) {
+    return { success: false, reason: 'Member not found' };
+  }
+
+  const result = side.objectiveMarkerManager.pickUpMarker(markerId, memberId);
+  if (result.success) {
+    if (!member.objectiveMarkers.includes(markerId)) {
+      member.objectiveMarkers.push(markerId);
+    }
+  }
+  return { success: result.success, reason: result.reason };
+}
+
+/**
+ * Drop a marker from a member at a position
+ */
+export function memberDropMarker(
+  side: MissionSide,
+  memberId: string,
+  markerId: string,
+  position: Position
+): { success: boolean; reason?: string } {
+  const member = side.members.find(m => m.id === memberId);
+  if (!member) {
+    return { success: false, reason: 'Member not found' };
+  }
+
+  const result = side.objectiveMarkerManager.dropMarker(markerId, position);
+  if (result.success) {
+    const index = member.objectiveMarkers.indexOf(markerId);
+    if (index >= 0) {
+      member.objectiveMarkers.splice(index, 1);
+    }
+  }
+  return { success: result.success, reason: result.reason };
+}
+
+/**
+ * Score a marker for the side
+ */
+export function scoreSideMarker(
+  side: MissionSide,
+  markerId: string
+): { success: boolean; victoryPoints: number; reason?: string } {
+  const result = side.objectiveMarkerManager.scoreMarker(markerId, side.id);
+  if (result.success) {
+    side.state.victoryPoints += result.victoryPointsAwarded;
+    // Remove from any carrier
+    for (const member of side.members) {
+      const index = member.objectiveMarkers.indexOf(markerId);
+      if (index >= 0) {
+        member.objectiveMarkers.splice(index, 1);
+      }
+    }
+  }
+  return {
+    success: result.success,
+    victoryPoints: result.victoryPointsAwarded,
+    reason: result.reason,
+  };
+}
+
+/**
+ * Get total victory points from markers for this side
+ */
+export function getMarkerVictoryPoints(side: MissionSide): number {
+  return side.objectiveMarkerManager.getTotalVictoryPoints(side.id);
+}
+
+/**
+ * Get markers carried by a member
+ */
+export function getMemberMarkers(side: MissionSide, memberId: string): ObjectiveMarker[] {
+  return side.objectiveMarkerManager.getMarkersCarriedBy(memberId);
+}
+
+/**
+ * Get available markers (not carried or scored)
+ */
+export function getAvailableMarkers(side: MissionSide): ObjectiveMarker[] {
+  return side.objectiveMarkerManager.getAvailableMarkers();
+}
+
+/**
+ * Get dropped markers
+ */
+export function getDroppedMarkers(side: MissionSide): ObjectiveMarker[] {
+  return side.objectiveMarkerManager.getDroppedMarkers();
 }
