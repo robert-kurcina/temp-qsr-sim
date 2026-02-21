@@ -8,9 +8,18 @@ import { buildLOSResultContext, ActionContextInput } from './battlefield/action-
 import { TurnPhase } from './types';
 import { getCharacterTraitLevel } from './status-system';
 import { MissionSide } from './MissionSide';
-import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissionOutcome, initMissionFlow, recordBottleResults } from './mission-flow';
+import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissionOutcome, initMissionFlow, mergeMissionDelta, recordBottleResults } from './mission-flow';
 import { MissionScoreResult } from './mission-scoring';
 import { BottleTestResult } from './bottle-tests';
+import {
+  MissionEngineConfig,
+  applyFlawlessScoring,
+  applyObjectiveMarkerScoring,
+  applyPoiMajorityScoring,
+  applyTurnEnd,
+  initMissionEngine,
+} from './mission-engine';
+import { MissionModel } from './mission-keys';
 
 export interface ControllerLogEntry {
   turn: number;
@@ -30,6 +39,8 @@ export interface SkirmishConfig {
 
 export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
   endDieRolls?: number[];
+  missionId?: string;
+  missionEngine?: Omit<MissionEngineConfig, 'missionId' | 'sides' | 'gameSize'>;
 }
 
 export interface MissionRunResult {
@@ -59,9 +70,22 @@ export class GameController {
     }
     const sideCharacters = sides.map(side => side.members.map(member => member.character));
     let state = initMissionFlow(sides, config);
+    const missionEngine = initMissionEngine({
+      missionId: config.missionId ?? 'QAI_1',
+      gameSize: state.gameSize,
+      sides,
+      dominanceZones: config.missionEngine?.dominanceZones,
+      sanctuaryZones: config.missionEngine?.sanctuaryZones,
+      poiZones: config.missionEngine?.poiZones,
+      courierZoneBySide: config.missionEngine?.courierZoneBySide,
+      startingBpBySide: config.missionEngine?.startingBpBySide,
+      objectiveMarkers: config.missionEngine?.objectiveMarkers,
+    });
     let ended = false;
 
     this.runTurns(sideCharacters, config, bottleResults => {
+      const models = this.buildMissionModels(sides);
+      state = mergeMissionDelta(state, applyTurnEnd(missionEngine, { models }));
       state = recordBottleResults(state, bottleResults);
       const advance = advanceEndGameState(state, config.endDieRolls);
       state = advance.state;
@@ -78,6 +102,10 @@ export class GameController {
       return ended;
     }, sides.map(side => side.id));
 
+    const finalModels = this.buildMissionModels(sides);
+    state = mergeMissionDelta(state, applyObjectiveMarkerScoring(missionEngine));
+    state = mergeMissionDelta(state, applyPoiMajorityScoring(missionEngine, finalModels));
+    state = mergeMissionDelta(state, applyFlawlessScoring(missionEngine, finalModels));
     const outcome = computeMissionOutcome(sides, state);
     return { log: this.log, state, outcome };
   }
@@ -357,5 +385,27 @@ export class GameController {
       && char.state.isOrdered
       && char.state.isAttentive
     ) ?? null;
+  }
+
+  private buildMissionModels(sides: MissionSide[]): MissionModel[] {
+    const models: MissionModel[] = [];
+    for (const side of sides) {
+      for (const member of side.members) {
+        const character = member.character;
+        const position = this.manager.getCharacterPosition(character);
+        if (!position) continue;
+        models.push({
+          id: character.id,
+          sideId: side.id,
+          position,
+          bp: member.profile?.totalBp ?? 0,
+          isKOd: character.state.isKOd,
+          isEliminated: character.state.isEliminated,
+          isOrdered: character.state.isOrdered,
+          isAttentive: character.state.isAttentive,
+        });
+      }
+    }
+    return models;
   }
 }
