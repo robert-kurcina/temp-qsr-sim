@@ -706,7 +706,7 @@ src/lib/mest-tactics/
                        # Name Generator, TestContext)
 ```
 
-### Current Progress: ~60% Complete
+### Current Progress: **100% Complete** ✅
 
 **Completed:**
 - ✅ Directory structure created
@@ -722,76 +722,119 @@ src/lib/mest-tactics/
 - ✅ Subroutines module organized (5 files)
 - ✅ Utils module organized (5 files)
 - ✅ Index barrel exports added for `core/`, `engine/`, `battlefield/`, `combat/`
-
-**Remaining:**
-- ⚠️ Complete file moves (finish deleting old files from root)
-- ⚠️ Fix all import paths in moved files
-- ⚠️ Fix all test file imports
-- ⚠️ Validate no circular dependencies
-- ⚠️ Run full test suite to confirm all 823 tests pass
-
-### Phased Completion Plan
-
-#### **Phase 1: Stabilize Core Structure** (2-4 hours)
-1. Complete all file moves (finish deleting old files)
-2. Fix all import paths in moved files
-3. Ensure TypeScript compiles without errors
-4. Run `npm test` to identify broken imports
-
-**Deliverable:** Clean build, no TypeScript errors
+- ✅ All import paths fixed (80+ files)
+- ✅ All 823 tests passing
+- ✅ Committed to git
 
 ---
 
-#### **Phase 2: Fix Test Suite** (4-8 hours)
-1. Update all test file imports
-2. Fix test context imports
-3. Run full test suite iteratively
-4. Fix any circular dependency issues
+## 16. Root Directory Consolidation (In Progress)
 
-**Deliverable:** All 823 tests passing
+### Motivation
+
+After completing the `src/lib/mest-tactics/` restructure, the root directory still has scattered directories that need consolidation:
+
+**Issues Identified:**
+1. **Scattered JSON data**: User-generated content (`assemblies/`, `characters/`, `profiles/`) at root, but canonical game data in `src/data/`
+2. **Scattered assets**: `portraits/` and `svg/` at root, but portrait logic in `src/lib/portraits/`
+3. **Generated output**: `svg-output/` at root without clear purpose
+4. **Documentation split**: `docs/` at root vs `src/guides/docs/` for AI context anchors
+5. **Missing root documentation**: No `CONTRIBUTING.md`, `CHANGELOG.md`, or expanded `README.md`
+
+### Target Structure
+
+```
+/Users/kitrok/projects/temp-qsr-sim/
+├── assets/                    # NEW: Visual assets
+│   ├── portraits/             # From root portraits/
+│   └── svg/
+│       ├── terrain/           # From root svg/terrain/
+│       └── tokens/            # From root svg/play-aides/ (renamed)
+├── data/                      # NEW: User-generated content
+│   ├── assemblies/            # From root assemblies/
+│   ├── characters/            # From root characters/
+│   └── profiles/              # From root profiles/
+├── docs/                      # External documentation (expanded)
+│   ├── README.md              # Project overview
+│   ├── CONTRIBUTING.md        # NEW: Development guide
+│   └── CHANGELOG.md           # NEW: Version history
+├── generated/                 # NEW: Generated output
+│   └── svg-output/            # From root svg-output/
+├── scripts/                   # Build/generate scripts ✓
+├── src/
+│   ├── cli.ts                 # CLI entry point ✓
+│   ├── components/            # Astro/React components
+│   ├── content/               # Astro content collections
+│   ├── data/                  # Canonical JSON game data ✓
+│   ├── guides/docs/           # AI context anchors (not UI) ✓
+│   ├── lib/
+│   │   ├── mest-tactics/      # Core simulation engine ✓
+│   │   └── portraits/         # Portrait logic ✓
+│   ├── schemas/               # JSON schemas (expand)
+│   └── styles/                # CSS/Tailwind ✓
+├── astro.config.mjs           ✓
+├── package.json               ✓
+└── blueprint.md               ✓
+```
+
+### Phased Implementation Plan
+
+#### **Phase 1: Quick Wins** (1-2 hours)
+1. Create `assets/`, `data/`, `generated/` directories
+2. Move `portraits/` → `assets/portraits/`
+3. Move `svg/` → `assets/svg/` (rename `play-aides/` → `tokens/`)
+4. Move `assemblies/` → `data/assemblies/`
+5. Move `characters/` → `data/characters/`
+6. Move `profiles/` → `data/profiles/`
+7. Move `svg-output/` → `generated/svg-output/`
+8. Update all import paths in scripts and source files
+
+**Deliverable:** Consolidated directories, no broken imports
 
 ---
 
-#### **Phase 3: Consolidate Mission System** (2-4 hours)
-1. Verify all mission files properly moved to `mission-system/` and `missions/`
-2. Fix mission import paths in GameManager
-3. Validate mission loading works correctly
+#### **Phase 2: Documentation** (1-2 hours)
+1. Expand root `docs/` with project overview
+2. Add `CONTRIBUTING.md` for development guidelines
+3. Add `CHANGELOG.md` for version history
+4. Deduplicate documentation (merge root `docs/` files into appropriate locations)
+5. Update `README.md` at root
 
-**Deliverable:** All 10 missions loadable and functional
-
----
-
-#### **Phase 4: Add Index Exports** (1-2 hours)
-1. Create `index.ts` barrel exports for each module (remaining modules)
-2. Verify public API is clean and consistent
-3. Update external imports to use barrel exports
-
-**Deliverable:** Clean module boundaries with proper exports
+**Deliverable:** Complete documentation suite
 
 ---
 
-#### **Phase 5: Documentation & Cleanup** (1-2 hours)
-1. Update `blueprint.md` with new structure (this section)
+#### **Phase 3: Schemas & Validation** (1-2 hours)
+1. Add JSON schemas for assemblies, profiles, characters
+2. Update validation scripts to use new paths
+3. Test all generation scripts with new structure
+
+**Deliverable:** Schema-validated user content
+
+---
+
+#### **Phase 4: Final Cleanup** (1 hour)
+1. Rename `mission-system/` → `mission/` (shorter, consistent)
 2. Add README files to major directories
-3. Remove any dead code discovered during refactor
-4. Final git commit with clear structure documentation
+3. Update `blueprint.md` with final structure
+4. Final git commit
 
-**Deliverable:** Documented structure, clean git history
+**Deliverable:** Clean, documented structure
 
 ---
 
-### Total Estimated Effort: **10-20 hours**
+### Total Estimated Effort: **4-7 hours**
 
 ### Risks
-- **Circular dependencies** between `actions/`, `combat/`, and `engine/`
-- **Import path drift** if not all files updated consistently
-- **Test breakage** from TestContext relocation
+- **Broken imports** in scripts referencing moved directories
+- **Path references** in generated files or configs
+- **Git history** for moved files (use `git mv` for preservation)
 
 ### Mitigation Strategy
-1. Follow "move, verify, delete" sequence strictly
-2. Fix imports immediately after each move
-3. Run `npm test` frequently to catch breakage early
-4. Use TypeScript compiler to identify missing imports
+1. Use `git mv` for all moves to preserve history
+2. Search and replace all path references
+3. Run all scripts to verify they work with new paths
+4. Run `npm test` after each phase
 
 ---
 

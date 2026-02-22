@@ -9,7 +9,7 @@ import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/TerrainElement';
 import { Position } from '../src/lib/mest-tactics/battlefield/Position';
 
-const outputDir = path.join(process.cwd(), 'svg-output');
+const outputDir = path.join(process.cwd(), 'generated/svg-output');
 const width = 24;
 const height = 24;
 const maxNonAreaSpacing = 0.5;

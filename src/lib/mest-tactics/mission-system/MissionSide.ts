@@ -7,7 +7,7 @@ import {
   DEFAULT_PORTRAIT_SHEET,
   NamedPortraitAssignment,
   createPortraitAssignmentFromIndex,
-} from '../../portraits/portrait-naming';
+} from '../../../lib/portraits/portrait-naming';
 import { ObjectiveMarkerManager, ObjectiveMarker } from './objective-markers';
 
 /**

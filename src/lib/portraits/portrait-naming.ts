@@ -3,7 +3,7 @@ import {
   PORTRAIT_SHEET_ROWS,
 } from './portrait-clip';
 
-export const DEFAULT_PORTRAIT_SHEET = 'portraits/human-quaggkhir-male.jpg';
+export const DEFAULT_PORTRAIT_SHEET = 'assets/portraits/human-quaggkhir-male.jpg';
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const dash = '-';

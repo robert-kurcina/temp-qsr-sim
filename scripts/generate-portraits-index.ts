@@ -8,7 +8,7 @@ import {
   PORTRAIT_SHEET_ROWS,
 } from '../src/lib/portraits/portrait-clip';
 
-const portraitDirName = 'portraits';
+const portraitDirName = 'assets/portraits';
 const portraitDir = path.resolve(portraitDirName);
 const outputName = 'index.html';
 const outputPath = path.join(portraitDir, outputName);
