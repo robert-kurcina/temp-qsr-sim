@@ -1,0 +1,79 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_18",
+  "name": "Incursion",
+  "description": "Penetrate the sanctum and extract the hidden Object before alert protocols lock down the site. Move unseen, or trigger the alarms that seal your fate.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "mechanism", "count": 1, "formation": "custom", "radius": 2 }
+    ],
+    "deployment": "opposing_edges"
+  },
+  "victoryConditions": [
+    {
+      "type": "courier",
+      "immediate": true,
+      "description": "Immediate victory for extracting the Authentic Object"
+    },
+    {
+      "type": "survival",
+      "threshold": 0,
+      "immediate": true,
+      "description": "Defender victory if Lockdown triggers before Object extraction"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "vip.extracted",
+      "vp": 3,
+      "description": "+3 VP and win for extracting Authentic Object"
+    },
+    {
+      "trigger": "objective.complete",
+      "vp": 1,
+      "description": "+1 VP for Decoy extraction (+2 Alert Level)"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "visibility",
+      "name": "Twilight Visibility",
+      "description": "Visibility Range is 4 MU",
+      "effect": "Reduced visibility",
+      "config": { "visibilityRange": 4 }
+    },
+    {
+      "id": "hidden_object",
+      "name": "Hidden Object",
+      "description": "The Object is Hidden at placement",
+      "effect": "Fog of war"
+    },
+    {
+      "id": "alert_level",
+      "name": "Alert Level",
+      "description": "Starts at 0. Increases via Revelation (+1), Attacks (+2), or Decoys (+2). If threshold reached, game ends - Defender wins unless Authentic Object was extracted",
+      "effect": "Escalating lockdown",
+      "config": {
+        "revelationIncrease": 1,
+        "attackIncrease": 2,
+        "decoyIncrease": 2
+      }
+    },
+    {
+      "id": "identification",
+      "name": "Identification",
+      "description": "Roll 1d6 when Object found: 1-3 = Authentic (+3 VP and win); 4-6 = Decoy (+1 VP, +2 Alert Level)",
+      "effect": "Risk/reward"
+    }
+  ],
+  "turnLimit": 8,
+  "endGameDieRoll": false,
+  "endGameDieStart": 6,
+  "_balance": {
+    "expectedTurns": 5,
+    "difficulty": "hard",
+    "notes": "Stealth vs detection - high tension"
+  }
+}

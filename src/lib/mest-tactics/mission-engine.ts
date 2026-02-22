@@ -1,253 +1,316 @@
-import { MissionDefinition } from './mission-definitions';
-import { getMissionDefinition } from './mission-registry';
-import {
-  MissionZone,
-  MissionModel,
-  MissionScoreDelta,
-  DominanceState,
-  SanctuaryState,
-  CourierState,
-  KeyEventState,
-  ExitState,
-  computeZoneControl,
-  applyDominanceTurn,
-  applySanctuaryTurn,
-  applyCourierTurn,
-  applyCollectionScores,
-  applyPoiMajority,
-  applyFlawless,
-  applyAcquisition,
-  applyCatalyst,
-  applyEncroachment,
-  applyTargeted,
-  applySabotage,
-  applyHarvest,
-  applyVipResult,
-  applyExitResult,
-  addDelta,
-  createEmptyDelta,
-} from './mission-keys';
-import { ObjectiveMarker } from './mission-objectives';
-import { MissionSide } from './MissionSide';
-import { GameSize } from './mission-scoring';
+import { MissionConfig, MissionState, VictoryResult, ScoringResult, ZoneInstance, GameSize } from './mission-config';
+import { VictoryCondition, createVictoryConditions } from './mission-components/victory-conditions';
+import { ScoringRule, createScoringRules } from './mission-components/scoring-rules';
+import { ZoneFactory } from './mission-components/zone-factory';
+import { BalanceValidator } from './mission-components/balance-validator';
+import { MissionSide } from '../MissionSide';
+import { Position } from '../battlefield/Position';
 
-export interface MissionEngineConfig {
-  missionId: string;
-  gameSize: GameSize;
-  sides: MissionSide[];
-  dominanceZones?: MissionZone[];
-  sanctuaryZones?: MissionZone[];
-  poiZones?: MissionZone[];
-  courierZoneBySide?: Record<string, MissionZone>;
-  startingBpBySide?: Record<string, number>;
-  objectiveMarkers?: ObjectiveMarker[];
-}
+/**
+ * Mission Engine
+ * Loads mission configurations and executes mission logic
+ */
+export class MissionEngine {
+  /** Mission configuration */
+  readonly config: MissionConfig;
+  /** Victory condition components */
+  private victoryConditions: VictoryCondition[];
+  /** Scoring rule components */
+  private scoringRules: ScoringRule[];
+  /** Zone instances */
+  private zones: ZoneInstance[];
+  /** Mission state */
+  private state: MissionState;
 
-export interface MissionEngineState {
-  mission: MissionDefinition;
-  gameSize: GameSize;
-  dominance?: DominanceState;
-  sanctuary?: SanctuaryState;
-  courier?: CourierState;
-  keyEvents: KeyEventState;
-  exit: ExitState;
-  objectiveMarkers: ObjectiveMarker[];
-  dominanceZones: MissionZone[];
-  sanctuaryZones: MissionZone[];
-  poiZones: MissionZone[];
-  courierZoneBySide: Record<string, MissionZone>;
-  startingBpBySide: Record<string, number>;
-  vpBySide: Record<string, number>;
-  rpBySide: Record<string, number>;
-  immediateWinnerSideId?: string;
-}
+  constructor(config: MissionConfig) {
+    this.config = config;
+    
+    // Validate configuration
+    const validation = BalanceValidator.validate(config);
+    if (!validation.passed) {
+      console.warn('Mission configuration warnings:', BalanceValidator.getReport(validation));
+    }
 
-export interface MissionTurnInput {
-  models: MissionModel[];
-  courierInfos?: { sideId: string; inZone: boolean; eliminated: boolean }[];
-}
-
-export interface MissionEventInput {
-  sideId: string;
-  amount?: number;
-}
-
-export interface MissionVipEventInput {
-  protectorSideId?: string | null;
-  eliminatedBySideId?: string;
-}
-
-export function initMissionEngine(config: MissionEngineConfig): MissionEngineState {
-  const mission = getMissionDefinition(config.missionId);
-  if (!mission) {
-    throw new Error(`Unknown mission: ${config.missionId}`);
+    // Create components from config
+    this.victoryConditions = createVictoryConditions(config.victoryConditions);
+    this.scoringRules = createScoringRules(config.scoringRules);
+    this.zones = [];
+    
+    // Initialize state
+    this.state = this.createInitialState();
   }
 
-  const startingBpBySide = config.startingBpBySide ?? config.sides.reduce((acc, side) => {
-    acc[side.id] = side.totalBP;
-    return acc;
-  }, {} as Record<string, number>);
-
-  return {
-    mission,
-    gameSize: config.gameSize,
-    dominance: mission.keys.includes('Dominance') ? { vpBySide: {} } : undefined,
-    sanctuary: mission.keys.includes('Sanctuary') ? { vpBySide: {} } : undefined,
-    courier: mission.keys.includes('Courier') ? { vpBySide: {}, deliveredBySide: {}, revokedBySide: {} } : undefined,
-    keyEvents: {},
-    exit: { exitedCountBySide: {}, startingCountBySide: config.sides.reduce((acc, side) => {
-      acc[side.id] = side.members.length;
-      return acc;
-    }, {} as Record<string, number>) },
-    objectiveMarkers: config.objectiveMarkers ?? [],
-    dominanceZones: config.dominanceZones ?? [],
-    sanctuaryZones: config.sanctuaryZones ?? [],
-    poiZones: config.poiZones ?? [],
-    courierZoneBySide: config.courierZoneBySide ?? {},
-    startingBpBySide,
-    vpBySide: {},
-    rpBySide: {},
-  };
-}
-
-function applyDelta(state: MissionEngineState, delta: MissionScoreDelta): void {
-  for (const [sideId, vp] of Object.entries(delta.vpBySide)) {
-    state.vpBySide[sideId] = (state.vpBySide[sideId] || 0) + vp;
-  }
-  for (const [sideId, rp] of Object.entries(delta.rpBySide)) {
-    state.rpBySide[sideId] = (state.rpBySide[sideId] || 0) + rp;
-  }
-  if (delta.immediateWinnerSideId) {
-    state.immediateWinnerSideId = delta.immediateWinnerSideId;
-  }
-}
-
-export function applyTurnEnd(state: MissionEngineState, input: MissionTurnInput): MissionScoreDelta {
-  const delta = createEmptyDelta();
-  const sizeConfig = state.mission.sizes[state.gameSize];
-
-  if (state.dominance && state.dominanceZones.length > 0) {
-    const control = computeZoneControl(input.models, state.dominanceZones);
-    const dominanceDelta = applyDominanceTurn(state.dominance, control, sizeConfig.dominanceWinVp);
-    applyDeltaTo(delta, dominanceDelta);
+  /**
+   * Create initial mission state
+   */
+  private createInitialState(): MissionState {
+    return {
+      currentTurn: 0,
+      currentRound: 0,
+      sides: [],
+      vpBySide: new Map(),
+      ended: false,
+      customState: {
+        zones: [],
+        firstBloodAwarded: false,
+      },
+    };
   }
 
-  if (state.sanctuary && state.sanctuaryZones.length > 0) {
-    const sanctuaryDelta = applySanctuaryTurn(
-      state.sanctuary,
-      input.models,
-      state.sanctuaryZones,
-      state.startingBpBySide,
-      0.25,
-      sizeConfig.sanctuaryWinVp
-    );
-    applyDeltaTo(delta, sanctuaryDelta);
+  /**
+   * Initialize mission with sides
+   */
+  initialize(sides: MissionSide[], battlefieldCenter: Position = { x: 12, y: 12 }): void {
+    this.state.sides = sides;
+    
+    // Initialize VP for each side
+    for (const side of sides) {
+      this.state.vpBySide.set(side.id, 0);
+    }
+
+    // Create zones from config
+    if (this.config.battlefield?.zones) {
+      this.zones = [];
+      for (const zoneConfig of this.config.battlefield.zones) {
+        const zoneInstances = ZoneFactory.createZones(zoneConfig, battlefieldCenter);
+        this.zones.push(...zoneInstances);
+      }
+      (this.state.customState['zones'] as ZoneInstance[]) = this.zones;
+    }
   }
 
-  if (state.courier && input.courierInfos?.length) {
-    const courierDelta = applyCourierTurn(state.courier, input.courierInfos, { revokeOnElimination: true });
-    applyDeltaTo(delta, courierDelta);
+  /**
+   * Start the mission
+   */
+  start(): void {
+    this.state.currentTurn = 1;
+    this.state.currentRound = 1;
   }
 
-  applyDelta(state, delta);
-  return delta;
-}
+  /**
+   * End turn processing
+   */
+  endTurn(): { scoringResults: ScoringResult[]; victoryResult?: VictoryResult } {
+    const scoringResults: ScoringResult[] = [];
 
-export function applyObjectiveMarkerScoring(state: MissionEngineState): MissionScoreDelta {
-  const delta = applyCollectionScores(state.objectiveMarkers);
-  applyDelta(state, delta);
-  return delta;
-}
+    // Apply turn-end scoring rules
+    for (const rule of this.scoringRules) {
+      if (rule.trigger.startsWith('turn.end')) {
+        const result = rule.apply(this.state);
+        if (result.vpAwarded > 0) {
+          scoringResults.push(result);
+        }
+      }
+    }
 
-export function applyPoiMajorityScoring(state: MissionEngineState, models: MissionModel[]): MissionScoreDelta {
-  if (state.poiZones.length === 0) return createEmptyDelta();
-  const control = computeZoneControl(models, state.poiZones);
-  const delta = applyPoiMajority(control);
-  applyDelta(state, delta);
-  return delta;
-}
+    // Check victory conditions
+    const victoryResult = this.checkVictory();
 
-export function applyFlawlessScoring(state: MissionEngineState, models: MissionModel[]): MissionScoreDelta {
-  const delta = applyFlawless(models);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyFirstBloodEvent(state: MissionEngineState, sideId: string): MissionScoreDelta {
-  const delta = createEmptyDelta();
-  if (state.keyEvents.firstBloodSideId) return delta;
-  state.keyEvents.firstBloodSideId = sideId;
-  addDelta(delta, sideId, 1, 0);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyCatalystEvent(state: MissionEngineState, input: MissionEventInput): MissionScoreDelta {
-  const delta = applyCatalyst(state.keyEvents, input.sideId);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyEncroachmentEvent(state: MissionEngineState, input: MissionEventInput): MissionScoreDelta {
-  const delta = applyEncroachment(state.keyEvents, input.sideId);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyTargetedEvent(state: MissionEngineState, input: MissionEventInput): MissionScoreDelta {
-  const delta = applyTargeted(state.keyEvents, input.sideId);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyAcquisitionEvent(state: MissionEngineState, input: MissionEventInput): MissionScoreDelta {
-  const delta = applyAcquisition(state.keyEvents, input.sideId);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applySabotageEvent(state: MissionEngineState, input: MissionEventInput): MissionScoreDelta {
-  const delta = applySabotage(input.sideId, input.amount ?? 2);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyHarvestEvent(state: MissionEngineState, input: MissionEventInput): MissionScoreDelta {
-  const delta = applyHarvest(input.sideId, input.amount ?? 1);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyVipEvent(state: MissionEngineState, input: MissionVipEventInput): MissionScoreDelta {
-  const delta = applyVipResult(input.protectorSideId ?? null, input.eliminatedBySideId);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyExitEvent(state: MissionEngineState, sideId: string, exitedCount = 1): MissionScoreDelta {
-  const delta = applyExitResult(state.exit, sideId, exitedCount);
-  applyDelta(state, delta);
-  return delta;
-}
-
-export function applyAcquisitionOnMarkerExit(
-  state: MissionEngineState,
-  marker: ObjectiveMarker,
-  sideId: string
-): MissionScoreDelta {
-  if (!state.mission.keys.includes('Acquisition')) return createEmptyDelta();
-  if (!marker.scoringSideId || marker.scoringSideId !== sideId) return createEmptyDelta();
-  return applyAcquisitionEvent(state, { sideId });
-}
-
-function applyDeltaTo(target: MissionScoreDelta, delta: MissionScoreDelta): void {
-  for (const [sideId, vp] of Object.entries(delta.vpBySide)) {
-    target.vpBySide[sideId] = (target.vpBySide[sideId] || 0) + vp;
+    return { scoringResults, victoryResult };
   }
-  for (const [sideId, rp] of Object.entries(delta.rpBySide)) {
-    target.rpBySide[sideId] = (target.rpBySide[sideId] || 0) + rp;
+
+  /**
+   * Advance to next turn
+   */
+  nextTurn(): void {
+    this.state.currentTurn++;
+    this.state.currentRound = 1;
   }
-  if (delta.immediateWinnerSideId) {
-    target.immediateWinnerSideId = delta.immediateWinnerSideId;
+
+  /**
+   * Check all victory conditions
+   */
+  checkVictory(): VictoryResult | undefined {
+    for (const condition of this.victoryConditions) {
+      const result = condition.check(this.state);
+      if (result.achieved) {
+        this.state.ended = true;
+        this.state.winner = result.winner;
+        this.state.endReason = result.reason;
+        return result;
+      }
+    }
+
+    // Check turn limit
+    if (this.state.currentTurn >= this.config.turnLimit && this.config.turnLimit > 0) {
+      // VP majority victory at turn limit
+      const vpMajority = this.victoryConditions.find(c => c.type === 'vp_majority');
+      if (vpMajority) {
+        const result = vpMajority.check(this.state);
+        if (result.achieved) {
+          this.state.ended = true;
+          this.state.winner = result.winner;
+          this.state.endReason = result.reason;
+          return result;
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  /**
+   * Award VP for an event
+   */
+  awardVP(sideId: string, amount: number, reason?: string): ScoringResult {
+    const currentVP = this.state.vpBySide.get(sideId) ?? 0;
+    this.state.vpBySide.set(sideId, currentVP + amount);
+
+    const side = this.state.sides.find(s => s.id === sideId);
+    if (side) {
+      side.state.victoryPoints = currentVP + amount;
+    }
+
+    // Check if any scoring rule triggered this
+    const scoringResult: ScoringResult = {
+      vpAwarded: amount,
+      sideId,
+      reason,
+    };
+
+    // Check victory after awarding VP
+    const victoryResult = this.checkVictory();
+    if (victoryResult) {
+      scoringResult.reason = scoringResult.reason 
+        ? `${scoringResult.reason} - ${victoryResult.reason}`
+        : victoryResult.reason;
+    }
+
+    return scoringResult;
+  }
+
+  /**
+   * Handle model elimination event
+   */
+  onModelEliminated(eliminatedSideId: string, eliminatingSideId?: string): ScoringResult[] {
+    const results: ScoringResult[] = [];
+
+    // Apply model eliminated scoring
+    for (const rule of this.scoringRules) {
+      if (rule.trigger === 'model.eliminated') {
+        const result = rule.apply(this.state, { eliminatedSideId, eliminatingSideId });
+        if (result.vpAwarded > 0) {
+          results.push(result);
+        }
+      }
+    }
+
+    // Check first blood
+    for (const rule of this.scoringRules) {
+      if (rule.trigger === 'first_blood' && eliminatingSideId) {
+        const result = rule.apply(this.state, { sideId: eliminatingSideId });
+        if (result.vpAwarded > 0) {
+          results.push(result);
+        }
+      }
+    }
+
+    return results;
+  }
+
+  /**
+   * Update zone control
+   */
+  updateZoneControl(zoneId: string, controllerId?: string): void {
+    const zone = this.zones.find(z => z.id === zoneId);
+    if (zone) {
+      zone.controller = controllerId;
+    }
+  }
+
+  /**
+   * Get current mission state
+   */
+  getState(): MissionState {
+    return { ...this.state };
+  }
+
+  /**
+   * Get zones
+   */
+  getZones(): ZoneInstance[] {
+    return [...this.zones];
+  }
+
+  /**
+   * Get VP for a side
+   */
+  getVP(sideId: string): number {
+    return this.state.vpBySide.get(sideId) ?? 0;
+  }
+
+  /**
+   * Get VP standings
+   */
+  getVPStandings(): Array<{ sideId: string; vp: number }> {
+    return Array.from(this.state.vpBySide.entries())
+      .map(([sideId, vp]) => ({ sideId, vp }))
+      .sort((a, b) => b.vp - a.vp);
+  }
+
+  /**
+   * Check if mission has ended
+   */
+  hasEnded(): boolean {
+    return this.state.ended;
+  }
+
+  /**
+   * Get winner
+   */
+  getWinner(): string | undefined {
+    return this.state.winner;
+  }
+
+  /**
+   * Get end reason
+   */
+  getEndReason(): string | undefined {
+    return this.state.endReason;
+  }
+
+  /**
+   * Get current turn
+   */
+  getCurrentTurn(): number {
+    return this.state.currentTurn;
+  }
+
+  /**
+   * Get balance validation report
+   */
+  getBalanceReport(): string {
+    const validation = BalanceValidator.validate(this.config);
+    return BalanceValidator.getReport(validation);
+  }
+
+  /**
+   * Load mission from JSON config
+   */
+  static fromConfig(config: MissionConfig): MissionEngine {
+    return new MissionEngine(config);
+  }
+
+  /**
+   * Create default Elimination mission config
+   */
+  static createEliminationConfig(): MissionConfig {
+    return {
+      id: 'QAI_1',
+      name: 'Elimination',
+      description: 'Destroy your opponent\'s fighting strength before they destroy yours.',
+      sides: { min: 2, max: 2 },
+      defaultGameSize: GameSize.SMALL,
+      victoryConditions: [
+        { type: 'elimination', immediate: true, description: 'Eliminate all enemy models' },
+        { type: 'vp_majority', description: 'Most VP at game end' },
+      ],
+      scoringRules: [
+        { trigger: 'model.eliminated', vp: 1, description: '1 VP per enemy model eliminated' },
+      ],
+      turnLimit: 10,
+      endGameDieRoll: true,
+      endGameDieStart: 6,
+    };
   }
 }

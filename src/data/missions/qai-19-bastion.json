@@ -1,0 +1,85 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_19",
+  "name": "Bastion",
+  "description": "The outer gates have fallen. Now you hold the inner ward against endless waves. Survive the onslaught or strike out to break their momentum.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "threshold", "count": 1, "formation": "custom", "radius": 6 }
+    ],
+    "deployment": "custom"
+  },
+  "victoryConditions": [
+    {
+      "type": "dominance",
+      "threshold": 4,
+      "immediate": true,
+      "description": "Defender victory via VP threshold"
+    },
+    {
+      "type": "survival",
+      "immediate": true,
+      "description": "Horde victory via Gamma marker"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "turn.end",
+      "vp": 1,
+      "description": "Defender +1 VP at End of Turn if 50% of starting models are in Ward Zone"
+    },
+    {
+      "trigger": "model.eliminated",
+      "vp": 1,
+      "description": "Defender +1 VP per kill immediately when exiting Ward (Sally Forth)"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "bastion",
+      "name": "Bastion",
+      "description": "Defenders award +1 VP at End of Turn if 50% of starting models are in Ward Zone",
+      "effect": "Defensive scoring",
+      "config": { "thresholdPercent": 50 }
+    },
+    {
+      "id": "breakthrough",
+      "name": "Breakthrough",
+      "description": "Horde models touching Ward trigger Alpha, Beta, and Gamma markers. Gamma is immediate Horde victory",
+      "effect": "Progressive breach"
+    },
+    {
+      "id": "sally_forth",
+      "name": "Sally Forth",
+      "description": "Defenders exiting Ward to kill Horde models award +1 VP per kill immediately",
+      "effect": "Counter-attack bonus"
+    }
+  ],
+  "turnLimit": 10,
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "sizeConfig": {
+    "SMALL": {
+      "bpDefender": 250,
+      "bpHorde": 375,
+      "vpThreshold": 3
+    },
+    "MEDIUM": {
+      "bpDefender": 500,
+      "bpHorde": 750,
+      "vpThreshold": 4
+    },
+    "LARGE": {
+      "bpDefender": 750,
+      "bpHorde": 1000,
+      "vpThreshold": 5
+    }
+  },
+  "_balance": {
+    "expectedTurns": 6,
+    "difficulty": "medium",
+    "notes": "Asymmetric siege - Defender holds, Horde attacks"
+  }
+}
