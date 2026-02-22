@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createDominionMission, DominionMissionManager } from './dominion-manager';
-import { buildOpposingSides } from '../mission-system/MissionSideBuilder';
-import { ModelSlotStatus } from '../mission-system/MissionSide';
+import { buildOpposingSides } from '../mission/MissionSideBuilder';
+import { ModelSlotStatus } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
 
 describe('Dominion Mission', () => {

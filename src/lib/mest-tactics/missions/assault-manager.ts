@@ -1,4 +1,4 @@
-import { MissionSide } from '../mission-system/MissionSide';
+import { MissionSide } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
 import { SpatialModel } from '../battlefield/spatial-rules';
 import { MeasurementUtils } from '../battlefield/spatial/model-registry';

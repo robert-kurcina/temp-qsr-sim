@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createEscortMission, EscortMissionManager } from './escort-manager';
-import { buildOpposingSides } from '../mission-system/MissionSideBuilder';
-import { buildAssembly, buildProfile } from '../mission-system/assembly-builder';
-import { ModelSlotStatus } from '../mission-system/MissionSide';
+import { buildOpposingSides } from '../mission/MissionSideBuilder';
+import { buildAssembly, buildProfile } from '../mission/assembly-builder';
+import { ModelSlotStatus } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
 
 describe('Escort Mission', () => {

@@ -1,9 +1,9 @@
-import { MissionSide, SideMember } from '../mission-system/MissionSide';
-import { PointOfInterest, POIType, POIManager, createPOI } from '../mission-system/poi-zone-control';
-import { VIP, VIPManager, VIPState, createVIP } from '../mission-system/vip-system';
-import { ReinforcementsManager, createReinforcementGroup, ReinforcementTrigger, ArrivalEdge } from '../mission-system/reinforcements-system';
+import { MissionSide, SideMember } from '../mission/MissionSide';
+import { PointOfInterest, POIType, POIManager, createPOI } from '../mission/poi-zone-control';
+import { VIP, VIPManager, VIPState, createVIP } from '../mission/vip-system';
+import { ReinforcementsManager, createReinforcementGroup, ReinforcementTrigger, ArrivalEdge } from '../mission/reinforcements-system';
 import { Position } from '../battlefield/Position';
-import { buildAssembly, buildProfile, AssemblyRoster } from '../mission-system/assembly-builder';
+import { buildAssembly, buildProfile, AssemblyRoster } from '../mission/assembly-builder';
 
 /**
  * Escort Mission State

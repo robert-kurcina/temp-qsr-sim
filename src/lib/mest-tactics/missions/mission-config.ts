@@ -1,5 +1,5 @@
 import { Position } from '../battlefield/Position';
-import { MissionSide } from '../mission-system/MissionSide';
+import { MissionSide } from '../mission/MissionSide';
 
 /**
  * Mission Configuration - Data-driven mission definition

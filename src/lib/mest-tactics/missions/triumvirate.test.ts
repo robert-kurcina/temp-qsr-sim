@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createTriumvirateMission, TriumvirateMissionManager } from './triumvirate-manager';
-import { buildOpposingSides } from '../mission-system/MissionSideBuilder';
-import { ModelSlotStatus } from '../mission-system/MissionSide';
+import { buildOpposingSides } from '../mission/MissionSideBuilder';
+import { ModelSlotStatus } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
 
 describe('Triumvirate Mission', () => {

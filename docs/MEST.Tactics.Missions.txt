@@ -32,7 +32,7 @@ Bottled — +1 VP if Opposing Side fails Bottle Test or has no Ordered models
 Outnumbered — +1 VP to Side outnumbered 3:2 models or greater at game start; 
   +2 VP if outnumbered 2:1 or greater (only if multiple Sides remain at game end)
 
-QAI MISSION 12 > ENGAGEMENT
+QAI MISSION 12 > CONVERGENCE
 Combat erupts as multiple forces converge on contested objectives from all 
 directions. Reinforcements arrive in waves—timing and positioning decide victory.
 
@@ -92,7 +92,7 @@ Elimination — +1 VP for most BP eliminated (tiebreaker only)
 Bottled — +1 VP if Opposing Side fails Bottle Test (tiebreaker only)
 First Blood — +1 VP to first Side to Wound an Opposing model
 
-QAI MISSION 13 > SABOTAGE
+QAI MISSION 13 > ASSAULT
 Infiltrate the facility and destroy its critical systems before reinforcements 
 arrive.
 
@@ -150,7 +150,7 @@ Elimination — +1 VP to Side with most BP worth of KO'd/Eliminated models
 POI — +1 VP to Side controlling majority of remaining SPs at game end
 Bottled — +1 VP if Opposing Side fails Bottle Test or has no Ordered models
 
-QAI MISSION 14 > BEACON
+QAI MISSION 14 > DOMINION
 Both Sides race to activate and hold transmission beacons that call in orbital 
 support. The first to achieve sustained signal dominance wins.
 
@@ -207,7 +207,7 @@ Sanctuary — VP from maintaining reserve force
 Elimination — +1 VP for most BP eliminated (tiebreaker only)
 Bottled — +1 VP if Opponent fails Bottle Test (tiebreaker only)
 
-QAI MISSION 15 > EXTRACTION POINT
+QAI MISSION 15 > RECOVERY
 Scattered intelligence caches contain vital data. Extract them before the 
 opposition—but each extraction triggers security protocols that escalate the 
 battlefield's danger.
@@ -271,7 +271,7 @@ Sanctuary — +1 VP per Turn for maintaining reserve force
 Catalyst — +1 VP to Side that triggered maximum Security Level
 Elimination — +1 VP for most BP eliminated (tiebreaker only)
 
-QAI MISSION 16 > EXFIL
+QAI MISSION 16 > ESCORT
 Extract the VIP before enemy reinforcements seal the perimeter. Every moment 
 counts—but rushing invites disaster.
 
@@ -352,7 +352,7 @@ Sanctuary — Immediate Defender victory upon VP threshold
 VIP Elimination — +2 VP to Defender (may trigger Sanctuary victory)
 Dominance — +1 VP per Turn controlling battlefield center (4 MU radius circle)
 
-QAI MISSION 17 > TRIAD
+QAI MISSION 17 > TRIUMVIRATE
 Three factions converge on a derelict facility containing three power nodes. 
 Control the nodes to unlock the central vault—but alliances shift with every Turn.
 
@@ -420,7 +420,7 @@ Commander Elimination — +2 VP immediately
 Sanctuary — +1 VP per Turn maintaining ≥25% of BP within own Entry Edge zone
 Bottled — +1 VP if Opposing Side fails Bottle Test
 
-QAI MISSION 18 > GHOST PROTOCOL
+QAI MISSION 18 > STEALTH
 Infiltrate the blacksite and extract the encrypted Data Core before security 
 protocols lock down the facility. Move unseen—or trigger the alarms that seal 
 your fate.
@@ -491,7 +491,7 @@ Courier — +3 VP and immediate victory for extracting Authentic Core
 Lockdown — Security victory when Alarm Level reaches threshold
 Elimination — Security victory if all Infiltrators are Eliminated
 Expiration — Security victory if game ends with no Authentic Core extracted
-QAI MISSION 19 > LAST STAND
+QAI MISSION 19 > DEFIANCE
 The fortress gates have fallen. Now you hold the inner sanctum against endless 
 waves. Survive the onslaught—but static defense invites collapse. Strike out to 
 break their momentum, or hold the line until dawn.
@@ -575,7 +575,7 @@ Keys to Victory
 Last Stand — Defender victory upon reaching VP threshold
 Breakthrough — Horde victory upon placing Breakthrough Gamma marker
 Elimination — Horde victory if all Defenders are Eliminated
-QAI MISSION 20 > SWITCHBACK
+QAI MISSION 20 > BREACH
 The vault contains three security switches. Flip them all to unlock the exit 
 corridor—but every movement risks detection. The defenders stand vigilant in 
 Wait status, their heightened awareness your greatest obstacle.

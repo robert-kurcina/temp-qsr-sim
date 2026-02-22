@@ -1,5 +1,5 @@
 import { Character } from '../core/Character';
-import { MissionSide } from '../mission-system/MissionSide';
+import { MissionSide } from '../mission/MissionSide';
 
 export type GameSize = 'Small' | 'Medium' | 'Large';
 

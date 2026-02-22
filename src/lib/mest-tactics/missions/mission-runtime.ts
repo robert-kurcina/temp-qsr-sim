@@ -1,11 +1,11 @@
 import { MissionConfig, MissionState, GameSize } from './mission-config';
-import { MissionEngine } from '../mission-system/mission-engine';
+import { MissionEngine } from '../mission/mission-engine';
 import {
   SpecialRuleHandlerRegistry,
   createDefaultHandlers,
   SpecialRuleEvent,
   SpecialRuleResult,
-} from '../mission-system/special-rules';
+} from '../mission/special-rules';
 import { MissionEventLogger, EventLog } from './mission-event-logger';
 import { MissionUIBridge, UIEvent } from './mission-ui-bridge';
 

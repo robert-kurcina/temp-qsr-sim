@@ -7,9 +7,9 @@ import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { buildLOSResultContext, ActionContextInput } from '../battlefield/action-context';
 import { TurnPhase } from '../core/types';
 import { getCharacterTraitLevel } from '../status/status-system';
-import { MissionSide } from '../mission-system/MissionSide';
-import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissionOutcome, initMissionFlow, mergeMissionDelta, recordBottleResults } from '../mission-system/mission-flow';
-import { MissionScoreResult } from '../mission-system/mission-scoring';
+import { MissionSide } from '../mission/MissionSide';
+import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissionOutcome, initMissionFlow, mergeMissionDelta, recordBottleResults } from '../mission/mission-flow';
+import { MissionScoreResult } from '../mission/mission-scoring';
 import { BottleTestResult } from '../status/bottle-tests';
 import {
   MissionEngineConfig,

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createRecoveryMission, RecoveryMissionManager } from './recovery-manager';
-import { buildOpposingSides } from '../mission-system/MissionSideBuilder';
-import { ModelSlotStatus } from '../mission-system/MissionSide';
+import { buildOpposingSides } from '../mission/MissionSideBuilder';
+import { ModelSlotStatus } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
 
 describe('Recovery Mission', () => {

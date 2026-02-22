@@ -1,6 +1,6 @@
-import { MissionSide, SideMember } from '../mission-system/MissionSide';
-import { PointOfInterest, POIType, POIManager, createPOI } from '../mission-system/poi-zone-control';
-import { VIP, VIPManager, VIPState, createVIP } from '../mission-system/vip-system';
+import { MissionSide, SideMember } from '../mission/MissionSide';
+import { PointOfInterest, POIType, POIManager, createPOI } from '../mission/poi-zone-control';
+import { VIP, VIPManager, VIPState, createVIP } from '../mission/vip-system';
 import { Position } from '../battlefield/Position';
 import { Character } from '../core/Character';
 
