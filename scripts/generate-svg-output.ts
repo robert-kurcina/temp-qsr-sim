@@ -1,12 +1,12 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/BattlefieldFactory';
-import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/SvgRenderer';
-import { PathfindingEngine } from '../src/lib/mest-tactics/battlefield/PathfindingEngine';
-import { LOSOperations } from '../src/lib/mest-tactics/battlefield/LOSOperations';
-import { LOFOperations } from '../src/lib/mest-tactics/battlefield/LOFOperations';
+import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory';
+import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
+import { PathfindingEngine } from '../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
+import { LOSOperations } from '../src/lib/mest-tactics/battlefield/los/LOSOperations';
+import { LOFOperations } from '../src/lib/mest-tactics/battlefield/los/LOFOperations';
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
-import { TerrainElement } from '../src/lib/mest-tactics/battlefield/TerrainElement';
+import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { Position } from '../src/lib/mest-tactics/battlefield/Position';
 
 const outputDir = path.join(process.cwd(), 'generated/svg-output');
