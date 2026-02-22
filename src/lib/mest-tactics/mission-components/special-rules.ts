@@ -1045,3 +1045,23 @@ export class BreakthroughHandler extends BaseSpecialRuleHandler {
     };
   }
 }
+
+/**
+ * Create default special rule handlers registry
+ * Registers all built-in special rule handlers
+ */
+export function createDefaultHandlers(): SpecialRuleHandlerRegistry {
+  const registry = new SpecialRuleHandlerRegistry();
+  registry.register(new ReinforcementWaveHandler());
+  registry.register(new AlertLevelHandler());
+  registry.register(new ThreatLevelHandler());
+  registry.register(new CourierHandler());
+  registry.register(new MechanismHandler());
+  registry.register(new CommanderHandler());
+  registry.register(new TimePressureHandler());
+  registry.register(new HarvestHandler());
+  registry.register(new HiddenObjectHandler());
+  registry.register(new BreakthroughHandler());
+  registry.register(new VigilanceHandler());
+  return registry;
+}
