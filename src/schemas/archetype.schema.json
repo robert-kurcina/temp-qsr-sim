@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mest-tactics.com/schemas/archetype.schema.json",
+  "title": "Archetype",
+  "description": "A character archetype definition in MEST Tactics",
+  "type": "object",
+  "required": ["attributes", "traits", "bp", "species", "class"],
+  "properties": {
+    "attributes": {
+      "type": "object",
+      "required": ["cca", "rca", "ref", "int", "pow", "str", "for", "mov", "siz"],
+      "properties": {
+        "cca": { "type": "number", "minimum": 0, "maximum": 10, "description": "Close Combat Attack" },
+        "rca": { "type": "number", "minimum": 0, "maximum": 10, "description": "Ranged Combat Attack" },
+        "ref": { "type": "number", "minimum": 0, "maximum": 10, "description": "Reflexes" },
+        "int": { "type": "number", "minimum": 0, "maximum": 10, "description": "Intelligence" },
+        "pow": { "type": "number", "minimum": 0, "maximum": 10, "description": "Power" },
+        "str": { "type": "number", "minimum": 0, "maximum": 10, "description": "Strength" },
+        "for": { "type": "number", "minimum": 0, "maximum": 10, "description": "Fortitude" },
+        "mov": { "type": "number", "minimum": 0, "maximum": 10, "description": "Movement" },
+        "siz": { "type": "number", "minimum": 1, "maximum": 10, "description": "Size" }
+      },
+      "additionalProperties": false
+    },
+    "traits": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of trait names"
+    },
+    "bp": {
+      "type": "number",
+      "description": "Base Battle Point cost",
+      "minimum": 0
+    },
+    "species": {
+      "type": "string",
+      "description": "Species (e.g., 'Humanoid')"
+    },
+    "class": {
+      "type": "string",
+      "description": "Class (e.g., 'Variant Common')"
+    }
+  },
+  "additionalProperties": false
+}

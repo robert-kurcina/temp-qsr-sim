@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mest-tactics.com/schemas/profile.schema.json",
+  "title": "Profile",
+  "description": "A character profile with archetype and items",
+  "type": "object",
+  "required": ["name", "archetype", "items", "totalBp"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Profile name",
+      "minLength": 1
+    },
+    "archetype": {
+      "type": "object",
+      "description": "Archetype data keyed by archetype name",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "archetype.schema.json"
+      }
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "item.schema.json"
+      },
+      "description": "List of equipped items"
+    },
+    "totalBp": {
+      "type": "number",
+      "description": "Total Battle Point cost",
+      "minimum": 0
+    },
+    "adjustedBp": {
+      "type": "number",
+      "description": "Adjusted Battle Point cost",
+      "minimum": 0
+    },
+    "adjustedItemCosts": {
+      "type": "object",
+      "properties": {
+        "meleeBp": { "type": "array", "items": { "type": "number" } },
+        "rangedBp": { "type": "array", "items": { "type": "number" } },
+        "equipmentBp": { "type": "array", "items": { "type": "number" } }
+      },
+      "required": ["meleeBp", "rangedBp", "equipmentBp"],
+      "additionalProperties": false
+    },
+    "physicality": {
+      "type": "number",
+      "minimum": 0
+    },
+    "adjPhysicality": {
+      "type": "number",
+      "minimum": 0
+    },
+    "durability": {
+      "type": "number",
+      "minimum": 0
+    },
+    "adjDurability": {
+      "type": "number",
+      "minimum": 0
+    },
+    "burden": {
+      "type": "object",
+      "properties": {
+        "totalLaden": { "type": "number" },
+        "totalBurden": { "type": "number" }
+      },
+      "required": ["totalLaden", "totalBurden"],
+      "additionalProperties": false
+    },
+    "totalHands": {
+      "type": "number",
+      "minimum": 0
+    },
+    "totalDeflect": {
+      "type": "number",
+      "minimum": 0
+    },
+    "totalAR": {
+      "type": "number",
+      "minimum": 0
+    },
+    "finalTraits": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "allTraits": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "additionalProperties": false
+}

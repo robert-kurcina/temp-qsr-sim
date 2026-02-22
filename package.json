@@ -11,6 +11,7 @@
     "astro": "astro",
     "test": "vitest",
     "validate:mission": "node scripts/validate-mission.js",
+    "validate:user-content": "node scripts/validate-user-content.js",
     "generate:svg": "node --import tsx scripts/generate-svg-output.ts",
     "generate:portraits": "node --import tsx scripts/generate-portraits-index.ts",
     "cli": "tsx src/cli.ts"

@@ -24,18 +24,30 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="0.33816964"
-     inkscape:cx="357.80858"
-     inkscape:cy="476.09241"
+     inkscape:cx="730.40265"
+     inkscape:cy="411.03631"
      inkscape:window-width="1535"
      inkscape:window-height="797"
      inkscape:window-x="122"
      inkscape:window-y="25"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer6" />
+     inkscape:current-layer="layer1" />
   <g
      inkscape:groupmode="layer"
      id="layer6"
      inkscape:label="building">
+    <g
+       inkscape:groupmode="layer"
+       id="layer1"
+       inkscape:label="area">
+      <rect
+         style="fill:#281d1d;fill-opacity:0.493243;stroke:none;stroke-width:0.0929268"
+         id="rect13"
+         width="21.75"
+         height="17.25"
+         x="0.85459208"
+         y="0.078354441" />
+    </g>
     <g
        inkscape:groupmode="layer"
        id="layer3"
