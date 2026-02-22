@@ -1,5 +1,5 @@
 
-import { TestDice, DiceType } from "../dice-roller";
+import { TestDice, DiceType } from "../subroutines/dice-roller";
 
 /**
  * Parses a weapon's accuracy string (e.g., "+1b") into a TestDice object.

@@ -1,11 +1,11 @@
-import { Character } from '../Character';
-import { Item } from '../Item';
-import { TestContext } from '../TestContext';
-import { ResolveTestResult, TestDice } from '../dice-roller';
-import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../morale';
+import { Character } from '../core/Character';
+import { Item } from '../core/Item';
+import { TestContext } from '../utils/TestContext';
+import { ResolveTestResult, TestDice } from '../subroutines/dice-roller';
+import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
 import { resolveDamage, DamageResolution } from '../subroutines/damage-test';
-import { getCharacterTraitLevel } from '../status-system';
-import { SpatialRules, SpatialModel } from '../battlefield/spatial-rules';
+import { getCharacterTraitLevel } from '../status/status-system';
+import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules';
 import { Position } from '../battlefield/Position';
 import { Battlefield } from '../battlefield/Battlefield';
 

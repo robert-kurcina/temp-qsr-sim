@@ -1,5 +1,5 @@
-import { Character } from '../Character';
-import { performTest, TestDice } from '../dice-roller';
+import { Character } from '../core/Character';
+import { performTest, TestDice } from '../subroutines/dice-roller';
 
 export interface CombatResult {
   hit: boolean;

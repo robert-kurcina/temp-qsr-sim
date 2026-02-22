@@ -5,9 +5,9 @@
  * These traits modify combat tests, damage, and tactical options.
  */
 
-import { Character } from '../Character';
-import { getCharacterTraitLevel } from '../status-system';
-import { Item } from '../Item';
+import { Character } from '../core/Character';
+import { getCharacterTraitLevel } from '../status/status-system';
+import { Item } from '../core/Item';
 
 // ============================================================================
 // CLEAVE

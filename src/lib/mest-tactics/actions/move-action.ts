@@ -1,8 +1,8 @@
-import { Character } from '../Character';
+import { Character } from '../core/Character';
 import { Position } from '../battlefield/Position';
-import { Item } from '../Item';
-import { SpatialRules } from '../battlefield/spatial-rules';
-import { getBaseDiameterFromSiz } from '../battlefield/size-utils';
+import { Item } from '../core/Item';
+import { SpatialRules } from '../battlefield/spatial/spatial-rules';
+import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { getSprintLevel, getLeapAgilityBonus, checkLeapUsage, getSurefootedTerrainBonus, TerrainType } from '../traits/combat-traits';
 
 export interface MoveActionDeps {

@@ -1,6 +1,6 @@
-import { MissionSide } from '../MissionSide';
-import { MissionDefinition } from '../mission-definitions';
-import { MissionEventManager, EventTriggerType, EventEffectType, EventConditionType, EventEffect } from '../mission-event-hooks';
+import { MissionSide } from '../mission-system/MissionSide';
+import { MissionDefinition } from '../missions/mission-config';
+import { MissionEventManager, EventTriggerType, EventEffectType, EventConditionType, EventEffect } from '../missions/mission-event-hooks';
 import { getEliminationMission } from './elimination';
 
 /**

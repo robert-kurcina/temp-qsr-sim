@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createDefianceMission, DefianceMissionManager } from './defiance-manager';
-import { buildOpposingSides } from '../MissionSideBuilder';
-import { buildAssembly, buildProfile } from '../assembly-builder';
-import { ModelSlotStatus } from '../MissionSide';
+import { buildOpposingSides } from '../mission-system/MissionSideBuilder';
+import { buildAssembly, buildProfile } from '../mission-system/assembly-builder';
+import { ModelSlotStatus } from '../mission-system/MissionSide';
 import { Position } from '../battlefield/Position';
 
 describe('Defiance Mission', () => {

@@ -666,3 +666,155 @@ Transform the headless simulator into a full-featured online gaming platform whe
 4. Wire up the existing headless engine to the UI
 
 This gives you a playable prototype quickly, which can then be extended with more features.
+
+---
+
+## 14. Directory Restructuring Effort (In Progress)
+
+### Motivation
+
+The original flat structure with 60+ files in `src/lib/mest-tactics/` had become difficult to navigate and maintain. Concerns were mixed (actions, combat, missions all at same level), making it hard to:
+- Find related files quickly
+- Understand module boundaries
+- Add new features without risking breakage
+- Onboard new developers (or AI agents)
+
+### Target Structure
+
+```
+src/lib/mest-tactics/
+├── core/              # Domain models (Character, Profile, Item, Trait, Assembly, Archetype, Attributes)
+├── engine/            # Core engine (GameManager, GameController, EventLogger, MetricsService)
+├── actions/           # All action logic (Move, Attack, Disengage, Activation, Bonus Actions, Interrupts)
+├── combat/            # Combat subsystem (Close Combat, Ranged Combat, Indirect Ranged Combat)
+├── battlefield/       # Spatial systems
+│   ├── los/          # Line of fire operations (LOSValidator, LOFOperations)
+│   ├── pathfinding/  # Navigation (Grid, Cell, NavMesh, Pathfinder, PathfindingEngine)
+│   ├── rendering/    # SVG rendering (SvgRenderer, BattlefieldFactory)
+│   ├── spatial/      # Engagement, model registry, spatial rules, size utils
+│   ├── terrain/      # Terrain, terrain elements, move validation
+│   └── validation/   # Action context validation
+├── status/            # Status effects (Morale, Concealment, Compulsory Actions, Passive Options, Bottle Tests)
+├── traits/            # Trait system (Combat Traits, Item Traits, Trait Parser, Trait Utils, Trait Logic Registry)
+├── mission-system/    # Mission engine (MissionEngine, MissionSide, MissionSideBuilder, AssemblyBuilder,
+│                      # Objective Markers, POI/Zone Control, VIP System, Reinforcements, Scoring Rules,
+│                      # Special Rules, Victory Conditions, Zone Factory, Balance Validator, Heuristic Scorer)
+├── missions/          # Individual mission implementations (10 missions: Elimination, Convergence, Dominion,
+│                      # Assault, Recovery, Escort, Triumvirate, Stealth, Defiance, Breach)
+├── subroutines/       # Low-level subroutines (Damage, Hit Test, Ranged Hit Test, Morale Test, Dice Roller)
+└── utils/             # Factories and generators (Character Factory, Character Generator, Profile Generator,
+                       # Name Generator, TestContext)
+```
+
+### Current Progress: ~60% Complete
+
+**Completed:**
+- ✅ Directory structure created
+- ✅ Core models moved to `core/` (8 files)
+- ✅ Engine files moved to `engine/` (5 files)
+- ✅ Actions module organized (22 files)
+- ✅ Combat module organized (8 files)
+- ✅ Battlefield subdirectories created (los/, pathfinding/, rendering/, spatial/, terrain/, validation/)
+- ✅ Status module organized (6 files)
+- ✅ Traits module organized (6 files)
+- ✅ Mission-system module organized (27 files)
+- ✅ Missions module organized (20 mission manager + test files)
+- ✅ Subroutines module organized (5 files)
+- ✅ Utils module organized (5 files)
+- ✅ Index barrel exports added for `core/`, `engine/`, `battlefield/`, `combat/`
+
+**Remaining:**
+- ⚠️ Complete file moves (finish deleting old files from root)
+- ⚠️ Fix all import paths in moved files
+- ⚠️ Fix all test file imports
+- ⚠️ Validate no circular dependencies
+- ⚠️ Run full test suite to confirm all 823 tests pass
+
+### Phased Completion Plan
+
+#### **Phase 1: Stabilize Core Structure** (2-4 hours)
+1. Complete all file moves (finish deleting old files)
+2. Fix all import paths in moved files
+3. Ensure TypeScript compiles without errors
+4. Run `npm test` to identify broken imports
+
+**Deliverable:** Clean build, no TypeScript errors
+
+---
+
+#### **Phase 2: Fix Test Suite** (4-8 hours)
+1. Update all test file imports
+2. Fix test context imports
+3. Run full test suite iteratively
+4. Fix any circular dependency issues
+
+**Deliverable:** All 823 tests passing
+
+---
+
+#### **Phase 3: Consolidate Mission System** (2-4 hours)
+1. Verify all mission files properly moved to `mission-system/` and `missions/`
+2. Fix mission import paths in GameManager
+3. Validate mission loading works correctly
+
+**Deliverable:** All 10 missions loadable and functional
+
+---
+
+#### **Phase 4: Add Index Exports** (1-2 hours)
+1. Create `index.ts` barrel exports for each module (remaining modules)
+2. Verify public API is clean and consistent
+3. Update external imports to use barrel exports
+
+**Deliverable:** Clean module boundaries with proper exports
+
+---
+
+#### **Phase 5: Documentation & Cleanup** (1-2 hours)
+1. Update `blueprint.md` with new structure (this section)
+2. Add README files to major directories
+3. Remove any dead code discovered during refactor
+4. Final git commit with clear structure documentation
+
+**Deliverable:** Documented structure, clean git history
+
+---
+
+### Total Estimated Effort: **10-20 hours**
+
+### Risks
+- **Circular dependencies** between `actions/`, `combat/`, and `engine/`
+- **Import path drift** if not all files updated consistently
+- **Test breakage** from TestContext relocation
+
+### Mitigation Strategy
+1. Follow "move, verify, delete" sequence strictly
+2. Fix imports immediately after each move
+3. Run `npm test` frequently to catch breakage early
+4. Use TypeScript compiler to identify missing imports
+
+---
+
+## 15. Current Status
+
+### Completed (Phases 1-2)
+- ✅ Spatial awareness system (model registry, LOS, engagement, cover)
+- ✅ Mission Side wiring (assemblies, positions, status)
+- ✅ Objective Markers system
+- ✅ VIP system
+- ✅ POI/Zone Control system
+- ✅ Reinforcements system
+- ✅ Mission Event Hooks
+- ✅ 10 of 10 missions implemented (Elimination, Convergence, Assault, Dominion, Recovery, Escort, Triumvirate, Stealth, Defiance, Breach)
+- ✅ All 823 unit tests passing
+- ✅ Mission/terminology renaming complete
+- ✅ Combat traits framework (`combat-traits.ts`) with 43 trait implementations
+
+### In Progress
+- 🔄 Directory restructuring — **~60% complete** (5 phases, currently in Phase 1)
+
+### Planned
+- ⏳ Complete directory restructure (Phases 1-5)
+- ⏳ Phase 3A: Minimal Playable UI (8,000–12,000 tokens)
+- ⏳ Phase 3B: Full Local Play (15,000–20,000 tokens)
+- ⏳ Phase 4: Online Multiplayer Platform (89,000–135,000 tokens)

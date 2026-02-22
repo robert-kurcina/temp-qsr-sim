@@ -1,7 +1,7 @@
-import { Character } from '../Character';
-import { TestContext } from '../TestContext';
-import { resolveTest } from '../dice-roller';
-import { CharacterStatus } from '../types';
+import { Character } from '../core/Character';
+import { TestContext } from '../utils/TestContext';
+import { resolveTest } from '../subroutines/dice-roller';
+import { CharacterStatus } from '../core/types';
 import { hasReload, getReloadActionsRequired, isWeaponLoaded, setWeaponLoaded } from '../traits/combat-traits';
 
 export interface SimpleActionDeps {

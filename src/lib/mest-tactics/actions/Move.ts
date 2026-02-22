@@ -1,6 +1,6 @@
 import { Action } from './Action';
 import { Character } from '../character/Character';
-import { GameManager } from '../GameManager';
+import { GameManager } from '../engine/GameManager';
 import { Coordinate } from '../spatial';
 
 export class Move extends Action {

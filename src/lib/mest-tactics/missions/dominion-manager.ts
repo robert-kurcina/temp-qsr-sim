@@ -1,5 +1,5 @@
-import { MissionSide } from '../MissionSide';
-import { PointOfInterest, POIType, POIManager, createPOI } from '../poi-zone-control';
+import { MissionSide } from '../mission-system/MissionSide';
+import { PointOfInterest, POIType, POIManager, createPOI } from '../mission-system/poi-zone-control';
 import { Position } from '../battlefield/Position';
 import { SpatialModel } from '../battlefield/spatial-rules';
 

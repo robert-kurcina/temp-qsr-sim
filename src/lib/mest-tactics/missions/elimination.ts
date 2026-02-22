@@ -1,4 +1,4 @@
-import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming, SpecialRule } from '../mission-definitions';
+import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming, SpecialRule } from './mission-definitions';
 
 /**
  * QAI Mission 1: Elimination

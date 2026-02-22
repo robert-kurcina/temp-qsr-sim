@@ -1,9 +1,9 @@
-import { Character } from '../Character';
+import { Character } from '../core/Character';
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { SpatialModel } from './spatial-rules';
-import { LOSOperations } from './LOSOperations';
-import { getBaseDiameterFromSiz } from './size-utils';
+import { LOSOperations } from './los/LOSOperations';
+import { getBaseDiameterFromSiz } from './spatial/size-utils';
 
 export function normalizeVector(vec: { x: number; y: number }): { x: number; y: number } | null {
   const length = Math.hypot(vec.x, vec.y);

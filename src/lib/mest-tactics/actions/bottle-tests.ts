@@ -1,6 +1,6 @@
-import { Character } from '../Character';
-import { CharacterStatus } from '../types';
-import { resolveBottleForSide, BottleTestResult } from '../bottle-tests';
+import { Character } from '../core/Character';
+import { CharacterStatus } from '../core/types';
+import { resolveBottleForSide, BottleTestResult } from '../status/bottle-tests';
 
 export interface BottleTestDeps {
   setCharacterStatus: (characterId: string, status: CharacterStatus) => void;

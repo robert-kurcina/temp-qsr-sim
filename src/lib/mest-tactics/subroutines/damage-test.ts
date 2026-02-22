@@ -1,7 +1,7 @@
-import { Character } from '../Character';
-import { resolveTest, TestParticipant, TestDice, DiceType, TestResult } from '../dice-roller';
-import { Item } from '../Item';
-import { TestContext } from '../TestContext';
+import { Character } from '../core/Character';
+import { resolveTest, TestParticipant, TestDice, DiceType, TestResult } from '../subroutines/dice-roller';
+import { Item } from '../core/Item';
+import { TestContext } from '../utils/TestContext';
 import { getDeflectBonus, getCoverageBonus, getStunLevel, calculateStunEffect, hasCharge, hasImpale, getImpalePenalty } from '../traits/combat-traits';
 
 // --- Sub-functions for parsing --- //

@@ -1,7 +1,7 @@
-import { Character } from '../Character';
+import { Character } from '../core/Character';
 import { Position } from '../battlefield/Position';
-import { TransfixTarget, resolveTransfixEffect } from '../status-system';
-import { getBaseDiameterFromSiz } from '../battlefield/size-utils';
+import { TransfixTarget, resolveTransfixEffect } from '../status/status-system';
+import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 
 export interface TransfixActionDeps {
   battlefield: import('../battlefield/Battlefield').Battlefield | null;

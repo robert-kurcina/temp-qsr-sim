@@ -1,11 +1,11 @@
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { createCharacter } from '../character-factory';
+import { createCharacter } from '../utils/character-factory';
 import { resolveMoraleTest } from './morale-test';
-import { setRoller, resetRoller, Roller, DiceType } from '../dice-roller';
-import { metricsService } from '../MetricsService';
-import type { Profile } from '../Profile';
-import type { Character } from '../Character';
+import { setRoller, resetRoller, Roller, DiceType } from '../subroutines/dice-roller';
+import { metricsService } from '../engine/MetricsService';
+import type { Profile } from '../core/Profile';
+import type { Character } from '../core/Character';
 import { gameData } from '../../data';
 
 const { archetypes } = gameData;

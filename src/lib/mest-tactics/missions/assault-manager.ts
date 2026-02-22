@@ -1,7 +1,7 @@
-import { MissionSide } from '../MissionSide';
+import { MissionSide } from '../mission-system/MissionSide';
 import { Position } from '../battlefield/Position';
 import { SpatialModel } from '../battlefield/spatial-rules';
-import { MeasurementUtils } from '../battlefield/model-registry';
+import { MeasurementUtils } from '../battlefield/spatial/model-registry';
 
 /**
  * Assault marker types

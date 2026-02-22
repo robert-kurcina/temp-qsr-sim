@@ -1,4 +1,4 @@
-import { Character } from '../Character';
+import { Character } from '../core/Character';
 import { ActivationDeps, spendAp } from './activation';
 
 /**

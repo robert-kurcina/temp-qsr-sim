@@ -1,9 +1,9 @@
-import { Character } from '../Character';
-import { Item } from '../Item';
+import { Character } from '../core/Character';
+import { Item } from '../core/Item';
 import { Position } from '../battlefield/Position';
-import { makeDisengageAction } from '../disengage';
-import { TestContext } from '../TestContext';
-import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusActionOptions } from '../bonus-actions';
+import { makeDisengageAction } from './disengage';
+import { TestContext } from '../utils/TestContext';
+import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusActionOptions } from './bonus-actions';
 import { normalizeVector } from '../battlefield/spatial-helpers';
 
 export interface DisengageActionDeps {

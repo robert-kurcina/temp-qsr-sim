@@ -1,20 +1,20 @@
-import { Character } from '../Character';
-import { Item } from '../Item';
+import { Character } from '../core/Character';
+import { Item } from '../core/Item';
 import { Position } from '../battlefield/Position';
-import { ActionContextInput, CloseCombatContextInput, buildCloseCombatActionContext, buildRangedActionContext, resolveFriendlyFire } from '../battlefield/action-context';
-import { SpatialRules, SpatialModel } from '../battlefield/spatial-rules';
-import { getBaseDiameterFromSiz } from '../battlefield/size-utils';
+import { ActionContextInput, CloseCombatContextInput, buildCloseCombatActionContext, buildRangedActionContext, resolveFriendlyFire } from '../battlefield/validation/action-context';
+import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules';
+import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { TestContext } from '../TestContext';
 import { ResolveTestResult } from '../dice-roller';
-import { resolveRangedCombatHitTest } from '../ranged-combat';
-import { resolveCloseCombatHitTest } from '../close-combat';
+import { resolveRangedCombatHitTest } from '../combat/ranged-combat';
+import { resolveCloseCombatHitTest } from '../combat/close-combat';
 import { DamageResolution, resolveDamage } from '../subroutines/damage-test';
-import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusActionOptions } from '../bonus-actions';
-import { parseStatusTrait, applyStatusTraitOnHit } from '../status-system';
-import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../morale';
-import { makeIndirectRangedAttack } from '../indirect-ranged-combat';
-import { LOSOperations } from '../battlefield/LOSOperations';
-import { hasItemTrait } from '../items/item-traits';
+import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusActionOptions } from './bonus-actions';
+import { parseStatusTrait, applyStatusTraitOnHit } from '../status/status-system';
+import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
+import { makeIndirectRangedAttack } from '../combat/indirect-ranged-combat';
+import { LOSOperations } from '../battlefield/los/LOSOperations';
+import { hasItemTrait } from '../traits/item-traits';
 import {
   getFightBonusActions,
   getBrawlLevel,

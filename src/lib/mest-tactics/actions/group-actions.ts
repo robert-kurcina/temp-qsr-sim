@@ -1,51 +1,23 @@
-import { Character } from '../Character';
-import { Item } from '../Item';
-import { GroupAction, buildGroupActionContext, createGroupAction } from '../group-actions';
-import { TestContext } from '../TestContext';
+import { Character } from '../core/Character';
+import { TestContext } from '../utils/TestContext';
 
-export interface GroupActionDeps {
-  executeRangedAttack: (
-    attacker: Character,
-    defender: Character,
-    weapon: Item,
-    options: { context?: TestContext }
-  ) => unknown;
-  executeCloseCombatAttack: (
-    attacker: Character,
-    defender: Character,
-    weapon: Item,
-    options: { context?: TestContext }
-  ) => unknown;
+export interface GroupAction {
+  leader: Character;
+  members: Character[];
 }
 
-export function createGroupActionWrapper(leader: Character, members: Character[]): GroupAction {
-  return createGroupAction(leader, members);
+export function createGroupAction(leader: Character, members: Character[]): GroupAction {
+  const uniq = new Map<string, Character>();
+  for (const member of members) {
+    if (!member) continue;
+    uniq.set(member.id, member);
+  }
+  if (!uniq.has(leader.id)) {
+    uniq.set(leader.id, leader);
+  }
+  return { leader, members: Array.from(uniq.values()) };
 }
 
-export function executeGroupRangedAttack(
-  deps: GroupActionDeps,
-  group: GroupAction,
-  defender: Character,
-  weapon: Item,
-  options: { context?: TestContext } = {}
-) {
-  const context = buildGroupActionContext(options.context ?? {});
-  return deps.executeRangedAttack(group.leader, defender, weapon, {
-    ...options,
-    context,
-  });
-}
-
-export function executeGroupCloseCombatAttack(
-  deps: GroupActionDeps,
-  group: GroupAction,
-  defender: Character,
-  weapon: Item,
-  options: { context?: TestContext } = {}
-) {
-  const context = buildGroupActionContext(options.context ?? {});
-  return deps.executeCloseCombatAttack(group.leader, defender, weapon, {
-    ...options,
-    context,
-  });
+export function buildGroupActionContext(context: TestContext = {}): TestContext {
+  return { ...context, isGroupAction: true };
 }

@@ -1,7 +1,7 @@
 
-import { Character } from '../Character';
-import { resolveTest, TestParticipant, TestDice, TestResult } from '../dice-roller';
-import { Item } from '../Item';
+import { Character } from '../core/Character';
+import { resolveTest, TestParticipant, TestDice, TestResult } from '../subroutines/dice-roller';
+import { Item } from '../core/Item';
 import { parseAccuracy } from './accuracy-parser';
 
 export function resolveRangedHitTest(

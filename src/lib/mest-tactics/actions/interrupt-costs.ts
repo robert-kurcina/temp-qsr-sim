@@ -1,5 +1,5 @@
-import { Character } from '../Character';
-import { CharacterStatus } from '../types';
+import { Character } from '../core/Character';
+import { CharacterStatus } from '../core/types';
 
 export interface InterruptCostDeps {
   setCharacterStatus: (characterId: string, status: CharacterStatus) => void;

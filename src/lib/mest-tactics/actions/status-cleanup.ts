@@ -1,6 +1,6 @@
-import { Character } from '../Character';
-import { CharacterStatus } from '../types';
-import { promotePendingStatusTokens } from '../status-system';
+import { Character } from '../core/Character';
+import { CharacterStatus } from '../core/types';
+import { promotePendingStatusTokens } from '../status/status-system';
 
 export interface StatusCleanupDeps {
   setCharacterStatus: (characterId: string, status: CharacterStatus) => void;

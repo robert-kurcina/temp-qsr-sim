@@ -1,11 +1,11 @@
-import { Character } from '../Character';
+import { Character } from '../core/Character';
 import { Delaunay } from 'd3-delaunay';
-import { Grid } from './Grid';
+import { Grid } from './pathfinding/Grid';
 import { Position } from './Position';
-import { TerrainFeature, TerrainType } from './Terrain';
+import { TerrainFeature, TerrainType } from './terrain/Terrain';
 import { TerrainElement } from './TerrainElement';
-import { ConstrainedNavMesh } from './ConstrainedNavMesh';
-import { getBaseDiameterFromSiz } from './size-utils';
+import { ConstrainedNavMesh } from './pathfinding/ConstrainedNavMesh';
+import { getBaseDiameterFromSiz } from './spatial/size-utils';
 
 function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
     function orientation(p: Position, q: Position, r: Position): number {

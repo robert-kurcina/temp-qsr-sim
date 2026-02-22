@@ -1,12 +1,12 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { Character } from '../Character';
-import type { Item } from '../Item';
+import type { Character } from '../core/Character';
+import type { Item } from '../core/Item';
 import { resolveDamageTest } from './damage';
-import * as diceRoller from '../dice-roller';
+import * as diceRoller from '../subroutines/dice-roller';
 
 // Mock the dice-roller module to control the outcome of resolveTest
-vi.mock('../dice-roller', () => ({
+vi.mock('../subroutines/dice-roller', () => ({
   resolveTest: vi.fn().mockReturnValue({ pass: false, cascades: 0 }), // Default mock
 }));
 

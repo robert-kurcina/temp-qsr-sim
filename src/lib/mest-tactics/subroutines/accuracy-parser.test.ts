@@ -1,7 +1,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { parseAccuracy } from './accuracy-parser';
-import { DiceType } from '../dice-roller';
+import { DiceType } from '../subroutines/dice-roller';
 
 describe('parseAccuracy', () => {
   it('should return empty pools for undefined input', () => {

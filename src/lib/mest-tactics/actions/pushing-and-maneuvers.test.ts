@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { performPushing, performCombatManeuver, CombatManeuverType } from './pushing-and-maneuvers';
-import { Character } from '../Character';
-import { Profile } from '../Profile';
-import { GameManager } from '../GameManager';
-import { CharacterStatus } from '../types';
+import { Character } from '../core/Character';
+import { Profile } from '../core/Profile';
+import { GameManager } from '../engine/GameManager';
+import { CharacterStatus } from '../core/types';
 import { Battlefield } from '../battlefield/Battlefield';
 
 describe('Pushing Action', () => {

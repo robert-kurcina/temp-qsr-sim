@@ -1,9 +1,9 @@
-import { MissionSide, SideMember } from '../MissionSide';
-import { PointOfInterest, POIType, POIManager, createPOI } from '../poi-zone-control';
-import { VIP, VIPManager, VIPState, createVIP } from '../vip-system';
-import { ReinforcementsManager, createReinforcementGroup, ReinforcementTrigger, ArrivalEdge } from '../reinforcements-system';
+import { MissionSide, SideMember } from '../mission-system/MissionSide';
+import { PointOfInterest, POIType, POIManager, createPOI } from '../mission-system/poi-zone-control';
+import { VIP, VIPManager, VIPState, createVIP } from '../mission-system/vip-system';
+import { ReinforcementsManager, createReinforcementGroup, ReinforcementTrigger, ArrivalEdge } from '../mission-system/reinforcements-system';
 import { Position } from '../battlefield/Position';
-import { buildAssembly, buildProfile, AssemblyRoster } from '../assembly-builder';
+import { buildAssembly, buildProfile, AssemblyRoster } from '../mission-system/assembly-builder';
 
 /**
  * Defiance Mission State

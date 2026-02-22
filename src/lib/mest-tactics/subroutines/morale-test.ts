@@ -1,9 +1,9 @@
 
-import { Character } from '../Character';
-import { resolveTest, TestParticipant, ResolveTestResult, DiceType } from '../dice-roller';
-import { TestContext } from '../TestContext';
-import { TestDice } from '../dice-roller';
-import { metricsService } from '../MetricsService';
+import { Character } from '../core/Character';
+import { resolveTest, TestParticipant, ResolveTestResult, DiceType } from '../subroutines/dice-roller';
+import { TestContext } from '../utils/TestContext';
+import { TestDice } from '../subroutines/dice-roller';
+import { metricsService } from '../engine/MetricsService';
 import { getLeadershipBonusDice, isImmuneToHindranceMoralePenalties } from '../traits/combat-traits';
 
 export function resolveMoraleTest(

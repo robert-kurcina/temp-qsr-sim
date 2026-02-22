@@ -1,8 +1,8 @@
-import { Item } from '../Item';
-import { Character } from '../Character';
-import { buildBonusActionOptions } from '../bonus-actions';
-import { buildReactOptions, ReactEvent, ReactOption, sortReactOptions } from '../react-actions';
-import { buildPassiveOptions, PassiveEvent, PassiveOption, buildActiveToggleOptions, ActiveToggleOption } from '../passive-options';
+import { Item } from '../core/Item';
+import { Character } from '../core/Character';
+import { buildBonusActionOptions } from './bonus-actions';
+import { buildReactOptions, ReactEvent, ReactOption, sortReactOptions } from './react-actions';
+import { buildPassiveOptions, PassiveEvent, PassiveOption, buildActiveToggleOptions, ActiveToggleOption } from '../status/passive-options';
 
 export function getPassiveOptions(event: PassiveEvent): PassiveOption[] {
   return buildPassiveOptions(event);

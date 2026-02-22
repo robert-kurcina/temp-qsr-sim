@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createEliminationMission, EliminationMissionManager } from './elimination-manager';
-import { buildOpposingSides } from '../MissionSideBuilder';
-import { ModelSlotStatus } from '../MissionSide';
+import { buildOpposingSides } from '../mission-system/MissionSideBuilder';
+import { ModelSlotStatus } from '../mission-system/MissionSide';
 
 describe('Elimination Mission', () => {
   let manager: EliminationMissionManager;

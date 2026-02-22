@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { CombatEngine, CombatResult } from './CombatEngine';
-import { Character } from '../Character';
-import { Profile } from '../Profile';
+import { Character } from '../core/Character';
+import { Profile } from '../core/Profile';
 
 // Mock the dice roller
-vi.mock('../dice-roller', async () => {
-  const actual = await vi.importActual('../dice-roller');
+vi.mock('../subroutines/dice-roller', async () => {
+  const actual = await vi.importActual('../subroutines/dice-roller');
   return {
     ...actual,
     // Keep the actual implementation and just spy on getRolls if needed, or override here.

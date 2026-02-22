@@ -1,7 +1,7 @@
 
-import type { Character } from '../Character';
-import type { Item } from '../Item';
-import { resolveTest } from '../dice-roller';
+import type { Character } from '../core/Character';
+import type { Item } from '../core/Item';
+import { resolveTest } from '../subroutines/dice-roller';
 import { parseDamage } from './damage-parser';
 
 export interface DamageResult {
