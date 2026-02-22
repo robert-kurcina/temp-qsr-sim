@@ -4,6 +4,7 @@ import { Position } from './battlefield/Position';
 import { resolveMoraleTest } from './subroutines/morale-test';
 import { SpatialRules, SpatialModel } from './battlefield/spatial-rules';
 import { getBaseDiameterFromSiz } from './battlefield/size-utils';
+import { getLeadershipBonusDice, isImmuneToPsychology, isExemptFromMoraleTests, isImmuneToHindranceMoralePenalties, hasCoward, getCowardAdditionalFearTokens } from './traits/combat-traits';
 
 export interface MoraleOptions {
   cohesionRangeMu?: number;
@@ -32,6 +33,13 @@ export function applyFearFromWounds(
   if (woundsAdded <= 0) {
     return { pass: true, fearAdded: 0 };
   }
+  
+  // Insane trait: exempt from Morale Tests unless has Hindrance tokens
+  const hasHindranceTokens = character.state.wounds > 0 || character.state.fearTokens > 0 || character.state.delayTokens > 0;
+  if (isExemptFromMoraleTests(character, hasHindranceTokens)) {
+    return { pass: true, fearAdded: 0 };
+  }
+  
   const result = resolveMoraleTest(character, character.state.fearTokens, {}, rolls ?? null);
   if (result.pass) {
     return { pass: true, fearAdded: 0 };
@@ -39,7 +47,13 @@ export function applyFearFromWounds(
 
   // RAW: failed test yields 1 Fear, or more if failed with multiple cascades.
   // We approximate cascades for failed tests using the negative score difference.
-  const fearAdded = Math.max(1, Math.abs(result.score || 0));
+  let fearAdded = Math.max(1, Math.abs(result.score || 0));
+  
+  // Coward trait: additional Fear tokens on failed Morale
+  if (hasCoward(character)) {
+    fearAdded += getCowardAdditionalFearTokens(character, true);
+  }
+  
   character.state.fearTokens += fearAdded;
   updateFearState(character);
   return { pass: false, fearAdded };

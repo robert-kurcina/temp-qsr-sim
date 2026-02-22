@@ -4,6 +4,7 @@ import { SpatialModel } from './spatial-rules';
 import { ModelRegistry, MeasurementUtils } from './model-registry';
 import { LOFOperations } from './LOFOperations';
 import { Item } from '../Item';
+import { getCharacterTraitLevel, getReachExtension, hasPerimeter } from '../traits/combat-traits';
 
 /**
  * Engagement state between two models
@@ -52,18 +53,35 @@ export class EngagementManager {
 
   /**
    * Check if two models are engaged (in base contact)
+   * Perimeter trait: models with Perimeter can only be engaged by Attentive models using Agility
    */
-  isEngaged(modelAId: string, modelBId: string): boolean {
+  isEngaged(modelAId: string, modelBId: string, characterA?: Character, characterB?: Character): boolean {
     const modelA = this.registry.getModel(modelAId);
     const modelB = this.registry.getModel(modelBId);
     if (!modelA || !modelB) return false;
+    
+    // Check Perimeter trait - models with Perimeter can only be engaged by Attentive models
+    if (characterA && hasPerimeter(characterA)) {
+      // Character A has Perimeter - can only be engaged by Attentive models
+      if (!characterB || !characterB.state.isAttentive) {
+        return false;
+      }
+    }
+    if (characterB && hasPerimeter(characterB)) {
+      // Character B has Perimeter - can only be engaged by Attentive models
+      if (!characterA || !characterA.state.isAttentive) {
+        return false;
+      }
+    }
+    
     return MeasurementUtils.isBaseContact(modelA, modelB);
   }
 
   /**
    * Get all models engaged with a specific model
+   * Perimeter trait: models with Perimeter can only be engaged by Attentive models
    */
-  getEngagedModels(modelId: string, opposingIds?: Set<string>): string[] {
+  getEngagedModels(modelId: string, opposingIds?: Set<string>, character?: Character, allCharacters?: Map<string, Character>): string[] {
     const model = this.registry.getModel(modelId);
     if (!model) return [];
 
@@ -73,6 +91,22 @@ export class EngagementManager {
     for (const other of allModels) {
       if (other.id === modelId) continue;
       if (opposingIds && !opposingIds.has(other.id)) continue;
+      
+      // Check Perimeter trait
+      const otherCharacter = allCharacters?.get(other.id);
+      if (character && hasPerimeter(character)) {
+        // This model has Perimeter - can only be engaged by Attentive models
+        if (!otherCharacter || !otherCharacter.state.isAttentive) {
+          continue;
+        }
+      }
+      if (otherCharacter && hasPerimeter(otherCharacter)) {
+        // Other model has Perimeter - requires this model to be Attentive
+        if (!character || !character.state.isAttentive) {
+          continue;
+        }
+      }
+      
       if (MeasurementUtils.isBaseContact(model, other)) {
         engaged.push(other.id);
       }
@@ -162,6 +196,7 @@ export class EngagementManager {
 
   /**
    * Calculate melee reach for a character with a specific weapon
+   * Reach trait: extends melee range by X × 1 MU
    */
   calculateMeleeReach(character: Character, weapon?: Item): MeleeReachResult {
     const model = this.registry.getModel(character.id);
@@ -177,7 +212,11 @@ export class EngagementManager {
 
     const baseReach = model.baseDiameter / 2;
     const weaponReach = this.getWeaponReachModifier(weapon);
-    const totalReach = baseReach + weaponReach;
+    
+    // Reach trait: character-based reach extension (X × 1 MU)
+    const reachTraitExtension = getReachExtension(character);
+    
+    const totalReach = baseReach + weaponReach + reachTraitExtension;
 
     return {
       baseReach,

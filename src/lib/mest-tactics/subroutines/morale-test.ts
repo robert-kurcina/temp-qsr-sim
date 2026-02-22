@@ -4,6 +4,7 @@ import { resolveTest, TestParticipant, ResolveTestResult, DiceType } from '../di
 import { TestContext } from '../TestContext';
 import { TestDice } from '../dice-roller';
 import { metricsService } from '../MetricsService';
+import { getLeadershipBonusDice, isImmuneToHindranceMoralePenalties } from '../traits/combat-traits';
 
 export function resolveMoraleTest(
   character: Character,
@@ -15,7 +16,10 @@ export function resolveMoraleTest(
   const bonusDice: TestDice = {};
   const penaltyDice: TestDice = {};
 
-  if (fearTokens > 0) {
+  // Insane trait: not affected by Hindrance penalties for Morale Tests
+  const isImmuneToHindrancePenalties = isImmuneToHindranceMoralePenalties(character);
+  
+  if (fearTokens > 0 && !isImmuneToHindrancePenalties) {
     penaltyDice[DiceType.Modifier] = fearTokens;
   }
 
@@ -25,6 +29,12 @@ export function resolveMoraleTest(
 
   if (context.isDisadvantaged) {
     penaltyDice[DiceType.Wild] = 1;
+  }
+
+  // Leadership X: +X Base dice for Morale Tests from nearby leader
+  // (Caller must set context.leadershipBonus if applicable)
+  if (context.leadershipBonus) {
+    bonusDice[DiceType.Base] = (bonusDice[DiceType.Base] || 0) + context.leadershipBonus;
   }
 
   const participant: TestParticipant = {

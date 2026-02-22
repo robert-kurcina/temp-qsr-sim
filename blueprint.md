@@ -455,12 +455,214 @@ Transform the headless simulator into a full-featured online gaming platform whe
 - ✅ POI/Zone Control system
 - ✅ Reinforcements system
 - ✅ Mission Event Hooks
-- ✅ 10 of 10 missions implemented (Elimination, Engagement, Beacon, Exfil, Extraction Point, Sabotage, Ghost Protocol, Switchback, Triad, Last Stand)
-- ✅ All 815 unit tests passing
+- ✅ 10 of 10 missions implemented (Elimination, Convergence, Assault, Dominion, Recovery, Escort, Triumvirate, Stealth, Defiance, Breach)
+- ✅ All 823 unit tests passing
+- ✅ Mission/terminology renaming complete
+- ✅ Combat traits framework (`combat-traits.ts`) with 23 trait implementations
 
 ### In Progress
-- 🔲 None - Phase 2 complete!
+- ✅ Combat traits integration — **100% complete**
 
-### Planned (Phases 3-4)
-- 🔲 Web UI for local play (Phase 3)
-- 🔲 Online multiplayer platform (Phase 4)
+### Combat Traits Implementation Status
+
+#### Implemented (in `src/lib/mest-tactics/traits/combat-traits.ts`)
+
+| Trait | QSR Rule | Implementation Status |
+|-------|----------|----------------------|
+| **Cleave X** | KO → Elimination, extra wounds for level 2+ | ✅ Complete |
+| **Parry X** | +Xm Defender Close Combat Tests | ✅ Complete |
+| **Reach X** | +X MU melee range | ✅ **Integrated** |
+| **Conceal** | WYSIWYG exception, Hide bonus | ✅ Complete |
+| **Discrete** | WYSIWYG exception (any number) | ✅ Complete |
+| **Coverage X** | Ignore engaged models, share benefits | ✅ Complete |
+| **Deflect X** | +Xm Defender Hit Tests (not Engaged Range) | ✅ Complete |
+| **Grit X** | Morale exemption, Fear reduction/conversion | ✅ Complete |
+| **Perimeter** | Base-contact restriction, defense bonus | ✅ **Integrated** |
+| **Protective X** | Discard Delay from Stun (with conditions) | ✅ Complete |
+| **Reload X** | Weapon state tracking | ✅ **Integrated** |
+| **Throwable** | OR = STR, no Accuracy bonus | ✅ Complete |
+| **Charge** | +1 Wild die Damage, +1 Impact on charge | ✅ **Integrated** |
+| **[Stub]** | No Overreach, penalty conditions | ✅ Complete |
+| **[Lumbering]** | Upgrade penalties to Base dice | ✅ Complete |
+| **[Blinders]** | Scrum penalty, Bow/Thrown restrictions | ✅ Complete |
+| **Brawl X** | Cascade bonus, mutual reduction | ✅ **Integrated** |
+| **Fight X** | Penalty reduction, bonus actions | ✅ **Integrated** |
+| **Shoot X** | Penalty reduction, Max ORM bonus | ✅ Complete |
+| **Archery** | +Xm Bow Hit Test | ✅ Complete |
+| **Scholar** | +Xm INT Tests | ✅ Complete |
+| **Insane** | Psychology immunity, Morale exemption | ✅ **Integrated** |
+| **[Coward]** | Additional Fear on failed Morale | ✅ **Integrated** |
+| **Stun X** | Full Stun Test calculation | ✅ **Integrated** |
+| **Natural Weapon** | Multiple attacks, no Overreach | ✅ Complete |
+| **[Awkward]** | Extra AP when engaged, Delay on Charge | ✅ **Integrated** |
+| **[Hafted]** | -1m Defender Close Combat Hit Tests | ✅ **Integrated** |
+| **[Discard]** | Limited use (3 variants) | ✅ **Integrated** |
+| **Acrobatic X** | +X Wild dice Defender Close Combat | ✅ **Integrated** |
+| **Bash** | +1 cascade Bonus Actions when Charging | ✅ **Integrated** |
+| **Brawn X** | +X STR except Close Combat Damage | ✅ Complete |
+| **Detect X** | +X Base dice Detect, +X Max ORM | ✅ **Integrated** |
+| **Evasive X** | +Xm per ORM Defender Range Hit, reposition | ✅ **Integrated** |
+| **Impale** | -1b Defender Damage vs Distracted | ✅ **Integrated** |
+| **Knife-fighter X** | +Xb +X Impact with [Stub] weapons | ✅ **Integrated** |
+| **Leadership X** | +Xb Morale Tests in Visibility | ✅ **Integrated** |
+| **Leap X** | +X" Agility for Movement/reposition | ✅ **Integrated** |
+| **Melee** | Weapon trait for Engaged combat | ✅ Complete |
+| **Sneaky X** | Auto-Hide, +Xm Suddenness, start Hidden | ✅ **Integrated** |
+| **Sprint X** | +X×2" Movement (straight), +X×4" if Attentive Free | ✅ **Integrated** |
+| **Surefooted X** | Upgrade terrain effects | ✅ **Integrated** |
+| **Tactics X** | +Xb Initiative Tests, avoid Situational Awareness | ✅ **Integrated** |
+| **Unarmed** | -1m CCA, STR-1m Damage, counts as [Stub] | ✅ **Integrated** |
+
+**Total: 43 combat traits implemented and integrated**
+
+#### Integration Summary
+
+| Trait | Integration | File(s) |
+|-------|-------------|---------|
+| **Cleave** | KO → Elimination, extra wounds | `close-combat.ts` |
+| **Stun** | Delay tokens from Stun X | `damage-test.ts` |
+| **Charge** | +1m Hit, +1 Impact Damage | `close-combat.ts`, `damage-test.ts` |
+| **Parry** | +Xm Defender Close Combat | `close-combat.ts` |
+| **Knife-fighter** | +Xb +X Impact with [Stub] | `close-combat.ts` |
+| **Hafted** | -1m Defender penalty | `close-combat.ts` |
+| **Awkward** | Delay on Charge, extra AP | `close-combat.ts` |
+| **Bash** | +1 cascade on Charge | `close-combat.ts` |
+| **Fight** | Bonus actions on higher Fight | `combat-actions.ts` |
+| **Brawl** | Bonus actions on failed hit (Delay cost) | `combat-actions.ts` |
+| **Perimeter** | Attentive-only engagement | `engagement-manager.ts` |
+| **Reach** | +X MU melee range | `engagement-manager.ts` |
+| **Insane** | Morale exemption, Hindrance immunity | `morale.ts`, `morale-test.ts` |
+| **Coward** | +1 Fear on failed Morale | `morale.ts` |
+| **Leadership** | +Xb Morale Tests | `morale-test.ts` |
+| **Reload** | Fiddle action tracking | `simple-actions.ts` |
+| **Sneaky** | Auto-Hide at end of activation, Suddenness bonus | `combat-actions.ts`, `activation.ts` |
+| **Sprint** | +X×2"/4" Movement bonus | `move-action.ts` |
+| **Leap** | +X" Agility bonus | `move-action.ts` |
+| **Surefooted** | Terrain upgrade (Rough→Clear, etc.) | `move-action.ts` |
+| **Tactics** | +Xb Initiative Tests | `GameManager.ts` |
+| **Unarmed** | -1m Hit/Damage penalties | `close-combat.ts` |
+| **Acrobatic** | +X Wild dice Defender CC | `close-combat.ts` |
+| **Detect** | +X Max ORM | `ranged-combat.ts` |
+| **Evasive** | +Xm per ORM Defender Range Hit | `ranged-combat.ts` |
+| **Impale** | -1b +1 per 3 Impact vs Distracted | `damage-test.ts` |
+| **[Discard]** | Weapon usage tracking | `simple-actions.ts` |
+
+**Integration Complete: 27/27 traits integrated**
+
+### Planned: Phase 3 - Web UI for Local Play
+
+#### Phase 3A: Minimal Playable UI (8,000–12,000 tokens)
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Battlefield Renderer** | 2D SVG battlefield with terrain, model tokens, zones | 2,500–3,500 | P0 |
+| **Selection System** | Click-to-select, highlight valid targets, LOS indicators | 1,500–2,000 | P0 |
+| **Action Panel** | Move, Attack, Disengage buttons, AP tracking | 1,500–2,000 | P0 |
+| **Game State Display** | VP scoreboard, model status, turn/round, objectives | 1,000–1,500 | P0 |
+| **Dice Roll Display** | Visual dice results, success counting | 500–1,000 | P1 |
+| **Camera Controls** | Pan, zoom, focus on selected model | 1,000–1,500 | P1 |
+
+#### Phase 3B: Full Local Play (15,000–20,000 tokens)
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Assembly Builder** | Select archetypes, build profiles, assign items, BP budget | 3,000–4,000 | P0 |
+| **Mission Setup** | Mission selection, side config, deployment placement | 2,500–3,500 | P0 |
+| **Deployment Phase** | Drag-and-drop deployment, zone validation | 2,000–3,000 | P0 |
+| **Action Resolution** | Dice animation, hit/damage display, status tokens | 2,500–3,500 | P0 |
+| **Movement Tools** | Move preview, engagement warnings, path validation | 2,000–3,000 | P0 |
+| **Combat Flow** | Ranged/CC attack wizards, target selection, results | 2,000–3,000 | P0 |
+| **Turn Management** | Ready/Done status, turn transitions, notifications | 1,000–1,500 | P0 |
+
+#### Phase 3C: Polish & UX (5,000–8,000 tokens)
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Tooltips & Help** | Rule references, trait explanations, contextual help | 1,000–1,500 | P1 |
+| **Animations** | Smooth transitions, combat effects, status changes | 1,500–2,500 | P1 |
+| **Sound Effects** | Dice rolls, combat hits, UI feedback | 1,000–1,500 | P2 |
+| **Save/Load** | Local game state persistence | 1,000–1,500 | P1 |
+| **Hotseat Mode** | Multiplayer on same device, player switching | 500–1,000 | P2 |
+
+**Phase 3 Total: 28,000–40,000 tokens**
+
+---
+
+### Planned: Phase 4 - Online Multiplayer Platform
+
+#### Phase 4A: Core Platform Foundation (23,000–35,000 tokens)
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **OAuth Integration** | Google, GitHub, Discord login | 2,500–3,500 | P0 |
+| **Email/Password Auth** | Traditional account creation | 1,500–2,000 | P0 |
+| **Player Profiles** | Username, bio, stats, preferences | 1,500–2,500 | P0 |
+| **Avatar System** | Upload, crop, store avatar images | 2,000–3,000 | P1 |
+| **Lobby System** | Create/join game rooms, player slots | 2,500–4,000 | P0 |
+| **Bot Configuration** | AI difficulty, bot names, assembly selection | 1,500–2,500 | P0 |
+| **Ready System** | Ready/not-ready, host controls, game start | 1,000–1,500 | P0 |
+| **Matchmaking** | Quick play, ranked, casual queues | 2,000–3,000 | P2 |
+
+#### Phase 4B: Real-Time Play (23,000–34,000 tokens)
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **WebSocket Server** | Real-time bidirectional communication | 3,000–5,000 | P0 |
+| **Game State Sync** | Sync board state across players | 3,000–4,000 | P0 |
+| **Turn Management** | Turn timers, notifications, AFK handling | 2,500–4,000 | P0 |
+| **Action Validation** | Server-side move validation, anti-cheat | 2,000–3,000 | P0 |
+| **Reconnection** | Resume disconnected games | 2,000–3,000 | P1 |
+| **Game History** | Save/load game state, replay system | 1,500–2,500 | P1 |
+| **Central Coordination** | Game orchestration, presence, notifications | 2,000–3,000 | P0 |
+
+#### Phase 4C: Social Features (25,000–39,000 tokens)
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Leaderboards** | ELO, wins, global/seasonal rankings | 2,000–3,000 | P1 |
+| **Player Statistics** | Win/loss, favorite missions, detailed stats | 1,500–2,500 | P1 |
+| **Game History** | Past games, replays, results sharing | 2,000–3,000 | P1 |
+| **In-Game Chat** | Text chat during games, emotes | 2,500–4,000 | P1 |
+| **Discord Integration** | OAuth, server linking, bot commands | 2,500–4,000 | P1 |
+| **Achievements** | Badges, milestones, unlocks | 1,000–1,500 | P2 |
+
+#### Phase 4D: Cloud Deployment (18,000–27,000 tokens)
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **Firebase Setup** | Firestore, Auth, Storage, Functions | 2,500–4,000 | P0 |
+| **Cloud Deployment** | Vercel/Netlify FE, Railway/Render BE | 1,500–2,500 | P0 |
+| **WebSocket Hosting** | Scaling, load balancing | 2,000–3,000 | P0 |
+| **Security** | Data encryption, rate limiting, audits | 2,000–3,000 | P0 |
+| **CI/CD Pipeline** | Automated testing, deployment | 2,000–3,000 | P1 |
+| **Monitoring** | Logging, metrics, health checks | 1,500–2,500 | P1 |
+
+**Phase 4 Total: 89,000–135,000 tokens**
+
+---
+
+### Implementation Priority Summary
+
+| Phase | Features | Total Tokens | Cumulative |
+|-------|----------|--------------|------------|
+| **3A** | Minimal Playable UI | 8,000–12,000 | 8,000–12,000 |
+| **3B** | Full Local Play | 15,000–20,000 | 23,000–32,000 |
+| **3C** | Polish & UX | 5,000–8,000 | 28,000–40,000 |
+| **4A** | Auth, Profiles, Lobby | 23,000–35,000 | 51,000–75,000 |
+| **4B** | Real-Time Play | 23,000–34,000 | 74,000–109,000 |
+| **4C** | Social, Leaderboards | 25,000–39,000 | 99,000–148,000 |
+| **4D** | Cloud, Security | 18,000–27,000 | 117,000–175,000 |
+
+**Grand Total: 117,000–175,000 tokens** (Phases 3 + 4)
+
+---
+
+### Recommended Next Step
+
+**Start Phase 3A** with a minimal playable UI:
+1. Set up Astro + React + Tailwind for the frontend
+2. Create 2D SVG battlefield renderer
+3. Add model selection and basic action buttons
+4. Wire up the existing headless engine to the UI
+
+This gives you a playable prototype quickly, which can then be extended with more features.

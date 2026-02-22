@@ -2,6 +2,7 @@ import { Character } from './Character';
 import { CharacterStatus, TurnPhase } from './types';
 import { Battlefield } from './battlefield/Battlefield';
 import { Position } from './battlefield/Position';
+import { getTacticsInitiativeBonus, getTacticsSituationalAwarenessExemption } from './traits/combat-traits';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { ActionContextInput, CloseCombatContextInput } from './battlefield/action-context';
@@ -144,7 +145,23 @@ export class GameManager {
 
   public rollInitiative(roller: () => number = Math.random): void {
     for (const character of this.characters) {
-      character.initiative = Math.floor(roller() * 10) + 1 + character.attributes.ref;
+      // Tactics X: +X Base dice for Initiative Tests
+      const tacticsBonus = getTacticsInitiativeBonus(character);
+      
+      // Roll 2 Base dice + Tactics bonus dice
+      let initiativeRoll = 0;
+      const totalDice = 2 + tacticsBonus;
+      for (let i = 0; i < totalDice; i++) {
+        const roll = Math.floor(roller() * 6) + 1;
+        // Base dice: 4-5 = 1 success, 6 = 2 successes
+        if (roll >= 6) {
+          initiativeRoll += 2;
+        } else if (roll >= 4) {
+          initiativeRoll += 1;
+        }
+      }
+      
+      character.initiative = initiativeRoll + character.attributes.ref;
     }
     this.activationOrder = [...this.characters].sort((a, b) => {
       if (b.initiative !== a.initiative) return b.initiative - a.initiative;
@@ -199,6 +216,7 @@ export class GameManager {
         this.characterStatus.set(character.id, CharacterStatus.Ready);
       }
       this.apRemaining.set(character.id, this.apPerActivation);
+      character.resetInitiativeState();
     }
     this.phase = TurnPhase.Activation;
   }

@@ -3,10 +3,12 @@ import { Position } from '../battlefield/Position';
 import { Item } from '../Item';
 import { SpatialRules } from '../battlefield/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/size-utils';
+import { getSprintLevel, getLeapAgilityBonus, checkLeapUsage, getSurefootedTerrainBonus, TerrainType } from '../traits/combat-traits';
 
 export interface MoveActionDeps {
   getCharacterPosition: (character: Character) => Position | undefined;
   moveCharacter: (character: Character, position: Position) => boolean;
+  getTerrainAt: (position: Position) => TerrainType;
   executeCloseCombatAttack: (
     attacker: Character,
     defender: Character,
@@ -23,12 +25,54 @@ export function executeMoveAction(
   deps: MoveActionDeps,
   mover: Character,
   destination: Position,
-  options: { opponents?: Character[]; allowOpportunityAttack?: boolean; opportunityWeapon?: Item } = {}
+  options: { 
+    opponents?: Character[]; 
+    allowOpportunityAttack?: boolean; 
+    opportunityWeapon?: Item;
+    isMovingStraight?: boolean;
+    isAtStartOrEndOfMovement?: boolean;
+  } = {}
 ) {
   const start = deps.getCharacterPosition(mover);
   if (!start) {
     throw new Error('Missing mover position.');
   }
+  
+  // Sprint X: Bonus movement when moving in a straight line
+  const sprintBonus = getSprintMovementBonus(mover, options.isMovingStraight ?? false, mover.state.isAttentive, true);
+  
+  // Leap X: Agility bonus at start or end of movement
+  const leapResult = checkLeapUsage(mover, options.isAtStartOrEndOfMovement ?? false);
+  const agilityBonus = leapResult.agilityBonus;
+  
+  // Surefooted X: Upgrade terrain effects
+  const currentTerrain = deps.getTerrainAt(destination);
+  const upgradedTerrain = getSurefootedTerrainBonus(mover, currentTerrain);
+  
+  // Calculate effective movement allowance (base MOV + Sprint bonus)
+  const baseMov = mover.finalAttributes.mov ?? 2;
+  const effectiveMov = baseMov + sprintBonus;
+  
+  // Check if destination is within movement range (considering terrain costs)
+  const dx = destination.x - start.x;
+  const dy = destination.y - start.y;
+  const distance = Math.hypot(dx, dy);
+  
+  // Terrain movement cost (Surefooted may upgrade this)
+  let terrainCostMultiplier = 1;
+  if (upgradedTerrain === 'Rough' || upgradedTerrain === 'Difficult') {
+    terrainCostMultiplier = 2;
+  }
+  
+  const effectiveDistance = distance * terrainCostMultiplier;
+  
+  // Allow move if within effective movement allowance
+  const canMove = effectiveDistance <= effectiveMov + agilityBonus;
+  
+  if (!canMove) {
+    return { moved: false, reason: 'Destination out of range' };
+  }
+  
   const moved = deps.moveCharacter(mover, destination);
   if (!moved) {
     return { moved: false };
@@ -62,5 +106,23 @@ export function executeMoveAction(
     }
   }
 
-  return { moved: true, opportunityAttack: opportunity };
+  return { 
+    moved: true, 
+    opportunityAttack: opportunity,
+    sprintBonusApplied: sprintBonus > 0,
+    leapBonusApplied: agilityBonus > 0,
+    terrainUpgraded: currentTerrain !== upgradedTerrain,
+  };
+}
+
+function getSprintMovementBonus(character: Character, isMovingStraight: boolean, isAttentive: boolean, isFree: boolean): number {
+  const sprintLevel = getSprintLevel(character);
+  if (sprintLevel <= 0 || !isMovingStraight) {
+    return 0;
+  }
+  // X × 4" if Attentive Free, otherwise X × 2"
+  if (isAttentive && isFree) {
+    return sprintLevel * 4;
+  }
+  return sprintLevel * 2;
 }

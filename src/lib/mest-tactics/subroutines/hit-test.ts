@@ -15,7 +15,7 @@ export function resolveHitTest(
     p1Rolls: number[] | null = null,
     p2Rolls: number[] | null = null,
 ): ResolveTestResult {
-    
+
     const attackerAttribute = weapon.classification === 'Melee' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
     const defenderAttribute = weapon.classification === 'Melee' ? defender.finalAttributes.cca : defender.finalAttributes.ref;
 

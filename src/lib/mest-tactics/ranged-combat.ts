@@ -4,10 +4,11 @@ import { TestDice, DiceType, TestResult } from './dice-roller';
 import { Item } from './Item';
 import { TestContext } from './TestContext';
 import { calculateHindrancePenalty } from './subroutines/hindrances';
-import { resolveRangedHitTest } from './subroutines/ranged-hit-test'; // Correct hit test for ranged
+import { resolveRangedHitTest } from './subroutines/ranged-hit-test';
 import { resolveDamage, DamageResolution } from './subroutines/damage-test';
 import { SpatialAttackContext, SpatialRules } from './battlefield/spatial-rules';
 import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from './status-system';
+import { getDetectMaxOrmBonus, getEvasiveBonusDice, checkEvasiveReposition, hasBlinders } from './traits/combat-traits';
 
 // --- Main Attack Result Interface ---
 
@@ -65,7 +66,18 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     
     // Distance Penalty (ORM)
     if (context.orm && context.orm > 0) {
-        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + context.orm;
+        // Detect X: Increase Maximum OR Multiple by X
+        const detectOrmBonus = getDetectMaxOrmBonus(attacker);
+        const effectiveOrm = Math.max(0, context.orm - detectOrmBonus);
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + effectiveOrm;
+    }
+    
+    // Evasive X: +X Modifier dice per OR Multiple for Defender Range Combat Hit Tests
+    if (context.orm && context.orm > 0) {
+        const evasiveBonus = getEvasiveBonusDice(defender, context.orm);
+        if (evasiveBonus > 0) {
+            defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + evasiveBonus;
+        }
     }
 
     return { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty };

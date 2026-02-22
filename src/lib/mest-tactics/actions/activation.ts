@@ -1,5 +1,6 @@
 import { Character } from '../Character';
 import { CharacterStatus } from '../types';
+import { checkSneakyAutoHide, getSneakyLevel } from '../traits/combat-traits';
 
 export interface ActivationDeps {
   apPerActivation: number;
@@ -11,6 +12,10 @@ export interface ActivationDeps {
   clearFiddleUsed: (characterId: string) => void;
   getApRemaining: (characterId: string) => number;
   setApRemaining: (characterId: string, value: number) => void;
+  getCharacterPosition: (character: Character) => { x: number; y: number } | undefined;
+  isBehindCover: (character: Character) => boolean;
+  isInLos: (character: Character, opposingCharacter: Character) => boolean;
+  getOpposingCharacters: () => Character[];
 }
 
 export function beginActivation(deps: ActivationDeps, character: Character): number {
@@ -38,6 +43,21 @@ export function beginActivation(deps: ActivationDeps, character: Character): num
 export function endActivation(deps: ActivationDeps, character: Character): void {
   deps.setActiveCharacterId(null);
   deps.setCharacterStatus(character.id, CharacterStatus.Done);
+  
+  // Sneaky X: Auto-Hide at end of initiative if Attentive and behind Cover or not in LOS
+  const sneakyLevel = getSneakyLevel(character);
+  if (sneakyLevel > 0 && character.state.isAttentive && !character.state.isHidden) {
+    const isBehindCover = deps.isBehindCover(character);
+    const opposingCharacters = deps.getOpposingCharacters();
+    const isInLosToAny = opposingCharacters.some(opp => 
+      opp.state.isAttentive && deps.isInLos(character, opp)
+    );
+    
+    const sneakyResult = checkSneakyAutoHide(character, true, isBehindCover, isInLosToAny);
+    if (sneakyResult.canAutoHide) {
+      character.state.isHidden = true;
+    }
+  }
 }
 
 export function setWaiting(deps: ActivationDeps, character: Character): void {

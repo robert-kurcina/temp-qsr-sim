@@ -2,6 +2,7 @@ import { Character } from '../Character';
 import { TestContext } from '../TestContext';
 import { resolveTest } from '../dice-roller';
 import { CharacterStatus } from '../types';
+import { hasReload, getReloadActionsRequired, isWeaponLoaded, setWeaponLoaded } from '../traits/combat-traits';
 
 export interface SimpleActionDeps {
   spendAp: (character: Character, cost: number) => boolean;
@@ -86,6 +87,7 @@ export function executeFiddleAction(
     rolls?: number[];
     opponentRolls?: number[];
     usesOneLessHand?: boolean;
+    reloadWeaponIndex?: number; // For Reload trait
   } = {}
 ) {
   const free = !deps.hasFiddleUsed(actor.id);
@@ -96,6 +98,26 @@ export function executeFiddleAction(
     }
   }
   deps.markFiddleUsed(actor.id);
+  
+  // Reload trait: track reload progress
+  if (options.reloadWeaponIndex !== undefined) {
+    const reloadLevel = getReloadActionsRequired(actor);
+    if (reloadLevel > 0) {
+      // Track reload progress in character state
+      const currentReloadProgress = actor.state.reloadProgress ?? 0;
+      const newProgress = currentReloadProgress + 1;
+      actor.state.reloadProgress = newProgress;
+      
+      if (newProgress >= reloadLevel) {
+        // Reload complete
+        setWeaponLoaded(actor, options.reloadWeaponIndex, true);
+        actor.state.reloadProgress = 0;
+        return { success: true, reloadComplete: true };
+      }
+      return { success: true, reloadComplete: false, reloadProgress: newProgress, reloadRequired: reloadLevel };
+    }
+  }
+  
   if (!options.attribute || options.difficulty === undefined) {
     return { success: true };
   }

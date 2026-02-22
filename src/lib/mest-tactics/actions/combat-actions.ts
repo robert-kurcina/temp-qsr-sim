@@ -15,6 +15,20 @@ import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../mora
 import { makeIndirectRangedAttack } from '../indirect-ranged-combat';
 import { LOSOperations } from '../battlefield/LOSOperations';
 import { hasItemTrait } from '../items/item-traits';
+import {
+  getFightBonusActions,
+  getBrawlLevel,
+  checkBonusActionEligibility,
+  hasReload,
+  getReloadActionsRequired,
+  getSneakyLevel,
+  checkSneakyAutoHide,
+  getSneakySuddennessBonus,
+  isUnarmed,
+  getUnarmedHitPenalty,
+  getUnarmedDamagePenalty,
+  getAcrobaticBonusDice,
+} from '../traits/combat-traits';
 
 export interface CombatActionDeps {
   battlefield: import('../battlefield/Battlefield').Battlefield | null;
@@ -345,12 +359,35 @@ export function executeCloseCombatAttack(
   if (options.defend && defender.state.isAttentive) {
     mergedContext.isDefending = true;
   }
+  
+  // Sneaky X: +Xm Suddenness bonus
+  const sneakySuddenness = getSneakySuddennessBonus(attacker);
+  if (sneakySuddenness > 0 && attacker.state.isHidden) {
+    mergedContext.hasSuddenness = true;
+    mergedContext.suddennessBonus = (mergedContext.suddennessBonus ?? 0) + sneakySuddenness;
+  }
+  
   if (attacker.state.isHidden && mergedContext.hasSuddenness !== false) {
     mergedContext.hasSuddenness = true;
   }
   if (defender.state.isHidden && !mergedContext.forceHit) {
     mergedContext.forceMiss = true;
   }
+  
+  // Unarmed: -1m Hit Test, STR-1m Damage
+  if (isUnarmed(attacker)) {
+    const unarmedHitPenalty = getUnarmedHitPenalty(attacker);
+    if (unarmedHitPenalty < 0) {
+      mergedContext.unarmedPenalty = (mergedContext.unarmedPenalty ?? 0) + Math.abs(unarmedHitPenalty);
+    }
+  }
+  
+  // Acrobatic X: +X Wild dice Defender Close Combat Tests
+  const acrobaticBonus = getAcrobaticBonusDice(defender);
+  if (acrobaticBonus > 0) {
+    mergedContext.acrobaticBonus = (mergedContext.acrobaticBonus ?? 0) + acrobaticBonus;
+  }
+  
   if (mergedContext.isCharge && hasItemTrait(defender, 'Awkward')) {
     const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
     const defenderSiz = defender.finalAttributes.siz ?? defender.attributes.siz ?? 3;
@@ -385,6 +422,20 @@ export function executeCloseCombatAttack(
   let bonusActionOptions: ReturnType<typeof buildBonusActionOptions> | undefined;
   let bonusActionOutcome: BonusActionOutcome | undefined;
   const allowBonusActions = options.allowBonusActions ?? true;
+  
+  // Fight trait: additional bonus actions when Fight level is higher than opponent
+  const fightBonusActions = getFightBonusActions(attacker, defender, attacker.state.isAttentive);
+  
+  // Brawl trait: allows bonus actions even on failed hit (with Delay token)
+  const brawlLevel = getBrawlLevel(attacker);
+  const brawlEligibility = checkBonusActionEligibility(
+    attacker,
+    defender,
+    attacker.state.isAttentive,
+    true, // isEngaged
+    !hit // failedHitTest
+  );
+  
   if (allowBonusActions) {
     const attackerModel = deps.buildSpatialModel(attacker);
     const defenderModel = deps.buildSpatialModel(defender);
@@ -397,8 +448,13 @@ export function executeCloseCombatAttack(
       isCloseCombat: true,
       isCharge: mergedContext.isCharge,
       engaged,
+      additionalBonusActions: fightBonusActions,
     });
-    if (options.bonusAction) {
+    
+    // Allow bonus action even on failed hit if Brawl trait qualifies
+    const canPerformBonusAction = hit || brawlEligibility.canPerform;
+    
+    if (options.bonusAction && canPerformBonusAction) {
       bonusActionOutcome = applyBonusAction(
         {
           battlefield: deps.battlefield,
@@ -413,6 +469,12 @@ export function executeCloseCombatAttack(
       );
       if (bonusActionOutcome.refreshApplied) {
         deps.applyRefresh(attacker);
+      }
+      
+      // Brawl: acquire Delay token if performing bonus action on failed hit
+      if (brawlEligibility.requiresDelayToken && !hit) {
+        attacker.state.delayTokens += 1;
+        attacker.refreshStatusFlags();
       }
     }
   }

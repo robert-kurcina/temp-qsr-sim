@@ -30,6 +30,8 @@ export class Character {
     statusTokens: Record<string, number>;
     statusPendingTokens: Record<string, number>;
     armor: ArmorState;
+    loadedWeapons: number[]; // Weapon indices that are loaded (for Reload trait)
+    reloadProgress: number; // Progress toward reloading (for Reload trait)
   };
 
   constructor(profile: Profile) {
@@ -75,10 +77,13 @@ export class Character {
       isOrdered: true,
       isKOd: false,
       isEliminated: false,
+      hasPushedThisInitiative: false,
       statusEffects: [],
       statusTokens: {},
       statusPendingTokens: {},
       armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 },
+      loadedWeapons: [],
+      reloadProgress: 0,
     };
     this.refreshStatusFlags();
   }
@@ -90,6 +95,13 @@ export class Character {
     this.state.isAttentive = !koOrElim && !this.state.isDistracted;
     this.state.isOrdered = !koOrElim && !this.state.isDisordered;
     this.applyLadenEffects();
+  }
+
+  /**
+   * Reset per-Initiative state
+   */
+  resetInitiativeState(): void {
+    this.state.hasPushedThisInitiative = false;
   }
 
   private applyLadenEffects(): void {
