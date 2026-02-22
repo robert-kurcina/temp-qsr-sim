@@ -809,12 +809,13 @@ After completing the `src/lib/mest-tactics/` restructure, the root directory sti
 
 ---
 
-#### **Phase 3: Schemas & Validation** ⏳ (1-2 hours) - Planned
-1. ⏳ Add JSON schemas for assemblies, profiles, characters
-2. ⏳ Update validation scripts to use new paths
-3. ⏳ Test all generation scripts with new structure
+#### **Phase 3: Schemas & Validation** ✅ (1-2 hours)
+1. ✅ Added JSON schemas for assemblies, profiles, characters, items, archetypes
+2. ✅ Created `validate:user-content` script
+3. ✅ All generation scripts tested and working
+4. ✅ All 5 user content files validated successfully
 
-**Deliverable:** Schema-validated user content
+**Deliverable:** ✅ Schema-validated user content
 
 ---
 
@@ -829,7 +830,7 @@ After completing the `src/lib/mest-tactics/` restructure, the root directory sti
 ---
 
 ### Total Estimated Effort: **4-7 hours**
-### Actual Effort: **~3 hours** ✅
+### Actual Effort: **~4 hours** ✅
 
 ### Results
 - ✅ 62 files moved/renamed with git history preserved
@@ -837,6 +838,8 @@ After completing the `src/lib/mest-tactics/` restructure, the root directory sti
 - ✅ All 823 tests passing
 - ✅ Generation scripts tested and working
 - ✅ Complete documentation suite added
+- ✅ JSON schemas for all user content types
+- ✅ Validation script for user content
 
 ---
 
@@ -857,8 +860,12 @@ After completing the `src/lib/mest-tactics/` restructure, the root directory sti
 - ✅ **Directory restructure complete** (191 files organized into 12 modules)
 - ✅ **Root directory consolidation complete** (62 files moved/renamed)
 
+### Completed (Phase 3)
+- ✅ **JSON schemas** for all user content types (item, archetype, profile, character, assembly)
+- ✅ **Validation script** (`npm run validate:user-content`)
+- ✅ All user content files validated
+
 ### In Progress
-- ⏳ Phase 3: Schemas & Validation (JSON schemas for user content)
 - ⏳ Phase 4: Final Cleanup (rename mission-system/ → mission/, add directory READMEs)
 
 ### Planned
