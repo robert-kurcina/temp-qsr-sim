@@ -1,6 +1,25 @@
 import { VictoryConditionConfig, VictoryResult, MissionState } from '../mission-config';
 
 /**
+ * Victory Condition Type
+ * All victory condition types supported by the mission system
+ */
+export enum VictoryConditionType {
+  ELIMINATION = 'elimination',
+  DOMINANCE = 'dominance',
+  EXTRACTION = 'extraction',
+  SURVIVAL = 'survival',
+  VP_MAJORITY = 'vp_majority',
+  COURIER = 'courier',
+  RUPTURE = 'rupture',
+  HARVEST = 'harvest',
+  FIRST_TO_VP = 'first_to_vp',
+  CONTROL_ALL = 'control_all',
+  LAST_STANDING = 'last_standing',
+  THRESHOLD_REACHED = 'threshold_reached',
+}
+
+/**
  * Victory Condition Interface (Strategy Pattern)
  * All victory conditions implement this interface
  */
@@ -178,6 +197,83 @@ export class SurvivalVictory extends BaseVictoryCondition {
 }
 
 /**
+ * First to VP Victory Condition
+ * Win by being first to reach VP threshold
+ */
+export class FirstToVPVictory extends BaseVictoryCondition {
+  readonly type = 'first_to_vp';
+
+  constructor(
+    private config: VictoryConditionConfig & { threshold: number }
+  ) {
+    super(config);
+  }
+
+  check(state: MissionState): VictoryResult {
+    for (const side of state.sides) {
+      const vp = this.getVP(state, side.id);
+      if (vp >= this.config.threshold) {
+        return {
+          achieved: true,
+          winner: side.id,
+          reason: `First to ${this.config.threshold} VP`,
+        };
+      }
+    }
+
+    return { achieved: false };
+  }
+}
+
+/**
+ * Control All Victory Condition
+ * Win by controlling all zones/objectives
+ */
+export class ControlAllVictory extends BaseVictoryCondition {
+  readonly type = 'control_all';
+
+  check(state: MissionState): VictoryResult {
+    const zones = state.customState['zones'] as Array<{ controller?: string }> | [];
+    if (zones.length === 0) return { achieved: false };
+
+    for (const side of state.sides) {
+      const controlledCount = zones.filter(z => z.controller === side.id).length;
+      if (controlledCount === zones.length && zones.length > 0) {
+        return {
+          achieved: true,
+          winner: side.id,
+          reason: 'Controls all objectives',
+        };
+      }
+    }
+
+    return { achieved: false };
+  }
+}
+
+/**
+ * Custom Victory Condition
+ * For mission-specific victory conditions checked via custom state
+ */
+export class CustomVictory extends BaseVictoryCondition {
+  readonly type = 'custom';
+
+  check(state: MissionState): VictoryResult {
+    // Check custom victory state
+    const customVictory = state.customState['victory'] as { achieved?: boolean; winner?: string; reason?: string };
+    if (customVictory?.achieved) {
+      return {
+        achieved: true,
+        winner: customVictory.winner,
+        reason: customVictory.reason,
+      };
+    }
+
+    return { achieved: false };
+  }
+}
+
+/**
  * Victory Condition Factory
  * Creates victory condition instances from config
  */
@@ -197,6 +293,20 @@ export function createVictoryCondition(config: VictoryConditionConfig): VictoryC
         throw new Error('Survival victory requires threshold');
       }
       return new SurvivalVictory(config as VictoryConditionConfig & { threshold: number });
+    case 'first_to_vp':
+      if (!config.threshold) {
+        throw new Error('FirstToVP victory requires threshold');
+      }
+      return new FirstToVPVictory(config as VictoryConditionConfig & { threshold: number });
+    case 'control_all':
+      return new ControlAllVictory(config);
+    case 'courier':
+    case 'extraction':
+    case 'rupture':
+    case 'harvest':
+    case 'threshold_reached':
+      // These require mission-specific state checks
+      return new CustomVictory(config);
     default:
       throw new Error(`Unknown victory condition type: ${config.type}`);
   }

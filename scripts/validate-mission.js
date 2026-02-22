@@ -140,22 +140,64 @@ Examples:
       console.warn('   ⚠️  No zones configured - consider adding for contestation');
     } else if (zoneCount === 1) {
       console.warn('   ⚠️  Only 1 zone - consider 2+ for better contestation');
-    } else {
+    } else if (zoneCount >= 2 && zoneCount <= 4) {
       console.log(`   ✅ Zones: ${zoneCount} (good contestation)`);
+    } else if (zoneCount > 6) {
+      console.warn('   ⚠️  Many zones - may crowd the battlefield');
+    } else {
+      console.log(`   ✅ Zones: ${zoneCount}`);
     }
     
     // Check victory threshold
-    const dominanceVC = config.victoryConditions.find(vc => vc.type === 'dominance');
+    const dominanceVC = config.victoryConditions.find(vc => vc.type === 'dominance' || vc.type === 'first_to_vp');
     if (dominanceVC) {
       const threshold = dominanceVC.threshold;
       if (threshold && threshold < 3) {
         console.warn(`   ⚠️  Victory threshold (${threshold}) is LOW - games may end too quickly`);
       } else if (threshold && threshold > 8) {
         console.warn(`   ⚠️  Victory threshold (${threshold}) is HIGH - games may drag`);
+      } else if (threshold && threshold >= 4 && threshold <= 6) {
+        console.log(`   ✅ Victory threshold: ${threshold} (ideal range)`);
       } else if (threshold) {
         const expectedTurns = Math.ceil(threshold / (vpPerTurn || 1));
-        console.log(`   ✅ Expected game length: ~${expectedTurns} turns`);
+        console.log(`   ℹ️  Expected game length: ~${expectedTurns} turns`);
       }
+    }
+    
+    // Check turn structure
+    if (config.turnLimit) {
+      if (config.turnLimit < 6) {
+        console.warn('   ⚠️  Turn limit is SHORT - games may end too quickly');
+      } else if (config.turnLimit > 12) {
+        console.warn('   ⚠️  Turn limit is LONG - games may drag');
+      } else if (config.turnLimit >= 8 && config.turnLimit <= 10) {
+        console.log('   ✅ Turn limit: ideal range');
+      } else {
+        console.log(`   ℹ️  Turn limit: ${config.turnLimit}`);
+      }
+    }
+    
+    // Check for end game die roll
+    if (config.endGameDieRoll) {
+      const dieWindow = (config.turnLimit ?? 10) - (config.endGameDieStart ?? 6);
+      if (dieWindow >= 3 && dieWindow <= 5) {
+        console.log('   ✅ End game die roll: good timing');
+      } else if (dieWindow < 2) {
+        console.warn('   ⚠️  End game die starts too late - may not have time to roll');
+      } else {
+        console.log(`   ℹ️  End game die starts turn ${config.endGameDieStart}`);
+      }
+    }
+    
+    // Check for interaction mechanics
+    const hasEliminationScoring = config.scoringRules.some(r => r.trigger === 'model.eliminated');
+    const hasFirstBlood = config.scoringRules.some(r => r.trigger === 'first_blood');
+    
+    if (hasEliminationScoring) {
+      console.log('   ✅ Model elimination scoring - encourages aggression');
+    }
+    if (hasFirstBlood) {
+      console.log('   ✅ First blood bonus - encourages early action');
     }
     
     // Show balance hints if present
