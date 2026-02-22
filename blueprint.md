@@ -200,13 +200,13 @@ These are rough estimates for implementation + tests + wiring.
 1.  Elimination: 800–1,200 ✅ **Complete**
 2.  Engagement: 2,500–3,600 ✅ **Complete**
 3.  Beacon: 1,800–2,800 ✅ **Complete**
-4.  Exfil: 3,000–4,500 🔲 Remaining
-5.  Extraction Point: 4,000–6,000 🔲 Remaining
+4.  Exfil: 3,000–4,500 ✅ **Complete**
+5.  Extraction Point: 4,000–6,000 ✅ **Complete**
 6.  Sabotage: 3,500–5,000 ✅ **Complete**
-7.  Ghost Protocol: 4,500–6,500 🔲 Remaining
-8.  Switchback: 3,500–5,000 🔲 Remaining
-9.  Triad: 4,500–6,500 🔲 Remaining
-10. Last Stand: 5,500–8,000 🔲 Remaining
+7.  Ghost Protocol: 4,500–6,500 ✅ **Complete**
+8.  Switchback: 3,500–5,000 ✅ **Complete**
+9.  Triad: 4,500–6,500 ✅ **Complete**
+10. Last Stand: 5,500–8,000 ✅ **Complete**
 
 ---
 
@@ -455,10 +455,11 @@ Transform the headless simulator into a full-featured online gaming platform whe
 - ✅ POI/Zone Control system
 - ✅ Reinforcements system
 - ✅ Mission Event Hooks
-- ✅ 4 of 10 missions implemented (Elimination, Engagement, Sabotage, Beacon)
+- ✅ 10 of 10 missions implemented (Elimination, Engagement, Beacon, Exfil, Extraction Point, Sabotage, Ghost Protocol, Switchback, Triad, Last Stand)
+- ✅ All 815 unit tests passing
 
 ### In Progress
-- 🔲 Remaining 6 missions
+- 🔲 None - Phase 2 complete!
 
 ### Planned (Phases 3-4)
 - 🔲 Web UI for local play (Phase 3)
