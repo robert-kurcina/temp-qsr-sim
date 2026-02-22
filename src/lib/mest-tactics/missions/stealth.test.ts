@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createGhostProtocolMission, GhostProtocolMissionManager, DetectionState } from './ghost-protocol-manager';
+import { createStealthMission, StealthMissionManager, DetectionState } from './stealth-manager';
 import { buildOpposingSides } from '../MissionSideBuilder';
 import { buildAssembly, buildProfile } from '../assembly-builder';
 import { ModelSlotStatus } from '../MissionSide';
 import { Position } from '../battlefield/Position';
 
-describe('Ghost Protocol Mission', () => {
-  let manager: GhostProtocolMissionManager;
+describe('Stealth Mission', () => {
+  let manager: StealthMissionManager;
   let sideA: ReturnType<typeof buildOpposingSides>['sideA'];
   let sideB: ReturnType<typeof buildOpposingSides>['sideB'];
   let vipMemberIdA: string;
@@ -35,10 +35,10 @@ describe('Ghost Protocol Mission', () => {
     reinforcementRosters.set(sideA.id, buildAssembly('Reinf A', [reinforceProfile]));
     reinforcementRosters.set(sideB.id, buildAssembly('Reinf B', [reinforceProfile]));
 
-    manager = createGhostProtocolMission([sideA, sideB], vipMemberIds, reinforcementRosters);
+    manager = createStealthMission([sideA, sideB], vipMemberIds, reinforcementRosters);
   });
 
-  describe('createGhostProtocolMission', () => {
+  describe('createStealthMission', () => {
     it('should create mission manager with sides and VIPs', () => {
       expect(manager).toBeDefined();
       expect(manager.hasEnded()).toBe(false);
@@ -50,7 +50,7 @@ describe('Ghost Protocol Mission', () => {
       expect(vipB).toBeDefined();
     });
 
-    it('should create stealth zones and exfil zone', () => {
+    it('should create stealth zones and extraction zone', () => {
       const zones = manager.getZones();
       expect(zones.length).toBeGreaterThanOrEqual(4); // 3 stealth + 1 exfil
     });
@@ -110,57 +110,57 @@ describe('Ghost Protocol Mission', () => {
     });
   });
 
-  describe('startExfil', () => {
-    it('should start exfil when VIP is in controlled exfil zone', () => {
-      sideA.members[0].position = { x: 12, y: 2 }; // In exfil zone
+  describe('startExtraction', () => {
+    it('should start extraction when VIP is in controlled extraction zone', () => {
+      sideA.members[0].position = { x: 12, y: 2 }; // In extraction zone
 
-      manager.updateStealthZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
+      manager.updateExtractionZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
 
-      const result = manager.startExfil(vipMemberIdA);
+      const result = manager.startExtraction(vipMemberIdA);
 
       expect(result.success).toBe(true);
-      expect(result.actionType).toBe('start_exfil');
-      expect(manager.getExfilProgress(vipMemberIdA)).toBe(1);
+      expect(result.actionType).toBe('start_extraction');
+      expect(manager.getExtractionProgress(vipMemberIdA)).toBe(1);
     });
 
-    it('should fail if VIP not in exfil zone', () => {
+    it('should fail if VIP not in extraction zone', () => {
       sideA.members[0].position = { x: 3, y: 3 };
 
-      const result = manager.startExfil(vipMemberIdA);
+      const result = manager.startExtraction(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('VIP not in exfil zone');
+      expect(result.reason).toBe('VIP not in extraction zone');
     });
 
-    it('should fail if exfil zone not controlled', () => {
+    it('should fail if extraction zone not controlled', () => {
       sideA.members[0].position = { x: 12, y: 2 };
       sideB.members[0].position = { x: 12, y: 2 }; // Contest zone
 
-      manager.updateStealthZoneControl([
+      manager.updateExtractionZoneControl([
         { id: sideA.members[0].id, position: sideA.members[0].position! },
         { id: sideB.members[0].id, position: sideB.members[0].position! },
       ]);
 
-      const result = manager.startExfil(vipMemberIdA);
+      const result = manager.startExtraction(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Exfil zone not controlled');
+      expect(result.reason).toBe('Extraction zone not controlled');
     });
   });
 
-  describe('continueExfil', () => {
-    it('should complete exfil on second turn', () => {
+  describe('continueExtraction', () => {
+    it('should complete extraction on second turn', () => {
       sideA.members[0].position = { x: 12, y: 2 };
 
-      manager.updateStealthZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
-      manager.startExfil(vipMemberIdA);
+      manager.updateExtractionZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
+      manager.startExtraction(vipMemberIdA);
 
-      const result = manager.continueExfil(vipMemberIdA);
+      const result = manager.continueExtraction(vipMemberIdA);
 
       expect(result.success).toBe(true);
-      expect(result.actionType).toBe('complete_exfil');
+      expect(result.actionType).toBe('complete_extraction');
       expect(result.vpAwarded).toBe(15); // Ghost bonus (never detected)
-      expect(result.isGhostBonus).toBe(true);
+      expect(result.isStealthBonus).toBe(true);
       expect(manager.hasEnded()).toBe(true);
       expect(manager.getWinner()).toBe(sideA.id);
     });
@@ -170,21 +170,21 @@ describe('Ghost Protocol Mission', () => {
       manager.detectVIP(vipMemberIdA, sideB.id);
 
       sideA.members[0].position = { x: 12, y: 2 };
-      manager.updateStealthZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
-      manager.startExfil(vipMemberIdA);
+      manager.updateExtractionZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
+      manager.startExtraction(vipMemberIdA);
 
-      const result = manager.continueExfil(vipMemberIdA);
+      const result = manager.continueExtraction(vipMemberIdA);
 
       expect(result.success).toBe(true);
       expect(result.vpAwarded).toBe(8); // No ghost bonus
-      expect(result.isGhostBonus).toBe(false);
+      expect(result.isStealthBonus).toBe(false);
     });
 
-    it('should fail if exfil not started', () => {
-      const result = manager.continueExfil(vipMemberIdA);
+    it('should fail if extraction not started', () => {
+      const result = manager.continueExtraction(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Exfil not started');
+      expect(result.reason).toBe('Extraction not started');
     });
   });
 
@@ -238,9 +238,9 @@ describe('Ghost Protocol Mission', () => {
   });
 });
 
-describe('Ghost Protocol Mission - Edge Cases', () => {
+describe('Stealth Mission - Edge Cases', () => {
   describe('Ghost bonus', () => {
-    it('should award 15 VP for ghost exfiltration', () => {
+    it('should award 15 VP for ghost extraction', () => {
       const result = buildOpposingSides(
         'Side A',
         [{ archetypeName: 'Veteran', count: 2 }],
@@ -252,13 +252,13 @@ describe('Ghost Protocol Mission - Edge Cases', () => {
       const reinforcementRosters = new Map();
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [buildProfile('Average')]));
 
-      const manager = createGhostProtocolMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
+      const manager = createStealthMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
 
-      // Go straight to exfil without being detected
+      // Go straight to extraction without being detected
       result.sideA.members[0].position = { x: 12, y: 2 };
-      manager.updateStealthZoneControl([{ id: result.sideA.members[0].id, position: result.sideA.members[0].position! }]);
-      manager.startExfil(result.sideA.members[0].id);
-      manager.continueExfil(result.sideA.members[0].id);
+      manager.updateExtractionZoneControl([{ id: result.sideA.members[0].id, position: result.sideA.members[0].position! }]);
+      manager.startExtraction(result.sideA.members[0].id);
+      manager.continueExtraction(result.sideA.members[0].id);
 
       expect(manager.getVictoryPoints(result.sideA.id)).toBe(15);
       expect(manager.wasVIPDetected(result.sideA.members[0].id)).toBe(false);
@@ -276,7 +276,7 @@ describe('Ghost Protocol Mission - Edge Cases', () => {
 
       const vipMemberIds = new Map([[result.sideA.id, result.sideA.members[0].id]]);
       const reinforcementRosters = new Map();
-      const manager = createGhostProtocolMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
+      const manager = createStealthMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
 
       // VIP in stealth zone
       result.sideA.members[0].position = { x: 6, y: 6 };
@@ -304,7 +304,7 @@ describe('Ghost Protocol Mission - Edge Cases', () => {
       const reinforcementRosters = new Map();
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [buildProfile('Average')]));
 
-      const manager = createGhostProtocolMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
+      const manager = createStealthMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
 
       // First detection triggers reinforcements
       manager.detectVIP(result.sideA.members[0].id, result.sideB.id);

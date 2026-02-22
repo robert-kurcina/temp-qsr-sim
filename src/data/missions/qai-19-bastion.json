@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_19",
-  "name": "Bastion",
+  "name": "Defiance",
   "description": "The outer gates have fallen. Now you hold the inner ward against endless waves. Survive the onslaught or strike out to break their momentum.",
   "sides": { "min": 2, "max": 2 },
   "defaultGameSize": "MEDIUM",
@@ -39,7 +39,7 @@
   "specialRules": [
     {
       "id": "bastion",
-      "name": "Bastion",
+      "name": "Defiance",
       "description": "Defenders award +1 VP at End of Turn if 50% of starting models are in Ward Zone",
       "effect": "Defensive scoring",
       "config": { "thresholdPercent": 50 }

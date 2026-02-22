@@ -1,22 +1,21 @@
 import { MissionSide } from '../MissionSide';
-import { PointOfInterest, POIType, ZoneControlState, POIManager, createPOI } from '../poi-zone-control';
+import { PointOfInterest, POIType, POIManager, createPOI } from '../poi-zone-control';
 import { Position } from '../battlefield/Position';
-import { SpatialModel } from '../battlefield/spatial-rules';
 
 /**
- * Engagement Mission State
+ * Triumvirate Mission State
  */
-export interface EngagementMissionState {
+export interface TriumvirateMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
-  /** Zone control tracking */
-  zoneControl: Map<string, string | null>; // zoneId -> controlling sideId (null = contested)
-  /** First control tracking (for VP bonus) */
-  firstControl: Map<string, string>; // zoneId -> first controlling sideId
-  /** VP from zone control per side */
+  /** Zone control for each triumvirate zone */
+  zoneControl: Map<string, string | null>; // zoneId -> controlling sideId
+  /** VP per side */
   vpBySide: Map<string, number>;
   /** Zones controlled per side this turn */
   zonesControlledThisTurn: Map<string, number>;
+  /** Has any side achieved full triumvirate? */
+  fullTriumvirateAchieved: Map<string, boolean>; // sideId -> achieved
   /** Has the mission ended? */
   ended: boolean;
   /** Winning side ID (if ended) */
@@ -26,25 +25,26 @@ export interface EngagementMissionState {
 }
 
 /**
- * Engagement Mission Manager
- * Handles all Engagement mission logic
+ * Triumvirate Mission Manager
+ * Handles all Triumvirate mission logic
  */
-export class EngagementMissionManager {
+export class TriumvirateMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
-  private state: EngagementMissionState;
-  private zoneCount: number;
+  private state: TriumvirateMissionState;
 
-  constructor(sides: MissionSide[], zonePositions: Position[], zoneCount?: number) {
+  constructor(
+    sides: MissionSide[],
+    zonePositions?: Position[]
+  ) {
     this.sides = new Map();
     this.poiManager = new POIManager();
-    this.zoneCount = zoneCount ?? zonePositions.length ?? 3;
     this.state = {
       sideIds: sides.map(s => s.id),
       zoneControl: new Map(),
-      firstControl: new Map(),
       vpBySide: new Map(),
       zonesControlledThisTurn: new Map(),
+      fullTriumvirateAchieved: new Map(),
       ended: false,
     };
 
@@ -53,35 +53,35 @@ export class EngagementMissionManager {
       this.sides.set(side.id, side);
       this.state.vpBySide.set(side.id, 0);
       this.state.zonesControlledThisTurn.set(side.id, 0);
+      this.state.fullTriumvirateAchieved.set(side.id, false);
     }
 
-    // Create engagement zones
-    this.setupEngagementZones(zonePositions);
+    // Create triumvirate zones
+    this.setupTriumvirateZones(zonePositions);
   }
 
   /**
-   * Set up engagement zones
+   * Set up triumvirate zones in triangle formation
    */
-  private setupEngagementZones(positions: Position[]): void {
+  private setupTriumvirateZones(positions?: Position[]): void {
+    // Default triumvirate positions (triangle formation)
     const defaultPositions: Position[] = [
-      { x: 6, y: 6 },
-      { x: 18, y: 6 },
-      { x: 12, y: 12 },
-      { x: 6, y: 18 },
-      { x: 18, y: 18 },
+      { x: 12, y: 4 },   // Top center
+      { x: 4, y: 18 },   // Bottom left
+      { x: 20, y: 18 },  // Bottom right
     ];
 
-    const zonePositions = positions.length > 0 ? positions : defaultPositions.slice(0, this.zoneCount);
+    const zonePositions = positions && positions.length > 0 ? positions : defaultPositions;
 
-    for (let i = 0; i < zonePositions.length; i++) {
+    for (let i = 0; i < zonePositions.length && i < 3; i++) {
       const zone = createPOI({
-        id: `zone-${i + 1}`,
-        name: `Engagement Zone ${i + 1}`,
+        id: `triumvirate-zone-${i + 1}`,
+        name: `Triumvirate Zone ${i + 1}`,
         type: POIType.ControlZone,
         position: zonePositions[i],
-        radius: 3,
-        vpPerTurn: 2,
-        vpFirstControl: 1,
+        radius: 4,
+        vpPerTurn: 3,
+        vpFirstControl: 0,
       });
       this.poiManager.addPOI(zone);
       this.state.zoneControl.set(zone.id, null);
@@ -91,15 +91,18 @@ export class EngagementMissionManager {
   /**
    * Update zone control based on model positions
    */
-  updateZoneControl(models: SpatialModel[]): void {
+  updateZoneControl(models: Array<{ id: string; position: Position }>): void {
     const zones = this.poiManager.getAllPOIs();
 
     for (const zone of zones) {
       // Get models in this zone
-      const modelsInZone = this.poiManager.getModelsInPOI(zone.id, models);
+      const modelsInZone = models.filter(m => {
+        const dx = m.position.x - zone.position.x;
+        const dy = m.position.y - zone.position.y;
+        return (dx * dx + dy * dy) <= (zone.radius * zone.radius);
+      });
 
       if (modelsInZone.length === 0) {
-        // No models - zone becomes uncontrolled
         this.state.zoneControl.set(zone.id, null);
         continue;
       }
@@ -116,29 +119,15 @@ export class EngagementMissionManager {
       if (sidesPresent.size === 0) {
         this.state.zoneControl.set(zone.id, null);
       } else if (sidesPresent.size === 1) {
-        // Single side controls the zone
-        const controllingSide = Array.from(sidesPresent)[0];
-        const previousController = this.state.zoneControl.get(zone.id);
-
-        this.state.zoneControl.set(zone.id, controllingSide);
-
-        // Track first control
-        if (!this.state.firstControl.has(zone.id)) {
-          this.state.firstControl.set(zone.id, controllingSide);
-        }
-
-        // Award first control VP if newly controlled
-        if (previousController !== controllingSide && !previousController) {
-          const poi = this.poiManager.getPOI(zone.id);
-          if (poi) {
-            this.awardVP(controllingSide, poi.vpFirstControl);
-          }
-        }
+        this.state.zoneControl.set(zone.id, Array.from(sidesPresent)[0]);
       } else {
-        // Multiple sides - zone is contested
+        // Contested
         this.state.zoneControl.set(zone.id, null);
       }
     }
+
+    // Check for full triumvirate achievement
+    this.checkForFullTriumvirate();
   }
 
   /**
@@ -154,7 +143,31 @@ export class EngagementMissionManager {
   }
 
   /**
-   * Award VP at end of turn for controlled zones
+   * Check if any side has achieved full triumvirate
+   */
+  private checkForFullTriumvirate(): void {
+    for (const sideId of this.state.sideIds) {
+      if (this.state.fullTriumvirateAchieved.get(sideId)) continue;
+
+      let controlledCount = 0;
+      for (const controller of this.state.zoneControl.values()) {
+        if (controller === sideId) {
+          controlledCount++;
+        }
+      }
+
+      if (controlledCount >= 3) {
+        this.state.fullTriumvirateAchieved.set(sideId, true);
+        // Award bonus VP
+        this.awardVP(sideId, 5);
+        // Instant win!
+        this.endMission(sideId, 'Achieved full triumvirate control');
+      }
+    }
+  }
+
+  /**
+   * Award VP for zone control at end of turn
    */
   awardTurnVP(): Map<string, number> {
     const vpAwarded = new Map<string, number>();
@@ -171,10 +184,10 @@ export class EngagementMissionManager {
         const currentCount = this.state.zonesControlledThisTurn.get(controller) ?? 0;
         this.state.zonesControlledThisTurn.set(controller, currentCount + 1);
 
-        // Award 2 VP per zone
+        // Award 3 VP per zone
         const currentVP = vpAwarded.get(controller) ?? 0;
-        vpAwarded.set(controller, currentVP + 2);
-        this.awardVP(controller, 2);
+        vpAwarded.set(controller, currentVP + 3);
+        this.awardVP(controller, 3);
       }
     }
 
@@ -188,35 +201,9 @@ export class EngagementMissionManager {
     const currentVP = this.state.vpBySide.get(sideId) ?? 0;
     this.state.vpBySide.set(sideId, currentVP + amount);
 
-    // Update side state
     const side = this.sides.get(sideId);
     if (side) {
       side.state.victoryPoints = currentVP + amount;
-    }
-  }
-
-  /**
-   * Check for victory (all zones controlled)
-   */
-  checkForVictory(): void {
-    if (this.state.ended) return;
-
-    for (const sideId of this.state.sideIds) {
-      let controlledCount = 0;
-      let totalZones = 0;
-
-      for (const [zoneId, controller] of this.state.zoneControl.entries()) {
-        totalZones++;
-        if (controller === sideId) {
-          controlledCount++;
-        }
-      }
-
-      // Victory if controlling all zones
-      if (controlledCount === totalZones && totalZones > 0) {
-        this.endMission(sideId, 'Controlled all engagement zones');
-        return;
-      }
     }
   }
 
@@ -228,7 +215,6 @@ export class EngagementMissionManager {
     this.state.winner = winnerId;
     this.state.endReason = reason;
 
-    // If no winner, determine by VP
     if (!winnerId) {
       winnerId = this.determineVPWinner();
       this.state.winner = winnerId;
@@ -247,7 +233,6 @@ export class EngagementMissionManager {
       const side = this.sides.get(sideId);
       if (!side) continue;
 
-      // Only sides with active models can win
       const activeModels = side.members.filter(
         m => m.status !== 'Eliminated' as any && m.status !== 'KO' as any
       ).length;
@@ -285,10 +270,10 @@ export class EngagementMissionManager {
   }
 
   /**
-   * Get first controller of a zone
+   * Check if side has achieved full triumvirate
    */
-  getFirstController(zoneId: string): string | undefined {
-    return this.state.firstControl.get(zoneId);
+  hasFullTriumvirate(sideId: string): boolean {
+    return this.state.fullTriumvirateAchieved.get(sideId) ?? false;
   }
 
   /**
@@ -301,12 +286,12 @@ export class EngagementMissionManager {
   /**
    * Get mission state
    */
-  getState(): EngagementMissionState {
+  getState(): TriumvirateMissionState {
     return { ...this.state };
   }
 
   /**
-   * Get all POIs (zones)
+   * Get all triumvirate zones
    */
   getZones(): PointOfInterest[] {
     return this.poiManager.getAllPOIs();
@@ -336,24 +321,24 @@ export class EngagementMissionManager {
   /**
    * Get VP standings
    */
-  getVPStandings(): Array<{ sideId: string; vp: number; zonesControlled: number }> {
+  getVPStandings(): Array<{ sideId: string; vp: number; zonesControlled: number; hasFullTriumvirate: boolean }> {
     return Array.from(this.state.vpBySide.entries())
       .map(([sideId, vp]) => ({
         sideId,
         vp,
         zonesControlled: this.state.zonesControlledThisTurn.get(sideId) ?? 0,
+        hasFullTriumvirate: this.state.fullTriumvirateAchieved.get(sideId) ?? false,
       }))
       .sort((a, b) => b.vp - a.vp);
   }
 }
 
 /**
- * Create an Engagement mission manager
+ * Create a Triumvirate mission manager
  */
-export function createEngagementMission(
+export function createTriumvirateMission(
   sides: MissionSide[],
-  zonePositions?: Position[],
-  zoneCount?: number
-): EngagementMissionManager {
-  return new EngagementMissionManager(sides, zonePositions ?? [], zoneCount);
+  zonePositions?: Position[]
+): TriumvirateMissionManager {
+  return new TriumvirateMissionManager(sides, zonePositions);
 }

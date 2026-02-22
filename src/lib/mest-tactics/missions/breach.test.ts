@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createSwitchbackMission, SwitchbackMissionManager } from './switchback-manager';
+import { createBreachMission, BreachMissionManager } from './breach-manager';
 import { buildOpposingSides } from '../MissionSideBuilder';
 import { ModelSlotStatus } from '../MissionSide';
 import { Position } from '../battlefield/Position';
 
-describe('Switchback Mission', () => {
-  let manager: SwitchbackMissionManager;
+describe('Breach Mission', () => {
+  let manager: BreachMissionManager;
   let sideA: ReturnType<typeof buildOpposingSides>['sideA'];
   let sideB: ReturnType<typeof buildOpposingSides>['sideB'];
 
@@ -19,10 +19,10 @@ describe('Switchback Mission', () => {
     sideA = result.sideA;
     sideB = result.sideB;
 
-    manager = createSwitchbackMission([sideA, sideB]);
+    manager = createBreachMission([sideA, sideB]);
   });
 
-  describe('createSwitchbackMission', () => {
+  describe('createBreachMission', () => {
     it('should create mission manager with sides', () => {
       expect(manager).toBeDefined();
       expect(manager.hasEnded()).toBe(false);
@@ -31,7 +31,7 @@ describe('Switchback Mission', () => {
     it('should create markers', () => {
       const markers = manager.getMarkers();
       expect(markers.length).toBe(5);
-      expect(markers[0].name).toContain('Switchback Marker');
+      expect(markers[0].name).toContain('Breach Marker');
     });
 
     it('should initialize VP to 0', () => {
@@ -47,9 +47,9 @@ describe('Switchback Mission', () => {
       }
     });
 
-    it('should set switch turns to [4, 8] by default', () => {
-      const switchTurns = manager.getSwitchTurns();
-      expect(switchTurns).toEqual([4, 8]);
+    it('should set breach turns to [4, 8] by default', () => {
+      const breachTurns = manager.getBreachTurns();
+      expect(breachTurns).toEqual([4, 8]);
     });
   });
 
@@ -59,7 +59,7 @@ describe('Switchback Mission', () => {
 
       manager.updateMarkerControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
 
-      expect(manager.getMarkerController('switchback-marker-1')).toBe(sideA.id);
+      expect(manager.getMarkerController('breach-marker-1')).toBe(sideA.id);
     });
 
     it('should contest marker with multiple sides present', () => {
@@ -71,7 +71,7 @@ describe('Switchback Mission', () => {
         { id: sideB.members[0].id, position: sideB.members[0].position! },
       ]);
 
-      expect(manager.getMarkerController('switchback-marker-1')).toBeNull();
+      expect(manager.getMarkerController('breach-marker-1')).toBeNull();
     });
 
     it('should uncontrol marker with no models', () => {
@@ -79,7 +79,7 @@ describe('Switchback Mission', () => {
 
       manager.updateMarkerControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
 
-      expect(manager.getMarkerController('switchback-marker-1')).toBeNull();
+      expect(manager.getMarkerController('breach-marker-1')).toBeNull();
     });
   });
 
@@ -100,7 +100,7 @@ describe('Switchback Mission', () => {
       const results = manager.executeSwitches(4);
 
       // Should have switched from Side A to Side B
-      const switched = results.find(r => r.markerId === 'switchback-marker-1');
+      const switched = results.find(r => r.markerId === 'breach-marker-1');
       expect(switched?.switched).toBe(true);
       expect(switched?.vpAwarded).toBe(5);
     });
@@ -121,7 +121,7 @@ describe('Switchback Mission', () => {
 
       const results = manager.executeSwitches(8);
 
-      const switched = results.find(r => r.markerId === 'switchback-marker-1');
+      const switched = results.find(r => r.markerId === 'breach-marker-1');
       expect(switched?.switched).toBe(true);
     });
 
@@ -133,18 +133,18 @@ describe('Switchback Mission', () => {
         [{ archetypeName: 'Militia', count: 2 }]
       );
 
-      const threeSideManager = createSwitchbackMission([result.sideA, result.sideB]);
+      const threeSideManager = createBreachMission([result.sideA, result.sideB]);
 
       result.sideA.members[0].position = { x: 12, y: 6 };
       threeSideManager.updateMarkerControl([{ id: result.sideA.members[0].id, position: result.sideA.members[0].position! }]);
 
       // Turn 4: A -> B
       threeSideManager.executeSwitches(4);
-      expect(threeSideManager.getMarkerController('switchback-marker-1')).toBe(result.sideB.id);
+      expect(threeSideManager.getMarkerController('breach-marker-1')).toBe(result.sideB.id);
 
       // Turn 8: B -> A
       threeSideManager.executeSwitches(8);
-      expect(threeSideManager.getMarkerController('switchback-marker-1')).toBe(result.sideA.id);
+      expect(threeSideManager.getMarkerController('breach-marker-1')).toBe(result.sideA.id);
     });
   });
 
@@ -202,7 +202,7 @@ describe('Switchback Mission', () => {
         [{ archetypeName: 'Militia', count: 2 }]
       );
 
-      const testManager = createSwitchbackMission([result.sideA, result.sideB]);
+      const testManager = createBreachMission([result.sideA, result.sideB]);
 
       // Control all 5 markers with correct positions
       const markerPositions = [
@@ -304,7 +304,7 @@ describe('Switchback Mission', () => {
   });
 });
 
-describe('Switchback Mission - Edge Cases', () => {
+describe('Breach Mission - Edge Cases', () => {
   describe('Custom switch turns', () => {
     it('should handle custom switch turns', () => {
       const result = buildOpposingSides(
@@ -314,9 +314,9 @@ describe('Switchback Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 2 }]
       );
 
-      const manager = createSwitchbackMission([result.sideA, result.sideB], undefined, [3, 7]);
+      const manager = createBreachMission([result.sideA, result.sideB], undefined, [3, 7]);
 
-      expect(manager.getSwitchTurns()).toEqual([3, 7]);
+      expect(manager.getBreachTurns()).toEqual([3, 7]);
 
       // Should not switch on turn 4
       result.sideA.members[0].position = { x: 12, y: 6 };
@@ -340,18 +340,18 @@ describe('Switchback Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 2 }]
       );
 
-      const manager = createSwitchbackMission([result.sideA, result.sideB]);
+      const manager = createBreachMission([result.sideA, result.sideB]);
 
       result.sideA.members[0].position = { x: 12, y: 6 };
       manager.updateMarkerControl([{ id: result.sideA.members[0].id, position: result.sideA.members[0].position! }]);
 
       // Turn 4: A -> B
       manager.executeSwitches(4);
-      expect(manager.getMarkerController('switchback-marker-1')).toBe(result.sideB.id);
+      expect(manager.getMarkerController('breach-marker-1')).toBe(result.sideB.id);
 
       // Turn 8: B -> A
       manager.executeSwitches(8);
-      expect(manager.getMarkerController('switchback-marker-1')).toBe(result.sideA.id);
+      expect(manager.getMarkerController('breach-marker-1')).toBe(result.sideA.id);
     });
   });
 
@@ -364,7 +364,7 @@ describe('Switchback Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 5 }]
       );
 
-      const manager = createSwitchbackMission([result.sideA, result.sideB]);
+      const manager = createBreachMission([result.sideA, result.sideB]);
 
       // Control 4 out of 5 markers
       const markerPositions = [

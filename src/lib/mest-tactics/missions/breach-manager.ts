@@ -3,9 +3,9 @@ import { PointOfInterest, POIType, POIManager, createPOI } from '../poi-zone-con
 import { Position } from '../battlefield/Position';
 
 /**
- * Switchback Mission State
+ * Breach Mission State
  */
-export interface SwitchbackMissionState {
+export interface BreachMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
   /** Marker control (markerId -> controlling sideId) */
@@ -16,8 +16,8 @@ export interface SwitchbackMissionState {
   vpBySide: Map<string, number>;
   /** Markers controlled per side this turn */
   markersControlledThisTurn: Map<string, number>;
-  /** Switch turns */
-  switchTurns: number[];
+  /** Breach turns */
+  breachTurns: number[];
   /** Has the mission ended? */
   ended: boolean;
   /** Winning side ID (if ended) */
@@ -38,18 +38,18 @@ export interface SwitchResult {
 }
 
 /**
- * Switchback Mission Manager
- * Handles all Switchback mission logic with automatic marker switching
+ * Breach Mission Manager
+ * Handles all Breach mission logic with automatic marker switching
  */
-export class SwitchbackMissionManager {
+export class BreachMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
-  private state: SwitchbackMissionState;
+  private state: BreachMissionState;
 
   constructor(
     sides: MissionSide[],
     markerPositions?: Position[],
-    switchTurns?: number[]
+    breachTurns?: number[]
   ) {
     this.sides = new Map();
     this.poiManager = new POIManager();
@@ -59,7 +59,7 @@ export class SwitchbackMissionManager {
       originalControl: new Map(),
       vpBySide: new Map(),
       markersControlledThisTurn: new Map(),
-      switchTurns: switchTurns ?? [4, 8],
+      breachTurns: breachTurns ?? [4, 8],
       ended: false,
     };
 
@@ -87,14 +87,14 @@ export class SwitchbackMissionManager {
       { x: 18, y: 18 },  // Bottom right
     ];
 
-    const markerPositions = positions && positions.length > 0 
-      ? positions 
+    const markerPositions = positions && positions.length > 0
+      ? positions
       : defaultPositions.slice(0, 5);
 
     for (let i = 0; i < markerPositions.length && i < 6; i++) {
       const marker = createPOI({
-        id: `switchback-marker-${i + 1}`,
-        name: `Switchback Marker ${i + 1}`,
+        id: `breach-marker-${i + 1}`,
+        name: `Breach Marker ${i + 1}`,
         type: POIType.ControlZone,
         position: markerPositions[i],
         radius: 3,
@@ -164,12 +164,12 @@ export class SwitchbackMissionManager {
   }
 
   /**
-   * Check and execute marker switches on switch turns
+   * Check and execute marker switches on breach turns
    */
   executeSwitches(currentTurn: number): SwitchResult[] {
     const results: SwitchResult[] = [];
 
-    if (!this.state.switchTurns.includes(currentTurn)) {
+    if (!this.state.breachTurns.includes(currentTurn)) {
       return results;
     }
 
@@ -178,7 +178,7 @@ export class SwitchbackMissionManager {
 
     for (const marker of markers) {
       const currentController = this.state.markerControl.get(marker.id);
-      
+
       // Find next side in rotation
       let newController: string | null = null;
       if (currentController) {
@@ -340,16 +340,16 @@ export class SwitchbackMissionManager {
   }
 
   /**
-   * Get switch turns
+   * Get breach turns
    */
-  getSwitchTurns(): number[] {
-    return [...this.state.switchTurns];
+  getBreachTurns(): number[] {
+    return [...this.state.breachTurns];
   }
 
   /**
    * Get mission state
    */
-  getState(): SwitchbackMissionState {
+  getState(): BreachMissionState {
     return { ...this.state };
   }
 
@@ -396,12 +396,12 @@ export class SwitchbackMissionManager {
 }
 
 /**
- * Create a Switchback mission manager
+ * Create a Breach mission manager
  */
-export function createSwitchbackMission(
+export function createBreachMission(
   sides: MissionSide[],
   markerPositions?: Position[],
-  switchTurns?: number[]
-): SwitchbackMissionManager {
-  return new SwitchbackMissionManager(sides, markerPositions, switchTurns);
+  breachTurns?: number[]
+): BreachMissionManager {
+  return new BreachMissionManager(sides, markerPositions, breachTurns);
 }

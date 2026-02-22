@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createTriadMission, TriadMissionManager } from './triad-manager';
+import { createTriumvirateMission, TriumvirateMissionManager } from './triumvirate-manager';
 import { buildOpposingSides } from '../MissionSideBuilder';
 import { ModelSlotStatus } from '../MissionSide';
 import { Position } from '../battlefield/Position';
 
-describe('Triad Mission', () => {
-  let manager: TriadMissionManager;
+describe('Triumvirate Mission', () => {
+  let manager: TriumvirateMissionManager;
   let sideA: ReturnType<typeof buildOpposingSides>['sideA'];
   let sideB: ReturnType<typeof buildOpposingSides>['sideB'];
 
@@ -25,21 +25,21 @@ describe('Triad Mission', () => {
       { x: 20, y: 18 },  // Bottom right
     ];
 
-    manager = createTriadMission([sideA, sideB], zonePositions);
+    manager = createTriumvirateMission([sideA, sideB], zonePositions);
   });
 
-  describe('createTriadMission', () => {
+  describe('createTriumvirateMission', () => {
     it('should create mission manager with sides', () => {
       expect(manager).toBeDefined();
       expect(manager.hasEnded()).toBe(false);
     });
 
-    it('should create three triad zones', () => {
+    it('should create three triumvirate zones', () => {
       const zones = manager.getZones();
       expect(zones.length).toBe(3);
-      expect(zones[0].name).toBe('Triad Zone 1');
-      expect(zones[1].name).toBe('Triad Zone 2');
-      expect(zones[2].name).toBe('Triad Zone 3');
+      expect(zones[0].name).toBe('Triumvirate Zone 1');
+      expect(zones[1].name).toBe('Triumvirate Zone 2');
+      expect(zones[2].name).toBe('Triumvirate Zone 3');
     });
 
     it('should initialize VP to 0', () => {
@@ -62,7 +62,7 @@ describe('Triad Mission', () => {
 
       manager.updateZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
 
-      expect(manager.getZoneController('triad-zone-1')).toBe(sideA.id);
+      expect(manager.getZoneController('triumvirate-zone-1')).toBe(sideA.id);
     });
 
     it('should contest zone with multiple sides present', () => {
@@ -74,7 +74,7 @@ describe('Triad Mission', () => {
         { id: sideB.members[0].id, position: sideB.members[0].position! },
       ]);
 
-      expect(manager.getZoneController('triad-zone-1')).toBeNull();
+      expect(manager.getZoneController('triumvirate-zone-1')).toBeNull();
     });
 
     it('should uncontrol zone with no models', () => {
@@ -82,7 +82,7 @@ describe('Triad Mission', () => {
 
       manager.updateZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
 
-      expect(manager.getZoneController('triad-zone-1')).toBeNull();
+      expect(manager.getZoneController('triumvirate-zone-1')).toBeNull();
     });
   });
 
@@ -148,8 +148,8 @@ describe('Triad Mission', () => {
     });
   });
 
-  describe('checkForFullTriad', () => {
-    it('should detect full triad and award bonus VP', () => {
+  describe('checkForFullTriumvirate', () => {
+    it('should detect full triumvirate and award bonus VP', () => {
       sideA.members[0].position = { x: 12, y: 4 }; // Zone 1
       sideA.members[1].position = { x: 4, y: 18 }; // Zone 2
       sideA.members[2].position = { x: 20, y: 18 }; // Zone 3
@@ -160,13 +160,13 @@ describe('Triad Mission', () => {
         { id: sideA.members[2].id, position: sideA.members[2].position! },
       ]);
 
-      expect(manager.hasFullTriad(sideA.id)).toBe(true);
+      expect(manager.hasFullTriumvirate(sideA.id)).toBe(true);
       expect(manager.hasEnded()).toBe(true);
       expect(manager.getWinner()).toBe(sideA.id);
-      expect(manager.getEndReason()).toBe('Achieved full triad control');
+      expect(manager.getEndReason()).toBe('Achieved full triumvirate control');
     });
 
-    it('should not trigger full triad with only 2 zones', () => {
+    it('should not trigger full triumvirate with only 2 zones', () => {
       sideA.members[0].position = { x: 12, y: 4 }; // Zone 1
       sideA.members[1].position = { x: 4, y: 18 }; // Zone 2
 
@@ -175,7 +175,7 @@ describe('Triad Mission', () => {
         { id: sideA.members[1].id, position: sideA.members[1].position! },
       ]);
 
-      expect(manager.hasFullTriad(sideA.id)).toBe(false);
+      expect(manager.hasFullTriumvirate(sideA.id)).toBe(false);
       expect(manager.hasEnded()).toBe(false);
     });
   });
@@ -223,7 +223,7 @@ describe('Triad Mission', () => {
       expect(standings[1].vp).toBe(3);
     });
 
-    it('should include zones controlled and full triad status', () => {
+    it('should include zones controlled and full triumvirate status', () => {
       sideA.members[0].position = { x: 12, y: 4 };
       sideA.members[1].position = { x: 4, y: 18 };
       sideA.members[2].position = { x: 20, y: 18 };
@@ -238,12 +238,12 @@ describe('Triad Mission', () => {
       const standings = manager.getVPStandings();
 
       expect(standings[0].zonesControlled).toBe(3);
-      expect(standings[0].hasFullTriad).toBe(true);
+      expect(standings[0].hasFullTriumvirate).toBe(true);
     });
   });
 });
 
-describe('Triad Mission - Edge Cases', () => {
+describe('Triumvirate Mission - Edge Cases', () => {
   describe('Zone contest', () => {
     it('should prevent VP when zone is contested', () => {
       const result = buildOpposingSides(
@@ -253,7 +253,7 @@ describe('Triad Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 2 }]
       );
 
-      const manager = createTriadMission([result.sideA, result.sideB]);
+      const manager = createTriumvirateMission([result.sideA, result.sideB]);
 
       // Both sides in same zone
       result.sideA.members[0].position = { x: 12, y: 4 };
@@ -271,8 +271,8 @@ describe('Triad Mission - Edge Cases', () => {
     });
   });
 
-  describe('Full triad bonus', () => {
-    it('should award 5 VP bonus for full triad', () => {
+  describe('Full triumvirate bonus', () => {
+    it('should award 5 VP bonus for full triumvirate', () => {
       const result = buildOpposingSides(
         'Side A',
         [{ archetypeName: 'Veteran', count: 3 }],
@@ -280,7 +280,7 @@ describe('Triad Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 3 }]
       );
 
-      const manager = createTriadMission([result.sideA, result.sideB]);
+      const manager = createTriumvirateMission([result.sideA, result.sideB]);
 
       result.sideA.members[0].position = { x: 12, y: 4 };
       result.sideA.members[1].position = { x: 4, y: 18 };
@@ -292,7 +292,7 @@ describe('Triad Mission - Edge Cases', () => {
         { id: result.sideA.members[2].id, position: result.sideA.members[2].position! },
       ]);
 
-      // Full triad triggers instant win with 5 VP bonus
+      // Full triumvirate triggers instant win with 5 VP bonus
       // Note: Turn VP is not awarded since game ends immediately
       expect(manager.getVictoryPoints(result.sideA.id)).toBe(5);
     });
@@ -307,7 +307,7 @@ describe('Triad Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 3 }]
       );
 
-      const manager = createTriadMission([result.sideA, result.sideB]);
+      const manager = createTriumvirateMission([result.sideA, result.sideB]);
 
       const zonePositions: Position[] = [
         { x: 12, y: 4 },

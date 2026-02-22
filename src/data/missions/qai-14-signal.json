@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_14",
-  "name": "Signal",
+  "name": "Dominion",
   "description": "Both Sides race to activate and hold markers that call in powerful outside support. The first to achieve sustained signal dominance wins.",
   "sides": { "min": 2, "max": 2 },
   "defaultGameSize": "MEDIUM",

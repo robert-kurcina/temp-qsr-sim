@@ -6,19 +6,19 @@ import { Position } from '../battlefield/Position';
 import { buildAssembly, buildProfile, AssemblyRoster } from '../assembly-builder';
 
 /**
- * Exfil Mission State
+ * Escort Mission State
  */
-export interface ExfilMissionState {
+export interface EscortMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
   /** VIP for each side (sideId -> VIP member ID) */
   vipBySide: Map<string, string>;
   /** Side for each VIP (vipMemberId -> sideId) */
   sideByVip: Map<string, string>;
-  /** Exfil zone control */
-  exfilZoneControl: string | null; // controlling sideId or null
-  /** VIP exfil progress */
-  exfilProgress: Map<string, number>; // vipId -> turns exfiling (0-2)
+  /** Escort zone control */
+  escortZoneControl: string | null; // controlling sideId or null
+  /** VIP escort progress */
+  escortProgress: Map<string, number>; // vipId -> turns escorting (0-2)
   /** VP per side */
   vpBySide: Map<string, number>;
   /** Reinforcements arrived per side */
@@ -32,25 +32,25 @@ export interface ExfilMissionState {
 }
 
 /**
- * Exfil action result
+ * Escort action result
  */
-export interface ExfilActionResult {
+export interface EscortActionResult {
   success: boolean;
-  actionType: 'start_exfil' | 'continue_exfil' | 'complete_exfil';
+  actionType: 'start_escort' | 'continue_escort' | 'complete_escort';
   vpAwarded: number;
   reason?: string;
 }
 
 /**
- * Exfil Mission Manager
- * Handles all Exfil mission logic combining VIP + Reinforcements
+ * Escort Mission Manager
+ * Handles all Escort mission logic combining VIP + Reinforcements
  */
-export class ExfilMissionManager {
+export class EscortMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
   private vipManager: VIPManager;
   private reinforceManager: ReinforcementsManager;
-  private state: ExfilMissionState;
+  private state: EscortMissionState;
   private reinforcementTurnMin: number;
   private reinforcementTurnMax: number;
 
@@ -58,7 +58,7 @@ export class ExfilMissionManager {
     sides: MissionSide[],
     vipMemberIds: Map<string, string>, // sideId -> member ID to be VIP
     reinforcementRosters: Map<string, AssemblyRoster>, // sideId -> reinforcement roster
-    exfilZonePosition?: Position,
+    escortZonePosition?: Position,
     reinforcementTurnRange?: [number, number]
   ) {
     this.sides = new Map();
@@ -71,8 +71,8 @@ export class ExfilMissionManager {
       sideIds: sides.map(s => s.id),
       vipBySide: new Map(),
       sideByVip: new Map(),
-      exfilZoneControl: null,
-      exfilProgress: new Map(),
+      escortZoneControl: null,
+      escortProgress: new Map(),
       vpBySide: new Map(),
       reinforcementsArrived: new Map(),
       ended: false,
@@ -102,8 +102,8 @@ export class ExfilMissionManager {
       }
     }
 
-    // Create exfil zone
-    this.setupExfilZone(exfilZonePosition);
+    // Create escort zone
+    this.setupEscortZone(escortZonePosition);
   }
 
   /**
@@ -136,16 +136,16 @@ export class ExfilMissionManager {
   }
 
   /**
-   * Set up exfil zone
+   * Set up escort zone
    */
-  private setupExfilZone(position?: Position): void {
-    const exfilPosition = position ?? { x: 12, y: 12 }; // Center of battlefield
+  private setupEscortZone(position?: Position): void {
+    const escortPosition = position ?? { x: 12, y: 12 }; // Center of battlefield
 
     const zone = createPOI({
-      id: 'exfil-zone',
-      name: 'Exfiltration Zone',
+      id: 'escort-zone',
+      name: 'Escort Zone',
       type: POIType.ExtractionPoint,
-      position: exfilPosition,
+      position: escortPosition,
       radius: 4,
       vpPerTurn: 0,
       vpFirstControl: 0,
@@ -154,22 +154,22 @@ export class ExfilMissionManager {
   }
 
   /**
-   * Update exfil zone control based on model positions
+   * Update escort zone control based on model positions
    */
-  updateExfilZoneControl(models: Array<{ id: string; position: Position }>): void {
+  updateEscortZoneControl(models: Array<{ id: string; position: Position }>): void {
     const zones = this.poiManager.getAllPOIs();
-    const exfilZone = zones.find(z => z.id === 'exfil-zone');
-    if (!exfilZone) return;
+    const escortZone = zones.find(z => z.id === 'escort-zone');
+    if (!escortZone) return;
 
-    // Get models in exfil zone
+    // Get models in escort zone
     const modelsInZone = models.filter(m => {
-      const dx = m.position.x - exfilZone.position.x;
-      const dy = m.position.y - exfilZone.position.y;
-      return (dx * dx + dy * dy) <= (exfilZone.radius * exfilZone.radius);
+      const dx = m.position.x - escortZone.position.x;
+      const dy = m.position.y - escortZone.position.y;
+      return (dx * dx + dy * dy) <= (escortZone.radius * escortZone.radius);
     });
 
     if (modelsInZone.length === 0) {
-      this.state.exfilZoneControl = null;
+      this.state.escortZoneControl = null;
       return;
     }
 
@@ -183,12 +183,12 @@ export class ExfilMissionManager {
     }
 
     if (sidesPresent.size === 0) {
-      this.state.exfilZoneControl = null;
+      this.state.escortZoneControl = null;
     } else if (sidesPresent.size === 1) {
-      this.state.exfilZoneControl = Array.from(sidesPresent)[0];
+      this.state.escortZoneControl = Array.from(sidesPresent)[0];
     } else {
       // Contested
-      this.state.exfilZoneControl = null;
+      this.state.escortZoneControl = null;
     }
   }
 
@@ -230,14 +230,14 @@ export class ExfilMissionManager {
   }
 
   /**
-   * Start VIP exfiltration
+   * Start VIP escort
    */
-  startExfil(vipMemberId: string): ExfilActionResult {
+  startEscort(vipMemberId: string): EscortActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_escort',
         vpAwarded: 0,
         reason: 'VIP not found',
       };
@@ -246,75 +246,75 @@ export class ExfilMissionManager {
     if (vip.state !== VIPState.Active) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_escort',
         vpAwarded: 0,
         reason: 'VIP is not active',
       };
     }
 
-    // Check if VIP is in controlled exfil zone
+    // Check if VIP is in controlled escort zone
     const member = this.getMemberById(vipMemberId);
     if (!member || !member.position) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_escort',
         vpAwarded: 0,
         reason: 'VIP has no position',
       };
     }
 
-    const inZone = this.isInExfilZone(member.position);
+    const inZone = this.isInEscortZone(member.position);
     if (!inZone) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_escort',
         vpAwarded: 0,
-        reason: 'VIP not in exfil zone',
+        reason: 'VIP not in escort zone',
       };
     }
 
     const sideId = this.state.sideByVip.get(vipMemberId);
-    if (this.state.exfilZoneControl !== sideId) {
+    if (this.state.escortZoneControl !== sideId) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_escort',
         vpAwarded: 0,
-        reason: 'Exfil zone not controlled',
+        reason: 'Escort zone not controlled',
       };
     }
 
-    // Start exfil (progress = 1)
-    this.state.exfilProgress.set(vipMemberId, 1);
+    // Start escort (progress = 1)
+    this.state.escortProgress.set(vipMemberId, 1);
     vip.state = VIPState.InTransit;
 
     return {
       success: true,
-      actionType: 'start_exfil',
+      actionType: 'start_escort',
       vpAwarded: 0,
     };
   }
 
   /**
-   * Continue/complete VIP exfiltration
+   * Continue/complete VIP escort
    */
-  continueExfil(vipMemberId: string): ExfilActionResult {
+  continueEscort(vipMemberId: string): EscortActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_escort',
         vpAwarded: 0,
         reason: 'VIP not found',
       };
     }
 
-    const progress = this.state.exfilProgress.get(vipMemberId) ?? 0;
+    const progress = this.state.escortProgress.get(vipMemberId) ?? 0;
     if (progress === 0) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_escort',
         vpAwarded: 0,
-        reason: 'Exfil not started',
+        reason: 'Escort not started',
       };
     }
 
@@ -323,57 +323,57 @@ export class ExfilMissionManager {
     if (!member || !member.position) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_escort',
         vpAwarded: 0,
         reason: 'VIP has no position',
       };
     }
 
-    const inZone = this.isInExfilZone(member.position);
+    const inZone = this.isInEscortZone(member.position);
     if (!inZone) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_escort',
         vpAwarded: 0,
-        reason: 'VIP no longer in exfil zone',
+        reason: 'VIP no longer in escort zone',
       };
     }
 
     const sideId = this.state.sideByVip.get(vipMemberId);
-    if (this.state.exfilZoneControl !== sideId) {
+    if (this.state.escortZoneControl !== sideId) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_escort',
         vpAwarded: 0,
-        reason: 'Exfil zone no longer controlled',
+        reason: 'Escort zone no longer controlled',
       };
     }
 
     // Increment progress
     const newProgress = progress + 1;
-    this.state.exfilProgress.set(vipMemberId, newProgress);
+    this.state.escortProgress.set(vipMemberId, newProgress);
 
     if (newProgress >= 2) {
-      // Exfil complete!
-      return this.completeExfil(vipMemberId);
+      // Escort complete!
+      return this.completeEscort(vipMemberId);
     }
 
     return {
       success: true,
-      actionType: 'continue_exfil',
+      actionType: 'continue_escort',
       vpAwarded: 0,
     };
   }
 
   /**
-   * Complete VIP exfiltration
+   * Complete VIP escort
    */
-  private completeExfil(vipMemberId: string): ExfilActionResult {
+  private completeEscort(vipMemberId: string): EscortActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'complete_exfil',
+        actionType: 'complete_escort',
         vpAwarded: 0,
         reason: 'VIP not found',
       };
@@ -383,7 +383,7 @@ export class ExfilMissionManager {
     if (!sideId) {
       return {
         success: false,
-        actionType: 'complete_exfil',
+        actionType: 'complete_escort',
         vpAwarded: 0,
         reason: 'No extracting side',
       };
@@ -391,11 +391,11 @@ export class ExfilMissionManager {
 
     // Mark VIP as extracted
     vip.state = VIPState.Extracted;
-    this.state.exfilProgress.delete(vipMemberId);
+    this.state.escortProgress.delete(vipMemberId);
 
     // Award VP
     const currentVP = this.state.vpBySide.get(sideId) ?? 0;
-    const vpAwarded = 10; // Base exfil VP
+    const vpAwarded = 10; // Base escort VP
     this.state.vpBySide.set(sideId, currentVP + vpAwarded);
 
     // Update side state
@@ -405,26 +405,26 @@ export class ExfilMissionManager {
     }
 
     // Instant win!
-    this.endMission(sideId, 'VIP exfiltrated successfully');
+    this.endMission(sideId, 'VIP escorted successfully');
 
     return {
       success: true,
-      actionType: 'complete_exfil',
+      actionType: 'complete_escort',
       vpAwarded,
     };
   }
 
   /**
-   * Check if position is in exfil zone
+   * Check if position is in escort zone
    */
-  private isInExfilZone(position: Position): boolean {
+  private isInEscortZone(position: Position): boolean {
     const zones = this.poiManager.getAllPOIs();
-    const exfilZone = zones.find(z => z.id === 'exfil-zone');
-    if (!exfilZone) return false;
+    const escortZone = zones.find(z => z.id === 'escort-zone');
+    if (!escortZone) return false;
 
-    const dx = position.x - exfilZone.position.x;
-    const dy = position.y - exfilZone.position.y;
-    return (dx * dx + dy * dy) <= (exfilZone.radius * exfilZone.radius);
+    const dx = position.x - escortZone.position.x;
+    const dy = position.y - escortZone.position.y;
+    return (dx * dx + dy * dy) <= (escortZone.radius * escortZone.radius);
   }
 
   /**
@@ -572,10 +572,10 @@ export class ExfilMissionManager {
   }
 
   /**
-   * Get exfil progress for a VIP
+   * Get escort progress for a VIP
    */
-  getExfilProgress(vipMemberId: string): number {
-    return this.state.exfilProgress.get(vipMemberId) ?? 0;
+  getEscortProgress(vipMemberId: string): number {
+    return this.state.escortProgress.get(vipMemberId) ?? 0;
   }
 
   /**
@@ -586,25 +586,25 @@ export class ExfilMissionManager {
   }
 
   /**
-   * Get exfil zone controller
+   * Get escort zone controller
    */
-  getExfilZoneController(): string | null {
-    return this.state.exfilZoneControl;
+  getEscortZoneController(): string | null {
+    return this.state.escortZoneControl;
   }
 
   /**
    * Get mission state
    */
-  getState(): ExfilMissionState {
+  getState(): EscortMissionState {
     return { ...this.state };
   }
 
   /**
-   * Get exfil zone
+   * Get escort zone
    */
-  getExfilZone(): PointOfInterest | null {
+  getEscortZone(): PointOfInterest | null {
     const zones = this.poiManager.getAllPOIs();
-    return zones.find(z => z.id === 'exfil-zone') ?? null;
+    return zones.find(z => z.id === 'escort-zone') ?? null;
   }
 
   /**
@@ -643,14 +643,14 @@ export class ExfilMissionManager {
 }
 
 /**
- * Create an Exfil mission manager
+ * Create an Escort mission manager
  */
-export function createExfilMission(
+export function createEscortMission(
   sides: MissionSide[],
   vipMemberIds: Map<string, string>,
   reinforcementRosters: Map<string, AssemblyRoster>,
-  exfilZonePosition?: Position,
+  escortZonePosition?: Position,
   reinforcementTurnRange?: [number, number]
-): ExfilMissionManager {
-  return new ExfilMissionManager(sides, vipMemberIds, reinforcementRosters, exfilZonePosition, reinforcementTurnRange);
+): EscortMissionManager {
+  return new EscortMissionManager(sides, vipMemberIds, reinforcementRosters, escortZonePosition, reinforcementTurnRange);
 }

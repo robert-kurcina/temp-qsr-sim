@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createLastStandMission, LastStandMissionManager } from './last-stand-manager';
+import { createDefianceMission, DefianceMissionManager } from './defiance-manager';
 import { buildOpposingSides } from '../MissionSideBuilder';
 import { buildAssembly, buildProfile } from '../assembly-builder';
 import { ModelSlotStatus } from '../MissionSide';
 import { Position } from '../battlefield/Position';
 
-describe('Last Stand Mission', () => {
-  let manager: LastStandMissionManager;
+describe('Defiance Mission', () => {
+  let manager: DefianceMissionManager;
   let sideA: ReturnType<typeof buildOpposingSides>['sideA'];
   let sideB: ReturnType<typeof buildOpposingSides>['sideB'];
   let vipMemberIdA: string;
@@ -35,10 +35,10 @@ describe('Last Stand Mission', () => {
     reinforcementRosters.set(sideA.id, buildAssembly('Reinf A', [reinforceProfile, reinforceProfile]));
     reinforcementRosters.set(sideB.id, buildAssembly('Reinf B', [reinforceProfile, reinforceProfile]));
 
-    manager = createLastStandMission([sideA, sideB], vipMemberIds, reinforcementRosters);
+    manager = createDefianceMission([sideA, sideB], vipMemberIds, reinforcementRosters);
   });
 
-  describe('createLastStandMission', () => {
+  describe('createDefianceMission', () => {
     it('should create mission manager with sides and VIPs', () => {
       expect(manager).toBeDefined();
       expect(manager.hasEnded()).toBe(false);
@@ -247,7 +247,7 @@ describe('Last Stand Mission', () => {
   });
 });
 
-describe('Last Stand Mission - Edge Cases', () => {
+describe('Defiance Mission - Edge Cases', () => {
   describe('VIP survival bonus', () => {
     it('should award bonus only once when reinforcements arrive', () => {
       const result = buildOpposingSides(
@@ -261,7 +261,7 @@ describe('Last Stand Mission - Edge Cases', () => {
       const reinforcementRosters = new Map();
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [buildProfile('Average')]));
 
-      const manager = createLastStandMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
+      const manager = createDefianceMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
 
       // Go to turn 6
       for (let i = 1; i <= 6; i++) {
@@ -290,7 +290,7 @@ describe('Last Stand Mission - Edge Cases', () => {
       const reinforcementRosters = new Map();
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [buildProfile('Average')]));
 
-      const manager = createLastStandMission(
+      const manager = createDefianceMission(
         [result.sideA, result.sideB],
         vipMemberIds,
         reinforcementRosters,
@@ -330,7 +330,7 @@ describe('Last Stand Mission - Edge Cases', () => {
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [buildProfile('Average')]));
       reinforcementRosters.set(result.sideB.id, buildAssembly('Reinf B', [buildProfile('Average')]));
 
-      const manager = createLastStandMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
+      const manager = createDefianceMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
 
       manager.endTurn(1);
       manager.endTurn(2);

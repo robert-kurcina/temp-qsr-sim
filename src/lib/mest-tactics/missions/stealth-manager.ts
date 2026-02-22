@@ -15,9 +15,9 @@ export enum DetectionState {
 }
 
 /**
- * Ghost Protocol Mission State
+ * Stealth Mission State
  */
-export interface GhostProtocolMissionState {
+export interface StealthMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
   /** VIP for each side (sideId -> VIP member ID) */
@@ -26,14 +26,14 @@ export interface GhostProtocolMissionState {
   sideByVip: Map<string, string>;
   /** Detection state for each VIP */
   vipDetection: Map<string, DetectionState>;
-  /** Whether VIP was ever detected (for ghost bonus) */
+  /** Whether VIP was ever detected (for stealth bonus) */
   vipWasDetected: Map<string, boolean>;
   /** Stealth zone control */
   zoneControl: Map<string, string | null>;
-  /** Exfil zone controller */
-  exfilZoneControl: string | null;
-  /** VIP exfil progress */
-  exfilProgress: Map<string, number>;
+  /** Extraction zone controller */
+  extractionZoneControl: string | null;
+  /** VIP extraction progress */
+  extractionProgress: Map<string, number>;
   /** VP per side */
   vpBySide: Map<string, number>;
   /** Reinforcements arrived per side */
@@ -47,13 +47,13 @@ export interface GhostProtocolMissionState {
 }
 
 /**
- * Exfil action result
+ * Extraction action result
  */
-export interface ExfilActionResult {
+export interface ExtractionActionResult {
   success: boolean;
-  actionType: 'start_exfil' | 'continue_exfil' | 'complete_exfil';
+  actionType: 'start_extraction' | 'continue_extraction' | 'complete_extraction';
   vpAwarded: number;
-  isGhostBonus: boolean;
+  isStealthBonus: boolean;
   reason?: string;
 }
 
@@ -69,22 +69,22 @@ export interface DetectionResult {
 }
 
 /**
- * Ghost Protocol Mission Manager
- * Handles all Ghost Protocol mission logic combining VIP + Detection + Reinforcements
+ * Stealth Mission Manager
+ * Handles all Stealth mission logic combining VIP + Detection + Reinforcements
  */
-export class GhostProtocolMissionManager {
+export class StealthMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
   private vipManager: VIPManager;
   private reinforceManager: ReinforcementsManager;
-  private state: GhostProtocolMissionState;
+  private state: StealthMissionState;
 
   constructor(
     sides: MissionSide[],
     vipMemberIds: Map<string, string>, // sideId -> member ID to be VIP
     reinforcementRosters: Map<string, AssemblyRoster>, // sideId -> reinforcement roster
     stealthZonePositions?: Position[],
-    exfilZonePosition?: Position
+    extractionZonePosition?: Position
   ) {
     this.sides = new Map();
     this.poiManager = new POIManager();
@@ -97,8 +97,8 @@ export class GhostProtocolMissionManager {
       vipDetection: new Map(),
       vipWasDetected: new Map(),
       zoneControl: new Map(),
-      exfilZoneControl: null,
-      exfilProgress: new Map(),
+      extractionZoneControl: null,
+      extractionProgress: new Map(),
       vpBySide: new Map(),
       reinforcementsArrived: new Map(),
       ended: false,
@@ -130,8 +130,8 @@ export class GhostProtocolMissionManager {
       }
     }
 
-    // Create stealth zones and exfil zone
-    this.setupZones(stealthZonePositions, exfilZonePosition);
+    // Create stealth zones and extraction zone
+    this.setupZones(stealthZonePositions, extractionZonePosition);
   }
 
   /**
@@ -163,9 +163,9 @@ export class GhostProtocolMissionManager {
   }
 
   /**
-   * Set up stealth zones and exfil zone
+   * Set up stealth zones and extraction zone
    */
-  private setupZones(stealthPositions?: Position[], exfilPosition?: Position): void {
+  private setupZones(stealthPositions?: Position[], extractionPosition?: Position): void {
     // Default stealth zone positions
     const defaultStealthPositions: Position[] = [
       { x: 6, y: 6 },
@@ -173,8 +173,8 @@ export class GhostProtocolMissionManager {
       { x: 12, y: 12 },
     ];
 
-    const zonePositions = stealthPositions && stealthPositions.length > 0 
-      ? stealthPositions 
+    const zonePositions = stealthPositions && stealthPositions.length > 0
+      ? stealthPositions
       : defaultStealthPositions;
 
     for (let i = 0; i < zonePositions.length && i < 4; i++) {
@@ -191,18 +191,18 @@ export class GhostProtocolMissionManager {
       this.state.zoneControl.set(zone.id, null);
     }
 
-    // Create exfil zone
-    const exfilPos = exfilPosition ?? { x: 12, y: 2 };
-    const exfilZone = createPOI({
-      id: 'exfil-zone',
-      name: 'Exfiltration Point',
+    // Create extraction zone
+    const extractionPos = extractionPosition ?? { x: 12, y: 2 };
+    const extractionZone = createPOI({
+      id: 'extraction-zone',
+      name: 'Stealth Extraction Point',
       type: POIType.ExtractionPoint,
-      position: exfilPos,
+      position: extractionPos,
       radius: 4,
       vpPerTurn: 0,
       vpFirstControl: 0,
     });
-    this.poiManager.addPOI(exfilZone);
+    this.poiManager.addPOI(extractionZone);
   }
 
   /**
@@ -240,26 +240,26 @@ export class GhostProtocolMissionManager {
       }
     }
 
-    // Update exfil zone control
-    this.updateExfilZoneControl(models);
+    // Update extraction zone control
+    this.updateExtractionZoneControl(models);
   }
 
   /**
-   * Update exfil zone control
+   * Update extraction zone control
    */
-  private updateExfilZoneControl(models: Array<{ id: string; position: Position }>): void {
+  private updateExtractionZoneControl(models: Array<{ id: string; position: Position }>): void {
     const zones = this.poiManager.getAllPOIs();
-    const exfilZone = zones.find(z => z.id === 'exfil-zone');
-    if (!exfilZone) return;
+    const extractionZone = zones.find(z => z.id === 'extraction-zone');
+    if (!extractionZone) return;
 
     const modelsInZone = models.filter(m => {
-      const dx = m.position.x - exfilZone.position.x;
-      const dy = m.position.y - exfilZone.position.y;
-      return (dx * dx + dy * dy) <= (exfilZone.radius * exfilZone.radius);
+      const dx = m.position.x - extractionZone.position.x;
+      const dy = m.position.y - extractionZone.position.y;
+      return (dx * dx + dy * dy) <= (extractionZone.radius * extractionZone.radius);
     });
 
     if (modelsInZone.length === 0) {
-      this.state.exfilZoneControl = null;
+      this.state.extractionZoneControl = null;
       return;
     }
 
@@ -272,11 +272,11 @@ export class GhostProtocolMissionManager {
     }
 
     if (sidesPresent.size === 0) {
-      this.state.exfilZoneControl = null;
+      this.state.extractionZoneControl = null;
     } else if (sidesPresent.size === 1) {
-      this.state.exfilZoneControl = Array.from(sidesPresent)[0];
+      this.state.extractionZoneControl = Array.from(sidesPresent)[0];
     } else {
-      this.state.exfilZoneControl = null;
+      this.state.extractionZoneControl = null;
     }
   }
 
@@ -311,19 +311,19 @@ export class GhostProtocolMissionManager {
   }
 
   /**
-   * Check if VIP is in exfil zone
+   * Check if VIP is in extraction zone
    */
-  isVIPInExfilZone(vipMemberId: string): boolean {
+  isVIPInExtractionZone(vipMemberId: string): boolean {
     const member = this.getMemberById(vipMemberId);
     if (!member || !member.position) return false;
 
     const zones = this.poiManager.getAllPOIs();
-    const exfilZone = zones.find(z => z.id === 'exfil-zone');
-    if (!exfilZone) return false;
+    const extractionZone = zones.find(z => z.id === 'extraction-zone');
+    if (!extractionZone) return false;
 
-    const dx = member.position.x - exfilZone.position.x;
-    const dy = member.position.y - exfilZone.position.y;
-    return (dx * dx + dy * dy) <= (exfilZone.radius * exfilZone.radius);
+    const dx = member.position.x - extractionZone.position.x;
+    const dy = member.position.y - extractionZone.position.y;
+    return (dx * dx + dy * dy) <= (extractionZone.radius * extractionZone.radius);
   }
 
   /**
@@ -383,16 +383,16 @@ export class GhostProtocolMissionManager {
   }
 
   /**
-   * Start VIP exfiltration
+   * Start VIP extraction
    */
-  startExfil(vipMemberId: string): ExfilActionResult {
+  startExtraction(vipMemberId: string): ExtractionActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
+        isStealthBonus: false,
         reason: 'VIP not found',
       };
     }
@@ -400,123 +400,123 @@ export class GhostProtocolMissionManager {
     if (vip.state !== VIPState.Active) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
+        isStealthBonus: false,
         reason: 'VIP is not active',
       };
     }
 
-    // Check if VIP is in exfil zone
-    if (!this.isVIPInExfilZone(vipMemberId)) {
+    // Check if VIP is in extraction zone
+    if (!this.isVIPInExtractionZone(vipMemberId)) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
-        reason: 'VIP not in exfil zone',
+        isStealthBonus: false,
+        reason: 'VIP not in extraction zone',
       };
     }
 
     const sideId = this.state.sideByVip.get(vipMemberId);
-    if (this.state.exfilZoneControl !== sideId) {
+    if (this.state.extractionZoneControl !== sideId) {
       return {
         success: false,
-        actionType: 'start_exfil',
+        actionType: 'start_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
-        reason: 'Exfil zone not controlled',
+        isStealthBonus: false,
+        reason: 'Extraction zone not controlled',
       };
     }
 
-    // Start exfil (progress = 1)
-    this.state.exfilProgress.set(vipMemberId, 1);
+    // Start extraction (progress = 1)
+    this.state.extractionProgress.set(vipMemberId, 1);
     vip.state = VIPState.InTransit;
 
     return {
       success: true,
-      actionType: 'start_exfil',
+      actionType: 'start_extraction',
       vpAwarded: 0,
-      isGhostBonus: false,
+      isStealthBonus: false,
     };
   }
 
   /**
-   * Continue/complete VIP exfiltration
+   * Continue/complete VIP extraction
    */
-  continueExfil(vipMemberId: string): ExfilActionResult {
+  continueExtraction(vipMemberId: string): ExtractionActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
+        isStealthBonus: false,
         reason: 'VIP not found',
       };
     }
 
-    const progress = this.state.exfilProgress.get(vipMemberId) ?? 0;
+    const progress = this.state.extractionProgress.get(vipMemberId) ?? 0;
     if (progress === 0) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
-        reason: 'Exfil not started',
+        isStealthBonus: false,
+        reason: 'Extraction not started',
       };
     }
 
-    // Check if still in exfil zone
-    if (!this.isVIPInExfilZone(vipMemberId)) {
+    // Check if still in extraction zone
+    if (!this.isVIPInExtractionZone(vipMemberId)) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
-        reason: 'VIP no longer in exfil zone',
+        isStealthBonus: false,
+        reason: 'VIP no longer in extraction zone',
       };
     }
 
     const sideId = this.state.sideByVip.get(vipMemberId);
-    if (this.state.exfilZoneControl !== sideId) {
+    if (this.state.extractionZoneControl !== sideId) {
       return {
         success: false,
-        actionType: 'continue_exfil',
+        actionType: 'continue_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
-        reason: 'Exfil zone no longer controlled',
+        isStealthBonus: false,
+        reason: 'Extraction zone no longer controlled',
       };
     }
 
     // Increment progress
     const newProgress = progress + 1;
-    this.state.exfilProgress.set(vipMemberId, newProgress);
+    this.state.extractionProgress.set(vipMemberId, newProgress);
 
     if (newProgress >= 2) {
-      // Exfil complete!
-      return this.completeExfil(vipMemberId);
+      // Extraction complete!
+      return this.completeExtraction(vipMemberId);
     }
 
     return {
       success: true,
-      actionType: 'continue_exfil',
+      actionType: 'continue_extraction',
       vpAwarded: 0,
-      isGhostBonus: false,
+      isStealthBonus: false,
     };
   }
 
   /**
-   * Complete VIP exfiltration
+   * Complete VIP extraction
    */
-  private completeExfil(vipMemberId: string): ExfilActionResult {
+  private completeExtraction(vipMemberId: string): ExtractionActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'complete_exfil',
+        actionType: 'complete_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
+        isStealthBonus: false,
         reason: 'VIP not found',
       };
     }
@@ -525,18 +525,18 @@ export class GhostProtocolMissionManager {
     if (!sideId) {
       return {
         success: false,
-        actionType: 'complete_exfil',
+        actionType: 'complete_extraction',
         vpAwarded: 0,
-        isGhostBonus: false,
+        isStealthBonus: false,
         reason: 'No extracting side',
       };
     }
 
     // Mark VIP as extracted
     vip.state = VIPState.Extracted;
-    this.state.exfilProgress.delete(vipMemberId);
+    this.state.extractionProgress.delete(vipMemberId);
 
-    // Determine VP (ghost bonus if never detected)
+    // Determine VP (stealth bonus if never detected)
     const wasDetected = this.state.vipWasDetected.get(vipMemberId) ?? false;
     const vpAwarded = wasDetected ? 8 : 15;
 
@@ -550,13 +550,13 @@ export class GhostProtocolMissionManager {
     }
 
     // Instant win!
-    this.endMission(sideId, 'VIP exfiltrated successfully');
+    this.endMission(sideId, 'VIP extracted successfully');
 
     return {
       success: true,
-      actionType: 'complete_exfil',
+      actionType: 'complete_extraction',
       vpAwarded,
-      isGhostBonus: !wasDetected,
+      isStealthBonus: !wasDetected,
     };
   }
 
@@ -705,10 +705,10 @@ export class GhostProtocolMissionManager {
   }
 
   /**
-   * Get exfil progress for a VIP
+   * Get extraction progress for a VIP
    */
-  getExfilProgress(vipMemberId: string): number {
-    return this.state.exfilProgress.get(vipMemberId) ?? 0;
+  getExtractionProgress(vipMemberId: string): number {
+    return this.state.extractionProgress.get(vipMemberId) ?? 0;
   }
 
   /**
@@ -721,7 +721,7 @@ export class GhostProtocolMissionManager {
   /**
    * Get mission state
    */
-  getState(): GhostProtocolMissionState {
+  getState(): StealthMissionState {
     return { ...this.state };
   }
 
@@ -771,14 +771,14 @@ export class GhostProtocolMissionManager {
 }
 
 /**
- * Create a Ghost Protocol mission manager
+ * Create a Stealth mission manager
  */
-export function createGhostProtocolMission(
+export function createStealthMission(
   sides: MissionSide[],
   vipMemberIds: Map<string, string>,
   reinforcementRosters: Map<string, AssemblyRoster>,
   stealthZonePositions?: Position[],
-  exfilZonePosition?: Position
-): GhostProtocolMissionManager {
-  return new GhostProtocolMissionManager(sides, vipMemberIds, reinforcementRosters, stealthZonePositions, exfilZonePosition);
+  extractionZonePosition?: Position
+): StealthMissionManager {
+  return new StealthMissionManager(sides, vipMemberIds, reinforcementRosters, stealthZonePositions, extractionZonePosition);
 }

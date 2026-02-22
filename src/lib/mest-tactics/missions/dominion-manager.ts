@@ -1,21 +1,22 @@
 import { MissionSide } from '../MissionSide';
 import { PointOfInterest, POIType, POIManager, createPOI } from '../poi-zone-control';
 import { Position } from '../battlefield/Position';
+import { SpatialModel } from '../battlefield/spatial-rules';
 
 /**
- * Triad Mission State
+ * Dominion Mission State
  */
-export interface TriadMissionState {
+export interface DominionMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
-  /** Zone control for each triad zone */
-  zoneControl: Map<string, string | null>; // zoneId -> controlling sideId
-  /** VP per side */
+  /** Dominion control tracking */
+  zoneControl: Map<string, string | null>; // zoneId -> controlling sideId (null = contested)
+  /** First control tracking (for VP bonus) */
+  firstControl: Map<string, string>; // zoneId -> first controlling sideId
+  /** VP from dominion control per side */
   vpBySide: Map<string, number>;
   /** Zones controlled per side this turn */
   zonesControlledThisTurn: Map<string, number>;
-  /** Has any side achieved full triad? */
-  fullTriadAchieved: Map<string, boolean>; // sideId -> achieved
   /** Has the mission ended? */
   ended: boolean;
   /** Winning side ID (if ended) */
@@ -25,26 +26,25 @@ export interface TriadMissionState {
 }
 
 /**
- * Triad Mission Manager
- * Handles all Triad mission logic
+ * Dominion Mission Manager
+ * Handles all Dominion mission logic
  */
-export class TriadMissionManager {
+export class DominionMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
-  private state: TriadMissionState;
+  private state: DominionMissionState;
+  private zoneCount: number;
 
-  constructor(
-    sides: MissionSide[],
-    zonePositions?: Position[]
-  ) {
+  constructor(sides: MissionSide[], zonePositions?: Position[], zoneCount?: number) {
     this.sides = new Map();
     this.poiManager = new POIManager();
+    this.zoneCount = zoneCount ?? zonePositions?.length ?? 4;
     this.state = {
       sideIds: sides.map(s => s.id),
       zoneControl: new Map(),
+      firstControl: new Map(),
       vpBySide: new Map(),
       zonesControlledThisTurn: new Map(),
-      fullTriadAchieved: new Map(),
       ended: false,
     };
 
@@ -53,35 +53,36 @@ export class TriadMissionManager {
       this.sides.set(side.id, side);
       this.state.vpBySide.set(side.id, 0);
       this.state.zonesControlledThisTurn.set(side.id, 0);
-      this.state.fullTriadAchieved.set(side.id, false);
     }
 
-    // Create triad zones
-    this.setupTriadZones(zonePositions);
+    // Create dominion zones
+    this.setupDominionZones(zonePositions);
   }
 
   /**
-   * Set up triad zones in triangle formation
+   * Set up dominion zones
    */
-  private setupTriadZones(positions?: Position[]): void {
-    // Default triad positions (triangle formation)
+  private setupDominionZones(positions: Position[]): void {
+    // Default dominion positions in a strategic pattern
     const defaultPositions: Position[] = [
-      { x: 12, y: 4 },   // Top center
-      { x: 4, y: 18 },   // Bottom left
-      { x: 20, y: 18 },  // Bottom right
+      { x: 12, y: 6 },   // Top center
+      { x: 6, y: 12 },   // Left center
+      { x: 18, y: 12 },  // Right center
+      { x: 12, y: 18 },  // Bottom center
+      { x: 12, y: 12 },  // Center
     ];
 
-    const zonePositions = positions && positions.length > 0 ? positions : defaultPositions;
+    const zonePositions = positions.length > 0 ? positions : defaultPositions.slice(0, this.zoneCount);
 
-    for (let i = 0; i < zonePositions.length && i < 3; i++) {
+    for (let i = 0; i < zonePositions.length; i++) {
       const zone = createPOI({
-        id: `triad-zone-${i + 1}`,
-        name: `Triad Zone ${i + 1}`,
+        id: `zone-${i + 1}`,
+        name: `Dominion Zone ${i + 1}`,
         type: POIType.ControlZone,
         position: zonePositions[i],
-        radius: 4,
-        vpPerTurn: 3,
-        vpFirstControl: 0,
+        radius: 3,
+        vpPerTurn: 2,
+        vpFirstControl: 2,
       });
       this.poiManager.addPOI(zone);
       this.state.zoneControl.set(zone.id, null);
@@ -91,18 +92,15 @@ export class TriadMissionManager {
   /**
    * Update zone control based on model positions
    */
-  updateZoneControl(models: Array<{ id: string; position: Position }>): void {
+  updateZoneControl(models: SpatialModel[]): void {
     const zones = this.poiManager.getAllPOIs();
 
     for (const zone of zones) {
       // Get models in this zone
-      const modelsInZone = models.filter(m => {
-        const dx = m.position.x - zone.position.x;
-        const dy = m.position.y - zone.position.y;
-        return (dx * dx + dy * dy) <= (zone.radius * zone.radius);
-      });
+      const modelsInZone = this.poiManager.getModelsInPOI(zone.id, models);
 
       if (modelsInZone.length === 0) {
+        // No models - zone becomes uncontrolled
         this.state.zoneControl.set(zone.id, null);
         continue;
       }
@@ -119,15 +117,29 @@ export class TriadMissionManager {
       if (sidesPresent.size === 0) {
         this.state.zoneControl.set(zone.id, null);
       } else if (sidesPresent.size === 1) {
-        this.state.zoneControl.set(zone.id, Array.from(sidesPresent)[0]);
+        // Single side controls the zone
+        const controllingSide = Array.from(sidesPresent)[0];
+        const previousController = this.state.zoneControl.get(zone.id);
+
+        this.state.zoneControl.set(zone.id, controllingSide);
+
+        // Track first control
+        if (!this.state.firstControl.has(zone.id)) {
+          this.state.firstControl.set(zone.id, controllingSide);
+        }
+
+        // Award first control VP if newly controlled
+        if (previousController !== controllingSide && !previousController) {
+          const poi = this.poiManager.getPOI(zone.id);
+          if (poi) {
+            this.awardVP(controllingSide, poi.vpFirstControl);
+          }
+        }
       } else {
-        // Contested
+        // Multiple sides - zone is contested
         this.state.zoneControl.set(zone.id, null);
       }
     }
-
-    // Check for full triad achievement
-    this.checkForFullTriad();
   }
 
   /**
@@ -143,31 +155,7 @@ export class TriadMissionManager {
   }
 
   /**
-   * Check if any side has achieved full triad
-   */
-  private checkForFullTriad(): void {
-    for (const sideId of this.state.sideIds) {
-      if (this.state.fullTriadAchieved.get(sideId)) continue;
-
-      let controlledCount = 0;
-      for (const controller of this.state.zoneControl.values()) {
-        if (controller === sideId) {
-          controlledCount++;
-        }
-      }
-
-      if (controlledCount >= 3) {
-        this.state.fullTriadAchieved.set(sideId, true);
-        // Award bonus VP
-        this.awardVP(sideId, 5);
-        // Instant win!
-        this.endMission(sideId, 'Achieved full triad control');
-      }
-    }
-  }
-
-  /**
-   * Award VP for zone control at end of turn
+   * Award VP at end of turn for controlled zones
    */
   awardTurnVP(): Map<string, number> {
     const vpAwarded = new Map<string, number>();
@@ -184,10 +172,10 @@ export class TriadMissionManager {
         const currentCount = this.state.zonesControlledThisTurn.get(controller) ?? 0;
         this.state.zonesControlledThisTurn.set(controller, currentCount + 1);
 
-        // Award 3 VP per zone
+        // Award 2 VP per zone
         const currentVP = vpAwarded.get(controller) ?? 0;
-        vpAwarded.set(controller, currentVP + 3);
-        this.awardVP(controller, 3);
+        vpAwarded.set(controller, currentVP + 2);
+        this.awardVP(controller, 2);
       }
     }
 
@@ -201,9 +189,35 @@ export class TriadMissionManager {
     const currentVP = this.state.vpBySide.get(sideId) ?? 0;
     this.state.vpBySide.set(sideId, currentVP + amount);
 
+    // Update side state
     const side = this.sides.get(sideId);
     if (side) {
       side.state.victoryPoints = currentVP + amount;
+    }
+  }
+
+  /**
+   * Check for victory (all zones controlled)
+   */
+  checkForVictory(): void {
+    if (this.state.ended) return;
+
+    for (const sideId of this.state.sideIds) {
+      let controlledCount = 0;
+      let totalZones = 0;
+
+      for (const [zoneId, controller] of this.state.zoneControl.entries()) {
+        totalZones++;
+        if (controller === sideId) {
+          controlledCount++;
+        }
+      }
+
+      // Victory if controlling all zones
+      if (controlledCount === totalZones && totalZones > 0) {
+        this.endMission(sideId, 'Controlled all dominion zones');
+        return;
+      }
     }
   }
 
@@ -215,6 +229,7 @@ export class TriadMissionManager {
     this.state.winner = winnerId;
     this.state.endReason = reason;
 
+    // If no winner, determine by VP
     if (!winnerId) {
       winnerId = this.determineVPWinner();
       this.state.winner = winnerId;
@@ -233,6 +248,7 @@ export class TriadMissionManager {
       const side = this.sides.get(sideId);
       if (!side) continue;
 
+      // Only sides with active models can win
       const activeModels = side.members.filter(
         m => m.status !== 'Eliminated' as any && m.status !== 'KO' as any
       ).length;
@@ -270,10 +286,10 @@ export class TriadMissionManager {
   }
 
   /**
-   * Check if side has achieved full triad
+   * Get first controller of a zone
    */
-  hasFullTriad(sideId: string): boolean {
-    return this.state.fullTriadAchieved.get(sideId) ?? false;
+  getFirstController(zoneId: string): string | undefined {
+    return this.state.firstControl.get(zoneId);
   }
 
   /**
@@ -286,12 +302,12 @@ export class TriadMissionManager {
   /**
    * Get mission state
    */
-  getState(): TriadMissionState {
+  getState(): DominionMissionState {
     return { ...this.state };
   }
 
   /**
-   * Get all triad zones
+   * Get all POIs (zones)
    */
   getZones(): PointOfInterest[] {
     return this.poiManager.getAllPOIs();
@@ -321,24 +337,24 @@ export class TriadMissionManager {
   /**
    * Get VP standings
    */
-  getVPStandings(): Array<{ sideId: string; vp: number; zonesControlled: number; hasFullTriad: boolean }> {
+  getVPStandings(): Array<{ sideId: string; vp: number; zonesControlled: number }> {
     return Array.from(this.state.vpBySide.entries())
       .map(([sideId, vp]) => ({
         sideId,
         vp,
         zonesControlled: this.state.zonesControlledThisTurn.get(sideId) ?? 0,
-        hasFullTriad: this.state.fullTriadAchieved.get(sideId) ?? false,
       }))
       .sort((a, b) => b.vp - a.vp);
   }
 }
 
 /**
- * Create a Triad mission manager
+ * Create a Dominion mission manager
  */
-export function createTriadMission(
+export function createDominionMission(
   sides: MissionSide[],
-  zonePositions?: Position[]
-): TriadMissionManager {
-  return new TriadMissionManager(sides, zonePositions);
+  zonePositions?: Position[],
+  zoneCount?: number
+): DominionMissionManager {
+  return new DominionMissionManager(sides, zonePositions ?? [], zoneCount);
 }

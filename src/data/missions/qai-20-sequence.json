@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_20",
-  "name": "Sequence",
+  "name": "Breach",
   "description": "The apex contains three mechanisms. Activate them all to unlock the threshold, but every movement risks detection. The defenders stand vigilant.",
   "sides": { "min": 2, "max": 2 },
   "defaultGameSize": "MEDIUM",

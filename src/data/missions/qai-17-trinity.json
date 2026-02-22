@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_17",
-  "name": "Trinity",
+  "name": "Triumvirate",
   "description": "Multiple factions converge on a site containing three focal nodes. Control the nodes to unlock the central prize, but alliances shift with every Turn.",
   "sides": { "min": 3, "max": 4 },
   "defaultGameSize": "LARGE",

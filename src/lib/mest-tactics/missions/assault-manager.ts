@@ -4,10 +4,10 @@ import { SpatialModel } from '../battlefield/spatial-rules';
 import { MeasurementUtils } from '../battlefield/model-registry';
 
 /**
- * Sabotage marker types
+ * Assault marker types
  */
-export enum SabotageMarkerType {
-  /** Standard sabotage target */
+export enum AssaultMarkerType {
+  /** Standard assault target */
   Standard = 'Standard',
   /** High-value target (more VP) */
   HighValue = 'HighValue',
@@ -18,21 +18,21 @@ export enum SabotageMarkerType {
 }
 
 /**
- * Sabotage marker state
+ * Assault marker state
  */
-export interface SabotageMarker {
+export interface AssaultMarker {
   /** Unique identifier */
   id: string;
   /** Marker type */
-  type: SabotageMarkerType;
+  type: AssaultMarkerType;
   /** Position on battlefield */
   position: Position;
-  /** Has this marker been sabotaged? */
-  sabotaged: boolean;
-  /** Which side sabotaged it */
-  sabotagedBy?: string;
-  /** VP value for sabotage */
-  sabotageVP: number;
+  /** Has this marker been assaulted? */
+  assaulted: boolean;
+  /** Which side assaulted it */
+  assaultedBy?: string;
+  /** VP value for assault */
+  assaultVP: number;
   /** VP value for harvest (if resource) */
   harvestVP: number;
   /** Times this marker has been harvested */
@@ -42,17 +42,17 @@ export interface SabotageMarker {
 }
 
 /**
- * Sabotage Mission State
+ * Assault Mission State
  */
-export interface SabotageMissionState {
+export interface AssaultMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
-  /** Sabotage markers */
-  markers: Map<string, SabotageMarker>;
-  /** VP from sabotage/harvest per side */
+  /** Assault markers */
+  markers: Map<string, AssaultMarker>;
+  /** VP from assault/harvest per side */
   vpBySide: Map<string, number>;
-  /** Sabotage count per side */
-  sabotageCountBySide: Map<string, number>;
+  /** Assault count per side */
+  assaultCountBySide: Map<string, number>;
   /** Harvest count per side */
   harvestCountBySide: Map<string, number>;
   /** Has the mission ended? */
@@ -64,23 +64,23 @@ export interface SabotageMissionState {
 }
 
 /**
- * Sabotage action result
+ * Assault action result
  */
-export interface SabotageActionResult {
+export interface AssaultActionResult {
   success: boolean;
   markerId: string;
-  actionType: 'sabotage' | 'harvest';
+  actionType: 'assault' | 'harvest';
   vpAwarded: number;
   reason?: string;
 }
 
 /**
- * Sabotage Mission Manager
- * Handles all Sabotage mission logic
+ * Assault Mission Manager
+ * Handles all Assault mission logic
  */
-export class SabotageMissionManager {
+export class AssaultMissionManager {
   private sides: Map<string, MissionSide>;
-  private state: SabotageMissionState;
+  private state: AssaultMissionState;
   private markerCount: number;
 
   constructor(sides: MissionSide[], markerPositions?: Position[], markerCount?: number) {
@@ -90,7 +90,7 @@ export class SabotageMissionManager {
       sideIds: sides.map(s => s.id),
       markers: new Map(),
       vpBySide: new Map(),
-      sabotageCountBySide: new Map(),
+      assaultCountBySide: new Map(),
       harvestCountBySide: new Map(),
       ended: false,
     };
@@ -99,18 +99,18 @@ export class SabotageMissionManager {
     for (const side of sides) {
       this.sides.set(side.id, side);
       this.state.vpBySide.set(side.id, 0);
-      this.state.sabotageCountBySide.set(side.id, 0);
+      this.state.assaultCountBySide.set(side.id, 0);
       this.state.harvestCountBySide.set(side.id, 0);
     }
 
-    // Create sabotage markers
-    this.setupSabotageMarkers(markerPositions);
+    // Create assault markers
+    this.setupAssaultMarkers(markerPositions);
   }
 
   /**
-   * Set up sabotage markers
+   * Set up assault markers
    */
-  private setupSabotageMarkers(positions: Position[]): void {
+  private setupAssaultMarkers(positions: Position[]): void {
     const defaultPositions: Position[] = [
       { x: 6, y: 6 },
       { x: 18, y: 6 },
@@ -126,12 +126,12 @@ export class SabotageMissionManager {
       const isResource = i % 3 === 0; // Every 3rd marker is a resource
       const isHighValue = i === 0; // First marker is high value
 
-      const marker: SabotageMarker = {
-        id: `sabotage-${i + 1}`,
-        type: isHighValue ? SabotageMarkerType.HighValue : (isResource ? SabotageMarkerType.Resource : SabotageMarkerType.Standard),
+      const marker: AssaultMarker = {
+        id: `assault-${i + 1}`,
+        type: isHighValue ? AssaultMarkerType.HighValue : (isResource ? AssaultMarkerType.Resource : AssaultMarkerType.Standard),
         position: markerPositions[i],
-        sabotaged: false,
-        sabotageVP: isHighValue ? 5 : 3,
+        assaulted: false,
+        assaultVP: isHighValue ? 5 : 3,
         harvestVP: 1,
         harvestCount: 0,
         maxHarvests: isResource ? 3 : 0, // Resources can be harvested 3 times
@@ -142,27 +142,27 @@ export class SabotageMissionManager {
   }
 
   /**
-   * Attempt to sabotage a marker
+   * Attempt to assault a marker
    */
-  sabotageMarker(modelId: string, markerId: string): SabotageActionResult {
+  assaultMarker(modelId: string, markerId: string): AssaultActionResult {
     const marker = this.state.markers.get(markerId);
     if (!marker) {
       return {
         success: false,
         markerId,
-        actionType: 'sabotage',
+        actionType: 'assault',
         vpAwarded: 0,
         reason: 'Marker not found',
       };
     }
 
-    if (marker.sabotaged) {
+    if (marker.assaulted) {
       return {
         success: false,
         markerId,
-        actionType: 'sabotage',
+        actionType: 'assault',
         vpAwarded: 0,
-        reason: 'Marker already sabotaged',
+        reason: 'Marker already assaulted',
       };
     }
 
@@ -172,7 +172,7 @@ export class SabotageMissionManager {
       return {
         success: false,
         markerId,
-        actionType: 'sabotage',
+        actionType: 'assault',
         vpAwarded: 0,
         reason: 'Model not found',
       };
@@ -184,7 +184,7 @@ export class SabotageMissionManager {
       return {
         success: false,
         markerId,
-        actionType: 'sabotage',
+        actionType: 'assault',
         vpAwarded: 0,
         reason: 'Model has no position',
       };
@@ -199,35 +199,35 @@ export class SabotageMissionManager {
       return {
         success: false,
         markerId,
-        actionType: 'sabotage',
+        actionType: 'assault',
         vpAwarded: 0,
         reason: 'Model not adjacent to marker',
       };
     }
 
-    // Success! Sabotage the marker
-    marker.sabotaged = true;
-    marker.sabotagedBy = side.id;
+    // Success! Assault the marker
+    marker.assaulted = true;
+    marker.assaultedBy = side.id;
 
     // Award VP
-    this.awardVP(side.id, marker.sabotageVP);
+    this.awardVP(side.id, marker.assaultVP);
 
-    // Track sabotage count
-    const currentCount = this.state.sabotageCountBySide.get(side.id) ?? 0;
-    this.state.sabotageCountBySide.set(side.id, currentCount + 1);
+    // Track assault count
+    const currentCount = this.state.assaultCountBySide.get(side.id) ?? 0;
+    this.state.assaultCountBySide.set(side.id, currentCount + 1);
 
     return {
       success: true,
       markerId,
-      actionType: 'sabotage',
-      vpAwarded: marker.sabotageVP,
+      actionType: 'assault',
+      vpAwarded: marker.assaultVP,
     };
   }
 
   /**
    * Attempt to harvest a resource marker
    */
-  harvestMarker(modelId: string, markerId: string): SabotageActionResult {
+  harvestMarker(modelId: string, markerId: string): AssaultActionResult {
     const marker = this.state.markers.get(markerId);
     if (!marker) {
       return {
@@ -239,7 +239,7 @@ export class SabotageMissionManager {
       };
     }
 
-    if (marker.type !== SabotageMarkerType.Resource) {
+    if (marker.type !== AssaultMarkerType.Resource) {
       return {
         success: false,
         markerId,
@@ -356,36 +356,36 @@ export class SabotageMissionManager {
   }
 
   /**
-   * Check for victory (all markers sabotaged by one side)
+   * Check for victory (all markers assaulted by one side)
    */
   checkForVictory(): void {
     if (this.state.ended) return;
 
-    // Count sabotaged markers per side
-    const sabotagedBySide = new Map<string, number>();
-    let totalSabotaged = 0;
+    // Count assaulted markers per side
+    const assaultedBySide = new Map<string, number>();
+    let totalAssaulted = 0;
 
     for (const marker of this.state.markers.values()) {
-      if (marker.sabotaged && marker.sabotagedBy) {
-        const count = sabotagedBySide.get(marker.sabotagedBy) ?? 0;
-        sabotagedBySide.set(marker.sabotagedBy, count + 1);
-        totalSabotaged++;
+      if (marker.assaulted && marker.assaultedBy) {
+        const count = assaultedBySide.get(marker.assaultedBy) ?? 0;
+        assaultedBySide.set(marker.assaultedBy, count + 1);
+        totalAssaulted++;
       }
     }
 
-    // Check if any side has sabotaged all markers
+    // Check if any side has assaulted all markers
     const totalMarkers = this.state.markers.size;
-    for (const [sideId, count] of sabotagedBySide.entries()) {
+    for (const [sideId, count] of assaultedBySide.entries()) {
       if (count === totalMarkers && totalMarkers > 0) {
-        this.endMission(sideId, 'Sabotaged all objectives');
+        this.endMission(sideId, 'Assaulted all objectives');
         return;
       }
     }
 
-    // Check if all markers are sabotaged (any side)
-    if (totalSabotaged === totalMarkers && totalMarkers > 0) {
+    // Check if all markers are assaulted (any side)
+    if (totalAssaulted === totalMarkers && totalMarkers > 0) {
       // Game ends, winner determined by VP
-      this.endMission(undefined, 'All objectives sabotaged');
+      this.endMission(undefined, 'All objectives assaulted');
     }
   }
 
@@ -442,29 +442,29 @@ export class SabotageMissionManager {
   /**
    * Get a marker by ID
    */
-  getMarker(markerId: string): SabotageMarker | undefined {
+  getMarker(markerId: string): AssaultMarker | undefined {
     return this.state.markers.get(markerId);
   }
 
   /**
    * Get all markers
    */
-  getAllMarkers(): SabotageMarker[] {
+  getAllMarkers(): AssaultMarker[] {
     return Array.from(this.state.markers.values());
   }
 
   /**
-   * Get unsabotaged markers
+   * Get unassaulted markers
    */
-  getUnsabotagedMarkers(): SabotageMarker[] {
-    return this.getAllMarkers().filter(m => !m.sabotaged);
+  getUnassaultedMarkers(): AssaultMarker[] {
+    return this.getAllMarkers().filter(m => !m.assaulted);
   }
 
   /**
-   * Get sabotage count for a side
+   * Get assault count for a side
    */
-  getSabotageCount(sideId: string): number {
-    return this.state.sabotageCountBySide.get(sideId) ?? 0;
+  getAssaultCount(sideId: string): number {
+    return this.state.assaultCountBySide.get(sideId) ?? 0;
   }
 
   /**
@@ -477,7 +477,7 @@ export class SabotageMissionManager {
   /**
    * Get mission state
    */
-  getState(): SabotageMissionState {
+  getState(): AssaultMissionState {
     return { ...this.state };
   }
 
@@ -505,12 +505,12 @@ export class SabotageMissionManager {
   /**
    * Get VP standings
    */
-  getVPStandings(): Array<{ sideId: string; vp: number; sabotages: number; harvests: number }> {
+  getVPStandings(): Array<{ sideId: string; vp: number; assaults: number; harvests: number }> {
     return Array.from(this.state.vpBySide.entries())
       .map(([sideId, vp]) => ({
         sideId,
         vp,
-        sabotages: this.state.sabotageCountBySide.get(sideId) ?? 0,
+        assaults: this.state.assaultCountBySide.get(sideId) ?? 0,
         harvests: this.state.harvestCountBySide.get(sideId) ?? 0,
       }))
       .sort((a, b) => b.vp - a.vp);
@@ -518,12 +518,12 @@ export class SabotageMissionManager {
 }
 
 /**
- * Create a Sabotage mission manager
+ * Create an Assault mission manager
  */
-export function createSabotageMission(
+export function createAssaultMission(
   sides: MissionSide[],
   markerPositions?: Position[],
   markerCount?: number
-): SabotageMissionManager {
-  return new SabotageMissionManager(sides, markerPositions ?? [], markerCount);
+): AssaultMissionManager {
+  return new AssaultMissionManager(sides, markerPositions ?? [], markerCount);
 }

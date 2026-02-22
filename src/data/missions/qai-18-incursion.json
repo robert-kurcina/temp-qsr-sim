@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_18",
-  "name": "Incursion",
+  "name": "Stealth",
   "description": "Penetrate the sanctum and extract the hidden Object before alert protocols lock down the site. Move unseen, or trigger the alarms that seal your fate.",
   "sides": { "min": 2, "max": 2 },
   "defaultGameSize": "MEDIUM",

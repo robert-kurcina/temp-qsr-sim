@@ -5,19 +5,19 @@ import { Position } from '../battlefield/Position';
 import { Character } from '../Character';
 
 /**
- * Extraction Point Mission State
+ * Recovery Mission State
  */
-export interface ExtractionPointMissionState {
+export interface RecoveryMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
   /** VIP for each side (sideId -> VIP member ID) */
   vipBySide: Map<string, string>;
   /** Side for each VIP (vipMemberId -> sideId) */
   sideByVip: Map<string, string>;
-  /** Extraction zone control */
+  /** Recovery zone control */
   zoneControl: Map<string, string | null>; // zoneId -> controlling sideId
-  /** VIP extraction progress */
-  extractionProgress: Map<string, number>; // vipId -> turns extracting (0-2)
+  /** VIP recovery progress */
+  recoveryProgress: Map<string, number>; // vipId -> turns recovering (0-2)
   /** VP per side */
   vpBySide: Map<string, number>;
   /** Zones controlled per side this turn */
@@ -31,24 +31,24 @@ export interface ExtractionPointMissionState {
 }
 
 /**
- * Extraction action result
+ * Recovery action result
  */
-export interface ExtractionActionResult {
+export interface RecoveryActionResult {
   success: boolean;
-  actionType: 'start_extract' | 'continue_extract' | 'complete_extract';
+  actionType: 'start_recovery' | 'continue_recovery' | 'complete_recovery';
   vpAwarded: number;
   reason?: string;
 }
 
 /**
- * Extraction Point Mission Manager
- * Handles all Extraction Point mission logic
+ * Recovery Mission Manager
+ * Handles all Recovery mission logic
  */
-export class ExtractionPointMissionManager {
+export class RecoveryMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
   private vipManager: VIPManager;
-  private state: ExtractionPointMissionState;
+  private state: RecoveryMissionState;
   private zoneCount: number;
 
   constructor(
@@ -66,7 +66,7 @@ export class ExtractionPointMissionManager {
       vipBySide: new Map(),
       sideByVip: new Map(),
       zoneControl: new Map(),
-      extractionProgress: new Map(),
+      recoveryProgress: new Map(),
       vpBySide: new Map(),
       zonesControlledThisTurn: new Map(),
       ended: false,
@@ -90,8 +90,8 @@ export class ExtractionPointMissionManager {
       }
     }
 
-    // Create extraction zones
-    this.setupExtractionZones(zonePositions);
+    // Create recovery zones
+    this.setupRecoveryZones(zonePositions);
   }
 
   /**
@@ -109,10 +109,10 @@ export class ExtractionPointMissionManager {
   }
 
   /**
-   * Set up extraction zones
+   * Set up recovery zones
    */
-  private setupExtractionZones(positions?: Position[]): void {
-    // Default extraction zone positions
+  private setupRecoveryZones(positions?: Position[]): void {
+    // Default recovery zone positions
     const defaultPositions: Position[] = [
       { x: 3, y: 3 },    // Corner 1
       { x: 21, y: 3 },   // Corner 2
@@ -123,8 +123,8 @@ export class ExtractionPointMissionManager {
 
     for (let i = 0; i < zonePositions.length; i++) {
       const zone = createPOI({
-        id: `extract-zone-${i + 1}`,
-        name: `Extraction Zone ${i + 1}`,
+        id: `recovery-zone-${i + 1}`,
+        name: `Recovery Zone ${i + 1}`,
         type: POIType.ExtractionPoint,
         position: zonePositions[i],
         radius: 3,
@@ -188,14 +188,14 @@ export class ExtractionPointMissionManager {
   }
 
   /**
-   * Start VIP extraction
+   * Start VIP recovery
    */
-  startExtraction(vipMemberId: string): ExtractionActionResult {
+  startRecovery(vipMemberId: string): RecoveryActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'start_extract',
+        actionType: 'start_recovery',
         vpAwarded: 0,
         reason: 'VIP not found',
       };
@@ -204,18 +204,18 @@ export class ExtractionPointMissionManager {
     if (vip.state !== VIPState.Active) {
       return {
         success: false,
-        actionType: 'start_extract',
+        actionType: 'start_recovery',
         vpAwarded: 0,
         reason: 'VIP is not active',
       };
     }
 
-    // Check if VIP is in a controlled extraction zone
+    // Check if VIP is in a controlled recovery zone
     const member = this.getMemberById(vipMemberId);
     if (!member || !member.position) {
       return {
         success: false,
-        actionType: 'start_extract',
+        actionType: 'start_recovery',
         vpAwarded: 0,
         reason: 'VIP has no position',
       };
@@ -225,9 +225,9 @@ export class ExtractionPointMissionManager {
     if (!zone) {
       return {
         success: false,
-        actionType: 'start_extract',
+        actionType: 'start_recovery',
         vpAwarded: 0,
-        reason: 'VIP not in extraction zone',
+        reason: 'VIP not in recovery zone',
       };
     }
 
@@ -236,44 +236,44 @@ export class ExtractionPointMissionManager {
     if (controller !== sideId) {
       return {
         success: false,
-        actionType: 'start_extract',
+        actionType: 'start_recovery',
         vpAwarded: 0,
         reason: 'Zone not controlled by VIP side',
       };
     }
 
-    // Start extraction (progress = 1)
-    this.state.extractionProgress.set(vipMemberId, 1);
-    vip.state = VIPState.InTransit; // Extracting
+    // Start recovery (progress = 1)
+    this.state.recoveryProgress.set(vipMemberId, 1);
+    vip.state = VIPState.InTransit; // Recovering
 
     return {
       success: true,
-      actionType: 'start_extract',
+      actionType: 'start_recovery',
       vpAwarded: 0,
     };
   }
 
   /**
-   * Continue/complete VIP extraction
+   * Continue/complete VIP recovery
    */
-  continueExtraction(vipMemberId: string): ExtractionActionResult {
+  continueRecovery(vipMemberId: string): RecoveryActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'continue_extract',
+        actionType: 'continue_recovery',
         vpAwarded: 0,
         reason: 'VIP not found',
       };
     }
 
-    const progress = this.state.extractionProgress.get(vipMemberId) ?? 0;
+    const progress = this.state.recoveryProgress.get(vipMemberId) ?? 0;
     if (progress === 0) {
       return {
         success: false,
-        actionType: 'continue_extract',
+        actionType: 'continue_recovery',
         vpAwarded: 0,
-        reason: 'Extraction not started',
+        reason: 'Recovery not started',
       };
     }
 
@@ -282,7 +282,7 @@ export class ExtractionPointMissionManager {
     if (!member || !member.position) {
       return {
         success: false,
-        actionType: 'continue_extract',
+        actionType: 'continue_recovery',
         vpAwarded: 0,
         reason: 'VIP has no position',
       };
@@ -292,9 +292,9 @@ export class ExtractionPointMissionManager {
     if (!zone) {
       return {
         success: false,
-        actionType: 'continue_extract',
+        actionType: 'continue_recovery',
         vpAwarded: 0,
-        reason: 'VIP no longer in extraction zone',
+        reason: 'VIP no longer in recovery zone',
       };
     }
 
@@ -303,7 +303,7 @@ export class ExtractionPointMissionManager {
     if (controller !== sideId) {
       return {
         success: false,
-        actionType: 'continue_extract',
+        actionType: 'continue_recovery',
         vpAwarded: 0,
         reason: 'Zone no longer controlled',
       };
@@ -311,29 +311,29 @@ export class ExtractionPointMissionManager {
 
     // Increment progress
     const newProgress = progress + 1;
-    this.state.extractionProgress.set(vipMemberId, newProgress);
+    this.state.recoveryProgress.set(vipMemberId, newProgress);
 
     if (newProgress >= 2) {
-      // Extraction complete!
-      return this.completeExtraction(vipMemberId);
+      // Recovery complete!
+      return this.completeRecovery(vipMemberId);
     }
 
     return {
       success: true,
-      actionType: 'continue_extract',
+      actionType: 'continue_recovery',
       vpAwarded: 0,
     };
   }
 
   /**
-   * Complete VIP extraction
+   * Complete VIP recovery
    */
-  private completeExtraction(vipMemberId: string): ExtractionActionResult {
+  private completeRecovery(vipMemberId: string): RecoveryActionResult {
     const vip = this.vipManager.getVIP(vipMemberId);
     if (!vip) {
       return {
         success: false,
-        actionType: 'complete_extract',
+        actionType: 'complete_recovery',
         vpAwarded: 0,
         reason: 'VIP not found',
       };
@@ -343,7 +343,7 @@ export class ExtractionPointMissionManager {
     if (!sideId) {
       return {
         success: false,
-        actionType: 'complete_extract',
+        actionType: 'complete_recovery',
         vpAwarded: 0,
         reason: 'No extracting side',
       };
@@ -351,7 +351,7 @@ export class ExtractionPointMissionManager {
 
     // Mark VIP as extracted
     vip.state = VIPState.Extracted;
-    this.state.extractionProgress.delete(vipMemberId);
+    this.state.recoveryProgress.delete(vipMemberId);
 
     // Award VP
     const currentVP = this.state.vpBySide.get(sideId) ?? 0;
@@ -369,7 +369,7 @@ export class ExtractionPointMissionManager {
 
     return {
       success: true,
-      actionType: 'complete_extract',
+      actionType: 'complete_recovery',
       vpAwarded,
     };
   }
@@ -532,21 +532,21 @@ export class ExtractionPointMissionManager {
   }
 
   /**
-   * Get extraction progress for a VIP
+   * Get recovery progress for a VIP
    */
-  getExtractionProgress(vipMemberId: string): number {
-    return this.state.extractionProgress.get(vipMemberId) ?? 0;
+  getRecoveryProgress(vipMemberId: string): number {
+    return this.state.recoveryProgress.get(vipMemberId) ?? 0;
   }
 
   /**
    * Get mission state
    */
-  getState(): ExtractionPointMissionState {
+  getState(): RecoveryMissionState {
     return { ...this.state };
   }
 
   /**
-   * Get all extraction zones
+   * Get all recovery zones
    */
   getZones(): PointOfInterest[] {
     return this.poiManager.getAllPOIs();
@@ -588,13 +588,13 @@ export class ExtractionPointMissionManager {
 }
 
 /**
- * Create an Extraction Point mission manager
+ * Create a Recovery mission manager
  */
-export function createExtractionPointMission(
+export function createRecoveryMission(
   sides: MissionSide[],
   vipMemberIds: Map<string, string>,
   zonePositions?: Position[],
   zoneCount?: number
-): ExtractionPointMissionManager {
-  return new ExtractionPointMissionManager(sides, vipMemberIds, zonePositions ?? [], zoneCount);
+): RecoveryMissionManager {
+  return new RecoveryMissionManager(sides, vipMemberIds, zonePositions ?? [], zoneCount);
 }

@@ -1,22 +1,22 @@
 import { MissionSide } from '../MissionSide';
-import { PointOfInterest, POIType, POIManager, createPOI } from '../poi-zone-control';
+import { PointOfInterest, POIType, ZoneControlState, POIManager, createPOI } from '../poi-zone-control';
 import { Position } from '../battlefield/Position';
 import { SpatialModel } from '../battlefield/spatial-rules';
 
 /**
- * Beacon Mission State
+ * Convergence Mission State
  */
-export interface BeaconMissionState {
+export interface ConvergenceMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
-  /** Beacon control tracking */
-  beaconControl: Map<string, string | null>; // beaconId -> controlling sideId (null = contested)
+  /** Zone control tracking */
+  zoneControl: Map<string, string | null>; // zoneId -> controlling sideId (null = contested)
   /** First control tracking (for VP bonus) */
-  firstControl: Map<string, string>; // beaconId -> first controlling sideId
-  /** VP from beacon control per side */
+  firstControl: Map<string, string>; // zoneId -> first controlling sideId
+  /** VP from zone control per side */
   vpBySide: Map<string, number>;
-  /** Beacons controlled per side this turn */
-  beaconsControlledThisTurn: Map<string, number>;
+  /** Zones controlled per side this turn */
+  zonesControlledThisTurn: Map<string, number>;
   /** Has the mission ended? */
   ended: boolean;
   /** Winning side ID (if ended) */
@@ -26,25 +26,25 @@ export interface BeaconMissionState {
 }
 
 /**
- * Beacon Mission Manager
- * Handles all Beacon mission logic
+ * Convergence Mission Manager
+ * Handles all Convergence mission logic
  */
-export class BeaconMissionManager {
+export class ConvergenceMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
-  private state: BeaconMissionState;
-  private beaconCount: number;
+  private state: ConvergenceMissionState;
+  private zoneCount: number;
 
-  constructor(sides: MissionSide[], beaconPositions?: Position[], beaconCount?: number) {
+  constructor(sides: MissionSide[], zonePositions: Position[], zoneCount?: number) {
     this.sides = new Map();
     this.poiManager = new POIManager();
-    this.beaconCount = beaconCount ?? beaconPositions?.length ?? 4;
+    this.zoneCount = zoneCount ?? zonePositions.length ?? 3;
     this.state = {
       sideIds: sides.map(s => s.id),
-      beaconControl: new Map(),
+      zoneControl: new Map(),
       firstControl: new Map(),
       vpBySide: new Map(),
-      beaconsControlledThisTurn: new Map(),
+      zonesControlledThisTurn: new Map(),
       ended: false,
     };
 
@@ -52,62 +52,61 @@ export class BeaconMissionManager {
     for (const side of sides) {
       this.sides.set(side.id, side);
       this.state.vpBySide.set(side.id, 0);
-      this.state.beaconsControlledThisTurn.set(side.id, 0);
+      this.state.zonesControlledThisTurn.set(side.id, 0);
     }
 
-    // Create beacon zones
-    this.setupBeaconZones(beaconPositions);
+    // Create convergence zones
+    this.setupConvergenceZones(zonePositions);
   }
 
   /**
-   * Set up beacon zones
+   * Set up convergence zones
    */
-  private setupBeaconZones(positions: Position[]): void {
-    // Default beacon positions in a strategic pattern
+  private setupConvergenceZones(positions: Position[]): void {
     const defaultPositions: Position[] = [
-      { x: 12, y: 6 },   // Top center
-      { x: 6, y: 12 },   // Left center
-      { x: 18, y: 12 },  // Right center
-      { x: 12, y: 18 },  // Bottom center
-      { x: 12, y: 12 },  // Center
+      { x: 6, y: 6 },
+      { x: 18, y: 6 },
+      { x: 12, y: 12 },
+      { x: 6, y: 18 },
+      { x: 18, y: 18 },
     ];
 
-    const beaconPositions = positions.length > 0 ? positions : defaultPositions.slice(0, this.beaconCount);
+    const zonePositions = positions.length > 0 ? positions : defaultPositions.slice(0, this.zoneCount);
 
-    for (let i = 0; i < beaconPositions.length; i++) {
-      const beacon = createPOI({
-        id: `beacon-${i + 1}`,
-        name: `Beacon ${i + 1}`,
-        type: POIType.Beacon,
-        position: beaconPositions[i],
+    for (let i = 0; i < zonePositions.length; i++) {
+      const zone = createPOI({
+        id: `zone-${i + 1}`,
+        name: `Convergence Zone ${i + 1}`,
+        type: POIType.ControlZone,
+        position: zonePositions[i],
         radius: 3,
         vpPerTurn: 2,
-        vpFirstControl: 2,
+        vpFirstControl: 1,
       });
-      this.poiManager.addPOI(beacon);
-      this.state.beaconControl.set(beacon.id, null);
+      this.poiManager.addPOI(zone);
+      this.state.zoneControl.set(zone.id, null);
     }
   }
 
   /**
-   * Update beacon control based on model positions
+   * Update zone control based on model positions
    */
-  updateBeaconControl(models: SpatialModel[]): void {
-    const beacons = this.poiManager.getAllPOIs();
+  updateZoneControl(models: SpatialModel[]): void {
+    const zones = this.poiManager.getAllPOIs();
 
-    for (const beacon of beacons) {
-      // Get models in this beacon zone
-      const modelsInBeacon = this.poiManager.getModelsInPOI(beacon.id, models);
+    for (const zone of zones) {
+      // Get models in this zone
+      const modelsInZone = this.poiManager.getModelsInPOI(zone.id, models);
 
-      if (modelsInBeacon.length === 0) {
-        // No models - beacon becomes uncontrolled
-        this.state.beaconControl.set(beacon.id, null);
+      if (modelsInZone.length === 0) {
+        // No models - zone becomes uncontrolled
+        this.state.zoneControl.set(zone.id, null);
         continue;
       }
 
-      // Get sides present in beacon
+      // Get sides present in zone
       const sidesPresent = new Set<string>();
-      for (const model of modelsInBeacon) {
+      for (const model of modelsInZone) {
         const side = this.getSideForModel(model.id);
         if (side) {
           sidesPresent.add(side);
@@ -115,29 +114,29 @@ export class BeaconMissionManager {
       }
 
       if (sidesPresent.size === 0) {
-        this.state.beaconControl.set(beacon.id, null);
+        this.state.zoneControl.set(zone.id, null);
       } else if (sidesPresent.size === 1) {
-        // Single side controls the beacon
+        // Single side controls the zone
         const controllingSide = Array.from(sidesPresent)[0];
-        const previousController = this.state.beaconControl.get(beacon.id);
+        const previousController = this.state.zoneControl.get(zone.id);
 
-        this.state.beaconControl.set(beacon.id, controllingSide);
+        this.state.zoneControl.set(zone.id, controllingSide);
 
         // Track first control
-        if (!this.state.firstControl.has(beacon.id)) {
-          this.state.firstControl.set(beacon.id, controllingSide);
+        if (!this.state.firstControl.has(zone.id)) {
+          this.state.firstControl.set(zone.id, controllingSide);
         }
 
         // Award first control VP if newly controlled
         if (previousController !== controllingSide && !previousController) {
-          const poi = this.poiManager.getPOI(beacon.id);
+          const poi = this.poiManager.getPOI(zone.id);
           if (poi) {
             this.awardVP(controllingSide, poi.vpFirstControl);
           }
         }
       } else {
-        // Multiple sides - beacon is contested
-        this.state.beaconControl.set(beacon.id, null);
+        // Multiple sides - zone is contested
+        this.state.zoneControl.set(zone.id, null);
       }
     }
   }
@@ -155,24 +154,24 @@ export class BeaconMissionManager {
   }
 
   /**
-   * Award VP at end of turn for controlled beacons
+   * Award VP at end of turn for controlled zones
    */
   awardTurnVP(): Map<string, number> {
     const vpAwarded = new Map<string, number>();
 
     // Reset turn tracking
     for (const sideId of this.state.sideIds) {
-      this.state.beaconsControlledThisTurn.set(sideId, 0);
+      this.state.zonesControlledThisTurn.set(sideId, 0);
       vpAwarded.set(sideId, 0);
     }
 
-    // Count beacons controlled by each side
-    for (const [beaconId, controller] of this.state.beaconControl.entries()) {
+    // Count zones controlled by each side
+    for (const [zoneId, controller] of this.state.zoneControl.entries()) {
       if (controller) {
-        const currentCount = this.state.beaconsControlledThisTurn.get(controller) ?? 0;
-        this.state.beaconsControlledThisTurn.set(controller, currentCount + 1);
+        const currentCount = this.state.zonesControlledThisTurn.get(controller) ?? 0;
+        this.state.zonesControlledThisTurn.set(controller, currentCount + 1);
 
-        // Award 2 VP per beacon
+        // Award 2 VP per zone
         const currentVP = vpAwarded.get(controller) ?? 0;
         vpAwarded.set(controller, currentVP + 2);
         this.awardVP(controller, 2);
@@ -197,25 +196,25 @@ export class BeaconMissionManager {
   }
 
   /**
-   * Check for victory (all beacons controlled)
+   * Check for victory (all zones controlled)
    */
   checkForVictory(): void {
     if (this.state.ended) return;
 
     for (const sideId of this.state.sideIds) {
       let controlledCount = 0;
-      let totalBeacons = 0;
+      let totalZones = 0;
 
-      for (const [beaconId, controller] of this.state.beaconControl.entries()) {
-        totalBeacons++;
+      for (const [zoneId, controller] of this.state.zoneControl.entries()) {
+        totalZones++;
         if (controller === sideId) {
           controlledCount++;
         }
       }
 
-      // Victory if controlling all beacons
-      if (controlledCount === totalBeacons && totalBeacons > 0) {
-        this.endMission(sideId, 'Controlled all beacon zones');
+      // Victory if controlling all zones
+      if (controlledCount === totalZones && totalZones > 0) {
+        this.endMission(sideId, 'Controlled all convergence zones');
         return;
       }
     }
@@ -272,44 +271,44 @@ export class BeaconMissionManager {
   }
 
   /**
-   * Get beacon controller
+   * Get zone controller
    */
-  getBeaconController(beaconId: string): string | null | undefined {
-    return this.state.beaconControl.get(beaconId);
+  getZoneController(zoneId: string): string | null | undefined {
+    return this.state.zoneControl.get(zoneId);
   }
 
   /**
-   * Get all beacon controllers
+   * Get all zone controllers
    */
-  getBeaconControllers(): Map<string, string | null> {
-    return new Map(this.state.beaconControl);
+  getZoneControllers(): Map<string, string | null> {
+    return new Map(this.state.zoneControl);
   }
 
   /**
-   * Get first controller of a beacon
+   * Get first controller of a zone
    */
-  getFirstController(beaconId: string): string | undefined {
-    return this.state.firstControl.get(beaconId);
+  getFirstController(zoneId: string): string | undefined {
+    return this.state.firstControl.get(zoneId);
   }
 
   /**
-   * Get beacons controlled by a side this turn
+   * Get zones controlled by a side this turn
    */
-  getBeaconsControlledThisTurn(sideId: string): number {
-    return this.state.beaconsControlledThisTurn.get(sideId) ?? 0;
+  getZonesControlledThisTurn(sideId: string): number {
+    return this.state.zonesControlledThisTurn.get(sideId) ?? 0;
   }
 
   /**
    * Get mission state
    */
-  getState(): BeaconMissionState {
+  getState(): ConvergenceMissionState {
     return { ...this.state };
   }
 
   /**
-   * Get all POIs (beacons)
+   * Get all POIs (zones)
    */
-  getBeacons(): PointOfInterest[] {
+  getZones(): PointOfInterest[] {
     return this.poiManager.getAllPOIs();
   }
 
@@ -337,24 +336,24 @@ export class BeaconMissionManager {
   /**
    * Get VP standings
    */
-  getVPStandings(): Array<{ sideId: string; vp: number; beaconsControlled: number }> {
+  getVPStandings(): Array<{ sideId: string; vp: number; zonesControlled: number }> {
     return Array.from(this.state.vpBySide.entries())
       .map(([sideId, vp]) => ({
         sideId,
         vp,
-        beaconsControlled: this.state.beaconsControlledThisTurn.get(sideId) ?? 0,
+        zonesControlled: this.state.zonesControlledThisTurn.get(sideId) ?? 0,
       }))
       .sort((a, b) => b.vp - a.vp);
   }
 }
 
 /**
- * Create a Beacon mission manager
+ * Create a Convergence mission manager
  */
-export function createBeaconMission(
+export function createConvergenceMission(
   sides: MissionSide[],
-  beaconPositions?: Position[],
-  beaconCount?: number
-): BeaconMissionManager {
-  return new BeaconMissionManager(sides, beaconPositions ?? [], beaconCount);
+  zonePositions?: Position[],
+  zoneCount?: number
+): ConvergenceMissionManager {
+  return new ConvergenceMissionManager(sides, zonePositions ?? [], zoneCount);
 }

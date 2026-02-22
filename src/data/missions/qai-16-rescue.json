@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_16",
-  "name": "Rescue",
+  "name": "Escort",
   "description": "Extract the VIP before enemy reinforcements seal the perimeter. Every moment counts, but rushing invites disaster.",
   "sides": { "min": 2, "max": 2 },
   "defaultGameSize": "MEDIUM",

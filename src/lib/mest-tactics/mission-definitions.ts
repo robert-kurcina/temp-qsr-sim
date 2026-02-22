@@ -357,15 +357,15 @@ export function getMissionDefinition(missionId: string): MissionDefinition | nul
   }
 
   // TODO: Add more mission definitions as they are implemented
-  // QAI_12: Engagement
-  // QAI_13: Sabotage
-  // QAI_14: Beacon
-  // QAI_15: Extraction Point
-  // QAI_16: Exfil
-  // QAI_17: Triad
-  // QAI_18: Ghost Protocol
-  // QAI_19: Last Stand
-  // QAI_20: Switchback
+  // QAI_12: Convergence
+  // QAI_13: Assault
+  // QAI_14: Dominion
+  // QAI_15: Recovery
+  // QAI_16: Escort
+  // QAI_17: Triumvirate
+  // QAI_18: Stealth
+  // QAI_19: Defiance
+  // QAI_20: Breach
 
   return null;
 }

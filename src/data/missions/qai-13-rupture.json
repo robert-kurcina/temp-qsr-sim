@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_13",
-  "name": "Rupture",
+  "name": "Assault",
   "description": "Infiltrate a guarded location and destroy its vital assets before the enemy can muster a full defense.",
   "sides": { "min": 2, "max": 2 },
   "defaultGameSize": "MEDIUM",

@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createExfilMission, ExfilMissionManager } from './exfil-manager';
+import { createEscortMission, EscortMissionManager } from './escort-manager';
 import { buildOpposingSides } from '../MissionSideBuilder';
 import { buildAssembly, buildProfile } from '../assembly-builder';
 import { ModelSlotStatus } from '../MissionSide';
 import { Position } from '../battlefield/Position';
 
-describe('Exfil Mission', () => {
-  let manager: ExfilMissionManager;
+describe('Escort Mission', () => {
+  let manager: EscortMissionManager;
   let sideA: ReturnType<typeof buildOpposingSides>['sideA'];
   let sideB: ReturnType<typeof buildOpposingSides>['sideB'];
   let vipMemberIdA: string;
@@ -39,12 +39,12 @@ describe('Exfil Mission', () => {
     reinforcementRosters.set(sideA.id, reinforceRosterA);
     reinforcementRosters.set(sideB.id, reinforceRosterB);
 
-    const exfilZonePosition: Position = { x: 12, y: 12 };
+    const escortZonePosition: Position = { x: 12, y: 12 };
 
-    manager = createExfilMission([sideA, sideB], vipMemberIds, reinforcementRosters, exfilZonePosition);
+    manager = createEscortMission([sideA, sideB], vipMemberIds, reinforcementRosters, escortZonePosition);
   });
 
-  describe('createExfilMission', () => {
+  describe('createEscortMission', () => {
     it('should create mission manager with sides and VIPs', () => {
       expect(manager).toBeDefined();
       expect(manager.hasEnded()).toBe(false);
@@ -56,10 +56,10 @@ describe('Exfil Mission', () => {
       expect(vipB).toBeDefined();
     });
 
-    it('should create exfil zone', () => {
-      const zone = manager.getExfilZone();
+    it('should create escort zone', () => {
+      const zone = manager.getEscortZone();
       expect(zone).toBeDefined();
-      expect(zone?.name).toBe('Exfiltration Zone');
+      expect(zone?.name).toBe('Escort Zone');
     });
 
     it('should initialize VP to 0', () => {
@@ -73,81 +73,81 @@ describe('Exfil Mission', () => {
     });
   });
 
-  describe('startExfil', () => {
-    it('should start exfil when VIP is in controlled zone', () => {
-      sideA.members[0].position = { x: 12, y: 12 }; // In exfil zone
+  describe('startEscort', () => {
+    it('should start escort when VIP is in controlled zone', () => {
+      sideA.members[0].position = { x: 12, y: 12 }; // In escort zone
 
       // Control the zone
-      manager.updateExfilZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
+      manager.updateEscortZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
 
-      const result = manager.startExfil(vipMemberIdA);
+      const result = manager.startEscort(vipMemberIdA);
 
       expect(result.success).toBe(true);
-      expect(result.actionType).toBe('start_exfil');
-      expect(manager.getExfilProgress(vipMemberIdA)).toBe(1);
+      expect(result.actionType).toBe('start_escort');
+      expect(manager.getEscortProgress(vipMemberIdA)).toBe(1);
     });
 
-    it('should fail if VIP not in exfil zone', () => {
-      sideA.members[0].position = { x: 3, y: 3 }; // Not in exfil zone
+    it('should fail if VIP not in escort zone', () => {
+      sideA.members[0].position = { x: 3, y: 3 }; // Not in escort zone
 
-      const result = manager.startExfil(vipMemberIdA);
+      const result = manager.startEscort(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('VIP not in exfil zone');
+      expect(result.reason).toBe('VIP not in escort zone');
     });
 
     it('should fail if zone not controlled', () => {
       sideA.members[0].position = { x: 12, y: 12 };
       sideB.members[0].position = { x: 12, y: 12 }; // Contest zone
 
-      manager.updateExfilZoneControl([
+      manager.updateEscortZoneControl([
         { id: sideA.members[0].id, position: sideA.members[0].position! },
         { id: sideB.members[0].id, position: sideB.members[0].position! },
       ]);
 
-      const result = manager.startExfil(vipMemberIdA);
+      const result = manager.startEscort(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Exfil zone not controlled');
+      expect(result.reason).toBe('Escort zone not controlled');
     });
   });
 
-  describe('continueExfil', () => {
-    it('should complete exfil on second turn', () => {
+  describe('continueEscort', () => {
+    it('should complete escort on second turn', () => {
       sideA.members[0].position = { x: 12, y: 12 };
 
-      manager.updateExfilZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
-      manager.startExfil(vipMemberIdA);
+      manager.updateEscortZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
+      manager.startEscort(vipMemberIdA);
 
-      const result = manager.continueExfil(vipMemberIdA);
+      const result = manager.continueEscort(vipMemberIdA);
 
       expect(result.success).toBe(true);
-      expect(result.actionType).toBe('complete_exfil');
+      expect(result.actionType).toBe('complete_escort');
       expect(result.vpAwarded).toBe(10);
       expect(manager.hasEnded()).toBe(true);
       expect(manager.getWinner()).toBe(sideA.id);
     });
 
-    it('should fail if exfil not started', () => {
-      const result = manager.continueExfil(vipMemberIdA);
+    it('should fail if escort not started', () => {
+      const result = manager.continueEscort(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Exfil not started');
+      expect(result.reason).toBe('Escort not started');
     });
 
     it('should fail if VIP leaves zone', () => {
       sideA.members[0].position = { x: 12, y: 12 };
 
-      manager.updateExfilZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
-      manager.startExfil(vipMemberIdA);
+      manager.updateEscortZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
+      manager.startEscort(vipMemberIdA);
 
       // VIP moves out of zone
       sideA.members[0].position = { x: 3, y: 3 };
 
-      const result = manager.continueExfil(vipMemberIdA);
+      const result = manager.continueEscort(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('VIP no longer in exfil zone');
+      expect(result.reason).toBe('VIP no longer in escort zone');
     });
   });
 
@@ -256,7 +256,7 @@ describe('Exfil Mission', () => {
   });
 });
 
-describe('Exfil Mission - Edge Cases', () => {
+describe('Escort Mission - Edge Cases', () => {
   describe('VIP protection', () => {
     it('should award win to side with VIP when enemy VIP dies', () => {
       const result = buildOpposingSides(
@@ -276,7 +276,7 @@ describe('Exfil Mission - Edge Cases', () => {
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [reinforceProfile]));
       reinforcementRosters.set(result.sideB.id, buildAssembly('Reinf B', [reinforceProfile]));
 
-      const manager = createExfilMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
+      const manager = createEscortMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
 
       // Eliminate Side B VIP
       result.sideB.members[0].status = ModelSlotStatus.Eliminated;
@@ -287,8 +287,8 @@ describe('Exfil Mission - Edge Cases', () => {
     });
   });
 
-  describe('Exfil interruption', () => {
-    it('should fail exfil if zone is contested', () => {
+  describe('Escort interruption', () => {
+    it('should fail escort if zone is contested', () => {
       const result = buildOpposingSides(
         'Side A',
         [{ archetypeName: 'Veteran', count: 2 }],
@@ -300,26 +300,26 @@ describe('Exfil Mission - Edge Cases', () => {
       const reinforcementRosters = new Map();
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [buildProfile('Average')]));
 
-      const manager = createExfilMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
+      const manager = createEscortMission([result.sideA, result.sideB], vipMemberIds, reinforcementRosters);
 
-      // Start exfil
+      // Start escort
       result.sideA.members[0].position = { x: 12, y: 12 };
-      manager.updateExfilZoneControl([{ id: result.sideA.members[0].id, position: result.sideA.members[0].position! }]);
-      const startResult = manager.startExfil(result.sideA.members[0].id);
+      manager.updateEscortZoneControl([{ id: result.sideA.members[0].id, position: result.sideA.members[0].position! }]);
+      const startResult = manager.startEscort(result.sideA.members[0].id);
 
       expect(startResult.success).toBe(true);
 
       // Enemy contests zone
       result.sideB.members[0].position = { x: 12, y: 12 };
-      manager.updateExfilZoneControl([
+      manager.updateEscortZoneControl([
         { id: result.sideA.members[0].id, position: result.sideA.members[0].position! },
         { id: result.sideB.members[0].id, position: result.sideB.members[0].position! },
       ]);
 
-      const result2 = manager.continueExfil(result.sideA.members[0].id);
+      const result2 = manager.continueEscort(result.sideA.members[0].id);
 
       expect(result2.success).toBe(false);
-      expect(result2.reason).toBe('Exfil zone no longer controlled');
+      expect(result2.reason).toBe('Escort zone no longer controlled');
     });
   });
 
@@ -336,7 +336,7 @@ describe('Exfil Mission - Edge Cases', () => {
       const reinforcementRosters = new Map();
       reinforcementRosters.set(result.sideA.id, buildAssembly('Reinf A', [buildProfile('Average')]));
 
-      const manager = createExfilMission(
+      const manager = createEscortMission(
         [result.sideA, result.sideB],
         vipMemberIds,
         reinforcementRosters,

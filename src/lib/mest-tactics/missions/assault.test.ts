@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createSabotageMission, SabotageMissionManager } from './sabotage-manager';
+import { createAssaultMission, AssaultMissionManager } from './assault-manager';
 import { buildOpposingSides } from '../MissionSideBuilder';
 import { ModelSlotStatus } from '../MissionSide';
 import { Position } from '../battlefield/Position';
 
-describe('Sabotage Mission', () => {
-  let manager: SabotageMissionManager;
+describe('Assault Mission', () => {
+  let manager: AssaultMissionManager;
   let sideA: ReturnType<typeof buildOpposingSides>['sideA'];
   let sideB: ReturnType<typeof buildOpposingSides>['sideB'];
 
@@ -33,19 +33,19 @@ describe('Sabotage Mission', () => {
       { x: 18, y: 18 },
     ];
 
-    manager = createSabotageMission([sideA, sideB], markerPositions);
+    manager = createAssaultMission([sideA, sideB], markerPositions);
   });
 
-  describe('createSabotageMission', () => {
+  describe('createAssaultMission', () => {
     it('should create mission manager with sides', () => {
       expect(manager).toBeDefined();
       expect(manager.hasEnded()).toBe(false);
     });
 
-    it('should create sabotage markers', () => {
+    it('should create assault markers', () => {
       const markers = manager.getAllMarkers();
       expect(markers.length).toBe(4);
-      expect(markers[0].id).toBe('sabotage-1');
+      expect(markers[0].id).toBe('assault-1');
     });
 
     it('should initialize VP to 0', () => {
@@ -55,7 +55,7 @@ describe('Sabotage Mission', () => {
 
     it('should have first marker as high value', () => {
       const markers = manager.getAllMarkers();
-      expect(markers[0].sabotageVP).toBe(5);
+      expect(markers[0].assaultVP).toBe(5);
     });
 
     it('should have resource markers', () => {
@@ -66,52 +66,52 @@ describe('Sabotage Mission', () => {
     });
   });
 
-  describe('sabotageMarker', () => {
-    it('should successfully sabotage a marker', () => {
+  describe('assaultMarker', () => {
+    it('should successfully assault a marker', () => {
       sideA.members[0].position = { x: 6, y: 6 }; // Adjacent to marker 1
 
-      const result = manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      const result = manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
       expect(result.success).toBe(true);
       expect(result.vpAwarded).toBe(5); // High value marker
-      expect(manager.getMarker('sabotage-1')?.sabotaged).toBe(true);
+      expect(manager.getMarker('assault-1')?.assaulted).toBe(true);
     });
 
-    it('should award VP for sabotage', () => {
+    it('should award VP for assault', () => {
       sideA.members[0].position = { x: 6, y: 6 };
 
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
       expect(manager.getVictoryPoints(sideA.id)).toBe(5);
     });
 
-    it('should fail if marker already sabotaged', () => {
+    it('should fail if marker already assaulted', () => {
       sideA.members[0].position = { x: 6, y: 6 };
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
-      const result = manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      const result = manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Marker already sabotaged');
+      expect(result.reason).toBe('Marker already assaulted');
     });
 
     it('should fail if model not adjacent to marker', () => {
       sideA.members[0].position = { x: 20, y: 20 }; // Far from marker
 
-      const result = manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      const result = manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
       expect(result.success).toBe(false);
       expect(result.reason).toBe('Model not adjacent to marker');
     });
 
-    it('should track sabotage count', () => {
+    it('should track assault count', () => {
       sideA.members[0].position = { x: 6, y: 6 };
       sideA.members[1].position = { x: 18, y: 6 };
 
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
-      manager.sabotageMarker(sideA.members[1].id, 'sabotage-2');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
+      manager.assaultMarker(sideA.members[1].id, 'assault-2');
 
-      expect(manager.getSabotageCount(sideA.id)).toBe(2);
+      expect(manager.getAssaultCount(sideA.id)).toBe(2);
     });
   });
 
@@ -120,7 +120,7 @@ describe('Sabotage Mission', () => {
       // Marker 4 (index 3) is a resource (i % 3 === 0, but i=0 is HighValue)
       sideA.members[0].position = { x: 18, y: 18 };
 
-      const result = manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
+      const result = manager.harvestMarker(sideA.members[0].id, 'assault-4');
 
       expect(result.success).toBe(true);
       expect(result.vpAwarded).toBe(1);
@@ -129,7 +129,7 @@ describe('Sabotage Mission', () => {
     it('should fail if marker is not a resource', () => {
       sideA.members[0].position = { x: 18, y: 6 }; // Marker 2 is not a resource
 
-      const result = manager.harvestMarker(sideA.members[0].id, 'sabotage-2');
+      const result = manager.harvestMarker(sideA.members[0].id, 'assault-2');
 
       expect(result.success).toBe(false);
       expect(result.reason).toBe('Marker is not a resource');
@@ -138,9 +138,9 @@ describe('Sabotage Mission', () => {
     it('should allow multiple harvests of resource', () => {
       sideA.members[0].position = { x: 18, y: 18 }; // Marker 4 is resource
 
-      const result1 = manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
-      const result2 = manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
-      const result3 = manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
+      const result1 = manager.harvestMarker(sideA.members[0].id, 'assault-4');
+      const result2 = manager.harvestMarker(sideA.members[0].id, 'assault-4');
+      const result3 = manager.harvestMarker(sideA.members[0].id, 'assault-4');
 
       expect(result1.success).toBe(true);
       expect(result2.success).toBe(true);
@@ -150,10 +150,10 @@ describe('Sabotage Mission', () => {
     it('should fail when resource is depleted', () => {
       sideA.members[0].position = { x: 18, y: 18 };
 
-      manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
-      manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
-      manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
-      const result4 = manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
+      manager.harvestMarker(sideA.members[0].id, 'assault-4');
+      manager.harvestMarker(sideA.members[0].id, 'assault-4');
+      manager.harvestMarker(sideA.members[0].id, 'assault-4');
+      const result4 = manager.harvestMarker(sideA.members[0].id, 'assault-4');
 
       expect(result4.success).toBe(false);
       expect(result4.reason).toBe('Resource depleted');
@@ -162,57 +162,57 @@ describe('Sabotage Mission', () => {
     it('should track harvest count', () => {
       sideA.members[0].position = { x: 18, y: 18 };
 
-      manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
-      manager.harvestMarker(sideA.members[0].id, 'sabotage-4');
+      manager.harvestMarker(sideA.members[0].id, 'assault-4');
+      manager.harvestMarker(sideA.members[0].id, 'assault-4');
 
       expect(manager.getHarvestCount(sideA.id)).toBe(2);
     });
   });
 
   describe('checkForVictory', () => {
-    it('should detect victory when one side sabotages all markers', () => {
+    it('should detect victory when one side assaults all markers', () => {
       sideA.members[0].position = { x: 6, y: 6 };
       sideA.members[1].position = { x: 18, y: 6 };
       sideA.members[2].position = { x: 6, y: 18 };
 
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
-      manager.sabotageMarker(sideA.members[1].id, 'sabotage-2');
-      manager.sabotageMarker(sideA.members[2].id, 'sabotage-3');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
+      manager.assaultMarker(sideA.members[1].id, 'assault-2');
+      manager.assaultMarker(sideA.members[2].id, 'assault-3');
 
-      // Sabotage the 4th marker
+      // Assault the 4th marker
       sideA.members[0].position = { x: 18, y: 18 };
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-4');
+      manager.assaultMarker(sideA.members[0].id, 'assault-4');
 
       manager.checkForVictory();
 
       expect(manager.hasEnded()).toBe(true);
       expect(manager.getWinner()).toBe(sideA.id);
-      expect(manager.getEndReason()).toBe('Sabotaged all objectives');
+      expect(manager.getEndReason()).toBe('Assaulted all objectives');
     });
 
-    it('should end game when all markers are sabotaged by any sides', () => {
+    it('should end game when all markers are assaulted by any sides', () => {
       sideA.members[0].position = { x: 6, y: 6 };
       sideB.members[0].position = { x: 18, y: 6 };
       sideA.members[1].position = { x: 6, y: 18 };
       sideB.members[1].position = { x: 18, y: 18 };
 
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
-      manager.sabotageMarker(sideB.members[0].id, 'sabotage-2');
-      manager.sabotageMarker(sideA.members[1].id, 'sabotage-3');
-      manager.sabotageMarker(sideB.members[1].id, 'sabotage-4');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
+      manager.assaultMarker(sideB.members[0].id, 'assault-2');
+      manager.assaultMarker(sideA.members[1].id, 'assault-3');
+      manager.assaultMarker(sideB.members[1].id, 'assault-4');
 
       manager.checkForVictory();
 
       expect(manager.hasEnded()).toBe(true);
       // Winner determined by VP
       expect(manager.getWinner()).toBeDefined();
-      expect(manager.getEndReason()).toBe('All objectives sabotaged');
+      expect(manager.getEndReason()).toBe('All objectives assaulted');
     });
 
     it('should not end if markers remain', () => {
       sideA.members[0].position = { x: 6, y: 6 };
 
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
       manager.checkForVictory();
 
@@ -231,7 +231,7 @@ describe('Sabotage Mission', () => {
 
     it('should determine VP winner if no winner specified', () => {
       sideA.members[0].position = { x: 6, y: 6 };
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
       manager.endMission(undefined, 'Turn limit');
 
@@ -240,7 +240,7 @@ describe('Sabotage Mission', () => {
 
     it('should only consider active models for VP victory', () => {
       sideA.members[0].position = { x: 6, y: 6 };
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
       sideA.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
       manager.endMission(undefined, 'Turn limit');
@@ -255,8 +255,8 @@ describe('Sabotage Mission', () => {
       sideA.members[0].position = { x: 6, y: 6 };
       sideB.members[0].position = { x: 18, y: 6 };
 
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1'); // 5 VP
-      manager.sabotageMarker(sideB.members[0].id, 'sabotage-2'); // 3 VP
+      manager.assaultMarker(sideA.members[0].id, 'assault-1'); // 5 VP
+      manager.assaultMarker(sideB.members[0].id, 'assault-2'); // 3 VP
 
       const standings = manager.getVPStandings();
 
@@ -267,22 +267,22 @@ describe('Sabotage Mission', () => {
       expect(standings[1].vp).toBe(3);
     });
 
-    it('should include sabotage and harvest counts', () => {
+    it('should include assault and harvest counts', () => {
       sideA.members[0].position = { x: 6, y: 6 };
       sideA.members[1].position = { x: 18, y: 18 };
 
-      manager.sabotageMarker(sideA.members[0].id, 'sabotage-1');
-      manager.harvestMarker(sideA.members[1].id, 'sabotage-4');
+      manager.assaultMarker(sideA.members[0].id, 'assault-1');
+      manager.harvestMarker(sideA.members[1].id, 'assault-4');
 
       const standings = manager.getVPStandings();
 
-      expect(standings[0].sabotages).toBe(1);
+      expect(standings[0].assaults).toBe(1);
       expect(standings[0].harvests).toBe(1);
     });
   });
 });
 
-describe('Sabotage Mission - Edge Cases', () => {
+describe('Assault Mission - Edge Cases', () => {
   describe('Multiple markers', () => {
     it('should handle 6 markers', () => {
       const result = buildOpposingSides(
@@ -301,18 +301,18 @@ describe('Sabotage Mission - Edge Cases', () => {
         { x: 12, y: 3 },
       ];
 
-      const manager = createSabotageMission([result.sideA, result.sideB], markerPositions, 6);
+      const manager = createAssaultMission([result.sideA, result.sideB], markerPositions, 6);
 
       const markers = manager.getAllMarkers();
       expect(markers.length).toBe(6);
 
-      // Sabotage all 6 markers
+      // Assault all 6 markers
       result.sideA.members.forEach((m, i) => {
         m.position = markerPositions[i];
       });
 
       for (let i = 0; i < 6; i++) {
-        manager.sabotageMarker(result.sideA.members[i].id, `sabotage-${i + 1}`);
+        manager.assaultMarker(result.sideA.members[i].id, `assault-${i + 1}`);
       }
 
       manager.checkForVictory();
@@ -322,7 +322,7 @@ describe('Sabotage Mission - Edge Cases', () => {
     });
   });
 
-  describe('Mixed sabotage and harvest', () => {
+  describe('Mixed assault and harvest', () => {
     it('should allow both strategies', () => {
       const result = buildOpposingSides(
         'Side A',
@@ -332,7 +332,7 @@ describe('Sabotage Mission - Edge Cases', () => {
       );
 
       // Use 4 markers so marker 4 (index 3) is a resource
-      const manager = createSabotageMission([result.sideA, result.sideB], [
+      const manager = createAssaultMission([result.sideA, result.sideB], [
         { x: 6, y: 6 },
         { x: 18, y: 6 },
         { x: 6, y: 18 },
@@ -342,15 +342,15 @@ describe('Sabotage Mission - Edge Cases', () => {
       result.sideA.members[0].position = { x: 18, y: 18 }; // Resource marker
 
       // Harvest 3 times
-      manager.harvestMarker(result.sideA.members[0].id, 'sabotage-4');
-      manager.harvestMarker(result.sideA.members[0].id, 'sabotage-4');
-      manager.harvestMarker(result.sideA.members[0].id, 'sabotage-4');
+      manager.harvestMarker(result.sideA.members[0].id, 'assault-4');
+      manager.harvestMarker(result.sideA.members[0].id, 'assault-4');
+      manager.harvestMarker(result.sideA.members[0].id, 'assault-4');
 
-      // Now sabotage it
-      const sabotageResult = manager.sabotageMarker(result.sideA.members[0].id, 'sabotage-4');
+      // Now assault it
+      const assaultResult = manager.assaultMarker(result.sideA.members[0].id, 'assault-4');
 
-      expect(sabotageResult.success).toBe(true);
-      expect(manager.getVictoryPoints(result.sideA.id)).toBe(6); // 3 harvest (1 VP each) + 3 sabotage
+      expect(assaultResult.success).toBe(true);
+      expect(manager.getVictoryPoints(result.sideA.id)).toBe(6); // 3 harvest (1 VP each) + 3 assault
     });
   });
 });

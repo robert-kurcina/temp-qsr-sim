@@ -46,18 +46,18 @@ export class MissionRuntime {
    */
   private initializeSpecialRules(): void {
     const ruleIds = this.config.specialRules?.map(r => r.id) ?? [];
-    
+
     // Map mission types to special rules
     const missionRuleMap: Record<string, string[]> = {
       'QAI_12': ['reinforcements'], // Convergence
-      'QAI_13': ['time_pressure', 'harvest'], // Rupture
-      'QAI_14': ['courier'], // Signal
-      'QAI_15': ['threat_level', 'harvest'], // Caches
-      'QAI_16': ['courier', 'reinforcements'], // Rescue
-      'QAI_17': ['commander'], // Trinity
-      'QAI_18': ['alert_level', 'hidden_object'], // Incursion
-      'QAI_19': ['breakthrough', 'sally_forth'], // Bastion
-      'QAI_20': ['mechanism', 'vigilance'], // Sequence
+      'QAI_13': ['time_pressure', 'harvest'], // Assault
+      'QAI_14': ['courier'], // Dominion
+      'QAI_15': ['threat_level', 'harvest'], // Recovery
+      'QAI_16': ['courier', 'reinforcements'], // Escort
+      'QAI_17': ['commander'], // Triumvirate
+      'QAI_18': ['alert_level', 'hidden_object'], // Stealth
+      'QAI_19': ['breakthrough', 'sally_forth'], // Defiance
+      'QAI_20': ['mechanism', 'vigilance'], // Breach
     };
 
     const missionRules = missionRuleMap[this.config.id] ?? [];

@@ -197,16 +197,16 @@ These are rough estimates for implementation + tests + wiring.
 7.  Mission event hooks: 1,500–2,500
 
 **Mission Implementations**
-1.  Elimination: 800–1,200 ✅ **Complete**
-2.  Engagement: 2,500–3,600 ✅ **Complete**
-3.  Beacon: 1,800–2,800 ✅ **Complete**
-4.  Exfil: 3,000–4,500 ✅ **Complete**
-5.  Extraction Point: 4,000–6,000 ✅ **Complete**
-6.  Sabotage: 3,500–5,000 ✅ **Complete**
-7.  Ghost Protocol: 4,500–6,500 ✅ **Complete**
-8.  Switchback: 3,500–5,000 ✅ **Complete**
-9.  Triad: 4,500–6,500 ✅ **Complete**
-10. Last Stand: 5,500–8,000 ✅ **Complete**
+1.  Elimination: 800–1,200 ✅ **Complete** (unchanged)
+2.  Convergence (was Engagement): 2,500–3,600 ✅ **Complete**
+3.  Dominion (was Beacon): 1,800–2,800 ✅ **Complete**
+4.  Assault (was Sabotage): 3,000–4,500 ✅ **Complete**
+5.  Recovery (was Extraction Point): 4,000–6,000 ✅ **Complete**
+6.  Escort (was Exfil): 3,000–4,500 ✅ **Complete**
+7.  Stealth (was Ghost Protocol): 4,500–6,500 ✅ **Complete**
+8.  Triumvirate (was Triad): 4,500–6,500 ✅ **Complete**
+9.  Defiance (was Last Stand): 5,500–8,000 ✅ **Complete**
+10. Breach (was Switchback): 3,500–5,000 ✅ **Complete**
 
 ---
 

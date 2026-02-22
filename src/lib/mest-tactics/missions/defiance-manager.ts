@@ -6,9 +6,9 @@ import { Position } from '../battlefield/Position';
 import { buildAssembly, buildProfile, AssemblyRoster } from '../assembly-builder';
 
 /**
- * Last Stand Mission State
+ * Defiance Mission State
  */
-export interface LastStandMissionState {
+export interface DefianceMissionState {
   /** Side IDs in the mission */
   sideIds: string[];
   /** VIP for each side (sideId -> VIP member ID) */
@@ -34,15 +34,15 @@ export interface LastStandMissionState {
 }
 
 /**
- * Last Stand Mission Manager
- * Handles all Last Stand mission logic combining VIP + Reinforcements + Defense
+ * Defiance Mission Manager
+ * Handles all Defiance mission logic combining VIP + Reinforcements + Defense
  */
-export class LastStandMissionManager {
+export class DefianceMissionManager {
   private sides: Map<string, MissionSide>;
   private poiManager: POIManager;
   private vipManager: VIPManager;
   private reinforceManager: ReinforcementsManager;
-  private state: LastStandMissionState;
+  private state: DefianceMissionState;
 
   constructor(
     sides: MissionSide[],
@@ -138,8 +138,8 @@ export class LastStandMissionManager {
       { x: 18, y: 18 },
     ];
 
-    const zonePositions = positions && positions.length > 0 
-      ? positions 
+    const zonePositions = positions && positions.length > 0
+      ? positions
       : defaultPositions.slice(0, 4);
 
     for (let i = 0; i < zonePositions.length && i < 5; i++) {
@@ -352,8 +352,8 @@ export class LastStandMissionManager {
     for (const [sideId, vipMemberId] of this.state.vipBySide.entries()) {
       const vip = this.vipManager.getVIP(vipMemberId);
       const member = this.getMemberById(vipMemberId);
-      
-      if (vip && vip.state !== VIPState.Eliminated && 
+
+      if (vip && vip.state !== VIPState.Eliminated &&
           member && member.status !== 'Eliminated' as any) {
         survivingVIPs.push(sideId);
       }
@@ -468,7 +468,7 @@ export class LastStandMissionManager {
   /**
    * Get mission state
    */
-  getState(): LastStandMissionState {
+  getState(): DefianceMissionState {
     return { ...this.state };
   }
 
@@ -523,14 +523,14 @@ export class LastStandMissionManager {
 }
 
 /**
- * Create a Last Stand mission manager
+ * Create a Defiance mission manager
  */
-export function createLastStandMission(
+export function createDefianceMission(
   sides: MissionSide[],
   vipMemberIds: Map<string, string>,
   reinforcementRosters: Map<string, AssemblyRoster>,
   defenseZonePositions?: Position[],
   reinforcementTurn?: number
-): LastStandMissionManager {
-  return new LastStandMissionManager(sides, vipMemberIds, reinforcementRosters, defenseZonePositions, reinforcementTurn);
+): DefianceMissionManager {
+  return new DefianceMissionManager(sides, vipMemberIds, reinforcementRosters, defenseZonePositions, reinforcementTurn);
 }

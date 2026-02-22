@@ -39,7 +39,7 @@ Use the standard rules. There are just 2 Sides.
 - Bottled: +1 VP if Opposing Side fails Bottle Test or has no Ordered models remaining at game end.
 - Outnumbered: +1 VP to Side outnumbered 3:2 models or greater at game start; +2 VP if outnumbered 2:1 or greater (only if multiple Sides remain at game end).
 
-## QAI Mission 12: Engagement
+## QAI Mission 12: Convergence
 
 Combat erupts as multiple forces converge on contested objectives from all directions. Reinforcements arrive in waves. Timing and positioning decide victory.
 
@@ -54,7 +54,7 @@ Use the standard rules. There can be 2 to 4 mutually Opposing Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place Power Nodes (POI terrain pieces) at battlefield center:
+- Place Control Points (POI terrain pieces) at battlefield center:
   - Small: 2 POIs placed 6 MU apart.
   - Medium: 3 POIs in triangular formation, 8 MU apart.
   - Large: 4 POIs in diamond formation, 10 MU apart.
@@ -81,7 +81,7 @@ Use the standard rules. There can be 2 to 4 mutually Opposing Sides.
 - Bottled: +1 VP if Opposing Side fails Bottle Test (tiebreaker only).
 - First Blood: +1 VP to first Side to Wound an Opposing model.
 
-## QAI Mission 13: Sabotage
+## QAI Mission 13: Assault
 
 Infiltrate the facility and destroy its critical systems before reinforcements arrive.
 
@@ -96,7 +96,7 @@ Use the standard rules. There are just 2 Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place Sabotage Points (SPs), each a POI terrain piece:
+- Place Target Points (SPs), each a POI terrain piece:
   - Small: 1 SP placed 8 MU from Defender edge.
   - Medium: 2 SPs placed 12 MU from Defender edge, 12 MU apart.
   - Large: 3 SPs in triangular formation, 16 MU from Defender edge, 16 MU apart.
@@ -129,7 +129,7 @@ Use the standard rules. There are just 2 Sides.
 - POI: +1 VP to Side controlling majority of remaining SPs at game end.
 - Bottled: +1 VP if Opposing Side fails Bottle Test or has no Ordered models.
 
-## QAI Mission 14: Beacon
+## QAI Mission 14: Dominion
 
 Both Sides race to activate and hold transmission beacons that call in orbital support. The first to achieve sustained signal dominance wins.
 
@@ -170,7 +170,7 @@ Use the standard rules. There are just 2 Sides.
 - Elimination: +1 VP for most BP eliminated (tiebreaker only).
 - Bottled: +1 VP if Opponent fails Bottle Test (tiebreaker only).
 
-## QAI Mission 15: Extraction Point
+## QAI Mission 15: Recovery
 
 Scattered intelligence caches contain vital data. Extract them before the opposition, but each extraction triggers security protocols that escalate the battlefield's danger.
 
@@ -185,7 +185,7 @@ Use the standard rules. There are just 2 Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place Intelligence Caches (ICs), each a Small OM:
+- Place Vital Assets (ICs), each a Small OM:
   - Small: 3 ICs placed randomly (roll 2d6 x 2 MU from corner), min 8 MU apart.
   - Medium: 5 ICs placed randomly (roll 2d6 x 3 MU from corner), min 8 MU apart.
   - Large: 7 ICs placed randomly (roll 2d6 x 4 MU from corner), min 8 MU apart.
@@ -220,7 +220,7 @@ Use the standard rules. There are just 2 Sides.
 - Catalyst: +1 VP to Side that triggered maximum Security Level.
 - Elimination: +1 VP for most BP eliminated (tiebreaker only).
 
-## QAI Mission 16: Exfil
+## QAI Mission 16: Escort
 
 Extract the VIP before enemy reinforcements seal the perimeter. Every moment counts, but rushing invites disaster.
 
@@ -278,7 +278,7 @@ Use the standard rules. There are just 2 Sides.
 - VIP Elimination: +2 VP to Defender (may trigger Sanctuary victory).
 - Dominance: +1 VP per Turn controlling battlefield center (4 MU radius circle).
 
-## QAI Mission 17: Triad
+## QAI Mission 17: Triumvirate
 
 Three factions converge on a derelict facility containing three power nodes. Control the nodes to unlock the central vault, but alliances shift with every Turn.
 
@@ -293,7 +293,7 @@ Use the standard rules. There are 3 mutually Opposing Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place three Power Nodes (PNs), each a POI terrain piece:
+- Place three Control Points (PNs), each a POI terrain piece:
   - Small: 8 MU apart in triangle formation centered on battlefield.
   - Medium: 12 MU apart in triangle formation centered on battlefield.
   - Large: 16 MU apart in triangle formation centered on battlefield.
@@ -327,7 +327,7 @@ Use the standard rules. There are 3 mutually Opposing Sides.
 - Sanctuary: +1 VP per Turn maintaining at least 25 percent of BP within own Entry Edge zone.
 - Bottled: +1 VP if Opposing Side fails Bottle Test.
 
-## QAI Mission 18: Ghost Protocol
+## QAI Mission 18: Stealth
 
 Infiltrate the blacksite and extract the encrypted Data Core before security protocols lock down the facility. Move unseen, or trigger the alarms that seal your fate.
 
@@ -385,7 +385,7 @@ Use the standard rules. There are just 2 Sides.
 - Elimination: Security victory if all Infiltrators are Eliminated.
 - Expiration: Security victory if game ends with no Authentic Core extracted.
 
-## QAI Mission 19: Last Stand
+## QAI Mission 19: Defiance
 
 The fortress gates have fallen. Now you hold the inner sanctum against endless waves. Survive the onslaught, but static defense invites collapse. Strike out to break their momentum, or hold the line until dawn.
 
@@ -446,7 +446,7 @@ Use the standard rules. There are just 2 Sides.
 - Breakthrough: Horde victory upon placing Breakthrough Gamma marker.
 - Elimination: Horde victory if all Defenders are Eliminated.
 
-## QAI Mission 20: Switchback
+## QAI Mission 20: Breach
 
 The vault contains three security switches. Flip them all to unlock the exit corridor, but every movement risks detection. The defenders stand vigilant in Wait status, their heightened awareness your greatest obstacle.
 
@@ -462,7 +462,7 @@ Use the standard rules. There are just 2 Sides.
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
 - Visibility is Twilight, Overcast: 8 MU OR for all models.
-- Place three Security Switches (POI terrain pieces) forming an equilateral triangle centered on battlefield:
+- Place three Access Switches (POI terrain pieces) forming an equilateral triangle centered on battlefield:
   - Small: 8 MU from center point.
   - Medium: 12 MU from center point.
   - Large: 16 MU from center point.

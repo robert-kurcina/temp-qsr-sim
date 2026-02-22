@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createExtractionPointMission, ExtractionPointMissionManager } from './extraction-point-manager';
+import { createRecoveryMission, RecoveryMissionManager } from './recovery-manager';
 import { buildOpposingSides } from '../MissionSideBuilder';
 import { ModelSlotStatus } from '../MissionSide';
 import { Position } from '../battlefield/Position';
 
-describe('Extraction Point Mission', () => {
-  let manager: ExtractionPointMissionManager;
+describe('Recovery Mission', () => {
+  let manager: RecoveryMissionManager;
   let sideA: ReturnType<typeof buildOpposingSides>['sideA'];
   let sideB: ReturnType<typeof buildOpposingSides>['sideB'];
   let vipMemberIdA: string;
@@ -36,10 +36,10 @@ describe('Extraction Point Mission', () => {
       { x: 12, y: 21 },
     ];
 
-    manager = createExtractionPointMission([sideA, sideB], vipMemberIds, zonePositions);
+    manager = createRecoveryMission([sideA, sideB], vipMemberIds, zonePositions);
   });
 
-  describe('createExtractionPointMission', () => {
+  describe('createRecoveryMission', () => {
     it('should create mission manager with sides and VIPs', () => {
       expect(manager).toBeDefined();
       expect(manager.hasEnded()).toBe(false);
@@ -51,10 +51,10 @@ describe('Extraction Point Mission', () => {
       expect(vipB).toBeDefined();
     });
 
-    it('should create extraction zones', () => {
+    it('should create recovery zones', () => {
       const zones = manager.getZones();
       expect(zones.length).toBe(3);
-      expect(zones[0].name).toBe('Extraction Zone 1');
+      expect(zones[0].name).toBe('Recovery Zone 1');
     });
 
     it('should initialize VP to 0', () => {
@@ -63,27 +63,27 @@ describe('Extraction Point Mission', () => {
     });
   });
 
-  describe('startExtraction', () => {
-    it('should start extraction when VIP is in controlled zone', () => {
+  describe('startRecovery', () => {
+    it('should start recovery when VIP is in controlled zone', () => {
       sideA.members[0].position = { x: 3, y: 3 }; // In zone 1
 
       // Control the zone
       manager.updateZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
 
-      const result = manager.startExtraction(vipMemberIdA);
+      const result = manager.startRecovery(vipMemberIdA);
 
       expect(result.success).toBe(true);
-      expect(result.actionType).toBe('start_extract');
-      expect(manager.getExtractionProgress(vipMemberIdA)).toBe(1);
+      expect(result.actionType).toBe('start_recovery');
+      expect(manager.getRecoveryProgress(vipMemberIdA)).toBe(1);
     });
 
-    it('should fail if VIP not in extraction zone', () => {
+    it('should fail if VIP not in recovery zone', () => {
       sideA.members[0].position = { x: 12, y: 12 }; // Not in any zone
 
-      const result = manager.startExtraction(vipMemberIdA);
+      const result = manager.startRecovery(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('VIP not in extraction zone');
+      expect(result.reason).toBe('VIP not in recovery zone');
     });
 
     it('should fail if zone not controlled', () => {
@@ -95,49 +95,49 @@ describe('Extraction Point Mission', () => {
         { id: sideB.members[0].id, position: sideB.members[0].position! },
       ]);
 
-      const result = manager.startExtraction(vipMemberIdA);
+      const result = manager.startRecovery(vipMemberIdA);
 
       expect(result.success).toBe(false);
       expect(result.reason).toBe('Zone not controlled by VIP side');
     });
   });
 
-  describe('continueExtraction', () => {
-    it('should complete extraction on second turn', () => {
+  describe('continueRecovery', () => {
+    it('should complete recovery on second turn', () => {
       sideA.members[0].position = { x: 3, y: 3 };
 
       manager.updateZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
-      manager.startExtraction(vipMemberIdA);
+      manager.startRecovery(vipMemberIdA);
 
-      const result = manager.continueExtraction(vipMemberIdA);
+      const result = manager.continueRecovery(vipMemberIdA);
 
       expect(result.success).toBe(true);
-      expect(result.actionType).toBe('complete_extract');
+      expect(result.actionType).toBe('complete_recovery');
       expect(result.vpAwarded).toBe(5);
       expect(manager.hasEnded()).toBe(true);
       expect(manager.getWinner()).toBe(sideA.id);
     });
 
-    it('should fail if extraction not started', () => {
-      const result = manager.continueExtraction(vipMemberIdA);
+    it('should fail if recovery not started', () => {
+      const result = manager.continueRecovery(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('Extraction not started');
+      expect(result.reason).toBe('Recovery not started');
     });
 
     it('should fail if VIP leaves zone', () => {
       sideA.members[0].position = { x: 3, y: 3 };
 
       manager.updateZoneControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
-      manager.startExtraction(vipMemberIdA);
+      manager.startRecovery(vipMemberIdA);
 
       // VIP moves out of zone
       sideA.members[0].position = { x: 12, y: 12 };
 
-      const result = manager.continueExtraction(vipMemberIdA);
+      const result = manager.continueRecovery(vipMemberIdA);
 
       expect(result.success).toBe(false);
-      expect(result.reason).toBe('VIP no longer in extraction zone');
+      expect(result.reason).toBe('VIP no longer in recovery zone');
     });
   });
 
@@ -230,7 +230,7 @@ describe('Extraction Point Mission', () => {
   });
 });
 
-describe('Extraction Point Mission - Edge Cases', () => {
+describe('Recovery Mission - Edge Cases', () => {
   describe('VIP protection', () => {
     it('should award win to side with VIP when enemy VIP dies', () => {
       const result = buildOpposingSides(
@@ -245,7 +245,7 @@ describe('Extraction Point Mission - Edge Cases', () => {
         [result.sideB.id, result.sideB.members[0].id],
       ]);
 
-      const manager = createExtractionPointMission([result.sideA, result.sideB], vipMemberIds);
+      const manager = createRecoveryMission([result.sideA, result.sideB], vipMemberIds);
 
       // Eliminate Side B VIP
       result.sideB.members[0].status = ModelSlotStatus.Eliminated;
@@ -256,8 +256,8 @@ describe('Extraction Point Mission - Edge Cases', () => {
     });
   });
 
-  describe('Multiple extraction zones', () => {
-    it('should handle 4 extraction zones', () => {
+  describe('Multiple recovery zones', () => {
+    it('should handle 4 recovery zones', () => {
       const result = buildOpposingSides(
         'Side A',
         [{ archetypeName: 'Veteran', count: 4 }],
@@ -274,7 +274,7 @@ describe('Extraction Point Mission - Edge Cases', () => {
         { x: 21, y: 21 },
       ];
 
-      const manager = createExtractionPointMission([result.sideA, result.sideB], vipMemberIds, zonePositions, 4);
+      const manager = createRecoveryMission([result.sideA, result.sideB], vipMemberIds, zonePositions, 4);
 
       const zones = manager.getZones();
       expect(zones.length).toBe(4);
@@ -294,8 +294,8 @@ describe('Extraction Point Mission - Edge Cases', () => {
     });
   });
 
-  describe('Extraction interruption', () => {
-    it('should fail extraction if zone is contested', () => {
+  describe('Recovery interruption', () => {
+    it('should fail recovery if zone is contested', () => {
       const result = buildOpposingSides(
         'Side A',
         [{ archetypeName: 'Veteran', count: 2 }],
@@ -304,15 +304,15 @@ describe('Extraction Point Mission - Edge Cases', () => {
       );
 
       const vipMemberIds = new Map([[result.sideA.id, result.sideA.members[0].id]]);
-      const manager = createExtractionPointMission([result.sideA, result.sideB], vipMemberIds);
+      const manager = createRecoveryMission([result.sideA, result.sideB], vipMemberIds);
 
-      // Start extraction
+      // Start recovery
       result.sideA.members[0].position = { x: 3, y: 3 };
       manager.updateZoneControl([{ id: result.sideA.members[0].id, position: result.sideA.members[0].position! }]);
-      const startResult = manager.startExtraction(result.sideA.members[0].id);
-      
+      const startResult = manager.startRecovery(result.sideA.members[0].id);
+
       expect(startResult.success).toBe(true);
-      expect(manager.getExtractionProgress(result.sideA.members[0].id)).toBe(1);
+      expect(manager.getRecoveryProgress(result.sideA.members[0].id)).toBe(1);
 
       // Enemy contests zone
       result.sideB.members[0].position = { x: 3, y: 3 };
@@ -321,7 +321,7 @@ describe('Extraction Point Mission - Edge Cases', () => {
         { id: result.sideB.members[0].id, position: result.sideB.members[0].position! },
       ]);
 
-      const result2 = manager.continueExtraction(result.sideA.members[0].id);
+      const result2 = manager.continueRecovery(result.sideA.members[0].id);
 
       expect(result2.success).toBe(false);
       expect(result2.reason).toBe('Zone no longer controlled');

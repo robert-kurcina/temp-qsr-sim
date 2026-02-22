@@ -1,7 +1,7 @@
 {
   "$schema": "../../schemas/mission.schema.json",
   "id": "QAI_15",
-  "name": "Caches",
+  "name": "Recovery",
   "description": "Scattered vital caches contain valuable assets. Recover them before the opposition, but each claim triggers alert protocols that escalate the battlefield's danger.",
   "sides": { "min": 2, "max": 2 },
   "defaultGameSize": "MEDIUM",

@@ -1,17 +1,17 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from '../mission-definitions';
 
 /**
- * QAI Mission 12: Engagement
- * 
- * Control engagement zones to score victory points.
+ * QAI Mission 12: Convergence
+ *
+ * Control convergence zones to score victory points.
  * Zones are contested areas where models fight for control.
  * Control a zone by having the only active models in it.
  * First to control all zones OR most zones at game end wins.
  */
-export const EngagementMission: MissionDefinition = {
+export const ConvergenceMission: MissionDefinition = {
   id: 'QAI_12',
-  name: 'Engagement',
-  description: 'Control engagement zones to score victory points. Zones are contested areas where models fight for control. Control a zone by having the only active models in it.',
+  name: 'Convergence',
+  description: 'Control convergence zones to score victory points. Zones are contested areas where models fight for control. Control a zone by having the only active models in it.',
   minSides: 2,
   maxSides: 4,
   defaultGameSize: 'SMALL',
@@ -21,7 +21,7 @@ export const EngagementMission: MissionDefinition = {
       side: 'any',
       threshold: 0, // All zones (dynamic based on mission setup)
       instantWin: true,
-      description: 'Control all engagement zones',
+      description: 'Control all convergence zones',
     },
     {
       type: VictoryConditionType.MostPoints,
@@ -34,21 +34,21 @@ export const EngagementMission: MissionDefinition = {
       type: ScoringType.PerZoneControlled,
       timing: ScoringTiming.EndTurn,
       value: 2,
-      description: 'Score 2 VP for each engagement zone controlled at end of turn',
+      description: 'Score 2 VP for each convergence zone controlled at end of turn',
     },
     {
       type: ScoringType.FirstControl,
       timing: ScoringTiming.Immediate,
       value: 1,
       target: 'zone',
-      description: 'Score 1 VP for first control of each engagement zone',
+      description: 'Score 1 VP for first control of each convergence zone',
     },
   ],
   specialRules: [
     {
-      id: 'engagement_zones',
-      name: 'Engagement Zones',
-      description: 'The battlefield contains 2-4 engagement zones. Models in these zones contest control.',
+      id: 'convergence_zones',
+      name: 'Convergence Zones',
+      description: 'The battlefield contains 2-4 convergence zones. Models in these zones contest control.',
       effect: 'Zones are controlled by the side with the only active models inside',
     },
     {
@@ -98,15 +98,15 @@ export const EngagementMission: MissionDefinition = {
 };
 
 /**
- * Get the Engagement mission definition
+ * Get the Convergence mission definition
  */
-export function getEngagementMission(): MissionDefinition {
-  return EngagementMission;
+export function getConvergenceMission(): MissionDefinition {
+  return ConvergenceMission;
 }
 
 /**
- * Check if a mission is the Engagement mission
+ * Check if a mission is the Convergence mission
  */
-export function isEngagementMission(missionId: string): boolean {
+export function isConvergenceMission(missionId: string): boolean {
   return missionId === 'QAI_12';
 }
