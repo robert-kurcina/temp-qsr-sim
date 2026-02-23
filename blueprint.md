@@ -7,9 +7,10 @@ This project is a wargame simulator designed to run in Firebase Studio. The goal
 
 **Project Evolution:**
 - **Phase 1 (Complete):** Headless simulation engine with spatial awareness
-- **Phase 2 (Complete):** Mission system with 4 of 10 missions implemented
+- **Phase 2 (Complete):** Mission system with 10 of 10 missions implemented
 - **Phase 3 (Planned):** Web UI for local play
 - **Phase 4 (Planned):** Online multiplayer platform with authentication, social features, and cloud deployment
+- **Phase 4E (Planned):** Enterprise platform foundation (RBAC, audit logs, observability)
 
 ## 2. The Blueprint: Our Shared Source of Truth
 
@@ -392,6 +393,26 @@ Transform the headless simulator into a full-featured online gaming platform whe
 
 ---
 
+#### 12. Enterprise Platform Foundation (Phase 4E)
+**Token Budget: 25,000–40,000**
+
+*These enterprise enablers should be implemented BEFORE Phase 4C (social polish) for production readiness.*
+
+| Feature | Description | Tokens | Priority |
+|---------|-------------|--------|----------|
+| **RBAC System** | Roles, permissions, admin dashboard UI | 4,000–6,000 | P0 |
+| **Audit Logging** | Immutable log of security-relevant actions | 3,000–5,000 | P0 |
+| **Observability Stack** | Distributed tracing, SLOs, metrics dashboards | 5,000–8,000 | P0 |
+| **Feature Flags** | A/B testing, gradual rollout, kill switches | 2,000–3,000 | P1 |
+| **API Versioning** | Backward-compatible API evolution | 2,000–3,000 | P1 |
+| **Data Migration** | Schema evolution, backfills, versioning | 3,000–5,000 | P1 |
+| **Event Sourcing** | Game replay backbone, debugging, rollback | 4,000–6,000 | P2 |
+| **Scalability Plan** | Load testing, auto-scaling, performance budgets | 2,000–4,000 | P0 |
+
+**Rationale:** These features are critical for operating as a production SaaS platform with compliance requirements (SOC2, GDPR enforcement), >1,000 concurrent users, and rapid production debugging capability.
+
+---
+
 ### Implementation Priority Summary
 
 | Phase | Features | Total Tokens | Cumulative |
@@ -400,8 +421,9 @@ Transform the headless simulator into a full-featured online gaming platform whe
 | **4B** | Real-Time Play, Coordination | 23,000–34,000 | 46,000–69,000 |
 | **4C** | Social, Leaderboards, Chat | 25,000–39,000 | 71,000–108,000 |
 | **4D** | Cloud, Security | 18,000–27,000 | 89,000–135,000 |
+| **4E** | Enterprise Platform (RBAC, Audit, Observability) | 25,000–40,000 | 114,000–175,000 |
 
-**Total Estimated Token Budget: 89,000–135,000 tokens**
+**Total Estimated Token Budget: 114,000–175,000 tokens** (updated with Phase 4E)
 
 ---
 
@@ -447,7 +469,7 @@ Transform the headless simulator into a full-featured online gaming platform whe
 
 ## 13. Current Status
 
-### Completed (Phases 1-2)
+### Completed (Phases 1-5)
 - ✅ Spatial awareness system (model registry, LOS, engagement, cover)
 - ✅ Mission Side wiring (assemblies, positions, status)
 - ✅ Objective Markers system
@@ -456,12 +478,28 @@ Transform the headless simulator into a full-featured online gaming platform whe
 - ✅ Reinforcements system
 - ✅ Mission Event Hooks
 - ✅ 10 of 10 missions implemented (Elimination, Convergence, Assault, Dominion, Recovery, Escort, Triumvirate, Stealth, Defiance, Breach)
-- ✅ All 823 unit tests passing
+- ✅ **All 935 unit tests passing** (updated)
 - ✅ Mission/terminology renaming complete
-- ✅ Combat traits framework (`combat-traits.ts`) with 23 trait implementations
+- ✅ Combat traits framework (`combat-traits.ts`) with 43 trait implementations
+- ✅ **AI system complete** (Phases 1-5: CharacterAI, Tactical Patterns, GOAP, Strategic Layer, Mission Specialization)
+- ✅ **Pathfinding fixed** — AI now moves and charges correctly
+- ✅ **GameController consolidated** — `runMission()` fixed, dead code removed
+
+### Recommended Next Step
+
+**Phase 3A: Minimal Playable UI** — Validate core gameplay loop with local play before investing in multiplayer infrastructure.
+
+1. Set up Astro + React + Tailwind for frontend
+2. Create 2D SVG battlefield renderer
+3. Add model selection and basic action buttons
+4. Wire up existing headless engine to UI
+
+This gives a playable prototype quickly, which can then be extended with online features.
 
 ### In Progress
 - ✅ Combat traits integration — **100% complete**
+- ✅ GameController consolidation — **100% complete**
+- ✅ Pathfinding tests — **10 tests passing**
 
 ### Combat Traits Implementation Status
 
