@@ -23,7 +23,8 @@ import {
   setWeaponJammed,
   getMultipleAttackPenalty,
   recordWeaponUse,
-  isMultipleAttackExempt 
+  isMultipleAttackExempt,
+  getMultipleWeaponsBonus,
 } from '../traits/combat-traits';
 
 // --- Main Attack Result Interface ---
@@ -58,7 +59,14 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
 
     // Note: Defender hindrance doesn't apply to the REF roll for being hit.
 
-    // 2. Multiple Attack Penalty (-1m for same weapon consecutively)
+    // 2. Multiple Weapons Bonus (+1m per additional weapon of same classification)
+    // Weapon index 0 = primary weapon (simplified)
+    const multipleWeaponsBonus = getMultipleWeaponsBonus(attacker, 0, false);
+    if (multipleWeaponsBonus > 0) {
+        attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + multipleWeaponsBonus;
+    }
+
+    // 3. Multiple Attack Penalty (-1m for consecutive same weapon use)
     // Natural weapons and Natural Weapon trait are exempt
     // This is handled externally and passed via context.multipleAttackPenalty
 
@@ -66,7 +74,7 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + context.multipleAttackPenalty;
     }
 
-    // 3. [Burst] trait bonus (+1b to Hit Test) - handled via context.burstBonusBase
+    // 4. [Burst] trait bonus (+1b to Hit Test) - handled via context.burstBonusBase
     if (context.burstBonusBase) {
         attackerBonus[DiceType.Base] = (attackerBonus[DiceType.Base] || 0) + context.burstBonusBase;
     }

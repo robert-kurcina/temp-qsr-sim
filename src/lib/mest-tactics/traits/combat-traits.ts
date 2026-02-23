@@ -631,6 +631,161 @@ export function isMultipleAttackExempt(character: Character, weaponIndex: number
 }
 
 // ============================================================================
+// MULTIPLE WEAPONS BONUS
+// ============================================================================
+
+/**
+ * Multiple Weapons (△)
+ * QSR: Characters benefit from Multiple Weapons rule if:
+ * - Model is sculpted with multiple weapons
+ * - Weapons are purchased using BP
+ * - All weapons are same classification (all Melee or all Ranged)
+ * 
+ * Benefit: +1m per additional weapon of same classification
+ * Penalty: -1m for consecutive same weapon use (if others in hand)
+ */
+
+export type WeaponClassification = 'Melee' | 'Ranged' | 'Natural';
+
+/**
+ * Get weapon classification for Multiple Weapons rule
+ * - Melee weapons with Throwable count as Ranged
+ * - Ranged weapons with [Awkward] count as Melee
+ * - Natural weapons are their own classification
+ */
+export function getWeaponClassification(
+  character: Character,
+  weaponIndex: number
+): WeaponClassification {
+  // Natural weapons
+  if (isNaturalWeapon(character, weaponIndex)) {
+    return 'Natural';
+  }
+  
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  if (weaponIndex >= equipment.length) {
+    return 'Melee'; // Default
+  }
+  
+  const weapon = equipment[weaponIndex];
+  const classification = (weapon.classification || weapon.class || '').toLowerCase();
+  const traits = weapon.traits || [];
+  
+  // Check for [Awkward] - Ranged weapons count as Melee
+  if (traits.some(t => t.includes('[Awkward]'))) {
+    return 'Melee';
+  }
+  
+  // Check for Throwable - Melee weapons count as Ranged
+  if (traits.some(t => t.includes('Throwable'))) {
+    return 'Ranged';
+  }
+  
+  // Standard classification
+  if (classification.includes('bow') || 
+      classification.includes('thrown') || 
+      classification.includes('firearm') ||
+      classification.includes('range') ||
+      classification.includes('support')) {
+    return 'Ranged';
+  }
+  
+  return 'Melee';
+}
+
+/**
+ * Get all weapons of a specific classification "in hand"
+ */
+export function getWeaponsByClassification(
+  character: Character,
+  classification: WeaponClassification
+): number[] {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  const weaponsInHand: number[] = [];
+  
+  for (let i = 0; i < equipment.length; i++) {
+    const weapon = equipment[i];
+    
+    // Skip improvised weapons
+    if (weapon.classification?.toLowerCase().includes('improvised')) {
+      continue;
+    }
+    
+    const weaponClass = getWeaponClassification(character, i);
+    
+    if (weaponClass === classification) {
+      weaponsInHand.push(i);
+    }
+  }
+  
+  return weaponsInHand;
+}
+
+/**
+ * Get Multiple Weapons bonus
+ * QSR: +1m per additional weapon of same classification when targeting same model
+ */
+export function getMultipleWeaponsBonus(
+  character: Character,
+  weaponIndex: number,
+  isCloseCombat: boolean
+): number {
+  // Determine classification for this attack
+  const targetClassification = isCloseCombat ? 'Melee' : 'Ranged';
+  const weaponClassification = getWeaponClassification(character, weaponIndex);
+  
+  // Natural weapons use Natural classification
+  if (weaponClassification === 'Natural') {
+    const naturalWeapons = getWeaponsByClassification(character, 'Natural');
+    return Math.max(0, naturalWeapons.length - 1);
+  }
+  
+  // Check if weapon matches attack type
+  if (isCloseCombat) {
+    const meleeWeapons = getWeaponsByClassification(character, 'Melee');
+    return Math.max(0, meleeWeapons.length - 1);
+  } else {
+    const rangedWeapons = getWeaponsByClassification(character, 'Ranged');
+    return Math.max(0, rangedWeapons.length - 1);
+  }
+}
+
+/**
+ * Check if character qualifies for Multiple Weapons benefit
+ * QSR: Must have multiple weapons of same classification
+ */
+export function qualifiesForMultipleWeapons(
+  character: Character,
+  isCloseCombat: boolean
+): boolean {
+  if (isCloseCombat) {
+    const meleeWeapons = getWeaponsByClassification(character, 'Melee');
+    const naturalWeapons = getWeaponsByClassification(character, 'Natural');
+    return meleeWeapons.length > 1 || naturalWeapons.length > 1;
+  } else {
+    const rangedWeapons = getWeaponsByClassification(character, 'Ranged');
+    return rangedWeapons.length > 1;
+  }
+}
+
+/**
+ * Check if character has mixed weapon types (no Multiple Weapons bonus)
+ */
+export function hasMixedWeaponTypes(character: Character): boolean {
+  const meleeWeapons = getWeaponsByClassification(character, 'Melee');
+  const rangedWeapons = getWeaponsByClassification(character, 'Ranged');
+  const naturalWeapons = getWeaponsByClassification(character, 'Natural');
+  
+  const nonEmptyClassifications = [
+    meleeWeapons.length > 0,
+    rangedWeapons.length > 0,
+    naturalWeapons.length > 0
+  ].filter(Boolean).length;
+  
+  return nonEmptyClassifications > 1;
+}
+
+// ============================================================================
 // SITUATIONAL AWARENESS
 // ============================================================================
 

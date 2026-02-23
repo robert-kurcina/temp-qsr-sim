@@ -21,6 +21,7 @@ Below is a list of the rule modules and their current implementation status.
 | 3 | [Items](./rules-items)                             | `DONE`   | Rules for weapons, armor, and equipment.                                     |
 | 3 | [Movement & Terrain](./rules-movement-and-terrain)         | `DONE`   | How characters move and interact with the battlefield environment.           |
 | 3 | [Situational Modifiers](./rules-situational-modifiers)       | `DONE`   | A reference for contextual modifiers to tests.                               |
+| 3 | [Multiple Weapons](./rules-multiple)                 | `DONE`   | Rules for wielding multiple weapons, bonuses, and penalties.                 |
 | 4 | [Actions](./rules-actions)                         | `DONE`   | The list of actions characters can perform on their turn.                    |
 | 5 | [Combat](./rules-combat)                           | `DONE`   | Detailed rules for resolving close-quarters and ranged combat.               |
 | 6 | [Damage & Morale](./rules-damage-and-morale)             | `DONE`   | Rules for taking damage, injuries, and morale checks.                        |

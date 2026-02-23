@@ -22,6 +22,8 @@ import {
   getHaftedPenalty,
   hasBash,
   checkBashCascadeBonus,
+  getMultipleWeaponsBonus,
+  getMultipleAttackPenalty,
 } from '../traits/combat-traits';
 import { Position } from '../battlefield/Position';
 
@@ -60,7 +62,20 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
     const defenderHindrance = calculateHindrancePenalty({ woundTokens: defender.state.wounds, fearTokens: defender.state.fearTokens, delayTokens: defender.state.delayTokens });
     if (defenderHindrance > 0) defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + defenderHindrance;
 
-    // 2. Contextual Modifiers
+    // 2. Multiple Weapons Bonus (+1m per additional weapon of same classification)
+    // Weapon index 0 = primary weapon (simplified)
+    const multipleWeaponsBonus = getMultipleWeaponsBonus(attacker, 0, true);
+    if (multipleWeaponsBonus > 0) {
+        attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + multipleWeaponsBonus;
+    }
+
+    // 3. Multiple Attack Penalty (-1m for consecutive same weapon use)
+    const multipleAttackResult = getMultipleAttackPenalty(attacker, 0);
+    if (multipleAttackResult.penalty > 0) {
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + multipleAttackResult.penalty;
+    }
+
+    // 4. Contextual Modifiers
     if (context.isDefending) defenderBonus[DiceType.Base] = (defenderBonus[DiceType.Base] || 0) + 1;
     
     // Charge bonus (hit test bonus, damage bonus handled in resolveDamage)
