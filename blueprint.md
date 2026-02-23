@@ -1133,9 +1133,20 @@ Hybrid system combining:
   - 12 unit tests passing
   - **Token cost:** ~5,000 tokens
   - **Time spent:** ~3 hours
-- ⏳ Phase 5: Mission Specialization
-  - Mission-specific AI behaviors (Elimination, Convergence, Dominion, etc.)
-  - Objective prioritization per mission type
+- ✅ Phase 5: Mission Specialization — COMPLETE (Core Missions)
+  - MissionAI base class with mission-specific overrides
+  - MissionAIRegistry for mission AI lookup
+  - Implemented mission AIs:
+    - Elimination (QAI_1): Baseline, focus fire on wounded
+    - Convergence (QAI_12): Zone control prioritization
+    - Dominion (QAI_14): Zone defense and capture
+    - Recovery (QAI_15): VIP extraction, Guard roles
+    - Escort (QAI_16): VIP protection/assassination roles
+  - Mission-specific character roles (VIP, Guard, IC, Assassin)
+  - Strategic priority overrides per mission type
+  - 12 unit tests passing
+  - **Token cost:** ~4,000 tokens
+  - **Time spent:** ~2 hours
 - ⏳ Phase 6: Advanced Features (optional)
   - MCTS for critical decisions (VIP protection, final-turn victory)
   - Learning from player behavior
