@@ -1,33 +1,118 @@
 ---
-title: Rules
-description: The core rules for MEST Tactics.
+title: Rules Index
+description: Complete index of all MEST Tactics rule modules.
 ---
 
-This document provides a comprehensive overview of the MEST Tactics game system. The rules are broken down into several modules, each covering a specific aspect of gameplay.
+# MEST Tactics Rules Index
 
-## Core Rule Modules
+This document provides links to all rule modules for the MEST Tactics game system.
 
-Below is a list of the rule modules and their current implementation status.
+## Core Rules
 
-| Priority | Rule Module                        | Status | Description                                                                  |
-| :--- | :--------------------------------- | :----- | :--------------------------------------------------------------------------- |
-| 0 | [Introduction](./rules-introduction)                     | `DONE`   | An overview of the game and its core concepts.                               |
-| 1 | [General Terms](./rules-general-terms)                   | `DONE`   | A glossary of common game terminology.                                       |
-| 2 | [Characters & Attributes](./rules-characters-and-attributes) | `DONE`   | Details on character creation, attributes, and their functions.              |
-| 2 | [Tests & Checks](./rules-tests-and-checks)                 | `DONE`   | The core dice-rolling and resolution mechanics.                              |
-| 2 | [Traits](./rules-traits)                           | `DONE`   | Explanation of character and item traits.                                    |
-| 2 | [Data Concepts](./rules-archetypes-and-profiles)      | `DONE`   | The core data concepts for Archetypes, Profiles, and Characters.             |
-| 2 | [Initiative](./rules-initiative)                     | `DONE`   | Initiative Tests, Initiative Points, and activation order.                   |
-| 2 | [AI System](./rules-ai)                            | `DONE`   | Artificial Intelligence system for autonomous model control.                 |
-| 3 | [Items](./rules-items)                             | `DONE`   | Rules for weapons, armor, and equipment.                                     |
-| 3 | [Movement & Terrain](./rules-movement-and-terrain)         | `DONE`   | How characters move and interact with the battlefield environment.           |
-| 3 | [Situational Modifiers](./rules-situational-modifiers)       | `DONE`   | A reference for contextual modifiers to tests.                               |
-| 3 | [Multiple Weapons](./rules-multiple)                 | `DONE`   | Rules for wielding multiple weapons, bonuses, and penalties.                 |
-| 4 | [Actions](./rules-actions)                         | `DONE`   | The list of actions characters can perform on their turn.                    |
-| 5 | [Combat](./rules-combat)                           | `DONE`   | Detailed rules for resolving close-quarters and ranged combat.               |
-| 6 | [Damage & Morale](./rules-damage-and-morale)             | `DONE`   | Rules for taking damage, injuries, and morale checks.                        |
-| 7 | [Advanced Rules](./rules-advanced)                   | `DONE`   | Optional, more complex rules like reactions for experienced players.         |
-| 8 | [Missions: QAI Pack](./rules-missions-qai)            | `DONE`   | QAI mission set with scenario rules and victory conditions.                  |
-| 8 | [Mission Keys](./rules-mission-keys)                 | `DONE`   | Mission elements, objective markers, and keys to victory.                    |
-| 8 | [Objective Markers](./rules-objective-markers)        | `DONE`   | Objective marker types, actions, and scoring concerns.                       |
-| 9 | [Reference](./rules-reference)                       | `DONE`   | Quick-reference sheets, tables, and summaries.                               |
+| Rule Module | Description |
+|-------------|-------------|
+| [Introduction](./rules-introduction) | Overview of the game and its core concepts |
+| [General Terms](./rules-general-terms) | Glossary of common game terminology |
+| [Characters & Attributes](./rules-characters-and-attributes) | Character creation, attributes, and functions |
+| [Tests & Checks](./rules-tests-and-checks) | Core dice-rolling and resolution mechanics |
+| [Traits](./rules-traits) | Explanation of character and item traits |
+| [Traits List](./rules-traits-list) | Complete list of all traits and effects |
+| [Assemblies & Setup](./rules-assemblies-and-setup) | Assembly building and game setup |
+| [Initiative](./rules-initiative) | Initiative Tests, Points, and activation order |
+| [AI System](./rules-ai) | AI system for autonomous model control |
+
+## Equipment & Combat
+
+| Rule Module | Description |
+|-------------|-------------|
+| [Items](./rules-items) | Weapons, armor, and equipment rules |
+| [Multiple Weapons](./rules-multiple) | Wielding multiple weapons, bonuses, penalties |
+| [Combat](./rules-combat) | Close-quarters and ranged combat resolution |
+| [Damage & Morale](./rules-damage-and-morale) | Damage, injuries, and morale checks |
+| [Status](./rules-status) | Status effects, tokens, and conditions |
+
+## Movement & Terrain
+
+| Rule Module | Description |
+|-------------|-------------|
+| [Movement & Terrain](./rules-movement-and-terrain) | Movement and terrain interaction |
+| [Terrain](./rules-terrain) | Terrain types, features, and effects |
+| [Size & Base Diameter](./rules-size-base-diameter) | Model sizes and base standards |
+| [Situational Modifiers](./rules-situational-modifiers) | Contextual modifiers reference |
+
+## Actions & Advanced Rules
+
+| Rule Module | Description |
+|-------------|-------------|
+| [Actions](./rules-actions) | Character actions on their turn |
+| [Advanced Rules](./rules-advanced) | Optional complex rules (reactions, etc.) |
+| [Friendly Fire & LOF](./rules-friendly-fire-los) | Friendly fire and line of fire |
+| [Scatter Diagram](./rules-scatter) | Scatter for indirect attacks |
+| [Indirect Combat](./rules-indirect) | Indirect range combat rules |
+
+## Missions & Objectives
+
+| Rule Module | Description |
+|-------------|-------------|
+| [Missions](./rules-missions) | Mission system overview |
+| [Missions: QAI Pack](./rules-missions-qai) | QAI mission scenarios |
+| [Mission Keys](./rules-mission-keys) | Objective markers and victory keys |
+| [Objective Markers](./rules-objective-markers) | Marker types, actions, scoring |
+
+## Reference & Setup
+
+| Rule Module | Description |
+|-------------|-------------|
+| [Portraits](./rules-portraits) | Portrait system and callsigns |
+| [Materials](./rules-materials) | Required materials for play |
+| [Reference](./rules-reference) | Quick-reference sheets and tables |
+
+---
+
+## Quick Reference by Topic
+
+### Getting Started
+1. [Introduction](./rules-introduction)
+2. [Materials](./rules-materials)
+3. [General Terms](./rules-general-terms)
+4. [Assemblies & Setup](./rules-assemblies-and-setup)
+
+### Character Creation
+1. [Characters & Attributes](./rules-characters-and-attributes)
+2. [Traits](./rules-traits)
+3. [Traits List](./rules-traits-list)
+4. [Items](./rules-items)
+5. [Portraits](./rules-portraits)
+
+### Playing the Game
+1. [Initiative](./rules-initiative)
+2. [Actions](./rules-actions)
+3. [Tests & Checks](./rules-tests-and-checks)
+4. [Combat](./rules-combat)
+5. [Damage & Morale](./rules-damage-and-morale)
+
+### Movement & Positioning
+1. [Movement & Terrain](./rules-movement-and-terrain)
+2. [Terrain](./rules-terrain)
+3. [Size & Base Diameter](./rules-size-base-diameter)
+4. [Situational Modifiers](./rules-situational-modifiers)
+
+### Advanced Play
+1. [Advanced Rules](./rules-advanced)
+2. [Friendly Fire & LOF](./rules-friendly-fire-los)
+3. [Scatter Diagram](./rules-scatter)
+4. [Indirect Combat](./rules-indirect)
+5. [Multiple Weapons](./rules-multiple)
+
+### Missions
+1. [Missions](./rules-missions)
+2. [Missions: QAI Pack](./rules-missions-qai)
+3. [Mission Keys](./rules-mission-keys)
+4. [Objective Markers](./rules-objective-markers)
+
+### AI & Automation
+1. [AI System](./rules-ai)
+
+### Reference
+1. [Status](./rules-status)
+2. [Reference](./rules-reference)
