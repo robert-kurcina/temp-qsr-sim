@@ -95,7 +95,38 @@ function _calculateModifiers(
 }
 
 /**
+ * Check if character has higher Physicality than all Engaged Opposing models
+ * QSR Line 965: Physicality = higher of STR or SIZ
+ */
+export function hasPhysicalityAdvantage(
+    character: Character,
+    engagedOpponents: Character[]
+): boolean {
+    const characterPhysicality = Math.max(
+        character.finalAttributes.str ?? character.attributes.str ?? 0,
+        character.finalAttributes.siz ?? character.attributes.siz ?? 0
+    );
+    
+    for (const opponent of engagedOpponents) {
+        const opponentPhysicality = Math.max(
+            opponent.finalAttributes.str ?? opponent.attributes.str ?? 0,
+            opponent.finalAttributes.siz ?? opponent.attributes.siz ?? 0
+        );
+        if (opponentPhysicality >= characterPhysicality) {
+            return false;
+        }
+    }
+    
+    return engagedOpponents.length > 0;
+}
+
+/**
  * Orchestrates a complete disengage action.
+ * 
+ * QSR Rules:
+ * - Costs 1 AP (or 0 AP if higher Physicality than all Engaged Opposing models)
+ * - REF vs CCA Opposed Test
+ * - Automatic pass if Outnumbered or no Ordered Opposing targets
  */
 export function makeDisengageAction(
     disengager: Character,
@@ -105,6 +136,33 @@ export function makeDisengageAction(
     p1Rolls: number[] | null = null,
     p2Rolls: number[] | null = null
 ): DisengageResult {
+
+    // QSR Line 965: If Active model has higher Physicality than any Engaged Opposing models,
+    // first Disengage this Initiative costs 0 AP (handled in activation)
+    // Physicality = higher of STR or SIZ
+    const disengagerPhysicality = Math.max(
+        disengager.finalAttributes.str ?? disengager.attributes.str ?? 0,
+        disengager.finalAttributes.siz ?? disengager.attributes.siz ?? 0
+    );
+    const defenderPhysicality = Math.max(
+        defender.finalAttributes.str ?? defender.attributes.str ?? 0,
+        defender.finalAttributes.siz ?? defender.attributes.siz ?? 0
+    );
+    
+    // QSR Line 960: Automatic pass if Outnumbered (handled by context.outnumberAdvantage)
+    // QSR Line 962: Automatic pass if no Ordered Opposing targets
+    if (!defender.state.isOrdered) {
+        const testResult: ResolveTestResult = {
+            pass: true,
+            score: 99,
+            cascades: 99,
+            p1FinalScore: 99,
+            p2FinalScore: 0,
+            p1Result: { score: 99, carryOverDice: {}},
+            p2Result: { score: 0, carryOverDice: {}},
+        };
+        return { pass: true, score: 99, testResult };
+    }
 
     if (context.isAutoPass) {
         const testResult: ResolveTestResult = { 

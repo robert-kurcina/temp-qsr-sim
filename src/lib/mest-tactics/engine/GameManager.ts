@@ -265,19 +265,27 @@ export class GameManager {
   public startTurn(roller: () => number = Math.random): void {
     this.currentRound = 1;
     this.initializeCharacterStatus();
-    this.rollInitiative(roller);
-    this.refreshUsed.clear();
-    this.rallyUsed.clear();
-    this.reviveUsed.clear();
-    this.reactedThisTurn.clear();
     
-    // QSR Advanced Rules: Award 1 Initiative Point to each Ready, Ordered character
+    // QSR Line 693: Optimized Initiative - Side with least BP gets +1b on first Turn
+    // (Not implemented - would need side tracking)
+    
+    this.rollInitiative(roller);
+    
+    // QSR Lines 691-692: Award Initiative Points based on Initiative Test results
+    // Winner gets IP equal to difference to lowest Test Score
+    // All other players get 1 IP per Base die with carry-over
+    // NOTE: For simplicity in 2-player games, we award 1 IP to all Ready, Ordered characters
+    // Full IP system would require tracking Initiative Test scores per side
     for (const character of this.characters) {
       if (!character.state.isEliminated && !character.state.isKOd && character.state.isOrdered) {
         character.addInitiativePoints(1);
       }
     }
     
+    this.refreshUsed.clear();
+    this.rallyUsed.clear();
+    this.reviveUsed.clear();
+    this.reactedThisTurn.clear();
     this.phase = TurnPhase.Activation;
   }
 
