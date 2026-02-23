@@ -1089,7 +1089,7 @@ Hybrid system combining:
   - 4 unit tests passing
 - ✅ Phase 2B: GOAP Integration — COMPLETE (Refinement & Validation Done)
   - Goal definition system (7 standard goals: Survive, Eliminate, Protect, Disengage, Rally, Revive, Reach)
-  - QSR-compliant action preconditions/effects (11 actions: Move, Close Combat, Ranged Combat, Disengage, Rally, Revive, Wait, Hold, Concentrate, Hide, Detect)
+  - QSR-compliant action preconditions/effects (11 actions mapped to QSR Individual Actions sections)
   - Backward-chaining planner with configurable depth (default 5)
   - Runtime action validator (validates actions against game state before execution)
   - Plan execution logging for debugging
@@ -1097,10 +1097,24 @@ Hybrid system combining:
   - 7 unit tests passing
   - **Token cost:** ~5,000 tokens (refinement + validation)
   - **Time spent:** ~8 hours
-- ⏳ Phase 3: Strategic Layer (SideAI, AssemblyAI)
-  - Mission evaluation and victory tracking
-  - Resource allocation across assemblies
-  - Squad coordination and target assignment
+- ✅ Phase 3: Strategic Layer (SideAI, AssemblyAI) — COMPLETE
+  - SideAI: Mission-level coordination for entire side
+    - Strategic posture assessment (Aggressive, Balanced, Defensive, Stealth)
+    - Victory condition evaluation with probability estimation
+    - Priority target identification and assignment
+    - Strategic objective generation (eliminate, protect, regroup, etc.)
+    - Resource allocation across assemblies
+    - Force ratio and threat level calculation
+  - AssemblyAI: Squad-level tactical coordination
+    - Character role assignment (Vanguard, Support, Flanker, Scout, Protector)
+    - Focus fire coordination with target assignment
+    - Formation state tracking (Line, Cluster, Flank, Column)
+    - Cohesion monitoring
+    - Flanking opportunity identification
+  - Integration: SideAI → AssemblyAI → CharacterAI decision hierarchy
+  - 18 unit tests passing
+  - **Token cost:** ~6,000 tokens
+  - **Time spent:** ~4 hours
 - ⏳ Phase 4: Action Integration
   - Wire AI decisions to GameManager execution
   - Validate planned actions execute correctly

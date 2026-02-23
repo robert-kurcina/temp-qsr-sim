@@ -446,11 +446,24 @@ export class GOAPPlanner {
 
 /**
  * Create GOAP actions with QSR-compliant preconditions and effects
+ * 
+ * Action definitions based on MEST Tactics Quick Start Rules (QSR):
+ * - Move: Individual Actions → Simple Actions → Move
+ * - Close Combat: Individual Actions → Simple Actions → Close Combat Attack
+ * - Ranged Combat: Individual Actions → Simple Actions → Range Combat Attack
+ * - Disengage: Individual Actions → Simple Actions → Disengage
+ * - Rally: Individual Actions → Special Actions → Rally
+ * - Revive: Individual Actions → Special Actions → Revive
+ * - Wait: Individual Actions → Complex Actions → Wait
+ * - Hold: Individual Actions → Simple Actions (default when no AP spent)
+ * - Concentrate: Individual Actions → Special Actions → Concentrate
+ * - Hide: Individual Actions → Complex Actions → Hide
+ * - Detect: Individual Actions → Complex Actions → Detect
  */
 export function createStandardActions(): GOAPAction[] {
   return [
     /**
-     * Move Action (QSR p.1110)
+     * Move Action
      * - Costs 1 AP (or 2 AP for Combined action)
      * - Limited by MOV + terrain modifiers
      * - Triggers Opportunity Attacks when breaking engagement
@@ -473,11 +486,12 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Close Combat Attack (QSR p.1111)
+     * Close Combat Attack
      * - Requires engagement (base-to-base contact)
      * - Costs 1 AP
      * - Opposed CCA vs CCA Hit Test
      * - Followed by Damage Test if hit succeeds
+     * - May cause Delay token if not first attack this Initiative
      */
     {
       name: 'Close Combat',
@@ -492,7 +506,6 @@ export function createStandardActions(): GOAPAction[] {
         { property: 'apRemaining', value: 1, effectType: 'remove' },
         { property: 'wounds.target', value: 1, effectType: 'add' },
         { property: 'hasAttacked', value: true, effectType: 'set' },
-        // May cause Delay token if not first attack (QSR p.1111)
         { property: 'delay.self', value: 1, effectType: 'add' },
       ],
       cost: 1,
@@ -501,7 +514,7 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Ranged Combat Attack (QSR p.1112)
+     * Ranged Combat Attack
      * - Requires LOS to target
      * - Requires ranged weapon with OR
      * - Costs 1 AP
@@ -530,11 +543,11 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Disengage Action (QSR p.1111)
+     * Disengage Action
      * - Required when engaged and wanting to move away
-     * - Opposed REF vs CCA Test (disengager uses REF)
+     * - Opposed REF vs CCA Test (disengager uses REF instead of CCA)
      * - Costs 1 AP
-     * - On success: move MOV × 1" away
+     * - On success: move MOV × 1" away from opponent
      */
     {
       name: 'Disengage',
@@ -556,7 +569,7 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Rally Action (QSR p.1114, p.1136)
+     * Rally Action
      * - Unopposed POW Test
      * - Removes 1 Fear token per cascade
      * - Can target self or ally in Cohesion
@@ -582,11 +595,11 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Revive Action (QSR p.1114)
+     * Revive Action
      * - Unopposed FOR Test
      * - Can target self or ally in base-contact
      * - On success: spend cascades to remove Delay (1 each) and Wounds (2 each)
-     * - KO'd models: right them, assign Delay tokens = SIZ (min 2)
+     * - KO'd models: right them, assign Delay tokens = SIZ (min 2), replace rest with Wounds
      * - Costs 1 AP
      */
     {
@@ -611,10 +624,10 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Wait Action (QSR p.1113)
+     * Wait Action
      * - Costs 2 AP (or 1 AP to maintain if already waiting)
-     * - Allows Reacts even when Done
-     * - Doubles Visibility OR
+     * - Allows Reacts even when Done status
+     * - Doubles Visibility OR for Detect
      * - Reveals Hidden models in LOS not in Cover
      */
     {
@@ -636,10 +649,10 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Hold Action (QSR p.1113)
+     * Hold Action
      * - Zero AP cost
      * - Character remains in position
-     * - Used when no better action available
+     * - Used when no better action available or AP exhausted
      */
     {
       name: 'Hold',
@@ -656,8 +669,8 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Concentrate Action (QSR p.1113)
-     * - Costs 1 AP (combined with another action)
+     * Concentrate Action
+     * - Costs 1 AP (must combine with another action)
      * - Provides +1w to specified Test
      * - If for Hit Test: ignore Max ORM, double all ORs
      */
@@ -679,11 +692,11 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Hide Action (QSR p.1113)
+     * Hide Action
      * - Costs 1 AP (0 AP if not in LOS)
      * - Requires Cover and LOS
      * - Marks model as Hidden
-     * - Hidden: Visibility/Cohesion halved, terrain degraded
+     * - Hidden: Visibility/Cohesion halved, terrain degraded except when using Agility
      */
     {
       name: 'Hide',
@@ -705,11 +718,11 @@ export function createStandardActions(): GOAPAction[] {
     },
 
     /**
-     * Detect Action (QSR p.1113)
+     * Detect Action
      * - First Detect costs 0 AP, subsequent cost 1 AP
      * - Opposed REF Test vs Hidden target
      * - OR = Visibility
-     * - On success: removes Hidden status
+     * - On success: removes Hidden status from target
      */
     {
       name: 'Detect',
