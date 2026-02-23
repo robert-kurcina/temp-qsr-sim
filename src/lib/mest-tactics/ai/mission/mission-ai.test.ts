@@ -17,6 +17,11 @@ import {
   DominionMissionAI,
   RecoveryMissionAI,
   EscortMissionAI,
+  AssaultMissionAI,
+  TriumvirateMissionAI,
+  BreachMissionAI,
+  DefianceMissionAI,
+  StealthMissionAI,
   createMissionAI,
 } from './MissionAIs';
 
@@ -84,15 +89,16 @@ function makeTestSide(
 
 function makeMissionContext(
   side: any,
-  enemySide: any,
+  enemySides: any[] | any,
   battlefield: Battlefield,
   missionState: Record<string, unknown> = {}
 ): MissionAIContext {
+  const enemyArray = Array.isArray(enemySides) ? enemySides : [enemySides];
   return {
     currentTurn: 1,
     currentRound: 1,
     side,
-    enemySides: [enemySide],
+    enemySides: enemyArray,
     battlefield,
     missionState,
   };
@@ -111,6 +117,13 @@ describe('MissionAI Factory', () => {
     expect(ai).toBeDefined();
     expect(ai?.missionId).toBe('QAI_12');
     expect(ai?.missionName).toBe('Convergence');
+  });
+
+  it('should create AssaultMissionAI', () => {
+    const ai = createMissionAI('QAI_13');
+    expect(ai).toBeDefined();
+    expect(ai?.missionId).toBe('QAI_13');
+    expect(ai?.missionName).toBe('Assault');
   });
 
   it('should create DominionMissionAI', () => {
@@ -132,6 +145,34 @@ describe('MissionAI Factory', () => {
     expect(ai).toBeDefined();
     expect(ai?.missionId).toBe('QAI_16');
     expect(ai?.missionName).toBe('Escort');
+  });
+
+  it('should create TriumvirateMissionAI', () => {
+    const ai = createMissionAI('QAI_17');
+    expect(ai).toBeDefined();
+    expect(ai?.missionId).toBe('QAI_17');
+    expect(ai?.missionName).toBe('Triumvirate');
+  });
+
+  it('should create StealthMissionAI', () => {
+    const ai = createMissionAI('QAI_18');
+    expect(ai).toBeDefined();
+    expect(ai?.missionId).toBe('QAI_18');
+    expect(ai?.missionName).toBe('Stealth');
+  });
+
+  it('should create DefianceMissionAI', () => {
+    const ai = createMissionAI('QAI_19');
+    expect(ai).toBeDefined();
+    expect(ai?.missionId).toBe('QAI_19');
+    expect(ai?.missionName).toBe('Defiance');
+  });
+
+  it('should create BreachMissionAI', () => {
+    const ai = createMissionAI('QAI_20');
+    expect(ai).toBeDefined();
+    expect(ai?.missionId).toBe('QAI_20');
+    expect(ai?.missionName).toBe('Breach');
   });
 
   it('should return undefined for unknown mission', () => {
@@ -241,5 +282,137 @@ describe('EscortMissionAI', () => {
     // Attacker side characters should be Assassins
     const attackerRole = ai.getCharacterRole(attackerResult.characters[0], context);
     expect(attackerRole).toBe('Assassin');
+  });
+});
+
+describe('AssaultMissionAI', () => {
+  it('should move to assault marker', () => {
+    const battlefield = new Battlefield(24, 24);
+    const sideAResult = makeTestSide('Alpha', 3, battlefield, 2);
+    const sideBResult = makeTestSide('Bravo', 3, battlefield, 18);
+    
+    const markers = [
+      { id: 'm1', position: { x: 12, y: 12 }, assaulted: false },
+    ];
+    
+    const context = makeMissionContext(sideAResult.side, sideBResult.side, battlefield, { markers });
+    const ai = new AssaultMissionAI();
+    
+    const decision = ai.getDecision(sideAResult.characters[0], context);
+    expect(decision).toBeDefined();
+    expect(decision?.override?.type).toBe('move');
+  });
+});
+
+describe('TriumvirateMissionAI', () => {
+  it('should prioritize completing triad', () => {
+    const battlefield = new Battlefield(24, 24);
+    const sideAResult = makeTestSide('Alpha', 3, battlefield, 2);
+    const sideBResult = makeTestSide('Bravo', 3, battlefield, 18);
+    
+    const zones = [
+      { id: 'z1', center: { x: 8, y: 12 }, controlledBy: sideAResult.side.id },
+      { id: 'z2', center: { x: 16, y: 12 }, controlledBy: sideAResult.side.id },
+      { id: 'z3', center: { x: 12, y: 6 }, controlledBy: undefined },
+    ];
+    
+    const context = makeMissionContext(sideAResult.side, sideBResult.side, battlefield, { zones });
+    const ai = new TriumvirateMissionAI();
+    
+    const decision = ai.getDecision(sideAResult.characters[0], context);
+    expect(decision).toBeDefined();
+    expect(decision?.context).toContain('triad');
+  });
+
+  it('should get strategic priorities for triad', () => {
+    const battlefield = new Battlefield(24, 24);
+    const sideAResult = makeTestSide('Alpha', 3, battlefield, 2);
+    const sideBResult = makeTestSide('Bravo', 3, battlefield, 18);
+    
+    const zones = [
+      { id: 'z1', center: { x: 8, y: 12 }, controlledBy: sideAResult.side.id },
+      { id: 'z2', center: { x: 16, y: 12 }, controlledBy: sideAResult.side.id },
+      { id: 'z3', center: { x: 12, y: 6 }, controlledBy: undefined },
+    ];
+    
+    const context = makeMissionContext(sideAResult.side, sideBResult.side, battlefield, { zones });
+    const ai = new TriumvirateMissionAI();
+    
+    const priorities = ai.getStrategicPriorities(context);
+    expect(priorities.objectives).toContain('complete_triad');
+  });
+});
+
+describe('BreachMissionAI', () => {
+  it('should position for switch turn', () => {
+    const battlefield = new Battlefield(24, 24);
+    const sideAResult = makeTestSide('Alpha', 3, battlefield, 2);
+    const sideBResult = makeTestSide('Bravo', 3, battlefield, 18);
+    
+    const markers = [
+      { id: 'm1', position: { x: 12, y: 12 }, controlledBy: sideBResult.side.id },
+    ];
+    
+    const context = makeMissionContext(sideAResult.side, sideBResult.side, battlefield, { 
+      markers, 
+      switchTurns: [4, 8] 
+    });
+    context.currentTurn = 3; // Turn before switch
+    
+    const ai = new BreachMissionAI();
+    
+    const decision = ai.getDecision(sideAResult.characters[0], context);
+    expect(decision).toBeDefined();
+    expect(decision?.context).toContain('switch');
+  });
+});
+
+describe('DefianceMissionAI', () => {
+  it('should assign correct roles', () => {
+    const battlefield = new Battlefield(24, 24);
+    const defenderResult = makeTestSide('Defender', 3, battlefield, 12, 0);
+    const attackerResult = makeTestSide('Attacker', 3, battlefield, 2);
+    
+    // Test from defender perspective
+    const defenderContext = makeMissionContext(defenderResult.side, [attackerResult.side], battlefield);
+    const ai = new DefianceMissionAI();
+    
+    // First character (index 0) is VIP for defender
+    const vipRole = ai.getCharacterRole(defenderResult.characters[0], defenderContext);
+    expect(vipRole).toBeDefined();
+    
+    // Test from attacker perspective
+    const attackerContext = makeMissionContext(attackerResult.side, [defenderResult.side], battlefield);
+    const attackerRole = ai.getCharacterRole(attackerResult.characters[0], attackerContext);
+    expect(attackerRole).toBe('Attacker');
+  });
+});
+
+describe('StealthMissionAI', () => {
+  it('should assign Infiltrator role', () => {
+    const battlefield = new Battlefield(24, 24);
+    const infiltratorResult = makeTestSide('Infiltrator', 3, battlefield, 2, 0);
+    const defenderResult = makeTestSide('Defender', 3, battlefield, 18);
+    
+    const context = makeMissionContext(infiltratorResult.side, defenderResult.side, battlefield);
+    const ai = new StealthMissionAI();
+    
+    const role = ai.getCharacterRole(infiltratorResult.characters[0], context);
+    expect(role).toBeDefined();
+    expect(['Ghost VIP', 'Infiltrator']).toContain(role);
+  });
+
+  it('should prioritize detection for defender', () => {
+    const battlefield = new Battlefield(24, 24);
+    const infiltratorResult = makeTestSide('Infiltrator', 3, battlefield, 2, 0);
+    const defenderResult = makeTestSide('Defender', 3, battlefield, 18);
+    
+    const context = makeMissionContext(defenderResult.side, infiltratorResult.side, battlefield, {
+      vipDetected: false,
+    });
+    const ai = new StealthMissionAI();
+    
+    const priorities = ai.getStrategicPriorities(context);
+    expect(priorities.objectives).toContain('detect_vip');
   });
 });

@@ -417,8 +417,696 @@ export class EscortMissionAI extends MissionAI {
 }
 
 // ============================================================================
-// Factory Functions
+// Assault Mission AI (QAI_13)
 // ============================================================================
+
+/**
+ * Assault Mission AI
+ * 
+ * Assault objective markers or harvest resources.
+ * Key behaviors:
+ * - Prioritize assault actions on markers (3 VP each)
+ * - Harvest resources when assault not available (1 VP each)
+ * - Disengage before assaulting if engaged
+ */
+export class AssaultMissionAI extends MissionAI {
+  readonly missionId = 'QAI_13';
+  readonly missionName = 'Assault';
+
+  getDecision(character: Character, context: MissionAIContext): MissionAIDecision | undefined {
+    const markers = context.missionState['markers'] as any[] || [];
+    if (markers.length === 0) return undefined;
+
+    // Find unassaulted markers
+    const availableMarkers = markers.filter(m => !m.assaulted);
+    if (availableMarkers.length === 0) return undefined;
+
+    const charPos = context.battlefield.getCharacterPosition(character);
+    if (!charPos) return undefined;
+
+    // Priority 1: Assault nearest marker if in range
+    for (const marker of availableMarkers) {
+      const dist = Math.hypot(marker.position.x - charPos.x, marker.position.y - charPos.y);
+      if (dist <= 1) {
+        // In assault range
+        const isEngaged = context.battlefield.isEngaged?.(character);
+        if (isEngaged) {
+          // Need to disengage first
+          return {
+            override: {
+              type: 'disengage',
+              reason: 'Disengage to assault marker',
+              priority: 4,
+              requiresAP: true,
+            },
+            context: 'Assault: Disengage first',
+          };
+        }
+        
+        return {
+          override: {
+            type: 'hold',
+            reason: 'Assault marker',
+            priority: 5,
+            requiresAP: true,
+          },
+          context: 'Assault: Assault marker',
+        };
+      }
+    }
+
+    // Priority 2: Move to nearest marker
+    const nearest = this.findNearestMarker(character, availableMarkers, context.battlefield);
+    if (nearest) {
+      return {
+        override: {
+          type: 'move',
+          position: nearest.position,
+          reason: 'Move to assault marker',
+          priority: 3,
+          requiresAP: true,
+        },
+        context: 'Assault: Move to marker',
+      };
+    }
+
+    return undefined;
+  }
+
+  getStrategicPriorities(context: MissionAIContext): {
+    priorityTargets?: string[];
+    objectives?: string[];
+  } {
+    return {
+      objectives: ['assault_markers', 'harvest_resources'],
+    };
+  }
+
+  private findNearestMarker(
+    character: Character,
+    markers: any[],
+    battlefield: Battlefield
+  ): any | null {
+    const charPos = battlefield.getCharacterPosition(character);
+    if (!charPos) return null;
+
+    let nearest: any = null;
+    let nearestDist = Infinity;
+
+    for (const marker of markers) {
+      const dist = Math.hypot(marker.position.x - charPos.x, marker.position.y - charPos.y);
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearest = marker;
+      }
+    }
+
+    return nearest;
+  }
+}
+
+// ============================================================================
+// Triumvirate Mission AI (QAI_17)
+// ============================================================================
+
+/**
+ * Triumvirate Mission AI
+ * 
+ * Control all three triad zones for instant victory.
+ * Key behaviors:
+ * - Prioritize zones that complete the triad
+ * - Contest enemy-controlled zones
+ * - Defend when controlling 2+ zones
+ */
+export class TriumvirateMissionAI extends MissionAI {
+  readonly missionId = 'QAI_17';
+  readonly missionName = 'Triumvirate';
+
+  getDecision(character: Character, context: MissionAIContext): MissionAIDecision | undefined {
+    const zones = context.missionState['zones'] as any[] || [];
+    if (zones.length !== 3) return undefined;
+
+    const controlledBySide = this.getControlledZones(context.side.id, zones);
+    const enemyControlled = zones.filter(z => z.controlledBy && z.controlledBy !== context.side.id);
+    const uncontrolled = zones.filter(z => !z.controlledBy);
+
+    // Priority 1: Capture zone that completes triad (if we have 2)
+    if (controlledBySide.length === 2 && uncontrolled.length > 0) {
+      const nearest = this.findNearestZone(character, uncontrolled, context.battlefield);
+      if (nearest) {
+        return {
+          override: {
+            type: 'move',
+            position: nearest.center,
+            reason: 'Complete triad for instant victory',
+            priority: 5,
+            requiresAP: true,
+          },
+          context: 'Triumvirate: Complete triad',
+        };
+      }
+    }
+
+    // Priority 2: Contest enemy zones (especially if they have 2)
+    if (enemyControlled.length > 0) {
+      const nearest = this.findNearestZone(character, enemyControlled, context.battlefield);
+      if (nearest) {
+        return {
+          override: {
+            type: 'move',
+            position: nearest.center,
+            reason: 'Contest enemy triad zone',
+            priority: 4,
+            requiresAP: true,
+          },
+          context: 'Triumvirate: Contest zone',
+        };
+      }
+    }
+
+    // Priority 3: Capture uncontrolled zones
+    if (uncontrolled.length > 0) {
+      const nearest = this.findNearestZone(character, uncontrolled, context.battlefield);
+      if (nearest) {
+        return {
+          override: {
+            type: 'move',
+            position: nearest.center,
+            reason: 'Capture triad zone',
+            priority: 3,
+            requiresAP: true,
+          },
+          context: 'Triumvirate: Capture zone',
+        };
+      }
+    }
+
+    // Priority 4: Defend controlled zones
+    if (controlledBySide.length > 0) {
+      const nearest = this.findNearestZone(character, controlledBySide, context.battlefield);
+      if (nearest) {
+        return {
+          override: {
+            type: 'hold',
+            reason: 'Defend triad zone',
+            priority: 3,
+            requiresAP: false,
+          },
+          context: 'Triumvirate: Defend zone',
+        };
+      }
+    }
+
+    return undefined;
+  }
+
+  getStrategicPriorities(context: MissionAIContext): {
+    priorityZones?: string[];
+    objectives?: string[];
+  } {
+    const zones = context.missionState['zones'] as any[] || [];
+    const controlledBySide = this.getControlledZones(context.side.id, zones);
+    
+    // If we have 2 zones, prioritize the third
+    if (controlledBySide.length === 2) {
+      const uncontrolled = zones.filter(z => !z.controlledBy);
+      return {
+        priorityZones: uncontrolled.map(z => z.id),
+        objectives: ['complete_triad'],
+      };
+    }
+
+    // Otherwise prioritize all zones
+    return {
+      priorityZones: zones.map(z => z.id),
+      objectives: ['control_triad_zones'],
+    };
+  }
+}
+
+// ============================================================================
+// Breach/Switchback Mission AI (QAI_20)
+// ============================================================================
+
+/**
+ * Breach/Switchback Mission AI
+ * 
+ * Control markers that switch allegiance on turns 4 and 8.
+ * Key behaviors:
+ * - Prepare for switch turns (position for captures)
+ * - Contest markers before switch
+ * - Maximize control after switch
+ */
+export class BreachMissionAI extends MissionAI {
+  readonly missionId = 'QAI_20';
+  readonly missionName = 'Breach';
+
+  getDecision(character: Character, context: MissionAIContext): MissionAIDecision | undefined {
+    const markers = context.missionState['markers'] as any[] || [];
+    const switchTurns = context.missionState['switchTurns'] as number[] || [4, 8];
+    const currentTurn = context.currentTurn;
+
+    if (markers.length === 0) return undefined;
+
+    const charPos = context.battlefield.getCharacterPosition(character);
+    if (!charPos) return undefined;
+
+    // Check if this is a switch turn (or turn before)
+    const isSwitchTurn = switchTurns.includes(currentTurn);
+    const isPreSwitch = switchTurns.includes(currentTurn + 1);
+
+    // Priority 1: Position for switch turn capture
+    if (isPreSwitch) {
+      // Find markers we don't control that will switch
+      const enemyMarkers = markers.filter(m => m.controlledBy && m.controlledBy !== context.side.id);
+      if (enemyMarkers.length > 0) {
+        const nearest = this.findNearestMarker(character, enemyMarkers, context.battlefield);
+        if (nearest) {
+          return {
+            override: {
+              type: 'move',
+              position: nearest.position,
+              reason: 'Position for switch turn capture',
+              priority: 4,
+              requiresAP: true,
+            },
+            context: 'Breach: Pre-switch position',
+          };
+        }
+      }
+    }
+
+    // Priority 2: Contest enemy markers
+    const enemyMarkers = markers.filter(m => m.controlledBy && m.controlledBy !== context.side.id);
+    if (enemyMarkers.length > 0) {
+      const nearest = this.findNearestMarker(character, enemyMarkers, context.battlefield);
+      if (nearest) {
+        return {
+          override: {
+            type: 'move',
+            position: nearest.position,
+            reason: 'Contest enemy marker',
+            priority: 3,
+            requiresAP: true,
+          },
+          context: 'Breach: Contest marker',
+        };
+      }
+    }
+
+    // Priority 3: Capture uncontrolled markers
+    const uncontrolled = markers.filter(m => !m.controlledBy);
+    if (uncontrolled.length > 0) {
+      const nearest = this.findNearestMarker(character, uncontrolled, context.battlefield);
+      if (nearest) {
+        return {
+          override: {
+            type: 'move',
+            position: nearest.position,
+            reason: 'Capture marker',
+            priority: 3,
+            requiresAP: true,
+          },
+          context: 'Breach: Capture marker',
+        };
+      }
+    }
+
+    return undefined;
+  }
+
+  getStrategicPriorities(context: MissionAIContext): {
+    priorityTargets?: string[];
+    objectives?: string[];
+  } {
+    const currentTurn = context.currentTurn;
+    const switchTurns = context.missionState['switchTurns'] as number[] || [4, 8];
+    
+    if (switchTurns.includes(currentTurn + 1)) {
+      return {
+        objectives: ['position_for_switch'],
+      };
+    }
+
+    return {
+      objectives: ['control_markers', 'contest_enemy'],
+    };
+  }
+
+  private findNearestMarker(
+    character: Character,
+    markers: any[],
+    battlefield: Battlefield
+  ): any | null {
+    const charPos = battlefield.getCharacterPosition(character);
+    if (!charPos) return null;
+
+    let nearest: any = null;
+    let nearestDist = Infinity;
+
+    for (const marker of markers) {
+      const dist = Math.hypot(marker.position.x - charPos.x, marker.position.y - charPos.y);
+      if (dist < nearestDist) {
+        nearestDist = dist;
+        nearest = marker;
+      }
+    }
+
+    return nearest;
+  }
+}
+
+// ============================================================================
+// Defiance/Last Stand Mission AI (QAI_19)
+// ============================================================================
+
+/**
+ * Defiance/Last Stand Mission AI
+ * 
+ * Defend VIP until reinforcements arrive (turn 6).
+ * Key behaviors:
+ * - Defender: Form defensive perimeter around VIP
+ * - Attacker: Focus fire on VIP, eliminate defenders
+ */
+export class DefianceMissionAI extends MissionAI {
+  readonly missionId = 'QAI_19';
+  readonly missionName = 'Defiance';
+
+  getDecision(character: Character, context: MissionAIContext): MissionAIDecision | undefined {
+    const isDefender = context.side.id === 'Defender';
+    const vip = this.findVIP(context.side);
+    const currentTurn = context.currentTurn;
+
+    if (!vip) return undefined;
+
+    const vipPos = context.battlefield.getCharacterPosition(vip);
+    const charPos = context.battlefield.getCharacterPosition(character);
+
+    if (!vipPos || !charPos) return undefined;
+
+    if (isDefender) {
+      // Defender behaviors
+      const isVIP = character === vip;
+
+      if (isVIP) {
+        // VIP: Stay in fortified position
+        return {
+          override: {
+            type: 'hold',
+            reason: 'VIP hold fortified position',
+            priority: 4,
+            requiresAP: false,
+          },
+          context: 'Defiance: VIP hold',
+        };
+      }
+
+      // Guard: Form perimeter around VIP
+      const distToVIP = Math.hypot(vipPos.x - charPos.x, vipPos.y - charPos.y);
+      const idealPerimeter = 4; // 4 MU from VIP
+
+      if (distToVIP > idealPerimeter + 1) {
+        // Move toward VIP to form perimeter
+        const perimeterPos = {
+          x: vipPos.x + (charPos.x - vipPos.x) / distToVIP * idealPerimeter,
+          y: vipPos.y + (charPos.y - vipPos.y) / distToVIP * idealPerimeter,
+        };
+        return {
+          override: {
+            type: 'move',
+            position: perimeterPos,
+            reason: 'Form defensive perimeter',
+            priority: 3,
+            requiresAP: true,
+          },
+          context: 'Defiance: Form perimeter',
+        };
+      }
+
+      // In position: Hold and defend
+      return {
+        override: {
+          type: 'hold',
+          reason: 'Hold defensive position',
+          priority: 3,
+          requiresAP: false,
+        },
+        context: 'Defiance: Hold position',
+      };
+    } else {
+      // Attacker behaviors
+      // Focus fire on VIP
+      return {
+        override: {
+          type: 'ranged_combat',
+          target: vip,
+          reason: 'Eliminate enemy VIP',
+          priority: 5,
+          requiresAP: true,
+        },
+        context: 'Defiance: Attack VIP',
+      };
+    }
+  }
+
+  getCharacterRole(character: Character, context: MissionAIContext): string | undefined {
+    const isDefender = context.side.id === 'Defender';
+    const isVIP = this.isVIP(character, context.side);
+
+    if (isDefender) {
+      return isVIP ? 'VIP' : 'Defender';
+    }
+    return 'Attacker';
+  }
+
+  getStrategicPriorities(context: MissionAIContext): {
+    priorityTargets?: string[];
+    objectives?: string[];
+  } {
+    const isDefender = context.side.id === 'Defender';
+    const vip = this.findVIP(context.side);
+
+    if (isDefender) {
+      return {
+        objectives: ['protect_vip', 'hold_until_reinforcements'],
+      };
+    }
+
+    return {
+      priorityTargets: vip ? [vip.id] : [],
+      objectives: ['eliminate_vip'],
+    };
+  }
+}
+
+// ============================================================================
+// Stealth/Ghost Protocol Mission AI (QAI_18)
+// ============================================================================
+
+/**
+ * Stealth/Ghost Protocol Mission AI
+ * 
+ * Extract VIP without detection (15 VP) or after detection (8 VP).
+ * Key behaviors:
+ * - Infiltrator: Use Hide, avoid detection, reach extraction
+ * - Defender: Detect VIP, prevent extraction
+ */
+export class StealthMissionAI extends MissionAI {
+  readonly missionId = 'QAI_18';
+  readonly missionName = 'Stealth';
+
+  getDecision(character: Character, context: MissionAIContext): MissionAIDecision | undefined {
+    const isInfiltrator = context.side.id === 'Infiltrator';
+    const isVIP = this.isVIP(character, context.side);
+    const extractionZone = context.missionState['extractionZone'] as any;
+
+    const charPos = context.battlefield.getCharacterPosition(character);
+    if (!charPos) return undefined;
+
+    if (isInfiltrator) {
+      // Infiltrator behaviors
+      if (isVIP) {
+        const isDetected = context.missionState['vipDetected'] as boolean || false;
+
+        if (!isDetected) {
+          // Not detected: Use stealth
+          // Priority 1: Hide if visible to enemies
+          const isVisibleToEnemy = this.isVisibleToEnemy(character, context);
+          if (isVisibleToEnemy && !character.state.isHidden) {
+            return {
+              override: {
+                type: 'hide',
+                reason: 'VIP stay hidden',
+                priority: 5,
+                requiresAP: true,
+              },
+              context: 'Stealth: VIP hide',
+            };
+          }
+
+          // Priority 2: Move to extraction
+          if (extractionZone) {
+            const dist = Math.hypot(
+              extractionZone.center.x - charPos.x,
+              extractionZone.center.y - charPos.y
+            );
+            if (dist > 1) {
+              return {
+                override: {
+                  type: 'move',
+                  position: extractionZone.center,
+                  reason: 'Move to extraction point',
+                  priority: 4,
+                  requiresAP: true,
+                },
+                context: 'Stealth: VIP to extraction',
+              };
+            }
+            
+            // At extraction: Extract
+            return {
+              override: {
+                type: 'hold',
+                reason: 'Extract VIP',
+                priority: 5,
+                requiresAP: true,
+              },
+              context: 'Stealth: VIP extract',
+            };
+          }
+        } else {
+          // Detected: Rush to extraction
+          if (extractionZone) {
+            return {
+              override: {
+                type: 'move',
+                position: extractionZone.center,
+                reason: 'Rush to extraction (detected)',
+                priority: 5,
+                requiresAP: true,
+              },
+              context: 'Stealth: VIP rush',
+            };
+          }
+        }
+      } else {
+        // Guard: Protect VIP, clear path
+        const vip = this.findVIP(context.side);
+        if (vip) {
+          const vipPos = context.battlefield.getCharacterPosition(vip);
+          if (vipPos) {
+            const dist = Math.hypot(vipPos.x - charPos.x, vipPos.y - charPos.y);
+            if (dist > 6) {
+              return {
+                override: {
+                  type: 'move',
+                  position: { x: vipPos.x, y: vipPos.y },
+                  reason: 'Protect VIP',
+                  priority: 4,
+                  requiresAP: true,
+                },
+                context: 'Stealth: Guard VIP',
+              };
+            }
+          }
+        }
+      }
+    } else {
+      // Defender behaviors
+      // Detect hidden VIP
+      const infiltratorVIP = this.findEnemyVIP(context);
+      if (infiltratorVIP) {
+        return {
+          override: {
+            type: 'detect',
+            target: infiltratorVIP,
+            reason: 'Detect enemy VIP',
+            priority: 5,
+            requiresAP: true,
+          },
+          context: 'Stealth: Detect VIP',
+        };
+      }
+
+      // Patrol zones
+      const zones = context.missionState['stealthZones'] as any[] || [];
+      if (zones.length > 0) {
+        const nearest = this.findNearestZone(character, zones, context.battlefield);
+        if (nearest) {
+          return {
+            override: {
+              type: 'move',
+              position: nearest.center,
+              reason: 'Patrol stealth zone',
+              priority: 3,
+              requiresAP: true,
+            },
+            context: 'Stealth: Patrol',
+          };
+        }
+      }
+    }
+
+    return undefined;
+  }
+
+  getCharacterRole(character: Character, context: MissionAIContext): string | undefined {
+    const isInfiltrator = context.side.id === 'Infiltrator';
+    const isVIP = this.isVIP(character, context.side);
+
+    if (isInfiltrator) {
+      return isVIP ? 'Ghost VIP' : 'Infiltrator';
+    }
+    return 'Defender';
+  }
+
+  getStrategicPriorities(context: MissionAIContext): {
+    priorityTargets?: string[];
+    objectives?: string[];
+  } {
+    const isInfiltrator = context.side.id === 'Infiltrator';
+
+    if (isInfiltrator) {
+      return {
+        objectives: ['extract_vip_stealth', 'avoid_detection'],
+      };
+    }
+
+    return {
+      objectives: ['detect_vip', 'prevent_extraction'],
+    };
+  }
+
+  private isVisibleToEnemy(character: Character, context: MissionAIContext): boolean {
+    const charPos = context.battlefield.getCharacterPosition(character);
+    if (!charPos) return false;
+
+    for (const enemySide of context.enemySides) {
+      for (const member of enemySide.members) {
+        if (member.character.state.isEliminated || member.character.state.isKOd) continue;
+        
+        const enemyPos = context.battlefield.getCharacterPosition(member.character);
+        if (!enemyPos) continue;
+
+        const dist = Math.hypot(enemyPos.x - charPos.x, enemyPos.y - charPos.y);
+        if (dist <= 16) { // Visibility range
+          // Check LOS (simplified)
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  private findEnemyVIP(context: MissionAIContext): Character | undefined {
+    for (const enemySide of context.enemySides) {
+      const vip = this.findVIP(enemySide);
+      if (vip) return vip;
+    }
+    return undefined;
+  }
+}
 
 export function createMissionAI(missionId: string): MissionAI | undefined {
   switch (missionId) {
@@ -426,12 +1114,22 @@ export function createMissionAI(missionId: string): MissionAI | undefined {
       return new EliminationMissionAI();
     case 'QAI_12':
       return new ConvergenceMissionAI();
+    case 'QAI_13':
+      return new AssaultMissionAI();
     case 'QAI_14':
       return new DominionMissionAI();
     case 'QAI_15':
       return new RecoveryMissionAI();
     case 'QAI_16':
       return new EscortMissionAI();
+    case 'QAI_17':
+      return new TriumvirateMissionAI();
+    case 'QAI_18':
+      return new StealthMissionAI();
+    case 'QAI_19':
+      return new DefianceMissionAI();
+    case 'QAI_20':
+      return new BreachMissionAI();
     // Add more missions as implemented
     default:
       return undefined;
