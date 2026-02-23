@@ -58,7 +58,7 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="1.0062584"
-     inkscape:cx="132.6697"
+     inkscape:cx="133.66348"
      inkscape:cy="191.79964"
      inkscape:window-width="1635"
      inkscape:window-height="837"
@@ -72,15 +72,13 @@
        inkscape:groupmode="layer"
        id="layer3"
        inkscape:label="area"
-       sodipodi:insensitive="true"
        style="display:inline"><rect
-         style="fill:#808080;stroke:none;stroke-width:0.981384;stroke-opacity:1"
+         style="fill:#cccccc;stroke:none;stroke-width:0.981384;stroke-opacity:1"
          id="rect317"
          width="52.916668"
          height="105.83334"
          x="-1.9382323e-06"
-         y="-1.1505859e-05"
-         sodipodi:insensitive="true" /></g><g
+         y="-1.1505859e-05" /></g><g
        inkscape:groupmode="layer"
        id="layer1"
        inkscape:label="terrain"><path
