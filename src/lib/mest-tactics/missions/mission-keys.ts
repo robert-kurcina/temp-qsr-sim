@@ -1,5 +1,5 @@
-import { Position } from './battlefield/Position';
-import { ObjectiveMarker } from './mission-objectives';
+import { Position } from '../battlefield/Position';
+import { ObjectiveMarker } from '../mission/objective-markers';
 
 export interface MissionZone {
   id: string;

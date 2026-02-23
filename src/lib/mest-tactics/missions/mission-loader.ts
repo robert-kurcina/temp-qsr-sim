@@ -1,5 +1,5 @@
-import { MissionConfig } from './mission-config';
-import { BalanceValidator } from './mission-components/balance-validator';
+import { MissionConfig } from '../mission/mission-config';
+import { BalanceValidator } from '../mission/balance-validator';
 
 /**
  * Mission Loader

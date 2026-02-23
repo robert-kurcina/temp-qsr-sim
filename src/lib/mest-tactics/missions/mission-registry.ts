@@ -1,17 +1,17 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from './mission-definitions';
-import { getEliminationMission, isEliminationMission } from './missions/elimination';
-import { getConvergenceMission, isConvergenceMission } from './missions/convergence';
-import { getAssaultMission, isAssaultMission } from './missions/assault';
-import { getDominionMission, isDominionMission } from './missions/dominion';
-import { getRecoveryMission, isRecoveryMission } from './missions/recovery';
-import { getEscortMission, isEscortMission } from './missions/escort';
-import { getTriumvirateMission, isTriumvirateMission } from './missions/triumvirate';
-import { getStealthMission, isStealthMission } from './missions/stealth';
-import { getDefianceMission, isDefianceMission } from './missions/defiance';
-import { getBreachMission, isBreachMission } from './missions/breach';
-import { MissionLoader } from './mission-loader';
-import { MissionEngine } from './mission-engine';
-import { MissionConfig } from './mission-config';
+import { getEliminationMission, isEliminationMission } from './elimination';
+import { getConvergenceMission, isConvergenceMission } from './convergence';
+import { getAssaultMission, isAssaultMission } from './assault';
+import { getDominionMission, isDominionMission } from './dominion';
+import { getRecoveryMission, isRecoveryMission } from './recovery';
+import { getEscortMission, isEscortMission } from './escort';
+import { getTriumvirateMission, isTriumvirateMission } from './triumvirate';
+import { getStealthMission, isStealthMission } from './stealth';
+import { getDefianceMission, isDefianceMission } from './defiance';
+import { getBreachMission, isBreachMission } from './breach';
+import { MissionLoader } from '../mission/mission-loader';
+import { MissionEngine } from '../mission/mission-engine';
+import { MissionConfig } from '../mission/mission-config';
 
 /**
  * Mission Registry

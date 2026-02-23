@@ -1,4 +1,4 @@
-import { MissionConfig, MissionState, GameSize } from './mission-config';
+import { MissionConfig, MissionState, GameSize } from '../mission/mission-config';
 import { MissionEngine } from '../mission/mission-engine';
 import {
   SpecialRuleHandlerRegistry,

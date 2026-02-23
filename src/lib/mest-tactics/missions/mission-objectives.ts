@@ -1,4 +1,4 @@
-import { Position } from './battlefield/Position';
+import { Position } from '../battlefield/Position';
 
 export type ObjectiveMarkerKind = 'Switch' | 'Lock' | 'Key' | 'Idea' | 'Tiny' | 'Small' | 'Large' | 'Bulky';
 export type ObjectiveMarkerState = 'Neutral' | 'Carried' | 'Destroyed';

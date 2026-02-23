@@ -18,8 +18,8 @@ import {
   applyPoiMajorityScoring,
   applyTurnEnd,
   initMissionEngine,
-} from './mission-engine';
-import { MissionModel } from './mission-keys';
+} from '../mission/mission-engine';
+import { MissionModel } from '../mission/mission-keys';
 
 export interface ControllerLogEntry {
   turn: number;
