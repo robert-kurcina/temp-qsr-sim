@@ -31,7 +31,8 @@ export interface BuildProfileOptions {
   itemNames?: string[];
 }
 
-const gameSizeDefaults: Record<GameSize, Required<AssemblyConfig>> = {
+// Game size defaults (QSR standard)
+export const gameSizeDefaults: Record<GameSize, Required<AssemblyConfig>> = {
   [GameSize.VERY_SMALL]: {
     bpLimitMin: 125,
     bpLimitMax: 250,

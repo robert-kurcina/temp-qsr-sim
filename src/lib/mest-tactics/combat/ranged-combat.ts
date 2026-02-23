@@ -9,6 +9,22 @@ import { resolveDamage, DamageResolution } from '../subroutines/damage-test';
 import { SpatialAttackContext, SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from '../status/status-system';
 import { getDetectMaxOrmBonus, getEvasiveBonusDice, checkEvasiveReposition, hasBlinders } from '../traits/combat-traits';
+import { resolveFriendlyFire, FriendlyFireOptions } from './friendly-fire';
+import { Battlefield } from '../battlefield/Battlefield';
+import { Position } from '../battlefield/Position';
+import { 
+  hasBurst, 
+  getBurstBonus,
+  hasFeed, 
+  checkFeedJam,
+  hasJam, 
+  checkJam,
+  isWeaponJammed,
+  setWeaponJammed,
+  getMultipleAttackPenalty,
+  recordWeaponUse,
+  isMultipleAttackExempt 
+} from '../traits/combat-traits';
 
 // --- Main Attack Result Interface ---
 
@@ -16,6 +32,14 @@ export interface AttackResult {
     hit: boolean;
     damageResolution?: DamageResolution;
     hitTestResult: TestResult;
+    friendlyFire?: {
+        triggered: boolean;
+        hit: boolean;
+        hitCharacter?: Character;
+        reason?: string;
+    };
+    weaponJammed?: boolean;
+    multipleAttackPenalty?: number;
 }
 
 // --- Internal Modifier Calculation for Ranged Combat --- //
@@ -34,7 +58,20 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
 
     // Note: Defender hindrance doesn't apply to the REF roll for being hit.
 
-    // 2. Ranged-Specific Contextual Modifiers
+    // 2. Multiple Attack Penalty (-1m for same weapon consecutively)
+    // Natural weapons and Natural Weapon trait are exempt
+    // This is handled externally and passed via context.multipleAttackPenalty
+
+    if (context.multipleAttackPenalty) {
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + context.multipleAttackPenalty;
+    }
+
+    // 3. [Burst] trait bonus (+1b to Hit Test) - handled via context.burstBonusBase
+    if (context.burstBonusBase) {
+        attackerBonus[DiceType.Base] = (attackerBonus[DiceType.Base] || 0) + context.burstBonusBase;
+    }
+
+    // 4. Ranged-Specific Contextual Modifiers
     if (context.isLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isTargetLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
     if (context.isPointBlank) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
@@ -97,6 +134,7 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
 
 /**
  * Orchestrates a complete direct ranged combat attack, from the initial hit roll to the final damage resolution.
+ * Includes Friendly Fire resolution when the attack misses.
  */
 export function makeRangedCombatAttack(
     attacker: Character,
@@ -104,7 +142,15 @@ export function makeRangedCombatAttack(
     weapon: Item,
     orm: number = 0,
     context: TestContext = {},
-    spatial?: SpatialAttackContext
+    spatial?: SpatialAttackContext,
+    options?: {
+        /** All characters on battlefield for friendly fire check */
+        allCharacters?: Character[];
+        /** Character position lookup for friendly fire */
+        getCharacterPosition?: (character: Character) => Position | undefined;
+        /** Battlefield for LOS checks in friendly fire */
+        battlefield?: Battlefield;
+    }
 ): AttackResult {
 
     const spatialContext = spatial ? SpatialRules.buildRangedContextFromSpatial(spatial) : {};
@@ -141,8 +187,40 @@ export function makeRangedCombatAttack(
         hitTestResult = resolveRangedHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
     }
 
+    // 3. Handle missed attacks - check for Friendly Fire
     if (!hitTestResult.pass) {
-        return { hit: false, hitTestResult };
+        // Calculate misses for friendly fire
+        const misses = Math.abs(Math.min(0, hitTestResult.score));
+        
+        // Check if we have the required data for friendly fire
+        let friendlyFireResult: AttackResult['friendlyFire'] = undefined;
+        if (options?.allCharacters && options?.getCharacterPosition && options?.battlefield) {
+            const ffOptions: FriendlyFireOptions = {
+                attacker,
+                originalTarget: defender,
+                originalTargetPosition: spatial?.target.position ?? { x: 0, y: 0 },
+                allCharacters: options.allCharacters,
+                getCharacterPosition: options.getCharacterPosition,
+                battlefield: options.battlefield,
+                weapon,
+                misses,
+                isConcentrated: context.isConcentrating ?? false,
+            };
+            
+            const ffResult = resolveFriendlyFire(ffOptions);
+            friendlyFireResult = {
+                triggered: ffResult.triggered,
+                hit: ffResult.hit,
+                hitCharacter: ffResult.hitCharacter,
+                reason: ffResult.reason,
+            };
+        }
+        
+        return {
+            hit: false,
+            hitTestResult,
+            friendlyFire: friendlyFireResult,
+        };
     }
 
     if (weapon.traits?.length) {

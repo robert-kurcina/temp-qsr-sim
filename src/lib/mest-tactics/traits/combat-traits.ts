@@ -444,6 +444,308 @@ export function getReloadActionsRequired(character: Character): number {
 }
 
 // ============================================================================
+// ROF FAMILY TRAITS ([Feed], [Jam], [Burst])
+// ============================================================================
+
+/**
+ * [Feed] — ROF
+ * QSR: Requires careful ammunition feeding. Weapon jams on roll of 1 on any attack die.
+ */
+export function hasFeed(character: Character, weaponIndex: number = 0): boolean {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  if (weaponIndex >= equipment.length) return false;
+  const weapon = equipment[weaponIndex];
+  return weapon.traits?.some(t => t.includes('[Feed]')) ?? false;
+}
+
+export interface FeedCheckResult {
+  jammed: boolean;
+  rolls: number[];
+}
+
+/**
+ * Check if weapon jams due to [Feed] trait
+ * Jams if any attack die rolls a 1
+ */
+export function checkFeedJam(rolls: number[]): FeedCheckResult {
+  const jammed = rolls.some(roll => roll === 1);
+  return { jammed, rolls };
+}
+
+/**
+ * [Jam] — ROF
+ * QSR: Weapon may jam when fired. Check after each attack.
+ */
+export function hasJam(character: Character, weaponIndex: number = 0): boolean {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  if (weaponIndex >= equipment.length) return false;
+  const weapon = equipment[weaponIndex];
+  return weapon.traits?.some(t => t.includes('[Jam]')) ?? false;
+}
+
+export interface JamCheckResult {
+  jammed: boolean;
+  jamChance: number; // 0-1, default 1/6 for standard jam
+}
+
+/**
+ * Check if weapon jams due to [Jam] trait
+ * Standard jam chance is 1/6 (roll of 1 on d6)
+ */
+export function checkJam(rng: () => number = Math.random): JamCheckResult {
+  const jamChance = 1 / 6;
+  const jammed = rng() < jamChance;
+  return { jammed, jamChance };
+}
+
+/**
+ * Clear weapon jam (requires Fiddle action)
+ */
+export function clearWeaponJam(character: Character, weaponIndex: number = 0): void {
+  const jammedWeapons = character.state.statusTokens['jammedWeapons'] || [];
+  const index = jammedWeapons.indexOf(weaponIndex);
+  if (index > -1) {
+    jammedWeapons.splice(index, 1);
+    character.state.statusTokens['jammedWeapons'] = jammedWeapons;
+  }
+}
+
+/**
+ * Set weapon as jammed
+ */
+export function setWeaponJammed(character: Character, weaponIndex: number = 0): void {
+  const jammedWeapons = character.state.statusTokens['jammedWeapons'] || [];
+  if (!jammedWeapons.includes(weaponIndex)) {
+    jammedWeapons.push(weaponIndex);
+    character.state.statusTokens['jammedWeapons'] = jammedWeapons;
+  }
+}
+
+/**
+ * Check if weapon is jammed
+ */
+export function isWeaponJammed(character: Character, weaponIndex: number = 0): boolean {
+  const jammedWeapons = character.state.statusTokens['jammedWeapons'] || [];
+  return jammedWeapons.includes(weaponIndex);
+}
+
+/**
+ * [Burst] — ROF
+ * QSR: Fires in bursts. +1b to Hit Test, but weapon jams on roll of 1 on any die.
+ */
+export function hasBurst(character: Character, weaponIndex: number = 0): boolean {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  if (weaponIndex >= equipment.length) return false;
+  const weapon = equipment[weaponIndex];
+  return weapon.traits?.some(t => t.includes('[Burst]')) ?? false;
+}
+
+export interface BurstBonusResult {
+  bonusBaseDice: number;
+  jamRisk: boolean;
+}
+
+/**
+ * Get [Burst] trait bonus
+ * +1b to Hit Test, but increased jam risk
+ */
+export function getBurstBonus(character: Character, weaponIndex: number = 0): BurstBonusResult {
+  if (!hasBurst(character, weaponIndex)) {
+    return { bonusBaseDice: 0, jamRisk: false };
+  }
+  return { bonusBaseDice: 1, jamRisk: true };
+}
+
+// ============================================================================
+// MULTIPLE ATTACK PENALTY
+// ============================================================================
+
+/**
+ * Multiple Attack Penalty
+ * QSR: -1m to Hit Test when using same weapon consecutively
+ */
+export interface MultipleAttackState {
+  lastWeaponUsed: number | null; // Weapon index
+  consecutiveAttacks: number;
+}
+
+/**
+ * Check if multiple attack penalty applies
+ * Returns -1m penalty if using same weapon consecutively
+ */
+export function getMultipleAttackPenalty(
+  character: Character,
+  weaponIndex: number
+): { penalty: number; isConsecutive: boolean } {
+  const lastWeaponUsed = character.state.statusTokens['lastWeaponUsed'];
+  
+  if (lastWeaponUsed === weaponIndex) {
+    return { penalty: 1, isConsecutive: true };
+  }
+  
+  return { penalty: 0, isConsecutive: false };
+}
+
+/**
+ * Record weapon use for multiple attack tracking
+ */
+export function recordWeaponUse(character: Character, weaponIndex: number): void {
+  character.state.statusTokens['lastWeaponUsed'] = weaponIndex;
+}
+
+/**
+ * Reset multiple attack tracking (end of Initiative)
+ */
+export function resetMultipleAttackTracking(character: Character): void {
+  character.state.statusTokens['lastWeaponUsed'] = null;
+}
+
+// ============================================================================
+// NATURAL WEAPONS MULTI-ATTACK EXEMPTION
+// ============================================================================
+
+/**
+ * Natural Weapons Multi-Attack Exemption
+ * QSR: Natural weapons are exempt from Multiple Attack Penalty
+ */
+export function isNaturalWeapon(character: Character, weaponIndex: number = 0): boolean {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  if (weaponIndex >= equipment.length) return false;
+  const weapon = equipment[weaponIndex];
+  const classification = (weapon.classification || weapon.class || '').toLowerCase();
+  return classification.includes('natural');
+}
+
+/**
+ * Check if character is exempt from Multiple Attack Penalty
+ * Natural weapons and characters with Natural Weapon trait are exempt
+ */
+export function isMultipleAttackExempt(character: Character, weaponIndex: number = 0): boolean {
+  // Natural weapons are exempt
+  if (isNaturalWeapon(character, weaponIndex)) {
+    return true;
+  }
+  
+  // Natural Weapon trait provides exemption
+  return getCharacterTraitLevel(character, 'Natural Weapon') > 0;
+}
+
+// ============================================================================
+// SITUATIONAL AWARENESS
+// ============================================================================
+
+/**
+ * Situational Awareness (Advanced Initiative Rule)
+ * QSR: When Side reduced to < half original model count:
+ * - Check if Designated Leader has half forces within LOS and Awareness range
+ * - If not, do not add INT to Initiative Test Score
+ * - Hidden characters behind Cover never counted
+ */
+export interface SituationalAwarenessResult {
+  /** Whether leader passes Situational Awareness check */
+  passes: boolean;
+  /** Number of models within LOS and range */
+  modelsInCommand: number;
+  /** Total models remaining */
+  totalModels: number;
+  /** Half threshold */
+  halfThreshold: number;
+  /** Reason for failure (if any) */
+  reason?: string;
+}
+
+/**
+ * Check if Designated Leader passes Situational Awareness
+ */
+export function checkSituationalAwareness(
+  leader: Character,
+  sideModels: Character[],
+  getCharacterPosition: (character: Character) => { x: number; y: number } | undefined,
+  isBehindCover: (character: Character) => boolean,
+  isInLos: (character1: Character, character2: Character) => boolean,
+  awarenessRange: number = 16 // Default Visibility range
+): SituationalAwarenessResult {
+  const totalModels = sideModels.length;
+  const halfThreshold = Math.ceil(totalModels / 2);
+  
+  // Check if Side is reduced to < half original model count
+  if (totalModels >= halfThreshold * 2) {
+    // Not reduced enough to trigger check
+    return {
+      passes: true,
+      modelsInCommand: totalModels,
+      totalModels,
+      halfThreshold,
+    };
+  }
+  
+  // Count models within LOS and Awareness range of leader
+  let modelsInCommand = 0;
+  
+  for (const model of sideModels) {
+    if (model.id === leader.id) {
+      // Leader always counts
+      modelsInCommand++;
+      continue;
+    }
+    
+    // Hidden characters behind Cover never counted
+    if (model.state.isHidden && isBehindCover(model)) {
+      continue;
+    }
+    
+    // Check LOS
+    if (!isInLos(leader, model)) {
+      continue;
+    }
+    
+    // Check range
+    const leaderPos = getCharacterPosition(leader);
+    const modelPos = getCharacterPosition(model);
+    
+    if (!leaderPos || !modelPos) {
+      continue;
+    }
+    
+    const distance = Math.sqrt(
+      Math.pow(modelPos.x - leaderPos.x, 2) +
+      Math.pow(modelPos.y - leaderPos.y, 2)
+    );
+    
+    if (distance <= awarenessRange) {
+      modelsInCommand++;
+    }
+  }
+  
+  // Check if leader has half forces within LOS and range
+  const passes = modelsInCommand >= halfThreshold;
+  
+  return {
+    passes,
+    modelsInCommand,
+    totalModels,
+    halfThreshold,
+    reason: passes ? undefined : `Leader only has ${modelsInCommand} models in command (need ${halfThreshold})`,
+  };
+}
+
+/**
+ * Get Tactics trait level for Initiative Test bonus
+ * Also provides exemption from Situational Awareness
+ */
+export function getTacticsInitiativeBonus(character: Character): number {
+  return getCharacterTraitLevel(character, 'Tactics');
+}
+
+/**
+ * Check if character is exempt from Situational Awareness due to Tactics trait
+ */
+export function getTacticsSituationalAwarenessExemption(character: Character): boolean {
+  // Tactics X: Avoid Situational Awareness penalty
+  return getCharacterTraitLevel(character, 'Tactics') > 0;
+}
+
+// ============================================================================
 // THROWABLE
 // ============================================================================
 
@@ -891,6 +1193,297 @@ export function getCowardAdditionalFearTokens(
   // Coward receives additional Fear tokens on failed Morale
   // Typically +1 Fear token
   return 1;
+}
+
+// ============================================================================
+// ADDITIONAL PSYCHOLOGY TRAITS
+// ============================================================================
+
+/**
+ * Fanatic — Psychology
+ * QSR: Immune to Fear from Psychology keyword traits. Does not perform Morale Tests
+ *      caused by Psychology traits.
+ */
+export function hasFanatic(character: Character): boolean {
+  return getCharacterTraitLevel(character, 'Fanatic') > 0;
+}
+
+export function isImmuneToFanaticFear(character: Character): boolean {
+  return hasFanatic(character);
+}
+
+/**
+ * Terror X — Psychology
+ * QSR: Enemy models within X MU that fail Morale Tests against this character
+ *      receive +1 Fear token.
+ */
+export function getTerrorLevel(character: Character): number {
+  return getCharacterTraitLevel(character, 'Terror');
+}
+
+export function hasTerror(character: Character): boolean {
+  return getTerrorLevel(character) > 0;
+}
+
+export interface TerrorEffectResult {
+  additionalFearTokens: number;
+  withinTerrorRange: boolean;
+}
+
+export function checkTerrorEffect(
+  terrorCharacter: Character,
+  targetCharacter: Character,
+  getCharacterPosition: (character: Character) => { x: number; y: number } | undefined
+): TerrorEffectResult {
+  const terrorLevel = getTerrorLevel(terrorCharacter);
+  
+  if (terrorLevel <= 0) {
+    return { additionalFearTokens: 0, withinTerrorRange: false };
+  }
+  
+  const terrorPos = getCharacterPosition(terrorCharacter);
+  const targetPos = getCharacterPosition(targetCharacter);
+  
+  if (!terrorPos || !targetPos) {
+    return { additionalFearTokens: 0, withinTerrorRange: false };
+  }
+  
+  const distance = Math.sqrt(
+    Math.pow(targetPos.x - terrorPos.x, 2) +
+    Math.pow(targetPos.y - terrorPos.y, 2)
+  );
+  
+  if (distance <= terrorLevel) {
+    return { additionalFearTokens: 1, withinTerrorRange: true };
+  }
+  
+  return { additionalFearTokens: 0, withinTerrorRange: false };
+}
+
+/**
+ * Hatred X — Psychology
+ * QSR: When engaged with hated enemy type, receive +Xb to Close Combat Hit Tests.
+ */
+export function getHatredLevel(character: Character, enemyType?: string): number {
+  // Hatred is typically specified with a target type (e.g., "Hatred (Orcs)")
+  // For simplicity, check general Hatred level
+  return getCharacterTraitLevel(character, 'Hatred');
+}
+
+export function hasHatred(character: Character): boolean {
+  return getHatredLevel(character) > 0;
+}
+
+export interface HatredBonusResult {
+  bonusBaseDice: number;
+  hatredActive: boolean;
+}
+
+export function getHatredBonus(
+  character: Character,
+  isEngagedWithHatedEnemy: boolean
+): HatredBonusResult {
+  const hatredLevel = getHatredLevel(character);
+  
+  if (hatredLevel <= 0 || !isEngagedWithHatedEnemy) {
+    return { bonusBaseDice: 0, hatredActive: false };
+  }
+  
+  return { bonusBaseDice: hatredLevel, hatredActive: true };
+}
+
+// ============================================================================
+// CLIMBING AND JUMPING (Agility)
+// ============================================================================
+
+/**
+ * Climbing — Agility Action
+ * QSR: Climb vertical surfaces using Agility. 
+ *      Climb distance = Agility in MU.
+ *      Difficult climbs may require Unopposed Agility Test.
+ */
+export interface ClimbResult {
+  success: boolean;
+  distanceClimbed: number;
+  agilityUsed: number;
+  testRequired: boolean;
+  testPassed?: boolean;
+}
+
+export function calculateClimbDistance(
+  character: Character,
+  climbDifficulty: 'easy' | 'normal' | 'difficult' = 'normal',
+  agilityTestRolls?: number[]
+): ClimbResult {
+  const agility = character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+  const climbDistance = agility; // Base climb distance = Agility
+  
+  // Difficult climbs require Agility Test
+  const testRequired = climbDifficulty === 'difficult';
+  let testPassed = !testRequired;
+  
+  if (testRequired && agilityTestRolls && agilityTestRolls.length > 0) {
+    // Simple unopposed test vs. System (2 Base + 2)
+    const systemScore = 4;
+    let characterScore = 0;
+    
+    for (const roll of agilityTestRolls) {
+      if (roll >= 6) characterScore += 2;
+      else if (roll >= 4) characterScore += 1;
+    }
+    characterScore += agility;
+    
+    testPassed = characterScore >= systemScore;
+  }
+  
+  return {
+    success: testPassed,
+    distanceClimbed: testPassed ? climbDistance : 0,
+    agilityUsed: agility,
+    testRequired,
+    testPassed,
+  };
+}
+
+/**
+ * Jump Up/Down/Across — Agility Action
+ * QSR: Jump using Agility. Distance based on Agility and jump type.
+ */
+export interface JumpResult {
+  success: boolean;
+  distanceJumped: number;
+  jumpType: 'up' | 'down' | 'across';
+  agilityUsed: number;
+  testRequired: boolean;
+  testPassed?: boolean;
+}
+
+export function calculateJump(
+  character: Character,
+  jumpType: 'up' | 'down' | 'across',
+  jumpDistance: number,
+  agilityTestRolls?: number[]
+): JumpResult {
+  const agility = character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+  
+  // Base jump distances
+  let maxJumpDistance: number;
+  let testRequired = false;
+  
+  switch (jumpType) {
+    case 'up':
+      maxJumpDistance = Math.ceil(agility / 2); // Half Agility for vertical jump
+      testRequired = jumpDistance > 1;
+      break;
+    case 'down':
+      maxJumpDistance = agility * 2; // Double Agility for downward jump
+      testRequired = jumpDistance > agility;
+      break;
+    case 'across':
+      maxJumpDistance = agility; // Full Agility for horizontal jump
+      testRequired = jumpDistance > Math.ceil(agility / 2);
+      break;
+  }
+  
+  let testPassed = !testRequired;
+  
+  if (testRequired && agilityTestRolls && agilityTestRolls.length > 0) {
+    // Unopposed Agility Test
+    const systemScore = 4;
+    let characterScore = 0;
+    
+    for (const roll of agilityTestRolls) {
+      if (roll >= 6) characterScore += 2;
+      else if (roll >= 4) characterScore += 1;
+    }
+    characterScore += agility;
+    
+    testPassed = characterScore >= systemScore;
+  }
+  
+  return {
+    success: testPassed && jumpDistance <= maxJumpDistance,
+    distanceJumped: testPassed ? jumpDistance : 0,
+    jumpType,
+    agilityUsed: agility,
+    testRequired,
+    testPassed,
+  };
+}
+
+/**
+ * Running Jump — Agility Action
+ * QSR: Jump with running start. +X" bonus based on movement.
+ */
+export function calculateRunningJump(
+  character: Character,
+  jumpType: 'up' | 'down' | 'across',
+  runDistance: number,
+  targetDistance: number,
+  agilityTestRolls?: number[]
+): JumpResult {
+  const agility = character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+  
+  // Running start provides bonus
+  const runningBonus = Math.floor(runDistance / 2); // +1" per 2" run
+  
+  // Calculate effective jump distance
+  let baseJumpDistance: number;
+  switch (jumpType) {
+    case 'up':
+      baseJumpDistance = Math.ceil(agility / 2) + runningBonus;
+      break;
+    case 'down':
+      baseJumpDistance = (agility * 2) + runningBonus;
+      break;
+    case 'across':
+      baseJumpDistance = agility + runningBonus;
+      break;
+  }
+  
+  const testRequired = targetDistance > baseJumpDistance * 0.75;
+  let testPassed = !testRequired;
+  
+  if (testRequired && agilityTestRolls && agilityTestRolls.length > 0) {
+    const systemScore = 4;
+    let characterScore = 0;
+    
+    for (const roll of agilityTestRolls) {
+      if (roll >= 6) characterScore += 2;
+      else if (roll >= 4) characterScore += 1;
+    }
+    characterScore += agility;
+    
+    testPassed = characterScore >= systemScore;
+  }
+  
+  return {
+    success: testPassed && targetDistance <= baseJumpDistance,
+    distanceJumped: testPassed ? targetDistance : 0,
+    jumpType,
+    agilityUsed: agility,
+    testRequired,
+    testPassed,
+  };
+}
+
+/**
+ * Check if character has [Lumbering] trait (cannot climb/jump)
+ * Note: This function is defined earlier in the file
+ */
+
+export function canClimbOrJump(character: Character): boolean {
+  // [Lumbering] trait prevents climbing and jumping
+  return !hasLumbering(character);
+}
+
+/**
+ * Get Agility value for a character
+ * QSR: Agility = half of MOV in MU (unless modified)
+ */
+export function getAgility(character: Character): number {
+  const mov = character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+  return Math.floor(mov / 2);
 }
 
 // ============================================================================
@@ -1637,14 +2230,6 @@ export function getSurefootedTerrainBonus(
  */
 export function getTacticsLevel(character: Character): number {
   return getCharacterTraitLevel(character, 'Tactics');
-}
-
-export function getTacticsInitiativeBonus(character: Character): number {
-  return getTacticsLevel(character); // +X Base dice for Initiative Tests
-}
-
-export function getTacticsSituationalAwarenessExemption(character: Character): number {
-  return getTacticsLevel(character); // Avoid X Turns of Situational Awareness checks
 }
 
 // ============================================================================

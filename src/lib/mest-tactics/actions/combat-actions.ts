@@ -28,6 +28,17 @@ import {
   getUnarmedHitPenalty,
   getUnarmedDamagePenalty,
   getAcrobaticBonusDice,
+  hasBurst,
+  getBurstBonus,
+  hasFeed,
+  checkFeedJam,
+  hasJam,
+  checkJam,
+  isWeaponJammed,
+  setWeaponJammed,
+  getMultipleAttackPenalty,
+  recordWeaponUse,
+  isMultipleAttackExempt,
 } from '../traits/combat-traits';
 
 export interface CombatActionDeps {
@@ -170,6 +181,44 @@ export function executeRangedAttack(
     mergedContext.isDefending = true;
   }
 
+  // Multiple Attack Penalty: -1m for using same weapon consecutively
+  // Natural weapons and Natural Weapon trait are exempt
+  let weaponJammed = false;
+  let multipleAttackPenalty = 0;
+  let burstBonusBase = 0;
+  
+  // Determine weapon index (simplified: use 0 for primary weapon)
+  const weaponIndex = 0;
+  
+  if (!isMultipleAttackExempt(attacker, weaponIndex)) {
+    const penaltyResult = getMultipleAttackPenalty(attacker, weaponIndex);
+    multipleAttackPenalty = penaltyResult.penalty;
+    if (multipleAttackPenalty > 0) {
+      mergedContext.multipleAttackPenalty = multipleAttackPenalty;
+    }
+  }
+  
+  // [Burst] trait: +1b to Hit Test
+  if (hasBurst(attacker, weaponIndex)) {
+    const burstResult = getBurstBonus(attacker, weaponIndex);
+    burstBonusBase = burstResult.bonusBaseDice;
+    if (burstBonusBase > 0) {
+      mergedContext.burstBonusBase = burstBonusBase;
+    }
+  }
+  
+  // Check for weapon jam before attack ([Feed], [Jam], [Burst] traits)
+  if (isWeaponJammed(attacker, weaponIndex)) {
+    // Weapon is jammed, cannot attack
+    return {
+      result: { hit: false, hitTestResult: { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: {} } },
+      context: mergedContext,
+      friendlyFire,
+      takeCover: takeCoverResult,
+      weaponJammed: true,
+    };
+  }
+
   const { hitTestResult, context: resolvedContext } = resolveRangedCombatHitTest(
     attacker,
     defender,
@@ -178,6 +227,36 @@ export function executeRangedAttack(
     mergedContext,
     spatial
   );
+  
+  // Record weapon use for Multiple Attack Penalty tracking
+  recordWeaponUse(attacker, weaponIndex);
+  
+  // Check for [Feed] jam (jams on roll of 1 on any attack die)
+  if (hasFeed(attacker, weaponIndex) && hitTestResult.p1Rolls) {
+    const feedResult = checkFeedJam(hitTestResult.p1Rolls);
+    if (feedResult.jammed) {
+      weaponJammed = true;
+      setWeaponJammed(attacker, weaponIndex);
+    }
+  }
+  
+  // Check for [Burst] jam (jams on roll of 1 on any attack die)
+  if (hasBurst(attacker, weaponIndex) && hitTestResult.p1Rolls) {
+    const feedResult = checkFeedJam(hitTestResult.p1Rolls);
+    if (feedResult.jammed) {
+      weaponJammed = true;
+      setWeaponJammed(attacker, weaponIndex);
+    }
+  }
+  
+  // Check for [Jam] trait (random jam chance after attack)
+  if (hasJam(attacker, weaponIndex) && !weaponJammed) {
+    const jamResult = checkJam();
+    if (jamResult.jammed) {
+      weaponJammed = true;
+      setWeaponJammed(attacker, weaponIndex);
+    }
+  }
 
   if (!hitTestResult.pass) {
     if (options.defend && defender.state.isAttentive) {
@@ -188,6 +267,8 @@ export function executeRangedAttack(
       context: resolvedContext,
       friendlyFire,
       takeCover: takeCoverResult,
+      weaponJammed,
+      multipleAttackPenalty,
     };
   }
 
@@ -266,6 +347,8 @@ export function executeRangedAttack(
     takeCover: takeCoverResult,
     bonusActionOptions,
     bonusActionOutcome,
+    weaponJammed,
+    multipleAttackPenalty,
   };
 }
 

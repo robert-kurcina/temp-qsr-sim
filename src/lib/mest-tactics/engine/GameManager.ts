@@ -2,7 +2,7 @@ import { Character } from '../core/Character';
 import { CharacterStatus, TurnPhase } from '../core/types';
 import { Battlefield } from '../battlefield/Battlefield';
 import { Position } from '../battlefield/Position';
-import { getTacticsInitiativeBonus, getTacticsSituationalAwarenessExemption } from '../traits/combat-traits';
+import { getTacticsInitiativeBonus, getTacticsSituationalAwarenessExemption, resetMultipleAttackTracking } from '../traits/combat-traits';
 import { Item } from '../core/Item';
 import { TestContext } from '../utils/TestContext';
 import { ActionContextInput, CloseCombatContextInput } from '../battlefield/action-context';
@@ -396,6 +396,8 @@ export class GameManager {
       }
       this.apRemaining.set(character.id, this.apPerActivation);
       character.resetInitiativeState();
+      // Reset Multiple Attack Penalty tracking at start of each round (new Initiative)
+      resetMultipleAttackTracking(character);
     }
     this.phase = TurnPhase.Activation;
   }

@@ -23,6 +23,17 @@ import {
   hasBash,
   checkBashCascadeBonus,
 } from '../traits/combat-traits';
+import { Position } from '../battlefield/Position';
+
+// Export combat maneuver interfaces and functions
+export interface CombatManeuverResult {
+  maneuverType: 'push-back' | 'reversal' | 'pull-back';
+  success: boolean;
+  cascadesUsed: number;
+  newPosition?: Position;
+  attackerNewPosition?: Position;
+  defenderNewPosition?: Position;
+}
 
 // --- Main Attack Result Interface --- //
 
@@ -216,4 +227,165 @@ export function resolveCloseCombatHitTest(
 ) {
     const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, weapon, context);
     return resolveHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty, p1Rolls, p2Rolls);
+}
+
+// ============================================================================
+// COMBAT MANEUVERS
+// ============================================================================
+
+/**
+ * Combat Maneuvers (QSR)
+ * Spend cascades from successful Hit Test to perform special maneuvers
+ * before rolling Damage Test.
+ * 
+ * Maneuvers:
+ * - Push-back (1 cascade): Target 1" away (+1" per 2 additional cascades)
+ * - Reversal (2 cascades): Switch positions with attacker
+ * - Pull-back (1 cascade): Attacker 1" away after resolution
+ */
+
+export interface ManeuverOptions {
+  /** Number of cascades available to spend */
+  cascades: number;
+  /** Attacker's current position */
+  attackerPosition: Position;
+  /** Defender's current position */
+  defenderPosition: Position;
+  /** Direction to push (normalized vector) */
+  pushDirection?: { x: number; y: number };
+}
+
+/**
+ * Push-back Maneuver
+ * QSR: Spend 1 cascade to push target 1" away (+1" per 2 additional cascades)
+ */
+export function performPushBack(
+  options: ManeuverOptions
+): CombatManeuverResult {
+  const { cascades, defenderPosition, pushDirection } = options;
+  
+  if (cascades < 1) {
+    return {
+      maneuverType: 'push-back',
+      success: false,
+      cascadesUsed: 0,
+    };
+  }
+  
+  // Calculate push distance: 1" + 1" per 2 additional cascades
+  const additionalCascades = cascades - 1;
+  const bonusDistance = Math.floor(additionalCascades / 2);
+  const pushDistance = 1 + bonusDistance;
+  
+  // Default push direction (away from attacker)
+  const direction = pushDirection ?? { x: 1, y: 0 };
+  
+  // Normalize direction
+  const length = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
+  const normalizedDir = length > 0 
+    ? { x: direction.x / length, y: direction.y / length }
+    : { x: 1, y: 0 };
+  
+  // Calculate new position
+  const newDefenderPosition: Position = {
+    x: defenderPosition.x + normalizedDir.x * pushDistance,
+    y: defenderPosition.y + normalizedDir.y * pushDistance,
+  };
+  
+  return {
+    maneuverType: 'push-back',
+    success: true,
+    cascadesUsed: cascades,
+    defenderNewPosition: newDefenderPosition,
+  };
+}
+
+/**
+ * Reversal Maneuver
+ * QSR: Spend 2 cascades to switch positions with attacker
+ */
+export function performReversal(
+  options: ManeuverOptions
+): CombatManeuverResult {
+  const { cascades, attackerPosition, defenderPosition } = options;
+  
+  if (cascades < 2) {
+    return {
+      maneuverType: 'reversal',
+      success: false,
+      cascadesUsed: 0,
+    };
+  }
+  
+  // Switch positions
+  return {
+    maneuverType: 'reversal',
+    success: true,
+    cascadesUsed: 2,
+    attackerNewPosition: defenderPosition,
+    defenderNewPosition: attackerPosition,
+  };
+}
+
+/**
+ * Pull-back Maneuver
+ * QSR: Spend 1 cascade to move attacker 1" away after resolution
+ */
+export function performPullBack(
+  options: ManeuverOptions
+): CombatManeuverResult {
+  const { cascades, attackerPosition, pushDirection } = options;
+  
+  if (cascades < 1) {
+    return {
+      maneuverType: 'pull-back',
+      success: false,
+      cascadesUsed: 0,
+    };
+  }
+  
+  // Default pull direction (away from defender)
+  const direction = pushDirection ?? { x: -1, y: 0 };
+  
+  // Normalize direction
+  const length = Math.sqrt(direction.x * direction.x + direction.y * direction.y);
+  const normalizedDir = length > 0 
+    ? { x: direction.x / length, y: direction.y / length }
+    : { x: -1, y: 0 };
+  
+  // Calculate new position (1" away)
+  const newAttackerPosition: Position = {
+    x: attackerPosition.x + normalizedDir.x * 1,
+    y: attackerPosition.y + normalizedDir.y * 1,
+  };
+  
+  return {
+    maneuverType: 'pull-back',
+    success: true,
+    cascadesUsed: 1,
+    attackerNewPosition: newAttackerPosition,
+  };
+}
+
+/**
+ * Apply combat maneuver to character positions
+ */
+export function applyCombatManeuver(
+  maneuverResult: CombatManeuverResult,
+  setAttackerPosition: (position: Position) => void,
+  setDefenderPosition: (position: Position) => void
+): boolean {
+  if (!maneuverResult.success) {
+    return false;
+  }
+  
+  if (maneuverResult.attackerNewPosition) {
+    setAttackerPosition(maneuverResult.attackerNewPosition);
+  }
+  
+  if (maneuverResult.defenderNewPosition) {
+    setDefenderPosition(maneuverResult.defenderNewPosition);
+  }
+  
+  return true;
 }

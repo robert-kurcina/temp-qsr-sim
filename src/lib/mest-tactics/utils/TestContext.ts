@@ -45,6 +45,8 @@ export interface TestContext {
   delayTokensAdded?: number; // For stun damage
   blindersThrownPenalty?: number;
   reactPenaltyBase?: number;
+  multipleAttackPenalty?: number; // For the -1m Multiple Attack penalty
+  burstBonusBase?: number;  // For the +1b [Burst] trait bonus
 
   // --- Test Overrides ---
   isAutoPass?: boolean;

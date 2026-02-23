@@ -1,6 +1,6 @@
 import { Character } from '../core/Character';
 import { CharacterStatus } from '../core/types';
-import { checkSneakyAutoHide, getSneakyLevel } from '../traits/combat-traits';
+import { checkSneakyAutoHide, getSneakyLevel, resetMultipleAttackTracking } from '../traits/combat-traits';
 
 export interface ActivationDeps {
   apPerActivation: number;
