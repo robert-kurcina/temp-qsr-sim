@@ -19,7 +19,7 @@ When a character is declared as the target of a Close Combat or Range Combat Att
 *   **Effect:** The defending character receives a **+1b (Bonus Base Die)** on their Defender Hit Test against the incoming attack. This bonus is listed in the Situational Test Modifiers.
 *   **Cost:** After the attack is fully resolved, the defending character immediately acquires a **Delay token**. This represents their focus on pure defense at the expense of their readiness to act.
 
-## 2. Reacts ()
+## 2. Reacts (▲)
 
 Reactions, or “Reacts,” are special actions that allow a player to interrupt an Opposing character's action. The character performing the React temporarily becomes the Active character.
 

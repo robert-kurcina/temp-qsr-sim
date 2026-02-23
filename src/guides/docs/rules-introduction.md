@@ -28,4 +28,4 @@ For these QSR rules, the goal is; create an “assembly” of combatants for eac
 
 ## How to Learn?
 
-Scan through the rules. Try them out. Make mistakes. Do it again. Afterwards, try out the Intermediate and Advanced rules which are marked with triangles () and ().
+Scan through the rules. Try them out. Make mistakes. Do it again. Afterwards, try out the Intermediate and Advanced rules which are marked with triangles () and (▲).

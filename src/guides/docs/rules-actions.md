@@ -40,11 +40,11 @@ Actions are classified as Simple, Special, Complex and their frequency of use fo
 
 Once per Initiative, at the option of the player; Active characters having no Delay tokens may use “Pushing” to push themselves to their limit and acquire 1 AP. They will also immediately acquire a Delay token.
 
-### Reacts ()
+### Reacts (▲)
 
 Individual Actions may be interrupted by Opposing models which use Reacts; allow each player time to announce any Reacts. See the section on Reacts for more information.
 
-### Using Agility ()
+### Using Agility (▲)
 
 Agility is a feature of Movement actions which can be used during actions to navigate difficult or unusual terrain. A character normally has Agility equal to half of MOV in MU.
 
@@ -99,7 +99,7 @@ See the section on Performing Movement Actions on how to use Agility.
     *   If the target was KO’d, spend a cascade to right the model and identify it as Done. Assign it as many Delay tokens as its SIZ, but at least two. Replace all but two of the Delay tokens with Wound tokens.
     *   Spend 1 cascade to remove each Delay token, and spend 2 cascades to remove each Wound token.
     *   Characters may only benefit from Revive once per Turn.
-*   **Combined ()** — Pay 2 AP. Perform a Move action and then perform any other Action or actions that total 1 AP or less at any time during that move. Allow use of Pushing during this action. Place a pawn as a reminder of the location where it started movement.
+*   **Combined (▲)** — Pay 2 AP. Perform a Move action and then perform any other Action or actions that total 1 AP or less at any time during that move. Allow use of Pushing during this action. Place a pawn as a reminder of the location where it started movement.
 
 ## Complex Actions
 
@@ -115,7 +115,7 @@ See the section on Performing Movement Actions on how to use Agility.
 *   **Detect** — The first Detect costs zero AP. Otherwise 1 AP. If Free perform a Detect Test as an Opposed REF Test against a Hidden target within LOS to remove its Hidden status and make it Revealed.
     *   Detect OR is equal to Visibility.
     *   Apply Situational Test Modifiers as necessary.
-*   **Wait ()** — Pay 2 AP if not Outnumbered to acquire Wait status and marker. Remove at the start of this character's next Initiative. If already in Wait status at the start of Initiative, pay 1 AP to maintain if Free, otherwise must remove.
+*   **Wait (▲)** — Pay 2 AP if not Outnumbered to acquire Wait status and marker. Remove at the start of this character's next Initiative. If already in Wait status at the start of Initiative, pay 1 AP to maintain if Free, otherwise must remove.
     *   During Wait status, may remove it to perform a React. Even when in Done status.
     *   While in Wait status, double Visibility OR. All Hidden Opposing models in LOS but not in Cover are immediately Revealed.
     *   When in Wait status, and involuntarily acquire a Delay token, must remove both instead.
