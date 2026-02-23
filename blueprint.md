@@ -847,7 +847,65 @@ After completing the `src/lib/mest-tactics/` restructure, the root directory sti
 
 ---
 
-## 17. Current Status
+## 17. Running AI vs AI Games
+
+The simulator supports full AI vs AI game simulations through the test infrastructure.
+
+### Available Game Simulations
+
+**Elimination Mission (QAI_1):**
+```bash
+npx vitest src/lib/mest-tactics/missions/elimination.test.ts --reporter=verbose
+```
+
+**All Missions:**
+```bash
+npx vitest src/lib/mest-tactics/missions/ --reporter=verbose
+```
+
+**Full Battle Simulation:**
+```bash
+npx vitest src/lib/mest-tactics/bottle-tests.test.ts --reporter=verbose
+```
+
+### Game Size Support
+
+| Size | Models/Side | BP/Side | Battlefield | Turns |
+|------|-------------|---------|-------------|-------|
+| Skirmish | 2-4 | 125-250 | 18×18 MU | 3 |
+| Small | 4-8 | 250-500 | 24×24 MU | 4 |
+| Medium | 6-12 | 500-750 | 36×36 MU | 6 |
+| Large | 8-16 | 750-1000 | 48×48 MU | 8 |
+| Epic | 16-32 | 1000-2000 | 60×60 MU | 10 |
+
+### Supported Missions
+
+| ID | Name | Sides | Type |
+|----|------|-------|------|
+| QAI_1 | Elimination | 2 | Standard |
+| QAI_12 | Convergence | 2-4 | Multi-sided |
+| QAI_13 | Assault | 2 | Asymmetric |
+| QAI_14 | Dominion | 2 | Zone Control |
+| QAI_15 | Recovery | 2 | Extraction |
+| QAI_16 | Escort | 2 | VIP Protection |
+| QAI_17 | Triumvirate | 3 | Free-for-all |
+| QAI_18 | Stealth | 2 | Infiltration |
+| QAI_19 | Defiance | 2 | Last Stand |
+| QAI_20 | Breach | 2 | Objective |
+
+### Test Coverage
+
+- **823 unit tests** covering all game systems
+- **64 test files** organized by module
+- **10 mission implementations** with full game logic
+- **Battlefield simulation** with terrain, LOS, engagement
+- **Combat resolution** (close combat, ranged, indirect)
+- **Status tracking** (wounds, fear, delay, KO, elimination)
+- **Victory conditions** and scoring
+
+---
+
+## 18. Current Status
 
 ### Completed (Phases 1-2)
 - ✅ Spatial awareness system (model registry, LOS, engagement, cover)
