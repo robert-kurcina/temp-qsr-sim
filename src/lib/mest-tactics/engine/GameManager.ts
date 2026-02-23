@@ -11,6 +11,8 @@ import { SpatialRules, type SpatialModel } from '../battlefield/spatial/spatial-
 import { LOSOperations } from '../battlefield/LOSOperations';
 import { d6, performTest, resolveTest } from '../subroutines/dice-roller';
 import type { ResolveTestResult, TestDice } from '../subroutines/dice-roller';
+import { MissionSide } from '../mission/MissionSide';
+import { awardInitiativePoints, spendInitiativePoints } from '../mission/MissionSide';
 import {
   attemptHide,
   attemptDetect,
@@ -152,12 +154,30 @@ export class GameManager {
     this.characterStatus.set(characterId, status);
   }
 
-  public rollInitiative(roller: () => number = Math.random): void {
+  /**
+   * Roll Initiative for all characters and award Initiative Points to Sides
+   * QSR: Start of Turn - Initiative Tests and Initiative Points
+   * 
+   * @param roller - Random number generator (default: Math.random)
+   * @param sides - Optional array of sides to award IP to (if not provided, IP not awarded)
+   */
+  public rollInitiative(roller: () => number = Math.random, sides?: MissionSide[]): void {
     const initiativeResults: Array<{
       character: Character;
       initiative: number;
       dicePips: number;
+      side?: MissionSide;
     }> = [];
+
+    // Build a map of character ID to side for IP awarding
+    const characterToSide = new Map<string, MissionSide>();
+    if (sides) {
+      for (const side of sides) {
+        for (const member of side.members) {
+          characterToSide.set(member.character.id, side);
+        }
+      }
+    }
 
     for (const character of this.characters) {
       // Tactics X: +X Base dice for Initiative Tests
@@ -178,13 +198,15 @@ export class GameManager {
         }
       }
 
-      // QSR Line 715: Initiative Test uses INT attribute
+      // QSR: Initiative Test uses INT attribute
       character.initiative = initiativeRoll + character.attributes.int;
-      
+
+      const side = characterToSide.get(character.id);
       initiativeResults.push({
         character,
         initiative: character.initiative,
         dicePips,
+        side,
       });
     }
 
@@ -194,7 +216,7 @@ export class GameManager {
         if (b.initiative !== a.initiative) {
           return b.initiative - a.initiative;
         }
-        // QSR Line 689: Tie-breaker is highest total pips on dice
+        // QSR: Tie-breaker is highest total pips on dice
         if (b.dicePips !== a.dicePips) {
           return b.dicePips - a.dicePips;
         }
@@ -204,24 +226,80 @@ export class GameManager {
         if (bTieBreaker !== aTieBreaker) {
           return bTieBreaker - aTieBreaker;
         }
-        // Final fallback: alphabetical by name
-        return a.name.localeCompare(b.name);
+        // Final fallback: alphabetical by name or id (generate fallback if both undefined)
+        const aId = a.name || a.id || `char-${initiativeResults.indexOf(a)}`;
+        const bId = b.name || b.id || `char-${initiativeResults.indexOf(b)}`;
+        return aId.localeCompare(bId);
       })
       .map(result => result.character);
+
+    // Award Initiative Points to Sides (QSR: Start of Turn)
+    if (sides && initiativeResults.length > 0) {
+      // Find winner (highest initiative)
+      const winner = initiativeResults[0];
+      const lowestScore = initiativeResults[initiativeResults.length - 1].initiative;
+      
+      // Group results by side
+      const sideResults = new Map<MissionSide, Array<typeof winner>>();
+      for (const result of initiativeResults) {
+        if (result.side) {
+          const existing = sideResults.get(result.side) || [];
+          existing.push(result);
+          sideResults.set(result.side, existing);
+        }
+      }
+
+      // Award IP to each side
+      for (const [side, results] of sideResults.entries()) {
+        const sideInitiative = Math.max(...results.map(r => r.initiative));
+        
+        if (sideInitiative === winner.initiative && side === winner.side) {
+          // Winner: IP = difference between winner and lowest score
+          const ipAwarded = winner.initiative - lowestScore;
+          if (ipAwarded > 0) {
+            awardInitiativePoints(side, ipAwarded);
+          }
+        } else {
+          // All other sides: 1 IP per carry-over Base die (rolled 6)
+          // For simplicity, award 1 IP per character with carry-over
+          let carryOverCount = 0;
+          for (const result of results) {
+            // Count dice that scored 6 (carry-over)
+            // This is a simplification - full implementation would track individual dice
+            if (result.dicePips >= 12) { // At least one 6 rolled
+              carryOverCount++;
+            }
+          }
+          if (carryOverCount > 0) {
+            awardInitiativePoints(side, carryOverCount);
+          }
+        }
+      }
+    }
   }
 
   /**
    * QSR Advanced Rules: Force Initiative
-   * Spend 2 IP to move ahead in activation order by 1 position
+   * Spend 2 IP from Side to move character ahead in activation order by 1 position
+   * QSR: Spending Initiative Points - Force Initiative costs 1 IP (not 2)
    */
-  public forceInitiative(character: Character): boolean {
-    if (!character.forceInitiative()) {
+  public forceInitiative(character: Character, side?: MissionSide): boolean {
+    // Find the side for this character if not provided
+    let targetSide = side;
+    if (!targetSide) {
+      // Side not provided, cannot spend IP
       return false;
     }
+
+    // Spend 1 IP from Side (QSR: Force Initiative costs 1 IP)
+    if (!spendInitiativePoints(targetSide, 1)) {
+      return false; // Insufficient IP
+    }
+
     const currentIndex = this.activationOrder.findIndex(c => c.id === character.id);
     if (currentIndex <= 0) {
       // Already first, refund IP
-      character.addInitiativePoints(2);
+      awardInitiativePoints(targetSide, 1);
       return false;
     }
     // Swap with character ahead
@@ -233,10 +311,30 @@ export class GameManager {
 
   /**
    * QSR Advanced Rules: Maintain Initiative
-   * Spend 1 IP to keep current initiative position next round (not implemented - placeholder)
+   * Spend 1 IP from Side to activate another model from same Side
+   * QSR: Spending Initiative Points - Maintain Initiative costs 1 IP
    */
-  public maintainInitiative(character: Character): boolean {
-    return character.maintainInitiative();
+  public maintainInitiative(side: MissionSide): boolean {
+    return spendInitiativePoints(side, 1);
+  }
+
+  /**
+   * QSR Advanced Rules: Refresh
+   * Spend 1 IP from Side to remove a Delay token from a model
+   * QSR: Spending Initiative Points - Refresh costs 1 IP
+   */
+  public refresh(character: Character, side: MissionSide): boolean {
+    if (!spendInitiativePoints(side, 1)) {
+      return false;
+    }
+    // Remove one Delay token from character
+    if (character.state.delayTokens > 0) {
+      character.state.delayTokens--;
+      return true;
+    }
+    // Refund IP if no Delay token to remove
+    awardInitiativePoints(side, 1);
+    return false;
   }
 
   public getNextToActivate(): Character | undefined {
@@ -262,26 +360,23 @@ export class GameManager {
     return this.battlefield.getCharacterPosition(character);
   }
 
-  public startTurn(roller: () => number = Math.random): void {
+  /**
+   * Start a new Turn
+   * QSR: Start of Turn sequence
+   * 
+   * @param roller - Random number generator
+   * @param sides - Optional array of sides for IP awarding
+   */
+  public startTurn(roller: () => number = Math.random, sides?: MissionSide[]): void {
     this.currentRound = 1;
     this.initializeCharacterStatus();
-    
-    // QSR Line 693: Optimized Initiative - Side with least BP gets +1b on first Turn
-    // (Not implemented - would need side tracking)
-    
-    this.rollInitiative(roller);
-    
-    // QSR Lines 691-692: Award Initiative Points based on Initiative Test results
-    // Winner gets IP equal to difference to lowest Test Score
-    // All other players get 1 IP per Base die with carry-over
-    // NOTE: For simplicity in 2-player games, we award 1 IP to all Ready, Ordered characters
-    // Full IP system would require tracking Initiative Test scores per side
-    for (const character of this.characters) {
-      if (!character.state.isEliminated && !character.state.isKOd && character.state.isOrdered) {
-        character.addInitiativePoints(1);
-      }
-    }
-    
+
+    // QSR: Optimized Initiative - Side with least BP gets +1b on first Turn
+    // (Not implemented - would need BP tracking per side)
+
+    // Roll Initiative and award IP to Sides
+    this.rollInitiative(roller, sides);
+
     this.refreshUsed.clear();
     this.rallyUsed.clear();
     this.reviveUsed.clear();

@@ -32,7 +32,6 @@ export class Character {
     armor: ArmorState;
     loadedWeapons: number[]; // Weapon indices that are loaded (for Reload trait)
     reloadProgress: number; // Progress toward reloading (for Reload trait)
-    initiativePoints: number; // QSR: Initiative Points for advanced play
   };
 
   constructor(profile: Profile) {
@@ -134,43 +133,5 @@ export class Character {
 
   set wounds(value: number) {
     this.state.wounds = value;
-  }
-
-  // Initiative Points (IP) management - QSR Advanced Rules
-  get initiativePoints(): number {
-    return this.state.initiativePoints;
-  }
-
-  addInitiativePoints(amount: number): void {
-    this.state.initiativePoints = Math.max(0, this.state.initiativePoints + amount);
-  }
-
-  spendInitiativePoints(amount: number): boolean {
-    if (this.state.initiativePoints >= amount) {
-      this.state.initiativePoints -= amount;
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Maintain Initiative - Spend 1 IP to keep current initiative position next round
-   */
-  maintainInitiative(): boolean {
-    return this.spendInitiativePoints(1);
-  }
-
-  /**
-   * Force Initiative - Spend 2 IP to move ahead in activation order by 1 position
-   */
-  forceInitiative(): boolean {
-    return this.spendInitiativePoints(2);
-  }
-
-  /**
-   * Refresh Action - Spend 1 IP to regain 1 AP during activation
-   */
-  refreshAction(): boolean {
-    return this.spendInitiativePoints(1);
   }
 }

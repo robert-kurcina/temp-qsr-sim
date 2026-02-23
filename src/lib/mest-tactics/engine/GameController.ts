@@ -12,6 +12,7 @@ import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissi
 import { MissionScoreResult, buildMissionSideStatus } from '../missions/mission-scoring';
 import { BottleTestResult } from '../status/bottle-tests';
 import { MissionModel } from '../mission/mission-keys';
+import { createAIGameLoop, AIGameLoopConfig } from '../ai/executor/AIGameLoop';
 
 export interface ControllerLogEntry {
   turn: number;
@@ -33,6 +34,10 @@ export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
   endDieRolls?: number[];
   missionId?: string;
   missionEngine?: Omit<MissionEngineConfig, 'missionId' | 'sides' | 'gameSize'>;
+  /** Enable AI control for all sides */
+  enableAI?: boolean;
+  /** AI configuration (only used if enableAI is true) */
+  aiConfig?: Partial<AIGameLoopConfig>;
 }
 
 export interface MissionRunResult {
@@ -58,30 +63,39 @@ export class GameController {
 
   /**
    * Run a mission-based game with MissionSide objects.
-   * 
+   *
    * Note: This is a simplified implementation. Full mission features
    * (objective markers, POI control, VIP system, etc.) are handled
    * by the mission-flow system in ../missions/mission-flow.ts
+   *
+   * @param sides - The mission sides
+   * @param config - Mission configuration
+   * @returns Mission run result with log, state, and outcome
    */
   runMission(sides: MissionSide[], config: MissionRunConfig = {}): MissionRunResult {
     if (sides.length < 2 || sides.length > 4) {
       throw new Error('runMission supports 2-4 sides.');
     }
 
+    // Check if AI control is enabled
+    if (config.enableAI) {
+      return this.runMissionWithAI(sides, config);
+    }
+
     // Initialize mission flow state
     let state = initMissionFlow(sides, config);
-    
+
     // Extract characters from sides for gameplay
     const sideCharacters = sides.map(side => side.members.map(member => member.character));
     const sideIds = sides.map(side => side.id);
-    
+
     let ended = false;
 
     // Run turns with mission scoring
     this.runTurns(sideCharacters, config, bottleResults => {
       // Record bottle test results
       state = recordBottleResults(state, bottleResults);
-      
+
       // Check for game end
       const advance = advanceEndGameState(state, config.endDieRolls);
       state = advance.state;
@@ -100,7 +114,58 @@ export class GameController {
 
     // Calculate final scores
     const outcome = this.calculateMissionOutcome(sides, state);
-    
+
+    return { log: this.log, state, outcome };
+  }
+
+  /**
+   * Run a mission with AI control for all sides
+   */
+  private runMissionWithAI(sides: MissionSide[], config: MissionRunConfig): MissionRunResult {
+    // Initialize mission flow state
+    let state = initMissionFlow(sides, config);
+
+    // Create AI game loop
+    const aiConfig: Partial<AIGameLoopConfig> = {
+      enableStrategic: true,
+      enableTactical: true,
+      enableCharacterAI: true,
+      enableValidation: true,
+      enableReplanning: true,
+      verboseLogging: false,
+      ...config.aiConfig,
+    };
+
+    const aiLoop = createAIGameLoop(this.manager, this.battlefield, sides, aiConfig);
+
+    // Run AI game
+    const aiResult = aiLoop.runGame(config.maxTurns ?? 10);
+
+    // Update mission state with AI results
+    state.turn = aiResult.finalTurn;
+
+    // Log AI game summary
+    this.log.push({
+      turn: aiResult.finalTurn,
+      round: 0,
+      actor: 'AI',
+      action: 'GameComplete',
+      detail: `Actions: ${aiResult.totalActions}, Success: ${aiResult.successfulActions}, Failed: ${aiResult.failedActions}, Replanned: ${aiResult.replannedActions}`,
+    });
+
+    if (aiResult.endReason) {
+      this.log.push({
+        turn: aiResult.finalTurn,
+        round: 0,
+        actor: 'AI',
+        action: 'EndGame',
+        detail: aiResult.endReason,
+      });
+    }
+
+    // Calculate final scores
+    const outcome = this.calculateMissionOutcome(sides, state);
+
     return { log: this.log, state, outcome };
   }
 

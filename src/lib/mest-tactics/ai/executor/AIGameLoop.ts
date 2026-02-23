@@ -10,6 +10,7 @@
 import { Character } from '../core/Character';
 import { Battlefield } from '../battlefield/Battlefield';
 import { GameManager } from '../engine/GameManager';
+import { TurnPhase } from '../core';
 import { MissionSide } from '../mission/MissionSide';
 import { createAIExecutor, AIActionExecutor, AIExecutionContext } from './AIActionExecutor';
 import { createSideAI, SideAI } from '../strategic/SideAI';
@@ -191,9 +192,14 @@ export class AIGameLoop {
       replannedActions: 0,
     };
 
+    // Initialize turn - set up activation order via initiative
+    if (turn === 1 || this.manager.phase !== TurnPhase.Activation) {
+      this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn });
+    }
+
     // Get activation order from GameManager
     const activationOrder = this.manager.activationOrder;
-    
+
     for (const character of activationOrder) {
       if (character.state.isEliminated || character.state.isKOd) {
         continue;

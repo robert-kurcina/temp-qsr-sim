@@ -92,6 +92,8 @@ export interface MissionSide {
     eliminatedModels: string[];
     /** Victory points earned */
     victoryPoints: number;
+    /** Initiative Points held by this Side (QSR: Start of Turn) */
+    initiativePoints: number;
     /** Mission-specific state (flexible for different mission types) */
     missionState: Record<string, unknown>;
   };
@@ -178,6 +180,7 @@ export function createMissionSide(
       woundsThisTurn: 0,
       eliminatedModels: [],
       victoryPoints: 0,
+      initiativePoints: 0,
       missionState: {},
     },
     objectiveMarkerManager: new ObjectiveMarkerManager(),
@@ -505,4 +508,64 @@ export function getAvailableMarkers(side: MissionSide): ObjectiveMarker[] {
  */
 export function getDroppedMarkers(side: MissionSide): ObjectiveMarker[] {
   return side.objectiveMarkerManager.getDroppedMarkers();
+}
+
+// ============================================================================
+// Initiative Points Management (QSR: Start of Turn)
+// ============================================================================
+
+/**
+ * Award Initiative Points to a Side (QSR: Start of Turn)
+ * IP are awarded to the Side/Player, NOT to individual characters
+ */
+export function awardInitiativePoints(side: MissionSide, amount: number): void {
+  side.state.initiativePoints = Math.max(0, side.state.initiativePoints + amount);
+}
+
+/**
+ * Get current Initiative Points for a Side
+ */
+export function getInitiativePoints(side: MissionSide): number {
+  return side.state.initiativePoints;
+}
+
+/**
+ * Spend Initiative Points from a Side (QSR: Spending Initiative Points)
+ * Returns true if successful, false if insufficient IP
+ */
+export function spendInitiativePoints(side: MissionSide, amount: number): boolean {
+  if (side.state.initiativePoints >= amount) {
+    side.state.initiativePoints -= amount;
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Reset Initiative Points at End of Turn (QSR: End of Turn)
+ * All unspent IP are lost
+ */
+export function clearInitiativePoints(side: MissionSide): void {
+  side.state.initiativePoints = 0;
+}
+
+/**
+ * Maintain Initiative - Spend 1 IP to activate another model (QSR: Spending IP)
+ */
+export function maintainInitiative(side: MissionSide): boolean {
+  return spendInitiativePoints(side, 1);
+}
+
+/**
+ * Force Initiative - Spend 1 IP to pass Initiative to another Side (QSR: Spending IP)
+ */
+export function forceInitiative(side: MissionSide): boolean {
+  return spendInitiativePoints(side, 1);
+}
+
+/**
+ * Refresh - Spend 1 IP to remove a Delay token (QSR: Spending IP)
+ */
+export function refreshInitiative(side: MissionSide): boolean {
+  return spendInitiativePoints(side, 1);
 }
