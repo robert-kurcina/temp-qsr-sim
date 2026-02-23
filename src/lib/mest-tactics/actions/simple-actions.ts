@@ -88,6 +88,7 @@ export function executeFiddleAction(
     opponentRolls?: number[];
     usesOneLessHand?: boolean;
     reloadWeaponIndex?: number; // For Reload trait
+    helpingModels?: number; // For +1m Help bonus per model
   } = {}
 ) {
   const free = !deps.hasFiddleUsed(actor.id);
@@ -98,7 +99,7 @@ export function executeFiddleAction(
     }
   }
   deps.markFiddleUsed(actor.id);
-  
+
   // Reload trait: track reload progress
   if (options.reloadWeaponIndex !== undefined) {
     const reloadLevel = getReloadActionsRequired(actor);
@@ -107,7 +108,7 @@ export function executeFiddleAction(
       const currentReloadProgress = actor.state.reloadProgress ?? 0;
       const newProgress = currentReloadProgress + 1;
       actor.state.reloadProgress = newProgress;
-      
+
       if (newProgress >= reloadLevel) {
         // Reload complete
         setWeaponLoaded(actor, options.reloadWeaponIndex, true);
@@ -117,14 +118,22 @@ export function executeFiddleAction(
       return { success: true, reloadComplete: false, reloadProgress: newProgress, reloadRequired: reloadLevel };
     }
   }
-  
+
   if (!options.attribute || options.difficulty === undefined) {
     return { success: true };
   }
   const attributeValue = actor.finalAttributes[options.attribute] ?? 0;
   const penaltyDice = options.usesOneLessHand ? { base: 1 } : undefined;
+  
+  // QSR: Help - +1m per Free Attentive Ordered Friendly model in base-contact
+  // that is given a Delay token
+  const bonusDice: { modifier?: number } = {};
+  if (options.helpingModels && options.helpingModels > 0) {
+    bonusDice.modifier = options.helpingModels;
+  }
+  
   const result = resolveTest(
-    { attributeValue, penaltyDice },
+    { attributeValue, penaltyDice, bonusDice },
     { attributeValue: options.difficulty },
     options.rolls ?? null,
     options.opponentRolls ?? null

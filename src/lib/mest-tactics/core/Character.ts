@@ -32,6 +32,7 @@ export class Character {
     armor: ArmorState;
     loadedWeapons: number[]; // Weapon indices that are loaded (for Reload trait)
     reloadProgress: number; // Progress toward reloading (for Reload trait)
+    initiativePoints: number; // QSR: Initiative Points for advanced play
   };
 
   constructor(profile: Profile) {
@@ -84,6 +85,7 @@ export class Character {
       armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 },
       loadedWeapons: [],
       reloadProgress: 0,
+      initiativePoints: 0,
     };
     this.refreshStatusFlags();
   }
@@ -92,8 +94,16 @@ export class Character {
     const koOrElim = this.state.isKOd || this.state.isEliminated;
     this.state.isDistracted = this.state.delayTokens > 0;
     this.state.isDisordered = this.state.fearTokens >= 2;
-    this.state.isAttentive = !koOrElim && !this.state.isDistracted;
-    this.state.isOrdered = !koOrElim && !this.state.isDisordered;
+    
+    // QSR: 4+ Fear tokens = Eliminated (auto-elimination from panic)
+    if (this.state.fearTokens >= 4 && !this.state.isEliminated) {
+      this.state.isEliminated = true;
+      this.state.isAttentive = false;
+      this.state.isOrdered = false;
+    }
+    
+    this.state.isAttentive = !koOrElim && !this.state.isDistracted && !this.state.isEliminated;
+    this.state.isOrdered = !koOrElim && !this.state.isDisordered && !this.state.isEliminated;
     this.applyLadenEffects();
   }
 
@@ -124,5 +134,43 @@ export class Character {
 
   set wounds(value: number) {
     this.state.wounds = value;
+  }
+
+  // Initiative Points (IP) management - QSR Advanced Rules
+  get initiativePoints(): number {
+    return this.state.initiativePoints;
+  }
+
+  addInitiativePoints(amount: number): void {
+    this.state.initiativePoints = Math.max(0, this.state.initiativePoints + amount);
+  }
+
+  spendInitiativePoints(amount: number): boolean {
+    if (this.state.initiativePoints >= amount) {
+      this.state.initiativePoints -= amount;
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Maintain Initiative - Spend 1 IP to keep current initiative position next round
+   */
+  maintainInitiative(): boolean {
+    return this.spendInitiativePoints(1);
+  }
+
+  /**
+   * Force Initiative - Spend 2 IP to move ahead in activation order by 1 position
+   */
+  forceInitiative(): boolean {
+    return this.spendInitiativePoints(2);
+  }
+
+  /**
+   * Refresh Action - Spend 1 IP to regain 1 AP during activation
+   */
+  refreshAction(): boolean {
+    return this.spendInitiativePoints(1);
   }
 }

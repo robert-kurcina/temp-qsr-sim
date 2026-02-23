@@ -11,9 +11,9 @@ describe('GameManager', () => {
   let gameManager: GameManager;
 
   beforeEach(() => {
-    const makeProfile = (name: string, ref: number): Profile => ({
+    const makeProfile = (name: string, int: number): Profile => ({
       name,
-      archetype: { attributes: { cca: 0, rca: 0, ref, int: 0, pow: 0, str: 0, for: 0, mov: 0, siz: 3 } },
+      archetype: { attributes: { cca: 0, rca: 0, ref: 0, int, pow: 0, str: 0, for: 0, mov: 0, siz: 3 } },
       items: [],
       totalBp: 0,
       adjustedBp: 0,
@@ -43,8 +43,9 @@ describe('GameManager', () => {
   });
 
   it('should correctly identify the current character', () => {
-    const roller = () => 0; // initiative = 1 + REF
+    const roller = () => 0; // initiative = 1 + INT (QSR Line 715), dice pips = 2 each
     gameManager.rollInitiative(roller);
+    // With same dice rolls, Bravo has higher INT (4 vs 2) so wins
     const next = gameManager.getNextToActivate();
     expect(next?.name).toBe('Bravo');
   });
@@ -53,6 +54,7 @@ describe('GameManager', () => {
     const roller = () => 0;
     gameManager.rollInitiative(roller);
     const first = gameManager.getNextToActivate();
+    // With same dice rolls, Bravo has higher INT (4 vs 2) so wins
     expect(first?.name).toBe('Bravo');
     if (first) {
       gameManager.endActivation(first);
@@ -70,6 +72,7 @@ describe('GameManager', () => {
     if (second) gameManager.endActivation(second);
     expect(gameManager.isTurnOver()).toBe(true);
     gameManager.startRound();
+    // With same dice rolls, Bravo has higher INT (4 vs 2) so wins
     const next = gameManager.getNextToActivate();
     expect(next?.name).toBe('Bravo');
   });

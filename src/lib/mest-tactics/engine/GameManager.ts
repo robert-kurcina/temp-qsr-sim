@@ -60,6 +60,13 @@ import {
   setWaiting as runSetWaiting,
   spendAp as runSpendAp,
 } from '../actions/activation';
+import {
+  EndGameTriggerState,
+  EndGameTriggerResult,
+  createEndGameTriggerState,
+  rollEndGameTrigger,
+  DEFAULT_END_GAME_TRIGGER_TURN,
+} from './end-game-trigger';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -117,10 +124,12 @@ export class GameManager {
   private freeFiddleUsed: Set<string> = new Set();
   private reactedThisTurn: Set<string> = new Set();
   private reactingNow: Set<string> = new Set();
+  private endGameTriggerState: EndGameTriggerState;
 
-  constructor(characters: Character[], battlefield: Battlefield | null = null) {
+  constructor(characters: Character[], battlefield: Battlefield | null = null, endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN) {
     this.characters = characters;
     this.battlefield = battlefield;
+    this.endGameTriggerState = createEndGameTriggerState(endGameTriggerTurn);
     this.initializeCharacterStatus();
   }
 
@@ -144,15 +153,23 @@ export class GameManager {
   }
 
   public rollInitiative(roller: () => number = Math.random): void {
+    const initiativeResults: Array<{
+      character: Character;
+      initiative: number;
+      dicePips: number;
+    }> = [];
+
     for (const character of this.characters) {
       // Tactics X: +X Base dice for Initiative Tests
       const tacticsBonus = getTacticsInitiativeBonus(character);
-      
+
       // Roll 2 Base dice + Tactics bonus dice
       let initiativeRoll = 0;
+      let dicePips = 0;
       const totalDice = 2 + tacticsBonus;
       for (let i = 0; i < totalDice; i++) {
         const roll = Math.floor(roller() * 6) + 1;
+        dicePips += roll; // Track total pips for tie-breaker
         // Base dice: 4-5 = 1 success, 6 = 2 successes
         if (roll >= 6) {
           initiativeRoll += 2;
@@ -160,15 +177,66 @@ export class GameManager {
           initiativeRoll += 1;
         }
       }
+
+      // QSR Line 715: Initiative Test uses INT attribute
+      character.initiative = initiativeRoll + character.attributes.int;
       
-      character.initiative = initiativeRoll + character.attributes.ref;
+      initiativeResults.push({
+        character,
+        initiative: character.initiative,
+        dicePips,
+      });
     }
-    this.activationOrder = [...this.characters].sort((a, b) => {
-      if (b.initiative !== a.initiative) return b.initiative - a.initiative;
-      const refDiff = (b.attributes.ref ?? 0) - (a.attributes.ref ?? 0);
-      if (refDiff !== 0) return refDiff;
-      return a.name.localeCompare(b.name);
-    });
+
+    // Sort by initiative, then by dice pips (QSR tie-breaker)
+    this.activationOrder = initiativeResults
+      .sort((a, b) => {
+        if (b.initiative !== a.initiative) {
+          return b.initiative - a.initiative;
+        }
+        // QSR Line 689: Tie-breaker is highest total pips on dice
+        if (b.dicePips !== a.dicePips) {
+          return b.dicePips - a.dicePips;
+        }
+        // If still tied, re-roll tie-breaker with d6
+        const aTieBreaker = Math.floor(roller() * 6) + 1;
+        const bTieBreaker = Math.floor(roller() * 6) + 1;
+        if (bTieBreaker !== aTieBreaker) {
+          return bTieBreaker - aTieBreaker;
+        }
+        // Final fallback: alphabetical by name
+        return a.name.localeCompare(b.name);
+      })
+      .map(result => result.character);
+  }
+
+  /**
+   * QSR Advanced Rules: Force Initiative
+   * Spend 2 IP to move ahead in activation order by 1 position
+   */
+  public forceInitiative(character: Character): boolean {
+    if (!character.forceInitiative()) {
+      return false;
+    }
+    const currentIndex = this.activationOrder.findIndex(c => c.id === character.id);
+    if (currentIndex <= 0) {
+      // Already first, refund IP
+      character.addInitiativePoints(2);
+      return false;
+    }
+    // Swap with character ahead
+    const temp = this.activationOrder[currentIndex - 1];
+    this.activationOrder[currentIndex - 1] = character;
+    this.activationOrder[currentIndex] = temp;
+    return true;
+  }
+
+  /**
+   * QSR Advanced Rules: Maintain Initiative
+   * Spend 1 IP to keep current initiative position next round (not implemented - placeholder)
+   */
+  public maintainInitiative(character: Character): boolean {
+    return character.maintainInitiative();
   }
 
   public getNextToActivate(): Character | undefined {
@@ -202,6 +270,14 @@ export class GameManager {
     this.rallyUsed.clear();
     this.reviveUsed.clear();
     this.reactedThisTurn.clear();
+    
+    // QSR Advanced Rules: Award 1 Initiative Point to each Ready, Ordered character
+    for (const character of this.characters) {
+      if (!character.state.isEliminated && !character.state.isKOd && character.state.isOrdered) {
+        character.addInitiativePoints(1);
+      }
+    }
+    
     this.phase = TurnPhase.Activation;
   }
 
@@ -258,6 +334,49 @@ export class GameManager {
     this.phase = TurnPhase.TurnEnd;
   }
 
+  /**
+   * QSR: Check for end-game trigger at the end of a turn
+   * Roll end-game dice if at or past the trigger turn
+   */
+  public checkEndGameTrigger(roller: () => number = Math.random): EndGameTriggerResult {
+    const result = rollEndGameTrigger(
+      this.endGameTriggerState,
+      this.currentTurn,
+      roller
+    );
+    
+    // Update state with new dice count
+    this.endGameTriggerState.endDice = result.endDice;
+    
+    if (result.gameEnded) {
+      this.endGameTriggerState.gameEnded = true;
+      this.endGameTriggerState.endReason = result.reason;
+    }
+    
+    return result;
+  }
+
+  /**
+   * Get the current end-game trigger state
+   */
+  public getEndGameTriggerState(): EndGameTriggerState {
+    return { ...this.endGameTriggerState };
+  }
+
+  /**
+   * Check if game has ended
+   */
+  public isGameEnded(): boolean {
+    return this.endGameTriggerState.gameEnded;
+  }
+
+  /**
+   * Get the reason for game end
+   */
+  public getGameEndReason(): string | undefined {
+    return this.endGameTriggerState.endReason;
+  }
+
   public advancePhase(options: { roller?: () => number; roundsPerTurn?: number } = {}): TurnPhase {
     const roundsPerTurn = Math.max(1, options.roundsPerTurn ?? this.roundsPerTurn);
     const roller = options.roller ?? Math.random;
@@ -281,6 +400,11 @@ export class GameManager {
         this.startRound();
         return this.phase;
       case TurnPhase.TurnEnd:
+        // QSR: Check for end-game trigger dice at end of turn
+        const endGameResult = this.checkEndGameTrigger(roller);
+        if (endGameResult.gameEnded) {
+          return this.phase; // Game ended, stay in TurnEnd phase
+        }
         this.nextTurn();
         return this.phase;
       default:

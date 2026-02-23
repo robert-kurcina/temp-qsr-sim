@@ -63,7 +63,17 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
         }
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + obscuredPenalty;
     }
-    
+
+    // QSR: Elevation - +1m if higher than opponent by 1" for every 1" away
+    if (context.hasElevationAdvantage) {
+        attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
+    }
+
+    // QSR: Confined - -1m if Confined by Terrain (vertically, horizontally, or behind)
+    if (context.isConfined) {
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+    }
+
     // Distance Penalty (ORM)
     if (context.orm && context.orm > 0) {
         // Detect X: Increase Maximum OR Multiple by X

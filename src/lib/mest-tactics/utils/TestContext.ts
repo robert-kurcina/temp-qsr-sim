@@ -27,6 +27,7 @@ export interface TestContext {
   orm?: number;             // For the -1m Distance penalty per ORM
   isPointBlank?: boolean;    // For the +1m Point-Blank bonus
   elevationAdvantage?: number; // For the +1m Elevation bonus
+  hasElevationAdvantage?: boolean; // Alias for elevationAdvantage > 0
   obscuringModels?: number; // For the -1m Obscured penalty
   isLeaning?: boolean;      // For the -1b Leaning penalty (active character)
   isTargetLeaning?: boolean;// For the -1b Leaning penalty (passive character)

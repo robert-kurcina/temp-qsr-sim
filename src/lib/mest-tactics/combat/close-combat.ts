@@ -103,6 +103,11 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
         attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
     }
 
+    // QSR: Confined - -1m if Confined by Terrain (vertically, horizontally, or behind)
+    if (context.isConfined) {
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+    }
+
     return { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty };
 }
 
