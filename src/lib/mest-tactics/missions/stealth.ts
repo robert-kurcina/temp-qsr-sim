@@ -1,16 +1,16 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from '../mission-definitions';
 
 /**
- * QAI Mission 18: Ghost Protocol
- * 
+ * QAI Mission 18: Stealth
+ *
  * Infiltrate enemy territory and extract intelligence (VIP) without being detected.
  * VIP starts hidden and must reach extraction point.
  * Detection triggers enemy reinforcements.
  * Stealth and timing are key to success.
  */
-export const GhostProtocolMission: MissionDefinition = {
+export const StealthMission: MissionDefinition = {
   id: 'QAI_18',
-  name: 'Ghost Protocol',
+  name: 'Stealth',
   description: 'Infiltrate enemy territory and extract intelligence (VIP) without being detected. VIP starts hidden and must reach extraction point.',
   minSides: 2,
   maxSides: 2,
@@ -20,7 +20,7 @@ export const GhostProtocolMission: MissionDefinition = {
       type: VictoryConditionType.VIPExtracted,
       side: 'any',
       instantWin: true,
-      description: 'Successfully extract your VIP via ghost protocol',
+      description: 'Successfully extract your VIP via stealth',
     },
     {
       type: VictoryConditionType.VIPEliminated,
@@ -140,15 +140,15 @@ export const GhostProtocolMission: MissionDefinition = {
 };
 
 /**
- * Get the Ghost Protocol mission definition
+ * Get the Stealth mission definition
  */
-export function getGhostProtocolMission(): MissionDefinition {
-  return GhostProtocolMission;
+export function getStealthMission(): MissionDefinition {
+  return StealthMission;
 }
 
 /**
- * Check if a mission is the Ghost Protocol mission
+ * Check if a mission is the Stealth mission
  */
-export function isGhostProtocolMission(missionId: string): boolean {
+export function isStealthMission(missionId: string): boolean {
   return missionId === 'QAI_18';
 }

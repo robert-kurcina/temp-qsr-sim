@@ -1,16 +1,16 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from '../mission-definitions';
 
 /**
- * QAI Mission 20: Switchback
- * 
+ * QAI Mission 20: Breach
+ *
  * Control objective markers that switch allegiance over time.
  * Markers change control automatically at certain turns.
  * Adapt your strategy as the battlefield shifts.
  * Most control at game end wins.
  */
-export const SwitchbackMission: MissionDefinition = {
+export const BreachMission: MissionDefinition = {
   id: 'QAI_20',
-  name: 'Switchback',
+  name: 'Breach',
   description: 'Control objective markers that switch allegiance over time. Markers change control automatically at certain turns.',
   minSides: 2,
   maxSides: 4,
@@ -115,15 +115,15 @@ export const SwitchbackMission: MissionDefinition = {
 };
 
 /**
- * Get the Switchback mission definition
+ * Get the Breach mission definition
  */
-export function getSwitchbackMission(): MissionDefinition {
-  return SwitchbackMission;
+export function getBreachMission(): MissionDefinition {
+  return BreachMission;
 }
 
 /**
- * Check if a mission is the Switchback mission
+ * Check if a mission is the Breach mission
  */
-export function isSwitchbackMission(missionId: string): boolean {
+export function isBreachMission(missionId: string): boolean {
   return missionId === 'QAI_20';
 }

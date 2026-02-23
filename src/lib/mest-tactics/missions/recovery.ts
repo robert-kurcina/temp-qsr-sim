@@ -1,16 +1,16 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from '../mission-definitions';
 
 /**
- * QAI Mission 15: Extraction Point
- * 
+ * QAI Mission 15: Recovery
+ *
  * Extract VIPs from designated extraction zones while preventing enemy extraction.
  * VIPs must reach extraction zones and spend actions to extract.
  * Enemy can intercept and eliminate VIPs.
  * First to extract their VIP OR most VP at game end wins.
  */
-export const ExtractionPointMission: MissionDefinition = {
+export const RecoveryMission: MissionDefinition = {
   id: 'QAI_15',
-  name: 'Extraction Point',
+  name: 'Recovery',
   description: 'Extract VIPs from designated extraction zones while preventing enemy extraction. VIPs must reach extraction zones and spend actions to extract.',
   minSides: 2,
   maxSides: 4,
@@ -139,15 +139,15 @@ export const ExtractionPointMission: MissionDefinition = {
 };
 
 /**
- * Get the Extraction Point mission definition
+ * Get the Recovery mission definition
  */
-export function getExtractionPointMission(): MissionDefinition {
-  return ExtractionPointMission;
+export function getRecoveryMission(): MissionDefinition {
+  return RecoveryMission;
 }
 
 /**
- * Check if a mission is the Extraction Point mission
+ * Check if a mission is the Recovery mission
  */
-export function isExtractionPointMission(missionId: string): boolean {
+export function isRecoveryMission(missionId: string): boolean {
   return missionId === 'QAI_15';
 }

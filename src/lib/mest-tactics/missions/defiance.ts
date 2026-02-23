@@ -1,16 +1,16 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from '../mission-definitions';
 
 /**
- * QAI Mission 19: Last Stand
- * 
+ * QAI Mission 19: Defiance
+ *
  * Defend your VIP against overwhelming enemy forces until reinforcements arrive.
  * VIP must survive for a set number of turns.
  * Reinforcements arrive mid-game to turn the tide.
  * Last VIP standing wins.
  */
-export const LastStandMission: MissionDefinition = {
+export const DefianceMission: MissionDefinition = {
   id: 'QAI_19',
-  name: 'Last Stand',
+  name: 'Defiance',
   description: 'Defend your VIP against overwhelming enemy forces until reinforcements arrive. VIP must survive for a set number of turns.',
   minSides: 2,
   maxSides: 4,
@@ -146,15 +146,15 @@ export const LastStandMission: MissionDefinition = {
 };
 
 /**
- * Get the Last Stand mission definition
+ * Get the Defiance mission definition
  */
-export function getLastStandMission(): MissionDefinition {
-  return LastStandMission;
+export function getDefianceMission(): MissionDefinition {
+  return DefianceMission;
 }
 
 /**
- * Check if a mission is the Last Stand mission
+ * Check if a mission is the Defiance mission
  */
-export function isLastStandMission(missionId: string): boolean {
+export function isDefianceMission(missionId: string): boolean {
   return missionId === 'QAI_19';
 }
