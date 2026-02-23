@@ -800,6 +800,93 @@ When Phase 5 AI integration completes:
 
 ---
 
+## 17b. GameController Consolidation
+
+### Issue: Duplicate Game-Running Methods
+
+The `GameController` class had two methods for running games:
+
+| Method | Purpose | Status |
+|--------|---------|--------|
+| `runSkirmish()` | Basic 2-side games with Character arrays | ✅ Working |
+| `runMission()` | Mission-based games with MissionSide arrays | ❌ Broken (referenced non-existent functions) |
+
+### Why Two Methods Existed
+
+- **`runSkirmish()`**: Original method for simple test games
+- **`runMission()`**: Planned for full mission system integration (objectives, VP scoring, etc.)
+
+### Problem
+
+`runMission()` referenced functions that **never existed** or had **incorrect names**:
+
+| Broken Code Referenced | Actual Function | Status |
+|------------------------|-----------------|--------|
+| `initMissionEngine()` | `initMissionFlow()` | ❌ Wrong name |
+| `applyTurnEnd()` | *(none)* | ❌ Never implemented |
+| `applyObjectiveMarkerScoring()` | `applyCollectionScores()` | ❌ Wrong name |
+| `applyPoiMajorityScoring()` | `applyPoiMajority()` | ❌ Wrong name + different signature |
+| `applyFlawlessScoring()` | `applyFlawless()` | ❌ Wrong name |
+
+**Root Cause:** The broken code was written speculatively with **incorrect function names** that were close to but not the same as the actual functions. This is a classic case of "almost right but completely wrong."
+
+### Resolution
+
+**Consolidated into a single working implementation:**
+
+1. **Kept `runSkirmish()`** unchanged - works for basic games
+2. **Fixed `runMission()`** to use existing mission-flow functions:
+   - `initMissionFlow()` ✅
+   - `recordBottleResults()` ✅
+   - `advanceEndGameState()` ✅
+   - `computeMissionOutcome()` ✅
+
+3. **Removed dead code** - Deleted 50+ lines of commented-out code
+
+### New `runMission()` Implementation
+
+```typescript
+runMission(sides: MissionSide[], config: MissionRunConfig = {}): MissionRunResult {
+  // Initialize mission flow state
+  let state = initMissionFlow(sides, config);
+  
+  // Extract characters from sides for gameplay
+  const sideCharacters = sides.map(side => 
+    side.members.map(member => member.character)
+  );
+  
+  // Run turns with mission scoring
+  this.runTurns(sideCharacters, config, bottleResults => {
+    state = recordBottleResults(state, bottleResults);
+    const advance = advanceEndGameState(state, config.endDieRolls);
+    state = advance.state;
+    return advance.ended;
+  });
+
+  // Calculate final scores
+  const outcome = this.calculateMissionOutcome(sides, state);
+  return { log: this.log, state, outcome };
+}
+```
+
+### Key Differences
+
+| Feature | `runSkirmish()` | `runMission()` |
+|---------|-----------------|----------------|
+| Input | `Character[][]` | `MissionSide[]` |
+| Mission scoring | None | VP/RP calculation |
+| Bottle tests | Basic | Full integration |
+| End game | Turn limit | End die rolls |
+| Use case | Testing, skirmishes | Campaign, missions |
+
+### Test Results
+
+- **All 935 tests pass** ✅
+- **No breaking changes** ✅
+- **Cleaner codebase** - Removed 50+ lines of dead code
+
+---
+
 ## 18. Root Directory Consolidation
 
 ### Motivation

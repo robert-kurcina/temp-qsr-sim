@@ -9,17 +9,8 @@ import { TurnPhase } from '../core/types';
 import { getCharacterTraitLevel } from '../status/status-system';
 import { MissionSide } from '../mission/MissionSide';
 import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissionOutcome, initMissionFlow, mergeMissionDelta, recordBottleResults } from '../missions/mission-flow';
-import { MissionScoreResult } from '../missions/mission-scoring';
+import { MissionScoreResult, buildMissionSideStatus } from '../missions/mission-scoring';
 import { BottleTestResult } from '../status/bottle-tests';
-// Note: mission-engine imports removed - functions not yet implemented
-// import {
-//   MissionEngineConfig,
-//   applyFlawlessScoring,
-//   applyObjectiveMarkerScoring,
-//   applyPoiMajorityScoring,
-//   applyTurnEnd,
-//   initMissionEngine,
-// } from '../mission/mission-engine';
 import { MissionModel } from '../mission/mission-keys';
 
 export interface ControllerLogEntry {
@@ -65,52 +56,62 @@ export class GameController {
     return this.log;
   }
 
-  // Note: runMission temporarily disabled - mission engine integration in progress
-  // runMission(sides: MissionSide[], config: MissionRunConfig = {}): MissionRunResult {
-  //   if (sides.length < 2 || sides.length > 4) {
-  //     throw new Error('runMission supports 2-4 sides.');
-  //   }
-  //   const sideCharacters = sides.map(side => side.members.map(member => member.character));
-  //   let state = initMissionFlow(sides, config);
-  //   const missionEngine = initMissionEngine({
-  //     missionId: config.missionId ?? 'QAI_11',
-  //     gameSize: state.gameSize,
-  //     sides,
-  //     dominanceZones: config.missionEngine?.dominanceZones,
-  //     sanctuaryZones: config.missionEngine?.sanctuaryZones,
-  //     poiZones: config.missionEngine?.poiZones,
-  //     courierZoneBySide: config.missionEngine?.courierZoneBySide,
-  //     startingBpBySide: config.missionEngine?.startingBpBySide,
-  //     objectiveMarkers: config.missionEngine?.objectiveMarkers,
-  //   });
-  //   let ended = false;
+  /**
+   * Run a mission-based game with MissionSide objects.
+   * 
+   * Note: This is a simplified implementation. Full mission features
+   * (objective markers, POI control, VIP system, etc.) are handled
+   * by the mission-flow system in ../missions/mission-flow.ts
+   */
+  runMission(sides: MissionSide[], config: MissionRunConfig = {}): MissionRunResult {
+    if (sides.length < 2 || sides.length > 4) {
+      throw new Error('runMission supports 2-4 sides.');
+    }
 
-  //   this.runTurns(sideCharacters, config, bottleResults => {
-  //     const models = this.buildMissionModels(sides);
-  //     state = mergeMissionDelta(state, applyTurnEnd(missionEngine, { models }));
-  //     state = recordBottleResults(state, bottleResults);
-  //     const advance = advanceEndGameState(state, config.endDieRolls);
-  //     state = advance.state;
-  //     if (advance.ended) {
-  //       this.log.push({
-  //         turn: this.manager.currentTurn,
-  //         round: this.manager.currentRound,
-  //         actor: '-',
-  //         action: 'EndGame',
-  //         detail: advance.reason ?? 'end-die',
-  //       });
-  //     }
-  //     ended = advance.ended;
-  //     return ended;
-  //   }, sides.map(side => side.id));
+    // Initialize mission flow state
+    let state = initMissionFlow(sides, config);
+    
+    // Extract characters from sides for gameplay
+    const sideCharacters = sides.map(side => side.members.map(member => member.character));
+    const sideIds = sides.map(side => side.id);
+    
+    let ended = false;
 
-  //   const finalModels = this.buildMissionModels(sides);
-  //   state = mergeMissionDelta(state, applyObjectiveMarkerScoring(missionEngine));
-  //   state = mergeMissionDelta(state, applyPoiMajorityScoring(missionEngine, finalModels));
-  //   state = mergeMissionDelta(state, applyFlawlessScoring(missionEngine, finalModels));
-  //   const outcome = computeMissionOutcome(sides, state);
-  //   return { log: this.log, state, outcome };
-  // }
+    // Run turns with mission scoring
+    this.runTurns(sideCharacters, config, bottleResults => {
+      // Record bottle test results
+      state = recordBottleResults(state, bottleResults);
+      
+      // Check for game end
+      const advance = advanceEndGameState(state, config.endDieRolls);
+      state = advance.state;
+      if (advance.ended) {
+        this.log.push({
+          turn: this.manager.currentTurn,
+          round: this.manager.currentRound,
+          actor: '-',
+          action: 'EndGame',
+          detail: advance.reason ?? 'end-die',
+        });
+      }
+      ended = advance.ended;
+      return ended;
+    }, sideIds);
+
+    // Calculate final scores
+    const outcome = this.calculateMissionOutcome(sides, state);
+    
+    return { log: this.log, state, outcome };
+  }
+
+  /**
+   * Calculate mission outcome from final game state
+   */
+  private calculateMissionOutcome(sides: MissionSide[], state: MissionFlowState): MissionScoreResult {
+    const sideStatus = sides.map(side => buildMissionSideStatus(side));
+    
+    return computeMissionOutcome(sides, state);
+  }
 
   private runTurns(
     sides: Character[][],
