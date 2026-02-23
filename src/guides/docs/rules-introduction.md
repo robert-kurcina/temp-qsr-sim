@@ -28,4 +28,10 @@ For these QSR rules, the goal is; create an “assembly” of combatants for eac
 
 ## How to Learn?
 
-Scan through the rules. Try them out. Make mistakes. Do it again. Afterwards, try out the Intermediate and Advanced rules which are marked with triangles () and (▲).
+Scan through the rules. Try them out. Make mistakes. Do it again. Afterwards, try out the Intermediate and Advanced rules which are marked with triangles (△) and (▲).
+
+## Rule Complexity Markers
+
+- **Basic Rules** — No marker. These are the core rules everyone should learn first.
+- **Intermediate Rules (△)** — More advanced rules that add depth and complexity. Learn these after mastering the basics.
+- **Advanced Rules (▲)** — Optional rules for experienced players seeking maximum detail and realism.

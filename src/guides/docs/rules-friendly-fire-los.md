@@ -5,7 +5,7 @@ dependencies:
 status: "In-Progress"
 ---
 
-## Friendly Fire (▲)
+## Friendly Fire (△)
 
 Whenever the target of a Direct Range Attack is missed; one randomly selected model, Opposing or Friendly, is subject to being attacked starting with those closest to the target as follows in this order:
 

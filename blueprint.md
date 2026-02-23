@@ -1032,3 +1032,65 @@ The codebase is now fully organized with:
 - ⏳ Phase 3A: Minimal Playable UI (8,000–12,000 tokens)
 - ⏳ Phase 3B: Full Local Play (15,000–20,000 tokens)
 - ⏳ Phase 4: Online Multiplayer Platform (89,000–135,000 tokens)
+
+---
+
+## 19. Hierarchical AI System
+
+### Architecture
+Hybrid system combining:
+- **Behavior Trees** for decision-making flexibility
+- **Hierarchical FSM** for action execution
+- **Utility Scoring** for tactical evaluation
+- **Tactical Patterns** for coordinated squad behavior
+- **GOAP** for multi-turn planning
+
+### Layers
+| Layer | Component | Responsibility |
+|-------|-----------|----------------|
+| **Strategic (Side)** | SideAI | Mission evaluation, victory tracking, resource allocation |
+| **Tactical (Assembly)** | AssemblyAI | Squad coordination, target assignment, formation management |
+| **Character (Individual)** | CharacterAI | Decision making, action execution, react handling |
+
+### Design Decisions
+| Decision | Approach | Rationale |
+|----------|----------|-----------|
+| Difficulty Levels | Parameterized (aggression, caution, accuracy) | Easy to tune, no code changes needed |
+| Information Access | God-mode default, fog-of-war stubbed | Simplifies testing, realistic mode for later |
+| Performance | Optimize for decision quality | Turn-based, not twitch game |
+| Testing | De-prioritized | Enormous scope, manual validation first |
+| Extensibility | De-prioritized | Focus on core AI first |
+| Minimax/DAG Search | NOT used | Branching factor too high (400^5 states) |
+| Neural Networks | NOT used | No training data, black box debugging |
+| Tactical Patterns | Scripted knowledge | Encode tactical expertise directly |
+| GOAP | Multi-turn planning | Backward chaining from goals |
+| MCTS | Optional for critical decisions | VIP protection, final-turn victory only |
+
+### Pathfinding Integration
+- Voronoi mesh for tactical positioning
+- Grid-mesh for A* navigation
+- LOS/LOF/FOV integration for cover assessment
+
+### Implementation Status
+- ✅ Phase 1: Foundation (Core AI Framework) — COMPLETE
+  - Behavior Tree (Selector, Sequence, Parallel, Decorator, Condition, Action, Utility nodes)
+  - Hierarchical FSM (nested states, transitions, interrupts)
+  - Utility Scorer (action/position/target scoring)
+  - Knowledge Base (god-mode, fog-of-war stub, threat zones)
+  - CharacterAI (decision making, react evaluation)
+  - 12 unit tests passing
+- ⏳ Phase 2A: Tactical Patterns — IN PROGRESS
+  - Flanking pattern
+  - Focus fire pattern
+  - Defensive formation pattern
+  - Objective assault pattern
+  - Retreat/regroup pattern
+- ⏳ Phase 2B: GOAP Integration
+  - Goal definition system
+  - Action precondition/effects
+  - Planner implementation
+  - Multi-turn planning
+- ⏳ Phase 3: Strategic Layer
+- ⏳ Phase 4: Action Integration
+- ⏳ Phase 5: Mission Specialization
+- ⏳ Phase 6: Advanced Features (optional MCTS)

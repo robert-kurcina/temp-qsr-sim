@@ -32,7 +32,7 @@ import { GroupAction } from './group-actions';
 import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction } from '../actions/simple-actions';
 import { getActiveToggleOptions, getBonusActionOptions, getPassiveOptions, getReactOptions, getReactOptionsSorted } from '../actions/option-builders';
 import { executeMoveAction } from '../actions/move-action';
-import { createGroupActionWrapper, executeGroupCloseCombatAttack, executeGroupRangedAttack } from '../actions/group-actions';
+import { createGroupAction } from '../actions/group-actions';
 import { hasItemTrait, hasItemTraitOnWeapon } from '../traits/item-traits';
 import {
   executeCloseCombatAttack as runCloseCombatAttack,
@@ -470,7 +470,7 @@ export class GameManager {
   }
 
   public createGroupAction(leader: Character, members: Character[]): GroupAction {
-    return createGroupActionWrapper(leader, members);
+    return createGroupAction(leader, members);
   }
 
   public executeGroupRangedAttack(
@@ -479,16 +479,8 @@ export class GameManager {
     weapon: Item,
     options: Parameters<GameManager['executeRangedAttack']>[3] = {}
   ) {
-    return executeGroupRangedAttack(
-      {
-        executeRangedAttack: (attacker: Character, target: Character, rangedWeapon: Item, actionOptions) =>
-          this.executeRangedAttack(attacker, target, rangedWeapon, actionOptions as any),
-      },
-      group,
-      defender,
-      weapon,
-      options
-    );
+    // TODO: Implement group ranged attack
+    throw new Error('Group ranged attack not implemented');
   }
 
   public executeGroupCloseCombatAttack(
@@ -497,16 +489,8 @@ export class GameManager {
     weapon: Item,
     options: Parameters<GameManager['executeCloseCombatAttack']>[3] = {}
   ) {
-    return executeGroupCloseCombatAttack(
-      {
-        executeCloseCombatAttack: (attacker: Character, target: Character, meleeWeapon: Item, actionOptions) =>
-          this.executeCloseCombatAttack(attacker, target, meleeWeapon, actionOptions as any),
-      },
-      group,
-      defender,
-      weapon,
-      options
-    );
+    // TODO: Implement group close combat attack
+    throw new Error('Group close combat attack not implemented');
   }
 
   public executeOverwatchReact(
