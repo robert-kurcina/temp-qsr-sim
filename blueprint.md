@@ -849,24 +849,25 @@ After completing the `src/lib/mest-tactics/` restructure, the root directory sti
 
 ## 17. Running AI vs AI Games
 
-The simulator supports full AI vs AI game simulations through the test infrastructure.
+The simulator supports **full end-to-end AI vs AI game simulations** from setup to conclusion.
 
-### Available Game Simulations
+### Full Game Simulation
 
-**Elimination Mission (QAI_1):**
+**Run complete autonomous games:**
 ```bash
-npx vitest src/lib/mest-tactics/missions/elimination.test.ts --reporter=verbose
+npx vitest src/lib/mest-tactics/full-game-simulation.test.ts --reporter=verbose
 ```
 
-**All Missions:**
-```bash
-npx vitest src/lib/mest-tactics/missions/ --reporter=verbose
-```
-
-**Full Battle Simulation:**
-```bash
-npx vitest src/lib/mest-tactics/bottle-tests.test.ts --reporter=verbose
-```
+This runs complete games that:
+1. ✅ Create terrain with valid terrain elements
+2. ✅ Build assemblies from archetypes
+3. ✅ Deploy models on opposite sides
+4. ✅ Run complete turn loop with AI decisions
+5. ✅ Resolve movement, ranged combat, and close combat
+6. ✅ Track wounds, KO, and elimination
+7. ✅ Check victory conditions each turn
+8. ✅ Play until conclusion (elimination or end-game die roll)
+9. ✅ Output full game log with statistics
 
 ### Game Size Support
 
@@ -878,30 +879,70 @@ npx vitest src/lib/mest-tactics/bottle-tests.test.ts --reporter=verbose
 | Large | 8-16 | 750-1000 | 48×48 MU | 8 |
 | Epic | 16-32 | 1000-2000 | 60×60 MU | 10 |
 
-### Supported Missions
+### AI Capabilities
 
-| ID | Name | Sides | Type |
-|----|------|-------|------|
-| QAI_1 | Elimination | 2 | Standard |
-| QAI_12 | Convergence | 2-4 | Multi-sided |
-| QAI_13 | Assault | 2 | Asymmetric |
-| QAI_14 | Dominion | 2 | Zone Control |
-| QAI_15 | Recovery | 2 | Extraction |
-| QAI_16 | Escort | 2 | VIP Protection |
-| QAI_17 | Triumvirate | 3 | Free-for-all |
-| QAI_18 | Stealth | 2 | Infiltration |
-| QAI_19 | Defiance | 2 | Last Stand |
-| QAI_20 | Breach | 2 | Objective |
+The AI controllers make decisions based on:
+- **Target selection** - Find closest visible enemy
+- **Engagement detection** - Fight or disengage when engaged
+- **Movement** - Advance toward enemies
+- **Ranged combat** - Attack when in range with good RCA
+- **Close combat** - Fight when engaged
+- **Charge** - Charge when in range with good CCA
+- **Aggression/Caution** - Configurable personality traits
 
-### Test Coverage
+### Example Output
 
-- **823 unit tests** covering all game systems
-- **64 test files** organized by module
-- **10 mission implementations** with full game logic
-- **Battlefield simulation** with terrain, LOS, engagement
-- **Combat resolution** (close combat, ranged, indirect)
-- **Status tracking** (wounds, fear, delay, KO, elimination)
-- **Victory conditions** and scoring
+```
+⚔️  Starting Skirmish Game
+
+Battlefield: 18×18 MU
+Max Turns: 3
+
+Alpha: 2 models
+Bravo: 3 models
+
+📍 Turn 1
+  veteran-loadout (Alpha): ranged_combat - ranged attack (13 MU)
+  militia-loadout (Bravo): move - advancing towards veteran-loadout (13 MU)
+
+📍 Turn 2
+  veteran-loadout (Alpha): ranged_combat - ranged attack (9 MU)
+  militia-loadout (Bravo): move - advancing towards veteran-loadout (7 MU)
+
+🎲 End game die roll - Game Over!
+
+📊 Final Results:
+Alpha: 2/2 models
+Bravo: 3/3 models
+🏆 Winner: Bravo!
+
+📈 Statistics:
+  Total Actions: 10
+  Moves: 6
+  Attacks: 4
+  Ranged Combats: 4
+```
+
+---
+
+### Component Testing
+
+For testing individual systems without full gameplay:
+
+**Elimination Mission (QAI_1):**
+```bash
+npx vitest src/lib/mest-tactics/missions/elimination.test.ts --reporter=verbose
+```
+
+**All Missions:**
+```bash
+npx vitest src/lib/mest-tactics/missions/ --reporter=verbose
+```
+
+**All Tests (823 tests):**
+```bash
+npm test
+```
 
 ---
 
@@ -931,6 +972,7 @@ npx vitest src/lib/mest-tactics/bottle-tests.test.ts --reporter=verbose
 - ✅ **Directory rename** `mission-system/` → `mission/`
 - ✅ **README files** for all 9 major directories
 - ✅ **Mission documentation** updated with new names
+- ✅ **Full end-to-end AI vs AI game simulation** implemented
 
 ### All Restructuring Complete! 🎉
 
@@ -939,6 +981,7 @@ The codebase is now fully organized with:
 - Comprehensive documentation
 - Schema-validated user content
 - Consistent naming conventions
+- **Complete autonomous game simulation**
 
 ### Planned
 - ⏳ Phase 3A: Minimal Playable UI (8,000–12,000 tokens)
