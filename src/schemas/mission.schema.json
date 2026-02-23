@@ -37,8 +37,8 @@
     },
     "defaultGameSize": {
       "type": "string",
-      "enum": ["SMALL", "MEDIUM", "LARGE"],
-      "default": "MEDIUM"
+      "enum": ["VERY_SMALL", "SMALL", "MEDIUM", "LARGE", "VERY_LARGE"],
+      "default": "VERY_SMALL"
     },
     "battlefield": {
       "type": "object",
@@ -86,9 +86,11 @@
     "sizeConfig": {
       "type": "object",
       "properties": {
+        "VERY_SMALL": { "$ref": "#/definitions/sizeSpecifics" },
         "SMALL": { "$ref": "#/definitions/sizeSpecifics" },
         "MEDIUM": { "$ref": "#/definitions/sizeSpecifics" },
-        "LARGE": { "$ref": "#/definitions/sizeSpecifics" }
+        "LARGE": { "$ref": "#/definitions/sizeSpecifics" },
+        "VERY_LARGE": { "$ref": "#/definitions/sizeSpecifics" }
       }
     },
     "_balance": {

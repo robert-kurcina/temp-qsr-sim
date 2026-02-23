@@ -53,16 +53,16 @@ function makeSide(id: string, count: number, bp = 0): MissionSide {
 
 describe('mission-scoring', () => {
   it('should determine game size with model bias', () => {
-    expect(determineGameSize(700, 5)).toBe('Small');
-    expect(determineGameSize(700, 9)).toBe('Large');
+    expect(determineGameSize(700, 5)).toBe('SMALL');
+    expect(determineGameSize(700, 9)).toBe('LARGE');
   });
 
   it('should resolve end-game die additions and endings', () => {
-    const state = resolveEndGameState({ gameSize: 'Small', turn: 4, endDice: 0 });
-    expect(state.addedEndDie).toBe(true);
-    expect(state.endDice).toBe(1);
+    const state = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 4, endDice: 0 });
+    expect(state.addedEndDie).toBe(false);
+    expect(state.endDice).toBe(0);
 
-    const ended = resolveEndGameState({ gameSize: 'Small', turn: 4, endDice: 1, rollResults: [2] });
+    const ended = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 10, endDice: 1, rollResults: [2] });
     expect(ended.ended).toBe(true);
     expect(ended.reason).toBe('end-die');
   });

@@ -112,6 +112,14 @@ export class ZoneFactory {
    */
   static getRecommendedZoneCount(gameSize: string, zoneType: ZoneType): number {
     const recommendations: Record<string, Record<ZoneType, number>> = {
+      VERY_SMALL: {
+        [ZoneType.POI]: 1,
+        [ZoneType.SIGNAL]: 1,
+        [ZoneType.CACHE]: 2,
+        [ZoneType.FOCAL_NODE]: 1,
+        [ZoneType.THRESHOLD]: 1,
+        [ZoneType.MECHANISM]: 1,
+      },
       SMALL: {
         [ZoneType.POI]: 2,
         [ZoneType.SIGNAL]: 2,
@@ -136,6 +144,14 @@ export class ZoneFactory {
         [ZoneType.THRESHOLD]: 1,
         [ZoneType.MECHANISM]: 3,
       },
+      VERY_LARGE: {
+        [ZoneType.POI]: 5,
+        [ZoneType.SIGNAL]: 5,
+        [ZoneType.CACHE]: 9,
+        [ZoneType.FOCAL_NODE]: 5,
+        [ZoneType.THRESHOLD]: 2,
+        [ZoneType.MECHANISM]: 4,
+      },
     };
 
     return recommendations[gameSize]?.[zoneType] ?? 3;
@@ -146,12 +162,16 @@ export class ZoneFactory {
    */
   static getRecommendedSpacing(gameSize: string): number {
     switch (gameSize) {
+      case 'VERY_SMALL':
+        return 6;
       case 'SMALL':
         return 8;
       case 'MEDIUM':
         return 12;
       case 'LARGE':
         return 16;
+      case 'VERY_LARGE':
+        return 20;
       default:
         return 12;
     }

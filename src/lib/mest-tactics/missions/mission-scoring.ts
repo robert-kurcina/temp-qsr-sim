@@ -1,9 +1,9 @@
 import { Character } from '../core/Character';
 import { MissionSide } from '../mission/MissionSide';
 
-export type GameSize = 'Small' | 'Medium' | 'Large';
+export type GameSize = 'VERY_SMALL' | 'SMALL' | 'MEDIUM' | 'LARGE' | 'VERY_LARGE';
 
-const GAME_SIZE_ORDER: GameSize[] = ['Small', 'Medium', 'Large'];
+const GAME_SIZE_ORDER: GameSize[] = ['VERY_SMALL', 'SMALL', 'MEDIUM', 'LARGE', 'VERY_LARGE'];
 
 export interface MissionSideStatus {
   sideId: string;
@@ -107,8 +107,8 @@ export function buildMissionSideStatus(side: MissionSide): MissionSideStatus {
 }
 
 export function determineGameSize(bpPerSide: number, modelsPerSide: number): GameSize {
-  const bpSize = bpPerSide >= 900 ? 'Large' : bpPerSide >= 650 ? 'Medium' : 'Small';
-  const modelSize = modelsPerSide >= 9 ? 'Large' : modelsPerSide >= 6 ? 'Medium' : 'Small';
+  const bpSize = bpPerSide >= 900 ? 'LARGE' : bpPerSide >= 650 ? 'MEDIUM' : bpPerSide >= 250 ? 'SMALL' : 'VERY_SMALL';
+  const modelSize = modelsPerSide >= 9 ? 'LARGE' : modelsPerSide >= 6 ? 'MEDIUM' : modelsPerSide >= 4 ? 'SMALL' : 'VERY_SMALL';
   if (bpSize === modelSize) return bpSize;
   const bpIndex = GAME_SIZE_ORDER.indexOf(bpSize);
   const modelIndex = GAME_SIZE_ORDER.indexOf(modelSize);
@@ -121,7 +121,7 @@ export function determineGameSize(bpPerSide: number, modelsPerSide: number): Gam
 export function resolveEndGameState(input: EndGameStateInput): EndGameStateResult {
   const endDice = input.endDice ?? 0;
   const rollResults = input.rollResults ?? [];
-  const thresholdTurn = input.gameSize === 'Small' ? 4 : input.gameSize === 'Medium' ? 6 : 8;
+  const thresholdTurn = 10;
 
   let ended = false;
   if (endDice > 0 && rollResults.length > 0) {

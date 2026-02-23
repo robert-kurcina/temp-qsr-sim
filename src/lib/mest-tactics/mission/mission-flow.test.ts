@@ -49,14 +49,14 @@ function makeSide(id: string, count: number, bp = 0): MissionSide {
 
 describe('mission-flow', () => {
   it('should initialize mission flow state from sides', () => {
-    const state = initMissionFlow([makeSide('A', 4, 100), makeSide('B', 6, 200)]);
-    expect(state.gameSize).toBe('Medium');
+    const state = initMissionFlow([makeSide('A', 4, 300), makeSide('B', 5, 400)]);
+    expect(state.gameSize).toBe('MEDIUM');
     expect(state.turn).toBe(1);
   });
 
   it('should advance end-game state and add end dice', () => {
-    const state = initMissionFlow([makeSide('A', 4, 100)]);
-    const advanced = advanceEndGameState({ ...state, turn: 4, endDice: 0 });
+    const state = initMissionFlow([makeSide('A', 4, 300)]);
+    const advanced = advanceEndGameState({ ...state, turn: 10, endDice: 0 });
     expect(advanced.addedEndDie).toBe(true);
     expect(advanced.state.endDice).toBe(1);
   });

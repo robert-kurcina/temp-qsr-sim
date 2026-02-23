@@ -12,10 +12,10 @@ import { resolveDamageTest, DamageTestContext } from './subroutines/damage';
 
 /**
  * Full End-to-End AI vs AI Game Simulator
- * 
+ *
  * Runs complete autonomous games from setup to conclusion.
- * Supports all game sizes from Skirmish to Epic.
- * 
+ * Supports all game sizes from Very Small to Very Large.
+ *
  * Run with: npx vitest src/lib/mest-tactics/full-game-simulation.test.ts --reporter=verbose
  */
 
@@ -33,11 +33,11 @@ interface GameSizeConfig {
 }
 
 const GAME_SIZES: Record<string, GameSizeConfig> = {
-  skirmish: { name: 'Skirmish', modelsPerSide: [2, 4], bpPerSide: [125, 250], battlefieldSize: 18, maxTurns: 3, endGameTurn: 2 },
-  small: { name: 'Small', modelsPerSide: [4, 8], bpPerSide: [250, 500], battlefieldSize: 24, maxTurns: 4, endGameTurn: 3 },
-  medium: { name: 'Medium', modelsPerSide: [6, 12], bpPerSide: [500, 750], battlefieldSize: 36, maxTurns: 6, endGameTurn: 5 },
-  large: { name: 'Large', modelsPerSide: [8, 16], bpPerSide: [750, 1000], battlefieldSize: 48, maxTurns: 8, endGameTurn: 7 },
-  epic: { name: 'Epic', modelsPerSide: [16, 32], bpPerSide: [1000, 2000], battlefieldSize: 60, maxTurns: 10, endGameTurn: 9 },
+  VERY_SMALL: { name: 'Very Small', modelsPerSide: [2, 4], bpPerSide: [125, 250], battlefieldSize: 18, maxTurns: 10, endGameTurn: 10 },
+  SMALL: { name: 'Small', modelsPerSide: [4, 8], bpPerSide: [250, 500], battlefieldSize: 24, maxTurns: 10, endGameTurn: 10 },
+  MEDIUM: { name: 'Medium', modelsPerSide: [6, 12], bpPerSide: [500, 750], battlefieldSize: 36, maxTurns: 10, endGameTurn: 10 },
+  LARGE: { name: 'Large', modelsPerSide: [8, 16], bpPerSide: [750, 1000], battlefieldSize: 48, maxTurns: 10, endGameTurn: 10 },
+  VERY_LARGE: { name: 'Very Large', modelsPerSide: [16, 32], bpPerSide: [1000, 2000], battlefieldSize: 60, maxTurns: 10, endGameTurn: 10 },
 };
 
 interface GameLogEntry {
@@ -606,21 +606,21 @@ class FullGameRunner {
 describe('Full End-to-End AI vs AI Game Simulation', () => {
   const runner = new FullGameRunner();
 
-  it('should run a complete SKIRMISH game (2-4 models)', async () => {
-    const result = await runner.runGame(GAME_SIZES.skirmish, 'Alpha', 'Bravo', true);
+  it('should run a complete VERY_SMALL game (2-4 models)', async () => {
+    const result = await runner.runGame(GAME_SIZES.VERY_SMALL, 'Alpha', 'Bravo', true);
     expect(result.winner).toBeDefined();
     expect(result.log.length).toBeGreaterThan(0);
     expect(result.stats.totalActions).toBeGreaterThan(0);
   });
 
   it('should run a complete SMALL game (4-8 models)', async () => {
-    const result = await runner.runGame(GAME_SIZES.small, 'Veterans', 'Militia', true);
+    const result = await runner.runGame(GAME_SIZES.SMALL, 'Veterans', 'Militia', true);
     expect(result.winner).toBeDefined();
     expect(result.log.length).toBeGreaterThan(0);
   });
 
   it('should run a complete MEDIUM game (6-12 models)', async () => {
-    const result = await runner.runGame(GAME_SIZES.medium, 'Force A', 'Force B', true);
+    const result = await runner.runGame(GAME_SIZES.MEDIUM, 'Force A', 'Force B', true);
     expect(result.winner).toBeDefined();
     expect(result.stats.totalActions).toBeGreaterThan(0);
   });

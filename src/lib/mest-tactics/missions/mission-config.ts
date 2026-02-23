@@ -42,9 +42,11 @@ export interface MissionConfig {
  * Game size enumeration
  */
 export enum GameSize {
+  VERY_SMALL = 'VERY_SMALL',
   SMALL = 'SMALL',
   MEDIUM = 'MEDIUM',
   LARGE = 'LARGE',
+  VERY_LARGE = 'VERY_LARGE',
 }
 
 /**
