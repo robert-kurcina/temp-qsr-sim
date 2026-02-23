@@ -728,7 +728,79 @@ src/lib/mest-tactics/
 
 ---
 
-## 16. Root Directory Consolidation
+## 17. Code Redundancy Analysis
+
+### Motivation
+
+During Phase 5 Mission Specialization implementation, apparent redundancy was discovered across `mission/` (singular) and `missions/` (plural) directories. Initial analysis suggested dead code, but deeper investigation revealed a **hybrid architecture** where both directories serve different purposes.
+
+### Directory Structure Reality
+
+| Directory | Purpose | Status |
+|-----------|---------|--------|
+| **`missions/`** (plural) | **Source of truth** - Type definitions, mission implementations, manager files | ✅ ACTIVE |
+| **`mission/`** (singular) | **Refactored components** - New engine components that IMPORT FROM `missions/` | ✅ ACTIVE |
+
+### Dependency Flow
+
+```
+mission/ (singular)
+├── mission-engine.ts ──imports──> missions/mission-config.ts
+├── zone-factory.ts ──imports──> missions/mission-config.ts
+├── victory-conditions.ts ──imports──> missions/mission-config.ts
+├── scoring-rules.ts ──imports──> missions/mission-config.ts
+└── [tests] ──imports──> missions/*
+```
+
+### Files Initially Marked "Dead" (But Actually Used)
+
+| File | Actually Used By | Status |
+|------|------------------|--------|
+| `missions/mission-config.ts` | 7+ files in `mission/` | ✅ KEEP - Source of truth for types |
+| `missions/mission-flow.ts` | Tests, GameController | ✅ KEEP |
+| `missions/mission-scoring.ts` | Tests, mission-scoring.test.ts | ✅ KEEP |
+| `missions/mission-objectives.ts` | mission-keys.ts | ✅ KEEP |
+| `missions/mission-runtime.ts` | mission-runtime.test.ts | ✅ KEEP |
+| `missions/mission-event-logger.ts` | mission-runtime.ts | ✅ KEEP |
+| `missions/mission-ui-bridge.ts` | mission-runtime.ts | ✅ KEEP |
+| `missions/mission-registry.ts` | Referenced by legacy code | ⚠️ DEPRECATED but kept |
+
+### ACTUAL Redundancy Issues
+
+The real redundancy is **interface divergence**, not dead files:
+
+1. **`mission/objective-markers.ts`** vs **`missions/mission-objectives.ts`**
+   - Different interfaces (`ObjectiveMarker` defined twice with different shapes)
+   - `mission/` uses enum-based types
+   - `missions/` uses string literal types
+
+2. **`mission/mission-keys.ts`** vs **`missions/mission-keys.ts`**
+   - Different function signatures
+   - `mission/` has newer test helpers
+   - `missions/` has production scoring functions
+
+3. **Manager files** (`*-manager.ts`)
+   - Not integrated with AI execution pipeline
+   - Kept for reference until Phase 5 AI integration completes
+
+### Resolution
+
+**No files deleted.** The apparent redundancy is actually:
+1. **Evolution in progress** - `mission/` contains newer refactored components
+2. **Backwards compatibility** - `missions/` remains source of truth for types
+3. **Gradual migration** - Imports flow from `mission/` → `missions/`
+
+### Future Consolidation Plan
+
+When Phase 5 AI integration completes:
+1. Migrate `missions/mission-objectives.ts` interface to `mission/objective-markers.ts`
+2. Consolidate `mission-keys.ts` functions
+3. Delete `*-manager.ts` files once AI uses them
+4. Update all imports to use `mission/` as primary source
+
+---
+
+## 18. Root Directory Consolidation
 
 ### Motivation
 

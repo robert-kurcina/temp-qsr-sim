@@ -8,7 +8,7 @@
  *   node scripts/validate-mission.js <path-to-json>
  * 
  * Examples:
- *   npm run validate:mission -- src/data/missions/qai-01-elimination.json
+ *   npm run validate:mission -- src/data/missions/qai-11-elimination.json
  *   npm run validate:mission -- src/data/missions/templates/mission-template.json
  */
 
@@ -27,7 +27,7 @@ Usage:
   node scripts/validate-mission.js <path-to-json>
 
 Examples:
-  npm run validate:mission -- src/data/missions/qai-01-elimination.json
+  npm run validate:mission -- src/data/missions/qai-11-elimination.json
   npm run validate:mission -- src/data/missions/templates/mission-template.json
 `);
     process.exit(1);

@@ -147,6 +147,26 @@ class AIController {
 
     // Check if we can charge
     if (closest.dist <= mov + 1 && cca >= 2 && this.aggression > 0.4) {
+      // Charge includes movement to engagement range
+      const charPos = battlefield.getCharacterPosition(character);
+      const targetPos = battlefield.getCharacterPosition(closest.enemy);
+      if (charPos && targetPos) {
+        // Move to engagement range (1 MU from target)
+        const dx = targetPos.x - charPos.x;
+        const dy = targetPos.y - charPos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const moveDist = Math.max(0, dist - 1); // Stop 1 MU away
+        const ratio = moveDist / dist;
+        return {
+          type: 'charge',
+          target: closest.enemy,
+          position: {
+            x: Math.round(charPos.x + dx * ratio),
+            y: Math.round(charPos.y + dy * ratio),
+          },
+          reason: `charging (${Math.round(closest.dist)} MU)`,
+        };
+      }
       return { type: 'charge', target: closest.enemy, reason: `charging (${Math.round(closest.dist)} MU)` };
     }
 

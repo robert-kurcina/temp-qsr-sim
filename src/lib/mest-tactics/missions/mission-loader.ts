@@ -38,7 +38,7 @@ export class MissionLoader {
   static async byId(missionId: string): Promise<MissionConfig | null> {
     // Map mission IDs to file names
     const missionFiles: Record<string, string> = {
-      'QAI_11': '/data/missions/qai-01-elimination.json',
+      'QAI_11': '/data/missions/qai-11-elimination.json',
       'QAI_12': '/data/missions/qai-12-convergence.json',
       'QAI_13': '/data/missions/qai-13-rupture.json',
       'QAI_14': '/data/missions/qai-14-signal.json',
