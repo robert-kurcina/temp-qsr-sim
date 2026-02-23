@@ -6,7 +6,7 @@ import { UIEventTypes } from '../missions/mission-ui-bridge';
 
 function createTestConfig(): MissionConfig {
   return {
-    id: 'QAI_1',
+    id: 'QAI_11',
     name: 'Elimination',
     description: 'Test elimination mission',
     sides: { min: 2, max: 2 },
@@ -101,7 +101,7 @@ describe('MissionRuntime', () => {
 
     const uiState = runtime.exportUIState();
 
-    expect(uiState.missionId).toBe('QAI_1');
+    expect(uiState.missionId).toBe('QAI_11');
     expect(uiState.currentTurn).toBe(1);
     expect(uiState.vpStandings.length).toBeGreaterThan(0);
   });
@@ -112,7 +112,7 @@ describe('MissionRuntime', () => {
 
     const log = runtime.getEventLog();
 
-    expect(log.missionId).toBe('QAI_1');
+    expect(log.missionId).toBe('QAI_11');
     expect(log.events.length).toBeGreaterThan(0);
   });
 });
@@ -200,7 +200,7 @@ describe('MissionRuntime UI Events', () => {
     runtime.start();
 
     expect(eventReceived).not.toBeNull();
-    expect(eventReceived?.payload.missionId).toBe('QAI_1');
+    expect(eventReceived?.payload.missionId).toBe('QAI_11');
   });
 
   it('should emit VP changed event', () => {
@@ -270,7 +270,7 @@ describe('MissionRuntime Event Logging', () => {
 
     const log = runtime.getEventLog();
 
-    expect(log.missionId).toBe('QAI_1');
+    expect(log.missionId).toBe('QAI_11');
     expect(log.events.length).toBeGreaterThan(3);
     
     // Check specific event types
@@ -295,7 +295,7 @@ describe('MissionRuntime Event Logging', () => {
       ? JSON.stringify(log, null, 2)
       : '{}';
 
-    expect(json).toContain('QAI_1');
+    expect(json).toContain('QAI_11');
     expect(json).toContain('events');
   });
 });

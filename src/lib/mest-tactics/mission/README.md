@@ -31,7 +31,7 @@ This directory contains the mission engine and supporting systems.
 
 | ID | Name | Sides | Description |
 |----|------|-------|-------------|
-| QAI_1 | Elimination | 2 | Destroy enemy forces |
+| QAI_11 | Elimination | 2 | Destroy enemy forces |
 | QAI_12 | Convergence | 2-4 | Multi-sided objective control |
 | QAI_13 | Assault | 2 | Attacker vs Defender sabotage |
 | QAI_14 | Dominion | 2 | Beacon zone control |

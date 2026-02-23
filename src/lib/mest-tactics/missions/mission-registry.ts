@@ -55,7 +55,7 @@ export function isValidMission(missionId: string): boolean {
 
 /**
  * Load a mission engine from JSON config
- * @param missionId - Mission ID (e.g., 'QAI_1', 'QAI_12')
+ * @param missionId - Mission ID (e.g., 'QAI_11', 'QAI_12')
  * @returns MissionEngine instance or null if not found
  */
 export async function loadMissionEngine(missionId: string): Promise<MissionEngine | null> {

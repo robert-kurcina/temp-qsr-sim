@@ -1,14 +1,14 @@
 import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming, SpecialRule } from './mission-definitions';
 
 /**
- * QAI Mission 1: Elimination
+ * QAI Mission 11: Elimination
  * 
  * The default mission. Eliminate all enemy models to win.
  * Score 1 VP for each enemy model eliminated.
  * Last side with models remaining wins.
  */
 export const EliminationMission: MissionDefinition = {
-  id: 'QAI_1',
+  id: 'QAI_11',
   name: 'Elimination',
   description: 'The default mission: eliminate opposing models. The last side with models remaining wins.',
   minSides: 2,
@@ -73,5 +73,5 @@ export function getEliminationMission(): MissionDefinition {
  * Check if a mission is the Elimination mission
  */
 export function isEliminationMission(missionId: string): boolean {
-  return missionId === 'QAI_1';
+  return missionId === 'QAI_11';
 }

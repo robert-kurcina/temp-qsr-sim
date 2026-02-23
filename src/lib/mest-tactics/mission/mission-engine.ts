@@ -296,7 +296,7 @@ export class MissionEngine {
    */
   static createEliminationConfig(): MissionConfig {
     return {
-      id: 'QAI_1',
+      id: 'QAI_11',
       name: 'Elimination',
       description: 'Destroy your opponent\'s fighting strength before they destroy yours.',
       sides: { min: 2, max: 2 },

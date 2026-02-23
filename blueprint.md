@@ -160,16 +160,16 @@ Full mission implementation includes: a data-driven mission engine, objective ma
 
 ### Priority Order (Least Impact First)
 
-1.  **QAI Mission 1: Elimination**
-2.  **QAI Mission 12: Engagement**
-3.  **QAI Mission 14: Beacon**
-4.  **QAI Mission 16: Exfil**
-5.  **QAI Mission 15: Extraction Point**
-6.  **QAI Mission 13: Sabotage**
-7.  **QAI Mission 18: Ghost Protocol**
-8.  **QAI Mission 20: Switchback**
-9.  **QAI Mission 17: Triad**
-10. **QAI Mission 19: Last Stand**
+1.  **QAI Mission 11: Elimination**
+2.  **QAI Mission 12: Convergence**
+3.  **QAI Mission 14: Dominion**
+4.  **QAI Mission 16: Escort**
+5.  **QAI Mission 15: Recovery**
+6.  **QAI Mission 13: Assault**
+7.  **QAI Mission 18: Stealth**
+8.  **QAI Mission 20: Breach**
+9.  **QAI Mission 17: Triumvirate**
+10. **QAI Mission 19: Defiance**
 
 ### Shared Feature Modules (Engine Work)
 
@@ -929,7 +929,7 @@ Bravo: 3/3 models
 
 For testing individual systems without full gameplay:
 
-**Elimination Mission (QAI_1):**
+**Elimination Mission (QAI_11):**
 ```bash
 npx vitest src/lib/mest-tactics/missions/elimination.test.ts --reporter=verbose
 ```
@@ -1137,7 +1137,7 @@ Hybrid system combining:
   - MissionAI base class with mission-specific overrides
   - MissionAIRegistry for mission AI lookup
   - Implemented mission AIs:
-    - Elimination (QAI_1): Baseline, focus fire on wounded
+    - Elimination (QAI_11): Baseline, focus fire on wounded
     - Convergence (QAI_12): Zone control prioritization
     - Assault (QAI_13): Marker assault/harvest decisions
     - Dominion (QAI_14): Zone defense and capture

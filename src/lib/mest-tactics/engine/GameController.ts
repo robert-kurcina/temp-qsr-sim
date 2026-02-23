@@ -71,7 +71,7 @@ export class GameController {
     const sideCharacters = sides.map(side => side.members.map(member => member.character));
     let state = initMissionFlow(sides, config);
     const missionEngine = initMissionEngine({
-      missionId: config.missionId ?? 'QAI_1',
+      missionId: config.missionId ?? 'QAI_11',
       gameSize: state.gameSize,
       sides,
       dominanceZones: config.missionEngine?.dominanceZones,

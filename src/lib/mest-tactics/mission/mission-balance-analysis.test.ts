@@ -46,12 +46,12 @@ function buildMissionConfig(params: {
 
 // All 10 missions at LARGE game size
 const missions: Array<{ id: string; name: string; config: MissionConfig }> = [
-  // QAI_1: Elimination - VP per elimination, instant win
+  // QAI_11: Elimination - VP per elimination, instant win
   {
-    id: 'QAI_1',
+    id: 'QAI_11',
     name: 'Elimination',
     config: buildMissionConfig({
-      id: 'QAI_1',
+      id: 'QAI_11',
       name: 'Elimination',
       victoryConditions: [
         { type: VictoryConditionType.ELIMINATION, immediate: true },

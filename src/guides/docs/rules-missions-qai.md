@@ -6,7 +6,7 @@ priority: 10
 
 # QAI Missions
 
-## QAI Mission 1: Elimination
+## QAI Mission 11: Elimination
 
 Two forces meet on the battlefield. Destroy your opponent's fighting strength before they destroy yours.
 

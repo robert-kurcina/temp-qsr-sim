@@ -1,6 +1,6 @@
 {
   "$schema": "../../schemas/mission.schema.json",
-  "id": "QAI_1",
+  "id": "QAI_11",
   "name": "Elimination",
   "description": "Two forces meet on the battlefield. Destroy your opponent's fighting strength before they destroy yours.",
   "sides": { "min": 2, "max": 2 },

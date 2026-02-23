@@ -9,7 +9,7 @@ import { Character } from '../../core/Character';
 import { VictoryConditionType, ScoringType } from '../../missions/mission-definitions';
 
 // ============================================================================
-// Elimination Mission AI (QAI_1)
+// Elimination Mission AI (QAI_11)
 // ============================================================================
 
 /**
@@ -22,7 +22,7 @@ import { VictoryConditionType, ScoringType } from '../../missions/mission-defini
  * - Push advantage when ahead
  */
 export class EliminationMissionAI extends MissionAI {
-  readonly missionId = 'QAI_1';
+  readonly missionId = 'QAI_11';
   readonly missionName = 'Elimination';
 
   getDecision(character: Character, context: MissionAIContext): MissionAIDecision | undefined {
@@ -1110,7 +1110,7 @@ export class StealthMissionAI extends MissionAI {
 
 export function createMissionAI(missionId: string): MissionAI | undefined {
   switch (missionId) {
-    case 'QAI_1':
+    case 'QAI_11':
       return new EliminationMissionAI();
     case 'QAI_12':
       return new ConvergenceMissionAI();

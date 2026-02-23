@@ -106,9 +106,9 @@ function makeMissionContext(
 
 describe('MissionAI Factory', () => {
   it('should create EliminationMissionAI', () => {
-    const ai = createMissionAI('QAI_1');
+    const ai = createMissionAI('QAI_11');
     expect(ai).toBeDefined();
-    expect(ai?.missionId).toBe('QAI_1');
+    expect(ai?.missionId).toBe('QAI_11');
     expect(ai?.missionName).toBe('Elimination');
   });
 
