@@ -441,194 +441,754 @@ export class GOAPPlanner {
 }
 
 // ============================================================================
-// Standard GOAP Actions
+// Standard GOAP Actions (QSR-Compliant)
 // ============================================================================
 
-export const StandardActions = {
-  /** Move to position */
-  Move: {
-    name: 'Move',
-    type: 'move' as ActionType,
-    preconditions: [],
-    effects: [
-      { property: 'position', value: null, effectType: 'set' as const },
-    ],
-    cost: 1,
-    targetsCharacter: false,
-    targetsPosition: true,
-  },
+/**
+ * Create GOAP actions with QSR-compliant preconditions and effects
+ */
+export function createStandardActions(): GOAPAction[] {
+  return [
+    /**
+     * Move Action (QSR p.1110)
+     * - Costs 1 AP (or 2 AP for Combined action)
+     * - Limited by MOV + terrain modifiers
+     * - Triggers Opportunity Attacks when breaking engagement
+     */
+    {
+      name: 'Move',
+      type: 'move',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+      ],
+      effects: [
+        { property: 'position.self', value: null, effectType: 'set' },
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'hasMoved', value: true, effectType: 'set' },
+      ],
+      cost: 1,
+      targetsCharacter: false,
+      targetsPosition: true,
+    },
 
-  /** Close combat attack */
-  CloseCombat: {
-    name: 'Close Combat',
-    type: 'close_combat' as ActionType,
-    preconditions: [
-      { property: 'engaged', value: null, comparison: 'exists' as const },
-    ],
-    effects: [
-      { property: 'wounds.enemy', value: 1, effectType: 'add' as const },
-      { property: 'engaged', value: null, effectType: 'remove' as const },
-    ],
-    cost: 1,
-    targetsCharacter: true,
-    targetsPosition: false,
-  },
+    /**
+     * Close Combat Attack (QSR p.1111)
+     * - Requires engagement (base-to-base contact)
+     * - Costs 1 AP
+     * - Opposed CCA vs CCA Hit Test
+     * - Followed by Damage Test if hit succeeds
+     */
+    {
+      name: 'Close Combat',
+      type: 'close_combat',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+        { property: 'engaged.self', value: true, comparison: 'equals' },
+        { property: 'hasMeleeWeapon', value: true, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'wounds.target', value: 1, effectType: 'add' },
+        { property: 'hasAttacked', value: true, effectType: 'set' },
+        // May cause Delay token if not first attack (QSR p.1111)
+        { property: 'delay.self', value: 1, effectType: 'add' },
+      ],
+      cost: 1,
+      targetsCharacter: true,
+      targetsPosition: false,
+    },
 
-  /** Ranged combat attack */
-  RangedCombat: {
-    name: 'Ranged Combat',
-    type: 'ranged_combat' as ActionType,
-    preconditions: [
-      { property: 'hasLOS', value: true, comparison: 'equals' as const },
-    ],
-    effects: [
-      { property: 'wounds.enemy', value: 1, effectType: 'add' as const },
-    ],
-    cost: 1,
-    targetsCharacter: true,
-    targetsPosition: false,
-  },
+    /**
+     * Ranged Combat Attack (QSR p.1112)
+     * - Requires LOS to target
+     * - Requires ranged weapon with OR
+     * - Costs 1 AP
+     * - Opposed RCA vs REF Hit Test
+     * - ORM penalty: -1m per OR multiple beyond first
+     */
+    {
+      name: 'Ranged Combat',
+      type: 'ranged_combat',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+        { property: 'hasLOS.target', value: true, comparison: 'equals' },
+        { property: 'hasRangedWeapon', value: true, comparison: 'equals' },
+        { property: 'engaged.self', value: false, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'wounds.target', value: 1, effectType: 'add' },
+        { property: 'hasAttacked', value: true, effectType: 'set' },
+        { property: 'delay.self', value: 1, effectType: 'add' },
+      ],
+      cost: 1,
+      targetsCharacter: true,
+      targetsPosition: false,
+    },
 
-  /** Disengage from melee */
-  Disengage: {
-    name: 'Disengage',
-    type: 'disengage' as ActionType,
-    preconditions: [
-      { property: 'engaged', value: null, comparison: 'exists' as const },
-    ],
-    effects: [
-      { property: 'engaged', value: null, effectType: 'delete' as const },
-    ],
-    cost: 1,
-    targetsCharacter: true,
-    targetsPosition: false,
-  },
+    /**
+     * Disengage Action (QSR p.1111)
+     * - Required when engaged and wanting to move away
+     * - Opposed REF vs CCA Test (disengager uses REF)
+     * - Costs 1 AP
+     * - On success: move MOV × 1" away
+     */
+    {
+      name: 'Disengage',
+      type: 'disengage',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+        { property: 'engaged.self', value: true, comparison: 'equals' },
+        { property: 'wantsToMove', value: true, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'engaged.self', value: false, effectType: 'set' },
+        { property: 'hasMoved', value: true, effectType: 'set' },
+      ],
+      cost: 1,
+      targetsCharacter: true,
+      targetsPosition: false,
+    },
 
-  /** Rally ally (remove fear) */
-  Rally: {
-    name: 'Rally',
-    type: 'rally' as ActionType,
-    preconditions: [
-      { property: 'fear', value: 0, comparison: 'greater_than' as const },
-    ],
-    effects: [
-      { property: 'fear', value: 1, effectType: 'remove' as const },
-    ],
-    cost: 1,
-    targetsCharacter: true,
-    targetsPosition: false,
-  },
+    /**
+     * Rally Action (QSR p.1114, p.1136)
+     * - Unopposed POW Test
+     * - Removes 1 Fear token per cascade
+     * - Can target self or ally in Cohesion
+     * - Costs 1 AP
+     */
+    {
+      name: 'Rally',
+      type: 'rally',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+        { property: 'fear.target', value: 0, comparison: 'greater_than' },
+        { property: 'inCohesion.target', value: true, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'fear.target', value: 1, effectType: 'remove' },
+        { property: 'hasActed', value: true, effectType: 'set' },
+      ],
+      cost: 1,
+      targetsCharacter: true,
+      targetsPosition: false,
+    },
 
-  /** Revive KO'd ally */
-  Revive: {
-    name: 'Revive',
-    type: 'revive' as ActionType,
-    preconditions: [
-      { property: 'status', value: 'ko', comparison: 'equals' as const },
-    ],
-    effects: [
-      { property: 'status', value: 'active', effectType: 'set' as const },
-      { property: 'wounds', value: 2, effectType: 'add' as const },
-    ],
-    cost: 1,
-    targetsCharacter: true,
-    targetsPosition: false,
-  },
+    /**
+     * Revive Action (QSR p.1114)
+     * - Unopposed FOR Test
+     * - Can target self or ally in base-contact
+     * - On success: spend cascades to remove Delay (1 each) and Wounds (2 each)
+     * - KO'd models: right them, assign Delay tokens = SIZ (min 2)
+     * - Costs 1 AP
+     */
+    {
+      name: 'Revive',
+      type: 'revive',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+        { property: 'status.target', value: 'ko', comparison: 'equals' },
+        { property: 'inBaseContact.target', value: true, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'status.target', value: 'active', effectType: 'set' },
+        { property: 'wounds.target', value: 2, effectType: 'add' },
+        { property: 'delay.target', value: 2, effectType: 'set' },
+        { property: 'hasActed', value: true, effectType: 'set' },
+      ],
+      cost: 1,
+      targetsCharacter: true,
+      targetsPosition: false,
+    },
 
-  /** Wait for opportunity */
-  Wait: {
-    name: 'Wait',
-    type: 'wait' as ActionType,
-    preconditions: [],
-    effects: [
-      { property: 'status', value: 'waiting', effectType: 'set' as const },
-    ],
-    cost: 2,
-    targetsCharacter: false,
-    targetsPosition: false,
-  },
+    /**
+     * Wait Action (QSR p.1113)
+     * - Costs 2 AP (or 1 AP to maintain if already waiting)
+     * - Allows Reacts even when Done
+     * - Doubles Visibility OR
+     * - Reveals Hidden models in LOS not in Cover
+     */
+    {
+      name: 'Wait',
+      type: 'wait',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 1, comparison: 'greater_than' },
+        { property: 'isWaiting', value: false, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 2, effectType: 'remove' },
+        { property: 'isWaiting', value: true, effectType: 'set' },
+        { property: 'visibilityOR', value: 2, effectType: 'multiply' },
+      ],
+      cost: 2,
+      targetsCharacter: false,
+      targetsPosition: false,
+    },
 
-  /** Hold position */
-  Hold: {
-    name: 'Hold',
-    type: 'hold' as ActionType,
-    preconditions: [],
-    effects: [],
-    cost: 0,
-    targetsCharacter: false,
-    targetsPosition: false,
-  },
-};
+    /**
+     * Hold Action (QSR p.1113)
+     * - Zero AP cost
+     * - Character remains in position
+     * - Used when no better action available
+     */
+    {
+      name: 'Hold',
+      type: 'hold',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'hasActed', value: true, effectType: 'set' },
+      ],
+      cost: 0,
+      targetsCharacter: false,
+      targetsPosition: false,
+    },
+
+    /**
+     * Concentrate Action (QSR p.1113)
+     * - Costs 1 AP (combined with another action)
+     * - Provides +1w to specified Test
+     * - If for Hit Test: ignore Max ORM, double all ORs
+     */
+    {
+      name: 'Concentrate',
+      type: 'concentrate',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+        { property: 'hasActionToCombine', value: true, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'concentrateBonus', value: true, effectType: 'set' },
+      ],
+      cost: 1,
+      targetsCharacter: false,
+      targetsPosition: false,
+    },
+
+    /**
+     * Hide Action (QSR p.1113)
+     * - Costs 1 AP (0 AP if not in LOS)
+     * - Requires Cover and LOS
+     * - Marks model as Hidden
+     * - Hidden: Visibility/Cohesion halved, terrain degraded
+     */
+    {
+      name: 'Hide',
+      type: 'hide',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'apRemaining', value: 0, comparison: 'greater_than' },
+        { property: 'hasCover', value: true, comparison: 'equals' },
+        { property: 'inLOS', value: true, comparison: 'equals' },
+        { property: 'isHidden', value: false, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'isHidden', value: true, effectType: 'set' },
+      ],
+      cost: 1,
+      targetsCharacter: false,
+      targetsPosition: false,
+    },
+
+    /**
+     * Detect Action (QSR p.1113)
+     * - First Detect costs 0 AP, subsequent cost 1 AP
+     * - Opposed REF Test vs Hidden target
+     * - OR = Visibility
+     * - On success: removes Hidden status
+     */
+    {
+      name: 'Detect',
+      type: 'detect',
+      preconditions: [
+        { property: 'status.self', value: 'active', comparison: 'equals' },
+        { property: 'hasHiddenTarget', value: true, comparison: 'equals' },
+        { property: 'inLOS.target', value: true, comparison: 'equals' },
+      ],
+      effects: [
+        { property: 'apRemaining', value: 1, effectType: 'remove' },
+        { property: 'isHidden.target', value: false, effectType: 'set' },
+        { property: 'hasActed', value: true, effectType: 'set' },
+      ],
+      cost: 0,
+      targetsCharacter: true,
+      targetsPosition: false,
+    },
+  ];
+}
 
 /**
- * Standard GOAP Goals
+ * Standard GOAP Goals (QSR-Compliant)
  */
 export const StandardGoals = {
-  /** Eliminate all enemies */
+  /**
+   * Eliminate all enemies (QSR Mission 1: Elimination)
+   * - All enemy models must be Eliminated
+   * - Priority 5 (default offensive goal)
+   */
   EliminateEnemies: {
     name: 'Eliminate Enemies',
     conditions: [
-      { property: 'status.enemy', value: 'eliminated', comparison: 'equals' as const },
+      { property: 'status.enemy', value: 'eliminated', comparison: 'equals' },
     ],
     priority: 5,
     isUrgent: false,
   },
 
-  /** Survive (don't be eliminated) */
+  /**
+   * Survive (don't be eliminated)
+   * - Character must not be KO'd or Eliminated
+   * - Priority 10 (highest - survival instinct)
+   * - Urgent: triggers when wounds >= SIZ - 1
+   */
   Survive: {
     name: 'Survive',
     conditions: [
-      { property: 'status.self', value: 'eliminated', comparison: 'not_equals' as const },
+      { property: 'status.self', value: 'eliminated', comparison: 'not_equals' },
+      { property: 'status.self', value: 'ko', comparison: 'not_equals' },
     ],
     priority: 10,
     isUrgent: true,
   },
 
-  /** Protect ally */
+  /**
+   * Protect ally
+   * - Allied models must not be Eliminated
+   * - Priority 7 (important but not critical)
+   */
   ProtectAlly: {
     name: 'Protect Ally',
     conditions: [
-      { property: 'status.ally', value: 'eliminated', comparison: 'not_equals' as const },
+      { property: 'status.ally', value: 'eliminated', comparison: 'not_equals' },
     ],
     priority: 7,
     isUrgent: false,
   },
 
-  /** Disengage from combat */
+  /**
+   * Disengage from combat
+   * - Character must not be engaged
+   * - Priority 6 (urgent when disadvantaged)
+   * - Urgent: triggers when engaged and wounds high or CCA low
+   */
   DisengageCombat: {
     name: 'Disengage',
     conditions: [
-      { property: 'engaged.self', value: null, comparison: 'exists' as const },
+      { property: 'engaged.self', value: false, comparison: 'equals' },
     ],
     priority: 6,
     isUrgent: true,
   },
 
-  /** Move to position */
+  /**
+   * Reach tactical position
+   * - Character must be at specified position
+   * - Priority 3 (positional goal)
+   */
   ReachPosition: {
     name: 'Reach Position',
     conditions: [
-      { property: 'position', value: null, comparison: 'exists' as const },
+      { property: 'position.self', value: null, comparison: 'exists' },
     ],
     priority: 3,
+    isUrgent: false,
+  },
+
+  /**
+   * Rally from fear
+   * - Remove all Fear tokens
+   * - Priority 8 (important for disordered characters)
+   */
+  RallyFromFear: {
+    name: 'Rally',
+    conditions: [
+      { property: 'fear.self', value: 0, comparison: 'equals' },
+    ],
+    priority: 8,
+    isUrgent: false,
+  },
+
+  /**
+   * Revive fallen ally
+   * - Ally status changed from KO to Active
+   * - Priority 9 (high priority for saving allies)
+   */
+  ReviveAlly: {
+    name: 'Revive Ally',
+    conditions: [
+      { property: 'status.ally', value: 'active', comparison: 'equals' },
+    ],
+    priority: 9,
     isUrgent: false,
   },
 };
 
 /**
- * Create default GOAP planner with standard actions
+ * Create default GOAP planner with QSR-compliant actions
  */
 export function createDefaultGOAPPlanner(maxDepth: number = 5): GOAPPlanner {
-  const actions = [
-    StandardActions.Move,
-    StandardActions.CloseCombat,
-    StandardActions.RangedCombat,
-    StandardActions.Disengage,
-    StandardActions.Rally,
-    StandardActions.Revive,
-    StandardActions.Wait,
-    StandardActions.Hold,
-  ];
-
+  const actions = createStandardActions();
   return new GOAPPlanner(actions, maxDepth);
+}
+
+// ============================================================================
+// GOAP Action Validator
+// ============================================================================
+
+/**
+ * Validation result for GOAP action
+ */
+export interface ActionValidation {
+  /** Whether action is valid */
+  isValid: boolean;
+  /** List of validation errors */
+  errors: string[];
+  /** List of validation warnings */
+  warnings: string[];
+}
+
+/**
+ * Validate GOAP action against current game state
+ * 
+ * This provides runtime verification that planned actions
+ * are actually executable in the current game context.
+ */
+export function validateAction(
+  action: GOAPAction,
+  context: AIContext,
+  target?: Character,
+  position?: Position
+): ActionValidation {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+
+  // Check character status
+  if (context.character.state.isEliminated) {
+    errors.push('Character is Eliminated and cannot act');
+    return { isValid: false, errors, warnings };
+  }
+
+  if (context.character.state.isKOd) {
+    errors.push('Character is KO\'d and cannot act');
+    return { isValid: false, errors, warnings };
+  }
+
+  if (!context.character.state.isAttentive) {
+    errors.push('Character is Distracted and cannot act');
+    return { isValid: false, errors, warnings };
+  }
+
+  if (!context.character.state.isOrdered) {
+    errors.push('Character is Disordered and must take compulsory actions');
+    return { isValid: false, errors, warnings };
+  }
+
+  // Check AP availability
+  const apCost = action.cost;
+  if (context.apRemaining < apCost) {
+    errors.push(`Insufficient AP: need ${apCost}, have ${context.apRemaining}`);
+  }
+
+  // Action-specific validation
+  switch (action.type) {
+    case 'move':
+      validateMoveAction(context, position, errors, warnings);
+      break;
+    case 'close_combat':
+      validateCloseCombatAction(context, target, errors, warnings);
+      break;
+    case 'ranged_combat':
+      validateRangedCombatAction(context, target, errors, warnings);
+      break;
+    case 'disengage':
+      validateDisengageAction(context, errors, warnings);
+      break;
+    case 'rally':
+      validateRallyAction(context, target, errors, warnings);
+      break;
+    case 'revive':
+      validateReviveAction(context, target, errors, warnings);
+      break;
+    case 'wait':
+      validateWaitAction(context, errors, warnings);
+      break;
+    case 'hide':
+      validateHideAction(context, errors, warnings);
+      break;
+    case 'detect':
+      validateDetectAction(context, target, errors, warnings);
+      break;
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors,
+    warnings,
+  };
+}
+
+function validateMoveAction(
+  context: AIContext,
+  position: Position | undefined,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (!position) {
+    errors.push('Move action requires target position');
+    return;
+  }
+
+  const startPos = context.battlefield.getCharacterPosition(context.character);
+  if (!startPos) {
+    errors.push('Cannot determine character starting position');
+    return;
+  }
+
+  const dx = position.x - startPos.x;
+  const dy = position.y - startPos.y;
+  const distance = Math.hypot(dx, dy);
+  const mov = context.character.finalAttributes.mov ?? 2;
+
+  if (distance > mov * 2) {
+    errors.push(`Destination too far: ${distance.toFixed(1)} MU exceeds max movement (${mov * 2} MU)`);
+  } else if (distance > mov) {
+    warnings.push(`Destination requires Sprint or full movement (${distance.toFixed(1)} MU > ${mov} MOV)`);
+  }
+
+  // Check for engagement (should disengage first)
+  if (context.battlefield.isEngaged?.(context.character)) {
+    errors.push('Cannot move while engaged - must Disengage first');
+  }
+}
+
+function validateCloseCombatAction(
+  context: AIContext,
+  target: Character | undefined,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (!target) {
+    errors.push('Close Combat requires target character');
+    return;
+  }
+
+  if (!context.battlefield.isEngaged?.(context.character)) {
+    errors.push('Not engaged with target - must move into base contact first');
+  }
+
+  // Check for melee weapon
+  const hasMeleeWeapon = context.character.profile?.items?.some(item => {
+    const classification = item.classification || item.class || '';
+    return classification.toLowerCase().includes('melee') || 
+           classification.toLowerCase().includes('natural');
+  });
+
+  if (!hasMeleeWeapon) {
+    warnings.push('No melee weapon equipped - using Improvised Melee');
+  }
+}
+
+function validateRangedCombatAction(
+  context: AIContext,
+  target: Character | undefined,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (!target) {
+    errors.push('Ranged Combat requires target character');
+    return;
+  }
+
+  // Check LOS
+  const attackerModel = buildSpatialModelForValidation(context.character, context.battlefield);
+  const targetModel = buildSpatialModelForValidation(target, context.battlefield);
+  
+  if (!attackerModel || !targetModel) {
+    errors.push('Cannot determine positions for LOS check');
+    return;
+  }
+
+  // Check engagement (can't do ranged combat while engaged)
+  if (context.battlefield.isEngaged?.(context.character)) {
+    errors.push('Cannot perform ranged combat while engaged');
+  }
+
+  // Check for ranged weapon
+  const hasRangedWeapon = context.character.profile?.items?.some(item => {
+    const classification = item.classification || item.class || '';
+    return classification.toLowerCase().includes('bow') || 
+           classification.toLowerCase().includes('thrown') ||
+           classification.toLowerCase().includes('firearm') ||
+           classification.toLowerCase().includes('range');
+  });
+
+  if (!hasRangedWeapon) {
+    errors.push('No ranged weapon equipped');
+  }
+}
+
+function validateDisengageAction(
+  context: AIContext,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (!context.battlefield.isEngaged?.(context.character)) {
+    errors.push('Not engaged - Disengage only valid when engaged');
+  }
+}
+
+function validateRallyAction(
+  context: AIContext,
+  target: Character | undefined,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (!target) {
+    errors.push('Rally requires target character');
+    return;
+  }
+
+  if (target.state.fearTokens <= 0) {
+    errors.push('Target has no Fear tokens to remove');
+  }
+
+  // Check cohesion (simplified - should check actual cohesion distance)
+  const myPos = context.battlefield.getCharacterPosition(context.character);
+  const targetPos = context.battlefield.getCharacterPosition(target);
+  
+  if (myPos && targetPos) {
+    const distance = Math.hypot(targetPos.x - myPos.x, targetPos.y - myPos.y);
+    const cohesionRange = 8; // Simplified cohesion
+    if (distance > cohesionRange) {
+      errors.push(`Target out of Cohesion range (${distance.toFixed(1)} MU > ${cohesionRange} MU)`);
+    }
+  }
+}
+
+function validateReviveAction(
+  context: AIContext,
+  target: Character | undefined,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (!target) {
+    errors.push('Revive requires target character');
+    return;
+  }
+
+  if (!target.state.isKOd) {
+    errors.push('Target is not KO\'d - Revive only valid for KO\'d characters');
+  }
+
+  // Check base contact
+  const myPos = context.battlefield.getCharacterPosition(context.character);
+  const targetPos = context.battlefield.getCharacterPosition(target);
+  
+  if (myPos && targetPos) {
+    const distance = Math.hypot(targetPos.x - myPos.x, targetPos.y - myPos.y);
+    if (distance > 1) {
+      errors.push(`Target not in base contact (${distance.toFixed(1)} MU > 1 MU)`);
+    }
+  }
+}
+
+function validateWaitAction(
+  context: AIContext,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (context.apRemaining < 2) {
+    errors.push(`Wait requires 2 AP, have ${context.apRemaining}`);
+  }
+
+  if (context.character.state.isWaiting) {
+    warnings.push('Character already in Wait status');
+  }
+}
+
+function validateHideAction(
+  context: AIContext,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (context.character.state.isHidden) {
+    errors.push('Character is already Hidden');
+  }
+
+  // Check for cover (simplified - should check actual terrain)
+  const hasCover = true; // TODO: Check actual terrain
+  if (!hasCover) {
+    errors.push('No Cover available for Hide');
+  }
+}
+
+function validateDetectAction(
+  context: AIContext,
+  target: Character | undefined,
+  errors: string[],
+  warnings: string[]
+): void {
+  if (!target) {
+    errors.push('Detect requires target character');
+    return;
+  }
+
+  if (!target.state.isHidden) {
+    errors.push('Target is not Hidden - Detect only valid vs Hidden targets');
+  }
+}
+
+function buildSpatialModelForValidation(character: Character, battlefield: any) {
+  const position = battlefield.getCharacterPosition(character);
+  if (!position) return null;
+  const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+  return {
+    id: character.id,
+    position,
+    baseDiameter: siz / 3, // Simplified
+    siz,
+  };
+}
+
+/**
+ * Log GOAP plan execution for debugging
+ */
+export function logPlanExecution(
+  plan: ActionPlan | null,
+  goal: GOAPGoal,
+  context: AIContext
+): void {
+  console.log(`[GOAP] Goal: ${goal.name} (priority: ${goal.priority})`);
+  
+  if (!plan) {
+    console.log(`[GOAP] ❌ No plan found`);
+    return;
+  }
+
+  console.log(`[GOAP] ✓ Plan found: ${plan.actions.length} actions, cost: ${plan.totalCost}`);
+  console.log(`[GOAP] Success probability: ${(plan.successProbability * 100).toFixed(0)}%`);
+  
+  plan.actions.forEach((action, index) => {
+    console.log(`[GOAP]   ${index + 1}. ${action.name} (cost: ${action.cost})`);
+    if (action.preconditions.length > 0) {
+      console.log(`[GOAP]      Preconditions: ${action.preconditions.map(p => p.property).join(', ')}`);
+    }
+    if (action.effects.length > 0) {
+      console.log(`[GOAP]      Effects: ${action.effects.map(e => `${e.property} ${e.effectType} ${e.value}`).join(', ')}`);
+    }
+  });
 }

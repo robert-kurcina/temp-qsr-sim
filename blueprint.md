@@ -1079,18 +1079,36 @@ Hybrid system combining:
   - Knowledge Base (god-mode, fog-of-war stub, threat zones)
   - CharacterAI (decision making, react evaluation)
   - 12 unit tests passing
-- ⏳ Phase 2A: Tactical Patterns — IN PROGRESS
+- ✅ Phase 2A: Tactical Patterns — COMPLETE
   - Flanking pattern
   - Focus fire pattern
   - Defensive formation pattern
   - Objective assault pattern
   - Retreat/regroup pattern
-- ⏳ Phase 2B: GOAP Integration
-  - Goal definition system
-  - Action precondition/effects
-  - Planner implementation
-  - Multi-turn planning
-- ⏳ Phase 3: Strategic Layer
+  - PatternRecognizer with confidence scoring
+  - 4 unit tests passing
+- ✅ Phase 2B: GOAP Integration — COMPLETE (Refinement & Validation Done)
+  - Goal definition system (7 standard goals: Survive, Eliminate, Protect, Disengage, Rally, Revive, Reach)
+  - QSR-compliant action preconditions/effects (11 actions: Move, Close Combat, Ranged Combat, Disengage, Rally, Revive, Wait, Hold, Concentrate, Hide, Detect)
+  - Backward-chaining planner with configurable depth (default 5)
+  - Runtime action validator (validates actions against game state before execution)
+  - Plan execution logging for debugging
+  - Success probability estimation (factors: plan length, health, outnumbered status)
+  - 7 unit tests passing
+  - **Token cost:** ~5,000 tokens (refinement + validation)
+  - **Time spent:** ~8 hours
+- ⏳ Phase 3: Strategic Layer (SideAI, AssemblyAI)
+  - Mission evaluation and victory tracking
+  - Resource allocation across assemblies
+  - Squad coordination and target assignment
 - ⏳ Phase 4: Action Integration
+  - Wire AI decisions to GameManager execution
+  - Validate planned actions execute correctly
+  - Handle execution failures and replanning
 - ⏳ Phase 5: Mission Specialization
-- ⏳ Phase 6: Advanced Features (optional MCTS)
+  - Mission-specific AI behaviors (Elimination, Convergence, Dominion, etc.)
+  - Objective prioritization per mission type
+- ⏳ Phase 6: Advanced Features (optional)
+  - MCTS for critical decisions (VIP protection, final-turn victory)
+  - Learning from player behavior
+  - Difficulty scaling via parameter tuning

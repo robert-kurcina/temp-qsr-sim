@@ -15,8 +15,9 @@ import {
 import {
   GOAPPlanner,
   createDefaultGOAPPlanner,
-  StandardActions,
+  createStandardActions,
   StandardGoals,
+  validateAction,
 } from '../tactical/GOAP';
 import { Character } from '../../core/Character';
 import { Profile } from '../../core/Profile';
@@ -290,11 +291,127 @@ describe('GOAP', () => {
   });
 
   it('should have standard actions defined', () => {
-    expect(StandardActions.Move).toBeDefined();
-    expect(StandardActions.CloseCombat).toBeDefined();
-    expect(StandardActions.RangedCombat).toBeDefined();
-    expect(StandardActions.Disengage).toBeDefined();
-    expect(StandardActions.Hold).toBeDefined();
+    const actions = createStandardActions();
+    expect(actions.length).toBeGreaterThan(0);
+    expect(actions.some(a => a.type === 'move')).toBe(true);
+    expect(actions.some(a => a.type === 'close_combat')).toBe(true);
+    expect(actions.some(a => a.type === 'ranged_combat')).toBe(true);
+    expect(actions.some(a => a.type === 'disengage')).toBe(true);
+    expect(actions.some(a => a.type === 'hold')).toBe(true);
+  });
+
+  it('should validate actions against game state', () => {
+    const context = makeTestContext();
+    const actions = createStandardActions();
+    const moveAction = actions.find(a => a.type === 'move')!;
+    
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        aggression: 0.5,
+        caution: 0.5,
+        accuracyModifier: 0,
+        godMode: true,
+      },
+    };
+
+    // Valid move action
+    const validResult = validateAction(moveAction, aiContext, undefined, { x: 14, y: 12 });
+    expect(validResult.isValid).toBe(true);
+
+    // Invalid move (out of range)
+    const invalidResult = validateAction(moveAction, aiContext, undefined, { x: 100, y: 100 });
+    expect(invalidResult.isValid).toBe(false);
+    expect(invalidResult.errors.length).toBeGreaterThan(0);
+  });
+
+  it('should validate close combat requires engagement', () => {
+    const context = makeTestContext();
+    const actions = createStandardActions();
+    const ccAction = actions.find(a => a.type === 'close_combat')!;
+    
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        aggression: 0.5,
+        caution: 0.5,
+        accuracyModifier: 0,
+        godMode: true,
+      },
+    };
+
+    // Not engaged - should fail
+    const result = validateAction(ccAction, aiContext, context.enemies[0]);
+    expect(result.isValid).toBe(false);
+    expect(result.errors.some(e => e.includes('engaged'))).toBe(true);
+  });
+
+  it('should validate rally requires fear tokens', () => {
+    const context = makeTestContext();
+    const actions = createStandardActions();
+    const rallyAction = actions.find(a => a.type === 'rally')!;
+    
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        aggression: 0.5,
+        caution: 0.5,
+        accuracyModifier: 0,
+        godMode: true,
+      },
+    };
+
+    // Ally has no fear - should fail
+    const result = validateAction(rallyAction, aiContext, context.allies[0]);
+    expect(result.isValid).toBe(false);
+    expect(result.errors.some(e => e.includes('Fear'))).toBe(true);
+
+    // Ally has fear - should pass (if in cohesion)
+    context.allies[0].state.fearTokens = 2;
+    const validResult = validateAction(rallyAction, aiContext, context.allies[0]);
+    expect(validResult.isValid).toBe(true);
   });
 
   it('should have standard goals defined', () => {
