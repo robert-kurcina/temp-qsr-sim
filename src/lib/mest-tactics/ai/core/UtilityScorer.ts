@@ -9,6 +9,7 @@ import { Character } from '../../core/Character';
 import { Battlefield } from '../../battlefield/Battlefield';
 import { Position } from '../../battlefield/Position';
 import { AIContext, ActionDecision, ActionType } from './AIController';
+import { getMultipleWeaponsBonus, getWeaponClassification, qualifiesForMultipleWeapons } from '../../traits/combat-traits';
 import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 
@@ -149,22 +150,38 @@ export class UtilityScorer {
       // Check if in melee range
       const inMelee = this.isInMeleeRange(context.character, target.target, context.battlefield);
       if (inMelee) {
+        let score = target.score * 1.2;
+        
+        // Multiple Weapons bonus consideration for melee
+        if (qualifiesForMultipleWeapons(context.character, true)) {
+          const bonus = getMultipleWeaponsBonus(context.character, 0, true);
+          score += bonus * 0.3;
+        }
+        
         actions.push({
           action: 'close_combat',
           target: target.target,
-          score: target.score * 1.2,
-          factors: { ...target.factors },
+          score: score,
+          factors: { ...target.factors, multipleWeapons: qualifiesForMultipleWeapons(context.character, true) },
         });
       }
 
       // Check if in range for ranged attack
       const inRange = this.isInRange(context.character, target.target, context.battlefield);
       if (inRange) {
+        let score = target.score;
+        
+        // Multiple Weapons bonus consideration
+        if (qualifiesForMultipleWeapons(context.character, false)) {
+          const bonus = getMultipleWeaponsBonus(context.character, 0, false);
+          score += bonus * 0.3; // Bonus adds to score
+        }
+        
         actions.push({
           action: 'ranged_combat',
           target: target.target,
-          score: target.score,
-          factors: { ...target.factors },
+          score: score,
+          factors: { ...target.factors, multipleWeapons: qualifiesForMultipleWeapons(context.character, false) },
         });
       }
     }

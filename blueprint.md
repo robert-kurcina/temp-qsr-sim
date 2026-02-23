@@ -1380,7 +1380,15 @@ Hybrid system combining:
   - 24 unit tests passing
   - **Token cost:** ~7,000 tokens
   - **Time spent:** ~3 hours
-- ⏸️ Phase 6: Advanced Features (DEFERRED)
+- ✅ Phase 6: Advanced Rules Integration — COMPLETE
+  - **Indirect Range Combat AI** — Grenade/throwable targeting logic
+  - **Scatter Consideration** — AI accounts for scatter when using indirect weapons
+  - **Multiple Weapons Bonus** — AI recognizes and utilizes multiple weapons
+  - **Multiple Attack Penalty** — AI avoids consecutive same weapon use
+  - **Weapon Classification** — AI properly classifies Melee/Ranged/Natural weapons
+  - **Natural Weapons Exemption** — AI uses natural weapons without penalty
+  - Integration with existing GOAP and Utility systems
+- ⏸️ Phase 7: Advanced Features (DEFERRED)
   - MCTS for critical decisions (VIP protection, final-turn victory) — Not needed for current scope
   - Learning from player behavior — Requires persistent storage, not prioritized
   - Difficulty scaling via parameter tuning — AI config exists, presets can be added later

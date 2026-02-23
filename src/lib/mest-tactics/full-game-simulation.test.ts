@@ -644,4 +644,21 @@ describe('Full End-to-End AI vs AI Game Simulation', () => {
     expect(result.winner).toBeDefined();
     expect(result.stats.totalActions).toBeGreaterThan(0);
   });
+
+  it('should run a complete LARGE game (8-16 models)', async () => {
+    const result = await runner.runGame(GAME_SIZES.LARGE, 'Army A', 'Army B', true);
+    expect(result.winner).toBeDefined();
+    expect(result.stats.totalActions).toBeGreaterThan(0);
+  });
+
+  it('should run a complete VERY_LARGE game (16-32 models)', async () => {
+    const result = await runner.runGame(GAME_SIZES.VERY_LARGE, 'Grand Army A', 'Grand Army B', true);
+    expect(result.winner).toBeDefined();
+    expect(result.log.length).toBeGreaterThan(0);
+    expect(result.stats.totalActions).toBeGreaterThan(0);
+    // Verify pathfinding works at scale (models should reach targets)
+    expect(result.stats.moves).toBeGreaterThan(0);
+    // Verify combat works at scale
+    expect(result.stats.attacks).toBeGreaterThan(0);
+  }, 60000); // 60 second timeout for large game
 });
