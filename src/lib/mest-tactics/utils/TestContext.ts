@@ -14,6 +14,8 @@ export interface TestContext {
   isBlindAttack?: boolean;  // For the -1w Blind penalty
   isFiddle?: boolean;       // For the +1m Help bonus
   concentrateTarget?: 'hit' | 'damage' | 'any';
+  isCloseCombat?: boolean;
+  isEngaged?: boolean;      // For traits that change when engaged (e.g., Deflect)
 
   // --- Close Combat Spatial Modifiers ---
   assistingModels?: number; // For the +1 Assist bonus (per model)
@@ -47,6 +49,7 @@ export interface TestContext {
   reactPenaltyBase?: number;
   multipleAttackPenalty?: number; // For the -1m Multiple Attack penalty
   burstBonusBase?: number;  // For the +1b [Burst] trait bonus
+  handPenaltyBase?: number; // For -1b penalty when using one less hand
 
   // --- Test Overrides ---
   isAutoPass?: boolean;

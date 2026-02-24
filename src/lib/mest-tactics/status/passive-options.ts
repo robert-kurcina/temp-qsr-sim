@@ -384,15 +384,16 @@ export function buildActiveToggleOptions(params: {
   const isMelee = classification.toLowerCase().includes('melee');
   const hasStub = params.weapon?.traits?.some(trait => trait.includes('[Stub]')) ?? false;
   const isNatural = classification.toLowerCase().includes('natural');
+  const isTwoHanded = params.weapon?.traits?.some(trait => trait.includes('[2H]') || trait.includes('2H')) ?? false;
 
   options.push({
     id: `${params.attacker.id}:Overreach`,
     type: 'Overreach',
     label: 'Overreach',
-    available: isMelee && !isNatural && !hasStub && params.attacker.state.isAttentive,
-    reason: isMelee && !isNatural && !hasStub && params.attacker.state.isAttentive
+    available: isMelee && !isNatural && !hasStub && !isTwoHanded && params.attacker.state.isAttentive,
+    reason: isMelee && !isNatural && !hasStub && !isTwoHanded && params.attacker.state.isAttentive
       ? undefined
-      : 'Requires an Attentive attacker with a non-natural, non-stub melee weapon.',
+      : 'Requires an Attentive attacker with a non-natural, non-stub melee weapon (2H weapons cannot Overreach).',
   });
 
   options.push({

@@ -9,6 +9,7 @@ import { Character } from '../../core/Character';
 import { Battlefield } from '../../battlefield/Battlefield';
 import { Position } from '../../battlefield/Position';
 import { ActionDecision, AIContext, ActionType } from '../core/AIController';
+import { isAttackableEnemy } from '../core/ai-utils';
 
 /**
  * Tactical pattern recognition result
@@ -173,7 +174,7 @@ export const Conditions = {
       let rightCount = 0;
       
       for (const enemy of ctx.enemies) {
-        if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+        if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
         const enemyPos = ctx.battlefield.getCharacterPosition(enemy);
         if (!enemyPos) continue;
         
@@ -210,7 +211,7 @@ export const Conditions = {
     name: 'Enemy Wounded',
     check: (ctx: AIContext) => {
       return ctx.enemies.some(e => {
-        if (e.state.isEliminated || e.state.isKOd) return false;
+        if (!isAttackableEnemy(context.character, e, context.config)) return false;
         const siz = e.finalAttributes.siz ?? e.attributes.siz ?? 3;
         return e.state.wounds >= siz - 1;
       });
@@ -225,7 +226,7 @@ export const Conditions = {
         !a.state.isEliminated && !a.state.isKOd
       ).length;
       const enemyCount = ctx.enemies.filter(e => 
-        !e.state.isEliminated && !e.state.isKOd
+        isAttackableEnemy(context.character, e, context.config)
       ).length;
       return friendlyCount > enemyCount * 1.5;
     },
@@ -239,7 +240,7 @@ export const Conditions = {
         !a.state.isEliminated && !a.state.isKOd
       ).length + 1; // Include self
       const enemyCount = ctx.enemies.filter(e => 
-        !e.state.isEliminated && !e.state.isKOd
+        isAttackableEnemy(context.character, e, context.config)
       ).length;
       return enemyCount > friendlyCount * 1.5;
     },
@@ -256,7 +257,7 @@ export const Conditions = {
     name: 'Has LOS',
     check: (ctx: AIContext) => {
       return ctx.enemies.some(e => {
-        if (e.state.isEliminated || e.state.isKOd) return false;
+        if (!isAttackableEnemy(context.character, e, context.config)) return false;
         // Simplified LOS check
         return true;
       });
@@ -310,7 +311,7 @@ export const Patterns = {
       let highestWoundRatio = 0;
 
       for (const enemy of ctx.enemies) {
-        if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+        if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
         const siz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
         const woundRatio = enemy.state.wounds / siz;
         if (woundRatio > highestWoundRatio) {
@@ -347,7 +348,7 @@ export const Patterns = {
       
       // Find enemy to flank
       const nearestEnemy = ctx.enemies.find(e => 
-        !e.state.isEliminated && !e.state.isKOd
+        isAttackableEnemy(context.character, e, context.config)
       );
 
       if (nearestEnemy) {
@@ -467,7 +468,7 @@ export const Patterns = {
       // Disengage if engaged
       if (ctx.battlefield.isEngaged?.(ctx.character)) {
         const enemy = ctx.enemies.find(e => 
-          !e.state.isEliminated && !e.state.isKOd
+          isAttackableEnemy(context.character, e, context.config)
         );
         if (enemy) {
           actions.push({
@@ -514,7 +515,7 @@ export const Patterns = {
 
       // Attack enemies near objective
       const enemy = ctx.enemies.find(e => 
-        !e.state.isEliminated && !e.state.isKOd
+        isAttackableEnemy(context.character, e, context.config)
       );
       if (enemy) {
         actions.push({

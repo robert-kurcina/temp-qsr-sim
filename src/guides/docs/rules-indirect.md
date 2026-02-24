@@ -112,6 +112,37 @@ Apply the weapon traits, starting with those with the **AoE** keyword.
 
 ---
 
+## Scatter Diagrams
+
+Scatter diagrams are used to pick a random direction for moving or placing game-play elements.
+
+### Unbiased Diagram
+
+- Picks a random direction equally.
+- Use a vague hexagon shape.
+- Roll a six-sided die and count **clock-wise** with the **‘1’ point toward the other player** and the **‘4’ pointing away**.
+
+### Biased Diagram
+
+- Like the Unbiased diagram, but the **‘1’ points to a desired direction** chosen by the Active player.
+- **Re-roll the first ‘3’, ‘4’, or ‘5’**, then **re-roll the next ‘4’**.
+
+---
+
+## Blind Attacks
+
+Indirect Range Attacks can target battlefield locations that an attacking model does **not** currently have LOS to.
+
+**A target location in LOF but not LOS** may be attacked **only** if one of the following applies:
+- **Spotter**: A Free Attentive Ordered Friendly model within Cohesion has LOS to the target.
+- **Known**: The target was in LOS at the start of the Attacker’s Initiative.
+
+**Blind effects:**
+- **Blind**: Penalize the Active character **−1 Wild die** for the Attacker Range Combat Hit Test.
+- If the attack involves **[Scatter]** and is **Blind**, use the **Unbiased Scatter diagram** with an **extra Wild die for distance**, and **do not re-roll the direction**.
+
+---
+
 ## Implementation Notes
 
 ### Required Components
@@ -119,13 +150,14 @@ Apply the weapon traits, starting with those with the **AoE** keyword.
 | Component | Status | Description |
 |-----------|--------|-------------|
 | **Indirect Hit Test** | ✅ Partial | Unopposed RCA test with −1b per ORM |
-| **Scatter System** | ❌ Missing | Distance/direction reposition |
-| **Scatter Diagram** | ❌ Missing | Biased direction determination |
-| **Collision Detection** | ❌ Missing | Wall/barrier collision handling |
+| **Scatter System** | ✅ Partial | Distance/direction reposition (bias configurable) |
+| **Scatter Diagram** | ✅ Partial | Biased/unbiased direction supported |
+| **Collision Detection** | ✅ Partial | Wall/barrier collision handling |
 | **Roll-down/Gravity** | ❌ Missing | Slope and precipice handling |
-| **Scrambling React** | ❌ Missing | React action for indirect attacks |
-| **AoE Resolution** | ❌ Missing | Base-contact target resolution |
-| **Frag Trait** | ❌ Missing | Fragmentation damage rules |
+| **Scrambling React** | ✅ Partial | React allowed; full react-system wiring TBD |
+| **AoE Resolution** | ✅ Implemented | Base-contact target resolution |
+| **Frag Trait** | ✅ Implemented | Fragmentation damage rules |
+| **Blind Attacks** | ❌ Missing | Spotter/Known validation + blind penalties |
 
 ### QSR Rule References
 

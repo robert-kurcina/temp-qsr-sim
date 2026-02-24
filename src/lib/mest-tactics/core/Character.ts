@@ -37,6 +37,9 @@ export class Character {
     armor: ArmorState;
     loadedWeapons: number[]; // Weapon indices that are loaded (for Reload trait)
     reloadProgress: number; // Progress toward reloading (for Reload trait)
+    gritWoundIgnored: boolean;
+    gritFearReducedThisTurn: boolean;
+    activeWeaponIndex?: number; // Weapon index currently declared for this Initiative
   };
 
   constructor(profile: Profile) {
@@ -95,7 +98,18 @@ export class Character {
       loadedWeapons: [],
       reloadProgress: 0,
       initiativePoints: 0,
+      gritWoundIgnored: false,
+      gritFearReducedThisTurn: false,
+      activeWeaponIndex: undefined,
     };
+    // Initialize loaded weapons for items that have Reload trait
+    const equipment = this.profile?.equipment ?? this.profile?.items ?? [];
+    for (let i = 0; i < equipment.length; i++) {
+      const weapon = equipment[i];
+      if (weapon?.traits?.some(trait => trait.toLowerCase().includes('reload'))) {
+        this.state.loadedWeapons.push(i);
+      }
+    }
     this.refreshStatusFlags();
   }
 
@@ -126,6 +140,8 @@ export class Character {
    */
   resetInitiativeState(): void {
     this.state.hasPushedThisInitiative = false;
+    this.state.gritFearReducedThisTurn = false;
+    this.state.activeWeaponIndex = undefined;
   }
 
   private applyLadenEffects(): void {

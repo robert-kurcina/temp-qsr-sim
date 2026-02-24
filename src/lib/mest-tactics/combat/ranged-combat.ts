@@ -8,7 +8,17 @@ import { resolveRangedHitTest } from '../subroutines/ranged-hit-test';
 import { resolveDamage, DamageResolution } from '../subroutines/damage-test';
 import { SpatialAttackContext, SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from '../status/status-system';
-import { getDetectMaxOrmBonus, getEvasiveBonusDice, checkEvasiveReposition, hasBlinders } from '../traits/combat-traits';
+import {
+  getDetectMaxOrmBonus,
+  getEvasiveBonusDice,
+  checkEvasiveReposition,
+  hasBlinders,
+  getArcheryBonus,
+  getShootPenaltyReduction,
+  getShootMaxORMBonus,
+  getDeflectBonusForTest,
+  getWeaponIndexForCharacter,
+} from '../traits/combat-traits';
 import { resolveFriendlyFire, FriendlyFireOptions } from './friendly-fire';
 import { Battlefield } from '../battlefield/Battlefield';
 import { Position } from '../battlefield/Position';
@@ -45,13 +55,16 @@ export interface AttackResult {
 
 // --- Internal Modifier Calculation for Ranged Combat --- //
 
-function _calculateModifiers(attacker: Character, defender: Character, context: TestContext)
+export function buildRangedHitTestModifiers(attacker: Character, defender: Character, weapon: Item, context: TestContext)
     : { attackerBonus: TestDice, attackerPenalty: TestDice, defenderBonus: TestDice, defenderPenalty: TestDice } {
     
     const attackerBonus: TestDice = {};
     const attackerPenalty: TestDice = {};
     const defenderBonus: TestDice = {};
     const defenderPenalty: TestDice = {};
+    const weaponIndex = getWeaponIndexForCharacter(attacker, weapon);
+    const weaponClass = (weapon.classification || weapon.class || '').toLowerCase();
+    const isBow = weaponClass.includes('bow');
 
     // 1. Hindrance Penalties (applies to most tests)
     const attackerHindrance = calculateHindrancePenalty({ woundTokens: attacker.state.wounds, fearTokens: attacker.state.fearTokens, delayTokens: attacker.state.delayTokens });
@@ -60,8 +73,7 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     // Note: Defender hindrance doesn't apply to the REF roll for being hit.
 
     // 2. Multiple Weapons Bonus (+1m per additional weapon of same classification)
-    // Weapon index 0 = primary weapon (simplified)
-    const multipleWeaponsBonus = getMultipleWeaponsBonus(attacker, 0, false);
+    const multipleWeaponsBonus = getMultipleWeaponsBonus(attacker, weaponIndex, false);
     if (multipleWeaponsBonus > 0) {
         attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + multipleWeaponsBonus;
     }
@@ -99,6 +111,9 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
     if (context.reactPenaltyBase) {
         attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
     }
+    if (context.handPenaltyBase) {
+        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.handPenaltyBase;
+    }
 
     if (context.obscuringModels && context.obscuringModels > 0) {
         const thresholds = [1, 2, 5, 10];
@@ -121,9 +136,10 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
 
     // Distance Penalty (ORM)
     if (context.orm && context.orm > 0) {
-        // Detect X: Increase Maximum OR Multiple by X
+        // Detect X and Shoot X: Increase Maximum OR Multiple by X
         const detectOrmBonus = getDetectMaxOrmBonus(attacker);
-        const effectiveOrm = Math.max(0, context.orm - detectOrmBonus);
+        const shootOrmBonus = getShootMaxORMBonus(attacker);
+        const effectiveOrm = Math.max(0, context.orm - detectOrmBonus - shootOrmBonus);
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + effectiveOrm;
     }
     
@@ -133,6 +149,27 @@ function _calculateModifiers(attacker: Character, defender: Character, context: 
         if (evasiveBonus > 0) {
             defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + evasiveBonus;
         }
+    }
+
+    // Deflect X: +X Modifier dice for Defender Range Combat Hit Tests (ignored if engaged)
+    const deflectBonus = getDeflectBonusForTest(defender, true, context.isEngaged ?? false);
+    if (deflectBonus > 0) {
+        defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + deflectBonus;
+    }
+
+    // Archery X: +Xm Bow Hit Tests
+    const archeryBonus = getArcheryBonus(attacker, isBow);
+    if (archeryBonus > 0) {
+        attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + archeryBonus;
+    }
+
+    // Shoot X: Reduce up to X penalty Modifier dice on Range Hit Tests
+    const shootPenaltyReduction = getShootPenaltyReduction(attacker);
+    if (shootPenaltyReduction > 0 && (attackerPenalty[DiceType.Modifier] || 0) > 0) {
+        attackerPenalty[DiceType.Modifier] = Math.max(
+            0,
+            (attackerPenalty[DiceType.Modifier] || 0) - shootPenaltyReduction
+        );
     }
 
     return { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty };
@@ -183,7 +220,7 @@ export function makeRangedCombatAttack(
     }
 
     // 1. Calculate situational modifiers for the ranged attack.
-    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, fullContext);
+    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = buildRangedHitTestModifiers(attacker, defender, weapon, fullContext);
 
     // 2. Perform the Ranged Hit Test (RCA vs REF).
     let hitTestResult: TestResult;
@@ -278,7 +315,7 @@ export function resolveRangedCombatHitTest(
         }
     }
 
-    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = _calculateModifiers(attacker, defender, fullContext);
+    const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = buildRangedHitTestModifiers(attacker, defender, weapon, fullContext);
 
     let hitTestResult: TestResult;
     if (fullContext.forceHit) {

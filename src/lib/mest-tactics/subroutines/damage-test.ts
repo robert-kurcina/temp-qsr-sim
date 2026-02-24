@@ -2,7 +2,7 @@ import { Character } from '../core/Character';
 import { resolveTest, TestParticipant, TestDice, DiceType, TestResult } from '../subroutines/dice-roller';
 import { Item } from '../core/Item';
 import { TestContext } from '../utils/TestContext';
-import { getDeflectBonus, getCoverageBonus, getStunLevel, calculateStunEffect, hasCharge, hasImpale, getImpalePenalty } from '../traits/combat-traits';
+import { getCoverageBonus, getStunLevel, calculateStunEffect, hasCharge, hasImpale, getImpalePenalty, hasGrit, applyProtective } from '../traits/combat-traits';
 
 // --- Sub-functions for parsing --- //
 
@@ -82,6 +82,16 @@ export function resolveDamage(
         stunDelayTokens = stunResult.delayTokensApplied;
     }
     
+    const protective = applyProtective(
+        defender,
+        stunDelayTokens,
+        context.isConcentrating ?? false,
+        context.isCloseCombat ?? false,
+        defender.state.isInCover,
+        defender.state.isAttentive
+    );
+    stunDelayTokens = protective.tokensRemaining;
+
     // Add delay tokens from context (e.g., from weapon traits applied earlier)
     const newDelayTokens = (context.delayTokensAdded || 0) + stunDelayTokens;
     
@@ -156,18 +166,17 @@ export function resolveDamage(
             // Calculate base wounds from cascades
             let calculatedWounds = Math.max(0, cascades - effectiveAR);
 
-            // Apply Deflect bonus to reduce wounds
-            const deflectBonus = getDeflectBonus(defender);
-            if (deflectBonus > 0) {
-                calculatedWounds = Math.max(0, calculatedWounds - deflectBonus);
-            }
-
             woundsFromDamage = calculatedWounds;
         }
     }
 
     if (context.forceHit) {
         woundsFromDamage = Math.max(woundsFromDamage, 2);
+    }
+
+    if (woundsFromDamage > 0 && hasGrit(defender) && !defender.state.gritWoundIgnored) {
+        woundsFromDamage = Math.max(0, woundsFromDamage - 1);
+        defender.state.gritWoundIgnored = true;
     }
 
     // 4. Sum all wounds and update defender state

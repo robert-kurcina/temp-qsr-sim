@@ -7,6 +7,7 @@
 import { Character } from '../../core/Character';
 import { Battlefield } from '../../battlefield/Battlefield';
 import { AIContext, ReactOpportunity, ReactResult, ReactActionType } from '../core/AIController';
+import { isAttackableEnemy } from '../core/ai-utils';
 import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 
@@ -474,7 +475,7 @@ export class StealthEvaluator {
     }
 
     // Higher priority if outnumbered
-    const enemyCount = context.enemies.filter(e => !e.state.isEliminated && !e.state.isKOd).length;
+    const enemyCount = context.enemies.filter(e => isAttackableEnemy(context.character, e, context.config)).length;
     const allyCount = context.allies.filter(a => !a.state.isEliminated && !a.state.isKOd).length + 1;
     if (enemyCount > allyCount) {
       priority += 1.0;
@@ -496,7 +497,7 @@ export class StealthEvaluator {
     // Check if there are hidden enemies
     const hiddenEnemies = context.enemies.filter(e => 
       !e.state.isEliminated && 
-      !e.state.isKOd && 
+      isAttackableEnemy(context.character, e, context.config) &&
       e.state.isHidden
     );
 
@@ -538,7 +539,7 @@ export class StealthEvaluator {
     };
 
     for (const enemy of context.enemies) {
-      if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
 
       const enemyPos = context.battlefield.getCharacterPosition(enemy);
       if (!enemyPos) continue;

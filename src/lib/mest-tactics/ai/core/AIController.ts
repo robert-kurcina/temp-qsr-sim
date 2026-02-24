@@ -20,6 +20,12 @@ export interface AIControllerConfig {
   godMode: boolean;
   /** Personality seed for variation */
   personalitySeed?: number;
+  /** Allow attacks against KO'd targets (default false) */
+  allowKOdAttacks?: boolean;
+  /** Optional controller traits for Puppet KO'd rules */
+  kodControllerTraitsByCharacterId?: Record<string, string[]>;
+  /** Optional coordinator traits for Puppet KO'd rules */
+  kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
 }
 
 export interface ActionDecision {
@@ -203,6 +209,7 @@ export const DEFAULT_AI_CONFIG: AIControllerConfig = {
   accuracyModifier: 0,
   godMode: true, // Default to perfect knowledge
   personalitySeed: undefined,
+  allowKOdAttacks: false,
 };
 
 /**
@@ -215,5 +222,8 @@ export function validateAIConfig(config: AIControllerConfig): AIControllerConfig
     accuracyModifier: Math.max(-1, Math.min(1, config.accuracyModifier)),
     godMode: config.godMode ?? true,
     personalitySeed: config.personalitySeed,
+    allowKOdAttacks: config.allowKOdAttacks ?? false,
+    kodControllerTraitsByCharacterId: config.kodControllerTraitsByCharacterId,
+    kodCoordinatorTraitsByCharacterId: config.kodCoordinatorTraitsByCharacterId,
   };
 }

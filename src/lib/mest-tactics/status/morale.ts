@@ -4,7 +4,7 @@ import { Position } from '../battlefield/Position';
 import { resolveMoraleTest } from '../subroutines/morale-test';
 import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
-import { getLeadershipBonusDice, isImmuneToPsychology, isExemptFromMoraleTests, isImmuneToHindranceMoralePenalties, hasCoward, getCowardAdditionalFearTokens } from '../traits/combat-traits';
+import { getLeadershipBonusDice, isImmuneToPsychology, isExemptFromMoraleTests, isImmuneToHindranceMoralePenalties, hasCoward, getCowardAdditionalFearTokens, isImmuneToFear, applyGritFearReduction, applyGritFearConversion, checkGritMoraleExemption } from '../traits/combat-traits';
 
 export interface MoraleOptions {
   cohesionRangeMu?: number;
@@ -33,6 +33,10 @@ export function applyFearFromWounds(
   if (woundsAdded <= 0) {
     return { pass: true, fearAdded: 0 };
   }
+
+  if (isImmuneToFear(character)) {
+    return { pass: true, fearAdded: 0 };
+  }
   
   // Insane trait: exempt from Morale Tests unless has Hindrance tokens
   const hasHindranceTokens = character.state.wounds > 0 || character.state.fearTokens > 0 || character.state.delayTokens > 0;
@@ -54,9 +58,20 @@ export function applyFearFromWounds(
     fearAdded += getCowardAdditionalFearTokens(character, true);
   }
   
-  character.state.fearTokens += fearAdded;
+  const reduction = applyGritFearReduction(
+    character,
+    fearAdded,
+    character.state.isAttentive,
+    character.state.gritFearReducedThisTurn
+  );
+  if (reduction.tokensReduced > 0) {
+    character.state.gritFearReducedThisTurn = true;
+  }
+  const conversion = applyGritFearConversion(character, reduction.tokensApplied);
+  character.state.delayTokens += conversion.delayTokensConverted;
+  character.state.fearTokens += conversion.fearTokensApplied;
   updateFearState(character);
-  return { pass: false, fearAdded };
+  return { pass: false, fearAdded: conversion.fearTokensApplied };
 }
 
 export function applyFearFromAllyKO(
@@ -84,6 +99,11 @@ export function applyFearFromAllyKO(
       if (!cover.hasLOS) continue;
     }
     const rolls = options.rollsById?.[ally.id];
+    const exemptByGrit = checkGritMoraleExemption(ally, fallen.finalAttributes.pow ?? fallen.attributes.pow ?? 0);
+    if (exemptByGrit) {
+      results.push({ ally, fearAdded: 0 });
+      continue;
+    }
     const fearResult = applyFearFromWounds(ally, 1, rolls);
     results.push({ ally, fearAdded: fearResult.fearAdded });
   }

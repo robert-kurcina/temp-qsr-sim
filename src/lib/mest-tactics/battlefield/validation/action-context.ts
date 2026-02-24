@@ -69,6 +69,7 @@ export function buildRangedActionContext(input: ActionContextInput): TestContext
     isLeaning: input.isLeaning,
     isTargetLeaning: input.isTargetLeaning,
     obscuringModels: modelsAlongLof.length,
+    isEngaged: engaged,
   };
 
   if (!cover.hasLOS) {

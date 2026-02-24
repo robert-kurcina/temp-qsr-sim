@@ -1,0 +1,37 @@
+Attacking KO’d Models ()
+Attacking KO’d characters is disallowed for the Basic Game
+and Introductory Game for when learning how to play. This
+rule prevents anti-thematic attacks on most KO’d
+characters.
+ Characters with certain classifications, as shown here
+with keywords, adjust these rules as follows:
+ Panicked — Characters which are Panicked may always
+perform attacks against Opposing KO’d models.
+ Amoral — Characters which are “evil” or “dishonorable”
+may attack KO’d characters. These attackers must have
+one or more of the following traits; [Delusional],
+[Coward], [Ravenous], or [Treacherous], [Vitriol], Fear,
+Insane, Poisoner, Terrifying, or Torment.
+ Primal — Animal characters which have any of the
+[Beast], [Beast!], or [Beast+] traits are never allowed to
+attack KO’d models unless it also has one of these traits;
+[Ravenous], Fear, Insane, or Terrifying traits.
+ Puppet — Characters with the Automaton or [Mindless]
+trait may attack KO’d models if their Controller or
+Coordinator character has one or more of these traits;
+[Delusional], [Coward], [Treacherous], Insane.
+ Unnatural — Targets which have any of the following
+Traits may always be attacked if they are KO’d;
+[Automaton], Invader, Outsider, Supernatural, Mythos,
+Fear, Machine, [Mindless], or [Ravenous].
+ When KO’d models are attacked, do the following:
+ KO’d models may be attacked in order to cause the target
+to become Eliminated.
+ KO’d models are attacked via an Unopposed RCA Test and
+award +3 Attacker Range Combat Hit Test.
+ KO’d targets at Melee Range are automatically hit; merely
+perform the Damage Test with +3 Damage.
+ KO’d models reduce each Armor Rating by 3.
+ Causing a Wound damage, but at least the target’s SIZ
+minus 3 or greater will Eliminate the model. Otherwise,
+nothing happens.

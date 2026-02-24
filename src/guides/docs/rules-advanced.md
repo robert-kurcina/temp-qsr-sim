@@ -27,7 +27,7 @@ Reactions, or “Reacts,” are special actions that allow a player to interrupt
 
 A character can perform a React in one of two ways:
 
-1.  **From Wait Status:** A character that has performed the **Wait** action can expend their Wait status to perform an **Overwatch** React.
+1.  **From Wait Status:** A character that has performed the **Wait** action can expend their Wait status to perform a **Standard React**.
 2.  **Via a Trait:** Some traits, like **Counter-strike!**, grant the ability to perform a specific React when a certain condition is met. These Reacts often cost AP.
 
 ### General React Rules
@@ -38,13 +38,13 @@ A character can perform a React in one of two ways:
 
 ### Types of Reacts
 
-#### Overwatch (from Wait Status)
+#### Standard React (from Wait Status)
 
 This is the primary React granted by the **Wait** action. It allows a character to control a lane of fire and punish enemy movement.
 
 *   **Trigger:** An Opposing character moves at least half its base-diameter while within the Reacting character's Line of Sight (LOS).
 *   **Action:** The character in Wait status may perform a **Range Combat Attack** against the moving character. This React can be declared at any point during the opponent's movement.
-*   **Effect:** If the Overwatch attack is successful and causes a Wound or a Stun effect, the target's action ends immediately. They may not complete their move.
+*   **Effect:** If the Standard React attack is successful and causes a Wound or a Stun effect, the target's action ends immediately. They may not complete their move.
 
 #### Opportunity Attack
 

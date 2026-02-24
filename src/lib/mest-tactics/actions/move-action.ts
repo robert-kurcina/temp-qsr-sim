@@ -17,6 +17,7 @@ export interface MoveActionDeps {
       attacker: { id: string; position: Position; baseDiameter: number; siz: number };
       target: { id: string; position: Position; baseDiameter: number; siz: number };
       allowBonusActions: boolean;
+      weaponIndex?: number;
     }
   ) => unknown;
 }
@@ -95,10 +96,16 @@ export function executeMoveAction(
         { id: opponent.id, position: opponentPos, baseDiameter: opponentBase, siz: opponent.finalAttributes.siz }
       );
       if (wasEngaged && !nowEngaged) {
-        const result = deps.executeCloseCombatAttack(opponent, mover, options.opportunityWeapon, {
+        const declaredIndex = opponent.state.activeWeaponIndex;
+        const equipment = opponent.profile?.equipment || opponent.profile?.items || [];
+        const declaredWeapon = declaredIndex !== undefined && declaredIndex !== null ? equipment[declaredIndex] : undefined;
+        const weapon = declaredWeapon ?? options.opportunityWeapon;
+        const weaponIndex = declaredWeapon ? declaredIndex : undefined;
+        const result = deps.executeCloseCombatAttack(opponent, mover, weapon, {
           attacker: { id: opponent.id, position: opponentPos, baseDiameter: opponentBase, siz: opponent.finalAttributes.siz },
           target: { id: mover.id, position: destination, baseDiameter: moverBase, siz: mover.finalAttributes.siz },
           allowBonusActions: true,
+          weaponIndex,
         });
         opportunity = { attacker: opponent, result };
         break;

@@ -4,11 +4,12 @@ import { Position } from '../battlefield/Position';
 import { ActionContextInput, CloseCombatContextInput, buildCloseCombatActionContext, buildRangedActionContext, resolveFriendlyFire } from '../battlefield/validation/action-context';
 import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
-import { TestContext } from '../TestContext';
-import { ResolveTestResult } from '../dice-roller';
-import { resolveRangedCombatHitTest } from '../combat/ranged-combat';
+import { TestContext } from '../utils/TestContext';
+import { resolveRangedCombatHitTest, buildRangedHitTestModifiers } from '../combat/ranged-combat';
 import { resolveCloseCombatHitTest } from '../combat/close-combat';
 import { DamageResolution, resolveDamage } from '../subroutines/damage-test';
+import { resolveTest, TestParticipant, TestDice, DiceType, mergeTestDice, ResolveTestResult } from '../subroutines/dice-roller';
+import { parseAccuracy } from '../subroutines/accuracy-parser';
 import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusActionOptions } from './bonus-actions';
 import { parseStatusTrait, applyStatusTraitOnHit } from '../status/status-system';
 import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
@@ -22,6 +23,9 @@ import {
   checkBonusActionEligibility,
   hasReload,
   getReloadActionsRequired,
+  isWeaponLoaded,
+  setWeaponLoaded,
+  getWeaponIndexForCharacter,
   getSneakyLevel,
   checkSneakyAutoHide,
   getSneakySuddennessBonus,
@@ -41,13 +45,20 @@ import {
   recordWeaponUse,
   isMultipleAttackExempt,
 } from '../traits/combat-traits';
+import {
+  validateItemUsage,
+  markUsingOneLessHand,
+  getHandPenalty,
+  clearUsingOneLessHand,
+} from './hand-requirements';
+import { canAttackKOdTarget, getKOdEliminationThreshold, KOdAttackRulesConfig } from '../status/kod-rules';
 
 function findTargetsInBaseContact(
   position: Position,
   characters: Character[],
   getCharacterPosition: (character: Character) => Position | undefined
-): Character[] {
-  const results: Character[] = [];
+): Array<{ character: Character; position: Position }> {
+  const results: Array<{ character: Character; position: Position }> = [];
   for (const character of characters) {
     const targetPos = getCharacterPosition(character);
     if (!targetPos) continue;
@@ -55,7 +66,7 @@ function findTargetsInBaseContact(
     const radius = getBaseDiameterFromSiz(siz) / 2;
     const distance = Math.hypot(targetPos.x - position.x, targetPos.y - position.y);
     if (distance <= radius) {
-      results.push(character);
+      results.push({ character, position: targetPos });
     }
   }
   return results;
@@ -76,17 +87,17 @@ function resolveScrambleMoves(options: {
     return { eligibleIds: [], movedIds: [] };
   }
   const eligible = findTargetsInBaseContact(options.targetPosition, options.characters, options.getCharacterPosition);
-  const eligibleIds = eligible.map(character => character.id);
+  const eligibleIds = eligible.map(entry => entry.character.id);
   const movedIds: string[] = [];
   if (!options.scrambleMoves) {
     return { eligibleIds, movedIds };
   }
 
-  for (const character of eligible) {
+  for (const entry of eligible) {
+    const character = entry.character;
     const target = options.scrambleMoves[character.id];
     if (!target) continue;
-    const current = options.getCharacterPosition(character);
-    if (!current) continue;
+    const current = entry.position;
     const maxDistance = (character.finalAttributes.mov ?? character.attributes.mov ?? 0) * 0.5;
     const distance = Math.hypot(target.x - current.x, target.y - current.y);
     if (distance <= maxDistance) {
@@ -120,6 +131,9 @@ export interface RangedAttackOptions extends Partial<ActionContextInput> {
   allowBonusActions?: boolean;
   bonusAction?: BonusActionSelection;
   bonusActionOpponents?: Character[];
+  weaponIndex?: number;
+  allowKOdAttacks?: boolean;
+  kodRules?: KOdAttackRulesConfig;
 }
 
 export interface CloseCombatAttackOptions extends Partial<CloseCombatContextInput> {
@@ -130,6 +144,36 @@ export interface CloseCombatAttackOptions extends Partial<CloseCombatContextInpu
   allowBonusActions?: boolean;
   bonusAction?: BonusActionSelection;
   bonusActionOpponents?: Character[];
+  weaponIndex?: number;
+  allowKOdAttacks?: boolean;
+  kodRules?: KOdAttackRulesConfig;
+}
+
+function applyHandRequirementPenalty(
+  attacker: Character,
+  weapon: Item,
+  context: TestContext
+): { failed: boolean; reason?: string } {
+  const check = validateItemUsage(attacker, weapon, {
+    allowOneLessHand: true,
+    isConcentrating: context.isConcentrating ?? false,
+    isOverreach: context.isOverreach ?? false,
+  });
+  if (!check.valid || !check.canUse) {
+    return { failed: true, reason: check.reason };
+  }
+  if (check.overreachDisallowed) {
+    context.isOverreach = false;
+  }
+  if (check.usingOneLessHand) {
+    markUsingOneLessHand(attacker);
+    const penalty = getHandPenalty(attacker);
+    if (penalty < 0) {
+      context.handPenaltyBase = (context.handPenaltyBase ?? 0) + Math.abs(penalty);
+    }
+    clearUsingOneLessHand(attacker);
+  }
+  return { failed: false };
 }
 
 export function executeRangedAttack(
@@ -215,6 +259,7 @@ export function executeRangedAttack(
 
   const context = buildRangedActionContext(spatial);
   const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
+  mergedContext.isCloseCombat = false;
   if (!attacker.state.isAttentive) {
     mergedContext.isOverreach = false;
     mergedContext.isLeaning = false;
@@ -237,14 +282,27 @@ export function executeRangedAttack(
     mergedContext.isDefending = true;
   }
 
+  const handCheck = applyHandRequirementPenalty(attacker, weapon, mergedContext);
+  if (handCheck.failed) {
+    return {
+      result: { hit: false, hitTestResult: { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: {} } },
+      context: mergedContext,
+      friendlyFire,
+      takeCover: takeCoverResult,
+      handRequirementFailed: true,
+      handRequirementReason: handCheck.reason,
+    };
+  }
+
   // Multiple Attack Penalty: -1m for using same weapon consecutively
   // Natural weapons and Natural Weapon trait are exempt
   let weaponJammed = false;
   let multipleAttackPenalty = 0;
   let burstBonusBase = 0;
   
-  // Determine weapon index (simplified: use 0 for primary weapon)
-  const weaponIndex = 0;
+  // Determine weapon index (use option override if provided)
+  const weaponIndex = options.weaponIndex ?? getWeaponIndexForCharacter(attacker, weapon);
+  attacker.state.activeWeaponIndex = weaponIndex;
   
   if (!isMultipleAttackExempt(attacker, weaponIndex)) {
     const penaltyResult = getMultipleAttackPenalty(attacker, weaponIndex);
@@ -263,6 +321,18 @@ export function executeRangedAttack(
     }
   }
   
+  // Reload trait: cannot fire if weapon is not loaded (unless Archery ignores bow reload)
+  const reloadRequired = getReloadActionsRequired(attacker, weaponIndex);
+  if (reloadRequired > 0 && !isWeaponLoaded(attacker, weaponIndex)) {
+    return {
+      result: { hit: false, hitTestResult: { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: {} } },
+      context: mergedContext,
+      friendlyFire,
+      takeCover: takeCoverResult,
+      weaponReloading: true,
+    };
+  }
+
   // Check for weapon jam before attack ([Feed], [Jam], [Burst] traits)
   if (isWeaponJammed(attacker, weaponIndex)) {
     // Weapon is jammed, cannot attack
@@ -275,6 +345,88 @@ export function executeRangedAttack(
     };
   }
 
+  if (defender.state.isKOd) {
+    const allow = canAttackKOdTarget(attacker, defender, {
+      enabled: options.allowKOdAttacks ?? false,
+      ...(options.kodRules ?? {}),
+    });
+    if (!allow.allowed) {
+      return {
+        result: { hit: false, hitTestResult: { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: {} } },
+        context: mergedContext,
+        friendlyFire,
+        takeCover: takeCoverResult,
+        weaponJammed,
+        multipleAttackPenalty,
+        reason: allow.reason,
+      };
+    }
+
+    const hitTestResult = resolveKOdRangedHitTest(attacker, defender, weapon, mergedContext);
+    if (reloadRequired > 0) {
+      setWeaponLoaded(attacker, weaponIndex, false);
+    }
+    recordWeaponUse(attacker, weaponIndex);
+
+    // Check for [Feed] jam (jams on roll of 1 on any attack die)
+    if (hasFeed(attacker, weaponIndex) && hitTestResult.p1Rolls) {
+      const feedResult = checkFeedJam(hitTestResult.p1Rolls);
+      if (feedResult.jammed) {
+        weaponJammed = true;
+        setWeaponJammed(attacker, weaponIndex);
+      }
+    }
+
+    // Check for [Burst] jam (jams on roll of 1 on any attack die)
+    if (hasBurst(attacker, weaponIndex) && hitTestResult.p1Rolls) {
+      const feedResult = checkFeedJam(hitTestResult.p1Rolls);
+      if (feedResult.jammed) {
+        weaponJammed = true;
+        setWeaponJammed(attacker, weaponIndex);
+      }
+    }
+
+    // Check for [Jam] trait (random jam chance after attack)
+    if (hasJam(attacker, weaponIndex) && !weaponJammed) {
+      const jamResult = checkJam();
+      if (jamResult.jammed) {
+        weaponJammed = true;
+        setWeaponJammed(attacker, weaponIndex);
+      }
+    }
+
+    if (!hitTestResult.pass) {
+      return {
+        result: { hit: false, hitTestResult },
+        context: mergedContext,
+        friendlyFire,
+        takeCover: takeCoverResult,
+        weaponJammed,
+        multipleAttackPenalty,
+      };
+    }
+
+    const damageResolution = resolveKOdDamageIfNeeded(attacker, defender, weapon, hitTestResult, mergedContext, {
+      allowKOdAttacks: options.allowKOdAttacks ?? false,
+      kodRules: options.kodRules,
+    });
+    if (damageResolution) {
+      defender.state.wounds = damageResolution.defenderState.wounds;
+      defender.state.delayTokens = damageResolution.defenderState.delayTokens;
+      defender.state.isKOd = damageResolution.defenderState.isKOd;
+      defender.state.isEliminated = damageResolution.defenderState.isEliminated;
+    }
+
+    return {
+      result: { hit: true, hitTestResult, damageResolution },
+      context: mergedContext,
+      friendlyFire,
+      takeCover: takeCoverResult,
+      weaponJammed,
+      multipleAttackPenalty,
+    };
+  }
+
   const { hitTestResult, context: resolvedContext } = resolveRangedCombatHitTest(
     attacker,
     defender,
@@ -283,6 +435,10 @@ export function executeRangedAttack(
     mergedContext,
     spatial
   );
+
+  if (reloadRequired > 0) {
+    setWeaponLoaded(attacker, weaponIndex, false);
+  }
   
   // Record weapon use for Multiple Attack Penalty tracking
   recordWeaponUse(attacker, weaponIndex);
@@ -421,6 +577,9 @@ export function executeIndirectAttack(
     scatterWeights?: number[];
     scrambleMoves?: Record<string, Position>;
     allowScramble?: boolean;
+    weaponIndex?: number;
+    allowKOdAttacks?: boolean;
+    kodRules?: KOdAttackRulesConfig;
   } = {}
 ) {
   if (!deps.battlefield) {
@@ -449,7 +608,22 @@ export function executeIndirectAttack(
 
   const context = buildRangedActionContext(spatial);
   const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
+  mergedContext.isCloseCombat = false;
+  const handCheck = applyHandRequirementPenalty(attacker, weapon, mergedContext);
+  if (handCheck.failed) {
+    return {
+      hitTestResult: { pass: false, score: -99, p1FinalScore: 0, p2FinalScore: 99, cascades: 0, p1Result: { score: 0, carryOverDice: {} }, p2Result: { score: 99, carryOverDice: {} } },
+      scatterResult: undefined,
+      finalPosition: options.target?.position,
+      damageResults: [],
+      scramble: { eligibleIds: [], movedIds: [] },
+      handRequirementFailed: true,
+      handRequirementReason: handCheck.reason,
+    };
+  }
   const hitTestResult = makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial, options.targetCharacter);
+  const weaponIndex = options.weaponIndex ?? getWeaponIndexForCharacter(attacker, weapon);
+  attacker.state.activeWeaponIndex = weaponIndex;
 
   const misses = hitTestResult.pass ? 0 : Math.max(1, Math.ceil(Math.abs(hitTestResult.score)));
   const scatterResult: ScatterResult | undefined = hitTestResult.pass
@@ -481,9 +655,56 @@ export function executeIndirectAttack(
 
   const damageResults: Array<{ targetId: string; damageResolution: DamageResolution }> = [];
   if (usesAoE) {
-    for (const target of blastTargets) {
-      if (hasFrag && hitTestResult.pass) continue;
-      const damageResolution = resolveDamage(attacker, target, weapon, hitTestResult, mergedContext);
+    for (const entry of blastTargets) {
+      const target = entry.character;
+      if (target.state.isKOd) {
+        const allowKOd = canAttackKOdTarget(attacker, target, {
+          enabled: options.allowKOdAttacks ?? false,
+          ...(options.kodRules ?? {}),
+        });
+        if (!allowKOd.allowed) {
+          continue;
+        }
+      }
+      if (hasFrag) {
+        const fragSpatial: ActionContextInput = {
+          battlefield: deps.battlefield,
+          attacker: {
+            id: attacker.id,
+            position: attackerPos,
+            baseDiameter: getBaseDiameterFromSiz(attacker.finalAttributes.siz),
+            siz: attacker.finalAttributes.siz,
+          },
+          target: {
+            id: target.id,
+            position: entry.position,
+            baseDiameter: getBaseDiameterFromSiz(target.finalAttributes.siz),
+            siz: target.finalAttributes.siz,
+          },
+        };
+        const fragContext = buildRangedActionContext(fragSpatial);
+        const fragHit = resolveRangedCombatHitTest(
+          attacker,
+          target,
+          weapon,
+          orm,
+          fragContext,
+          fragSpatial
+        );
+        if (fragHit.hitTestResult.pass) {
+          continue;
+        }
+      }
+      if (hasFrag && hitTestResult.pass) {
+        continue;
+      }
+      const damageResolution = resolveKOdDamageIfNeeded(attacker, target, weapon, hitTestResult, mergedContext, {
+        allowKOdAttacks: options.allowKOdAttacks ?? false,
+        kodRules: options.kodRules,
+      });
+      if (!damageResolution) {
+        continue;
+      }
       target.state.wounds = damageResolution.defenderState.wounds;
       target.state.delayTokens = damageResolution.defenderState.delayTokens;
       target.state.isKOd = damageResolution.defenderState.isKOd;
@@ -491,7 +712,19 @@ export function executeIndirectAttack(
       damageResults.push({ targetId: target.id, damageResolution });
     }
   } else if (options.targetCharacter) {
-    const damageResolution = resolveDamage(attacker, options.targetCharacter, weapon, hitTestResult, mergedContext);
+    const damageResolution = resolveKOdDamageIfNeeded(attacker, options.targetCharacter, weapon, hitTestResult, mergedContext, {
+      allowKOdAttacks: options.allowKOdAttacks ?? false,
+      kodRules: options.kodRules,
+    });
+    if (!damageResolution) {
+      return {
+        hitTestResult,
+        scatterResult,
+        finalPosition,
+        damageResults,
+        scramble,
+      };
+    }
     options.targetCharacter.state.wounds = damageResolution.defenderState.wounds;
     options.targetCharacter.state.delayTokens = damageResolution.defenderState.delayTokens;
     options.targetCharacter.state.isKOd = damageResolution.defenderState.isKOd;
@@ -506,6 +739,120 @@ export function executeIndirectAttack(
     damageResults,
     scramble,
   };
+}
+
+function resolveKOdDamageIfNeeded(
+  attacker: Character,
+  defender: Character,
+  weapon: Item,
+  hitTestResult: ResolveTestResult,
+  context: TestContext,
+  options: { allowKOdAttacks: boolean; kodRules?: KOdAttackRulesConfig; damageBonus?: number }
+): DamageResolution | null {
+  if (!defender.state.isKOd) {
+    return resolveDamage(attacker, defender, weapon, hitTestResult, context);
+  }
+
+  const allow = canAttackKOdTarget(attacker, defender, {
+    enabled: options.allowKOdAttacks,
+    ...(options.kodRules ?? {}),
+  });
+  if (!allow.allowed) {
+    return null;
+  }
+
+  const originalState = {
+    wounds: defender.state.wounds,
+    delayTokens: defender.state.delayTokens,
+    isKOd: defender.state.isKOd,
+    isEliminated: defender.state.isEliminated,
+    armorTotal: defender.state.armor.total,
+  };
+
+  defender.state.armor.total = Math.max(0, originalState.armorTotal - 3);
+
+  const damageBonus = options.damageBonus ?? 0;
+  const adjustedWeapon = damageBonus > 0 ? {
+    ...weapon,
+    dmg: `${weapon.dmg ?? ''}+${damageBonus}`,
+  } : weapon;
+
+  const damageResolution = resolveDamage(attacker, defender, adjustedWeapon, hitTestResult, context);
+
+  const threshold = getKOdEliminationThreshold(defender);
+  if (damageResolution.woundsAdded >= threshold) {
+    defender.state.isEliminated = true;
+    defender.state.isKOd = false;
+    defender.state.wounds = Math.max(defender.state.wounds, (defender.finalAttributes.siz ?? 0) + 3);
+    damageResolution.defenderState = {
+      wounds: defender.state.wounds,
+      delayTokens: defender.state.delayTokens,
+      isKOd: defender.state.isKOd,
+      isEliminated: defender.state.isEliminated,
+    };
+  } else {
+    defender.state.wounds = originalState.wounds;
+    defender.state.delayTokens = originalState.delayTokens;
+    defender.state.isKOd = originalState.isKOd;
+    defender.state.isEliminated = originalState.isEliminated;
+    damageResolution.woundsAdded = 0;
+    damageResolution.stunWoundsAdded = 0;
+    damageResolution.defenderState = {
+      wounds: defender.state.wounds,
+      delayTokens: defender.state.delayTokens,
+      isKOd: defender.state.isKOd,
+      isEliminated: defender.state.isEliminated,
+    };
+  }
+
+  defender.state.armor.total = originalState.armorTotal;
+  return damageResolution;
+}
+
+function buildAutoHitResult(): ResolveTestResult {
+  const p1Result = { score: 1, carryOverDice: { base: 1, modifier: 0, wild: 0 } };
+  const p2Result = { score: 0, carryOverDice: { base: 0, modifier: 0, wild: 0 } };
+  return {
+    score: 1,
+    p1FinalScore: 1,
+    p2FinalScore: 0,
+    cascades: 1,
+    p1Result,
+    p2Result,
+    pass: true,
+    carryOverDice: { base: 1, modifier: 0, wild: 0 },
+  } as ResolveTestResult;
+}
+
+function resolveKOdRangedHitTest(
+  attacker: Character,
+  defender: Character,
+  weapon: Item,
+  context: TestContext
+): ResolveTestResult {
+  const { attackerBonus, attackerPenalty, defenderBonus, defenderPenalty } = buildRangedHitTestModifiers(attacker, defender, weapon, context);
+  attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 3;
+
+  const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(weapon.accuracy);
+  const attackerAttribute = weapon.classification === 'Thrown'
+    ? attacker.finalAttributes.cca
+    : attacker.finalAttributes.rca;
+
+  const attackerParticipant: TestParticipant = {
+    attributeValue: attackerAttribute,
+    bonusDice: mergeTestDice(attackerBonus, accBonus),
+    penaltyDice: mergeTestDice(attackerPenalty, accPenalty),
+  };
+  const systemParticipant: TestParticipant = {
+    attributeValue: 0,
+    bonusDice: defenderBonus,
+    penaltyDice: defenderPenalty,
+    isSystemPlayer: true,
+  };
+
+  const result = resolveTest(attackerParticipant, systemParticipant);
+  (result as ResolveTestResult & { carryOverDice?: TestDice }).carryOverDice = result.p1Result?.carryOverDice ?? { base: 0, modifier: 0, wild: 0 };
+  return result as ResolveTestResult;
 }
 
 export function executeCloseCombatAttack(
@@ -551,6 +898,7 @@ export function executeCloseCombatAttack(
 
   const context = buildCloseCombatActionContext(spatial);
   const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
+  mergedContext.isCloseCombat = true;
   if (!attacker.state.isAttentive) {
     mergedContext.isOverreach = false;
     mergedContext.isLeaning = false;
@@ -561,6 +909,47 @@ export function executeCloseCombatAttack(
   }
   if (options.defend && defender.state.isAttentive) {
     mergedContext.isDefending = true;
+  }
+
+  const handCheck = applyHandRequirementPenalty(attacker, weapon, mergedContext);
+  if (handCheck.failed) {
+    return {
+      result: { hit: false, hitTestResult: { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: {} } },
+      context: mergedContext,
+      handRequirementFailed: true,
+      handRequirementReason: handCheck.reason,
+    };
+  }
+
+  if (defender.state.isKOd) {
+    const allow = canAttackKOdTarget(attacker, defender, {
+      enabled: options.allowKOdAttacks ?? false,
+      ...(options.kodRules ?? {}),
+    });
+    if (!allow.allowed) {
+      return {
+        result: { hit: false, hitTestResult: { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: {} } },
+        context: mergedContext,
+        handRequirementFailed: true,
+        handRequirementReason: allow.reason,
+      };
+    }
+    const hitTestResult = buildAutoHitResult();
+    const damageResolution = resolveKOdDamageIfNeeded(attacker, defender, weapon, hitTestResult, mergedContext, {
+      allowKOdAttacks: options.allowKOdAttacks ?? false,
+      kodRules: options.kodRules,
+      damageBonus: 3,
+    });
+    if (damageResolution) {
+      defender.state.wounds = damageResolution.defenderState.wounds;
+      defender.state.delayTokens = damageResolution.defenderState.delayTokens;
+      defender.state.isKOd = damageResolution.defenderState.isKOd;
+      defender.state.isEliminated = damageResolution.defenderState.isEliminated;
+    }
+    return {
+      result: { hit: true, hitTestResult, damageResolution },
+      context: mergedContext,
+    };
   }
   
   // Sneaky X: +Xm Suddenness bonus
@@ -599,7 +988,10 @@ export function executeCloseCombatAttack(
       defender.refreshStatusFlags();
     }
   }
+  const weaponIndex = options.weaponIndex ?? getWeaponIndexForCharacter(attacker, weapon);
+  attacker.state.activeWeaponIndex = weaponIndex;
   const hitTestResult = resolveCloseCombatHitTest(attacker, defender, weapon, mergedContext);
+  recordWeaponUse(attacker, weaponIndex);
   const forcedMiss = mergedContext.forceMiss && !mergedContext.forceHit;
   const hit = (hitTestResult.score > 0 || mergedContext.forceHit) && !forcedMiss;
   if (!hit) {

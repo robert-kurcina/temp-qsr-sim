@@ -41,7 +41,7 @@ import {
   executeIndirectAttack as runIndirectAttack,
   executeRangedAttack as runRangedAttack,
 } from '../actions/combat-actions';
-import { executeOverwatchReact as runOverwatchReact, executeReactAction as runReactAction } from '../actions/react-actions';
+import { executeStandardReact as runStandardReact, executeReactAction as runReactAction } from '../actions/react-actions';
 import { executeDisengageAction } from '../actions/disengage-action';
 import { executeCombinedAction as runCombinedAction } from '../actions/combined-action';
 import { executeTransfixAction as runTransfixAction } from '../actions/transfix-action';
@@ -116,6 +116,9 @@ export class GameManager {
   public roundsPerTurn: number = 1;
   public phase: TurnPhase = TurnPhase.Setup;
   public lastInitiativeWinnerSideId: string | null = null;
+  public allowKOdAttacks: boolean = false;
+  public kodControllerTraitsByCharacterId?: Record<string, string[]>;
+  public kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
 
   private characterStatus: Map<string, CharacterStatus> = new Map();
   private activeCharacterId: string | null = null;
@@ -545,7 +548,15 @@ export class GameManager {
       bonusActionOpponents?: Character[];
     } = {}
   ) {
-    return runRangedAttack(this.combatActionDeps(), attacker, defender, weapon, options);
+    return runRangedAttack(this.combatActionDeps(), attacker, defender, weapon, {
+      allowKOdAttacks: this.allowKOdAttacks,
+      kodRules: {
+        enabled: this.allowKOdAttacks,
+        controllerTraits: this.kodControllerTraitsByCharacterId?.[attacker.id],
+        coordinatorTraits: this.kodCoordinatorTraitsByCharacterId?.[attacker.id],
+      },
+      ...options,
+    });
   }
 
   public getPassiveOptions(event: PassiveEvent): PassiveOption[] {
@@ -592,13 +603,13 @@ export class GameManager {
     throw new Error('Group close combat attack not implemented');
   }
 
-  public executeOverwatchReact(
+  public executeStandardReact(
     reactor: Character,
     target: Character,
     weapon: Item,
     options: { context?: TestContext; visibilityOrMu?: number } = {}
   ) {
-    return runOverwatchReact(this.reactActionDeps(), reactor, target, weapon, options);
+    return runStandardReact(this.reactActionDeps(), reactor, target, weapon, options);
   }
 
   public executeReactAction(
@@ -735,7 +746,15 @@ export class GameManager {
     orm: number,
     options: Partial<ActionContextInput> & { context?: TestContext; targetCharacter?: Character } = {}
   ) {
-    return runIndirectAttack(this.combatActionDeps(), attacker, weapon, orm, options);
+    return runIndirectAttack(this.combatActionDeps(), attacker, weapon, orm, {
+      allowKOdAttacks: this.allowKOdAttacks,
+      kodRules: {
+        enabled: this.allowKOdAttacks,
+        controllerTraits: this.kodControllerTraitsByCharacterId?.[attacker.id],
+        coordinatorTraits: this.kodCoordinatorTraitsByCharacterId?.[attacker.id],
+      },
+      ...options,
+    });
   }
 
   public executeTransfixAction(
@@ -769,7 +788,15 @@ export class GameManager {
       bonusActionOpponents?: Character[];
     } = {}
   ) {
-    return runCloseCombatAttack(this.combatActionDeps(), attacker, defender, weapon, options);
+    return runCloseCombatAttack(this.combatActionDeps(), attacker, defender, weapon, {
+      allowKOdAttacks: this.allowKOdAttacks,
+      kodRules: {
+        enabled: this.allowKOdAttacks,
+        controllerTraits: this.kodControllerTraitsByCharacterId?.[attacker.id],
+        coordinatorTraits: this.kodCoordinatorTraitsByCharacterId?.[attacker.id],
+      },
+      ...options,
+    });
   }
 
   public executeCounterStrike(
@@ -779,6 +806,11 @@ export class GameManager {
     hitTestResult: ResolveTestResult,
     options: { context?: TestContext; requireTrait?: boolean; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ): CounterStrikeResult {
+    const declaredIndex = defender.state.activeWeaponIndex;
+    if (declaredIndex !== undefined && declaredIndex !== null) {
+      const equipment = defender.profile?.equipment || defender.profile?.items || [];
+      weapon = equipment[declaredIndex] ?? weapon;
+    }
     return runCounterStrike(this.counterActionDeps(), defender, attacker, weapon, hitTestResult, options);
   }
 
@@ -789,6 +821,11 @@ export class GameManager {
     hitTestResult: ResolveTestResult,
     options: { context?: TestContext; visibilityOrMu?: number; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ): CounterFireResult {
+    const declaredIndex = defender.state.activeWeaponIndex;
+    if (declaredIndex !== undefined && declaredIndex !== null) {
+      const equipment = defender.profile?.equipment || defender.profile?.items || [];
+      weapon = equipment[declaredIndex] ?? weapon;
+    }
     return runCounterFire(this.counterActionDeps(), defender, attacker, weapon, hitTestResult, options);
   }
 

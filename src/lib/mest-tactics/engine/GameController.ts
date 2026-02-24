@@ -28,6 +28,12 @@ export interface SkirmishConfig {
   roundsPerTurn?: number;
   enableTransfix?: boolean;
   enableTakeCover?: boolean;
+  /** Optional: allow attacks against KO'd models (Basic/Intro default false) */
+  enableKOdAttacks?: boolean;
+  /** Optional: controller traits for Puppet KO'd rules */
+  kodControllerTraitsByCharacterId?: Record<string, string[]>;
+  /** Optional: coordinator traits for Puppet KO'd rules */
+  kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
 }
 
 export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
@@ -133,6 +139,9 @@ export class GameController {
   private runMissionWithAI(sides: MissionSide[], config: MissionRunConfig): MissionRunResult {
     // Initialize mission flow state
     let state = initMissionFlow(sides, config);
+    this.manager.allowKOdAttacks = config.enableKOdAttacks ?? false;
+    this.manager.kodControllerTraitsByCharacterId = config.kodControllerTraitsByCharacterId;
+    this.manager.kodCoordinatorTraitsByCharacterId = config.kodCoordinatorTraitsByCharacterId;
 
     // Create AI game loop
     const aiConfig: Partial<AIGameLoopConfig> = {
@@ -142,6 +151,9 @@ export class GameController {
       enableValidation: true,
       enableReplanning: true,
       verboseLogging: false,
+      allowKOdAttacks: config.enableKOdAttacks ?? false,
+      kodControllerTraitsByCharacterId: config.kodControllerTraitsByCharacterId,
+      kodCoordinatorTraitsByCharacterId: config.kodCoordinatorTraitsByCharacterId,
       ...config.aiConfig,
     };
 
@@ -230,6 +242,9 @@ export class GameController {
     const enableTransfix = config.enableTransfix ?? false;
     const enableTakeCover = config.enableTakeCover ?? false;
     this.manager.roundsPerTurn = config.roundsPerTurn ?? this.manager.roundsPerTurn;
+    this.manager.allowKOdAttacks = config.enableKOdAttacks ?? false;
+    this.manager.kodControllerTraitsByCharacterId = config.kodControllerTraitsByCharacterId;
+    this.manager.kodCoordinatorTraitsByCharacterId = config.kodCoordinatorTraitsByCharacterId;
     this.manager.phase = TurnPhase.Setup;
 
     while (this.manager.currentTurn <= maxTurns) {

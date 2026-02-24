@@ -22,6 +22,7 @@ import {
   validateAIConfig,
   ActionType,
 } from './AIController';
+import { isAttackableEnemy } from './ai-utils';
 import { BehaviorTree, SelectorNode, SequenceNode, ConditionNode, ActionNode, NodeStatus } from './BehaviorTree';
 import { FSM, createCharacterFSM, StateStatus } from './HierarchicalFSM';
 import { UtilityScorer, ScoredAction } from './UtilityScorer';
@@ -440,7 +441,7 @@ export class CharacterAI implements IAIController {
     }
 
     // Default: Eliminate enemies
-    if (context.enemies.some(e => !e.state.isEliminated && !e.state.isKOd)) {
+    if (context.enemies.some(e => isAttackableEnemy(context.character, e, context.config))) {
       return StandardGoals.EliminateEnemies;
     }
 
@@ -511,7 +512,7 @@ export class CharacterAI implements IAIController {
   }
 
   private hasVisibleEnemy(ctx: AIContext): boolean {
-    return ctx.enemies.some(e => !e.state.isEliminated && !e.state.isKOd);
+    return ctx.enemies.some(e => isAttackableEnemy(ctx.character, e, ctx.config));
   }
 
   private shouldDisengage(ctx: AIContext): boolean {
@@ -532,7 +533,7 @@ export class CharacterAI implements IAIController {
   private isInMeleeRange(ctx: AIContext): boolean {
     // Simplified melee range check
     return ctx.enemies.some(e => {
-      if (e.state.isEliminated || e.state.isKOd) return false;
+      if (!isAttackableEnemy(ctx.character, e, ctx.config)) return false;
       const pos = ctx.battlefield.getCharacterPosition(e);
       const myPos = ctx.battlefield.getCharacterPosition(ctx.character);
       if (!pos || !myPos) return false;
@@ -544,7 +545,7 @@ export class CharacterAI implements IAIController {
   private isInRange(ctx: AIContext): boolean {
     // Simplified range check (within 16 MU)
     return ctx.enemies.some(e => {
-      if (e.state.isEliminated || e.state.isKOd) return false;
+      if (!isAttackableEnemy(ctx.character, e, ctx.config)) return false;
       const pos = ctx.battlefield.getCharacterPosition(e);
       const myPos = ctx.battlefield.getCharacterPosition(ctx.character);
       if (!pos || !myPos) return false;

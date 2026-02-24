@@ -34,6 +34,7 @@ This document provides links to all rule modules for the MEST Tactics game syste
 | [Reasonable Behavior](./rule-reasonable-behavior) | Weapon throwing and discarding decisions |
 | [Damage & Morale](./rules-damage-and-morale) | Damage, injuries, and morale checks |
 | [Status](./rules-status) | Status effects, tokens, and conditions |
+| [KO'd Attacks](./rules-kod) | Optional rules for attacking KO'd models |
 
 ## Movement & Terrain
 
@@ -125,3 +126,4 @@ This document provides links to all rule modules for the MEST Tactics game syste
 ### Reference
 1. [Status](./rules-status)
 2. [Reference](./rules-reference)
+3. [KO'd Attacks](./rules-kod)

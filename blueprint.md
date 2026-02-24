@@ -158,20 +158,20 @@ At some point a UI will be needed to:
 These are known gaps/mismatches to be addressed later and treated as a prioritized backlog.
 
 ### Doc Mismatches
-- **Scatter Bias:** `rules-scatter.md` now allows biased/unbiased diagrams; QSR source indicates biased. Ensure runtime honors the chosen bias.
 - **Sudden Death:** QSR does **not** include sudden-death; it is an optional setup toggle. Default must be **false**.
 - **Status Docs:** `rules-status.md` is incomplete vs QSR and must be filled out.
 
 ### Engine Gaps (Partial Implementations)
 - **LOS/LOF fidelity:** 2D footprint; lacks 3D/height-based checks.
 - **Traits:** Parser exists, but full trait logic coverage is incomplete.
-- **Objective Markers:** Two OM systems existed; consolidate and enforce QSR OM types/actions.
-- **Indirect Combat:** Scatter exists; AoE/Frag/Scrambling and per-target hit handling need completion.
+- **Objective Markers:** QSR OM types/actions consolidated; remaining gaps are per-mission wiring and UI exposure.
+- **Indirect Combat:** Scatter/AoE/Frag/Scrambling are implemented; remaining gap is terrain/elevation fidelity for roll-down.
 - **Mission Keys Wiring:** Several keys exist but are not fully wired into gameplay events.
 - **Movement/Terrain:** Terrain categories and movement constraints require full QSR fidelity.
 
 ### Optional Rule Toggle (Required)
 - **VP Tie-Breaker:** Optional flag. If enabled, the **Initiative Card holder wins ties after RP→VP adjustment**. Default: `false`.
+- **KO'd Attacks:** Optional flag. If enabled, allows attacking KO'd models per `rules-kod.md`. Default: `false`.
 
 ### Unused Data in `src/lib/data.ts`
 The runtime does **not** currently consume these categories:

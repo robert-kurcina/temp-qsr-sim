@@ -3,6 +3,7 @@ import { TestContext } from '../utils/TestContext';
 import { resolveTest } from '../subroutines/dice-roller';
 import { CharacterStatus } from '../core/types';
 import { hasReload, getReloadActionsRequired, isWeaponLoaded, setWeaponLoaded } from '../traits/combat-traits';
+import { validateFiddleAction, hasUsingOneLessHandPenalty, clearUsingOneLessHand } from './hand-requirements';
 
 export interface SimpleActionDeps {
   spendAp: (character: Character, cost: number) => boolean;
@@ -91,6 +92,11 @@ export function executeFiddleAction(
     helpingModels?: number; // For +1m Help bonus per model
   } = {}
 ) {
+  const handCheck = validateFiddleAction(actor);
+  if (!handCheck.valid || !handCheck.canUse) {
+    return { success: false, reason: handCheck.reason ?? 'No hands available.' };
+  }
+
   const free = !deps.hasFiddleUsed(actor.id);
   const apCost = free ? 0 : 1;
   if (options.spendAp ?? true) {
@@ -102,7 +108,7 @@ export function executeFiddleAction(
 
   // Reload trait: track reload progress
   if (options.reloadWeaponIndex !== undefined) {
-    const reloadLevel = getReloadActionsRequired(actor);
+    const reloadLevel = getReloadActionsRequired(actor, options.reloadWeaponIndex);
     if (reloadLevel > 0) {
       // Track reload progress in character state
       const currentReloadProgress = actor.state.reloadProgress ?? 0;
@@ -123,7 +129,11 @@ export function executeFiddleAction(
     return { success: true };
   }
   const attributeValue = actor.finalAttributes[options.attribute] ?? 0;
-  const penaltyDice = options.usesOneLessHand ? { base: 1 } : undefined;
+  const applyHandPenalty = options.usesOneLessHand || hasUsingOneLessHandPenalty(actor);
+  const penaltyDice = applyHandPenalty ? { base: 1 } : undefined;
+  if (applyHandPenalty) {
+    clearUsingOneLessHand(actor);
+  }
   
   // QSR: Help - +1m per Free Attentive Ordered Friendly model in base-contact
   // that is given a Delay token

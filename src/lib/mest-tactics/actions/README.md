@@ -19,7 +19,7 @@ This directory contains all game action implementations.
 - **`interrupt-costs.ts`** - Interrupt AP costs and Wait removal
 - **`interrupts.test.ts`** - Interrupt system tests
 - **`counter-actions.ts`** - Counter Strike, Counter Charge, Counter Fire
-- **`react-actions.ts`** - React system (Overwatch, React Actions)
+- **`react-actions.ts`** - React system (Standard React, React Actions)
 
 ### Special Actions
 - **`transfix-action.ts`** - Transfix action resolution
@@ -77,7 +77,7 @@ Actions can be interrupted by opponents with React capabilities:
 1. **Counter Strike** - Melee interrupt
 2. **Counter Charge** - Charge interrupt
 3. **Counter Fire** - Ranged interrupt
-4. **Overwatch** - Movement-triggered attack
+4. **Standard React** - Movement-triggered attack
 
 ## Usage
 

@@ -25,7 +25,7 @@ const makeProfile = (name: string, ref = 2, mov = 4): Profile => ({
 });
 
 describe('react-actions', () => {
-  it('should offer an available Overwatch option when wait + LOS + movement threshold met', () => {
+  it('should offer an available Standard react option when wait + LOS + movement threshold met', () => {
     const battlefield = new Battlefield(12, 12);
     const active = new Character(makeProfile('Active', 2, 4));
     const reactor = new Character(makeProfile('Reactor', 4, 4));

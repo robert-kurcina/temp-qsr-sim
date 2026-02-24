@@ -8,6 +8,7 @@
 import { Character } from '../core/Character';
 import { getCharacterTraitLevel } from '../status/status-system';
 import { Item } from '../core/Item';
+import { parseTrait } from './trait-parser';
 
 // ============================================================================
 // CLEAVE
@@ -232,7 +233,7 @@ export function checkGritMoraleExemption(
   }
 
   // Exempt from Morale Test unless fallen ally had higher POW
-  const characterPow = character.profile?.finalAttributes?.POW ?? 0;
+  const characterPow = character.finalAttributes.pow ?? character.attributes.pow ?? 0;
   return fallenAllyPow <= characterPow;
 }
 
@@ -353,7 +354,7 @@ export function canApplyProtective(
   }
 
   // Must be in Cover for Concentrated Range Combat
-  if (isConcentratedAttack && !isCloseCombat && !isCover) {
+  if (isConcentratedAttack && !isCloseCombat && !isInCover) {
     return false;
   }
 
@@ -396,13 +397,23 @@ export function applyProtective(
  *      It remains unusable until after the character performs X Fiddle actions for 1 AP each.
  */
 export function getReloadLevel(character: Character, weaponIndex: number = 0): number {
-  // Reload is typically on the weapon, not character
-  // This checks if character has any weapon with Reload trait
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  if (weaponIndex < equipment.length) {
+    const weapon = equipment[weaponIndex];
+    if (weapon?.traits?.length) {
+      for (const trait of weapon.traits) {
+        const parsed = parseTrait(trait);
+        if (parsed.name.toLowerCase() === 'reload') {
+          return parsed.level ?? 1;
+        }
+      }
+    }
+  }
   return getCharacterTraitLevel(character, 'Reload');
 }
 
-export function hasReload(character: Character): boolean {
-  return getReloadLevel(character) > 0;
+export function hasReload(character: Character, weaponIndex: number = 0): boolean {
+  return getReloadLevel(character, weaponIndex) > 0;
 }
 
 export interface ReloadState {
@@ -439,8 +450,16 @@ export function setWeaponLoaded(
   character.state.loadedWeapons = loadedWeapons;
 }
 
-export function getReloadActionsRequired(character: Character): number {
-  return getReloadLevel(character);
+export function getReloadActionsRequired(character: Character, weaponIndex: number = 0): number {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  const weapon = weaponIndex < equipment.length ? equipment[weaponIndex] : undefined;
+  if (weapon && hasArchery(character)) {
+    const classification = (weapon.classification || weapon.class || '').toLowerCase();
+    if (classification.includes('bow')) {
+      return 0;
+    }
+  }
+  return getReloadLevel(character, weaponIndex);
 }
 
 // ============================================================================
@@ -580,7 +599,11 @@ export function getMultipleAttackPenalty(
   const lastWeaponUsed = character.state.statusTokens['lastWeaponUsed'];
   
   if (lastWeaponUsed === weaponIndex) {
-    return { penalty: 1, isConsecutive: true };
+    const classification = getWeaponClassification(character, weaponIndex);
+    const weaponsOfClass = getWeaponsByClassification(character, classification);
+    if (weaponsOfClass.length > 1) {
+      return { penalty: 1, isConsecutive: true };
+    }
   }
   
   return { penalty: 0, isConsecutive: false };
@@ -647,6 +670,37 @@ export function isMultipleAttackExempt(character: Character, weaponIndex: number
 
 export type WeaponClassification = 'Melee' | 'Ranged' | 'Natural';
 
+function hasConcealOrDiscrete(item?: Item): boolean {
+  if (!item?.traits) return false;
+  return item.traits.some(trait => {
+    const lower = trait.toLowerCase();
+    return lower.includes('conceal') || lower.includes('discrete');
+  });
+}
+
+function getWeaponPoolForMultipleWeapons(character: Character): Item[] {
+  const inHand = character.profile?.inHandItems ?? [];
+  const stowed = character.profile?.stowedItems ?? [];
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+
+  if (inHand.length > 0) {
+    const concealedStowed = stowed.filter(item => hasConcealOrDiscrete(item));
+    return Array.from(new Set([...inHand, ...concealedStowed]));
+  }
+
+  return equipment;
+}
+
+/**
+ * Find a weapon's index on a character profile (equipment/items).
+ * Falls back to 0 when not found.
+ */
+export function getWeaponIndexForCharacter(character: Character, weapon: Item): number {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+  const idx = equipment.findIndex(item => item === weapon || item?.name === weapon?.name);
+  return idx >= 0 ? idx : 0;
+}
+
 /**
  * Get weapon classification for Multiple Weapons rule
  * - Melee weapons with Throwable count as Ranged
@@ -701,20 +755,22 @@ export function getWeaponsByClassification(
   classification: WeaponClassification
 ): number[] {
   const equipment = character.profile?.equipment || character.profile?.items || [];
+  const pool = getWeaponPoolForMultipleWeapons(character);
   const weaponsInHand: number[] = [];
   
-  for (let i = 0; i < equipment.length; i++) {
-    const weapon = equipment[i];
+  for (const weapon of pool) {
+    const index = equipment.findIndex(item => item === weapon || item?.name === weapon?.name);
+    if (index < 0) continue;
     
     // Skip improvised weapons
     if (weapon.classification?.toLowerCase().includes('improvised')) {
       continue;
     }
     
-    const weaponClass = getWeaponClassification(character, i);
+    const weaponClass = getWeaponClassification(character, index);
     
     if (weaponClass === classification) {
-      weaponsInHand.push(i);
+      weaponsInHand.push(index);
     }
   }
   
@@ -1285,8 +1341,8 @@ export function hasInsane(character: Character): boolean {
 }
 
 export function isImmuneToFear(character: Character): boolean {
-  // Insane characters are immune to Fear (Psychology trait)
-  return hasInsane(character);
+  // Insane or Grit characters are immune to Fear
+  return hasInsane(character) || hasGrit(character);
 }
 
 export function isImmuneToPsychology(
@@ -1309,21 +1365,21 @@ export function isExemptFromMoraleTests(
   character: Character,
   hasHindranceTokens: boolean
 ): boolean {
+  if (hasGrit(character)) {
+    return true;
+  }
   if (!hasInsane(character)) {
     return false;
   }
-
-  // Does not perform Morale Tests unless has Hindrance tokens
   if (hasHindranceTokens) {
     return false;
   }
-
   return true;
 }
 
 export function isImmuneToHindranceMoralePenalties(character: Character): boolean {
   // Not affected by Hindrance penalties for Morale Tests
-  return hasInsane(character);
+  return hasInsane(character) || hasGrit(character);
 }
 
 // ============================================================================

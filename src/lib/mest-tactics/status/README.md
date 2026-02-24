@@ -34,7 +34,7 @@ This directory contains status effects and condition management.
 - Grants defensive bonuses
 
 ### Waiting
-- Enables React actions (Overwatch, etc.)
+- Enables React actions (Standard React, etc.)
 - Removed when Reacting or at Turn end
 - Costs AP to acquire
 

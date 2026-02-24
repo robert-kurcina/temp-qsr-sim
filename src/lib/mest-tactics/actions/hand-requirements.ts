@@ -34,6 +34,7 @@ export interface HandValidationResult {
   handsAvailable: number;
   usingOneLessHand: boolean;
   penaltyApplied: boolean;
+  overreachDisallowed?: boolean;
   reason?: string;
 }
 
@@ -137,11 +138,21 @@ export function getHandState(character: Character): HandState {
 export function validateItemUsage(
   character: Character,
   item: Item,
-  options: { allowOneLessHand?: boolean } = {}
+  options: { allowOneLessHand?: boolean; isConcentrating?: boolean; isOverreach?: boolean } = {}
 ): HandValidationResult {
-  const handsRequired = getItemHandRequirement(item);
+  let handsRequired = getItemHandRequirement(item);
   const handsAvailable = getAvailableHands(character);
-  
+  const isConcentrating = options.isConcentrating ?? false;
+  const isOverreach = options.isOverreach ?? false;
+  const isTwoHanded = handsRequired >= 2;
+  const isOneHanded = handsRequired === 1;
+  let overreachDisallowed = false;
+
+  // [1H] weapons used with Concentrate require two hands
+  if (isConcentrating && isOneHanded) {
+    handsRequired = 2;
+  }
+
   // No hand requirement
   if (handsRequired === 0) {
     return {
@@ -156,6 +167,10 @@ export function validateItemUsage(
   
   // Has enough hands
   if (handsAvailable >= handsRequired) {
+    // Two-handed weapons used with two hands cannot Overreach
+    if (isTwoHanded && isOverreach) {
+      overreachDisallowed = true;
+    }
     return {
       valid: true,
       canUse: true,
@@ -163,14 +178,16 @@ export function validateItemUsage(
       handsAvailable,
       usingOneLessHand: false,
       penaltyApplied: false,
+      overreachDisallowed,
     };
   }
   
   // Can use with one less hand?
   const allowOneLessHand = options.allowOneLessHand ?? true;
+  const allowOneLessHandAdjusted = isConcentrating && isOneHanded ? false : allowOneLessHand;
   const canUseOneLess = handsAvailable >= handsRequired - 1 && handsRequired > 1;
   
-  if (allowOneLessHand && canUseOneLess) {
+  if (allowOneLessHandAdjusted && canUseOneLess) {
     return {
       valid: true,
       canUse: true,

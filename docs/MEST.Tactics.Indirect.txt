@@ -83,3 +83,37 @@ Test against the weapon’s Dmg ratings.
 the Frag trait, and only against those targets that failed
 its Hit Test.
 
+
+Scatter Diagrams
+Scatter diagrams are used to pick a random directly for
+moving or placing game-play elements. There are two
+kinds of Scatter diagrams:
+ Unbiased — The Unbiased Scatter diagram will pick a
+random direction equally.
+ This should form a vague hexagon shape.
+ Roll a six-sided die and count clock-wise with the ‘1’ point
+towards the other player and the ‘4’ pointing away.
+ Biased — The Biased Scatter diagram is like the
+Unbiased Scatter diagram but the ‘1’ points to a
+“desired” direction picked by the Active player. Re-roll
+the first ‘3’, ‘4’, or ‘5, and then re-roll the next ‘4’.
+
+Blind Attacks
+Indirect Range Attacks can target battlefield locations that
+an attacking model does not currently have LOS.
+ Target locations which are in LOF but not in LOS to the
+Attacker may be attacked only if at least one of these
+following conditions apply and if so, the attack is
+“Blind”:
+ Spotter — if a Free Attentive Ordered Friendly model
+within Cohesion has LOS to the target (as a “Spotter”)
+ Known — if the target was in LOS at the start of
+Attacker's Initiative,
+ If the attack involves the [Scatter] trait and is also
+“Blind”, use the Unbiased Scatter diagram with an extra
+Wild die for distance but do not re-roll the direction.
+ Blind — Penalize the Active character -1 Wild die for the
+Attacker Range Combat Hit Test if this is a Blind Indirect
+attack. See Performing Indirect Range Combat for more
+information.
+

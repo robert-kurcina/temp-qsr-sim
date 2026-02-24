@@ -24,6 +24,7 @@ import {
   checkBashCascadeBonus,
   getMultipleWeaponsBonus,
   getMultipleAttackPenalty,
+  getWeaponIndexForCharacter,
 } from '../traits/combat-traits';
 import { Position } from '../battlefield/Position';
 
@@ -54,6 +55,7 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
     const attackerPenalty: TestDice = {};
     const defenderBonus: TestDice = {};
     const defenderPenalty: TestDice = {};
+    const weaponIndex = getWeaponIndexForCharacter(attacker, weapon);
 
     // 1. Hindrance Penalties
     const attackerHindrance = calculateHindrancePenalty({ woundTokens: attacker.state.wounds, fearTokens: attacker.state.fearTokens, delayTokens: attacker.state.delayTokens });
@@ -63,14 +65,13 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
     if (defenderHindrance > 0) defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + defenderHindrance;
 
     // 2. Multiple Weapons Bonus (+1m per additional weapon of same classification)
-    // Weapon index 0 = primary weapon (simplified)
-    const multipleWeaponsBonus = getMultipleWeaponsBonus(attacker, 0, true);
+    const multipleWeaponsBonus = getMultipleWeaponsBonus(attacker, weaponIndex, true);
     if (multipleWeaponsBonus > 0) {
         attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + multipleWeaponsBonus;
     }
 
     // 3. Multiple Attack Penalty (-1m for consecutive same weapon use)
-    const multipleAttackResult = getMultipleAttackPenalty(attacker, 0);
+    const multipleAttackResult = getMultipleAttackPenalty(attacker, weaponIndex);
     if (multipleAttackResult.penalty > 0) {
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + multipleAttackResult.penalty;
     }
@@ -94,7 +95,12 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
 
     // Fight trait - reduces penalty dice (not adds bonus dice)
     const attackerFightReduction = getFightPenaltyReduction(attacker);
-    // Apply penalty reduction (handled by caller in dice cancellation)
+    if (attackerFightReduction > 0 && (attackerPenalty[DiceType.Modifier] || 0) > 0) {
+        attackerPenalty[DiceType.Modifier] = Math.max(
+            0,
+            (attackerPenalty[DiceType.Modifier] || 0) - attackerFightReduction
+        );
+    }
 
     // Knife-fighter X: +Xb +X Impact when Attentive, in base-contact, using [Stub] weapon
     const isAttentive = attacker.state.isAttentive;
@@ -127,6 +133,9 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
     }
     if (context.reactPenaltyBase) {
         attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
+    }
+    if (context.handPenaltyBase) {
+        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.handPenaltyBase;
     }
 
     // QSR: Confined - -1m if Confined by Terrain (vertically, horizontally, or behind)

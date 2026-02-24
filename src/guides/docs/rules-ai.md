@@ -342,7 +342,7 @@ Weights are modified by Tactical Doctrine.
 
 | React | Trigger | Cost | Source |
 |-------|---------|------|--------|
-| **Overwatch** | Enemy moves in LOS | Wait status | Wait action |
+| **Standard React** | Enemy moves in LOS | Wait status | Wait action |
 | **Opportunity Attack** | Engaged enemy acts | 1 AP | Trait or default |
 | **Counter-strike!** | Enemy misses CC attack | 1 AP | Counter-strike! trait |
 

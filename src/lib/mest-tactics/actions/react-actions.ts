@@ -19,7 +19,17 @@ export interface ReactActionDeps {
   ) => unknown;
 }
 
-export function executeOverwatchReact(
+function resolveDeclaredWeapon(reactor: Character, fallback: import('../core/Item').Item) {
+  const declaredIndex = reactor.state.activeWeaponIndex;
+  if (declaredIndex === undefined || declaredIndex === null) {
+    return fallback;
+  }
+  const equipment = reactor.profile?.equipment || reactor.profile?.items || [];
+  const declaredWeapon = equipment[declaredIndex];
+  return declaredWeapon ?? fallback;
+}
+
+export function executeStandardReact(
   deps: ReactActionDeps,
   reactor: Character,
   target: Character,
@@ -65,7 +75,8 @@ export function executeOverwatchReact(
   deps.applyInterruptCost(reactor);
   deps.reactedThisTurn.add(reactor.id);
 
-  const result = deps.executeRangedAttack(reactor, target, weapon, {
+  const resolvedWeapon = resolveDeclaredWeapon(reactor, weapon);
+  const result = deps.executeRangedAttack(reactor, target, resolvedWeapon, {
     attacker: reactorModel,
     target: targetModel,
     context: options.context,
@@ -112,7 +123,7 @@ export interface ReactEvent {
 export interface ReactOption {
   actor: Character;
   target: Character;
-  type: 'Overwatch' | 'ReactAction';
+  type: 'StandardReact' | 'ReactAction';
   available: boolean;
   requiredRef: number;
   effectiveRef: number;
@@ -144,7 +155,7 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
       options.push({
         actor: opponent,
         target: event.active,
-        type: event.trigger === 'Move' ? 'Overwatch' : 'ReactAction',
+        type: event.trigger === 'Move' ? 'StandardReact' : 'ReactAction',
         available: false,
         requiredRef: 0,
         effectiveRef: 0,
@@ -171,7 +182,7 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
       options.push({
         actor: opponent,
         target: event.active,
-        type: event.trigger === 'Move' ? 'Overwatch' : 'ReactAction',
+        type: event.trigger === 'Move' ? 'StandardReact' : 'ReactAction',
         available: false,
         requiredRef: 0,
         effectiveRef: 0,
@@ -190,14 +201,14 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
     options.push({
       actor: opponent,
       target: event.active,
-      type: event.trigger === 'Move' ? 'Overwatch' : 'ReactAction',
+      type: event.trigger === 'Move' ? 'StandardReact' : 'ReactAction',
       available,
       requiredRef,
       effectiveRef,
       reason: available
         ? undefined
         : event.trigger === 'Move' && !requiresMovementTrigger
-          ? 'Move did not trigger Overwatch threshold.'
+          ? 'Move did not trigger Standard react threshold.'
           : 'Insufficient REF to React.',
     });
   }

@@ -17,6 +17,7 @@ import { createSideAI, SideAI } from '../strategic/SideAI';
 import { createSideAssemblyAIs, AssemblyAI } from '../strategic/AssemblyAI';
 import { CharacterAI, createSideAI as createCharacterAIs } from '../core/CharacterAI';
 import { ActionDecision } from '../core/AIController';
+import { isAttackableEnemy } from '../core/ai-utils';
 
 /**
  * AI Game Loop configuration
@@ -36,6 +37,12 @@ export interface AIGameLoopConfig {
   verboseLogging: boolean;
   /** Maximum actions per character per turn */
   maxActionsPerTurn: number;
+  /** Allow attacks against KO'd targets (default false) */
+  allowKOdAttacks?: boolean;
+  /** Optional controller traits for Puppet KO'd rules */
+  kodControllerTraitsByCharacterId?: Record<string, string[]>;
+  /** Optional coordinator traits for Puppet KO'd rules */
+  kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
 }
 
 /**
@@ -49,6 +56,7 @@ export const DEFAULT_AI_GAME_LOOP_CONFIG: AIGameLoopConfig = {
   enableReplanning: true,
   verboseLogging: false,
   maxActionsPerTurn: 3,
+  allowKOdAttacks: false,
 };
 
 /**
@@ -138,6 +146,11 @@ export class AIGameLoop {
         
         const charAIs = createCharacterAIs(characters);
         for (const [charId, charAI] of charAIs.entries()) {
+          charAI.setConfig({
+            allowKOdAttacks: this.config.allowKOdAttacks ?? false,
+            kodControllerTraitsByCharacterId: this.config.kodControllerTraitsByCharacterId,
+            kodCoordinatorTraitsByCharacterId: this.config.kodCoordinatorTraitsByCharacterId,
+          });
           this.characterAIs.set(charId, charAI);
         }
       }
@@ -486,7 +499,15 @@ export class AIGameLoop {
   private getEnemyCharacters(character: Character): Character[] {
     // Simplified: all other characters are enemies
     return this.manager.characters.filter(
-      c => c !== character && !c.state.isEliminated && !c.state.isKOd
+      c => c !== character && isAttackableEnemy(character, c, {
+        aggression: 0,
+        caution: 0,
+        accuracyModifier: 0,
+        godMode: true,
+        allowKOdAttacks: this.config.allowKOdAttacks ?? false,
+        kodControllerTraitsByCharacterId: this.config.kodControllerTraitsByCharacterId,
+        kodCoordinatorTraitsByCharacterId: this.config.kodCoordinatorTraitsByCharacterId,
+      })
     );
   }
 

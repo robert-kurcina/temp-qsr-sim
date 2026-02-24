@@ -9,6 +9,7 @@ import { parseAccuracy } from '../subroutines/accuracy-parser';
 import { metricsService } from '../engine/MetricsService';
 import { SpatialAttackContext, SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from '../status/status-system';
+import { getArcheryBonus, getShootPenaltyReduction, getShootMaxORMBonus } from '../traits/combat-traits';
 
 function _calculateModifiers(
     attacker: Character, 
@@ -47,6 +48,9 @@ function _calculateModifiers(
     if (context.reactPenaltyBase) {
         attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.reactPenaltyBase;
     }
+    if (context.handPenaltyBase) {
+        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.handPenaltyBase;
+    }
 
     if (context.obscuringModels && context.obscuringModels > 0) {
         const thresholds = [1, 2, 5, 10];
@@ -59,6 +63,22 @@ function _calculateModifiers(
     
     if (orm > 0) {
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + orm;
+    }
+
+    // Archery X: +Xm Bow Hit Tests
+    const weaponClass = (weapon.classification || weapon.class || '').toLowerCase();
+    const archeryBonus = getArcheryBonus(attacker, weaponClass.includes('bow'));
+    if (archeryBonus > 0) {
+        attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + archeryBonus;
+    }
+
+    // Shoot X: Reduce up to X penalty Modifier dice on Range Hit Tests
+    const shootPenaltyReduction = getShootPenaltyReduction(attacker);
+    if (shootPenaltyReduction > 0 && (attackerPenalty[DiceType.Modifier] || 0) > 0) {
+        attackerPenalty[DiceType.Modifier] = Math.max(
+            0,
+            (attackerPenalty[DiceType.Modifier] || 0) - shootPenaltyReduction
+        );
     }
 
     return { attackerBonus, attackerPenalty };
@@ -75,7 +95,10 @@ export function makeIndirectRangedAttack(
 ): ResolveTestResult {
     const attackerAttribute = weapon.classification === 'Thrown' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
 
-    if (orm > attackerAttribute) {
+    const shootOrmBonus = getShootMaxORMBonus(attacker);
+    const effectiveOrm = Math.max(0, orm - shootOrmBonus);
+
+    if (effectiveOrm > attackerAttribute) {
         return { pass: false, score: -1, p1FinalScore: 0, p2FinalScore: 1, cascades: 0, p1Result: { score: 0, carryOverDice: {} }, p2Result: { score: 1, carryOverDice: {} } };
     }
 
@@ -91,7 +114,7 @@ export function makeIndirectRangedAttack(
             fullContext.blindersThrownPenalty = 1;
         }
     }
-    const { attackerBonus, attackerPenalty } = _calculateModifiers(attacker, weapon, orm, fullContext);
+    const { attackerBonus, attackerPenalty } = _calculateModifiers(attacker, weapon, effectiveOrm, fullContext);
 
     const { bonusDice: accBonus, penaltyDice: accPenalty } = parseAccuracy(weapon.accuracy);
 

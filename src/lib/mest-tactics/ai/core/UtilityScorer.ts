@@ -9,6 +9,7 @@ import { Character } from '../../core/Character';
 import { Battlefield } from '../../battlefield/Battlefield';
 import { Position } from '../../battlefield/Position';
 import { AIContext, ActionDecision, ActionType } from './AIController';
+import { isAttackableEnemy } from './ai-utils';
 import { getMultipleWeaponsBonus, getWeaponClassification, qualifiesForMultipleWeapons } from '../../traits/combat-traits';
 import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
@@ -277,7 +278,7 @@ export class UtilityScorer {
     if (!characterPos) return targets;
 
     for (const enemy of context.enemies) {
-      if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
 
       const enemyPos = context.battlefield.getCharacterPosition(enemy);
       if (!enemyPos) continue;
@@ -354,7 +355,7 @@ export class UtilityScorer {
     // Check for cover from nearest enemy
     let bestCover = 0;
     for (const enemy of context.enemies) {
-      if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
       const enemyPos = context.battlefield.getCharacterPosition(enemy);
       if (!enemyPos) continue;
 
@@ -389,7 +390,7 @@ export class UtilityScorer {
   private evaluateVisibility(position: Position, context: AIContext): number {
     let visibleEnemies = 0;
     for (const enemy of context.enemies) {
-      if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
       // Simplified visibility check
       visibleEnemies++;
     }

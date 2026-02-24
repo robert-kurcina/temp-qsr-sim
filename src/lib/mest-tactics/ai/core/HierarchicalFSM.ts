@@ -6,6 +6,7 @@
  */
 
 import { AIContext } from './AIController';
+import { isAttackableEnemy } from './ai-utils';
 
 /**
  * State status
@@ -329,7 +330,7 @@ export class AttackingState extends State {
       return StateStatus.COMPLETE;
     }
 
-    if (this.target.state.isEliminated || this.target.state.isKOd) {
+    if (!isAttackableEnemy(context.character, this.target, context.config)) {
       return StateStatus.COMPLETE;
     }
 

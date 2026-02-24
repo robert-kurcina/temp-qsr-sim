@@ -9,6 +9,7 @@ import { Character } from '../../core/Character';
 import { Battlefield } from '../../battlefield/Battlefield';
 import { Position } from '../../battlefield/Position';
 import { ActionDecision, AIContext, ActionType } from '../core/AIController';
+import { isAttackableEnemy } from '../core/ai-utils';
 
 /**
  * World state representation
@@ -429,7 +430,7 @@ export class GOAPPlanner {
       !a.state.isEliminated && !a.state.isKOd
     ).length + 1;
     const enemyCount = context.enemies.filter(e => 
-      !e.state.isEliminated && !e.state.isKOd
+      isAttackableEnemy(context.character, e, context.config)
     ).length;
     
     if (enemyCount > friendlyCount) {
