@@ -25,10 +25,10 @@ The Scatter diagram consists of **six arrows** arranged in a **hexagonal pattern
 **Direction Arrows:**
 - **Forward** (↑) — Along Line of Fire toward target
 - **Forward-Right** (↗) — 60° clockwise from Forward
-- **Right** (↘) — 120° clockwise from Forward  
-- **Backward-Right** (↙) — 180° from Forward (away from attacker)
-- **Backward-Left** (↖) — 240° clockwise from Forward
-- **Left** (↗) — 300° clockwise from Forward
+- **Backward-Right** (↘) — 120° clockwise from Forward
+- **Backward** (↓) — 180° from Forward (away from attacker)
+- **Backward-Left** (↙) — 240° clockwise from Forward
+- **Forward-Left** (↖) — 300° clockwise from Forward
 
 **Center Point (●):** The original target location
 

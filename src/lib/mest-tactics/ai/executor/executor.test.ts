@@ -237,6 +237,40 @@ describe('AIActionExecutor', () => {
     const result = executor.executeAction(decision, character, context);
     expect(result.replanningRecommended).toBe(true);
   });
+
+  it('should execute disengage via GameManager API', () => {
+    target.profile.items = [
+      {
+        name: 'Defender Blade',
+        class: 'Melee',
+        classification: 'Melee',
+        type: 'Melee',
+        bp: 0,
+        traits: [],
+      } as any,
+    ];
+
+    const decision: ActionDecision = {
+      type: 'disengage',
+      target,
+      reason: 'Test disengage',
+      priority: 2,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    const result = executor.executeAction(decision, character, context);
+    expect(result.error ?? '').not.toContain('executeDisengageAction');
+    expect(result.action.type).toBe('disengage');
+  });
 });
 
 describe('AIGameLoop', () => {
@@ -270,6 +304,7 @@ describe('AIGameLoop', () => {
     
     expect(result).toBeDefined();
     expect(result.totalActions).toBeGreaterThanOrEqual(0);
+    expect(manager.isTurnOver()).toBe(true);
   });
 
   it('should run a complete game', () => {
@@ -286,6 +321,18 @@ describe('AIGameLoop', () => {
     
     // Should have attempted actions
     expect(result.totalActions).toBeGreaterThan(0);
+  });
+
+  it('should execute character-AI decisions when strategic/tactical layers are disabled', () => {
+    const gameLoopWithCharacterOnly = createAIGameLoop(manager, battlefield, [sides.sideA, sides.sideB], {
+      enableStrategic: false,
+      enableTactical: false,
+      enableCharacterAI: true,
+      verboseLogging: false,
+    });
+
+    const result = gameLoopWithCharacterOnly.runTurn(1);
+    expect(result.totalActions).toBeGreaterThanOrEqual(0);
   });
 });
 

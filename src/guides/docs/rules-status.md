@@ -1,56 +1,64 @@
 ---
 title: "Rules: Character Status"
 dependencies:
-  - "Rules: Core Mechanics" # DONE
-  - "Rules: Character Attributes" # DONE
-  - "Rules: Damage & Wounds" # In-Progress
-status: "Planning"
+  - "Rules: Core Mechanics"
+  - "Rules: Character Attributes"
+  - "Rules: Damage & Wounds"
+status: "Complete"
 ---
 
 ## Character Statuses
 
-Statuses are derived from tokens, actions, and game flow. The primary token types in QSR are **Wound**, **Delay**, and **Fear** (Hindrance types).
+Statuses are created by tokens, action flow, and mission state. The core Hindrance token types are **Wound**, **Delay**, and **Fear**.
 
-### Core Activation Statuses
+### Standard Conditions (Paired)
 
-- **Ready:** The character can be activated this turn.
-- **Done:** The character has completed its activation this turn.
+- **Revealed / Hidden**
+- **Attentive / Distracted**
+- **Ordered / Disordered**
+- **Ready / Done**
 
-### Awareness & Control Statuses
+### Turn Flow Statuses
 
-- **Attentive:** Default state; can React and use full options.
-- **Distracted:** 1+ Delay tokens. Loses Attentive status.
-- **Ordered:** Default state; not Disordered or Panicked.
-- **Disordered:** 2+ Fear tokens; loses Ordered status.
-- **Panicked:** 3+ Fear tokens; also Disordered.
+- **Ready:** Can be activated in the current Turn.
+- **Done:** Activation completed for the current Turn.
+- At Turn start, Done tokens are removed from In-Play models; they become Ready.
+- **KO'd models are never Ready** (always Done / non-active).
 
-### Concealment Statuses
+### In-Play State
 
-- **Revealed:** Visible on the battlefield.
-- **Hidden:** Concealed; opposing models must Detect to reveal.
+- **In-Play:** Not KO'd and not Eliminated.
+- **Out-of-Play:** KO'd or Eliminated.
 
-### Hindrance Statuses (Wound, Delay, Fear)
+### Hindrance-Derived States
 
-Each Hindrance token imposes **−1 Modifier die** to Tests (except Damage Tests).  
-Hindrance tokens create the following derived statuses:
+Hindrance penalty: **-1 Modifier die to Tests (except Damage Tests) per Hindrance type present** (Wound/Fear/Delay).
 
 | Status | Threshold | Notes |
 | :--- | :--- | :--- |
-| **Wounded** | 1+ Wound | Indicates injury and contributes to Hindrance. |
-| **Delayed** | 1+ Delay | Character is Distracted. |
-| **Stunned** | 2+ Delay | Character is unable to take most actions. |
-| **Nervous** | 1+ Fear | No compulsory action. |
+| **Wounded** | 1+ Wound | Hindrance type present. |
+| **Distracted** | 1+ Delay | Opposite of Attentive. |
+| **Stunned** | Delay >= AP allotment | Additional Delay converts to Wound as Stun damage. |
+| **Nervous** | 1+ Fear | No compulsory action by itself. |
 | **Disordered** | 2+ Fear | No longer Ordered. |
-| **Panicked** | 3+ Fear | Disordered; may trigger compulsory behavior. |
-| **Eliminated** | 4+ Fear | Automatic elimination (panic collapse). |
+| **Panicked** | 3+ Fear | Disordered; compulsory movement behavior applies. |
+| **Eliminated (Fear)** | 4+ Fear | Immediate elimination condition. |
 
-### KO / Eliminated
+### KO'd and Eliminated
 
-- **KO’d:** Wounds ≥ SIZ.
-- **Eliminated:** Wounds ≥ SIZ + 3, or 4+ Fear tokens (panic collapse).
+- **KO'd:** Wound tokens >= SIZ.
+- **Eliminated (Wounds):** Wound tokens >= SIZ + 3.
+- **Eliminated (Fear):** 4+ Fear tokens.
+- Exiting battlefield can also cause Elimination (mission/context dependent).
+- KO'd models:
+  - Are Out-of-Play and never Ready.
+  - Do not cause engagement.
+  - Lose Done/Wait/Hidden and most status markers per KO cleanup rules.
+  - Can be treated as terrain for movement/cover interactions per QSR.
 
 ### Token Summary
 
-- **Wound:** From Damage resolution.
-- **Delay:** From Reactions, special actions, or traits.
-- **Fear:** From failed Fear Tests, usually after Wounds or nearby KO/Elim events.
+- **Done:** Activation completion marker.
+- **Wait:** Enables React windows and related modifiers.
+- **Hidden:** Concealment marker.
+- **Wound / Delay / Fear:** Hindrance status tokens.

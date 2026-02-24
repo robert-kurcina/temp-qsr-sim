@@ -1,7 +1,7 @@
 import { Character } from '../core/Character';
 import { Item } from '../core/Item';
 import { Position } from '../battlefield/Position';
-import { ActionContextInput, CloseCombatContextInput, buildCloseCombatActionContext, buildRangedActionContext, resolveFriendlyFire } from '../battlefield/validation/action-context';
+import { ActionContextInput, CloseCombatContextInput, buildCloseCombatActionContext, buildLOSResultContext, buildRangedActionContext, resolveFriendlyFire } from '../battlefield/validation/action-context';
 import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { TestContext } from '../utils/TestContext';
@@ -106,6 +106,111 @@ function resolveScrambleMoves(options: {
     }
   }
   return { eligibleIds, movedIds };
+}
+
+interface BlindIndirectContext {
+  isBlind: boolean;
+  allowed: boolean;
+  usedSpotter: boolean;
+  usedKnown: boolean;
+  reason?: string;
+}
+
+function rollD6(rng: () => number = Math.random): number {
+  return Math.floor(rng() * 6) + 1;
+}
+
+function wildSuccessFromRoll(roll: number): number {
+  if (roll >= 6) return 2;
+  if (roll >= 4) return 1;
+  return 0;
+}
+
+function resolveBlindIndirectContext(options: {
+  deps: CombatActionDeps;
+  attacker: Character;
+  attackerPos: Position;
+  target: { id: string; position: Position; baseDiameter: number; siz: number };
+  hasLOS: boolean;
+  knownAtInitiativeStart?: boolean;
+  spotters?: Character[];
+  cohesionRangeMu?: number;
+}): BlindIndirectContext {
+  if (options.hasLOS) {
+    return { isBlind: false, allowed: true, usedSpotter: false, usedKnown: false };
+  }
+
+  const usedKnown = options.knownAtInitiativeStart === true;
+  const cohesionRange = Math.max(0, options.cohesionRangeMu ?? 4);
+  const targetModel: SpatialModel = {
+    id: options.target.id,
+    position: options.target.position,
+    baseDiameter: options.target.baseDiameter,
+    siz: options.target.siz,
+  };
+
+  let usedSpotter = false;
+  for (const spotter of options.spotters ?? []) {
+    if (spotter.id === options.attacker.id) continue;
+    if (spotter.state.isEliminated || spotter.state.isKOd) continue;
+    if (!spotter.state.isAttentive || !spotter.state.isOrdered) continue;
+
+    const spotterPos = options.deps.getCharacterPosition(spotter);
+    if (!spotterPos) continue;
+    const spotterModel: SpatialModel = {
+      id: spotter.id,
+      position: spotterPos,
+      baseDiameter: getBaseDiameterFromSiz(spotter.finalAttributes.siz ?? spotter.attributes.siz ?? 3),
+      siz: spotter.finalAttributes.siz ?? spotter.attributes.siz ?? 3,
+    };
+    const attackerModel: SpatialModel = {
+      id: options.attacker.id,
+      position: options.attackerPos,
+      baseDiameter: getBaseDiameterFromSiz(options.attacker.finalAttributes.siz ?? options.attacker.attributes.siz ?? 3),
+      siz: options.attacker.finalAttributes.siz ?? options.attacker.attributes.siz ?? 3,
+    };
+
+    const cohesionDistance = SpatialRules.distanceEdgeToEdge(spotterModel, attackerModel);
+    if (cohesionDistance > cohesionRange) continue;
+    if (!SpatialRules.hasLineOfSight(options.deps.battlefield!, spotterModel, targetModel)) continue;
+
+    // Approximation of "Free": no base-contact with other in-play models.
+    const engagedWithAny = options.deps.characters.some(other => {
+      if (other.id === spotter.id || other.state.isKOd || other.state.isEliminated) {
+        return false;
+      }
+      const otherPos = options.deps.getCharacterPosition(other);
+      if (!otherPos) return false;
+      const otherModel: SpatialModel = {
+        id: other.id,
+        position: otherPos,
+        baseDiameter: getBaseDiameterFromSiz(other.finalAttributes.siz ?? other.attributes.siz ?? 3),
+        siz: other.finalAttributes.siz ?? other.attributes.siz ?? 3,
+      };
+      return SpatialRules.isEngaged(spotterModel, otherModel);
+    });
+    if (engagedWithAny) continue;
+
+    usedSpotter = true;
+    break;
+  }
+
+  if (!usedSpotter && !usedKnown) {
+    return {
+      isBlind: true,
+      allowed: false,
+      usedSpotter: false,
+      usedKnown: false,
+      reason: 'Blind indirect attack requires Spotter or Known target.',
+    };
+  }
+
+  return {
+    isBlind: true,
+    allowed: true,
+    usedSpotter,
+    usedKnown,
+  };
 }
 
 export interface CombatActionDeps {
@@ -577,6 +682,11 @@ export function executeIndirectAttack(
     scatterWeights?: number[];
     scrambleMoves?: Record<string, Position>;
     allowScramble?: boolean;
+    knownAtInitiativeStart?: boolean;
+    spotters?: Character[];
+    spotterCohesionRangeMu?: number;
+    blindScatterDistanceRoll?: number;
+    blindScatterDistanceRng?: () => number;
     weaponIndex?: number;
     allowKOdAttacks?: boolean;
     kodRules?: KOdAttackRulesConfig;
@@ -607,8 +717,34 @@ export function executeIndirectAttack(
   };
 
   const context = buildRangedActionContext(spatial);
+  const losContext = buildLOSResultContext(spatial);
   const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
   mergedContext.isCloseCombat = false;
+  const blind = resolveBlindIndirectContext({
+    deps,
+    attacker,
+    attackerPos,
+    target: options.target,
+    hasLOS: losContext.hasLOS,
+    knownAtInitiativeStart: options.knownAtInitiativeStart,
+    spotters: options.spotters,
+    cohesionRangeMu: options.spotterCohesionRangeMu,
+  });
+  if (!blind.allowed) {
+    return {
+      hitTestResult: { pass: false, score: -99, p1FinalScore: 0, p2FinalScore: 99, cascades: 0, p1Result: { score: 0, carryOverDice: {} }, p2Result: { score: 99, carryOverDice: {} } },
+      scatterResult: undefined,
+      finalPosition: options.target?.position,
+      damageResults: [],
+      scramble: { eligibleIds: [], movedIds: [] },
+      blind,
+      handRequirementFailed: true,
+      handRequirementReason: blind.reason,
+    };
+  }
+  if (blind.isBlind) {
+    mergedContext.isBlindAttack = true;
+  }
   const handCheck = applyHandRequirementPenalty(attacker, weapon, mergedContext);
   if (handCheck.failed) {
     return {
@@ -617,6 +753,7 @@ export function executeIndirectAttack(
       finalPosition: options.target?.position,
       damageResults: [],
       scramble: { eligibleIds: [], movedIds: [] },
+      blind,
       handRequirementFailed: true,
       handRequirementReason: handCheck.reason,
     };
@@ -626,15 +763,24 @@ export function executeIndirectAttack(
   attacker.state.activeWeaponIndex = weaponIndex;
 
   const misses = hitTestResult.pass ? 0 : Math.max(1, Math.ceil(Math.abs(hitTestResult.score)));
+  const usesScatter = hasItemTraitOnWeapon(weapon, 'Scatter');
+  const blindScatterUsesUnbiased = blind.isBlind && usesScatter;
+  const blindScatterDistanceRoll = blindScatterUsesUnbiased
+    ? (options.blindScatterDistanceRoll ?? rollD6(options.blindScatterDistanceRng))
+    : undefined;
+  const blindScatterDistanceBonus = blindScatterUsesUnbiased && blindScatterDistanceRoll !== undefined
+    ? wildSuccessFromRoll(blindScatterDistanceRoll)
+    : 0;
+  const scatterMisses = misses + blindScatterDistanceBonus;
   const scatterResult: ScatterResult | undefined = hitTestResult.pass
     ? undefined
     : resolveScatter({
         attackerPosition: attackerPos,
         targetPosition: options.target!.position,
-        misses,
+        misses: scatterMisses,
         battlefield: deps.battlefield,
         directionRoll: options.directionRoll,
-        bias: options.scatterBias,
+        bias: blindScatterUsesUnbiased ? 'unbiased' : options.scatterBias,
         weights: options.scatterWeights,
       });
 
@@ -723,6 +869,9 @@ export function executeIndirectAttack(
         finalPosition,
         damageResults,
         scramble,
+        blind,
+        blindScatterDistanceBonus,
+        blindScatterDistanceRoll,
       };
     }
     options.targetCharacter.state.wounds = damageResolution.defenderState.wounds;
@@ -738,6 +887,9 @@ export function executeIndirectAttack(
     finalPosition,
     damageResults,
     scramble,
+    blind,
+    blindScatterDistanceBonus,
+    blindScatterDistanceRoll,
   };
 }
 

@@ -111,6 +111,54 @@ describe('interrupt execution', () => {
     expect(defender.state.delayTokens).toBe(1);
   });
 
+  it('should enforce declared weapon for Counter-fire attacks', () => {
+    setRoller(() => Array(10).fill(6));
+    const attacker = new Character(makeProfile('Attacker', { cca: 1, rca: 1, ref: 1, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));
+    const defender = new Character(makeProfile('Defender', { cca: 1, rca: 1, ref: 3, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));
+
+    const declaredWeapon = {
+      name: 'Declared Blank',
+      classification: 'Range',
+      class: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      impact: 0,
+      dmg: '-', // no damage test when declared weapon is enforced
+      traits: [],
+    };
+    defender.profile.items = [declaredWeapon as any];
+    defender.state.activeWeaponIndex = 0;
+
+    manager = new GameManager([attacker, defender], battlefield);
+    manager.placeCharacter(attacker, { x: 2, y: 2 });
+    manager.placeCharacter(defender, { x: 7, y: 2 });
+
+    const fallbackWeapon = {
+      name: 'Fallback Damage Weapon',
+      classification: 'Range',
+      class: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      impact: 0,
+      dmg: '10',
+      traits: [],
+    };
+
+    const hitTestResult = {
+      score: -2,
+      pass: false,
+      cascades: 0,
+      p1FinalScore: 1,
+      p2FinalScore: 3,
+      p1Result: { score: 1, carryOverDice: { base: 0, modifier: 0, wild: 0 } },
+      p2Result: { score: 3, carryOverDice: { base: 1, modifier: 0, wild: 0 } },
+    };
+
+    const result = manager.executeCounterFire(defender, attacker, fallbackWeapon as any, hitTestResult as any, { visibilityOrMu: 16 });
+    expect(result.executed).toBe(true);
+    expect(attacker.state.wounds).toBe(0);
+  });
+
   it('should resolve Counter-action cascades from carry-overs', () => {
     const attacker = new Character(makeProfile('Attacker', { cca: 1, rca: 1, ref: 1, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));
     const defender = new Character(makeProfile('Defender', { cca: 1, rca: 1, ref: 2, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));

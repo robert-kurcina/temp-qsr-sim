@@ -11,6 +11,8 @@
  */
 
 import * as readline from 'readline';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { Character } from '../src/lib/mest-tactics/core/Character';
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
@@ -21,8 +23,9 @@ import { getBaseDiameterFromSiz } from '../src/lib/mest-tactics/battlefield/spat
 import { buildAssembly, buildProfile, GameSize } from '../src/lib/mest-tactics/mission/assembly-builder';
 import { TacticalDoctrine, TACTICAL_DOCTRINE_INFO, getDoctrinesByEngagement } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../src/lib/mest-tactics/ai/core/CharacterAI';
-import { AIContext, AIControllerConfig } from '../src/lib/mest-tactics/ai/core/AIController';
+import { AIContext, AIControllerConfig, CharacterKnowledge } from '../src/lib/mest-tactics/ai/core/AIController';
 import { attemptHide, attemptDetect } from '../src/lib/mest-tactics/status/concealment';
+import { LOFOperations } from '../src/lib/mest-tactics/battlefield/los/LOFOperations';
 
 // ============================================================================
 // Configuration
@@ -38,6 +41,7 @@ interface GameConfig {
   sides: SideConfig[];
   densityRatio: number;
   verbose: boolean;
+  seed?: number;
 }
 
 interface SideConfig {
@@ -63,6 +67,8 @@ interface BattleStats {
   eliminations: number;
   kos: number;
   turnsCompleted: number;
+  losChecks: number;
+  lofChecks: number;
 }
 
 interface BattleLogEntry {
@@ -81,6 +87,39 @@ export interface BattleReport {
   finalCounts: Array<{ name: string; remaining: number }>;
   stats: BattleStats;
   log: BattleLogEntry[];
+  seed?: number;
+}
+
+interface ValidationCoverage {
+  movement: boolean;
+  pathfinding: boolean;
+  rangedCombat: boolean;
+  closeCombat: boolean;
+  react: boolean;
+  wait: boolean;
+  detect: boolean;
+  los: boolean;
+  lof: boolean;
+}
+
+interface ValidationAggregateReport {
+  missionId: string;
+  gameSize: GameSize;
+  densityRatio: number;
+  runs: number;
+  baseSeed: number;
+  winners: Record<string, number>;
+  totals: BattleStats;
+  averages: BattleStats;
+  coverage: ValidationCoverage;
+  runReports: Array<{
+    run: number;
+    seed: number;
+    winner: string;
+    finalCounts: Array<{ name: string; remaining: number }>;
+    stats: BattleStats;
+  }>;
+  generatedAt: string;
 }
 
 const GAME_SIZE_CONFIG: Record<GameSize, {
@@ -110,6 +149,44 @@ function doctrineToAIConfig(doctrine: TacticalDoctrine): Partial<AIControllerCon
   return {
     aggression: components.aggressive ? 0.7 : components.defensive ? 0.3 : 0.5,
     caution: components.defensive ? 0.7 : components.aggressive ? 0.3 : 0.5,
+  };
+}
+
+function createSeededRandom(seed: number): () => number {
+  let state = seed >>> 0;
+  return () => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 0x100000000;
+  };
+}
+
+function emptyKnowledge(turn: number): CharacterKnowledge {
+  return {
+    knownEnemies: new Map(),
+    knownTerrain: new Map(),
+    lastKnownPositions: new Map(),
+    threatZones: [],
+    safeZones: [],
+    lastUpdated: turn,
+  };
+}
+
+function createEmptyStats(): BattleStats {
+  return {
+    totalActions: 0,
+    moves: 0,
+    closeCombats: 0,
+    rangedCombats: 0,
+    disengages: 0,
+    waits: 0,
+    detects: 0,
+    hides: 0,
+    reacts: 0,
+    eliminations: 0,
+    kos: 0,
+    turnsCompleted: 0,
+    losChecks: 0,
+    lofChecks: 0,
   };
 }
 
@@ -154,14 +231,14 @@ class AIBattleSetup {
     const choice = await this.question('\nGame size [1-5] (default: 5): ');
     
     const sizes: Record<string, GameSize> = {
-      '1': 'VERY_SMALL',
-      '2': 'SMALL',
-      '3': 'MEDIUM',
-      '4': 'LARGE',
-      '5': 'VERY_LARGE',
+      '1': GameSize.VERY_SMALL,
+      '2': GameSize.SMALL,
+      '3': GameSize.MEDIUM,
+      '4': GameSize.LARGE,
+      '5': GameSize.VERY_LARGE,
     };
     
-    return sizes[choice] || 'VERY_LARGE';
+    return sizes[choice] || GameSize.VERY_LARGE;
   }
 
   private async selectTacticalDoctrine(sideName: string): Promise<TacticalDoctrine> {
@@ -305,148 +382,166 @@ class AIBattleSetup {
 
 class AIBattleRunner {
   private log: BattleLogEntry[] = [];
-  private stats: BattleStats = {
-    totalActions: 0,
-    moves: 0,
-    closeCombats: 0,
-    rangedCombats: 0,
-    disengages: 0,
-    waits: 0,
-    detects: 0,
-    hides: 0,
-    reacts: 0,
-    eliminations: 0,
-    kos: 0,
-    turnsCompleted: 0,
-  };
+  private stats: BattleStats = createEmptyStats();
 
-  async runBattle(config: GameConfig): Promise<BattleReport> {
-    console.log('\n⚔️  Starting Battle\n');
-    console.log(`Mission: ${config.missionName}`);
-    console.log(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
-    console.log(`Max Turns: ${config.maxTurns}\n`);
+  private resetRunState() {
+    this.log = [];
+    this.stats = createEmptyStats();
+  }
 
-    // Build assemblies
-    const sides = await Promise.all(config.sides.map(side => this.createAssembly(side)));
-    
-    console.log('Assemblies built:');
-    sides.forEach((side, i) => {
-      console.log(`  ${config.sides[i].name}: ${side.characters.length} models, ${side.totalBP} BP`);
-    });
-    console.log();
+  async runBattle(
+    config: GameConfig,
+    options: { seed?: number; suppressOutput?: boolean } = {}
+  ): Promise<BattleReport> {
+    this.resetRunState();
+    const seed = options.seed ?? config.seed;
+    const originalRandom = Math.random;
+    if (typeof seed === 'number') {
+      Math.random = createSeededRandom(seed);
+    }
 
-    // Create battlefield
-    const battlefield = this.createBattlefield(config.battlefieldSize, config.densityRatio);
+    try {
+      const outputEnabled = !options.suppressOutput;
+      const out = (...args: unknown[]) => {
+        if (outputEnabled) {
+          console.log(...args);
+        }
+      };
+      const verbose = config.verbose && outputEnabled;
 
-    // Deploy models
-    sides.forEach((side, i) => {
-      this.deployModels(side, battlefield, i, config.battlefieldSize);
-    });
+      out('\n⚔️  Starting Battle\n');
+      out(`Mission: ${config.missionName}`);
+      out(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
+      out(`Max Turns: ${config.maxTurns}\n`);
 
-    console.log('Models deployed.\n');
-    console.log('─'.repeat(60) + '\n');
+      // Build assemblies
+      const sides = await Promise.all(config.sides.map(side => this.createAssembly(side)));
 
-    // Create game manager
-    const allCharacters = sides.flatMap(s => s.characters);
-    const gameManager = new GameManager(allCharacters, battlefield);
-
-    // Create AI controllers
-    const aiControllers = new Map<string, CharacterAI>();
-    config.sides.forEach((sideConfig, sideIndex) => {
-      const sideCharacters = sides[sideIndex].characters;
-      sideCharacters.forEach(char => {
-        const aiConfig = {
-          ...DEFAULT_CHARACTER_AI_CONFIG,
-          ai: {
-            ...DEFAULT_CHARACTER_AI_CONFIG.ai,
-            aggression: sideConfig.aggression,
-            caution: sideConfig.caution,
-          },
-        };
-        aiControllers.set(char.id, new CharacterAI(aiConfig));
+      out('Assemblies built:');
+      sides.forEach((side, i) => {
+        out(`  ${config.sides[i].name}: ${side.characters.length} models, ${side.totalBP} BP`);
       });
-    });
+      out();
 
-    // Run game loop
-    let gameOver = false;
-    let turn = 0;
+      // Create battlefield
+      const battlefield = this.createBattlefield(config.battlefieldSize, config.densityRatio);
 
-    while (!gameOver && turn < config.maxTurns) {
-      turn++;
-      this.stats.turnsCompleted = turn;
+      // Deploy models
+      sides.forEach((side, i) => {
+        this.deployModels(side, battlefield, i, config.battlefieldSize);
+      });
 
-      if (config.verbose) {
-        console.log(`\n📍 Turn ${turn}\n`);
-      }
+      out('Models deployed.\n');
+      out('─'.repeat(60) + '\n');
 
-      // Process each side
-      for (let sideIndex = 0; sideIndex < config.sides.length; sideIndex++) {
-        const sideConfig = config.sides[sideIndex];
-        const sideCharacters = sides[sideIndex].characters
-          .filter(c => !c.state.isEliminated && !c.state.isKOd)
-          .sort((a, b) => (b.finalAttributes?.int ?? b.attributes?.int ?? 0) - (a.finalAttributes?.int ?? a.attributes?.int ?? 0));
-        
-        for (const character of sideCharacters) {
-          const aiController = aiControllers.get(character.id)!;
-          await this.resolveCharacterTurn(
-            character,
-            sides,
-            battlefield,
-            gameManager,
-            aiController,
-            turn,
-            sideIndex,
-            config
-          );
+      // Create game manager
+      const allCharacters = sides.flatMap(s => s.characters);
+      const gameManager = new GameManager(allCharacters, battlefield);
+
+      // Create AI controllers
+      const aiControllers = new Map<string, CharacterAI>();
+      config.sides.forEach((sideConfig, sideIndex) => {
+        const sideCharacters = sides[sideIndex].characters;
+        sideCharacters.forEach(char => {
+          const aiConfig = {
+            ...DEFAULT_CHARACTER_AI_CONFIG,
+            ai: {
+              ...DEFAULT_CHARACTER_AI_CONFIG.ai,
+              aggression: sideConfig.aggression,
+              caution: sideConfig.caution,
+            },
+          };
+          aiControllers.set(char.id, new CharacterAI(aiConfig));
+        });
+      });
+
+      // Run game loop
+      let gameOver = false;
+      let turn = 0;
+
+      while (!gameOver && turn < config.maxTurns) {
+        turn++;
+        this.stats.turnsCompleted = turn;
+
+        if (verbose) {
+          out(`\n📍 Turn ${turn}\n`);
+        }
+
+        // Process each side
+        for (let sideIndex = 0; sideIndex < config.sides.length; sideIndex++) {
+          const sideCharacters = sides[sideIndex].characters
+            .filter(c => !c.state.isEliminated && !c.state.isKOd)
+            .sort((a, b) => (b.finalAttributes?.int ?? b.attributes?.int ?? 0) - (a.finalAttributes?.int ?? a.attributes?.int ?? 0));
+
+          for (const character of sideCharacters) {
+            const aiController = aiControllers.get(character.id)!;
+            await this.resolveCharacterTurn(
+              character,
+              sides,
+              battlefield,
+              gameManager,
+              aiController,
+              turn,
+              sideIndex,
+              { ...config, verbose }
+            );
+          }
+        }
+
+        // Check victory conditions
+        const remainingPerSide = sides.map((side) =>
+          side.characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length
+        );
+
+        const sidesWithModels = remainingPerSide.filter(r => r > 0).length;
+        if (sidesWithModels <= 1) {
+          gameOver = true;
+          if (verbose) {
+            out(`\n🏆 Game Over - Only ${sidesWithModels} side(s) with models remaining!\n`);
+          }
+        } else if (turn >= config.endGameTurn) {
+          if (Math.random() < 0.5) {
+            gameOver = true;
+            if (verbose) {
+              out(`\n🎲 End game die roll - Game Over!\n`);
+            }
+          }
+        }
+
+        if (verbose) {
+          config.sides.forEach((side, i) => {
+            out(`  ${side.name}: ${remainingPerSide[i]}/${sides[i].characters.length} models`);
+          });
         }
       }
 
-      // Check victory conditions
-      const remainingPerSide = sides.map((side, i) => 
+      // Generate results
+      const finalCounts = sides.map((side) =>
         side.characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length
       );
 
-      const sidesWithModels = remainingPerSide.filter(r => r > 0).length;
-      if (sidesWithModels <= 1) {
-        gameOver = true;
-        if (config.verbose) {
-          console.log(`\n🏆 Game Over - Only ${sidesWithModels} side(s) with models remaining!\n`);
-        }
-      } else if (turn >= config.endGameTurn) {
-        if (Math.random() < 0.5) {
-          gameOver = true;
-          if (config.verbose) {
-            console.log(`\n🎲 End game die roll - Game Over!\n`);
-          }
-        }
+      const maxRemaining = Math.max(...finalCounts);
+      const winners = config.sides.filter((_, i) => finalCounts[i] === maxRemaining);
+
+      const report: BattleReport = {
+        config,
+        winner: winners.length === 1 ? winners[0].name : (winners.length === 0 ? 'None' : 'Draw'),
+        finalCounts: config.sides.map((side, i) => ({ name: side.name, remaining: finalCounts[i] })),
+        stats: this.stats,
+        log: this.log,
+        seed,
+      };
+
+      if (outputEnabled) {
+        this.displayReport(report);
       }
 
-      if (config.verbose) {
-        config.sides.forEach((side, i) => {
-          console.log(`  ${side.name}: ${remainingPerSide[i]}/${sides[i].characters.length} models`);
-        });
+      return report;
+    } finally {
+      if (typeof seed === 'number') {
+        Math.random = originalRandom;
       }
     }
-
-    // Generate results
-    const finalCounts = sides.map((side, i) => 
-      side.characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length
-    );
-
-    const maxRemaining = Math.max(...finalCounts);
-    const winners = config.sides.filter((_, i) => finalCounts[i] === maxRemaining);
-    
-    const report: BattleReport = {
-      config,
-      winner: winners.length === 1 ? winners[0].name : (winners.length === 0 ? 'None' : 'Draw'),
-      finalCounts: config.sides.map((side, i) => ({ name: side.name, remaining: finalCounts[i] })),
-      stats: this.stats,
-      log: this.log,
-    };
-
-    this.displayReport(report);
-
-    return report;
   }
 
   private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number }> {
@@ -477,7 +572,7 @@ class AIBattleRunner {
     }
 
     const assembly = buildAssembly(sideConfig.assemblyName, profiles);
-    return { characters: assembly.characters, totalBP: assembly.totalBP };
+    return { characters: assembly.characters, totalBP: assembly.assembly.totalBP };
   }
 
   private createBattlefield(size: number, densityRatio: number): Battlefield {
@@ -535,7 +630,6 @@ class AIBattleRunner {
   ) {
     const allies = allSides[sideIndex].characters.filter(c => c.id !== character.id && !c.state.isEliminated && !c.state.isKOd);
     const enemies = allSides.flatMap((side, i) => i !== sideIndex ? side.characters.filter(c => !c.state.isEliminated && !c.state.isKOd) : []);
-    
     const context: AIContext = {
       character,
       allies,
@@ -544,9 +638,10 @@ class AIBattleRunner {
       currentTurn: turn,
       currentRound: 1,
       apRemaining: 2,
-      knowledge: aiController.updateKnowledge({ character, allies, enemies, battlefield, currentTurn: turn, currentRound: 1, apRemaining: 2, config: aiController.getConfig() }),
+      knowledge: emptyKnowledge(turn),
       config: aiController.getConfig(),
     };
+    context.knowledge = aiController.updateKnowledge(context);
 
     gameManager.beginActivation(character);
 
@@ -949,6 +1044,20 @@ class AIBattleRunner {
         return;
       }
 
+      this.stats.losChecks++;
+      battlefield.hasLineOfSight(attackerPos, defenderPos);
+      this.stats.lofChecks++;
+      LOFOperations.getModelsAlongLOF(
+        attackerPos,
+        defenderPos,
+        battlefield.getModelBlockers([attacker.id, defender.id]).map(model => ({
+          id: model.id,
+          position: model.position,
+          baseDiameter: model.baseDiameter,
+        })),
+        { lofWidth: 1 }
+      );
+
       const orm = Math.sqrt(
         Math.pow(attackerPos.x - defenderPos.x, 2) +
         Math.pow(attackerPos.y - defenderPos.y, 2)
@@ -995,36 +1104,11 @@ class AIBattleRunner {
         return;
       }
 
-      const result = gameManager.executeDisengageAction(disengager, defender, weapon);
-      
-      if (result.pass && result.testResult) {
-        const disengagerPos = battlefield.getCharacterPosition(disengager);
-        const defenderPos = battlefield.getCharacterPosition(defender);
-        
-        if (disengagerPos && defenderPos) {
-          const dx = disengagerPos.x - defenderPos.x;
-          const dy = disengagerPos.y - defenderPos.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const mov = disengager.finalAttributes?.mov ?? disengager.attributes?.mov ?? 2;
-          
-          if (dist > 0) {
-            const ratio = Math.min(mov, 2) / dist;
-            const newPos = {
-              x: Math.round(disengagerPos.x + dx * ratio),
-              y: Math.round(disengagerPos.y + dy * ratio),
-            };
-            
-            try {
-              battlefield.moveCharacter(disengager, newPos);
-            } catch {
-              battlefield.placeCharacter(disengager, newPos);
-            }
-          }
-        }
-      }
-      
+      const result = gameManager.executeDisengage(disengager, defender, weapon);
+
       if (config.verbose) {
-        console.log(`    → Disengage: ${result.pass ? 'Success' : 'Failed'}`);
+        const moved = result.pass && 'moved' in result && result.moved ? ', moved' : '';
+        console.log(`    → Disengage: ${result.pass ? `Success${moved}` : 'Failed'}`);
       }
     } catch (error) {
       if (config.verbose) {
@@ -1061,6 +1145,8 @@ class AIBattleRunner {
     console.log(`  Detects: ${report.stats.detects}`);
     console.log(`  Hides: ${report.stats.hides}`);
     console.log(`  Reacts: ${report.stats.reacts}`);
+    console.log(`  LOS Checks: ${report.stats.losChecks}`);
+    console.log(`  LOF Checks: ${report.stats.lofChecks}`);
     console.log(`  Eliminations: ${report.stats.eliminations}`);
     console.log(`  KO's: ${report.stats.kos}`);
     
@@ -1092,7 +1178,7 @@ async function runInteractive() {
 }
 
 async function runQuickBattle(
-  gameSize: GameSize = 'VERY_LARGE',
+  gameSize: GameSize = GameSize.VERY_LARGE,
   missionId: string = 'QAI_11',
   densityRatio: number = 50
 ) {
@@ -1139,12 +1225,270 @@ async function runQuickBattle(
   }
 }
 
+function accumulateStats(total: BattleStats, add: BattleStats) {
+  (Object.keys(total) as Array<keyof BattleStats>).forEach((key) => {
+    total[key] += add[key];
+  });
+}
+
+function divideStats(total: BattleStats, runs: number): BattleStats {
+  const avg = createEmptyStats();
+  (Object.keys(total) as Array<keyof BattleStats>).forEach((key) => {
+    avg[key] = Number((total[key] / runs).toFixed(2));
+  });
+  return avg;
+}
+
+function baseCoverageFromStats(stats: BattleStats): ValidationCoverage {
+  return {
+    movement: stats.moves > 0,
+    pathfinding: stats.moves > 0,
+    rangedCombat: stats.rangedCombats > 0,
+    closeCombat: stats.closeCombats > 0,
+    react: stats.reacts > 0,
+    wait: stats.waits > 0,
+    detect: stats.detects > 0,
+    los: stats.losChecks > 0,
+    lof: stats.lofChecks > 0,
+  };
+}
+
+function mergeCoverage(
+  coverage: ValidationCoverage,
+  patch: Partial<ValidationCoverage>
+): ValidationCoverage {
+  return {
+    movement: coverage.movement || Boolean(patch.movement),
+    pathfinding: coverage.pathfinding || Boolean(patch.pathfinding),
+    rangedCombat: coverage.rangedCombat || Boolean(patch.rangedCombat),
+    closeCombat: coverage.closeCombat || Boolean(patch.closeCombat),
+    react: coverage.react || Boolean(patch.react),
+    wait: coverage.wait || Boolean(patch.wait),
+    detect: coverage.detect || Boolean(patch.detect),
+    los: coverage.los || Boolean(patch.los),
+    lof: coverage.lof || Boolean(patch.lof),
+  };
+}
+
+function ensureEquipment(profile: ReturnType<typeof buildProfile>) {
+  if (!profile.equipment && profile.items) {
+    profile.equipment = profile.items;
+  }
+}
+
+function runMechanicProbes(): Partial<ValidationCoverage> {
+  try {
+    const attackerProfile = buildProfile('Veteran', { itemNames: ['Rifle, Light, Semi/A'] });
+    const defenderProfile = buildProfile('Average', { itemNames: ['Sword, Broad'] });
+    const reactorProfile = buildProfile('Veteran', { itemNames: ['Rifle, Light, Semi/A'] });
+    const activeProfile = buildProfile('Average', { itemNames: ['Sword, Broad'] });
+    [attackerProfile, defenderProfile, reactorProfile, activeProfile].forEach(ensureEquipment);
+
+    const assembly = buildAssembly('Probe Assembly', [
+      attackerProfile,
+      defenderProfile,
+      reactorProfile,
+      activeProfile,
+    ]);
+    const [attacker, defender, reactor, active] = assembly.characters;
+    if (!attacker || !defender || !reactor || !active) {
+      return {};
+    }
+
+    const battlefield = new Battlefield(12, 12);
+    battlefield.placeCharacter(attacker, { x: 2, y: 2 });
+    battlefield.placeCharacter(defender, { x: 8, y: 2 });
+    battlefield.placeCharacter(reactor, { x: 2, y: 6 });
+    battlefield.placeCharacter(active, { x: 6, y: 6 });
+
+    const manager = new GameManager([attacker, defender, reactor, active], battlefield);
+    const coverage: Partial<ValidationCoverage> = {};
+
+    manager.beginActivation(attacker);
+    const moved = manager.executeMove(attacker, { x: 4, y: 2 });
+    coverage.movement = moved.moved;
+    coverage.pathfinding = moved.moved;
+    manager.endActivation(attacker);
+
+    manager.beginActivation(active);
+    const waited = manager.executeWait(active, { spendAp: true });
+    coverage.wait = waited.success;
+    manager.endActivation(active);
+
+    defender.state.isHidden = true;
+    const detect = manager.attemptDetect(attacker, defender, [defender]);
+    coverage.detect = detect.success;
+
+    const attackerPos = battlefield.getCharacterPosition(attacker);
+    const defenderPos = battlefield.getCharacterPosition(defender);
+    if (attackerPos && defenderPos) {
+      coverage.los = battlefield.hasLineOfSight(attackerPos, defenderPos);
+      const alongLof = LOFOperations.getModelsAlongLOF(
+        attackerPos,
+        defenderPos,
+        battlefield.getModelBlockers([attacker.id, defender.id]).map(model => ({
+          id: model.id,
+          position: model.position,
+          baseDiameter: model.baseDiameter,
+        })),
+        { lofWidth: 1 }
+      );
+      coverage.lof = Array.isArray(alongLof);
+    }
+
+    const rangedWeapon = (attacker.profile.equipment || attacker.profile.items || []).find(i =>
+      i.classification === 'Bow' ||
+      i.classification === 'Thrown' ||
+      i.classification === 'Range' ||
+      i.classification === 'Firearm'
+    ) || (attacker.profile.equipment || attacker.profile.items || [])[0];
+    if (rangedWeapon) {
+      const ranged = manager.executeRangedAttack(attacker, defender, rangedWeapon, { orm: 4 });
+      coverage.rangedCombat = Boolean(ranged.result);
+    }
+
+    battlefield.moveCharacter(active, { x: 3, y: 6 });
+    reactor.state.isWaiting = true;
+    const reactWeapon = (reactor.profile.equipment || reactor.profile.items || [])[0];
+    if (reactWeapon) {
+      const react = manager.executeStandardReact(reactor, active, reactWeapon);
+      coverage.react = react.executed;
+    }
+
+    battlefield.moveCharacter(defender, { x: 5, y: 2 });
+    const meleeWeapon = (defender.profile.equipment || defender.profile.items || [])[0];
+    if (meleeWeapon) {
+      const close = manager.executeCloseCombatAttack(attacker, defender, meleeWeapon, {
+        isDefending: false,
+        isCharge: false,
+      });
+      coverage.closeCombat = Boolean(close.result);
+    }
+
+    return coverage;
+  } catch {
+    return {};
+  }
+}
+
+function writeValidationReport(report: ValidationAggregateReport): string {
+  const outputDir = join(process.cwd(), 'generated', 'ai-battle-reports');
+  mkdirSync(outputDir, { recursive: true });
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const outputPath = join(outputDir, `mission-11-validation-${timestamp}.json`);
+  writeFileSync(outputPath, JSON.stringify(report, null, 2), 'utf-8');
+  return outputPath;
+}
+
+async function runValidationBatch(
+  gameSize: GameSize = GameSize.VERY_LARGE,
+  densityRatio: number = 50,
+  runs: number = 3,
+  baseSeed: number = 424242
+) {
+  if (runs < 1) {
+    throw new Error('Validation runs must be >= 1.');
+  }
+
+  const winners: Record<string, number> = {};
+  const totals = createEmptyStats();
+  const runReports: ValidationAggregateReport['runReports'] = [];
+  const baseConfig: GameConfig = {
+    missionId: 'QAI_11',
+    missionName: 'Elimination',
+    gameSize,
+    battlefieldSize: GAME_SIZE_CONFIG[gameSize].battlefieldSize,
+    maxTurns: GAME_SIZE_CONFIG[gameSize].maxTurns,
+    endGameTurn: GAME_SIZE_CONFIG[gameSize].endGameTurn,
+    sides: [
+      {
+        name: 'Alpha',
+        bp: GAME_SIZE_CONFIG[gameSize].bpPerSide[1],
+        modelCount: GAME_SIZE_CONFIG[gameSize].modelsPerSide[1],
+        tacticalDoctrine: TacticalDoctrine.Operative,
+        assemblyName: 'Alpha Assembly',
+        aggression: 0.5,
+        caution: 0.5,
+      },
+      {
+        name: 'Bravo',
+        bp: GAME_SIZE_CONFIG[gameSize].bpPerSide[1],
+        modelCount: GAME_SIZE_CONFIG[gameSize].modelsPerSide[1],
+        tacticalDoctrine: TacticalDoctrine.Operative,
+        assemblyName: 'Bravo Assembly',
+        aggression: 0.5,
+        caution: 0.5,
+      },
+    ],
+    densityRatio,
+    verbose: false,
+  };
+
+  console.log(`\nRunning ${runs} validation battle(s) for Mission 11 (${gameSize})...`);
+  for (let i = 0; i < runs; i++) {
+    const seed = baseSeed + i;
+    const runner = new AIBattleRunner();
+    const report = await runner.runBattle(baseConfig, { seed, suppressOutput: true });
+    winners[report.winner] = (winners[report.winner] ?? 0) + 1;
+    accumulateStats(totals, report.stats);
+    runReports.push({
+      run: i + 1,
+      seed,
+      winner: report.winner,
+      finalCounts: report.finalCounts,
+      stats: report.stats,
+    });
+    console.log(`  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}`);
+  }
+
+  let coverage = baseCoverageFromStats(totals);
+  coverage = mergeCoverage(coverage, runMechanicProbes());
+
+  const aggregateReport: ValidationAggregateReport = {
+    missionId: 'QAI_11',
+    gameSize,
+    densityRatio,
+    runs,
+    baseSeed,
+    winners,
+    totals,
+    averages: divideStats(totals, runs),
+    coverage,
+    runReports,
+    generatedAt: new Date().toISOString(),
+  };
+
+  const outputPath = writeValidationReport(aggregateReport);
+  console.log('\nValidation aggregate:');
+  console.log(`  Winners: ${JSON.stringify(winners)}`);
+  console.log(`  Coverage: ${JSON.stringify(coverage)}`);
+  console.log(`  Report: ${outputPath}`);
+}
+
 // Main entry point
 const args = process.argv.slice(2);
 const command = args[0];
 
 if (command === '--interactive' || command === '-i') {
   runInteractive();
+} else if (command === '--validate' || command === '-v') {
+  const sizeArg = (args[1] || 'VERY_LARGE').toUpperCase();
+  const densityArg = parseInt(args[2], 10) || 50;
+  const runsArg = parseInt(args[3], 10) || 3;
+  const seedArg = parseInt(args[4], 10) || 424242;
+  const toGameSize: Record<string, GameSize> = {
+    VERY_SMALL: GameSize.VERY_SMALL,
+    SMALL: GameSize.SMALL,
+    MEDIUM: GameSize.MEDIUM,
+    LARGE: GameSize.LARGE,
+    VERY_LARGE: GameSize.VERY_LARGE,
+  };
+  const gameSize = toGameSize[sizeArg] ?? GameSize.VERY_LARGE;
+  runValidationBatch(gameSize, densityArg, runsArg, seedArg).catch((error) => {
+    console.error('\n❌ Validation failed with error:');
+    console.error(error);
+    process.exit(1);
+  });
 } else if (command === '--help' || command === '-h') {
   console.log(`
 AI Battle Setup - MEST Tactics
@@ -1152,6 +1496,7 @@ AI Battle Setup - MEST Tactics
 Usage:
   npm run ai-battle                    # Quick battle (VERY_LARGE, density 50)
   npm run ai-battle -- -i              # Interactive setup
+  npm run ai-battle -- -v SIZE DENSITY RUNS SEED
   npm run ai-battle -- SIZE DENSITY    # Quick battle with custom params
 
 Game Sizes: VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE
@@ -1159,12 +1504,19 @@ Game Sizes: VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE
 Examples:
   npm run ai-battle -- VERY_LARGE 50   # Large battle, 50% terrain
   npm run ai-battle -- SMALL 30        # Small battle, 30% terrain
+  npm run ai-battle -- -v VERY_LARGE 50 5 424242
 `);
 } else {
   // Default: run quick battle with VERY_LARGE and density 50
-  const sizeArg = (args[0] || 'VERY_LARGE').toUpperCase() as GameSize;
+  const sizeArg = (args[0] || 'VERY_LARGE').toUpperCase();
   const densityArg = parseInt(args[1], 10) || 50;
-  const validSizes = ['VERY_SMALL', 'SMALL', 'MEDIUM', 'LARGE', 'VERY_LARGE'];
-  const gameSize = validSizes.includes(sizeArg) ? sizeArg : 'VERY_LARGE';
-  runQuickBattle(gameSize as GameSize, 'QAI_11', densityArg);
+  const toGameSize: Record<string, GameSize> = {
+    VERY_SMALL: GameSize.VERY_SMALL,
+    SMALL: GameSize.SMALL,
+    MEDIUM: GameSize.MEDIUM,
+    LARGE: GameSize.LARGE,
+    VERY_LARGE: GameSize.VERY_LARGE,
+  };
+  const gameSize = toGameSize[sizeArg] ?? GameSize.VERY_LARGE;
+  runQuickBattle(gameSize, 'QAI_11', densityArg);
 }

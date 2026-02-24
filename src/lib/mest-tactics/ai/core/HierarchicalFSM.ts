@@ -383,7 +383,7 @@ export class DisengagingState extends State {
  * Reacting state - responding to interrupt
  */
 export class ReactingState extends State {
-  reactType: 'overwatch' | 'counter_strike' | 'counter_fire' | 'counter_charge' = 'overwatch';
+  reactType: 'standard_react' | 'counter_strike' | 'counter_fire' | 'counter_charge' = 'standard_react';
   target?: Character;
   complete: boolean = false;
 

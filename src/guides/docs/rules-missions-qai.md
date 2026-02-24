@@ -54,7 +54,7 @@ Use the standard rules. There can be 2 to 4 mutually Opposing Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place Control Points (POI terrain pieces) at battlefield center:
+- Place Power Nodes (POI terrain pieces) at battlefield center:
   - Small: 2 POIs placed 6 MU apart.
   - Medium: 3 POIs in triangular formation, 8 MU apart.
   - Large: 4 POIs in diamond formation, 10 MU apart.
@@ -96,7 +96,7 @@ Use the standard rules. There are just 2 Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place Target Points (SPs), each a POI terrain piece:
+- Place Sabotage Points (SPs), each a POI terrain piece:
   - Small: 1 SP placed 8 MU from Defender edge.
   - Medium: 2 SPs placed 12 MU from Defender edge, 12 MU apart.
   - Large: 3 SPs in triangular formation, 16 MU from Defender edge, 16 MU apart.
@@ -185,7 +185,7 @@ Use the standard rules. There are just 2 Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place Vital Assets (ICs), each a Small OM:
+- Place Intelligence Caches (ICs), each a Small OM:
   - Small: 3 ICs placed randomly (roll 2d6 x 2 MU from corner), min 8 MU apart.
   - Medium: 5 ICs placed randomly (roll 2d6 x 3 MU from corner), min 8 MU apart.
   - Large: 7 ICs placed randomly (roll 2d6 x 4 MU from corner), min 8 MU apart.
@@ -293,7 +293,7 @@ Use the standard rules. There are 3 mutually Opposing Sides.
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
-- Place three Control Points (PNs), each a POI terrain piece:
+- Place three Power Nodes (PNs), each a POI terrain piece:
   - Small: 8 MU apart in triangle formation centered on battlefield.
   - Medium: 12 MU apart in triangle formation centered on battlefield.
   - Large: 16 MU apart in triangle formation centered on battlefield.
@@ -397,6 +397,10 @@ Use the standard rules. There are just 2 Sides.
 - Medium: 6 to 12, Def 500 / Horde 750 BP, 36 x 36 MU, Turn 6
 - Large: 8 to 16, Def 750 / Horde 1000 BP, 48 x 48 MU, Turn 8
 
+**Archetype Restrictions**
+- Defenders must purchase **Veteran or higher** archetypes only.
+- Horde must purchase **Untrained or Militia** archetypes only.
+
 **Battlefield**
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
@@ -462,7 +466,7 @@ Use the standard rules. There are just 2 Sides.
 - Terrain.
 - Set up the Battlefield using the rules for Environments and Terrain.
 - Visibility is Twilight, Overcast: 8 MU OR for all models.
-- Place three Access Switches (POI terrain pieces) forming an equilateral triangle centered on battlefield:
+- Place three Security Switches (POI terrain pieces) forming an equilateral triangle centered on battlefield:
   - Small: 8 MU from center point.
   - Medium: 12 MU from center point.
   - Large: 16 MU from center point.

@@ -51,6 +51,9 @@ function _calculateModifiers(
     if (context.handPenaltyBase) {
         attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + context.handPenaltyBase;
     }
+    if (context.isBlindAttack) {
+        attackerPenalty[DiceType.Wild] = (attackerPenalty[DiceType.Wild] || 0) + 1;
+    }
 
     if (context.obscuringModels && context.obscuringModels > 0) {
         const thresholds = [1, 2, 5, 10];

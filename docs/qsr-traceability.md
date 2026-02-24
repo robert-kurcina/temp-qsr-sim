@@ -28,7 +28,7 @@ Legend:
 | Friendly Fire & LOF | `src/guides/docs/rules-friendly-fire-los.md` | `src/lib/mest-tactics/combat/friendly-fire.ts`, `src/lib/mest-tactics/battlefield/los/*` | Partial | LOF/LOS logic is 2D; full cover fidelity is incomplete. |
 | Damage & Morale | `src/guides/docs/rules-damage-and-morale.md` | `src/lib/mest-tactics/subroutines/damage.ts`, `src/lib/mest-tactics/status/morale.ts` | Implemented | Damage pipeline and morale tests present. |
 | KO'd Attacks | `src/guides/docs/rules-kod.md` | `src/lib/mest-tactics/status/kod-rules.ts`, `src/lib/mest-tactics/actions/combat-actions.ts` | Partial | Optional toggle default false; Puppet controller traits require UI/config wiring. |
-| Status Effects | `src/guides/docs/rules-status.md` | `src/lib/mest-tactics/status/*` | Partial | Runtime status system exists, but docs are incomplete. |
+| Status Effects | `src/guides/docs/rules-status.md` | `src/lib/mest-tactics/status/*` | Implemented | Status docs now reflect QSR condition/status model and runtime token flow. |
 | Movement & Terrain | `src/guides/docs/rules-movement.md`, `src/guides/docs/rules-terrain.md`, `src/guides/docs/rules-movement-and-terrain.md` | `src/lib/mest-tactics/battlefield/*`, `src/lib/mest-tactics/actions/move-action.ts` | Partial | Movement validation is present; terrain heights and 3D volume are TODO. |
 | Size & Base Diameter | `src/guides/docs/rules-size-base-diameter.md` | `src/lib/mest-tactics/battlefield/spatial/size-utils.ts` | Implemented | Base diameter from SIZ is implemented. |
 
@@ -36,10 +36,10 @@ Legend:
 
 | Source Topic | Rules Docs Mapping | Runtime Code Mapping | Status | Notes |
 |---|---|---|---|---|
-| Missions & Scenarios | `src/guides/docs/rules-missions.md` | `src/lib/mest-tactics/missions/*`, `src/lib/mest-tactics/mission/mission-engine.ts` | Partial | Mission flow exists, but doc includes sudden-death guidance not in QSR. |
-| Mission Keys | `src/guides/docs/rules-mission-keys.md` | `src/lib/mest-tactics/missions/mission-keys.ts`, `src/lib/mest-tactics/missions/mission-scoring.ts` | Partial | Many keys implemented; some are event-driven and need wiring to gameplay. |
-| Objective Markers (OMs) | `src/guides/docs/rules-objective-markers.md` | `src/lib/mest-tactics/mission/objective-markers.ts` | Partial | Existing OM system lacks QSR OM types and AP/Hands rules (being added). |
-| QAI Missions | `src/guides/docs/rules-missions-qai.md` | `src/lib/mest-tactics/missions/*.ts` | Implemented | Mission definitions and tests are present. |
+| Missions & Scenarios | `src/guides/docs/rules-missions.md` | `src/lib/mest-tactics/engine/GameController.ts`, `src/lib/mest-tactics/missions/mission-runtime-adapter.ts`, `src/lib/mest-tactics/missions/*-manager.ts`, `scripts/ai-battle-setup.ts` | Partial | Authoritative runtime is now `GameController.runMission()` + mission runtime adapter; seeded Mission 11 validation/aggregate reporting is available via `scripts/ai-battle-setup.ts -v`; legacy mission-engine/runtime modules remain on disk for compatibility/tests. |
+| Mission Keys | `src/guides/docs/rules-mission-keys.md` | `src/lib/mest-tactics/missions/mission-keys.ts`, `src/lib/mest-tactics/missions/mission-runtime-adapter.ts`, `src/lib/mest-tactics/missions/mission-scoring.ts` | Partial | RP->VP scoring and RP tie-break winner logic are implemented; first-blood/targeted/collection/flawless hooks are runtime-wired, but several key variants remain mission-specific/TODO. |
+| Objective Markers (OMs) | `src/guides/docs/rules-objective-markers.md` | `src/lib/mest-tactics/mission/objective-markers.ts`, `src/lib/mest-tactics/missions/mission-runtime-adapter.ts`, `src/lib/mest-tactics/engine/GameManager.ts` | Partial | QSR OM types + acquire/share/transfer/drop/destroy lifecycle APIs are wired through runtime adapter + GameManager; full hand/trait fidelity and mission-specific OM restrictions remain partial. |
+| QAI Missions | `src/guides/docs/rules-missions-qai.md` | `src/lib/mest-tactics/missions/*.ts` | Implemented | Mission definitions/tests exist; terminology aligned to source labels (Power Nodes, Sabotage Points, Intelligence Caches, Security Switches). |
 
 ## Indirect Combat Supplemental (from `docs/MEST.Tactics.Indirect.txt`)
 
@@ -50,11 +50,10 @@ Legend:
 | Roll-down / Gravity | `src/guides/docs/rules-indirect.md`, `src/guides/docs/rules-scatter.md` | `src/lib/mest-tactics/combat/scatter.ts` | Partial | Basic logic exists; terrain elevation fidelity is limited. |
 | Scrambling React | `src/guides/docs/rules-indirect.md`, `src/guides/docs/rules-advanced.md` | `src/lib/mest-tactics/actions/combat-actions.ts#executeIndirectAttack` | Partial | Scramble resolution exists when enabled; still needs react-system integration and default move rules. |
 | AoE / Frag Resolution | `src/guides/docs/rules-indirect.md` | `src/lib/mest-tactics/actions/combat-actions.ts#executeIndirectAttack` | Implemented | AoE/Frag resolution is wired in indirect attack path. |
-| Blind Attacks | `src/guides/docs/rules-indirect.md` | N/A | Missing | Spotter/Known validation and blind penalties not wired into indirect attack path. |
+| Blind Attacks | `src/guides/docs/rules-indirect.md` | `src/lib/mest-tactics/actions/combat-actions.ts#executeIndirectAttack`, `src/lib/mest-tactics/combat/indirect-ranged-combat.ts` | Partial | Spotter/Known gating and blind penalties are wired; [Scatter] blind mode uses unbiased direction + extra wild-distance. Arc/height fidelity remains pending. |
 
 ## Known Doc Mismatches to Resolve
 
 | Item | Location | Mismatch |
 |---|---|---|
-| Sudden Death | `src/guides/docs/rules-missions.md` | Sudden death is not in QSR; should be an optional toggle. |
-| Status Module Completeness | `src/guides/docs/rules-status.md` | Marked Planning; does not fully reflect QSR statuses. |
+| Indirect Arc/Height Fidelity | `src/guides/docs/rules-indirect.md` | Midpoint/arc terrain-height precision remains deferred pending terrain elevation clarification. |

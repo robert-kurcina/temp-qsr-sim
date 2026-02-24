@@ -8,11 +8,21 @@ import { buildLOSResultContext, ActionContextInput } from '../battlefield/valida
 import { TurnPhase } from '../core/types';
 import { getCharacterTraitLevel } from '../status/status-system';
 import { MissionSide } from '../mission/MissionSide';
-import { MissionFlowOptions, MissionFlowState, advanceEndGameState, computeMissionOutcome, initMissionFlow, mergeMissionDelta, recordBottleResults } from '../missions/mission-flow';
-import { MissionScoreResult, buildMissionSideStatus } from '../missions/mission-scoring';
+import {
+  MissionFlowOptions,
+  MissionFlowState,
+  advanceEndGameState,
+  computeMissionOutcome,
+  initMissionFlow,
+  mergeMissionDelta,
+  recordBottleResults,
+  recordFirstBlood,
+} from '../missions/mission-flow';
+import { MissionScoreResult } from '../missions/mission-scoring';
 import { BottleTestResult } from '../status/bottle-tests';
-import { MissionModel } from '../mission/mission-keys';
+import { MissionModel } from '../missions/mission-keys';
 import { createAIGameLoop, AIGameLoopConfig } from '../ai/executor/AIGameLoop';
+import { createMissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
 
 export interface ControllerLogEntry {
   turn: number;
@@ -39,12 +49,13 @@ export interface SkirmishConfig {
 export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
   endDieRolls?: number[];
   missionId?: string;
-  missionEngine?: Omit<MissionEngineConfig, 'missionId' | 'sides' | 'gameSize'>;
   /** Enable AI control for all sides */
   enableAI?: boolean;
   /** AI configuration (only used if enableAI is true) */
   aiConfig?: Partial<AIGameLoopConfig>;
-  /** Optional sudden death tie-breaker (not QSR default) */
+  /** Optional: initiative-card holder wins final ties (default false) */
+  initiativeCardTieBreakerOnTie?: boolean;
+  /** @deprecated use initiativeCardTieBreakerOnTie */
   suddenDeathOnTie?: boolean;
   /** Initiative Card holder for sudden death tie-breaker (optional) */
   initiativeCardHolderSideId?: string;
@@ -54,6 +65,24 @@ export interface MissionRunResult {
   log: ControllerLogEntry[];
   state: MissionFlowState;
   outcome: MissionScoreResult;
+}
+
+interface AttackResolutionState {
+  wounds: number;
+  isKOd: boolean;
+  isEliminated: boolean;
+}
+
+interface TurnExecutionHooks {
+  onTurnStart?: (turn: number, round: number) => void;
+  onAttackResolved?: (event: {
+    attacker: Character;
+    target: Character;
+    attackerSideId?: string;
+    targetSideId?: string;
+    priorTargetState: AttackResolutionState;
+    woundsAdded: number;
+  }) => void;
 }
 
 export class GameController {
@@ -92,6 +121,10 @@ export class GameController {
       return this.runMissionWithAI(sides, config);
     }
 
+    const missionRuntime = createMissionRuntimeAdapter(config.missionId, sides);
+    this.manager.setMissionRuntimeAdapter(missionRuntime);
+
+    try {
     // Initialize mission flow state
     let state = initMissionFlow(sides, config);
 
@@ -103,6 +136,23 @@ export class GameController {
 
     // Run turns with mission scoring
     this.runTurns(sideCharacters, config, bottleResults => {
+      const runtimeTurnUpdate = missionRuntime.onTurnEnd(this.manager.currentTurn, this.buildMissionModels(sides));
+      state = mergeMissionDelta(state, runtimeTurnUpdate.delta);
+      if (runtimeTurnUpdate.firstBloodSideId) {
+        state = recordFirstBlood(state, runtimeTurnUpdate.firstBloodSideId);
+      }
+      if (runtimeTurnUpdate.immediateWinnerSideId) {
+        ended = true;
+        this.log.push({
+          turn: this.manager.currentTurn,
+          round: this.manager.currentRound,
+          actor: '-',
+          action: 'EndGame',
+          detail: `mission-immediate:${runtimeTurnUpdate.immediateWinnerSideId}`,
+        });
+        return true;
+      }
+
       // Record bottle test results
       state = recordBottleResults(state, bottleResults);
 
@@ -120,23 +170,89 @@ export class GameController {
       }
       ended = advance.ended;
       return ended;
-    }, sideIds);
+    }, sideIds, {
+      onTurnStart: (turn) => {
+        const update = missionRuntime.onTurnStart(turn, this.buildMissionModels(sides));
+        state = mergeMissionDelta(state, update.delta);
+        if (update.firstBloodSideId) {
+          state = recordFirstBlood(state, update.firstBloodSideId);
+        }
+        if (update.immediateWinnerSideId) {
+          ended = true;
+          this.log.push({
+            turn: this.manager.currentTurn,
+            round: this.manager.currentRound,
+            actor: '-',
+            action: 'EndGame',
+            detail: `mission-immediate:${update.immediateWinnerSideId}`,
+          });
+        }
+      },
+      onAttackResolved: ({ attacker, target, attackerSideId, priorTargetState, woundsAdded }) => {
+        const attackUpdate = missionRuntime.recordAttack(attackerSideId, woundsAdded);
+        if (attackUpdate.firstBloodSideId) {
+          state = recordFirstBlood(state, attackUpdate.firstBloodSideId);
+        }
+
+        const becameKOd = !priorTargetState.isKOd && target.state.isKOd;
+        const becameEliminated = !priorTargetState.isEliminated && target.state.isEliminated;
+        if (!becameKOd && !becameEliminated) {
+          return;
+        }
+
+        const targetPosition = this.manager.getCharacterPosition(target);
+        if (targetPosition) {
+          missionRuntime.onCarrierDown(target.id, targetPosition, becameEliminated);
+        }
+
+        if (!becameEliminated) return;
+
+        const eliminationUpdate = missionRuntime.onModelEliminated(target.id, attacker.id);
+        state = mergeMissionDelta(state, eliminationUpdate.delta);
+        if (eliminationUpdate.firstBloodSideId) {
+          state = recordFirstBlood(state, eliminationUpdate.firstBloodSideId);
+        }
+        if (eliminationUpdate.immediateWinnerSideId) {
+          ended = true;
+          this.log.push({
+            turn: this.manager.currentTurn,
+            round: this.manager.currentRound,
+            actor: '-',
+            action: 'EndGame',
+            detail: `mission-immediate:${eliminationUpdate.immediateWinnerSideId}`,
+          });
+        }
+      },
+    });
+
+    const finalUpdate = missionRuntime.finalize(this.buildMissionModels(sides));
+    state = mergeMissionDelta(state, finalUpdate.delta);
+    if (finalUpdate.firstBloodSideId) {
+      state = recordFirstBlood(state, finalUpdate.firstBloodSideId);
+    }
 
     // Calculate final scores
     const outcome = this.calculateMissionOutcome(sides, state);
-    this.applySuddenDeathIfEnabled(
+    this.applyInitiativeCardTieBreakerIfEnabled(
       outcome,
-      config.suddenDeathOnTie ?? false,
+      config.initiativeCardTieBreakerOnTie ?? config.suddenDeathOnTie ?? false,
       config.initiativeCardHolderSideId
     );
 
     return { log: this.log, state, outcome };
+    } finally {
+      this.manager.setMissionRuntimeAdapter(null);
+    }
   }
 
   /**
    * Run a mission with AI control for all sides
    */
   private runMissionWithAI(sides: MissionSide[], config: MissionRunConfig): MissionRunResult {
+    const missionRuntime = createMissionRuntimeAdapter(config.missionId, sides);
+    this.manager.setMissionRuntimeAdapter(missionRuntime);
+
+    try {
     // Initialize mission flow state
     let state = initMissionFlow(sides, config);
     this.manager.allowKOdAttacks = config.enableKOdAttacks ?? false;
@@ -154,6 +270,13 @@ export class GameController {
       allowKOdAttacks: config.enableKOdAttacks ?? false,
       kodControllerTraitsByCharacterId: config.kodControllerTraitsByCharacterId,
       kodCoordinatorTraitsByCharacterId: config.kodCoordinatorTraitsByCharacterId,
+      onTurnEnd: (turn) => {
+        const update = missionRuntime.onTurnEnd(turn, this.buildMissionModels(sides));
+        state = mergeMissionDelta(state, update.delta);
+        if (update.firstBloodSideId) {
+          state = recordFirstBlood(state, update.firstBloodSideId);
+        }
+      },
       ...config.aiConfig,
     };
 
@@ -164,6 +287,12 @@ export class GameController {
 
     // Update mission state with AI results
     state.turn = aiResult.finalTurn;
+
+    const finalUpdate = missionRuntime.finalize(this.buildMissionModels(sides));
+    state = mergeMissionDelta(state, finalUpdate.delta);
+    if (finalUpdate.firstBloodSideId) {
+      state = recordFirstBlood(state, finalUpdate.firstBloodSideId);
+    }
 
     // Log AI game summary
     this.log.push({
@@ -186,56 +315,57 @@ export class GameController {
 
     // Calculate final scores
     const outcome = this.calculateMissionOutcome(sides, state);
-    this.applySuddenDeathIfEnabled(
+    this.applyInitiativeCardTieBreakerIfEnabled(
       outcome,
-      config.suddenDeathOnTie ?? false,
+      config.initiativeCardTieBreakerOnTie ?? config.suddenDeathOnTie ?? false,
       config.initiativeCardHolderSideId
     );
 
     return { log: this.log, state, outcome };
+    } finally {
+      this.manager.setMissionRuntimeAdapter(null);
+    }
   }
 
   /**
    * Calculate mission outcome from final game state
    */
   private calculateMissionOutcome(sides: MissionSide[], state: MissionFlowState): MissionScoreResult {
-    const sideStatus = sides.map(side => buildMissionSideStatus(side));
-    
     return computeMissionOutcome(sides, state);
   }
 
-  private applySuddenDeathIfEnabled(
+  private applyInitiativeCardTieBreakerIfEnabled(
     outcome: MissionScoreResult,
     enabled: boolean,
     initiativeCardHolderSideId?: string
   ): void {
-    if (!enabled) return;
-    const entries = Object.entries(outcome.vpBySide);
-    if (entries.length === 0) return;
-    const sorted = entries.sort((a, b) => b[1] - a[1]);
-    const topValue = sorted[0][1];
-    const tied = sorted.filter(([, vp]) => vp === topValue);
-    outcome.tie = tied.length > 1;
-    if (!outcome.tie) {
-      outcome.winnerSideId = sorted[0][0];
-      return;
-    }
-    if (initiativeCardHolderSideId) {
-      outcome.winnerSideId = initiativeCardHolderSideId;
-      outcome.suddenDeathApplied = true;
-      return;
-    }
-    if (this.manager.lastInitiativeWinnerSideId) {
-      outcome.winnerSideId = this.manager.lastInitiativeWinnerSideId;
-      outcome.suddenDeathApplied = true;
-    }
+    if (!enabled || !outcome.tie) return;
+
+    const tieCandidates = outcome.tieSideIds.length > 0
+      ? outcome.tieSideIds
+      : Object.entries(outcome.vpBySide)
+        .sort((a, b) => b[1] - a[1])
+        .filter(([, vp], index, items) => index === 0 || vp === items[0][1])
+        .map(([sideId]) => sideId);
+    if (tieCandidates.length <= 1) return;
+
+    const preferredWinner = initiativeCardHolderSideId ?? this.manager.lastInitiativeWinnerSideId ?? undefined;
+    if (!preferredWinner || !tieCandidates.includes(preferredWinner)) return;
+
+    outcome.winnerSideId = preferredWinner;
+    outcome.tie = false;
+    outcome.tieSideIds = [];
+    outcome.winnerReason = 'initiative-card';
+    outcome.tieBreakMethod = 'initiative-card';
+    outcome.suddenDeathApplied = true;
   }
 
   private runTurns(
     sides: Character[][],
     config: SkirmishConfig,
     onTurnEnd?: (bottleResults: Record<string, BottleTestResult>) => boolean,
-    sideIds: string[] = []
+    sideIds: string[] = [],
+    hooks: TurnExecutionHooks = {}
   ): void {
     const maxTurns = config.maxTurns ?? 3;
     const rng = config.rng ?? Math.random;
@@ -248,13 +378,16 @@ export class GameController {
     this.manager.phase = TurnPhase.Setup;
 
     while (this.manager.currentTurn <= maxTurns) {
-      if (this.manager.phase === TurnPhase.Setup || this.manager.phase === TurnPhase.TurnEnd) {
+      const currentPhase: TurnPhase = this.manager.phase as TurnPhase;
+      if (currentPhase === TurnPhase.Setup || currentPhase === TurnPhase.TurnEnd) {
         this.manager.advancePhase({ roller: rng, roundsPerTurn: this.manager.roundsPerTurn });
         if (this.manager.currentTurn > maxTurns) break;
         this.log.push({ turn: this.manager.currentTurn, round: this.manager.currentRound, actor: '-', action: 'TurnStart' });
+        hooks.onTurnStart?.(this.manager.currentTurn, this.manager.currentRound);
       }
 
-      if (this.manager.phase !== TurnPhase.Activation) {
+      const phaseAfterAdvance: TurnPhase = this.manager.phase as TurnPhase;
+      if (phaseAfterAdvance !== TurnPhase.Activation) {
         this.manager.advancePhase({ roller: rng, roundsPerTurn: this.manager.roundsPerTurn });
         continue;
       }
@@ -310,11 +443,19 @@ export class GameController {
         const { target, position: targetPos } = targetInfo;
         const rangedWeapon = this.findWeapon(active, 'ranged');
         const meleeWeapon = this.findWeapon(active, 'melee');
+        const attackerSideId = sideIds[activeSideIndex];
+        const targetSideIndex = sides.findIndex(side => side.some(member => member.id === target.id));
+        const targetSideId = targetSideIndex >= 0 ? sideIds[targetSideIndex] : undefined;
 
         const spatial = this.buildActionInput(active, target, activePos, targetPos);
         const los = buildLOSResultContext(spatial);
 
         if (rangedWeapon && los.hasLOS && this.manager.spendAp(active, 1)) {
+          const priorTargetState: AttackResolutionState = {
+            wounds: target.state.wounds,
+            isKOd: target.state.isKOd,
+            isEliminated: target.state.isEliminated,
+          };
           const takeCoverPosition = enableTakeCover
             ? this.findTakeCoverPosition(target, active, targetPos, spatial)
             : null;
@@ -330,7 +471,24 @@ export class GameController {
             action: 'RangedAttack',
             detail: `${active.name} -> ${target.name} hit=${result.result.hit}`,
           });
+          const damageResolution = result.result.damageResolution;
+          const woundsAdded = damageResolution
+            ? (damageResolution.woundsAdded + damageResolution.stunWoundsAdded)
+            : 0;
+          hooks.onAttackResolved?.({
+            attacker: active,
+            target,
+            attackerSideId,
+            targetSideId,
+            priorTargetState,
+            woundsAdded,
+          });
         } else if (meleeWeapon && this.isInBaseContact(active, target, activePos, targetPos) && this.manager.spendAp(active, 1)) {
+          const priorTargetState: AttackResolutionState = {
+            wounds: target.state.wounds,
+            isKOd: target.state.isKOd,
+            isEliminated: target.state.isEliminated,
+          };
           const result = this.manager.executeCloseCombatAttack(active, target, meleeWeapon, {
             ...spatial,
             moveStart: activePos,
@@ -348,6 +506,18 @@ export class GameController {
             actor: active.name,
             action: 'CloseCombat',
             detail: `${active.name} -> ${target.name} hit=${result.hit}`,
+          });
+          const damageResolution = result.damageResolution;
+          const woundsAdded = damageResolution
+            ? (damageResolution.woundsAdded + damageResolution.stunWoundsAdded)
+            : 0;
+          hooks.onAttackResolved?.({
+            attacker: active,
+            target,
+            attackerSideId,
+            targetSideId,
+            priorTargetState,
+            woundsAdded,
           });
         } else if (this.manager.spendAp(active, 1)) {
           const step = this.stepToward(activePos, targetPos);
@@ -519,7 +689,7 @@ export class GameController {
         const position = this.manager.getCharacterPosition(character);
         if (!position) continue;
         models.push({
-          id: character.id,
+          id: member.id,
           sideId: side.id,
           position,
           bp: member.profile?.totalBp ?? 0,

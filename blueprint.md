@@ -285,6 +285,27 @@ This plan supersedes ad-hoc backlog ordering and is now the execution order for 
 - Documented disposition for each currently-unused data category.
 - Core runtime and required validation scripts are type-clean (or tracked exceptions are explicitly documented).
 
+### 10.2.1 Execution Status Snapshot (2026-02-24)
+
+Implemented and validated in runtime/tests:
+- Phase A: A1, A2, A3, A4.
+- Phase B: B1, B2, B3.
+- Phase C: C1, C2, C3, C4, C5.
+- Phase D: D1, D2, D4, D5.
+- Phase E: E1, E2, E3, E4 (authoritative path is `GameController.runMission()` with mission runtime adapter + mission manager wiring + OM APIs).
+- Phase F: F2 and F3 are implemented through `scripts/ai-battle-setup.ts -v` validation mode (repeatable seeded Mission 11 runs, aggregate metrics, coverage checks, and persisted reports under `generated/ai-battle-reports/`).
+- Phase G: G2 and G3 are partially completed for active mission/game-controller/game-manager paths; global repo-wide type drift remains open.
+
+Deferred or held by approval:
+- B4: Action-type alignment/fallback mapping across all AI pathways (deferred).
+- D3: Indirect midpoint/arc terrain-height fidelity (deferred pending terrain-height clarification).
+- F1: Original non-interactive profile step was rejected and superseded by interactive CLI + validation mode in `scripts/ai-battle-setup.ts`.
+- G1: Unused `gameData` key disposition policy (deferred).
+
+Remaining high-priority technical debt after current remediation:
+- Repository-wide TypeScript drift outside active mission/AI execution paths.
+- Legacy duplicate mission modules still present on disk (retained for compatibility/tests), while runtime authority is now consolidated through `GameController`.
+
 ## 11. Mission Engine Roadmap
 
 ### Scope Summary

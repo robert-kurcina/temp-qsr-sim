@@ -1,4 +1,4 @@
-import { MissionSide } from './MissionSide';
+import { MissionSide } from '../mission/MissionSide';
 import {
   AggressionState,
   GameSize,
@@ -9,7 +9,7 @@ import {
   markBottledOut,
   resolveEndGameState,
 } from './mission-scoring';
-import { BottleTestResult } from './bottle-tests';
+import { BottleTestResult } from '../status/bottle-tests';
 import { MissionScoreDelta } from './mission-keys';
 
 export interface MissionFlowState {
@@ -18,6 +18,7 @@ export interface MissionFlowState {
   endDice: number;
   aggression?: AggressionState;
   bottledOutSideIds: string[];
+  immediateWinnerSideId?: string;
   eliminationBpBySide?: Record<string, number>;
   extraRpBySide?: Record<string, number>;
   extraVpBySide?: Record<string, number>;
@@ -30,6 +31,7 @@ export interface MissionFlowOptions {
   turn?: number;
   endDice?: number;
   aggression?: AggressionState;
+  immediateWinnerSideId?: string;
   eliminationBpBySide?: Record<string, number>;
   extraRpBySide?: Record<string, number>;
   extraVpBySide?: Record<string, number>;
@@ -57,6 +59,7 @@ export function initMissionFlow(
     endDice: options.endDice ?? 0,
     aggression: options.aggression,
     bottledOutSideIds: [],
+    immediateWinnerSideId: options.immediateWinnerSideId,
     eliminationBpBySide: options.eliminationBpBySide,
     extraRpBySide: options.extraRpBySide,
     extraVpBySide: options.extraVpBySide,
@@ -123,7 +126,7 @@ export function computeMissionOutcome(
     combinedExtraVpBySide[sideId] = (combinedExtraVpBySide[sideId] || 0) + value;
   }
 
-  return computeMissionScores({
+  const scored = computeMissionScores({
     sides: statuses,
     aggression: state.aggression,
     bottledOutSideIds: state.bottledOutSideIds,
@@ -131,6 +134,16 @@ export function computeMissionOutcome(
     extraRpBySide: state.extraRpBySide,
     extraVpBySide: combinedExtraVpBySide,
   });
+
+  if (state.immediateWinnerSideId) {
+    scored.winnerSideId = state.immediateWinnerSideId;
+    scored.tie = false;
+    scored.tieSideIds = [];
+    scored.winnerReason = 'mission-immediate';
+    scored.tieBreakMethod = 'none';
+  }
+
+  return scored;
 }
 
 export function addKeyVp(
@@ -163,5 +176,10 @@ export function mergeMissionDelta(
   for (const [sideId, rp] of Object.entries(delta.rpBySide ?? {})) {
     extraRpBySide[sideId] = (extraRpBySide[sideId] || 0) + rp;
   }
-  return { ...state, extraVpBySide, extraRpBySide };
+  return {
+    ...state,
+    extraVpBySide,
+    extraRpBySide,
+    immediateWinnerSideId: delta.immediateWinnerSideId ?? state.immediateWinnerSideId,
+  };
 }

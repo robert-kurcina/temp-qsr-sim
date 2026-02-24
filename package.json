@@ -17,6 +17,7 @@
     "cli": "tsx src/cli.ts",
     "ai-battle": "node --import tsx scripts/ai-battle-setup.ts",
     "ai-battle:very-large": "node --import tsx scripts/ai-battle-setup.ts VERY_LARGE 50",
+    "ai-battle:validate": "node --import tsx scripts/ai-battle-setup.ts -v VERY_LARGE 50 3 424242",
     "ai-battle:interactive": "node --import tsx scripts/ai-battle-setup.ts --interactive"
   },
   "dependencies": {

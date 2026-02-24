@@ -47,7 +47,10 @@ export interface MissionScoreResult {
   rpBySide: Record<string, number>;
   breakdownBySide: Record<string, MissionScoreBreakdown>;
   winnerSideId?: string;
-  tie?: boolean;
+  tie: boolean;
+  tieSideIds: string[];
+  winnerReason: 'vp' | 'rp' | 'initiative-card' | 'mission-immediate' | 'tie';
+  tieBreakMethod: 'none' | 'rp' | 'initiative-card';
   suddenDeathApplied?: boolean;
 }
 
@@ -264,6 +267,57 @@ export function computeResourcePointsVictory(rpBySide: Record<string, number>): 
   return { [topSide]: 1 };
 }
 
+export function resolveMissionWinner(
+  vpBySide: Record<string, number>,
+  rpBySide: Record<string, number>
+): Pick<MissionScoreResult, 'winnerSideId' | 'tie' | 'tieSideIds' | 'winnerReason' | 'tieBreakMethod'> {
+  const entries = Object.entries(vpBySide);
+  if (entries.length === 0) {
+    return {
+      winnerSideId: undefined,
+      tie: true,
+      tieSideIds: [],
+      winnerReason: 'tie',
+      tieBreakMethod: 'none',
+    };
+  }
+
+  const topVp = Math.max(...entries.map(([, vp]) => vp));
+  const topVpSides = entries
+    .filter(([, vp]) => vp === topVp)
+    .map(([sideId]) => sideId);
+
+  if (topVpSides.length === 1) {
+    return {
+      winnerSideId: topVpSides[0],
+      tie: false,
+      tieSideIds: [],
+      winnerReason: 'vp',
+      tieBreakMethod: 'none',
+    };
+  }
+
+  const topRp = Math.max(...topVpSides.map(sideId => rpBySide[sideId] ?? 0));
+  const topRpSides = topVpSides.filter(sideId => (rpBySide[sideId] ?? 0) === topRp);
+  if (topRpSides.length === 1) {
+    return {
+      winnerSideId: topRpSides[0],
+      tie: false,
+      tieSideIds: [],
+      winnerReason: 'rp',
+      tieBreakMethod: 'rp',
+    };
+  }
+
+  return {
+    winnerSideId: undefined,
+    tie: true,
+    tieSideIds: topRpSides,
+    winnerReason: 'tie',
+    tieBreakMethod: 'none',
+  };
+}
+
 export function computeMissionScores(input: MissionScoreInput): MissionScoreResult {
   const sides = input.sides;
   const vpBySide: Record<string, number> = {};
@@ -306,7 +360,18 @@ export function computeMissionScores(input: MissionScoreInput): MissionScoreResu
       breakdown.extraVp;
   }
 
-  return { vpBySide, rpBySide, breakdownBySide };
+  const winner = resolveMissionWinner(vpBySide, rpBySide);
+  return {
+    vpBySide,
+    rpBySide,
+    breakdownBySide,
+    winnerSideId: winner.winnerSideId,
+    tie: winner.tie,
+    tieSideIds: winner.tieSideIds,
+    winnerReason: winner.winnerReason,
+    tieBreakMethod: winner.tieBreakMethod,
+    suddenDeathApplied: false,
+  };
 }
 
 export function markBottledOut(side: MissionSideStatus): MissionSideStatus {

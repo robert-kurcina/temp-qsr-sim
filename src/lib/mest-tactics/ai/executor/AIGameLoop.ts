@@ -43,6 +43,8 @@ export interface AIGameLoopConfig {
   kodControllerTraitsByCharacterId?: Record<string, string[]>;
   /** Optional coordinator traits for Puppet KO'd rules */
   kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
+  /** Optional callback after each turn resolves */
+  onTurnEnd?: (turn: number) => void;
 }
 
 /**
@@ -57,6 +59,7 @@ export const DEFAULT_AI_GAME_LOOP_CONFIG: AIGameLoopConfig = {
   verboseLogging: false,
   maxActionsPerTurn: 3,
   allowKOdAttacks: false,
+  onTurnEnd: undefined,
 };
 
 /**
@@ -192,6 +195,7 @@ export class AIGameLoop {
       result.failedActions += turnResult.failedActions;
       result.replannedActions += turnResult.replannedActions;
       result.finalTurn = turn;
+      this.config.onTurnEnd?.(turn);
 
       // Check for game end conditions
       if (this.shouldEndGame(turn)) {
@@ -224,11 +228,19 @@ export class AIGameLoop {
       this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn });
     }
 
-    // Get activation order from GameManager
-    const activationOrder = this.manager.activationOrder;
-
-    for (const character of activationOrder) {
+    while (!this.manager.isTurnOver()) {
+      const character = this.manager.getNextToActivate();
+      if (!character) {
+        break;
+      }
       if (character.state.isEliminated || character.state.isKOd) {
+        this.manager.endActivation(character);
+        continue;
+      }
+
+      const ap = this.manager.beginActivation(character);
+      if (ap <= 0) {
+        this.manager.endActivation(character);
         continue;
       }
 
@@ -237,6 +249,8 @@ export class AIGameLoop {
       result.successfulActions += charResult.successfulActions;
       result.failedActions += charResult.failedActions;
       result.replannedActions += charResult.replannedActions;
+
+      this.manager.endActivation(character);
     }
 
     return result;
@@ -441,7 +455,7 @@ export class AIGameLoop {
     return {
       currentTurn: this.manager.currentTurn,
       currentRound: this.manager.currentRound,
-      apRemaining: this.manager.apRemaining.get(character.id) ?? 2,
+      apRemaining: this.manager.getApRemaining(character),
       allies: this.getAllyCharacters(character),
       enemies: this.getEnemyCharacters(character),
       battlefield: this.battlefield,
@@ -466,7 +480,7 @@ export class AIGameLoop {
       battlefield: this.battlefield,
       currentTurn: this.manager.currentTurn,
       currentRound: this.manager.currentRound,
-      apRemaining: this.manager.apRemaining.get(character.id) ?? 2,
+      apRemaining: this.manager.getApRemaining(character),
       knowledge: {
         knownEnemies: new Map(),
         knownTerrain: new Map(),

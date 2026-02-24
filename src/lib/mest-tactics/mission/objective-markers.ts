@@ -1,4 +1,4 @@
-import { Position } from './battlefield/Position';
+import { Position } from '../battlefield/Position';
 
 /**
  * Types of objective markers used in missions
@@ -296,8 +296,7 @@ export class ObjectiveMarkerManager {
     if (!marker) {
       return {
         success: false,
-        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
-        victoryPointsAwarded: 0,
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
         reason: 'Marker not found',
       };
     }
@@ -325,8 +324,7 @@ export class ObjectiveMarkerManager {
     if (!marker) {
       return {
         success: false,
-        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
-        victoryPointsAwarded: 0,
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
         reason: 'Marker not found',
       };
     }
@@ -335,7 +333,6 @@ export class ObjectiveMarkerManager {
       return {
         success: false,
         marker,
-        victoryPointsAwarded: 0,
         reason: `Marker cannot be picked up (state: ${marker.state})`,
       };
     }
@@ -478,8 +475,7 @@ export class ObjectiveMarkerManager {
     if (!marker) {
       return {
         success: false,
-        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
-        victoryPointsAwarded: 0,
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
         reason: 'Marker not found',
       };
     }
@@ -488,7 +484,6 @@ export class ObjectiveMarkerManager {
       return {
         success: false,
         marker,
-        victoryPointsAwarded: 0,
         reason: `Marker cannot be dropped (state: ${marker.state})`,
       };
     }
@@ -514,7 +509,7 @@ export class ObjectiveMarkerManager {
     if (!marker) {
       return {
         success: false,
-        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
         victoryPointsAwarded: 0,
         reason: 'Marker not found',
       };
@@ -545,7 +540,7 @@ export class ObjectiveMarkerManager {
     if (!marker) {
       return {
         success: false,
-        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
         victoryPointsAwarded: 0,
         reason: 'Marker not found',
       };

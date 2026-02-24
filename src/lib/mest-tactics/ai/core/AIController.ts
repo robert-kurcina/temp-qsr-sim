@@ -177,7 +177,7 @@ export interface IAIController {
   /**
    * Get the best action for a character this activation
    */
-  decideAction(context: AIContext): Promise<AIResult>;
+  decideAction(context: AIContext): AIResult;
 
   /**
    * Evaluate react opportunities

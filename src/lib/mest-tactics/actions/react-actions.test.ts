@@ -1,9 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, afterEach } from 'vitest';
 import { Battlefield } from '../battlefield/Battlefield';
 import { Character } from '../core/Character';
 import type { Profile } from '../core/Profile';
 import { buildReactOptions, sortReactOptions } from './react-actions';
 import { GameManager } from '../engine/GameManager';
+import { setRoller, resetRoller } from '../subroutines/dice-roller';
 
 const makeProfile = (name: string, ref = 2, mov = 4): Profile => ({
   name,
@@ -25,6 +26,10 @@ const makeProfile = (name: string, ref = 2, mov = 4): Profile => ({
 });
 
 describe('react-actions', () => {
+  afterEach(() => {
+    resetRoller();
+  });
+
   it('should offer an available Standard react option when wait + LOS + movement threshold met', () => {
     const battlefield = new Battlefield(12, 12);
     const active = new Character(makeProfile('Active', 2, 4));
@@ -78,5 +83,48 @@ describe('react-actions', () => {
     const options = buildReactOptions({ battlefield, active, opponents: [r2, r1], trigger: 'Move', movedDistance: 2 });
     const sorted = sortReactOptions(options);
     expect(sorted[0].actor.id).toBe(r1.id);
+  });
+
+  it('should enforce declared weapon on Standard react attacks', () => {
+    setRoller(() => Array(20).fill(6));
+    const battlefield = new Battlefield(12, 12);
+    const active = new Character(makeProfile('Active', 2, 4));
+    const reactor = new Character(makeProfile('Reactor', 4, 4));
+    const declaredWeapon = {
+      name: 'Declared Rifle',
+      classification: 'Range',
+      class: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      or: 8,
+      accuracy: '-',
+      impact: 0,
+      dmg: '4',
+      traits: ['[Reveal]'],
+    };
+    const fallbackWeapon = {
+      name: 'Fallback Rifle',
+      classification: 'Range',
+      class: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      or: 8,
+      accuracy: '-',
+      impact: 0,
+      dmg: '4',
+      traits: [],
+    };
+    reactor.profile.items = [declaredWeapon as any];
+    reactor.state.activeWeaponIndex = 0;
+    reactor.state.isWaiting = true;
+    reactor.state.isHidden = true;
+
+    const manager = new GameManager([active, reactor], battlefield);
+    battlefield.placeCharacter(active, { x: 6, y: 6 });
+    battlefield.placeCharacter(reactor, { x: 2, y: 6 });
+
+    const result = manager.executeStandardReact(reactor, active, fallbackWeapon as any, {});
+    expect(result.executed).toBe(true);
+    expect(reactor.state.isHidden).toBe(false);
   });
 });

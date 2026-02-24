@@ -6,10 +6,44 @@ import { Profile } from '../core/Profile';
 import { Battlefield } from '../battlefield/Battlefield';
 import { TerrainElement } from '../battlefield/terrain/TerrainElement';
 import { TerrainType } from '../battlefield/terrain/Terrain';
+import { MissionSide } from '../mission/MissionSide';
+import { ObjectiveMarkerKind, ObjectiveMarkerManager, createObjectiveMarker } from '../mission/objective-markers';
+import { createMissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
 
 describe('GameManager', () => {
   let characters: Character[];
   let gameManager: GameManager;
+
+  const buildMissionSide = (id: string, character: Character): MissionSide => ({
+    id,
+    name: id,
+    assemblies: [],
+    members: [
+      {
+        id: character.id,
+        character,
+        profile: character.profile,
+        assembly: { name: `${id}-assembly`, characters: [character.id], totalBP: 0, totalCharacters: 1 },
+        portrait: { sheet: 'default', column: 0, row: 0, name: `${id}-portrait` } as any,
+        status: CharacterStatus.Ready as any,
+        isVIP: false,
+        objectiveMarkers: [],
+      },
+    ],
+    totalBP: 0,
+    deploymentZones: [],
+    state: {
+      currentTurn: 1,
+      activatedModels: new Set<string>(),
+      readyModels: new Set<string>([character.id]),
+      woundsThisTurn: 0,
+      eliminatedModels: [],
+      victoryPoints: 0,
+      initiativePoints: 0,
+      missionState: {},
+    },
+    objectiveMarkerManager: new ObjectiveMarkerManager(),
+  });
 
   beforeEach(() => {
     const makeProfile = (name: string, int: number): Profile => ({
@@ -291,5 +325,57 @@ describe('GameManager', () => {
       usesOneLessHand: true,
     });
     expect(penalizedResult.success).toBe(false);
+  });
+
+  it('should acquire objective markers through mission runtime APIs and spend AP', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_11', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    runtime.addObjectiveMarker(
+      createObjectiveMarker({
+        id: 'om-1',
+        position: { x: 2, y: 2 },
+        omTypes: [ObjectiveMarkerKind.Tiny],
+      })
+    );
+
+    gameManager.placeCharacter(characters[0], { x: 2, y: 2 });
+    gameManager.beginActivation(characters[0]);
+
+    const result = gameManager.executeAcquireObjectiveMarker(characters[0], 'om-1', 'SideA');
+
+    expect(result.success).toBe(true);
+    expect(gameManager.getApRemaining(characters[0])).toBe(0);
+    expect(gameManager.getObjectiveMarkers().find(marker => marker.id === 'om-1')?.carriedBy).toBe(characters[0].id);
+  });
+
+  it('should block destroying switch markers unless mission allows it', () => {
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_11', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    runtime.addObjectiveMarker(
+      createObjectiveMarker({
+        id: 'switch-1',
+        position: { x: 1, y: 1 },
+        omTypes: [ObjectiveMarkerKind.Switch],
+      })
+    );
+
+    const blocked = gameManager.executeDestroyObjectiveMarker(characters[0], 'switch-1', { spendAp: false });
+    expect(blocked.success).toBe(false);
+    expect(blocked.reason).toContain('cannot be destroyed');
+
+    const allowed = gameManager.executeDestroyObjectiveMarker(characters[0], 'switch-1', {
+      spendAp: false,
+      allowDestroySwitch: true,
+    });
+    expect(allowed.success).toBe(true);
   });
 });

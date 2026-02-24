@@ -503,7 +503,7 @@ export class AIActionExecutor {
     }
 
     try {
-      const result = this.manager.executeDisengageAction(
+      const result = this.manager.executeDisengage(
         character,
         target,
         weapon,

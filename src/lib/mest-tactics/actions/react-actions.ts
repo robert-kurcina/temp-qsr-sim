@@ -2,6 +2,7 @@ import { Character } from '../core/Character';
 import { Battlefield } from '../battlefield/Battlefield';
 import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
+import { resolveDeclaredWeapon } from './declared-weapon';
 
 export type ReactTriggerType = 'Move' | 'NonMove';
 
@@ -15,18 +16,13 @@ export interface ReactActionDeps {
     attacker: Character,
     defender: Character,
     weapon: import('../core/Item').Item,
-    options: { attacker: import('../battlefield/spatial/spatial-rules').SpatialModel; target: import('../battlefield/spatial/spatial-rules').SpatialModel; context?: import('../utils/TestContext').TestContext }
+    options: {
+      attacker: import('../battlefield/spatial/spatial-rules').SpatialModel;
+      target: import('../battlefield/spatial/spatial-rules').SpatialModel;
+      context?: import('../utils/TestContext').TestContext;
+      weaponIndex?: number;
+    }
   ) => unknown;
-}
-
-function resolveDeclaredWeapon(reactor: Character, fallback: import('../core/Item').Item) {
-  const declaredIndex = reactor.state.activeWeaponIndex;
-  if (declaredIndex === undefined || declaredIndex === null) {
-    return fallback;
-  }
-  const equipment = reactor.profile?.equipment || reactor.profile?.items || [];
-  const declaredWeapon = equipment[declaredIndex];
-  return declaredWeapon ?? fallback;
 }
 
 export function executeStandardReact(
@@ -75,11 +71,12 @@ export function executeStandardReact(
   deps.applyInterruptCost(reactor);
   deps.reactedThisTurn.add(reactor.id);
 
-  const resolvedWeapon = resolveDeclaredWeapon(reactor, weapon);
-  const result = deps.executeRangedAttack(reactor, target, resolvedWeapon, {
+  const resolved = resolveDeclaredWeapon(reactor, weapon);
+  const result = deps.executeRangedAttack(reactor, target, resolved.weapon, {
     attacker: reactorModel,
     target: targetModel,
     context: options.context,
+    weaponIndex: resolved.weaponIndex,
   });
 
   deps.reactingNow.delete(reactor.id);

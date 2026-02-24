@@ -346,12 +346,12 @@ export class ReactEvaluator {
         Math.pow(charPos.y - opportunity.actorPosition.y, 2)
       );
 
-      // Prefer overwatch when enemy is in optimal range (4-12 MU)
+      // Prefer Standard react when enemy is in optimal range (4-12 MU)
       if (distance >= 4 && distance <= 12) {
         priority += 1.0;
       }
 
-      // Prefer overwatch when enemy is wounded
+      // Prefer Standard react when enemy is wounded
       if (opportunity.actor.state.wounds > 0) {
         priority += 0.5;
       }

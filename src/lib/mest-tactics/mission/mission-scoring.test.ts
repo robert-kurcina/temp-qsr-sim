@@ -128,5 +128,43 @@ describe('mission-scoring', () => {
     });
     expect(result.vpBySide.A).toBeGreaterThan(result.vpBySide.B);
     expect(result.rpBySide.A).toBe(10);
+    expect(result.winnerSideId).toBe('A');
+    expect(result.tie).toBe(false);
+    expect(result.winnerReason).toBe('vp');
+    expect(result.tieBreakMethod).toBe('none');
+    expect(result.tieSideIds).toEqual([]);
+  });
+
+  it('should resolve tied VP with RP tie-break after RP->VP adjustment', () => {
+    const sideA = buildMissionSideStatus(makeSide('A', 4));
+    const sideB = buildMissionSideStatus(makeSide('B', 4));
+    const result = computeMissionScores({
+      sides: [sideA, sideB],
+      extraVpBySide: { B: 1 },
+      extraRpBySide: { A: 5, B: 3 }, // A gets +1 resource VP, causing VP tie at 1-1
+    });
+    expect(result.vpBySide.A).toBe(1);
+    expect(result.vpBySide.B).toBe(1);
+    expect(result.rpBySide.A).toBe(5);
+    expect(result.rpBySide.B).toBe(3);
+    expect(result.winnerSideId).toBe('A');
+    expect(result.tie).toBe(false);
+    expect(result.winnerReason).toBe('rp');
+    expect(result.tieBreakMethod).toBe('rp');
+  });
+
+  it('should remain tied when VP and RP are both tied', () => {
+    const sideA = buildMissionSideStatus(makeSide('A', 4));
+    const sideB = buildMissionSideStatus(makeSide('B', 4));
+    const result = computeMissionScores({
+      sides: [sideA, sideB],
+      extraVpBySide: { A: 1, B: 1 },
+      extraRpBySide: { A: 2, B: 2 },
+    });
+    expect(result.tie).toBe(true);
+    expect(result.winnerSideId).toBeUndefined();
+    expect(result.winnerReason).toBe('tie');
+    expect(result.tieBreakMethod).toBe('none');
+    expect(result.tieSideIds).toEqual(['A', 'B']);
   });
 });

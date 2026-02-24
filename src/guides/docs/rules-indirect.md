@@ -157,7 +157,7 @@ Indirect Range Attacks can target battlefield locations that an attacking model 
 | **Scrambling React** | ✅ Partial | React allowed; full react-system wiring TBD |
 | **AoE Resolution** | ✅ Implemented | Base-contact target resolution |
 | **Frag Trait** | ✅ Implemented | Fragmentation damage rules |
-| **Blind Attacks** | ❌ Missing | Spotter/Known validation + blind penalties |
+| **Blind Attacks** | ✅ Partial | Spotter/Known gating, blind hit-test penalty, and blind [Scatter] unbiased distance handling wired; arc/height fidelity remains pending |
 
 ### QSR Rule References
 

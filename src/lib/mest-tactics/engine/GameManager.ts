@@ -14,6 +14,7 @@ import { d6, performTest, resolveTest } from '../subroutines/dice-roller';
 import type { ResolveTestResult, TestDice } from '../subroutines/dice-roller';
 import { MissionSide } from '../mission/MissionSide';
 import { awardInitiativePoints, spendInitiativePoints } from '../mission/MissionSide';
+import { ObjectiveMarker, MarkerTransferOptions } from '../mission/objective-markers';
 import {
   attemptHide,
   attemptDetect,
@@ -36,6 +37,7 @@ import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWa
 import { getActiveToggleOptions, getBonusActionOptions, getPassiveOptions, getReactOptions, getReactOptionsSorted } from '../actions/option-builders';
 import { executeMoveAction } from '../actions/move-action';
 import { createGroupAction } from '../actions/group-actions';
+import { resolveDeclaredWeapon } from '../actions/declared-weapon';
 import { hasItemTrait, hasItemTraitOnWeapon } from '../traits/item-traits';
 import {
   executeCloseCombatAttack as runCloseCombatAttack,
@@ -70,6 +72,7 @@ import {
   rollEndGameTrigger,
   DEFAULT_END_GAME_TRIGGER_TURN,
 } from './end-game-trigger';
+import { MissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -132,6 +135,7 @@ export class GameManager {
   private reactedThisTurn: Set<string> = new Set();
   private reactingNow: Set<string> = new Set();
   private endGameTriggerState: EndGameTriggerState;
+  private missionRuntimeAdapter: MissionRuntimeAdapter | null = null;
 
   constructor(characters: Character[], battlefield: Battlefield | null = null, endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN) {
     this.characters = characters;
@@ -359,6 +363,18 @@ export class GameManager {
   public moveCharacter(character: Character, position: Position): boolean {
     if (!this.battlefield) return false;
     return this.battlefield.moveCharacter(character, position);
+  }
+
+  public setMissionRuntimeAdapter(adapter: MissionRuntimeAdapter | null): void {
+    this.missionRuntimeAdapter = adapter;
+  }
+
+  public getMissionRuntimeAdapter(): MissionRuntimeAdapter | null {
+    return this.missionRuntimeAdapter;
+  }
+
+  public getObjectiveMarkers(): ObjectiveMarker[] {
+    return this.missionRuntimeAdapter?.getObjectiveMarkers() ?? [];
   }
 
   public getCharacterPosition(character: Character): Position | undefined {
@@ -704,6 +720,112 @@ export class GameManager {
     return executeFiddleAction(this.simpleActionDeps(), actor, options);
   }
 
+  public executeAcquireObjectiveMarker(
+    actor: Character,
+    markerId: string,
+    sideId: string,
+    options: {
+      spendAp?: boolean;
+      isFree?: boolean;
+      opposingInBaseContact?: boolean;
+      isAttentive?: boolean;
+      isOrdered?: boolean;
+      isAnimal?: boolean;
+      keyIdsInHand?: string[];
+    } = {}
+  ) {
+    if (!this.missionRuntimeAdapter) {
+      return { success: false, reason: 'Mission runtime not configured' };
+    }
+
+    const apCost = this.missionRuntimeAdapter.getObjectiveMarkerAcquireApCost(markerId);
+    const spendAp = options.spendAp ?? true;
+    if (spendAp && apCost > 0 && this.getApRemaining(actor) < apCost) {
+      return { success: false, reason: `Insufficient AP (${apCost} required)` };
+    }
+
+    const result = this.missionRuntimeAdapter.acquireObjectiveMarker(markerId, actor.id, sideId, options);
+    if (!result.success) return result;
+    if (spendAp && result.apCost > 0) {
+      this.spendAp(actor, result.apCost);
+    }
+    return result;
+  }
+
+  public executeShareIdeaObjectiveMarker(
+    actor: Character,
+    markerId: string,
+    toModelId: string,
+    sideId: string,
+    options: { spendAp?: boolean; hindrance?: number } = {}
+  ) {
+    if (!this.missionRuntimeAdapter) {
+      return { success: false, reason: 'Mission runtime not configured', apCost: 0 };
+    }
+
+    const hindrance = options.hindrance ?? 0;
+    const expectedCost = 1 + Math.max(0, hindrance);
+    const spendAp = options.spendAp ?? true;
+    if (spendAp && this.getApRemaining(actor) < expectedCost) {
+      return { success: false, reason: `Insufficient AP (${expectedCost} required)`, apCost: expectedCost };
+    }
+
+    const result = this.missionRuntimeAdapter.shareIdeaObjectiveMarker(markerId, actor.id, toModelId, sideId, hindrance);
+    if (!result.success) return result;
+    if (spendAp && result.apCost > 0) {
+      this.spendAp(actor, result.apCost);
+    }
+    return result;
+  }
+
+  public executeTransferObjectiveMarker(
+    actor: Character,
+    markerId: string,
+    toModelId: string,
+    sideId: string,
+    options: MarkerTransferOptions & { spendAp?: boolean } = {}
+  ) {
+    if (!this.missionRuntimeAdapter) {
+      return { success: false, reason: 'Mission runtime not configured', apCost: 0 };
+    }
+
+    const expectedCost = options.isStunnedOrDisorderedOrDistracted ? 2 : 1;
+    const spendAp = options.spendAp ?? true;
+    if (spendAp && this.getApRemaining(actor) < expectedCost) {
+      return { success: false, reason: `Insufficient AP (${expectedCost} required)`, apCost: expectedCost };
+    }
+
+    const transfer = this.missionRuntimeAdapter.transferObjectiveMarker(markerId, toModelId, sideId, options);
+    if (!transfer.success) return transfer;
+    if (spendAp && transfer.apCost > 0) {
+      this.spendAp(actor, transfer.apCost);
+    }
+    return transfer;
+  }
+
+  public executeDestroyObjectiveMarker(
+    actor: Character,
+    markerId: string,
+    options: { spendAp?: boolean; allowDestroySwitch?: boolean } = {}
+  ) {
+    if (!this.missionRuntimeAdapter) {
+      return { success: false, reason: 'Mission runtime not configured', apCost: 0 };
+    }
+
+    const expectedCost = 1;
+    const spendAp = options.spendAp ?? true;
+    if (spendAp && this.getApRemaining(actor) < expectedCost) {
+      return { success: false, reason: `Insufficient AP (${expectedCost} required)`, apCost: expectedCost };
+    }
+
+    const result = this.missionRuntimeAdapter.destroyObjectiveMarker(markerId, options);
+    if (!result.success) return result;
+    if (spendAp && result.apCost > 0) {
+      this.spendAp(actor, result.apCost);
+    }
+    return result;
+  }
+
   public executeWait(actor: Character, options: { spendAp?: boolean; maintain?: boolean } = {}) {
     return executeWaitAction(this.simpleActionDeps(), actor, options);
   }
@@ -752,7 +874,15 @@ export class GameManager {
     attacker: Character,
     weapon: Item,
     orm: number,
-    options: Partial<ActionContextInput> & { context?: TestContext; targetCharacter?: Character } = {}
+    options: Partial<ActionContextInput> & {
+      context?: TestContext;
+      targetCharacter?: Character;
+      knownAtInitiativeStart?: boolean;
+      spotters?: Character[];
+      spotterCohesionRangeMu?: number;
+      blindScatterDistanceRoll?: number;
+      blindScatterDistanceRng?: () => number;
+    } = {}
   ) {
     return runIndirectAttack(this.combatActionDeps(), attacker, weapon, orm, {
       allowKOdAttacks: this.allowKOdAttacks,
@@ -814,12 +944,8 @@ export class GameManager {
     hitTestResult: ResolveTestResult,
     options: { context?: TestContext; requireTrait?: boolean; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ): CounterStrikeResult {
-    const declaredIndex = defender.state.activeWeaponIndex;
-    if (declaredIndex !== undefined && declaredIndex !== null) {
-      const equipment = defender.profile?.equipment || defender.profile?.items || [];
-      weapon = equipment[declaredIndex] ?? weapon;
-    }
-    return runCounterStrike(this.counterActionDeps(), defender, attacker, weapon, hitTestResult, options);
+    const resolved = resolveDeclaredWeapon(defender, weapon);
+    return runCounterStrike(this.counterActionDeps(), defender, attacker, resolved.weapon, hitTestResult, options);
   }
 
   public executeCounterFire(
@@ -829,12 +955,8 @@ export class GameManager {
     hitTestResult: ResolveTestResult,
     options: { context?: TestContext; visibilityOrMu?: number; moraleAllies?: Character[]; moraleOptions?: MoraleOptions } = {}
   ): CounterFireResult {
-    const declaredIndex = defender.state.activeWeaponIndex;
-    if (declaredIndex !== undefined && declaredIndex !== null) {
-      const equipment = defender.profile?.equipment || defender.profile?.items || [];
-      weapon = equipment[declaredIndex] ?? weapon;
-    }
-    return runCounterFire(this.counterActionDeps(), defender, attacker, weapon, hitTestResult, options);
+    const resolved = resolveDeclaredWeapon(defender, weapon);
+    return runCounterFire(this.counterActionDeps(), defender, attacker, resolved.weapon, hitTestResult, options);
   }
 
   public executeCounterAction(

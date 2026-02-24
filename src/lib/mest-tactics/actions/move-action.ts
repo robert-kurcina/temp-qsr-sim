@@ -4,6 +4,7 @@ import { Item } from '../core/Item';
 import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { getSprintLevel, getLeapAgilityBonus, checkLeapUsage, getSurefootedTerrainBonus, TerrainType } from '../traits/combat-traits';
+import { resolveDeclaredWeapon } from './declared-weapon';
 
 export interface MoveActionDeps {
   getCharacterPosition: (character: Character) => Position | undefined;
@@ -99,16 +100,12 @@ export function executeMoveAction(
         { id: opponent.id, position: opponentPos, baseDiameter: opponentBase, siz: opponent.finalAttributes.siz }
       );
       if (wasEngaged && !nowEngaged) {
-        const declaredIndex = opponent.state.activeWeaponIndex;
-        const equipment = opponent.profile?.equipment || opponent.profile?.items || [];
-        const declaredWeapon = declaredIndex !== undefined && declaredIndex !== null ? equipment[declaredIndex] : undefined;
-        const weapon = declaredWeapon ?? options.opportunityWeapon;
-        const weaponIndex = declaredWeapon ? declaredIndex : undefined;
-        const result = deps.executeCloseCombatAttack(opponent, mover, weapon, {
+        const resolved = resolveDeclaredWeapon(opponent, options.opportunityWeapon);
+        const result = deps.executeCloseCombatAttack(opponent, mover, resolved.weapon, {
           attacker: { id: opponent.id, position: opponentPos, baseDiameter: opponentBase, siz: opponent.finalAttributes.siz },
           target: { id: mover.id, position: destination, baseDiameter: moverBase, siz: mover.finalAttributes.siz },
           allowBonusActions: true,
-          weaponIndex,
+          weaponIndex: resolved.weaponIndex,
         });
         opportunity = { attacker: opponent, result };
         break;

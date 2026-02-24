@@ -203,7 +203,7 @@ export class CharacterAI implements IAIController {
    * 3. Utility Scoring - tactical evaluation
    * 4. Behavior Tree - fallback decision making
    */
-  async decideAction(context: AIContext): Promise<AIResult> {
+  decideAction(context: AIContext): AIResult {
     // Update knowledge
     const knowledge = this.knowledgeBase.updateKnowledge(
       context.character,
