@@ -10,7 +10,7 @@
 import { Character } from '../core/Character';
 import { Battlefield } from '../battlefield/Battlefield';
 import { GameManager } from '../engine/GameManager';
-import { TurnPhase } from '../core';
+import { TurnPhase } from '../../core/types';
 import { MissionSide } from '../mission/MissionSide';
 import { createAIExecutor, AIActionExecutor, AIExecutionContext } from './AIActionExecutor';
 import { createSideAI, SideAI } from '../strategic/SideAI';
@@ -92,6 +92,9 @@ export class AIGameLoop {
   private sideAIs: Map<string, SideAI> = new Map();
   private assemblyAIs: Map<string, AssemblyAI> = new Map();
   private characterAIs: Map<string, CharacterAI> = new Map();
+  private sideIds: string[] = [];
+  private characterSideById: Map<string, string> = new Map();
+  private characterAssemblyById: Map<string, string> = new Map();
 
   constructor(
     manager: GameManager,
@@ -118,6 +121,17 @@ export class AIGameLoop {
    * Initialize all AI layers
    */
   private initializeAILayers(sides: MissionSide[]): void {
+    this.sideIds = sides.map(side => side.id);
+    this.characterSideById.clear();
+    this.characterAssemblyById.clear();
+
+    for (const side of sides) {
+      for (const member of side.members) {
+        this.characterSideById.set(member.character.id, side.id);
+        this.characterAssemblyById.set(member.character.id, member.assembly.name);
+      }
+    }
+
     for (let i = 0; i < sides.length; i++) {
       const side = sides[i];
       const enemySide = sides[(i + 1) % sides.length];
@@ -438,6 +452,13 @@ export class AIGameLoop {
    * Create AI context for CharacterAI
    */
   private createAIContext(character: Character): any {
+    const aiConfig = this.characterAIs.get(character.id)?.getConfig() ?? {
+      aggression: 0.5,
+      caution: 0.5,
+      accuracyModifier: 0,
+      godMode: true,
+    };
+
     return {
       character,
       allies: this.getAllyCharacters(character),
@@ -454,12 +475,7 @@ export class AIGameLoop {
         safeZones: [],
         lastUpdated: this.manager.currentTurn,
       },
-      config: {
-        aggression: 0.5,
-        caution: 0.5,
-        accuracyModifier: 0,
-        godMode: true,
-      },
+      config: aiConfig,
     };
   }
 
@@ -467,29 +483,32 @@ export class AIGameLoop {
    * Find character's side ID
    */
   private findCharacterSide(character: Character): string | null {
-    for (const [sideId, sideAI] of this.sideAIs.entries()) {
-      // This is simplified - in real implementation, SideAI would track members
-      return sideId;
-    }
-    return null;
+    return this.characterSideById.get(character.id) ?? null;
   }
 
   /**
    * Find character's assembly ID
    */
   private findCharacterAssembly(character: Character): string | null {
-    for (const [assemblyId] of this.assemblyAIs.entries()) {
-      return assemblyId;
-    }
-    return null;
+    return this.characterAssemblyById.get(character.id) ?? null;
   }
 
   /**
    * Get ally characters
    */
   private getAllyCharacters(character: Character): Character[] {
+    const sideId = this.findCharacterSide(character);
+    if (!sideId) {
+      return this.manager.characters.filter(
+        c => c !== character && !c.state.isEliminated && !c.state.isKOd
+      );
+    }
     return this.manager.characters.filter(
-      c => c !== character && !c.state.isEliminated && !c.state.isKOd
+      c =>
+        c !== character &&
+        this.findCharacterSide(c) === sideId &&
+        !c.state.isEliminated &&
+        !c.state.isKOd
     );
   }
 
@@ -497,17 +516,20 @@ export class AIGameLoop {
    * Get enemy characters
    */
   private getEnemyCharacters(character: Character): Character[] {
-    // Simplified: all other characters are enemies
+    const ownSideId = this.findCharacterSide(character);
     return this.manager.characters.filter(
-      c => c !== character && isAttackableEnemy(character, c, {
-        aggression: 0,
-        caution: 0,
-        accuracyModifier: 0,
-        godMode: true,
-        allowKOdAttacks: this.config.allowKOdAttacks ?? false,
-        kodControllerTraitsByCharacterId: this.config.kodControllerTraitsByCharacterId,
-        kodCoordinatorTraitsByCharacterId: this.config.kodCoordinatorTraitsByCharacterId,
-      })
+      c =>
+        c !== character &&
+        (ownSideId === null || this.findCharacterSide(c) !== ownSideId) &&
+        isAttackableEnemy(character, c, {
+          aggression: 0,
+          caution: 0,
+          accuracyModifier: 0,
+          godMode: true,
+          allowKOdAttacks: this.config.allowKOdAttacks ?? false,
+          kodControllerTraitsByCharacterId: this.config.kodControllerTraitsByCharacterId,
+          kodCoordinatorTraitsByCharacterId: this.config.kodCoordinatorTraitsByCharacterId,
+        })
     );
   }
 
@@ -543,7 +565,7 @@ export class AIGameLoop {
     // Check if only one side has active models
     const activeBySide = new Map<string, number>();
     
-    for (const [sideId] of this.sideAIs.entries()) {
+    for (const sideId of this.sideIds) {
       activeBySide.set(sideId, 0);
     }
 

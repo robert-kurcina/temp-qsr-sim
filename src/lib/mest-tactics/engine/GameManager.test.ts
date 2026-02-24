@@ -5,6 +5,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { Profile } from '../core/Profile';
 import { Battlefield } from '../battlefield/Battlefield';
 import { TerrainElement } from '../battlefield/terrain/TerrainElement';
+import { TerrainType } from '../battlefield/terrain/Terrain';
 
 describe('GameManager', () => {
   let characters: Character[];
@@ -239,6 +240,33 @@ describe('GameManager', () => {
     expect(gameManager.getAttackApCost(attacker, weapon as any)).toBe(2);
     gameManager.moveCharacter(defender, { x: 5, y: 0 });
     expect(gameManager.getAttackApCost(attacker, weapon as any)).toBe(1);
+  });
+
+  it('should apply terrain movement cost when executing move', () => {
+    const battlefield = new Battlefield(12, 12);
+    battlefield.addTerrain({
+      id: 'rough-square',
+      type: TerrainType.Rough,
+      vertices: [
+        { x: 2, y: 0 },
+        { x: 4, y: 0 },
+        { x: 4, y: 2 },
+        { x: 2, y: 2 },
+      ],
+    });
+    gameManager.setBattlefield(battlefield);
+
+    const mover = characters[0];
+    mover.finalAttributes.mov = 2;
+    gameManager.placeCharacter(mover, { x: 0, y: 1 });
+
+    const blocked = gameManager.executeMove(mover, { x: 3, y: 1 });
+    expect(blocked.moved).toBe(false);
+    expect(blocked.reason).toContain('out of range');
+
+    mover.finalAttributes.mov = 6;
+    const allowed = gameManager.executeMove(mover, { x: 3, y: 1 });
+    expect(allowed.moved).toBe(true);
   });
 
   it('should penalize fiddling when using one less hand', () => {

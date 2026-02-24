@@ -8,6 +8,7 @@ import { TestContext } from '../utils/TestContext';
 import { ActionContextInput, CloseCombatContextInput } from '../battlefield/action-context';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { SpatialRules, type SpatialModel } from '../battlefield/spatial/spatial-rules';
+import { TerrainType as BattlefieldTerrainType } from '../battlefield/terrain/Terrain';
 import { LOSOperations } from '../battlefield/LOSOperations';
 import { d6, performTest, resolveTest } from '../subroutines/dice-roller';
 import type { ResolveTestResult, TestDice } from '../subroutines/dice-roller';
@@ -657,6 +658,13 @@ export class GameManager {
       {
         getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
         moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
+        getTerrainAt: (position: Position) => {
+          const terrain = this.battlefield!.getTerrainAt(position).type;
+          if (terrain === BattlefieldTerrainType.Obstacle) {
+            return 'Impassable';
+          }
+          return terrain as 'Clear' | 'Rough' | 'Difficult' | 'Impassable';
+        },
         executeCloseCombatAttack: (attacker: Character, defender: Character, weapon: Item, actionOptions) =>
           this.executeCloseCombatAttack(attacker, defender, weapon, actionOptions as any),
       },

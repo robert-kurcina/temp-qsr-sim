@@ -12,8 +12,6 @@ import { Item } from '../core/Item';
 import { GameManager } from '../engine/GameManager';
 import { ActionDecision, ActionType } from '../core/AIController';
 import { validateAction, ActionValidation } from '../tactical/GOAP';
-import { executeMoveAction } from '../../actions/move-action';
-import { executeRallyAction, executeReviveAction, executeWaitAction } from '../../actions/simple-actions';
 import { attemptHide, attemptDetect } from '../../status/concealment';
 
 /**
@@ -328,25 +326,11 @@ export class AIActionExecutor {
 
     // Find a weapon for opportunity attack check
     const weapon = this.findMeleeWeapon(character);
-
-    const result = executeMoveAction(
-      {
-        getCharacterPosition: (c: Character) => this.manager.battlefield?.getCharacterPosition(c),
-        moveCharacter: (c: Character, p: Position) => {
-          this.manager.battlefield?.placeCharacter(c, p);
-          return true;
-        },
-        getTerrainAt: () => 'Clear', // Simplified
-        executeCloseCombatAttack: () => ({}),
-      },
-      character,
-      position,
-      {
-        opponents: context.enemies,
-        allowOpportunityAttack: true,
-        opportunityWeapon: weapon ?? undefined,
-      }
-    );
+    const result = this.manager.executeMove(character, position, {
+      opponents: context.enemies,
+      allowOpportunityAttack: true,
+      opportunityWeapon: weapon ?? undefined,
+    });
 
     if (result.moved) {
       return this.createSuccess(
@@ -553,18 +537,12 @@ export class AIActionExecutor {
     }
 
     try {
-      const result = executeRallyAction(
-        {
-          getCharacterPosition: (c: Character) => this.manager.battlefield?.getCharacterPosition(c),
-        },
-        character,
-        target
-      );
+      const result = this.manager.executeRally(character, target);
 
       return this.createSuccess(
         { type: 'rally', target, reason: 'Rally ally', priority: 3, requiresAP: true },
         character,
-        result.pass ? 'Rally successful' : 'Rally failed'
+        result.success ? 'Rally successful' : 'Rally failed'
       );
     } catch (error) {
       return this.createFailure(
@@ -588,18 +566,12 @@ export class AIActionExecutor {
     }
 
     try {
-      const result = executeReviveAction(
-        {
-          getCharacterPosition: (c: Character) => this.manager.battlefield?.getCharacterPosition(c),
-        },
-        character,
-        target
-      );
+      const result = this.manager.executeRevive(character, target);
 
       return this.createSuccess(
         { type: 'revive', target, reason: 'Revive ally', priority: 3, requiresAP: true },
         character,
-        result.pass ? 'Revive successful' : 'Revive failed'
+        result.success ? 'Revive successful' : 'Revive failed'
       );
     } catch (error) {
       return this.createFailure(
@@ -615,7 +587,14 @@ export class AIActionExecutor {
    */
   private executeWait(character: Character): ExecutionResult {
     try {
-      executeWaitAction(character, this.manager);
+      const result = this.manager.executeWait(character, { spendAp: true });
+      if (!result.success) {
+        return this.createFailure(
+          { type: 'wait', reason: 'Wait', priority: 2, requiresAP: true },
+          character,
+          result.reason ?? 'Wait failed'
+        );
+      }
       return this.createSuccess(
         { type: 'wait', reason: 'Wait for opportunity', priority: 2, requiresAP: true },
         character,
@@ -640,18 +619,23 @@ export class AIActionExecutor {
 
     try {
       const result = attemptHide(
-        character,
         this.manager.battlefield,
-        {
-          isConcentrating: false,
-          isFocusing: false,
-        }
+        character,
+        context.enemies,
+        (amount: number) => this.manager.spendAp(character, amount),
       );
+      if (!result.canHide) {
+        return this.createFailure(
+          { type: 'hide', reason: 'Hide', priority: 2, requiresAP: true },
+          character,
+          result.reason ?? 'Hide failed'
+        );
+      }
 
       return this.createSuccess(
         { type: 'hide', reason: 'Hide from enemies', priority: 2, requiresAP: true },
         character,
-        result.hidden ? 'Hide successful' : 'Hide failed'
+        'Hide successful'
       );
     } catch (error) {
       return this.createFailure(
@@ -675,20 +659,31 @@ export class AIActionExecutor {
     }
 
     try {
+      if (!this.manager.spendAp(character, 1)) {
+        return this.createFailure(
+          { type: 'detect', target, reason: 'Detect', priority: 2, requiresAP: true },
+          character,
+          'Not enough AP'
+        );
+      }
       const result = attemptDetect(
+        this.manager.battlefield,
         character,
         target,
-        this.manager.battlefield,
-        {
-          isConcentrating: false,
-          isFocusing: false,
-        }
+        context.enemies,
       );
+      if (!result.success) {
+        return this.createFailure(
+          { type: 'detect', target, reason: 'Detect', priority: 2, requiresAP: true },
+          character,
+          result.reason ?? 'Detect failed'
+        );
+      }
 
       return this.createSuccess(
         { type: 'detect', target, reason: 'Detect hidden enemy', priority: 2, requiresAP: true },
         character,
-        result.detected ? 'Detect successful' : 'Detect failed'
+        'Detect successful'
       );
     } catch (error) {
       return this.createFailure(

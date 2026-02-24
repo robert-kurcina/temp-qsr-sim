@@ -35,6 +35,39 @@ function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Positio
     return false;
 }
 
+function pointOnSegment(point: Position, a: Position, b: Position): boolean {
+  const cross = (point.y - a.y) * (b.x - a.x) - (point.x - a.x) * (b.y - a.y);
+  if (Math.abs(cross) > 1e-9) return false;
+  const dot = (point.x - a.x) * (b.x - a.x) + (point.y - a.y) * (b.y - a.y);
+  if (dot < 0) return false;
+  const squaredLength = (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
+  return dot <= squaredLength;
+}
+
+function pointInPolygon(point: Position, polygon: Position[]): boolean {
+  if (polygon.length < 3) return false;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    if (pointOnSegment(point, polygon[j], polygon[i])) {
+      return true;
+    }
+  }
+
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].x;
+    const yi = polygon[i].y;
+    const xj = polygon[j].x;
+    const yj = polygon[j].y;
+    const intersects = ((yi > point.y) !== (yj > point.y))
+      && (point.x < (xj - xi) * (point.y - yi) / ((yj - yi) || Number.EPSILON) + xi);
+    if (intersects) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
 export class Battlefield {
   public grid: Grid;
   public terrain: TerrainFeature[] = [];
@@ -168,6 +201,29 @@ export class Battlefield {
 
   getConstrainedNavMesh(): ConstrainedNavMesh | null {
     return this.constrainedNavMesh;
+  }
+
+  getTerrainAt(position: Position): TerrainFeature {
+    const containing = this.terrain.filter(feature => pointInPolygon(position, feature.vertices));
+    if (containing.length === 0) {
+      return {
+        id: 'clear',
+        type: TerrainType.Clear,
+        vertices: [],
+      };
+    }
+
+    const priority: Record<TerrainType, number> = {
+      [TerrainType.Clear]: 0,
+      [TerrainType.Rough]: 1,
+      [TerrainType.Difficult]: 2,
+      [TerrainType.Impassable]: 3,
+      [TerrainType.Obstacle]: 4,
+    };
+
+    return containing.reduce((best, current) =>
+      (priority[current.type] > priority[best.type] ? current : best)
+    );
   }
 }
 

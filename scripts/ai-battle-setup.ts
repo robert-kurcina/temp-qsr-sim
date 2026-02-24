@@ -16,10 +16,13 @@ import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
 import { Position } from '../src/lib/mest-tactics/battlefield/Position';
+import { SpatialRules } from '../src/lib/mest-tactics/battlefield/spatial/spatial-rules';
+import { getBaseDiameterFromSiz } from '../src/lib/mest-tactics/battlefield/spatial/size-utils';
 import { buildAssembly, buildProfile, GameSize } from '../src/lib/mest-tactics/mission/assembly-builder';
 import { TacticalDoctrine, TACTICAL_DOCTRINE_INFO, getDoctrinesByEngagement } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../src/lib/mest-tactics/ai/core/CharacterAI';
 import { AIContext, AIControllerConfig } from '../src/lib/mest-tactics/ai/core/AIController';
+import { attemptHide, attemptDetect } from '../src/lib/mest-tactics/status/concealment';
 
 // ============================================================================
 // Configuration
@@ -53,6 +56,10 @@ interface BattleStats {
   closeCombats: number;
   rangedCombats: number;
   disengages: number;
+  waits: number;
+  detects: number;
+  hides: number;
+  reacts: number;
   eliminations: number;
   kos: number;
   turnsCompleted: number;
@@ -304,6 +311,10 @@ class AIBattleRunner {
     closeCombats: 0,
     rangedCombats: 0,
     disengages: 0,
+    waits: 0,
+    detects: 0,
+    hides: 0,
+    reacts: 0,
     eliminations: 0,
     kos: 0,
     turnsCompleted: 0,
@@ -440,10 +451,11 @@ class AIBattleRunner {
 
   private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number }> {
     const compositions = [
-      { archetypeName: 'Average', weight: 5, items: ['Sword, Broad', 'Shield, Medium'] },
-      { archetypeName: 'Militia', weight: 4, items: ['Spear, Medium', 'Shield, Medium'] },
-      { archetypeName: 'Veteran', weight: 2, items: ['Sword, Broad', 'Shield, Medium'] },
-      { archetypeName: 'Elite', weight: 1, items: ['Sword, Broad', 'Shield, Medium', 'Daggers'] },
+      { archetypeName: 'Average', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },
+      { archetypeName: 'Militia', weight: 2, items: ['Spear, Medium', 'Shield, Medium'] },
+      { archetypeName: 'Veteran', weight: 3, items: ['Rifle, Light, Semi/A'] },
+      { archetypeName: 'Veteran', weight: 2, items: ['Pistol, Medium, Auto', 'Sword, Broad'] },
+      { archetypeName: 'Elite', weight: 1, items: ['Rifle, Light, Semi/A', 'Sword, Broad'] },
     ];
 
     const profiles = [];
@@ -488,21 +500,23 @@ class AIBattleRunner {
 
   private deployModels(assembly: { characters: Character[] }, battlefield: Battlefield, sideIndex: number, size: number) {
     const edgeMargin = 3;
-    const modelsPerRow = Math.ceil(Math.sqrt(assembly.characters.length));
-    const spacing = Math.min(8, (size - edgeMargin * 2) / modelsPerRow);
+    const deploymentDepth = Math.max(6, Math.floor(size * 0.22));
+    const count = assembly.characters.length;
+    const cols = Math.max(1, Math.ceil(Math.sqrt(count * (size / deploymentDepth))));
+    const rows = Math.max(1, Math.ceil(count / cols));
+    const xSpacing = cols > 1 ? (size - edgeMargin * 2 - 1) / (cols - 1) : 0;
+    const ySpacing = rows > 1 ? (deploymentDepth - 1) / (rows - 1) : 0;
+    const sideStartY = sideIndex === 0
+      ? edgeMargin
+      : Math.max(edgeMargin, size - edgeMargin - deploymentDepth);
 
     assembly.characters.forEach((char: Character, i: number) => {
       let x, y;
-      const row = Math.floor(i / modelsPerRow);
-      const col = i % modelsPerRow;
+      const row = Math.floor(i / cols);
+      const col = i % cols;
 
-      if (sideIndex === 0) {
-        x = edgeMargin + col * spacing;
-        y = edgeMargin + row * spacing;
-      } else {
-        x = edgeMargin + col * spacing;
-        y = size - edgeMargin - 1 - row * spacing;
-      }
+      x = edgeMargin + col * xSpacing;
+      y = sideStartY + row * ySpacing;
       x = Math.max(0, Math.min(size - 1, x));
       y = Math.max(0, Math.min(size - 1, y));
       battlefield.placeCharacter(char, { x, y });
@@ -540,9 +554,33 @@ class AIBattleRunner {
       const aiResult = await aiController.decideAction(context);
       const decision = aiResult.decision;
       
-      if (!decision || decision.type === 'none' || decision.type === 'hold') {
+      if (!decision || decision.type === 'none') {
         if (config.verbose && decision?.reason) {
           console.log(`  ${character.profile.name} (${config.sides[sideIndex].name}): hold - ${decision.reason}`);
+        }
+        gameManager.endActivation(character);
+        return;
+      }
+
+      if (decision.type === 'hold') {
+        const wait = gameManager.executeWait(character, { spendAp: true });
+        if (wait.success) {
+          this.stats.totalActions++;
+          this.stats.waits++;
+          this.log.push({
+            turn,
+            round: 1,
+            side: config.sides[sideIndex].name,
+            model: character.profile.name,
+            action: 'wait',
+            detail: decision.reason ?? 'hold converted to wait',
+            result: 'wait=true',
+          });
+          if (config.verbose) {
+            console.log(`  ${character.profile.name} (${config.sides[sideIndex].name}): wait - ${decision.reason ?? 'hold converted'}`);
+          }
+        } else if (config.verbose) {
+          console.log(`  ${character.profile.name} (${config.sides[sideIndex].name}): hold - ${decision.reason ?? 'no action'}`);
         }
         gameManager.endActivation(character);
         return;
@@ -563,38 +601,132 @@ class AIBattleRunner {
         detail: decision.reason,
       });
 
+      const startPos = battlefield.getCharacterPosition(character);
+      let actionExecuted = false;
+
       // Execute action based on type
       switch (decision.type) {
-        case 'move':
-          if (decision.position) {
+        case 'move': {
+          const destination = decision.position ?? this.computeFallbackMovePosition(character, enemies, battlefield);
+          if (destination) {
             this.stats.moves++;
-            try {
-              battlefield.moveCharacter(character, decision.position);
-            } catch {
-              battlefield.placeCharacter(character, decision.position);
-            }
+            const equipment = character.profile.equipment || character.profile.items || [];
+            const opportunityWeapon = equipment.find(i => i.classification === 'Melee' || i.class === 'Melee') || equipment[0];
+            gameManager.executeMove(character, destination, {
+              opponents: enemies,
+              allowOpportunityAttack: true,
+              opportunityWeapon: opportunityWeapon ?? undefined,
+            });
+            actionExecuted = true;
           }
           break;
+        }
         case 'charge':
         case 'close_combat':
           if (decision.target) {
-            this.stats.closeCombats++;
-            if (decision.type === 'charge') this.stats.moves++;
-            await this.executeCloseCombat(character, decision.target, battlefield, gameManager, config, turn, sideIndex, decision.type === 'charge');
+            const wasEngaged = this.areEngaged(character, decision.target, battlefield);
+            let movedForEngagement = false;
+
+            if (!wasEngaged) {
+              const engagePos = this.computeEngageMovePosition(character, decision.target, battlefield);
+              if (engagePos) {
+                const equipment = character.profile.equipment || character.profile.items || [];
+                const opportunityWeapon = equipment.find(i => i.classification === 'Melee' || i.class === 'Melee') || equipment[0];
+                const moved = gameManager.executeMove(character, engagePos, {
+                  opponents: enemies,
+                  allowOpportunityAttack: true,
+                  opportunityWeapon: opportunityWeapon ?? undefined,
+                });
+                if (moved.moved) {
+                  this.stats.moves++;
+                  movedForEngagement = true;
+                  actionExecuted = true;
+                }
+              }
+            }
+
+            if (this.areEngaged(character, decision.target, battlefield)) {
+              this.stats.closeCombats++;
+              await this.executeCloseCombat(
+                character,
+                decision.target,
+                battlefield,
+                gameManager,
+                config,
+                turn,
+                sideIndex,
+                decision.type === 'charge' || movedForEngagement
+              );
+              actionExecuted = true;
+            } else if (!actionExecuted) {
+              this.log[this.log.length - 1].result = 'close_combat=false:not-engaged';
+            }
           }
           break;
         case 'ranged_combat':
           if (decision.target) {
             this.stats.rangedCombats++;
             await this.executeRangedCombat(character, decision.target, battlefield, gameManager, config, turn, sideIndex);
+            actionExecuted = true;
           }
           break;
         case 'disengage':
           if (decision.target) {
             this.stats.disengages++;
             await this.executeDisengage(character, decision.target, battlefield, gameManager, config, turn, sideIndex);
+            actionExecuted = true;
           }
           break;
+        case 'wait': {
+          this.stats.waits++;
+          const wait = gameManager.executeWait(character, { spendAp: true });
+          this.log[this.log.length - 1].result = wait.success ? 'wait=true' : `wait=false:${wait.reason ?? 'failed'}`;
+          actionExecuted = wait.success;
+          break;
+        }
+        case 'detect':
+          if (decision.target) {
+            this.stats.detects++;
+            if (!gameManager.spendAp(character, 1)) {
+              this.log[this.log.length - 1].result = 'detect=false:not-enough-ap';
+              break;
+            }
+            const detect = attemptDetect(battlefield, character, decision.target, enemies);
+            this.log[this.log.length - 1].result = detect.success ? 'detect=true' : `detect=false:${detect.reason ?? 'failed'}`;
+            actionExecuted = detect.success;
+          }
+          break;
+        case 'hide': {
+          this.stats.hides++;
+          const hide = attemptHide(battlefield, character, enemies, (amount: number) => gameManager.spendAp(character, amount));
+          this.log[this.log.length - 1].result = hide.canHide ? 'hide=true' : `hide=false:${hide.reason ?? 'failed'}`;
+          actionExecuted = hide.canHide;
+          break;
+        }
+        case 'rally':
+          if (decision.target) {
+            const rally = gameManager.executeRally(character, decision.target);
+            this.log[this.log.length - 1].result = rally.success ? 'rally=true' : `rally=false:${rally.reason ?? 'failed'}`;
+            actionExecuted = rally.success;
+          }
+          break;
+        case 'revive':
+          if (decision.target) {
+            const revive = gameManager.executeRevive(character, decision.target);
+            this.log[this.log.length - 1].result = revive.success ? 'revive=true' : `revive=false:${revive.reason ?? 'failed'}`;
+            actionExecuted = revive.success;
+          }
+          break;
+      }
+
+      if (actionExecuted) {
+        const endPos = battlefield.getCharacterPosition(character);
+        const movedDistance = startPos && endPos ? Math.hypot(endPos.x - startPos.x, endPos.y - startPos.y) : 0;
+        const trigger = movedDistance > 0 ? 'Move' : 'NonMove';
+        const reactResult = this.processReacts(character, enemies, gameManager, trigger, movedDistance);
+        if (reactResult.executed) {
+          this.stats.reacts++;
+        }
       }
     } catch (error) {
       if (config.verbose) {
@@ -603,6 +735,140 @@ class AIBattleRunner {
     }
 
     gameManager.endActivation(character);
+  }
+
+  private areEngaged(attacker: Character, defender: Character, battlefield: Battlefield): boolean {
+    const attackerPos = battlefield.getCharacterPosition(attacker);
+    const defenderPos = battlefield.getCharacterPosition(defender);
+    if (!attackerPos || !defenderPos) return false;
+    const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
+    const defenderSiz = defender.finalAttributes.siz ?? defender.attributes.siz ?? 3;
+    return SpatialRules.isEngaged(
+      {
+        id: attacker.id,
+        position: attackerPos,
+        baseDiameter: getBaseDiameterFromSiz(attackerSiz),
+        siz: attackerSiz,
+      },
+      {
+        id: defender.id,
+        position: defenderPos,
+        baseDiameter: getBaseDiameterFromSiz(defenderSiz),
+        siz: defenderSiz,
+      }
+    );
+  }
+
+  private computeEngageMovePosition(
+    attacker: Character,
+    defender: Character,
+    battlefield: Battlefield
+  ): Position | null {
+    const attackerPos = battlefield.getCharacterPosition(attacker);
+    const defenderPos = battlefield.getCharacterPosition(defender);
+    if (!attackerPos || !defenderPos) return null;
+
+    const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
+    const defenderSiz = defender.finalAttributes.siz ?? defender.attributes.siz ?? 3;
+    const requiredDistance = (getBaseDiameterFromSiz(attackerSiz) + getBaseDiameterFromSiz(defenderSiz)) / 2;
+    const dx = defenderPos.x - attackerPos.x;
+    const dy = defenderPos.y - attackerPos.y;
+    const distance = Math.hypot(dx, dy);
+    if (distance <= requiredDistance || distance === 0) return null;
+
+    const mov = attacker.finalAttributes.mov ?? attacker.attributes.mov ?? 2;
+    const step = Math.min(mov, distance - requiredDistance);
+    if (step <= 0) return null;
+
+    const ratio = step / distance;
+    return {
+      x: Math.max(0, Math.min(battlefield.width - 1, Math.round(attackerPos.x + dx * ratio))),
+      y: Math.max(0, Math.min(battlefield.height - 1, Math.round(attackerPos.y + dy * ratio))),
+    };
+  }
+
+  private processReacts(
+    active: Character,
+    opponents: Character[],
+    gameManager: GameManager,
+    trigger: 'Move' | 'NonMove',
+    movedDistance: number
+  ): { executed: boolean } {
+    const options = gameManager.getReactOptionsSorted({
+      battlefield: gameManager.battlefield!,
+      active,
+      opponents,
+      trigger,
+      movedDistance,
+    });
+    const first = options.find(option => option.available && option.type === 'StandardReact');
+    if (!first) {
+      return { executed: false };
+    }
+
+    const equipment = first.actor.profile.equipment || first.actor.profile.items || [];
+    const weapon = equipment.find(i =>
+      i.classification === 'Bow' ||
+      i.classification === 'Thrown' ||
+      i.classification === 'Range' ||
+      i.classification === 'Firearm' ||
+      i.classification === 'Support'
+    ) || equipment[0];
+    if (!weapon) {
+      return { executed: false };
+    }
+
+    const react = gameManager.executeStandardReact(first.actor, active, weapon);
+    return { executed: react.executed };
+  }
+
+  private computeFallbackMovePosition(
+    actor: Character,
+    enemies: Character[],
+    battlefield: Battlefield
+  ): Position | null {
+    const actorPos = battlefield.getCharacterPosition(actor);
+    if (!actorPos || enemies.length === 0) {
+      return null;
+    }
+
+    let nearestPos: Position | null = null;
+    let nearestDistance = Infinity;
+    for (const enemy of enemies) {
+      const enemyPos = battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      const distance = Math.hypot(enemyPos.x - actorPos.x, enemyPos.y - actorPos.y);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestPos = enemyPos;
+      }
+    }
+
+    if (!nearestPos || nearestDistance <= 1) {
+      return null;
+    }
+
+    const mov = actor.finalAttributes.mov ?? actor.attributes.mov ?? 2;
+    const step = Math.min(mov, nearestDistance - 1);
+    const dx = nearestPos.x - actorPos.x;
+    const dy = nearestPos.y - actorPos.y;
+    const ratio = step / nearestDistance;
+    return {
+      x: Math.max(0, Math.min(battlefield.width - 1, Math.round(actorPos.x + dx * ratio))),
+      y: Math.max(0, Math.min(battlefield.height - 1, Math.round(actorPos.y + dy * ratio))),
+    };
+  }
+
+  private normalizeAttackResult(result: any): {
+    hit?: boolean;
+    ko: boolean;
+    eliminated: boolean;
+  } {
+    const hit = result?.result?.hit ?? result?.hit;
+    const damageResolution = result?.result?.damageResolution ?? result?.damageResolution;
+    const ko = Boolean(damageResolution?.defenderState?.isKOd ?? damageResolution?.defenderKOd);
+    const eliminated = Boolean(damageResolution?.defenderState?.isEliminated ?? damageResolution?.defenderEliminated);
+    return { hit, ko, eliminated };
   }
 
   private async executeCloseCombat(
@@ -631,19 +897,20 @@ class AIBattleRunner {
         isCharge,
         isDefending: false,
       });
+      const normalized = this.normalizeAttackResult(result);
 
       if (config.verbose) {
-        const koStatus = result.damageResolution?.defenderState?.isKOd ? 'KO' : (result.damageResolution?.defenderKOd ? 'KO' : 'OK');
-        const elimStatus = result.damageResolution?.defenderState?.isEliminated ? 'Elim' : (result.damageResolution?.defenderEliminated ? 'Elim' : 'Active');
-        console.log(`    → Hit: ${result.hit}, KO: ${koStatus}, Elim: ${elimStatus}`);
+        const koStatus = normalized.ko ? 'KO' : 'OK';
+        const elimStatus = normalized.eliminated ? 'Elim' : 'Active';
+        console.log(`    → Hit: ${normalized.hit}, KO: ${koStatus}, Elim: ${elimStatus}`);
       }
 
-      this.log[this.log.length - 1].result = `hit=${result.hit}, KO=${result.damageResolution?.defenderState?.isKOd || result.damageResolution?.defenderKOd}, Elim=${result.damageResolution?.defenderState?.isEliminated || result.damageResolution?.defenderEliminated}`;
+      this.log[this.log.length - 1].result = `hit=${normalized.hit}, KO=${normalized.ko}, Elim=${normalized.eliminated}`;
 
-      if (result.damageResolution?.defenderState?.isKOd || result.damageResolution?.defenderKOd) {
+      if (normalized.ko) {
         this.stats.kos++;
       }
-      if (result.damageResolution?.defenderState?.isEliminated || result.damageResolution?.defenderEliminated) {
+      if (normalized.eliminated) {
         this.stats.eliminations++;
       }
     } catch (error) {
@@ -688,15 +955,16 @@ class AIBattleRunner {
       );
 
       const result = gameManager.executeRangedAttack(attacker, defender, weapon, { orm });
+      const normalized = this.normalizeAttackResult(result);
 
       if (config.verbose) {
-        console.log(`    → Hit: ${result.hit}, KO: ${result.damageResolution?.defenderKOd}, Elim: ${result.damageResolution?.defenderEliminated}`);
+        console.log(`    → Hit: ${normalized.hit}, KO: ${normalized.ko}, Elim: ${normalized.eliminated}`);
       }
 
-      if (result.damageResolution?.defenderKOd) {
+      if (normalized.ko) {
         this.stats.kos++;
       }
-      if (result.damageResolution?.defenderEliminated) {
+      if (normalized.eliminated) {
         this.stats.eliminations++;
       }
     } catch (error) {
@@ -789,6 +1057,10 @@ class AIBattleRunner {
     console.log(`  Close Combats: ${report.stats.closeCombats}`);
     console.log(`  Ranged Combats: ${report.stats.rangedCombats}`);
     console.log(`  Disengages: ${report.stats.disengages}`);
+    console.log(`  Waits: ${report.stats.waits}`);
+    console.log(`  Detects: ${report.stats.detects}`);
+    console.log(`  Hides: ${report.stats.hides}`);
+    console.log(`  Reacts: ${report.stats.reacts}`);
     console.log(`  Eliminations: ${report.stats.eliminations}`);
     console.log(`  KO's: ${report.stats.kos}`);
     
@@ -845,7 +1117,7 @@ async function runQuickBattle(
         name: 'Bravo',
         bp: GAME_SIZE_CONFIG[gameSize].bpPerSide[1],
         modelCount: GAME_SIZE_CONFIG[gameSize].modelsPerSide[1],
-        tacticalDoctrine: TacticalDoctrine.Soldier,
+        tacticalDoctrine: TacticalDoctrine.Operative,
         assemblyName: 'Bravo Assembly',
         aggression: 0.5,
         caution: 0.5,

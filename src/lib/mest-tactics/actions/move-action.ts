@@ -48,6 +48,9 @@ export function executeMoveAction(
   
   // Surefooted X: Upgrade terrain effects
   const currentTerrain = deps.getTerrainAt(destination);
+  if (currentTerrain === 'Impassable') {
+    return { moved: false, reason: 'Destination is impassable terrain' };
+  }
   const upgradedTerrain = getSurefootedTerrainBonus(mover, currentTerrain);
   
   // Calculate effective movement allowance (base MOV + Sprint bonus)
