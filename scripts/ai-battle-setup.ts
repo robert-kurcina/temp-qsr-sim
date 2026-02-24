@@ -29,6 +29,9 @@ import {
   TACTICAL_DOCTRINE_INFO,
   getDoctrinesByEngagement,
   deriveDoctrineAIPressure,
+  getDoctrineComponents,
+  EngagementStyle,
+  AggressionLevel,
 } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../src/lib/mest-tactics/ai/core/CharacterAI';
 import { AIContext, AIControllerConfig, CharacterKnowledge } from '../src/lib/mest-tactics/ai/core/AIController';
@@ -953,6 +956,7 @@ class AIBattleRunner {
   private advancedRules: AdvancedRuleMetrics = createEmptyAdvancedRuleMetrics();
   private modelUsageByCharacter = new Map<Character, ModelUsageStats>();
   private sideNameByCharacterId = new Map<string, string>();
+  private doctrineByCharacterId = new Map<string, TacticalDoctrine>();
   private auditTurns: TurnAudit[] = [];
   private activationSequence = 0;
 
@@ -962,6 +966,7 @@ class AIBattleRunner {
     this.advancedRules = createEmptyAdvancedRuleMetrics();
     this.modelUsageByCharacter = new Map<Character, ModelUsageStats>();
     this.sideNameByCharacterId = new Map<string, string>();
+    this.doctrineByCharacterId = new Map<string, TacticalDoctrine>();
     this.auditTurns = [];
     this.activationSequence = 0;
   }
@@ -972,10 +977,13 @@ class AIBattleRunner {
   ) {
     this.modelUsageByCharacter = new Map<Character, ModelUsageStats>();
     this.sideNameByCharacterId = new Map<string, string>();
+    this.doctrineByCharacterId = new Map<string, TacticalDoctrine>();
     for (let sideIndex = 0; sideIndex < sides.length; sideIndex++) {
       const sideName = config.sides[sideIndex]?.name ?? `Side ${sideIndex + 1}`;
+      const doctrine = config.sides[sideIndex]?.tacticalDoctrine ?? TacticalDoctrine.Operative;
       for (const character of sides[sideIndex].characters) {
         this.sideNameByCharacterId.set(character.id, sideName);
+        this.doctrineByCharacterId.set(character.id, doctrine);
         this.modelUsageByCharacter.set(character, {
           modelId: character.id,
           modelName: character.profile.name,
@@ -1248,6 +1256,160 @@ class AIBattleRunner {
     });
   }
 
+  private getDoctrineForCharacter(character: Character, fallback: TacticalDoctrine = TacticalDoctrine.Operative): TacticalDoctrine {
+    return this.doctrineByCharacterId.get(character.id) ?? fallback;
+  }
+
+  private getBonusActionPriority(
+    doctrine: TacticalDoctrine,
+    isCloseCombat: boolean,
+    attacker: Character
+  ): BonusActionType[] {
+    const components = getDoctrineComponents(doctrine);
+    let base: BonusActionType[];
+
+    if (components.aggression === AggressionLevel.Aggressive) {
+      if (isCloseCombat) {
+        base = components.engagement === EngagementStyle.Melee
+          ? ['PushBack', 'Circle', 'Reversal', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh']
+          : ['Reposition', 'PushBack', 'Circle', 'Hide', 'Refresh', 'PullBack', 'Disengage', 'Reversal'];
+      } else {
+        base = components.engagement === EngagementStyle.Ranged
+          ? ['Reposition', 'Hide', 'Refresh']
+          : ['Reposition', 'Refresh', 'Hide'];
+      }
+    } else if (components.aggression === AggressionLevel.Defensive) {
+      if (isCloseCombat) {
+        base = components.engagement === EngagementStyle.Ranged
+          ? ['Refresh', 'Disengage', 'PullBack', 'Reposition', 'Hide', 'Circle', 'PushBack', 'Reversal']
+          : ['Refresh', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Circle', 'PushBack', 'Reversal'];
+      } else {
+        base = ['Refresh', 'Hide', 'Reposition'];
+      }
+    } else {
+      base = isCloseCombat
+        ? ['Refresh', 'PushBack', 'Circle', 'Reposition', 'Hide', 'PullBack', 'Disengage', 'Reversal']
+        : ['Refresh', 'Reposition', 'Hide'];
+    }
+
+    if (attacker.state.delayTokens > 0) {
+      base = ['Refresh', ...base];
+    }
+
+    const unique: BonusActionType[] = [];
+    for (const type of base) {
+      if (!unique.includes(type)) {
+        unique.push(type);
+      }
+    }
+    return unique;
+  }
+
+  private createBonusSelectionForType(
+    type: BonusActionType,
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    opponents: Character[]
+  ): BonusActionSelection | undefined {
+    if (type === 'Hide') {
+      return attacker.state.isHidden ? undefined : { type: 'Hide', opponents };
+    }
+    if (type === 'Reposition') {
+      const relocation = this.findRelocationPosition(attacker, battlefield, target);
+      return relocation ? { type: 'Reposition', attackerPosition: relocation } : undefined;
+    }
+    return { type };
+  }
+
+  private shouldUseDefendDeclared(
+    doctrine: TacticalDoctrine,
+    attackType: 'melee' | 'ranged',
+    defender: Character
+  ): boolean {
+    void doctrine;
+    void attackType;
+    return defender.state.isAttentive;
+  }
+
+  private shouldUseTakeCoverDeclared(doctrine: TacticalDoctrine, defender: Character): boolean {
+    const components = getDoctrineComponents(doctrine);
+    if (
+      components.aggression === AggressionLevel.Aggressive &&
+      components.engagement === EngagementStyle.Melee
+    ) {
+      const loadout = this.getLoadoutProfile(defender);
+      const threatened = defender.state.wounds > 0 || defender.state.delayTokens > 0 || defender.state.fearTokens > 0;
+      if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons && !threatened) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private getPassiveResponsePriority(
+    doctrine: TacticalDoctrine,
+    attackType: 'melee' | 'ranged',
+    defender: Character
+  ): PassiveOptionType[] {
+    const components = getDoctrineComponents(doctrine);
+    const loadout = this.getLoadoutProfile(defender);
+    let priority: PassiveOptionType[];
+
+    if (attackType === 'melee') {
+      if (components.aggression === AggressionLevel.Aggressive && components.engagement === EngagementStyle.Melee) {
+        priority = ['CounterStrike', 'CounterAction', 'CounterFire'];
+      } else if (components.aggression === AggressionLevel.Defensive) {
+        priority = ['CounterAction', 'CounterStrike', 'CounterFire'];
+      } else {
+        priority = ['CounterAction', 'CounterStrike', 'CounterFire'];
+      }
+    } else {
+      if (components.aggression === AggressionLevel.Defensive || components.engagement === EngagementStyle.Ranged) {
+        priority = ['CounterFire', 'CounterAction', 'CounterStrike'];
+      } else if (components.aggression === AggressionLevel.Aggressive && components.engagement === EngagementStyle.Melee) {
+        priority = ['CounterAction', 'CounterFire', 'CounterStrike'];
+      } else {
+        priority = ['CounterAction', 'CounterFire', 'CounterStrike'];
+      }
+    }
+
+    if (!loadout.hasMeleeWeapons) {
+      priority = priority.filter(type => type !== 'CounterStrike');
+    }
+    if (!loadout.hasRangedWeapons) {
+      priority = priority.filter(type => type !== 'CounterFire');
+    }
+    return priority;
+  }
+
+  private scoreCounterChargeObserver(
+    doctrine: TacticalDoctrine,
+    observer: Character,
+    mover: Character,
+    battlefield: Battlefield
+  ): number {
+    const components = getDoctrineComponents(doctrine);
+    const loadout = this.getLoadoutProfile(observer);
+    const observerPos = battlefield.getCharacterPosition(observer);
+    const moverPos = battlefield.getCharacterPosition(mover);
+    const distance = observerPos && moverPos
+      ? Math.hypot(observerPos.x - moverPos.x, observerPos.y - moverPos.y)
+      : Number.POSITIVE_INFINITY;
+
+    let score = 0;
+    if (components.engagement === EngagementStyle.Melee) score += 1.5;
+    if (components.engagement === EngagementStyle.Ranged) score -= 0.6;
+    if (components.aggression === AggressionLevel.Aggressive) score += 1.2;
+    if (components.aggression === AggressionLevel.Defensive) score -= 0.4;
+    if (loadout.hasMeleeWeapons) score += 1.0;
+    if (!loadout.hasMeleeWeapons) score -= 1.0;
+    if (!loadout.hasRangedWeapons) score += 0.3;
+    if (distance <= 8) score += 1.0;
+    else if (distance >= 14) score -= 0.5;
+    return score;
+  }
+
   private buildSpatialModelFor(character: Character, battlefield: Battlefield) {
     const position = battlefield.getCharacterPosition(character);
     if (!position) return null;
@@ -1343,11 +1505,12 @@ class AIBattleRunner {
     battlefield: Battlefield,
     opponents: Character[],
     options: BonusActionOption[],
-    isCloseCombat: boolean
+    isCloseCombat: boolean,
+    doctrine: TacticalDoctrine
   ): BonusActionSelection[] {
     const available = options.filter(option => option.available);
     if (available.length === 0) return [];
-    const byType = new Set(available.map(option => option.type));
+    const byType = new Set<BonusActionType>(available.map(option => option.type));
     const selections: BonusActionSelection[] = [];
     const push = (selection: BonusActionSelection) => {
       if (!selections.some(existing => existing.type === selection.type)) {
@@ -1355,39 +1518,20 @@ class AIBattleRunner {
       }
     };
 
-    if (attacker.state.delayTokens > 0 && byType.has('Refresh')) {
-      push({ type: 'Refresh' });
-    }
-
-    if (isCloseCombat) {
-      if (byType.has('PushBack')) push({ type: 'PushBack' });
-      if (byType.has('PullBack')) push({ type: 'PullBack' });
-      if (byType.has('Circle')) push({ type: 'Circle' });
-      if (byType.has('Disengage')) push({ type: 'Disengage' });
-      if (byType.has('Reversal')) push({ type: 'Reversal' });
-    }
-
-    if (!attacker.state.isHidden && byType.has('Hide')) {
-      push({ type: 'Hide', opponents });
-    }
-
-    if (byType.has('Reposition')) {
-      const relocation = this.findRelocationPosition(attacker, battlefield, target);
-      if (relocation) {
-        push({ type: 'Reposition', attackerPosition: relocation });
+    const prioritizedTypes = this.getBonusActionPriority(doctrine, isCloseCombat, attacker);
+    for (const type of prioritizedTypes) {
+      if (!byType.has(type)) continue;
+      const selection = this.createBonusSelectionForType(type, attacker, target, battlefield, opponents);
+      if (selection) {
+        push(selection);
       }
     }
 
-    if (byType.has('Refresh')) {
-      push({ type: 'Refresh' });
-    }
-
-    // Add any remaining available options as fallbacks.
+    // Add any remaining available options as doctrine-agnostic fallbacks.
     for (const option of available) {
-      if (option.type === 'Hide') {
-        push({ type: 'Hide', opponents });
-      } else {
-        push({ type: option.type });
+      const selection = this.createBonusSelectionForType(option.type, attacker, target, battlefield, opponents);
+      if (selection) {
+        push(selection);
       }
     }
 
@@ -1401,9 +1545,10 @@ class AIBattleRunner {
     battlefield: Battlefield;
     opponents: Character[];
     isCloseCombat: boolean;
+    doctrine: TacticalDoctrine;
     isCharge?: boolean;
   }) {
-    const { result, attacker, target, battlefield, opponents, isCloseCombat, isCharge } = params;
+    const { result, attacker, target, battlefield, opponents, isCloseCombat, doctrine, isCharge } = params;
     if (!result || typeof result !== 'object') return;
     const existing = result.bonusActionOutcome as BonusActionOutcome | undefined;
     if (existing?.executed) return;
@@ -1415,7 +1560,7 @@ class AIBattleRunner {
       ?? 0;
     const cascades = Number.isFinite(cascadesRaw) ? Number(cascadesRaw) : 0;
 
-    const selections = this.buildAutoBonusActionSelections(attacker, target, battlefield, opponents, options, isCloseCombat);
+    const selections = this.buildAutoBonusActionSelections(attacker, target, battlefield, opponents, options, isCloseCombat, doctrine);
     if (selections.length === 0) return;
 
     for (const selection of selections) {
@@ -1449,42 +1594,46 @@ class AIBattleRunner {
     hitTestResult: any;
     attackType: 'melee' | 'ranged';
     options: PassiveOption[];
+    doctrine: TacticalDoctrine;
     visibilityOrMu: number;
   }): { type?: PassiveOptionType; result?: unknown } {
-    const { gameManager, attacker, defender, hitTestResult, attackType, options, visibilityOrMu } = params;
+    const { gameManager, attacker, defender, hitTestResult, attackType, options, doctrine, visibilityOrMu } = params;
     const available = options.filter(option => option.available);
     if (available.length === 0) {
       return {};
     }
 
     const hasType = (type: PassiveOptionType) => available.some(option => option.type === type);
-    if (attackType === 'melee' && hasType('CounterStrike')) {
-      const weapon = this.pickMeleeWeapon(defender);
-      if (weapon) {
-        const result = gameManager.executeCounterStrike(defender, attacker, weapon as any, hitTestResult as any);
-        if (result.executed) {
-          this.trackPassiveUsage('CounterStrike');
-          return { type: 'CounterStrike', result };
+
+    const prioritized = this.getPassiveResponsePriority(doctrine, attackType, defender);
+    for (const type of prioritized) {
+      if (!hasType(type)) continue;
+      if (type === 'CounterStrike' && attackType === 'melee') {
+        const weapon = this.pickMeleeWeapon(defender);
+        if (weapon) {
+          const result = gameManager.executeCounterStrike(defender, attacker, weapon as any, hitTestResult as any);
+          if (result.executed) {
+            this.trackPassiveUsage('CounterStrike');
+            return { type: 'CounterStrike', result };
+          }
         }
       }
-    }
-
-    if (attackType === 'ranged' && hasType('CounterFire')) {
-      const weapon = this.pickRangedWeapon(defender) ?? this.pickMeleeWeapon(defender);
-      if (weapon) {
-        const result = gameManager.executeCounterFire(defender, attacker, weapon as any, hitTestResult as any, { visibilityOrMu });
-        if (result.executed) {
-          this.trackPassiveUsage('CounterFire');
-          return { type: 'CounterFire', result };
+      if (type === 'CounterFire' && attackType === 'ranged') {
+        const weapon = this.pickRangedWeapon(defender) ?? this.pickMeleeWeapon(defender);
+        if (weapon) {
+          const result = gameManager.executeCounterFire(defender, attacker, weapon as any, hitTestResult as any, { visibilityOrMu });
+          if (result.executed) {
+            this.trackPassiveUsage('CounterFire');
+            return { type: 'CounterFire', result };
+          }
         }
       }
-    }
-
-    if (hasType('CounterAction')) {
-      const result = gameManager.executeCounterAction(defender, attacker, hitTestResult as any, { attackType });
-      if (result.executed) {
-        this.trackPassiveUsage('CounterAction');
-        return { type: 'CounterAction', result };
+      if (type === 'CounterAction') {
+        const result = gameManager.executeCounterAction(defender, attacker, hitTestResult as any, { attackType });
+        if (result.executed) {
+          this.trackPassiveUsage('CounterAction');
+          return { type: 'CounterAction', result };
+        }
       }
     }
 
@@ -1496,13 +1645,24 @@ class AIBattleRunner {
     mover: Character,
     moveOptions: PassiveOption[],
     allEnemies: Character[],
+    battlefield: Battlefield,
     visibilityOrMu: number
   ): void {
     const available = moveOptions.filter(option => option.available && option.type === 'CounterCharge');
     if (available.length === 0) return;
-    const chosen = available[0];
-    if (!chosen) return;
-    const observer = allEnemies.find(enemy => enemy.id === chosen.actorId);
+    let bestObserver: Character | undefined;
+    let bestScore = Number.NEGATIVE_INFINITY;
+    for (const option of available) {
+      const observer = allEnemies.find(enemy => enemy.id === option.actorId);
+      if (!observer) continue;
+      const doctrine = this.getDoctrineForCharacter(observer);
+      const score = this.scoreCounterChargeObserver(doctrine, observer, mover, battlefield);
+      if (score > bestScore) {
+        bestScore = score;
+        bestObserver = observer;
+      }
+    }
+    const observer = bestObserver;
     if (!observer) return;
     const result = gameManager.executeCounterCharge(observer, mover, { visibilityOrMu, moveApSpent: 1 });
     if (result.executed) {
@@ -2557,6 +2717,7 @@ class AIBattleRunner {
               character,
               movePassive.moveConcluded,
               enemies,
+              battlefield,
               config.visibilityOrMu
             );
           }
@@ -2676,6 +2837,7 @@ class AIBattleRunner {
                   character,
                   movePassive.moveConcluded,
                   enemies,
+                  battlefield,
                   config.visibilityOrMu
                 );
               }
@@ -3076,6 +3238,8 @@ class AIBattleRunner {
     }
 
     try {
+      const attackerDoctrine = config.sides[sideIndex]?.tacticalDoctrine ?? this.getDoctrineForCharacter(attacker);
+      const defenderDoctrine = this.getDoctrineForCharacter(defender);
       const declaredOptions = this.inspectPassiveOptions(gameManager, {
         kind: 'CloseCombatAttackDeclared',
         attacker,
@@ -3083,7 +3247,8 @@ class AIBattleRunner {
         battlefield,
         weapon: weapon as any,
       });
-      const useDefend = declaredOptions.some(option => option.type === 'Defend' && option.available);
+      const defendAvailable = declaredOptions.some(option => option.type === 'Defend' && option.available);
+      const useDefend = defendAvailable && this.shouldUseDefendDeclared(defenderDoctrine, 'melee', defender);
       if (useDefend) {
         this.trackPassiveUsage('Defend');
       }
@@ -3110,6 +3275,7 @@ class AIBattleRunner {
           hitTestResult,
           attackType: 'melee',
           options: failedOptions,
+          doctrine: defenderDoctrine,
           visibilityOrMu: config.visibilityOrMu,
         });
         if (passiveResponse.result) {
@@ -3123,6 +3289,7 @@ class AIBattleRunner {
         battlefield,
         opponents: [defender],
         isCloseCombat: true,
+        doctrine: attackerDoctrine,
         isCharge,
       });
       this.trackCombatExtras(result);
@@ -3183,6 +3350,8 @@ class AIBattleRunner {
     }
 
     try {
+      const attackerDoctrine = config.sides[sideIndex]?.tacticalDoctrine ?? this.getDoctrineForCharacter(attacker);
+      const defenderDoctrine = this.getDoctrineForCharacter(defender);
       const attackerPos = battlefield.getCharacterPosition(attacker);
       const defenderPos = battlefield.getCharacterPosition(defender);
       if (!attackerPos || !defenderPos) {
@@ -3212,10 +3381,12 @@ class AIBattleRunner {
         battlefield,
         weapon: weapon as any,
       });
-      const useDefend = declaredOptions.some(option => option.type === 'Defend' && option.available);
+      const defendAvailable = declaredOptions.some(option => option.type === 'Defend' && option.available);
       const canTakeCover = declaredOptions.some(option => option.type === 'TakeCover' && option.available);
+      const useDefend = defendAvailable && this.shouldUseDefendDeclared(defenderDoctrine, 'ranged', defender);
+      const useTakeCover = canTakeCover && this.shouldUseTakeCoverDeclared(defenderDoctrine, defender);
       const takeCoverPosition = canTakeCover
-        ? this.findTakeCoverPosition(defender, attacker, battlefield)
+        ? (useTakeCover ? this.findTakeCoverPosition(defender, attacker, battlefield) : undefined)
         : undefined;
       if (useDefend) {
         this.trackPassiveUsage('Defend');
@@ -3298,6 +3469,7 @@ class AIBattleRunner {
           hitTestResult,
           attackType: 'ranged',
           options: failedOptions,
+          doctrine: defenderDoctrine,
           visibilityOrMu: config.visibilityOrMu,
         });
         if (passiveResponse.result) {
@@ -3311,6 +3483,7 @@ class AIBattleRunner {
         battlefield,
         opponents: [defender],
         isCloseCombat: false,
+        doctrine: attackerDoctrine,
       });
       this.trackCombatExtras(result);
       const normalized = this.normalizeAttackResult(result);
@@ -3382,6 +3555,7 @@ class AIBattleRunner {
       }
 
       const result = gameManager.executeDisengage(disengager, defender, weapon);
+      const disengagerDoctrine = config.sides[sideIndex]?.tacticalDoctrine ?? this.getDoctrineForCharacter(disengager);
       this.applyAutoBonusActionIfPossible({
         result,
         attacker: disengager,
@@ -3389,6 +3563,7 @@ class AIBattleRunner {
         battlefield,
         opponents: [defender],
         isCloseCombat: true,
+        doctrine: disengagerDoctrine,
       });
       this.trackCombatExtras(result);
 
