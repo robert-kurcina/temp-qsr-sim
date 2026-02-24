@@ -46,6 +46,7 @@ import {
   BonusActionEvaluator,
   StealthEvaluator,
 } from '../tactical/ReactsAndBonusActions';
+import { evaluateRangeWithVisibility, parseWeaponOptimalRangeMu } from '../../utils/visibility';
 import {
   ReactEvaluator as ReactEvaluatorQSR,
   ReactOpportunity,
@@ -543,14 +544,42 @@ export class CharacterAI implements IAIController {
   }
 
   private isInRange(ctx: AIContext): boolean {
-    // Simplified range check (within 16 MU)
+    const items = ((ctx.character.profile?.items?.length ? ctx.character.profile.items : ctx.character.profile?.equipment) ?? [])
+      .filter((item): item is NonNullable<typeof item> => Boolean(item));
+    const rangedWeapons = items.filter(item => {
+      const classification = String(item.classification ?? item.class ?? '').toLowerCase();
+      if (
+        classification.includes('bow') ||
+        classification.includes('thrown') ||
+        classification.includes('firearm') ||
+        classification.includes('range') ||
+        classification.includes('support')
+      ) {
+        return true;
+      }
+      return (
+        (classification.includes('melee') || classification.includes('natural')) &&
+        Array.isArray(item.traits) &&
+        item.traits.some(t => t.toLowerCase().includes('throwable'))
+      );
+    });
+    if (rangedWeapons.length === 0) return false;
+
     return ctx.enemies.some(e => {
       if (!isAttackableEnemy(ctx.character, e, ctx.config)) return false;
       const pos = ctx.battlefield.getCharacterPosition(e);
       const myPos = ctx.battlefield.getCharacterPosition(ctx.character);
       if (!pos || !myPos) return false;
-      const dist = Math.sqrt(Math.pow(pos.x - myPos.x, 2) + Math.pow(pos.y - myPos.y, 2));
-      return dist > 1 && dist <= 16;
+      const dist = Math.hypot(pos.x - myPos.x, pos.y - myPos.y);
+      return rangedWeapons.some(weapon => {
+        const weaponOr = parseWeaponOptimalRangeMu(ctx.character, weapon);
+        const range = evaluateRangeWithVisibility(dist, weaponOr, {
+          visibilityOrMu: ctx.config.visibilityOrMu,
+          maxOrm: ctx.config.maxOrm,
+          allowConcentrateRangeExtension: ctx.config.allowConcentrateRangeExtension,
+        });
+        return range.inRange;
+      });
     });
   }
 
@@ -577,6 +606,7 @@ export class CharacterAI implements IAIController {
       case 'reload':
       case 'hide':
       case 'detect':
+        return true;
       case 'none':
       default:
         return false;

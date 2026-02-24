@@ -1,0 +1,160 @@
+import { Character } from '../core/Character';
+import { Item } from '../core/Item';
+import { parseOptimalRange } from '../subroutines/optimal-range-parser';
+
+export type LightingCondition = 'Day, Clear' | 'Twilight, Overcast';
+
+export interface VisibilityConfig {
+  visibilityOrMu: number;
+  maxOrm: number;
+  allowConcentrateRangeExtension: boolean;
+}
+
+export interface RangeCheckResult {
+  inRange: boolean;
+  requiresConcentrate: boolean;
+  orm: number;
+  effectiveOrMu: number;
+  concentratedOrm: number;
+  concentratedOrMu: number;
+}
+
+const LIGHTING_TO_VISIBILITY_OR: Record<LightingCondition, number> = {
+  'Day, Clear': 16,
+  'Twilight, Overcast': 8,
+};
+
+export function getVisibilityOrForLighting(lighting: LightingCondition): number {
+  return LIGHTING_TO_VISIBILITY_OR[lighting];
+}
+
+export function resolveVisibilityConfig(input: Partial<VisibilityConfig> = {}): VisibilityConfig {
+  return {
+    visibilityOrMu: Math.max(0.5, input.visibilityOrMu ?? 16),
+    maxOrm: Math.max(0, Math.floor(input.maxOrm ?? 3)),
+    allowConcentrateRangeExtension: input.allowConcentrateRangeExtension ?? true,
+  };
+}
+
+export function parseWeaponOptimalRangeMu(attacker: Character, weapon?: Item): number {
+  if (!weapon) return 0;
+  const rawOr = weapon.or;
+
+  if (typeof rawOr === 'number' && Number.isFinite(rawOr)) {
+    return Math.max(0, rawOr);
+  }
+
+  if (typeof rawOr === 'string') {
+    const trimmed = rawOr.trim();
+    if (!trimmed || trimmed === '-') {
+      return inferThrownRange(attacker, weapon);
+    }
+
+    if (/^OR\(/i.test(trimmed)) {
+      const parsed = parseOptimalRange(trimmed, attacker.finalAttributes);
+      if (parsed > 0) return parsed;
+    }
+
+    const compact = trimmed.replace(/\s+/g, '');
+    if (/^[+\-]?\d+(\.\d+)?$/.test(compact)) {
+      return Math.max(0, Number(compact));
+    }
+
+    const expressionMatch = compact.match(/[A-Za-z]+|\d+(?:\.\d+)?|[+\-]/g);
+    if (expressionMatch) {
+      let total = 0;
+      let op: '+' | '-' = '+';
+      for (const token of expressionMatch) {
+        if (token === '+' || token === '-') {
+          op = token;
+          continue;
+        }
+        const lower = token.toLowerCase();
+        let value = Number.NaN;
+        if (/^\d+(\.\d+)?$/.test(token)) {
+          value = Number(token);
+        } else {
+          value = resolveAttributeToken(attacker, lower);
+        }
+        if (!Number.isFinite(value)) continue;
+        total = op === '+' ? total + value : total - value;
+      }
+      if (total > 0) return total;
+    }
+  }
+
+  return inferThrownRange(attacker, weapon);
+}
+
+export function calculateOrm(distanceMu: number, optimalRangeMu: number): number {
+  if (!Number.isFinite(distanceMu) || distanceMu <= 0 || optimalRangeMu <= 0) {
+    return 0;
+  }
+  return Math.max(0, Math.ceil(distanceMu / optimalRangeMu) - 1);
+}
+
+export function evaluateRangeWithVisibility(
+  distanceMu: number,
+  weaponOrMu: number,
+  config: Partial<VisibilityConfig> = {}
+): RangeCheckResult {
+  const resolved = resolveVisibilityConfig(config);
+  const effectiveOrMu = weaponOrMu > 0
+    ? Math.min(weaponOrMu, resolved.visibilityOrMu)
+    : 0;
+  const orm = calculateOrm(distanceMu, effectiveOrMu);
+  const normalInRange = effectiveOrMu > 0 && orm <= resolved.maxOrm;
+
+  const concentratedOrMu = effectiveOrMu > 0 ? effectiveOrMu * 2 : 0;
+  const concentratedOrm = calculateOrm(distanceMu, concentratedOrMu);
+  const concentrateInRange = resolved.allowConcentrateRangeExtension && concentratedOrMu > 0;
+
+  return {
+    inRange: normalInRange || concentrateInRange,
+    requiresConcentrate: !normalInRange && concentrateInRange,
+    orm,
+    effectiveOrMu,
+    concentratedOrm,
+    concentratedOrMu,
+  };
+}
+
+function inferThrownRange(attacker: Character, weapon: Item): number {
+  const classification = String(weapon.classification ?? weapon.class ?? '').toLowerCase();
+  const traits = (weapon.traits ?? []).map(trait => trait.toLowerCase());
+  const hasThrowable = traits.some(trait => trait.includes('throwable'));
+  const thrownClass =
+    classification.includes('thrown') ||
+    ((classification.includes('melee') || classification.includes('natural')) && hasThrowable);
+  if (!thrownClass) return 0;
+  return Math.max(0.5, attacker.finalAttributes.str ?? attacker.attributes.str ?? 0);
+}
+
+function resolveAttributeToken(character: Character, token: string): number {
+  switch (token) {
+    case 'str':
+      return character.finalAttributes.str ?? character.attributes.str ?? 0;
+    case 'agi':
+      return (character.finalAttributes as any).agi ?? (character.attributes as any).agi ?? 0;
+    case 'int':
+      return character.finalAttributes.int ?? character.attributes.int ?? 0;
+    case 'per':
+      return (character.finalAttributes as any).per ?? (character.attributes as any).per ?? 0;
+    case 'mov':
+      return character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+    case 'rca':
+      return character.finalAttributes.rca ?? character.attributes.rca ?? 0;
+    case 'cca':
+      return character.finalAttributes.cca ?? character.attributes.cca ?? 0;
+    case 'ref':
+      return character.finalAttributes.ref ?? character.attributes.ref ?? 0;
+    case 'pow':
+      return character.finalAttributes.pow ?? character.attributes.pow ?? 0;
+    case 'for':
+      return character.finalAttributes.for ?? character.attributes.for ?? 0;
+    case 'siz':
+      return character.finalAttributes.siz ?? character.attributes.siz ?? 0;
+    default:
+      return Number.NaN;
+  }
+}

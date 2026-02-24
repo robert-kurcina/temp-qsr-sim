@@ -45,6 +45,14 @@ export interface AIGameLoopConfig {
   kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
   /** Optional callback after each turn resolves */
   onTurnEnd?: (turn: number) => void;
+  /** Session visibility OR in MU (default 16 / Day, Clear) */
+  visibilityOrMu?: number;
+  /** Session Max ORM for normal OR checks (default 3) */
+  maxOrm?: number;
+  /** Allow Concentrate range extension for AI range gating (default true) */
+  allowConcentrateRangeExtension?: boolean;
+  /** If true, require per-character LOS/FOV gates in AI range/path checks */
+  perCharacterFovLos?: boolean;
 }
 
 /**
@@ -60,6 +68,10 @@ export const DEFAULT_AI_GAME_LOOP_CONFIG: AIGameLoopConfig = {
   maxActionsPerTurn: 3,
   allowKOdAttacks: false,
   onTurnEnd: undefined,
+  visibilityOrMu: 16,
+  maxOrm: 3,
+  allowConcentrateRangeExtension: true,
+  perCharacterFovLos: false,
 };
 
 /**
@@ -167,6 +179,10 @@ export class AIGameLoop {
             allowKOdAttacks: this.config.allowKOdAttacks ?? false,
             kodControllerTraitsByCharacterId: this.config.kodControllerTraitsByCharacterId,
             kodCoordinatorTraitsByCharacterId: this.config.kodCoordinatorTraitsByCharacterId,
+            visibilityOrMu: this.config.visibilityOrMu,
+            maxOrm: this.config.maxOrm,
+            allowConcentrateRangeExtension: this.config.allowConcentrateRangeExtension,
+            perCharacterFovLos: this.config.perCharacterFovLos,
           });
           this.characterAIs.set(charId, charAI);
         }

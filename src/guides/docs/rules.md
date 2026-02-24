@@ -41,6 +41,7 @@ This document provides links to all rule modules for the MEST Tactics game syste
 | Rule Module | Description |
 |-------------|-------------|
 | [Movement & Terrain](./rules-movement-and-terrain) | Movement and terrain interaction |
+| [Visibility & Lighting](./rules-visibility) | Visibility OR, lighting presets, and ORM limits |
 | [Terrain](./rules-terrain) | Terrain types, features, and effects |
 | [Size & Base Diameter](./rules-size-base-diameter) | Model sizes and base standards |
 | [Situational Modifiers](./rules-situational-modifiers) | Contextual modifiers reference |
@@ -103,9 +104,10 @@ This document provides links to all rule modules for the MEST Tactics game syste
 
 ### Movement & Positioning
 1. [Movement & Terrain](./rules-movement-and-terrain)
-2. [Terrain](./rules-terrain)
-3. [Size & Base Diameter](./rules-size-base-diameter)
-4. [Situational Modifiers](./rules-situational-modifiers)
+2. [Visibility & Lighting](./rules-visibility)
+3. [Terrain](./rules-terrain)
+4. [Size & Base Diameter](./rules-size-base-diameter)
+5. [Situational Modifiers](./rules-situational-modifiers)
 
 ### Advanced Play
 1. [Advanced Rules](./rules-advanced)

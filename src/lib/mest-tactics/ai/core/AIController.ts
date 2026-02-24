@@ -26,6 +26,14 @@ export interface AIControllerConfig {
   kodControllerTraitsByCharacterId?: Record<string, string[]>;
   /** Optional coordinator traits for Puppet KO'd rules */
   kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
+  /** Session visibility OR in MU (defaults to 16) */
+  visibilityOrMu?: number;
+  /** Session maximum OR multiple for normal checks (defaults to 3) */
+  maxOrm?: number;
+  /** Allow Concentrate to double OR and ignore max ORM for range gating */
+  allowConcentrateRangeExtension?: boolean;
+  /** If true, AI range/target checks require per-character LOS/FOV gates */
+  perCharacterFovLos?: boolean;
 }
 
 export interface ActionDecision {
@@ -210,6 +218,10 @@ export const DEFAULT_AI_CONFIG: AIControllerConfig = {
   godMode: true, // Default to perfect knowledge
   personalitySeed: undefined,
   allowKOdAttacks: false,
+  visibilityOrMu: 16,
+  maxOrm: 3,
+  allowConcentrateRangeExtension: true,
+  perCharacterFovLos: false,
 };
 
 /**
@@ -225,5 +237,9 @@ export function validateAIConfig(config: AIControllerConfig): AIControllerConfig
     allowKOdAttacks: config.allowKOdAttacks ?? false,
     kodControllerTraitsByCharacterId: config.kodControllerTraitsByCharacterId,
     kodCoordinatorTraitsByCharacterId: config.kodCoordinatorTraitsByCharacterId,
+    visibilityOrMu: Math.max(0.5, config.visibilityOrMu ?? 16),
+    maxOrm: Math.max(0, Math.floor(config.maxOrm ?? 3)),
+    allowConcentrateRangeExtension: config.allowConcentrateRangeExtension ?? true,
+    perCharacterFovLos: config.perCharacterFovLos ?? false,
   };
 }

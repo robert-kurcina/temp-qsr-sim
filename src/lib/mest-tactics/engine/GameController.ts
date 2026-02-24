@@ -23,6 +23,7 @@ import { BottleTestResult } from '../status/bottle-tests';
 import { MissionModel } from '../missions/mission-keys';
 import { createAIGameLoop, AIGameLoopConfig } from '../ai/executor/AIGameLoop';
 import { createMissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
+import { LightingCondition, getVisibilityOrForLighting } from '../utils/visibility';
 
 export interface ControllerLogEntry {
   turn: number;
@@ -44,6 +45,16 @@ export interface SkirmishConfig {
   kodControllerTraitsByCharacterId?: Record<string, string[]>;
   /** Optional: coordinator traits for Puppet KO'd rules */
   kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
+  /** Session lighting preset (default "Day, Clear") */
+  lighting?: LightingCondition;
+  /** Session visibility OR override in MU (default derived from lighting) */
+  visibilityOrMu?: number;
+  /** Session Max ORM for normal checks (default 3) */
+  maxOrm?: number;
+  /** Allow concentrate range extension (default true) */
+  allowConcentrateRangeExtension?: boolean;
+  /** If true, enforce per-character FOV/LOS in AI gating (default false) */
+  perCharacterFovLos?: boolean;
 }
 
 export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
@@ -260,6 +271,8 @@ export class GameController {
     this.manager.kodCoordinatorTraitsByCharacterId = config.kodCoordinatorTraitsByCharacterId;
 
     // Create AI game loop
+    const lighting = config.lighting ?? 'Day, Clear';
+    const visibilityOrMu = config.visibilityOrMu ?? getVisibilityOrForLighting(lighting);
     const aiConfig: Partial<AIGameLoopConfig> = {
       enableStrategic: true,
       enableTactical: true,
@@ -270,6 +283,10 @@ export class GameController {
       allowKOdAttacks: config.enableKOdAttacks ?? false,
       kodControllerTraitsByCharacterId: config.kodControllerTraitsByCharacterId,
       kodCoordinatorTraitsByCharacterId: config.kodCoordinatorTraitsByCharacterId,
+      visibilityOrMu,
+      maxOrm: config.maxOrm ?? 3,
+      allowConcentrateRangeExtension: config.allowConcentrateRangeExtension ?? true,
+      perCharacterFovLos: config.perCharacterFovLos ?? false,
       onTurnEnd: (turn) => {
         const update = missionRuntime.onTurnEnd(turn, this.buildMissionModels(sides));
         state = mergeMissionDelta(state, update.delta);
