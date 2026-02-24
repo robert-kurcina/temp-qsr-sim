@@ -2,12 +2,12 @@
 import { FinalAttributes } from '../core/Attributes';
 
 /**
- * Parses a weapon's optimal range string (e.g., "OR(12)" or "OR(Agi+2)" or "OR(STR-1)")
+ * Parses a weapon's optimal range string (e.g., "OR(12)" or "OR(STR+2)" or "OR(STR-1)")
  * and calculates the final range value.
  * 
  * Supports:
  * - Plain numbers: "12"
- * - Attribute expressions: "STR+2", "STR-1", "AGI+3", "INT-2", "PER+1"
+ * - Attribute expressions: "STR+2", "STR-1","INT-2"
  * - Multiple terms: "STR+2-1" (evaluated left to right)
  */
 export function parseOptimalRange(orString: string | undefined, attributes: FinalAttributes): number {
@@ -41,14 +41,8 @@ export function parseOptimalRange(orString: string | undefined, attributes: Fina
                     case 'str':
                         value = attributes.str;
                         break;
-                    case 'agi':
-                        value = attributes.agi;
-                        break;
                     case 'int':
                         value = attributes.int;
-                        break;
-                    case 'per':
-                        value = attributes.per;
                         break;
                     default:
                         // Try to parse as number
