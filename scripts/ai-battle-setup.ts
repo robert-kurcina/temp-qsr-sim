@@ -31,6 +31,7 @@ import {
   deriveDoctrineAIPressure,
   getDoctrineComponents,
   EngagementStyle,
+  PlanningPriority,
   AggressionLevel,
 } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../src/lib/mest-tactics/ai/core/CharacterAI';
@@ -1266,6 +1267,23 @@ class AIBattleRunner {
     attacker: Character
   ): BonusActionType[] {
     const components = getDoctrineComponents(doctrine);
+    const prioritize = (list: BonusActionType[], preferred: BonusActionType[]): BonusActionType[] => {
+      const seen = new Set<BonusActionType>();
+      const ordered: BonusActionType[] = [];
+      for (const type of preferred) {
+        if (!seen.has(type)) {
+          seen.add(type);
+          ordered.push(type);
+        }
+      }
+      for (const type of list) {
+        if (!seen.has(type)) {
+          seen.add(type);
+          ordered.push(type);
+        }
+      }
+      return ordered;
+    };
     let base: BonusActionType[];
 
     if (components.aggression === AggressionLevel.Aggressive) {
@@ -1294,6 +1312,16 @@ class AIBattleRunner {
 
     if (attacker.state.delayTokens > 0) {
       base = ['Refresh', ...base];
+    }
+
+    if (components.planning === PlanningPriority.KeysToVictory) {
+      base = isCloseCombat
+        ? prioritize(base, ['Reposition', 'Disengage', 'Refresh', 'Hide'])
+        : prioritize(base, ['Reposition', 'Hide', 'Refresh']);
+    } else if (components.planning === PlanningPriority.Aggressive) {
+      base = isCloseCombat
+        ? prioritize(base, ['PushBack', 'Circle', 'Reversal', 'PullBack'])
+        : prioritize(base, ['Reposition', 'Refresh', 'Hide']);
     }
 
     const unique: BonusActionType[] = [];
@@ -1336,7 +1364,8 @@ class AIBattleRunner {
     const components = getDoctrineComponents(doctrine);
     if (
       components.aggression === AggressionLevel.Aggressive &&
-      components.engagement === EngagementStyle.Melee
+      components.engagement === EngagementStyle.Melee &&
+      components.planning === PlanningPriority.Aggressive
     ) {
       const loadout = this.getLoadoutProfile(defender);
       const threatened = defender.state.wounds > 0 || defender.state.delayTokens > 0 || defender.state.fearTokens > 0;
@@ -1354,6 +1383,23 @@ class AIBattleRunner {
   ): PassiveOptionType[] {
     const components = getDoctrineComponents(doctrine);
     const loadout = this.getLoadoutProfile(defender);
+    const prioritize = (list: PassiveOptionType[], preferred: PassiveOptionType[]): PassiveOptionType[] => {
+      const seen = new Set<PassiveOptionType>();
+      const ordered: PassiveOptionType[] = [];
+      for (const type of preferred) {
+        if (!seen.has(type)) {
+          seen.add(type);
+          ordered.push(type);
+        }
+      }
+      for (const type of list) {
+        if (!seen.has(type)) {
+          seen.add(type);
+          ordered.push(type);
+        }
+      }
+      return ordered;
+    };
     let priority: PassiveOptionType[];
 
     if (attackType === 'melee') {
@@ -1372,6 +1418,14 @@ class AIBattleRunner {
       } else {
         priority = ['CounterAction', 'CounterFire', 'CounterStrike'];
       }
+    }
+
+    if (components.planning === PlanningPriority.Aggressive) {
+      priority = attackType === 'melee'
+        ? prioritize(priority, ['CounterStrike', 'CounterAction'])
+        : prioritize(priority, ['CounterFire', 'CounterAction']);
+    } else if (components.planning === PlanningPriority.KeysToVictory) {
+      priority = prioritize(priority, ['CounterAction']);
     }
 
     if (!loadout.hasMeleeWeapons) {
@@ -1402,6 +1456,8 @@ class AIBattleRunner {
     if (components.engagement === EngagementStyle.Ranged) score -= 0.6;
     if (components.aggression === AggressionLevel.Aggressive) score += 1.2;
     if (components.aggression === AggressionLevel.Defensive) score -= 0.4;
+    if (components.planning === PlanningPriority.Aggressive) score += 0.7;
+    if (components.planning === PlanningPriority.KeysToVictory) score -= 0.4;
     if (loadout.hasMeleeWeapons) score += 1.0;
     if (!loadout.hasMeleeWeapons) score -= 1.0;
     if (!loadout.hasRangedWeapons) score += 0.3;

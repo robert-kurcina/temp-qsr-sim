@@ -163,6 +163,19 @@ describe('AI Tactical Doctrine', () => {
       expect(meleeOnly.aggression).toBeGreaterThan(rangedOnly.aggression);
       expect(meleeOnly.caution).toBeLessThan(rangedOnly.caution);
     });
+
+    it('should reflect planning priority in doctrine pressure', () => {
+      const missionFocused = deriveDoctrineAIPressure(TacticalDoctrine.Commander, {
+        hasMeleeWeapons: true,
+        hasRangedWeapons: true,
+      });
+      const annihilationFocused = deriveDoctrineAIPressure(TacticalDoctrine.Soldier, {
+        hasMeleeWeapons: true,
+        hasRangedWeapons: true,
+      });
+      expect(missionFocused.caution).toBeGreaterThan(annihilationFocused.caution);
+      expect(missionFocused.aggression).toBeLessThan(annihilationFocused.aggression);
+    });
   });
 
   describe('Stratagem Validation', () => {

@@ -313,6 +313,14 @@ export function deriveDoctrineAIPressure(
     caution += 0.08;
   }
 
+  if (components.planning === PlanningPriority.Aggressive) {
+    aggression += 0.08;
+    caution -= 0.05;
+  } else if (components.planning === PlanningPriority.KeysToVictory) {
+    aggression -= 0.03;
+    caution += 0.05;
+  }
+
   if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
     aggression += 0.14;
     caution -= 0.06;
