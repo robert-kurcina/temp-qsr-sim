@@ -10,9 +10,9 @@ export {
   PlanningPriority,
   AggressionLevel,
   getDoctrineComponents,
-  AIStratagems,
+  type AIStratagems,
   DEFAULT_TACTICAL_DOCTRINE,
-  StratagemModifiers,
+  type StratagemModifiers,
   calculateStratagemModifiers,
   TACTICAL_DOCTRINE_INFO,
   getDoctrinesByEngagement,
@@ -30,7 +30,7 @@ export {
 } from './StratagemIntegration';
 
 export {
-  DoctrineUIOption,
+  type DoctrineUIOption,
   getDoctrineUIOptions,
   getDoctrineUIOption,
   compareDoctrines,

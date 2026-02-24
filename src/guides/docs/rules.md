@@ -28,6 +28,9 @@ This document provides links to all rule modules for the MEST Tactics game syste
 | [Items](./rules-items) | Weapons, armor, and equipment rules |
 | [Multiple Weapons](./rules-multiple) | Wielding multiple weapons, bonuses, penalties |
 | [Combat](./rules-combat) | Close-quarters and ranged combat resolution |
+| [Close Combat](./rule-close-combat) | Performing close combat attacks (QSR) |
+| [Direct Range Combat](./rule-direct-range-combat) | Performing direct range combat attacks (QSR) |
+| [Disengage](./rule-disengage) | Performing disengage actions to escape combat (QSR) |
 | [Damage & Morale](./rules-damage-and-morale) | Damage, injuries, and morale checks |
 | [Status](./rules-status) | Status effects, tokens, and conditions |
 
@@ -89,7 +92,10 @@ This document provides links to all rule modules for the MEST Tactics game syste
 2. [Actions](./rules-actions)
 3. [Tests & Checks](./rules-tests-and-checks)
 4. [Combat](./rules-combat)
-5. [Damage & Morale](./rules-damage-and-morale)
+5. [Close Combat](./rule-close-combat)
+6. [Direct Range Combat](./rule-direct-range-combat)
+7. [Disengage](./rule-disengage)
+8. [Damage & Morale](./rules-damage-and-morale)
 
 ### Movement & Positioning
 1. [Movement & Terrain](./rules-movement-and-terrain)

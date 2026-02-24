@@ -5,7 +5,7 @@
  */
 
 import { ScoredAction, ScoredTarget, ScoredPosition } from '../core/AIController';
-import { StratagemModifiers, TacticalDoctrine, StrategicPriority, AggressionLevel } from './AIStratagems';
+import { StratagemModifiers, TacticalDoctrine, AggressionLevel } from './AIStratagems';
 
 // ============================================================================
 // Action Scoring Modifiers
@@ -87,25 +87,25 @@ export function applyStratagemModifiersToTargets(
   return targets.map((target) => {
     let modifiedScore = target.score;
 
-    // Apply strategic priority modifiers
-    if (modifiers.strategicPriority === StrategicPriority.Annihilation) {
-      // Annihilation: bonus to all targets
+    // Apply planning priority modifiers (derived from TacticalDoctrine)
+    if (modifiers.eliminationValue > 1.0) {
+      // Aggression planning: bonus to all targets
       modifiedScore *= modifiers.eliminationValue;
-    } else if (modifiers.strategicPriority === StrategicPriority.MissionFocus) {
-      // Mission Focus: prefer targets near objectives
+    } else if (modifiers.objectiveValue > 1.0) {
+      // Keys to Victory planning: prefer targets near objectives
       if (hasMissionObjective) {
         modifiedScore *= 0.9; // Slightly prefer objectives over kills
       }
     }
 
-    // Apply aggression modifiers
-    if (modifiers.aggressionLevel === AggressionLevel.Aggressive) {
+    // Apply aggression modifiers (derived from TacticalDoctrine)
+    if (modifiers.riskTolerance > 1.0) {
       // Aggressive: prefer wounded targets (finish them off)
       const healthFactor = target.factors?.health ?? 1.0;
       if (healthFactor < 0.5) {
         modifiedScore *= 1.3; // Bonus to finish wounded
       }
-    } else if (modifiers.aggressionLevel === AggressionLevel.Defensive) {
+    } else if (modifiers.survivalValue > 1.0) {
       // Defensive: prefer threatening targets (eliminate threats)
       const threatFactor = target.factors?.threat ?? 1.0;
       if (threatFactor > 1.5) {
@@ -135,59 +135,51 @@ export function applyStratagemModifiersToPositions(
   return positions.map((position) => {
     let modifiedScore = position.score;
 
-    // Apply tactical doctrine modifiers to position preferences
-    switch (modifiers.tacticalDoctrine) {
-      case TacticalDoctrine.MeleeCentric:
-        // Prefer positions closer to enemies
-        const distanceFactor = position.factors?.distance ?? 1.0;
-        if (distanceFactor > 0.8) {
-          modifiedScore *= 1.2;
-        }
-        break;
-
-      case TacticalDoctrine.RangedCentric:
-        // Prefer positions at optimal range
-        const rangeMod = modifiers.optimalRangeMod;
-        if (distanceFactor >= 0.5 && distanceFactor <= 0.8 * rangeMod) {
-          modifiedScore *= 1.2;
-        }
-        // Prefer cover more
-        const coverFactor = position.factors?.cover ?? 0;
-        modifiedScore += coverFactor * 0.3;
-        break;
-
-      case TacticalDoctrine.CombinedArms:
-      default:
-        // Balanced - no specific position preference
-        break;
+    // Apply engagement style modifiers (derived from TacticalDoctrine)
+    if (modifiers.meleePreference > 1.0) {
+      // Melee-Centric: Prefer positions closer to enemies
+      const distanceFactor = position.factors?.distance ?? 1.0;
+      if (distanceFactor > 0.8) {
+        modifiedScore *= 1.2;
+      }
+    } else if (modifiers.rangePreference > 1.0) {
+      // Ranged-Centric: Prefer positions at optimal range and cover
+      const distanceFactor = position.factors?.distance ?? 1.0;
+      const rangeMod = modifiers.optimalRangeMod;
+      if (distanceFactor >= 0.5 && distanceFactor <= 0.8 * rangeMod) {
+        modifiedScore *= 1.2;
+      }
+      // Prefer cover more
+      const coverFactor = position.factors?.cover ?? 0;
+      modifiedScore += coverFactor * 0.3;
     }
 
-    // Apply strategic priority modifiers
-    if (modifiers.strategicPriority === StrategicPriority.MissionFocus) {
-      // Bonus to positions closer to objectives
+    // Apply planning priority modifiers (derived from TacticalDoctrine)
+    if (modifiers.objectiveValue > 1.0) {
+      // Keys to Victory: Bonus to positions closer to objectives
       if (distanceToObjective > 0) {
         const objectiveProximity = 1 - Math.min(1, distanceToObjective / 20);
         modifiedScore += objectiveProximity * 2;
       }
     }
 
-    // Apply aggression modifiers
-    if (modifiers.aggressionLevel === AggressionLevel.Defensive) {
-      // Defensive: much higher cover value
+    // Apply aggression modifiers (derived from TacticalDoctrine)
+    if (modifiers.survivalValue > 1.0) {
+      // Defensive: much higher cover value and cohesion
       const coverFactor = position.factors?.cover ?? 0;
       modifiedScore += coverFactor * 0.5;
 
       // Prefer positions closer to allies (cohesion)
       const cohesionFactor = position.factors?.cohesion ?? 0;
       modifiedScore += cohesionFactor * 0.3;
-    } else if (modifiers.aggressionLevel === AggressionLevel.Aggressive) {
+    } else if (modifiers.riskTolerance > 1.0) {
       // Aggressive: prefer forward positions
       const distanceFactor = position.factors?.distance ?? 1.0;
       if (distanceFactor > 0.9) {
         modifiedScore *= 1.15;
       }
 
-      // Lower survival value
+      // Lower survival value weighting
       modifiedScore *= (2 - modifiers.survivalValue);
     }
 
