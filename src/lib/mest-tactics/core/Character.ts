@@ -20,6 +20,11 @@ export class Character {
     isWaiting: boolean;
     isDisordered: boolean;
     isDistracted: boolean;
+    isNervous: boolean;
+    isPanicked: boolean;
+    isStunned: boolean;
+    isHindered: boolean;
+    isWounded: boolean;
     isEngaged: boolean;
     isInCover: boolean;
     isAttentive: boolean;
@@ -71,6 +76,11 @@ export class Character {
       isWaiting: false,
       isDisordered: false,
       isDistracted: false,
+      isNervous: false,
+      isPanicked: false,
+      isStunned: false,
+      isHindered: false,
+      isWounded: false,
       isEngaged: false,
       isInCover: false,
       isAttentive: true,
@@ -93,6 +103,11 @@ export class Character {
     const koOrElim = this.state.isKOd || this.state.isEliminated;
     this.state.isDistracted = this.state.delayTokens > 0;
     this.state.isDisordered = this.state.fearTokens >= 2;
+    this.state.isNervous = this.state.fearTokens >= 1;
+    this.state.isPanicked = this.state.fearTokens >= 3;
+    this.state.isStunned = this.state.delayTokens >= 2;
+    this.state.isWounded = this.state.wounds > 0;
+    this.state.isHindered = this.state.delayTokens > 0 || this.state.fearTokens > 0 || this.state.wounds > 0;
     
     // QSR: 4+ Fear tokens = Eliminated (auto-elimination from panic)
     if (this.state.fearTokens >= 4 && !this.state.isEliminated) {

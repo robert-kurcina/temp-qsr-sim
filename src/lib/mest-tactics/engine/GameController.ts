@@ -40,6 +40,8 @@ export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
   aiConfig?: Partial<AIGameLoopConfig>;
   /** Optional sudden death tie-breaker (not QSR default) */
   suddenDeathOnTie?: boolean;
+  /** Initiative Card holder for sudden death tie-breaker (optional) */
+  initiativeCardHolderSideId?: string;
 }
 
 export interface MissionRunResult {
@@ -116,7 +118,11 @@ export class GameController {
 
     // Calculate final scores
     const outcome = this.calculateMissionOutcome(sides, state);
-    this.applySuddenDeathIfEnabled(outcome, config.suddenDeathOnTie ?? false);
+    this.applySuddenDeathIfEnabled(
+      outcome,
+      config.suddenDeathOnTie ?? false,
+      config.initiativeCardHolderSideId
+    );
 
     return { log: this.log, state, outcome };
   }
@@ -168,7 +174,11 @@ export class GameController {
 
     // Calculate final scores
     const outcome = this.calculateMissionOutcome(sides, state);
-    this.applySuddenDeathIfEnabled(outcome, config.suddenDeathOnTie ?? false);
+    this.applySuddenDeathIfEnabled(
+      outcome,
+      config.suddenDeathOnTie ?? false,
+      config.initiativeCardHolderSideId
+    );
 
     return { log: this.log, state, outcome };
   }
@@ -182,7 +192,11 @@ export class GameController {
     return computeMissionOutcome(sides, state);
   }
 
-  private applySuddenDeathIfEnabled(outcome: MissionScoreResult, enabled: boolean): void {
+  private applySuddenDeathIfEnabled(
+    outcome: MissionScoreResult,
+    enabled: boolean,
+    initiativeCardHolderSideId?: string
+  ): void {
     if (!enabled) return;
     const entries = Object.entries(outcome.vpBySide);
     if (entries.length === 0) return;
@@ -192,6 +206,11 @@ export class GameController {
     outcome.tie = tied.length > 1;
     if (!outcome.tie) {
       outcome.winnerSideId = sorted[0][0];
+      return;
+    }
+    if (initiativeCardHolderSideId) {
+      outcome.winnerSideId = initiativeCardHolderSideId;
+      outcome.suddenDeathApplied = true;
       return;
     }
     if (this.manager.lastInitiativeWinnerSideId) {

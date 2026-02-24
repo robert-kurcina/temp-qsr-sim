@@ -9,38 +9,48 @@ status: "Planning"
 
 ## Character Statuses
 
-A character's condition on the battlefield is represented by various statuses. These statuses can change throughout the game due to actions, damage, or other effects. Statuses are often paired as opposites.
+Statuses are derived from tokens, actions, and game flow. The primary token types in QSR are **Wound**, **Delay**, and **Fear** (Hindrance types).
 
 ### Core Activation Statuses
 
-These statuses control a character's ability to act within a game turn.
+- **Ready:** The character can be activated this turn.
+- **Done:** The character has completed its activation this turn.
 
-*   **Ready:** The character is able to be activated this turn.
-*   **Done:** The character has completed their activation for the current turn.
+### Awareness & Control Statuses
 
-### Engagement Statuses
-
-These relate to a character's awareness and ability to react.
-
-*   **Attentive:** The character is aware and ready to react. This is the default state.
-*   **Distracted:** The character's attention is diverted, making them vulnerable. A character with one or more Delay tokens is considered Distracted.
+- **Attentive:** Default state; can React and use full options.
+- **Distracted:** 1+ Delay tokens. Loses Attentive status.
+- **Ordered:** Default state; not Disordered or Panicked.
+- **Disordered:** 2+ Fear tokens; loses Ordered status.
+- **Panicked:** 3+ Fear tokens; also Disordered.
 
 ### Concealment Statuses
 
-*   **Revealed:** The character is visible on the battlefield. This is the default state.
-*   **Hidden:** The character is concealed from view, requiring an opposing character to make a successful `INT` test to spot them.
+- **Revealed:** Visible on the battlefield.
+- **Hidden:** Concealed; opposing models must Detect to reveal.
 
-### Negative Statuses (Conditions)
+### Hindrance Statuses (Wound, Delay, Fear)
 
-These statuses are typically gained as a result of taking damage, failing tests, or from special abilities. They are often linked to acquiring tokens (Wound, Fear, Delay).
+Each Hindrance token imposes **−1 Modifier die** to Tests (except Damage Tests).  
+Hindrance tokens create the following derived statuses:
 
-| Status | Cause | Description |
+| Status | Threshold | Notes |
 | :--- | :--- | :--- |
-| **Delayed** | 1+ Delay tokens | The character's actions are postponed. |
-| **Distracted** | 1+ Delay tokens | The character is also considered Distracted. |
-| **Stunned** | 2+ Delay tokens | The character is unable to take most actions. |
-| **Hindered** | 1+ Delay, Wound, or Fear tokens | The character's movement is reduced. |
-| **Wounded** | 1+ Wound tokens | The character is injured, potentially suffering penalties. |
-| **Nervous** | 1+ Fear token | The character is uneasy. |
-| **Disordered** | 2+ Fear tokens | The character is actively shaken and may act erratically. |
-| **Panicked** | 3+ Fear tokens | The character is routing or cowering and is uncontrollable. |
+| **Wounded** | 1+ Wound | Indicates injury and contributes to Hindrance. |
+| **Delayed** | 1+ Delay | Character is Distracted. |
+| **Stunned** | 2+ Delay | Character is unable to take most actions. |
+| **Nervous** | 1+ Fear | No compulsory action. |
+| **Disordered** | 2+ Fear | No longer Ordered. |
+| **Panicked** | 3+ Fear | Disordered; may trigger compulsory behavior. |
+| **Eliminated** | 4+ Fear | Automatic elimination (panic collapse). |
+
+### KO / Eliminated
+
+- **KO’d:** Wounds ≥ SIZ.
+- **Eliminated:** Wounds ≥ SIZ + 3, or 4+ Fear tokens (panic collapse).
+
+### Token Summary
+
+- **Wound:** From Damage resolution.
+- **Delay:** From Reactions, special actions, or traits.
+- **Fear:** From failed Fear Tests, usually after Wounds or nearby KO/Elim events.
