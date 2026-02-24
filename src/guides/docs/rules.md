@@ -69,6 +69,7 @@ This document provides links to all rule modules for the MEST Tactics game syste
 | [Portraits](./rules-portraits) | Portrait system and callsigns |
 | [Materials](./rules-materials) | Required materials for play |
 | [Reference](./rules-reference) | Quick-reference sheets and tables |
+| [Game Data System](./rules-data) | How game data is bundled and used |
 
 ---
 

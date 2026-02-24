@@ -14,7 +14,9 @@
     "validate:user-content": "node scripts/validate-user-content.js",
     "generate:svg": "node --import tsx scripts/generate-svg-output.ts",
     "generate:portraits": "node --import tsx scripts/generate-portraits-index.ts",
-    "cli": "tsx src/cli.ts"
+    "cli": "tsx src/cli.ts",
+    "ai-battle": "tsx scripts/ai-battle-setup.ts",
+    "ai-battle:interactive": "tsx scripts/ai-battle-setup.ts --interactive"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",
