@@ -51,8 +51,10 @@ The goal is to determine if the intended target location is where the weapon lan
 
 ### Success/Failure
 
-- **Pass**: Weapon lands at targeted location
-- **Fail**: Weapon **Scatters** (repositions from target location)
+- **Pass**: Weapon lands at targeted location. **Cascades** = score (minimum 1 on any pass).
+- **Fail**: Weapon **Scatters** (repositions from target location). **No cascades** on failure.
+
+**Note:** For Unopposed tests, the score is compared against a target number of 0. Any positive score is a pass with cascades equal to the score (minimum 1).
 
 ---
 

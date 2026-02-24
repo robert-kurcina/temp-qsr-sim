@@ -1043,10 +1043,20 @@ function validateRangedCombatAction(
   // Check for ranged weapon
   const hasRangedWeapon = context.character.profile?.items?.some(item => {
     const classification = item.classification || item.class || '';
-    return classification.toLowerCase().includes('bow') || 
-           classification.toLowerCase().includes('thrown') ||
-           classification.toLowerCase().includes('firearm') ||
-           classification.toLowerCase().includes('range');
+    // Check for ranged weapon classifications
+    if (classification.toLowerCase().includes('bow') ||
+        classification.toLowerCase().includes('thrown') ||
+        classification.toLowerCase().includes('firearm') ||
+        classification.toLowerCase().includes('range') ||
+        classification.toLowerCase().includes('support')) {
+      return true;
+    }
+    // Check for Melee/Natural weapons with Throwable trait (can be thrown)
+    if ((classification.toLowerCase().includes('melee') || classification.toLowerCase().includes('natural')) &&
+        item.traits && item.traits.some(t => t.toLowerCase().includes('throwable'))) {
+      return true;
+    }
+    return false;
   });
 
   if (!hasRangedWeapon) {

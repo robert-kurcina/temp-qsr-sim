@@ -434,12 +434,52 @@ export class AIActionExecutor {
     }
 
     try {
+      // Calculate distance and ORM
+      const attackerPos = this.manager.battlefield.getCharacterPosition(character);
+      const targetPos = this.manager.battlefield.getCharacterPosition(target);
+      
+      if (!attackerPos || !targetPos) {
+        return this.createFailure(
+          { type: 'ranged_combat', target, weapon: selectedWeapon, reason: 'Ranged combat', priority: 3, requiresAP: true },
+          character,
+          'Missing positions'
+        );
+      }
+
+      const distance = Math.sqrt(
+        Math.pow(attackerPos.x - targetPos.x, 2) +
+        Math.pow(attackerPos.y - targetPos.y, 2)
+      );
+
+      // Parse weapon OR (e.g., "STR+2", "STR-1", or "12")
+      let optimalRange = 0;
+      const orValue = selectedWeapon.or;
+      if (typeof orValue === 'number') {
+        optimalRange = orValue;
+      } else if (typeof orValue === 'string') {
+        // Parse "STR+2" or "STR-1" format
+        const strMatch = orValue.match(/STR\s*([+\-])\s*(\d+)/i);
+        if (strMatch) {
+          const operator = strMatch[1];
+          const strBonus = parseInt(strMatch[2], 10);
+          const strAttr = character.finalAttributes?.str ?? character.attributes?.str ?? 2;
+          optimalRange = operator === '+' ? strAttr + strBonus : strAttr - strBonus;
+        } else {
+          // Try parsing as plain number
+          optimalRange = parseFloat(orValue) || 0;
+        }
+      }
+
+      // Calculate ORM (Optimal Range Multiple)
+      const orm = optimalRange > 0 ? Math.ceil(distance / optimalRange) - 1 : 0;
+
       const result = this.manager.executeRangedAttack(
         character,
         target,
         selectedWeapon,
         {
           allowTakeCover: false,
+          orm: Math.max(0, orm),
         }
       );
 
@@ -725,10 +765,17 @@ export class AIActionExecutor {
     const items = character.profile?.items ?? [];
     for (const item of items) {
       const classification = item.classification || item.class || '';
-      if (classification.toLowerCase().includes('bow') || 
+      // Check for ranged weapon classifications
+      if (classification.toLowerCase().includes('bow') ||
           classification.toLowerCase().includes('thrown') ||
           classification.toLowerCase().includes('firearm') ||
-          classification.toLowerCase().includes('range')) {
+          classification.toLowerCase().includes('range') ||
+          classification.toLowerCase().includes('support')) {
+        return item;
+      }
+      // Check for Melee/Natural weapons with Throwable trait (can be thrown)
+      if ((classification.toLowerCase().includes('melee') || classification.toLowerCase().includes('natural')) &&
+          item.traits && item.traits.some(t => t.toLowerCase().includes('throwable'))) {
         return item;
       }
     }

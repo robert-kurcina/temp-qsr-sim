@@ -33,6 +33,8 @@ As part of its first Action, a **Free Attentive** Attacker not using a Natural w
 ### Step 1: Hit Test
 Resolve this attack by performing the **Close Combat Hit Test** using **Opposed CCA** (Attacker's CCA vs. Defender's CCA).
 
+**Tie Rule:** If the Attacker's score equals the Defender's score, the **Attacker wins** (Active model advantage). The Attacker receives **1 cascade** minimum on a tie or win.
+
 ### Step 2: Apply Situational Modifiers
 Apply any Situational Test Modifiers as necessary:
 
@@ -55,12 +57,17 @@ Add the weapon's **Accuracy** bonus. This appears as **"Acc"** on the weapon's s
 
 ## To the Damage Test
 
-If the Hit Test was **passed**, note cascades and carry-overs for the Damage Test.
+If the Hit Test was **passed** (Attacker score ≥ Defender score), cascades are generated:
+- **Tie (score difference = 0):** Attacker wins and receives **1 cascade**
+- **Win (score difference > 0):** Attacker receives cascades equal to the score difference (minimum 1)
+
+These cascades carry over to the Damage Test and contribute to wounds.
 
 ### Step 4: Damage Test
 Perform the **Close Combat Damage Test** using the weapon's **Damage Rating** vs. target **FOR** (Fortitude).
 
-- Upon **pass**, the target is **Wounded**
+- Hit Test cascades are added as carry-over dice to the Damage Test
+- Upon **pass**, the target is **Wounded** (wounds = cascades - effective Armor Rating)
 - See the [Damage & Morale](./rules-damage-and-morale) section for more information
 
 ## Related Rules

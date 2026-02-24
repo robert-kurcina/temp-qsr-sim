@@ -440,10 +440,10 @@ class AIBattleRunner {
 
   private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number }> {
     const compositions = [
-      { archetypeName: 'Average', weight: 5, items: ['Sword, Broad', 'Shield, Small'] },
-      { archetypeName: 'Militia', weight: 4, items: ['Spear', 'Shield, Small'] },
+      { archetypeName: 'Average', weight: 5, items: ['Sword, Broad', 'Shield, Medium'] },
+      { archetypeName: 'Militia', weight: 4, items: ['Spear, Medium', 'Shield, Medium'] },
       { archetypeName: 'Veteran', weight: 2, items: ['Sword, Broad', 'Shield, Medium'] },
-      { archetypeName: 'Elite', weight: 1, items: ['Sword, Broad', 'Shield, Medium', 'Dagger'] },
+      { archetypeName: 'Elite', weight: 1, items: ['Sword, Broad', 'Shield, Medium', 'Daggers'] },
     ];
 
     const profiles = [];

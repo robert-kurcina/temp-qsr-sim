@@ -169,20 +169,41 @@ export class UtilityScorer {
       // Check if in range for ranged attack
       const inRange = this.isInRange(context.character, target.target, context.battlefield);
       if (inRange) {
-        let score = target.score;
-        
-        // Multiple Weapons bonus consideration
-        if (qualifiesForMultipleWeapons(context.character, false)) {
-          const bonus = getMultipleWeaponsBonus(context.character, 0, false);
-          score += bonus * 0.3; // Bonus adds to score
-        }
-        
-        actions.push({
-          action: 'ranged_combat',
-          target: target.target,
-          score: score,
-          factors: { ...target.factors, multipleWeapons: qualifiesForMultipleWeapons(context.character, false) },
+        // Check if character has a ranged weapon (including Melee/Natural with Throwable)
+        const hasRangedWeapon = context.character.profile?.items?.some(item => {
+          const classification = item.classification || item.class || '';
+          // Check for ranged weapon classifications
+          if (classification.toLowerCase().includes('bow') ||
+              classification.toLowerCase().includes('thrown') ||
+              classification.toLowerCase().includes('firearm') ||
+              classification.toLowerCase().includes('range') ||
+              classification.toLowerCase().includes('support')) {
+            return true;
+          }
+          // Check for Melee/Natural weapons with Throwable trait (can be thrown)
+          if ((classification.toLowerCase().includes('melee') || classification.toLowerCase().includes('natural')) &&
+              item.traits && item.traits.some(t => t.toLowerCase().includes('throwable'))) {
+            return true;
+          }
+          return false;
         });
+
+        if (hasRangedWeapon) {
+          let score = target.score;
+
+          // Multiple Weapons bonus consideration
+          if (qualifiesForMultipleWeapons(context.character, false)) {
+            const bonus = getMultipleWeaponsBonus(context.character, 0, false);
+            score += bonus * 0.3; // Bonus adds to score
+          }
+
+          actions.push({
+            action: 'ranged_combat',
+            target: target.target,
+            score: score,
+            factors: { ...target.factors, multipleWeapons: qualifiesForMultipleWeapons(context.character, false) },
+          });
+        }
       }
     }
 

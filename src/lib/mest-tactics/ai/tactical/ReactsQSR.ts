@@ -568,11 +568,23 @@ export class ReactEvaluator {
    * Check if character has ranged weapon
    */
   private hasRangedWeapon(character: Character): boolean {
-    return character.profile?.items?.some(
-      i => i.classification === 'Bow' || 
-           i.classification === 'Thrown' || 
-           i.classification === 'Range' ||
-           i.classification === 'Firearm'
-    ) ?? false;
+    const items = character.profile?.items ?? [];
+    return items.some(i => {
+      const classification = i.classification || i.class || '';
+      // Check for ranged weapon classifications
+      if (classification === 'Bow' ||
+          classification === 'Thrown' ||
+          classification === 'Range' ||
+          classification === 'Firearm' ||
+          classification === 'Support') {
+        return true;
+      }
+      // Check for Melee/Natural weapons with Throwable trait (can be thrown)
+      if ((classification === 'Melee' || classification === 'Natural') &&
+          i.traits && i.traits.some(t => t.toLowerCase().includes('throwable'))) {
+        return true;
+      }
+      return false;
+    });
   }
 }
