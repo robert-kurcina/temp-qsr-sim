@@ -189,6 +189,102 @@ The runtime does **not** currently consume these categories:
 - `tech_level`
 - `thrown_weapons`
 
+## 10.2 Prioritized Remediation Plan (Post-Audit)
+
+This plan supersedes ad-hoc backlog ordering and is now the execution order for closing audited gaps.
+
+### Priority Levels
+- **P0:** Correctness blockers (mission outcome, AI execution integrity)
+- **P1:** Source-parity mismatches (docs + rule naming/terminology)
+- **P2:** Rule-completeness gaps (indirect/blind/arc/react wiring)
+- **P3:** Architecture consolidation (single mission runtime path)
+- **P4:** Simulation quality validation (VERY_LARGE Mission 11)
+- **P5:** Data and type-system hygiene (non-blocking but required for maintainability)
+
+### Phase A (P0): Mission Outcome Correctness
+**Objective:** Ensure mission results are always resolved correctly and deterministically.
+
+1. Add explicit winner/tie resolution to mission outcome computation after VP totals are finalized.
+2. Enforce RP tie-break winner (`most RP wins`) when VP remains tied after RP→VP bonus application.
+3. Keep Initiative-card tie-breaker as optional setup flag (`default: false`), applied only when still tied after RP logic.
+4. Ensure `winnerSideId`, `tie`, and tie-break metadata are always populated consistently in mission outputs.
+
+**Exit Criteria**
+- Unit tests cover: clear VP winner, RP tie-break winner, unresolved tie with optional toggle off, optional Initiative-card tie-break with toggle on.
+- `runMission()` returns deterministic outcome metadata for all these cases.
+
+### Phase B (P0): AI Runtime Execution Integrity
+**Objective:** Make the AI game loop execute legal actions through correct engine APIs and lifecycle.
+
+1. Fix async decision flow in AI loop (`await` character decisions).
+2. Replace invalid AI executor call-sites to non-existent manager APIs (e.g., disengage).
+3. Enforce activation lifecycle in AI turns (`beginActivation` / AP spending / `endActivation`).
+4. Align declared AI action types with executable action handlers, or hard-map unsupported actions to valid fallbacks.
+
+**Exit Criteria**
+- AI loop runs without API/runtime errors.
+- AI activation/AP behavior matches manager lifecycle constraints.
+- Tests cover disengage path, async decision path, and unsupported-action fallback behavior.
+
+### Phase C (P1): Source-Parity Documentation Fixes
+**Objective:** Restore one-to-one terminology and rules mapping between `docs/*.txt` and `rules*.md`.
+
+1. Complete `rules-status.md` to match QSR status model.
+2. Correct mission terminology mismatches in `rules-missions-qai.md` (Power Nodes, Sabotage Points, Intelligence Caches, Security Switches, etc.).
+3. Add missing Mission 19 archetype restrictions.
+4. Fix scatter-direction documentation typo in `rules-scatter.md`.
+5. Update `qsr-traceability.md` entries that are now stale.
+
+**Exit Criteria**
+- Source-to-doc diff pass has no known terminology mismatches.
+- `qsr-traceability.md` status entries match current runtime behavior.
+
+### Phase D (P2): Indirect + Reactive Rule Completeness
+**Objective:** Complete missing QSR/Indirect rule behavior in runtime.
+
+1. Implement Blind indirect gating (`Spotter` / `Known`) and blind penalties.
+2. Apply blind scatter behavior (`unbiased` direction behavior and blind distance handling).
+3. Enforce midpoint/arc validation in indirect attack execution.
+4. Consolidate react naming to `React`/`Standard react` in engine-facing pathways.
+5. Extend declared-weapon constraints across reactive/interrupt/passive attack pathways.
+
+**Exit Criteria**
+- New tests cover blind attacks, spotter-known validation, arc validation, and reactive declared-weapon constraints.
+
+### Phase E (P3): Mission Runtime Consolidation
+**Objective:** Remove split mission execution paths and route mission runs through one authoritative runtime.
+
+1. Select one authoritative mission execution path and deprecate duplicate pathways.
+2. Wire `missionId` into runtime behavior so mission-specific mechanics execute in real runs.
+3. Wire mission keys/event-driven deltas to gameplay events instead of test-only paths.
+4. Ensure Objective Marker lifecycle is mission-wired (acquire/share/transfer/drop/destroy/scoring hooks).
+
+**Exit Criteria**
+- Mission execution for QAI_11..QAI_20 runs through one runtime path.
+- Mission-key VP/RP effects are driven by actual mission events.
+
+### Phase F (P4): VERY_LARGE Mission Validation
+**Objective:** Validate that AI-vs-AI produces tactically credible outcomes for Mission 11 at scale.
+
+1. Provide a repeatable script/config profile for `VERY_LARGE` + `QAI_11` with both sides using balanced doctrine.
+2. Validate movement, pathing, ranged, close combat, react, wait, detect, LOS/LOF under long-run sessions.
+3. Emit reproducible battle reports and aggregate outcome metrics.
+
+**Exit Criteria**
+- Scripted runs complete without runtime errors.
+- Outcome metrics show non-trivial combat resolution (not only movement/holds).
+
+### Phase G (P5): Data + Type Hygiene
+**Objective:** Reduce maintenance risk and close known compile/runtime drift.
+
+1. Establish explicit policy for currently-unused `gameData` keys: wire, defer, or remove from runtime expectations.
+2. Address high-value TypeScript drift in active runtime + scripts used for validation workflows.
+3. Keep unit suite green while improving type safety in the mission/AI paths.
+
+**Exit Criteria**
+- Documented disposition for each currently-unused data category.
+- Core runtime and required validation scripts are type-clean (or tracked exceptions are explicitly documented).
+
 ## 11. Mission Engine Roadmap
 
 ### Scope Summary
