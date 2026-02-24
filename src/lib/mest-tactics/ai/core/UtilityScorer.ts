@@ -96,6 +96,7 @@ export interface ScoredPosition {
     distance: number;
     visibility: number;
     cohesion: number;
+    threatRelief: number;
   };
 }
 
@@ -137,6 +138,7 @@ export class UtilityScorer {
   evaluateActions(context: AIContext): ScoredAction[] {
     const actions: ScoredAction[] = [];
     const attackActions: ScoredAction[] = [];
+    const loadout = this.getLoadoutProfile(context.character);
 
     // Evaluate attack actions first so move pressure can adapt when no legal attacks exist.
     const attackTargets = this.evaluateTargets(context);
@@ -145,6 +147,12 @@ export class UtilityScorer {
       const inMelee = this.isInMeleeRange(context.character, target.target, context.battlefield);
       if (inMelee) {
         let score = target.score * 1.2;
+        if (!loadout.hasMeleeWeapons && loadout.hasRangedWeapons) {
+          // Ranged-only models generally should avoid base-contact fights.
+          score *= 0.55;
+        } else if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+          score *= 1.2;
+        }
         
         // Multiple Weapons bonus consideration for melee
         if (qualifiesForMultipleWeapons(context.character, true)) {
@@ -176,6 +184,14 @@ export class UtilityScorer {
           // Keep this viable, but less preferred than immediate fire.
           score *= 0.8;
         }
+        if (rangedOpportunity.leanOpportunity) {
+          score += 1.2;
+        }
+        if (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons) {
+          score *= 1.12;
+        } else if (!loadout.hasRangedWeapons && loadout.hasMeleeWeapons) {
+          score *= 0.75;
+        }
 
         attackActions.push({
           action: 'ranged_combat',
@@ -186,6 +202,7 @@ export class UtilityScorer {
             multipleWeapons: qualifiesForMultipleWeapons(context.character, false),
             requiresConcentrate: rangedOpportunity.requiresConcentrate ? 1 : 0,
             orm: rangedOpportunity.orm,
+            leanOpportunity: rangedOpportunity.leanOpportunity ? 1 : 0,
           },
         });
       }
@@ -197,8 +214,12 @@ export class UtilityScorer {
     const nearestEnemyDistance = characterPos
       ? this.distanceToClosestAttackableEnemy(characterPos, context)
       : Number.POSITIVE_INFINITY;
-    const moveMultiplier = attackActions.length > 0 ? 0.8 : 1.4;
-    const advanceBonus = nearestEnemyDistance > 10 ? 0.7 : 0;
+    const moveMultiplier = attackActions.length > 0
+      ? (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons ? 0.92 : 0.8)
+      : (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons ? 1.85 : 1.4);
+    const advanceBonus = nearestEnemyDistance > 10
+      ? (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons ? 1.25 : 0.7)
+      : 0;
     for (const pos of movePositions.slice(0, 3)) {
       actions.push({
         action: 'move',
@@ -232,6 +253,44 @@ export class UtilityScorer {
     // Evaluate support actions
     const supportActions = this.evaluateSupportActions(context);
     actions.push(...supportActions);
+
+    // Prefer Wait when no immediate attacks are available and ranged/passive play is possible.
+    if (
+      attackActions.length === 0 &&
+      !context.character.state.isWaiting &&
+      context.character.state.isAttentive &&
+      context.character.state.isOrdered &&
+      !context.character.state.isKOd &&
+      !context.character.state.isEliminated &&
+      !context.battlefield.isEngaged?.(context.character) &&
+      loadout.hasRangedWeapons
+    ) {
+      actions.push({
+        action: 'wait',
+        score: 2.6 + (context.config.caution * 1.2),
+        factors: { passiveReadiness: 1, caution: context.config.caution },
+      });
+    }
+    if (
+      attackActions.length > 0 &&
+      !context.character.state.isWaiting &&
+      context.character.state.isAttentive &&
+      context.character.state.isOrdered &&
+      !context.battlefield.isEngaged?.(context.character) &&
+      loadout.hasRangedWeapons
+    ) {
+      const currentPos = context.battlefield.getCharacterPosition(context.character);
+      const exposure = currentPos ? this.countEnemySightLinesToPosition(currentPos, context) : 0;
+      const waitScore = 1.8 + (context.config.caution * 1.6) + (exposure * 0.25);
+      const bestAttackScore = attackActions[0]?.score ?? 0;
+      if (waitScore >= bestAttackScore * 0.72) {
+        actions.push({
+          action: 'wait',
+          score: waitScore,
+          factors: { passiveReadiness: 1, caution: context.config.caution, exposure },
+        });
+      }
+    }
 
     // Sort by score
     actions.sort((a, b) => b.score - a.score);
@@ -273,17 +332,19 @@ export class UtilityScorer {
       const distanceScore = this.evaluateDistance(pos, context);
       const visibility = this.evaluateVisibility(pos, context);
       const cohesion = this.evaluateCohesion(pos, context);
+      const threatRelief = this.evaluateThreatRelief(pos, context);
 
       const score =
         cover * this.weights.coverValue +
         distanceScore * this.weights.distanceToTarget +
+        threatRelief * (1.5 + this.weights.riskAvoidance) +
         visibility * 0.5 +
         cohesion * this.weights.cohesionValue;
 
       positions.push({
         position: pos,
         score,
-        factors: { cover, distance: distanceScore, visibility, cohesion },
+        factors: { cover, distance: distanceScore, visibility, cohesion, threatRelief },
       });
     }
 
@@ -373,9 +434,12 @@ export class UtilityScorer {
   // ============================================================================
 
   private evaluateCover(position: Position, context: AIContext): number {
-    const characterPos = context.battlefield.getCharacterPosition(context.character);
-    if (!characterPos) return 0;
-
+    const loadout = this.getLoadoutProfile(context.character);
+    const coverPriority = loadout.hasRangedWeapons && !loadout.hasMeleeWeapons
+      ? 1.2
+      : loadout.hasMeleeWeapons && !loadout.hasRangedWeapons
+        ? 0.9
+        : 1.0;
     // Check for cover from nearest enemy
     let bestCover = 0;
     for (const enemy of context.enemies) {
@@ -383,13 +447,39 @@ export class UtilityScorer {
       const enemyPos = context.battlefield.getCharacterPosition(enemy);
       if (!enemyPos) continue;
 
-      // Simplified cover check - use LOS as proxy
-      // TODO: Use actual cover detection when available
-      const hasLOS = context.battlefield.hasLineOfSight(characterPos, position);
-      if (!hasLOS) bestCover = Math.max(bestCover, 1.0); // Full cover if no LOS
+      // Simplified cover check - LOS from enemy to candidate position.
+      const hasLOS = context.battlefield.hasLineOfSight(enemyPos, position);
+      if (!hasLOS) {
+        bestCover = Math.max(bestCover, 1.0); // Full cover if no LOS
+      }
     }
 
-    return bestCover;
+    return Math.min(1.5, bestCover * coverPriority);
+  }
+
+  private evaluateThreatRelief(position: Position, context: AIContext): number {
+    const currentPos = context.battlefield.getCharacterPosition(context.character);
+    if (!currentPos) return 0;
+
+    const currentExposure = this.countEnemySightLinesToPosition(currentPos, context);
+    const nextExposure = this.countEnemySightLinesToPosition(position, context);
+    if (currentExposure <= 0) return 0;
+
+    const delta = (currentExposure - nextExposure) / currentExposure;
+    return Math.max(-1, Math.min(1, delta));
+  }
+
+  private countEnemySightLinesToPosition(position: Position, context: AIContext): number {
+    let count = 0;
+    for (const enemy of context.enemies) {
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      if (context.battlefield.hasLineOfSight(enemyPos, position)) {
+        count += 1;
+      }
+    }
+    return count;
   }
 
   private evaluateDistance(position: Position, context: AIContext): number {
@@ -408,9 +498,17 @@ export class UtilityScorer {
       ? improvement / currentDistance
       : 0;
 
-    const hasRanged = this.getRangedWeapons(context.character).length > 0;
-    const preferredDistance = hasRanged ? 10 : 2;
-    const spread = hasRanged ? 10 : 6;
+    const loadout = this.getLoadoutProfile(context.character);
+    const preferredDistance = loadout.hasRangedWeapons && !loadout.hasMeleeWeapons
+      ? 10
+      : loadout.hasMeleeWeapons && !loadout.hasRangedWeapons
+        ? 1.5
+        : 6;
+    const spread = loadout.hasRangedWeapons && !loadout.hasMeleeWeapons
+      ? 10
+      : loadout.hasMeleeWeapons && !loadout.hasRangedWeapons
+        ? 4
+        : 8;
     const preferredBandScore = Math.max(0, 1 - Math.abs(nearestDistance - preferredDistance) / spread);
 
     return Math.max(0, Math.min(1.5, 0.15 + preferredBandScore * 0.45 + Math.max(-0.5, progressScore) * 0.9));
@@ -636,18 +734,19 @@ export class UtilityScorer {
   private evaluateRangedOpportunity(
     context: AIContext,
     target: Character
-  ): { canAttack: boolean; requiresConcentrate: boolean; orm: number } {
+  ): { canAttack: boolean; requiresConcentrate: boolean; orm: number; leanOpportunity: boolean } {
     const attackerPos = context.battlefield.getCharacterPosition(context.character);
     const targetPos = context.battlefield.getCharacterPosition(target);
     if (!attackerPos || !targetPos) {
-      return { canAttack: false, requiresConcentrate: false, orm: 0 };
+      return { canAttack: false, requiresConcentrate: false, orm: 0, leanOpportunity: false };
     }
     if (context.config.perCharacterFovLos && !this.hasLOS(context.character, target, context.battlefield)) {
-      return { canAttack: false, requiresConcentrate: false, orm: 0 };
+      return { canAttack: false, requiresConcentrate: false, orm: 0, leanOpportunity: false };
     }
 
     const distance = Math.hypot(attackerPos.x - targetPos.x, attackerPos.y - targetPos.y);
     const weapons = this.getRangedWeapons(context.character);
+    const leanOpportunity = this.canLeanFromCover(context.character, target, context.battlefield);
     for (const weapon of weapons) {
       const weaponOr = parseWeaponOptimalRangeMu(context.character, weapon);
       const range = evaluateRangeWithVisibility(distance, weaponOr, {
@@ -661,16 +760,60 @@ export class UtilityScorer {
         canAttack: true,
         requiresConcentrate: range.requiresConcentrate,
         orm: range.requiresConcentrate ? range.concentratedOrm : range.orm,
+        leanOpportunity,
       };
     }
 
-    return { canAttack: false, requiresConcentrate: false, orm: 0 };
+    return { canAttack: false, requiresConcentrate: false, orm: 0, leanOpportunity: false };
+  }
+
+  private canLeanFromCover(attacker: Character, target: Character, battlefield: Battlefield): boolean {
+    const attackerPos = battlefield.getCharacterPosition(attacker);
+    const targetPos = battlefield.getCharacterPosition(target);
+    if (!attackerPos || !targetPos) return false;
+
+    const attackerModel = {
+      id: attacker.id,
+      position: attackerPos,
+      baseDiameter: getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3),
+      siz: attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3,
+    };
+    const targetModel = {
+      id: target.id,
+      position: targetPos,
+      baseDiameter: getBaseDiameterFromSiz(target.finalAttributes.siz ?? target.attributes.siz ?? 3),
+      siz: target.finalAttributes.siz ?? target.attributes.siz ?? 3,
+    };
+    const coverFromTarget = SpatialRules.getCoverResult(battlefield, targetModel, attackerModel);
+    return coverFromTarget.hasLOS && (coverFromTarget.hasDirectCover || coverFromTarget.hasInterveningCover);
   }
 
   private getRangedWeapons(character: Character) {
-    const rawItems = (character.profile?.items?.length ? character.profile.items : character.profile?.equipment) ?? [];
+    const rawItems = [
+      ...(character.profile?.items ?? []),
+      ...(character.profile?.equipment ?? []),
+      ...(character.profile?.inHandItems ?? []),
+      ...(character.profile?.stowedItems ?? []),
+    ];
     const items = rawItems.filter((item): item is Item => Boolean(item));
     return items.filter(item => this.isRangedWeapon(item));
+  }
+
+  private getMeleeWeapons(character: Character) {
+    const rawItems = [
+      ...(character.profile?.items ?? []),
+      ...(character.profile?.equipment ?? []),
+      ...(character.profile?.inHandItems ?? []),
+      ...(character.profile?.stowedItems ?? []),
+    ];
+    const items = rawItems.filter((item): item is Item => Boolean(item));
+    return items.filter(item => this.isMeleeWeapon(item));
+  }
+
+  private getLoadoutProfile(character: Character): { hasMeleeWeapons: boolean; hasRangedWeapons: boolean } {
+    const hasRangedWeapons = this.getRangedWeapons(character).length > 0;
+    const hasMeleeWeapons = this.getMeleeWeapons(character).length > 0;
+    return { hasMeleeWeapons, hasRangedWeapons };
   }
 
   private isRangedWeapon(item: Item): boolean {
@@ -690,6 +833,12 @@ export class UtilityScorer {
       Array.isArray(item.traits) &&
       item.traits.some(t => t.toLowerCase().includes('throwable'))
     );
+  }
+
+  private isMeleeWeapon(item: Item): boolean {
+    if (!item) return false;
+    const classification = String(item.classification ?? item.class ?? '').toLowerCase();
+    return classification.includes('melee') || classification.includes('natural');
   }
 
   private sampleStrategicPositions(context: AIContext, characterPos: Position): Position[] {

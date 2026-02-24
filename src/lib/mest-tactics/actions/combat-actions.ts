@@ -1150,7 +1150,7 @@ export function executeCloseCombatAttack(
     if (options.defend && defender.state.isAttentive) {
       deps.applyPassiveOptionCost(defender);
     }
-    return { hit: false, hitTestResult };
+    return { hit: false, hitTestResult, context: mergedContext };
   }
 
   if (weapon.traits?.length) {
@@ -1266,5 +1266,6 @@ export function executeCloseCombatAttack(
     damageResolution,
     bonusActionOptions,
     bonusActionOutcome,
+    context: mergedContext,
   };
 }

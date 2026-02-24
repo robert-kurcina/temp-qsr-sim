@@ -449,24 +449,23 @@ export class StealthEvaluator {
   evaluateHide(context: AIContext): HideDecision {
     const character = context.character;
 
-    // Can only hide if behind cover
-    if (!character.state.isInCover) {
+    // Can only hide if in/behind cover against at least one enemy.
+    if (!this.hasCoverFromEnemy(character, context)) {
       return { shouldHide: false, reason: 'Not behind cover' };
     }
 
     // Check if enemies can see character
     const visibleToEnemy = this.isVisibleToEnemy(character, context);
-    if (visibleToEnemy) {
-      return { shouldHide: false, reason: 'Visible to enemy' };
-    }
-
-    // Check if already hidden
     if (character.state.isHidden) {
       return { shouldHide: false, reason: 'Already hidden' };
     }
 
     // Evaluate benefit of hiding
-    let priority = 2.0;
+    let priority = 2.2;
+    if (visibleToEnemy) {
+      // Hiding while visible is still valuable when cover exists (costs AP in rules).
+      priority += 1.1;
+    }
 
     // Higher priority if low health
     const siz = character.finalAttributes.siz ?? 3;
@@ -482,7 +481,7 @@ export class StealthEvaluator {
     }
 
     return {
-      shouldHide: priority > 3.0,
+      shouldHide: priority >= 3.0,
       reason: `Hide behind cover (priority: ${priority.toFixed(1)})`,
       priority,
     };
@@ -510,14 +509,30 @@ export class StealthEvaluator {
       return { shouldDetect: false, targets: [], reason: 'Not enough AP' };
     }
 
-    // Evaluate priority based on threat
-    let priority = 2.0;
+    // Evaluate priority based on threat and practical detect opportunity.
+    const charPos = context.battlefield.getCharacterPosition(character);
+    const nearbyHiddenCount = charPos
+      ? hiddenEnemies.filter(enemy => {
+          const enemyPos = context.battlefield.getCharacterPosition(enemy);
+          if (!enemyPos) return false;
+          const distance = Math.hypot(charPos.x - enemyPos.x, charPos.y - enemyPos.y);
+          return distance <= 16;
+        }).length
+      : 0;
+
+    let priority = 2.2;
     if (hiddenEnemies.length >= 2) {
-      priority += 1.0;
+      priority += 0.6;
+    }
+    if (nearbyHiddenCount > 0) {
+      priority += 0.5;
+    }
+    if (character.state.isInCover) {
+      priority += 0.2;
     }
 
     return {
-      shouldDetect: priority > 2.5,
+      shouldDetect: priority >= 2.4,
       targets: hiddenEnemies,
       priority,
       reason: `Detect ${hiddenEnemies.length} hidden enemy(ies)`,
@@ -553,6 +568,35 @@ export class StealthEvaluator {
 
       const hasLOS = SpatialRules.hasLineOfSight(context.battlefield, enemyModel, charModel);
       if (hasLOS) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private hasCoverFromEnemy(character: Character, context: AIContext): boolean {
+    const charPos = context.battlefield.getCharacterPosition(character);
+    if (!charPos) return false;
+    const charModel = {
+      id: character.id,
+      position: charPos,
+      baseDiameter: getBaseDiameterFromSiz(character.finalAttributes.siz ?? 3),
+      siz: character.finalAttributes.siz ?? 3,
+    };
+
+    for (const enemy of context.enemies) {
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      const enemyModel = {
+        id: enemy.id,
+        position: enemyPos,
+        baseDiameter: getBaseDiameterFromSiz(enemy.finalAttributes.siz ?? 3),
+        siz: enemy.finalAttributes.siz ?? 3,
+      };
+      const cover = SpatialRules.getCoverResult(context.battlefield, enemyModel, charModel);
+      if (cover.hasLOS && (cover.hasDirectCover || cover.hasInterveningCover)) {
         return true;
       }
     }

@@ -195,6 +195,16 @@ export interface StratagemModifiers {
   concentratePreference: number; // Preference for Concentrate action
 }
 
+export interface LoadoutProfile {
+  hasMeleeWeapons: boolean;
+  hasRangedWeapons: boolean;
+}
+
+export interface DoctrineAIPressure {
+  aggression: number;
+  caution: number;
+}
+
 /**
  * Calculate stratagem modifiers from Tactical Doctrine
  */
@@ -273,6 +283,54 @@ export function calculateStratagemModifiers(doctrine: TacticalDoctrine): Stratag
   }
 
   return modifiers;
+}
+
+function clampUnit(value: number): number {
+  return Math.max(0.1, Math.min(0.9, value));
+}
+
+/**
+ * Convert doctrine + model loadout into AI pressure controls.
+ *
+ * This keeps doctrine as the source of truth while letting each model adapt
+ * to what it can actually do in the current battle.
+ */
+export function deriveDoctrineAIPressure(
+  doctrine: TacticalDoctrine,
+  loadout: LoadoutProfile
+): DoctrineAIPressure {
+  const components = getDoctrineComponents(doctrine);
+  const modifiers = calculateStratagemModifiers(doctrine);
+
+  let aggression = 0.5 + (modifiers.riskTolerance - 1) * 0.35;
+  let caution = 0.5 + (modifiers.survivalValue - 1) * 0.35;
+
+  if (components.engagement === EngagementStyle.Melee) {
+    aggression += 0.08;
+    caution -= 0.04;
+  } else if (components.engagement === EngagementStyle.Ranged) {
+    aggression -= 0.04;
+    caution += 0.08;
+  }
+
+  if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+    aggression += 0.14;
+    caution -= 0.06;
+  } else if (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons) {
+    aggression -= 0.06;
+    caution += 0.14;
+  } else if (loadout.hasMeleeWeapons && loadout.hasRangedWeapons) {
+    aggression += 0.03;
+    caution += 0.03;
+  } else {
+    aggression -= 0.12;
+    caution += 0.16;
+  }
+
+  return {
+    aggression: clampUnit(aggression),
+    caution: clampUnit(caution),
+  };
 }
 
 // ============================================================================

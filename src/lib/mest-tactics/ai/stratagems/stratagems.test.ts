@@ -7,6 +7,7 @@ import {
   TacticalDoctrine,
   DEFAULT_TACTICAL_DOCTRINE,
   calculateStratagemModifiers,
+  deriveDoctrineAIPressure,
   TACTICAL_DOCTRINE_INFO,
   getDoctrinesByEngagement,
   validateStratagems,
@@ -135,6 +136,32 @@ describe('AI Tactical Doctrine', () => {
       const modifiers = calculateStratagemModifiers(TacticalDoctrine.Assault);
       expect(modifiers.riskTolerance).toBeGreaterThan(1);
       expect(modifiers.pushAdvantage).toBe(true);
+    });
+
+    it('should adapt doctrine pressure for ranged-only loadout', () => {
+      const rangedOnly = deriveDoctrineAIPressure(TacticalDoctrine.Watchman, {
+        hasMeleeWeapons: false,
+        hasRangedWeapons: true,
+      });
+      const meleeOnly = deriveDoctrineAIPressure(TacticalDoctrine.Watchman, {
+        hasMeleeWeapons: true,
+        hasRangedWeapons: false,
+      });
+      expect(rangedOnly.caution).toBeGreaterThan(meleeOnly.caution);
+      expect(rangedOnly.aggression).toBeLessThan(meleeOnly.aggression);
+    });
+
+    it('should adapt doctrine pressure for melee-only loadout', () => {
+      const meleeOnly = deriveDoctrineAIPressure(TacticalDoctrine.Juggernaut, {
+        hasMeleeWeapons: true,
+        hasRangedWeapons: false,
+      });
+      const rangedOnly = deriveDoctrineAIPressure(TacticalDoctrine.Juggernaut, {
+        hasMeleeWeapons: false,
+        hasRangedWeapons: true,
+      });
+      expect(meleeOnly.aggression).toBeGreaterThan(rangedOnly.aggression);
+      expect(meleeOnly.caution).toBeLessThan(rangedOnly.caution);
     });
   });
 

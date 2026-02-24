@@ -22,6 +22,8 @@ export interface DetectOptions {
   detectOrMu?: number;
   allowReposition?: boolean;
   revealReposition?: (options: RevealRepositionOptions) => PositionResult | null;
+  attackerLeaning?: boolean;
+  targetLeaning?: boolean;
 }
 
 export interface RevealExposureOptions {
@@ -138,8 +140,16 @@ export function attemptDetect(
     }
   }
 
-  const attackerParticipant: TestParticipant = { character: attacker, attribute: 'ref' };
-  const defenderParticipant: TestParticipant = { character: target, attribute: 'ref' };
+  const attackerParticipant: TestParticipant = {
+    character: attacker,
+    attribute: 'ref',
+    penaltyDice: options.attackerLeaning ? { base: 1 } : undefined,
+  };
+  const defenderParticipant: TestParticipant = {
+    character: target,
+    attribute: 'ref',
+    penaltyDice: options.targetLeaning ? { base: 1 } : undefined,
+  };
   const result = resolveTest(attackerParticipant, defenderParticipant);
   if (!result.pass) {
     return { success: false, result, reason: 'Detect test failed.' };

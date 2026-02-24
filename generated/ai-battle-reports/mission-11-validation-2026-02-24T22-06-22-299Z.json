@@ -1,0 +1,180 @@
+{
+  "missionId": "QAI_11",
+  "gameSize": "SMALL",
+  "densityRatio": 50,
+  "tacticalDoctrine": "operative",
+  "loadoutProfile": "default",
+  "lighting": "Day, Clear",
+  "visibilityOrMu": 16,
+  "maxOrm": 3,
+  "allowConcentrateRangeExtension": true,
+  "perCharacterFovLos": false,
+  "runs": 1,
+  "baseSeed": 424242,
+  "winners": {
+    "Alpha": 1
+  },
+  "totals": {
+    "totalActions": 160,
+    "moves": 5,
+    "closeCombats": 0,
+    "rangedCombats": 155,
+    "disengages": 0,
+    "waits": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "eliminations": 0,
+    "kos": 6,
+    "turnsCompleted": 6,
+    "losChecks": 155,
+    "lofChecks": 155,
+    "totalPathLength": 19.605551275463988,
+    "modelsMoved": 3
+  },
+  "averages": {
+    "totalActions": 160,
+    "moves": 5,
+    "closeCombats": 0,
+    "rangedCombats": 155,
+    "disengages": 0,
+    "waits": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "eliminations": 0,
+    "kos": 6,
+    "turnsCompleted": 6,
+    "losChecks": 155,
+    "lofChecks": 155,
+    "totalPathLength": 19.61,
+    "modelsMoved": 3
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runtimeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": false,
+    "react": false,
+    "wait": false,
+    "detect": false,
+    "los": true,
+    "lof": true
+  },
+  "probeCoverage": {
+    "movement": false,
+    "pathfinding": false,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 6
+        },
+        {
+          "name": "Bravo",
+          "remaining": 4
+        }
+      ],
+      "stats": {
+        "totalActions": 160,
+        "moves": 5,
+        "closeCombats": 0,
+        "rangedCombats": 155,
+        "disengages": 0,
+        "waits": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "eliminations": 0,
+        "kos": 6,
+        "turnsCompleted": 6,
+        "losChecks": 155,
+        "lofChecks": 155,
+        "totalPathLength": 19.605551275463988,
+        "modelsMoved": 3
+      },
+      "usage": {
+        "modelCount": 16,
+        "modelsMoved": 3,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 19.605551275463988,
+        "averagePathLengthPerMovedModel": 6.535183758487996,
+        "averagePathLengthPerModel": 1.2253469547164992,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 8,
+            "moveActions": 2,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-5-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 8,
+            "moveActions": 2,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-5-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 3.6055512754639896,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          }
+        ]
+      }
+    }
+  ],
+  "generatedAt": "2026-02-24T22:06:22.298Z"
+}

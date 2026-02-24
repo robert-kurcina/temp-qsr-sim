@@ -16,6 +16,7 @@ import * as readline from 'readline';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Character } from '../src/lib/mest-tactics/core/Character';
+import type { Item } from '../src/lib/mest-tactics/core/Item';
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
@@ -23,12 +24,26 @@ import { Position } from '../src/lib/mest-tactics/battlefield/Position';
 import { SpatialRules } from '../src/lib/mest-tactics/battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../src/lib/mest-tactics/battlefield/spatial/size-utils';
 import { buildAssembly, buildProfile, GameSize } from '../src/lib/mest-tactics/mission/assembly-builder';
-import { TacticalDoctrine, TACTICAL_DOCTRINE_INFO, getDoctrinesByEngagement } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
+import {
+  TacticalDoctrine,
+  TACTICAL_DOCTRINE_INFO,
+  getDoctrinesByEngagement,
+  deriveDoctrineAIPressure,
+} from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../src/lib/mest-tactics/ai/core/CharacterAI';
 import { AIContext, AIControllerConfig, CharacterKnowledge } from '../src/lib/mest-tactics/ai/core/AIController';
 import { attemptHide, attemptDetect } from '../src/lib/mest-tactics/status/concealment';
 import { LOFOperations } from '../src/lib/mest-tactics/battlefield/los/LOFOperations';
 import { PathfindingEngine } from '../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
+import {
+  applyBonusAction,
+  type BonusActionOption,
+  type BonusActionOutcome,
+  type BonusActionSelection,
+  type BonusActionType,
+} from '../src/lib/mest-tactics/actions/bonus-actions';
+import type { PassiveEvent, PassiveOption, PassiveOptionType } from '../src/lib/mest-tactics/status/passive-options';
+import type { TestContext } from '../src/lib/mest-tactics/utils/TestContext';
 import {
   LightingCondition,
   evaluateRangeWithVisibility,
@@ -63,6 +78,7 @@ interface SideConfig {
   bp: number;
   modelCount: number;
   tacticalDoctrine: TacticalDoctrine;
+  loadoutProfile?: 'default' | 'melee_only';
   assemblyName: string;
   aggression: number;
   caution: number;
@@ -126,6 +142,103 @@ interface UsageMetrics {
   averagePathLengthPerModel: number;
   topPathModels: ModelUsageStats[];
   modelUsage: ModelUsageStats[];
+}
+
+interface CharacterSection {
+  id: string;
+  name: string;
+  profile: {
+    name: string;
+    archetype: string;
+    attributes: Record<string, number>;
+    finalAttributes: Record<string, number>;
+    totalBp?: number;
+    burdenTotal?: number;
+    equipment: Array<{
+      name: string;
+      classification?: string;
+      traits?: string[];
+    }>;
+  };
+  startPosition?: Position;
+  endPosition?: Position;
+  state: ModelStateAudit;
+}
+
+interface AssemblySection {
+  name: string;
+  totalBP: number;
+  characters: CharacterSection[];
+}
+
+interface SideSection {
+  name: string;
+  assemblies: AssemblySection[];
+}
+
+interface BattlefieldLayoutSection {
+  widthMu: number;
+  heightMu: number;
+  densityRatio: number;
+  terrainFeatures: Array<{
+    id: string;
+    type: string;
+    metaName?: string;
+    movement?: string;
+    los?: string;
+    rotationDegrees?: number;
+    vertices: Position[];
+  }>;
+  deployments: Array<{
+    characterId: string;
+    characterName: string;
+    sideName: string;
+    assemblyName: string;
+    startPosition?: Position;
+    endPosition?: Position;
+  }>;
+}
+
+interface NestedSections {
+  sides: SideSection[];
+  battlefieldLayout: BattlefieldLayoutSection;
+}
+
+interface RuleTypeBreakdown {
+  [type: string]: number;
+}
+
+interface BonusActionMetrics {
+  opportunities: number;
+  optionsOffered: number;
+  optionsAvailable: number;
+  offeredByType: RuleTypeBreakdown;
+  availableByType: RuleTypeBreakdown;
+  executed: number;
+  executedByType: RuleTypeBreakdown;
+}
+
+interface PassiveOptionMetrics {
+  opportunities: number;
+  optionsOffered: number;
+  optionsAvailable: number;
+  offeredByType: RuleTypeBreakdown;
+  availableByType: RuleTypeBreakdown;
+  used: number;
+  usedByType: RuleTypeBreakdown;
+}
+
+interface SituationalModifierMetrics {
+  testsObserved: number;
+  modifiedTests: number;
+  modifiersApplied: number;
+  byType: RuleTypeBreakdown;
+}
+
+interface AdvancedRuleMetrics {
+  bonusActions: BonusActionMetrics;
+  passiveOptions: PassiveOptionMetrics;
+  situationalModifiers: SituationalModifierMetrics;
 }
 
 interface ModelStateAudit {
@@ -272,6 +385,8 @@ export interface BattleReport {
   finalCounts: Array<{ name: string; remaining: number }>;
   stats: BattleStats;
   usage?: UsageMetrics;
+  nestedSections: NestedSections;
+  advancedRules: AdvancedRuleMetrics;
   log: BattleLogEntry[];
   audit?: BattleAuditTrace;
   seed?: number;
@@ -293,6 +408,13 @@ interface ValidationAggregateReport {
   missionId: string;
   gameSize: GameSize;
   densityRatio: number;
+  tacticalDoctrine: string;
+  sideDoctrines: Array<{
+    sideName: string;
+    tacticalDoctrine: TacticalDoctrine;
+    loadoutProfile: 'default' | 'melee_only';
+  }>;
+  loadoutProfile: 'default' | 'melee_only';
   lighting: LightingCondition;
   visibilityOrMu: number;
   maxOrm: number;
@@ -303,6 +425,8 @@ interface ValidationAggregateReport {
   winners: Record<string, number>;
   totals: BattleStats;
   averages: BattleStats;
+  advancedRuleTotals: AdvancedRuleMetrics;
+  advancedRuleAverages: AdvancedRuleMetrics;
   /** Union of runtime and probe coverage (legacy field). */
   coverage: ValidationCoverage;
   /** Coverage observed in actual battle runs only. */
@@ -327,6 +451,8 @@ interface ValidationAggregateReport {
       averagePathLengthPerModel: number;
       topPathModels: ModelUsageStats[];
     };
+    nestedSections: NestedSections;
+    advancedRules: AdvancedRuleMetrics;
   }>;
   generatedAt: string;
 }
@@ -349,16 +475,13 @@ const GAME_SIZE_CONFIG: Record<GameSize, {
 
 // Map Tactical Doctrine to AI config
 function doctrineToAIConfig(doctrine: TacticalDoctrine): Partial<AIControllerConfig> {
-  const components = {
-    melee: ['juggernaut', 'berserker', 'raider', 'crusader', 'warrior', 'guardian', 'duelist', 'veteran_melee', 'defender'].includes(doctrine),
-    ranged: ['bombard', 'hunter', 'sniper', 'archer', 'gunner', 'sentinel', 'sharpshooter', 'marksman', 'watchman'].includes(doctrine),
-    aggressive: ['juggernaut', 'berserker', 'raider', 'bombard', 'hunter', 'sniper', 'assault', 'soldier', 'scout', 'crusader', 'duelist', 'archer', 'sharpshooter', 'assault', 'tactician', 'skirmisher'].includes(doctrine),
-    defensive: ['raider', 'guardian', 'defender', 'sniper', 'sentinel', 'watchman', 'scout', 'strategist', 'warden'].includes(doctrine),
-  };
-
+  const pressure = deriveDoctrineAIPressure(doctrine, {
+    hasMeleeWeapons: true,
+    hasRangedWeapons: true,
+  });
   return {
-    aggression: components.aggressive ? 0.7 : components.defensive ? 0.3 : 0.5,
-    caution: components.defensive ? 0.7 : components.aggressive ? 0.3 : 0.5,
+    aggression: pressure.aggression,
+    caution: pressure.caution,
   };
 }
 
@@ -402,6 +525,70 @@ function createEmptyStats(): BattleStats {
   };
 }
 
+function createEmptyAdvancedRuleMetrics(): AdvancedRuleMetrics {
+  return {
+    bonusActions: {
+      opportunities: 0,
+      optionsOffered: 0,
+      optionsAvailable: 0,
+      offeredByType: {},
+      availableByType: {},
+      executed: 0,
+      executedByType: {},
+    },
+    passiveOptions: {
+      opportunities: 0,
+      optionsOffered: 0,
+      optionsAvailable: 0,
+      offeredByType: {},
+      availableByType: {},
+      used: 0,
+      usedByType: {},
+    },
+    situationalModifiers: {
+      testsObserved: 0,
+      modifiedTests: 0,
+      modifiersApplied: 0,
+      byType: {},
+    },
+  };
+}
+
+const CONTEXT_MODIFIER_KEYS: Record<string, string> = {
+  isCharge: 'charge',
+  isDefending: 'defend',
+  isOverreach: 'overreach',
+  isSudden: 'sudden',
+  hasSuddenness: 'suddenness',
+  isConcentrating: 'concentrate',
+  isFocusing: 'focus',
+  isBlindAttack: 'blind_attack',
+  assistingModels: 'assisting_models',
+  outnumberAdvantage: 'outnumber_advantage',
+  hasHighGround: 'high_ground',
+  isCornered: 'cornered',
+  isFlanked: 'flanked',
+  orm: 'distance_orm',
+  isPointBlank: 'point_blank',
+  hasElevationAdvantage: 'elevation_advantage',
+  obscuringModels: 'obscuring_models',
+  isLeaning: 'leaning',
+  isTargetLeaning: 'target_leaning',
+  hasInterveningCover: 'intervening_cover',
+  hasDirectCover: 'direct_cover',
+  hasHardCover: 'hard_cover',
+  isConfined: 'confined',
+  blindersThrownPenalty: 'blinders_thrown_penalty',
+  reactPenaltyBase: 'react_penalty',
+  multipleAttackPenalty: 'multiple_attack_penalty',
+  burstBonusBase: 'burst_bonus',
+  handPenaltyBase: 'hand_penalty',
+  sizeAdvantage: 'size_advantage',
+  unarmedPenalty: 'unarmed_penalty',
+  acrobaticBonus: 'acrobatic_bonus',
+  elevationAdvantage: 'elevation_bonus',
+};
+
 function formatPathLeaders(topPathModels: ModelUsageStats[]): string {
   if (topPathModels.length === 0) {
     return '    none';
@@ -409,6 +596,17 @@ function formatPathLeaders(topPathModels: ModelUsageStats[]): string {
   return topPathModels
     .map((model, index) => `    ${index + 1}. ${model.modelName} (${model.side}) - ${model.pathLength.toFixed(2)} MU over ${model.moveActions} move(s)`)
     .join('\n');
+}
+
+function formatTypeBreakdownLines(
+  breakdown: RuleTypeBreakdown,
+  indent: string = '    '
+): string[] {
+  const entries = Object.entries(breakdown).sort((a, b) => b[1] - a[1]);
+  if (entries.length === 0) {
+    return [`${indent}none`];
+  }
+  return entries.map(([type, count]) => `${indent}${type}: ${count}`);
 }
 
 export function formatBattleReportHumanReadable(report: BattleReport): string {
@@ -426,6 +624,17 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
     modelUsage: [],
   };
   const usage = report.usage ?? fallbackUsage;
+  const advancedRules = report.advancedRules ?? createEmptyAdvancedRuleMetrics();
+  const nestedSections = report.nestedSections ?? {
+    sides: [],
+    battlefieldLayout: {
+      widthMu: report.config.battlefieldSize,
+      heightMu: report.config.battlefieldSize,
+      densityRatio: report.config.densityRatio,
+      terrainFeatures: [],
+      deployments: [],
+    },
+  };
   if (usage.averagePathLengthPerMovedModel === 0 && usage.modelsMoved > 0) {
     usage.averagePathLengthPerMovedModel = usage.totalPathLength / usage.modelsMoved;
   }
@@ -479,6 +688,54 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(`  Models that used React: ${usage.modelsUsedReact}/${usage.modelCount}`);
   lines.push('  Top Path Length Models:');
   lines.push(formatPathLeaders(usage.topPathModels));
+  lines.push('');
+  lines.push('⚡ BONUS ACTIONS');
+  lines.push(`  Opportunities: ${advancedRules.bonusActions.opportunities}`);
+  lines.push(`  Options Offered: ${advancedRules.bonusActions.optionsOffered}`);
+  lines.push(`  Options Available: ${advancedRules.bonusActions.optionsAvailable}`);
+  lines.push(`  Executed: ${advancedRules.bonusActions.executed}`);
+  lines.push('  Available By Type:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.bonusActions.availableByType, '    '));
+  lines.push('  Executed By Type:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.bonusActions.executedByType, '    '));
+  lines.push('');
+  lines.push('🛡️  PASSIVE OPTIONS');
+  lines.push(`  Opportunities: ${advancedRules.passiveOptions.opportunities}`);
+  lines.push(`  Options Offered: ${advancedRules.passiveOptions.optionsOffered}`);
+  lines.push(`  Options Available: ${advancedRules.passiveOptions.optionsAvailable}`);
+  lines.push(`  Used: ${advancedRules.passiveOptions.used}`);
+  lines.push('  Available By Type:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.passiveOptions.availableByType, '    '));
+  lines.push('  Used By Type:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.passiveOptions.usedByType, '    '));
+  lines.push('');
+  lines.push('🎯 SITUATIONAL MODIFIERS');
+  lines.push(`  Tests Observed: ${advancedRules.situationalModifiers.testsObserved}`);
+  lines.push(`  Modified Tests: ${advancedRules.situationalModifiers.modifiedTests}`);
+  lines.push(`  Modifiers Applied: ${advancedRules.situationalModifiers.modifiersApplied}`);
+  const leanUses = (advancedRules.situationalModifiers.byType.leaning ?? 0)
+    + (advancedRules.situationalModifiers.byType.detect_lean ?? 0);
+  lines.push(`  Lean Uses: ${leanUses}`);
+  lines.push('  Breakdown By Type:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.situationalModifiers.byType, '    '));
+  lines.push('');
+  lines.push('🧱 NESTED SECTIONS');
+  lines.push(`  Side Count: ${nestedSections.sides.length}`);
+  for (const side of nestedSections.sides) {
+    lines.push(`  Side: ${side.name}`);
+    for (const assembly of side.assemblies) {
+      lines.push(`    Assembly: ${assembly.name} (${assembly.characters.length} characters)`);
+      for (const character of assembly.characters) {
+        lines.push(`      Character: ${character.name}`);
+        lines.push(`        Profile: ${character.profile.archetype}`);
+      }
+    }
+  }
+  lines.push('  Battlefield Layout:');
+  lines.push(`    Size: ${nestedSections.battlefieldLayout.widthMu}x${nestedSections.battlefieldLayout.heightMu} MU`);
+  lines.push(`    Density: ${nestedSections.battlefieldLayout.densityRatio}%`);
+  lines.push(`    Terrain Features: ${nestedSections.battlefieldLayout.terrainFeatures.length}`);
+  lines.push(`    Deployments: ${nestedSections.battlefieldLayout.deployments.length}`);
   lines.push('');
   lines.push('════════════════════════════════════════════════════════════');
   return lines.join('\n');
@@ -693,6 +950,7 @@ class AIBattleSetup {
 class AIBattleRunner {
   private log: BattleLogEntry[] = [];
   private stats: BattleStats = createEmptyStats();
+  private advancedRules: AdvancedRuleMetrics = createEmptyAdvancedRuleMetrics();
   private modelUsageByCharacter = new Map<Character, ModelUsageStats>();
   private sideNameByCharacterId = new Map<string, string>();
   private auditTurns: TurnAudit[] = [];
@@ -701,6 +959,7 @@ class AIBattleRunner {
   private resetRunState() {
     this.log = [];
     this.stats = createEmptyStats();
+    this.advancedRules = createEmptyAdvancedRuleMetrics();
     this.modelUsageByCharacter = new Map<Character, ModelUsageStats>();
     this.sideNameByCharacterId = new Map<string, string>();
     this.auditTurns = [];
@@ -763,6 +1022,492 @@ class AIBattleRunner {
     if (action === 'detect') usage.detectSuccesses += 1;
     if (action === 'hide') usage.hideSuccesses += 1;
     if (action === 'react') usage.reactSuccesses += 1;
+  }
+
+  private incrementTypeBreakdown(breakdown: RuleTypeBreakdown, type: string, amount: number = 1) {
+    if (!type || !Number.isFinite(amount) || amount === 0) return;
+    breakdown[type] = (breakdown[type] ?? 0) + amount;
+  }
+
+  private trackBonusActionOptions(options: BonusActionOption[] | undefined) {
+    if (!Array.isArray(options) || options.length === 0) {
+      return;
+    }
+    this.advancedRules.bonusActions.opportunities += 1;
+    this.advancedRules.bonusActions.optionsOffered += options.length;
+    for (const option of options) {
+      this.incrementTypeBreakdown(this.advancedRules.bonusActions.offeredByType, option.type);
+      if (option.available) {
+        this.advancedRules.bonusActions.optionsAvailable += 1;
+        this.incrementTypeBreakdown(this.advancedRules.bonusActions.availableByType, option.type);
+      }
+    }
+  }
+
+  private trackBonusActionOutcome(outcome: BonusActionOutcome | undefined) {
+    if (!outcome || !outcome.executed) {
+      return;
+    }
+    const type = outcome.type ?? 'Unknown';
+    this.advancedRules.bonusActions.executed += 1;
+    this.incrementTypeBreakdown(this.advancedRules.bonusActions.executedByType, type);
+  }
+
+  private trackPassiveOptions(options: PassiveOption[] | undefined) {
+    if (!Array.isArray(options) || options.length === 0) {
+      return;
+    }
+    this.advancedRules.passiveOptions.opportunities += 1;
+    this.advancedRules.passiveOptions.optionsOffered += options.length;
+    for (const option of options) {
+      this.incrementTypeBreakdown(this.advancedRules.passiveOptions.offeredByType, option.type);
+      if (option.available) {
+        this.advancedRules.passiveOptions.optionsAvailable += 1;
+        this.incrementTypeBreakdown(this.advancedRules.passiveOptions.availableByType, option.type);
+      }
+    }
+  }
+
+  private trackPassiveUsage(type: PassiveOptionType, amount: number = 1) {
+    if (!Number.isFinite(amount) || amount <= 0) {
+      return;
+    }
+    this.advancedRules.passiveOptions.used += amount;
+    this.incrementTypeBreakdown(this.advancedRules.passiveOptions.usedByType, type, amount);
+  }
+
+  private trackSituationalModifiers(
+    context: TestContext | Record<string, unknown> | undefined,
+    hitTestResult: { finalPools?: Record<string, unknown> } | undefined
+  ) {
+    const applied = new Set<string>();
+    if (context && typeof context === 'object') {
+      for (const [key, label] of Object.entries(CONTEXT_MODIFIER_KEYS)) {
+        const value = (context as Record<string, unknown>)[key];
+        if (typeof value === 'boolean' && value) {
+          applied.add(label);
+        } else if (typeof value === 'number' && value > 0) {
+          applied.add(label);
+        }
+      }
+    }
+    const finalPools = hitTestResult?.finalPools;
+    if (finalPools && typeof finalPools === 'object') {
+      const buckets = [
+        ['p1FinalBonus', 'attacker_bonus'],
+        ['p1FinalPenalty', 'attacker_penalty'],
+        ['p2FinalBonus', 'defender_bonus'],
+        ['p2FinalPenalty', 'defender_penalty'],
+      ] as const;
+      for (const [poolKey, prefix] of buckets) {
+        const pool = (finalPools as Record<string, unknown>)[poolKey];
+        if (!pool || typeof pool !== 'object') continue;
+        for (const dieType of ['base', 'modifier', 'wild']) {
+          const value = (pool as Record<string, unknown>)[dieType];
+          if (typeof value === 'number' && value > 0) {
+            applied.add(`${prefix}_${dieType}`);
+          }
+        }
+      }
+    }
+
+    this.advancedRules.situationalModifiers.testsObserved += 1;
+    if (applied.size > 0) {
+      this.advancedRules.situationalModifiers.modifiedTests += 1;
+      this.advancedRules.situationalModifiers.modifiersApplied += applied.size;
+      for (const type of applied) {
+        this.incrementTypeBreakdown(this.advancedRules.situationalModifiers.byType, type);
+      }
+    }
+  }
+
+  private trackCombatExtras(result: unknown) {
+    if (!result || typeof result !== 'object') {
+      return;
+    }
+    const payload = result as {
+      bonusActionOptions?: BonusActionOption[];
+      bonusActionOutcome?: BonusActionOutcome;
+      context?: TestContext;
+      result?: { hitTestResult?: { finalPools?: Record<string, unknown> } };
+      hitTestResult?: { finalPools?: Record<string, unknown> };
+    };
+    this.trackBonusActionOptions(payload.bonusActionOptions);
+    this.trackBonusActionOutcome(payload.bonusActionOutcome);
+    const hitTestResult = payload.result?.hitTestResult ?? payload.hitTestResult;
+    if (payload.context || hitTestResult) {
+      this.trackSituationalModifiers(payload.context, hitTestResult);
+    }
+  }
+
+  private inspectPassiveOptions(gameManager: GameManager, event: PassiveEvent): PassiveOption[] {
+    const options = gameManager.getPassiveOptions(event);
+    this.trackPassiveOptions(options);
+    return options;
+  }
+
+  private inspectMovePassiveOptions(
+    gameManager: GameManager,
+    battlefield: Battlefield,
+    mover: Character,
+    opponents: Character[],
+    visibilityOrMu: number,
+    moveApSpent: number
+  ): { moveConcluded: PassiveOption[]; engagementBroken: PassiveOption[] } {
+    const moveConcluded = this.inspectPassiveOptions(gameManager, {
+      kind: 'MoveConcluded',
+      mover,
+      observers: opponents,
+      battlefield,
+      moveApSpent,
+      visibilityOrMu,
+    });
+    const engagementBroken = this.inspectPassiveOptions(gameManager, {
+      kind: 'EngagementBroken',
+      mover,
+      opponents,
+      battlefield,
+    });
+    return { moveConcluded, engagementBroken };
+  }
+
+  private getCharacterItems(character: Character): Item[] {
+    const rawItems = [
+      ...(character.profile?.equipment ?? []),
+      ...(character.profile?.items ?? []),
+      ...(character.profile?.inHandItems ?? []),
+      ...(character.profile?.stowedItems ?? []),
+    ];
+    const seen = new Set<string>();
+    const deduped: Item[] = [];
+    for (const item of rawItems) {
+      if (!item) continue;
+      const key = `${item.name}|${item.classification}|${item.class}|${item.type}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      deduped.push(item);
+    }
+    return deduped;
+  }
+
+  private isRangedWeapon(item: Item): boolean {
+    const classification = String(item.classification ?? item.class ?? '').toLowerCase();
+    if (
+      classification.includes('bow') ||
+      classification.includes('thrown') ||
+      classification.includes('firearm') ||
+      classification.includes('range') ||
+      classification.includes('support')
+    ) {
+      return true;
+    }
+    return (
+      (classification.includes('melee') || classification.includes('natural')) &&
+      Array.isArray(item.traits) &&
+      item.traits.some(trait => String(trait).toLowerCase().includes('throwable'))
+    );
+  }
+
+  private isMeleeWeapon(item: Item): boolean {
+    const classification = String(item.classification ?? item.class ?? '').toLowerCase();
+    return classification.includes('melee') || classification.includes('natural');
+  }
+
+  private getLoadoutProfile(character: Character): { hasMeleeWeapons: boolean; hasRangedWeapons: boolean } {
+    const items = this.getCharacterItems(character);
+    let hasMeleeWeapons = false;
+    let hasRangedWeapons = false;
+    for (const item of items) {
+      if (this.isRangedWeapon(item)) {
+        hasRangedWeapons = true;
+      } else if (this.isMeleeWeapon(item)) {
+        hasMeleeWeapons = true;
+      }
+      if (hasMeleeWeapons && hasRangedWeapons) {
+        break;
+      }
+    }
+    return { hasMeleeWeapons, hasRangedWeapons };
+  }
+
+  private applyDoctrineLoadoutConfig(
+    aiController: CharacterAI,
+    character: Character,
+    sideConfig: SideConfig,
+    config: GameConfig
+  ) {
+    const loadoutProfile = this.getLoadoutProfile(character);
+    const pressure = deriveDoctrineAIPressure(sideConfig.tacticalDoctrine, loadoutProfile);
+    aiController.setConfig({
+      aggression: pressure.aggression,
+      caution: pressure.caution,
+      visibilityOrMu: config.visibilityOrMu,
+      maxOrm: config.maxOrm,
+      allowConcentrateRangeExtension: config.allowConcentrateRangeExtension,
+      perCharacterFovLos: config.perCharacterFovLos,
+    });
+  }
+
+  private buildSpatialModelFor(character: Character, battlefield: Battlefield) {
+    const position = battlefield.getCharacterPosition(character);
+    if (!position) return null;
+    const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+    return {
+      id: character.id,
+      position,
+      baseDiameter: getBaseDiameterFromSiz(siz),
+      siz,
+    };
+  }
+
+  private shouldUseLeanForRanged(attacker: Character, defender: Character, battlefield: Battlefield): boolean {
+    if (!attacker.state.isAttentive) return false;
+    const attackerModel = this.buildSpatialModelFor(attacker, battlefield);
+    const defenderModel = this.buildSpatialModelFor(defender, battlefield);
+    if (!attackerModel || !defenderModel) return false;
+    const coverFromAttacker = SpatialRules.getCoverResult(battlefield, attackerModel, defenderModel);
+    const coverFromDefender = SpatialRules.getCoverResult(battlefield, defenderModel, attackerModel);
+    const hasAttackerCover = coverFromDefender.hasLOS && (coverFromDefender.hasDirectCover || coverFromDefender.hasInterveningCover);
+    const hasInterveningLaneCover = coverFromAttacker.hasLOS && (coverFromAttacker.hasDirectCover || coverFromAttacker.hasInterveningCover);
+    return hasAttackerCover || hasInterveningLaneCover;
+  }
+
+  private shouldUseLeanForDetect(attacker: Character, target: Character, battlefield: Battlefield): boolean {
+    if (!attacker.state.isAttentive) return false;
+    const attackerModel = this.buildSpatialModelFor(attacker, battlefield);
+    const targetModel = this.buildSpatialModelFor(target, battlefield);
+    if (!attackerModel || !targetModel) return false;
+    const coverFromAttacker = SpatialRules.getCoverResult(battlefield, attackerModel, targetModel);
+    const coverFromTarget = SpatialRules.getCoverResult(battlefield, targetModel, attackerModel);
+    const hasAttackerCover = coverFromTarget.hasLOS && (coverFromTarget.hasDirectCover || coverFromTarget.hasInterveningCover);
+    const hasInterveningLaneCover = coverFromAttacker.hasLOS && (coverFromAttacker.hasDirectCover || coverFromAttacker.hasInterveningCover);
+    return hasAttackerCover || hasInterveningLaneCover;
+  }
+
+  private applyRefreshLocally(character: Character) {
+    if (character.state.delayTokens > 0) {
+      character.state.delayTokens = Math.max(0, character.state.delayTokens - 1);
+    } else if (character.state.isAttentive && character.state.fearTokens > 0) {
+      character.state.fearTokens = Math.max(0, character.state.fearTokens - 1);
+    }
+    character.refreshStatusFlags();
+  }
+
+  private findRelocationPosition(
+    character: Character,
+    battlefield: Battlefield,
+    threatSource?: Character
+  ): Position | undefined {
+    const start = battlefield.getCharacterPosition(character);
+    if (!start) return undefined;
+    const mov = Math.max(1, character.finalAttributes.mov ?? character.attributes.mov ?? 0);
+    const maxDistance = mov;
+    const threatPos = threatSource ? battlefield.getCharacterPosition(threatSource) : undefined;
+    let best: { score: number; pos: Position } | null = null;
+
+    for (let dx = -maxDistance; dx <= maxDistance; dx++) {
+      for (let dy = -maxDistance; dy <= maxDistance; dy++) {
+        const distance = Math.hypot(dx, dy);
+        if (distance <= 0 || distance > maxDistance) continue;
+        const candidate = { x: Math.round(start.x + dx), y: Math.round(start.y + dy) };
+        if (candidate.x < 0 || candidate.x >= battlefield.width || candidate.y < 0 || candidate.y >= battlefield.height) continue;
+        const occupant = battlefield.getCharacterAt(candidate);
+        if (occupant && occupant.id !== character.id) continue;
+
+        let score = -distance * 0.1;
+        if (threatPos) {
+          const hasLos = battlefield.hasLineOfSight(threatPos, candidate);
+          score += hasLos ? 0 : 2;
+        }
+
+        if (!best || score > best.score) {
+          best = { score, pos: candidate };
+        }
+      }
+    }
+
+    return best?.pos;
+  }
+
+  private findTakeCoverPosition(
+    defender: Character,
+    attacker: Character,
+    battlefield: Battlefield
+  ): Position | undefined {
+    return this.findRelocationPosition(defender, battlefield, attacker);
+  }
+
+  private buildAutoBonusActionSelections(
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    opponents: Character[],
+    options: BonusActionOption[],
+    isCloseCombat: boolean
+  ): BonusActionSelection[] {
+    const available = options.filter(option => option.available);
+    if (available.length === 0) return [];
+    const byType = new Set(available.map(option => option.type));
+    const selections: BonusActionSelection[] = [];
+    const push = (selection: BonusActionSelection) => {
+      if (!selections.some(existing => existing.type === selection.type)) {
+        selections.push(selection);
+      }
+    };
+
+    if (attacker.state.delayTokens > 0 && byType.has('Refresh')) {
+      push({ type: 'Refresh' });
+    }
+
+    if (isCloseCombat) {
+      if (byType.has('PushBack')) push({ type: 'PushBack' });
+      if (byType.has('PullBack')) push({ type: 'PullBack' });
+      if (byType.has('Circle')) push({ type: 'Circle' });
+      if (byType.has('Disengage')) push({ type: 'Disengage' });
+      if (byType.has('Reversal')) push({ type: 'Reversal' });
+    }
+
+    if (!attacker.state.isHidden && byType.has('Hide')) {
+      push({ type: 'Hide', opponents });
+    }
+
+    if (byType.has('Reposition')) {
+      const relocation = this.findRelocationPosition(attacker, battlefield, target);
+      if (relocation) {
+        push({ type: 'Reposition', attackerPosition: relocation });
+      }
+    }
+
+    if (byType.has('Refresh')) {
+      push({ type: 'Refresh' });
+    }
+
+    // Add any remaining available options as fallbacks.
+    for (const option of available) {
+      if (option.type === 'Hide') {
+        push({ type: 'Hide', opponents });
+      } else {
+        push({ type: option.type });
+      }
+    }
+
+    return selections;
+  }
+
+  private applyAutoBonusActionIfPossible(params: {
+    result: any;
+    attacker: Character;
+    target: Character;
+    battlefield: Battlefield;
+    opponents: Character[];
+    isCloseCombat: boolean;
+    isCharge?: boolean;
+  }) {
+    const { result, attacker, target, battlefield, opponents, isCloseCombat, isCharge } = params;
+    if (!result || typeof result !== 'object') return;
+    const existing = result.bonusActionOutcome as BonusActionOutcome | undefined;
+    if (existing?.executed) return;
+    const options = Array.isArray(result.bonusActionOptions) ? (result.bonusActionOptions as BonusActionOption[]) : [];
+    if (options.length === 0) return;
+
+    const cascadesRaw = result.result?.hitTestResult?.cascades
+      ?? result.hitTestResult?.cascades
+      ?? 0;
+    const cascades = Number.isFinite(cascadesRaw) ? Number(cascadesRaw) : 0;
+
+    const selections = this.buildAutoBonusActionSelections(attacker, target, battlefield, opponents, options, isCloseCombat);
+    if (selections.length === 0) return;
+
+    for (const selection of selections) {
+      const outcome = applyBonusAction(
+        {
+          battlefield,
+          attacker,
+          target,
+          cascades,
+          isCloseCombat,
+          isCharge: isCharge ?? false,
+          engaged: this.areEngaged(attacker, target, battlefield),
+        },
+        selection
+      );
+
+      if (outcome.refreshApplied) {
+        this.applyRefreshLocally(attacker);
+      }
+      if (outcome.executed) {
+        result.bonusActionOutcome = outcome;
+        break;
+      }
+    }
+  }
+
+  private executeFailedHitPassiveResponse(params: {
+    gameManager: GameManager;
+    attacker: Character;
+    defender: Character;
+    hitTestResult: any;
+    attackType: 'melee' | 'ranged';
+    options: PassiveOption[];
+    visibilityOrMu: number;
+  }): { type?: PassiveOptionType; result?: unknown } {
+    const { gameManager, attacker, defender, hitTestResult, attackType, options, visibilityOrMu } = params;
+    const available = options.filter(option => option.available);
+    if (available.length === 0) {
+      return {};
+    }
+
+    const hasType = (type: PassiveOptionType) => available.some(option => option.type === type);
+    if (attackType === 'melee' && hasType('CounterStrike')) {
+      const weapon = this.pickMeleeWeapon(defender);
+      if (weapon) {
+        const result = gameManager.executeCounterStrike(defender, attacker, weapon as any, hitTestResult as any);
+        if (result.executed) {
+          this.trackPassiveUsage('CounterStrike');
+          return { type: 'CounterStrike', result };
+        }
+      }
+    }
+
+    if (attackType === 'ranged' && hasType('CounterFire')) {
+      const weapon = this.pickRangedWeapon(defender) ?? this.pickMeleeWeapon(defender);
+      if (weapon) {
+        const result = gameManager.executeCounterFire(defender, attacker, weapon as any, hitTestResult as any, { visibilityOrMu });
+        if (result.executed) {
+          this.trackPassiveUsage('CounterFire');
+          return { type: 'CounterFire', result };
+        }
+      }
+    }
+
+    if (hasType('CounterAction')) {
+      const result = gameManager.executeCounterAction(defender, attacker, hitTestResult as any, { attackType });
+      if (result.executed) {
+        this.trackPassiveUsage('CounterAction');
+        return { type: 'CounterAction', result };
+      }
+    }
+
+    return {};
+  }
+
+  private executeCounterChargeFromMove(
+    gameManager: GameManager,
+    mover: Character,
+    moveOptions: PassiveOption[],
+    allEnemies: Character[],
+    visibilityOrMu: number
+  ): void {
+    const available = moveOptions.filter(option => option.available && option.type === 'CounterCharge');
+    if (available.length === 0) return;
+    const chosen = available[0];
+    if (!chosen) return;
+    const observer = allEnemies.find(enemy => enemy.id === chosen.actorId);
+    if (!observer) return;
+    const result = gameManager.executeCounterCharge(observer, mover, { visibilityOrMu, moveApSpent: 1 });
+    if (result.executed) {
+      this.trackPassiveUsage('CounterCharge');
+    }
   }
 
   private buildUsageMetrics(): UsageMetrics {
@@ -924,6 +1669,120 @@ class AIBattleRunner {
     };
   }
 
+  private describeArchetype(character: Character): string {
+    const arch = character.profile.archetype as unknown;
+    if (typeof arch === 'string') return arch;
+    if (arch && typeof arch === 'object' && !Array.isArray(arch)) {
+      const keys = Object.keys(arch as Record<string, unknown>);
+      if (keys.length > 0) {
+        return keys.join('|');
+      }
+    }
+    return 'Unknown';
+  }
+
+  private buildNestedSections(
+    config: GameConfig,
+    sides: Array<{ characters: Character[]; totalBP: number }>,
+    battlefield: Battlefield,
+    startPositions: Map<string, Position>
+  ): NestedSections {
+    const sideSections: SideSection[] = [];
+
+    for (let sideIndex = 0; sideIndex < config.sides.length; sideIndex++) {
+      const sideConfig = config.sides[sideIndex];
+      const sideRuntime = sides[sideIndex];
+      if (!sideConfig || !sideRuntime) continue;
+      const assemblyName = sideConfig.assemblyName;
+      const characters: CharacterSection[] = sideRuntime.characters.map(character => {
+        const equipment = (character.profile.equipment || character.profile.items || [])
+          .filter(Boolean)
+          .map(item => ({
+            name: item?.name ?? 'Unknown Item',
+            classification: item?.classification ?? item?.class,
+            traits: Array.isArray(item?.traits) ? item.traits : undefined,
+          }));
+        const endPosition = battlefield.getCharacterPosition(character);
+        return {
+          id: character.id,
+          name: character.profile.name,
+          profile: {
+            name: character.profile.name,
+            archetype: this.describeArchetype(character),
+            attributes: { ...(character.attributes as Record<string, number>) },
+            finalAttributes: { ...(character.finalAttributes as Record<string, number>) },
+            totalBp: character.profile.totalBp,
+            burdenTotal: character.profile.burden?.totalBurden,
+            equipment,
+          },
+          startPosition: startPositions.get(character.id),
+          endPosition: endPosition ? { x: endPosition.x, y: endPosition.y } : undefined,
+          state: this.snapshotModelState(character),
+        };
+      });
+
+      sideSections.push({
+        name: sideConfig.name,
+        assemblies: [
+          {
+            name: assemblyName,
+            totalBP: sideRuntime.totalBP,
+            characters,
+          },
+        ],
+      });
+    }
+
+    const deploymentIndex = new Map<string, { sideName: string; assemblyName: string; characterName: string }>();
+    for (const side of sideSections) {
+      for (const assembly of side.assemblies) {
+        for (const character of assembly.characters) {
+          deploymentIndex.set(character.id, {
+            sideName: side.name,
+            assemblyName: assembly.name,
+            characterName: character.name,
+          });
+        }
+      }
+    }
+
+    const deployments = Array.from(deploymentIndex.entries()).map(([characterId, metadata]) => {
+      const current = sides
+        .flatMap(side => side.characters)
+        .find(character => character.id === characterId);
+      const end = current ? battlefield.getCharacterPosition(current) : undefined;
+      return {
+        characterId,
+        characterName: metadata.characterName,
+        sideName: metadata.sideName,
+        assemblyName: metadata.assemblyName,
+        startPosition: startPositions.get(characterId),
+        endPosition: end ? { x: end.x, y: end.y } : undefined,
+      };
+    });
+
+    const terrainFeatures = battlefield.terrain.map(feature => ({
+      id: feature.id,
+      type: String(feature.type),
+      metaName: feature.meta?.name,
+      movement: feature.meta?.movement,
+      los: feature.meta?.los,
+      rotationDegrees: feature.meta?.rotationDegrees,
+      vertices: feature.vertices.map(v => ({ x: v.x, y: v.y })),
+    }));
+
+    return {
+      sides: sideSections,
+      battlefieldLayout: {
+        widthMu: battlefield.width,
+        heightMu: battlefield.height,
+        densityRatio: config.densityRatio,
+        terrainFeatures,
+        deployments,
+      },
+    };
+  }
+
   private sanitizeForAudit(
     value: unknown,
     depth: number = 0,
@@ -1019,12 +1878,19 @@ class AIBattleRunner {
       sides.forEach((side, i) => {
         this.deployModels(side, battlefield, i, config.battlefieldSize);
       });
+      const allCharacters = sides.flatMap(s => s.characters);
+      const startPositions = new Map<string, Position>();
+      for (const character of allCharacters) {
+        const position = battlefield.getCharacterPosition(character);
+        if (position) {
+          startPositions.set(character.id, { x: position.x, y: position.y });
+        }
+      }
 
       out('Models deployed.\n');
       out('─'.repeat(60) + '\n');
 
       // Create game manager
-      const allCharacters = sides.flatMap(s => s.characters);
       const gameManager = new GameManager(allCharacters, battlefield);
 
       // Create AI controllers
@@ -1144,6 +2010,8 @@ class AIBattleRunner {
         finalCounts: config.sides.map((side, i) => ({ name: side.name, remaining: finalCounts[i] })),
         stats: this.stats,
         usage,
+        nestedSections: this.buildNestedSections(config, sides, battlefield, startPositions),
+        advancedRules: this.advancedRules,
         log: this.log,
         audit: this.createBattleAuditTrace(config, seed),
         seed,
@@ -1162,13 +2030,21 @@ class AIBattleRunner {
   }
 
   private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number }> {
-    const compositions = [
-      { archetypeName: 'Average', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },
-      { archetypeName: 'Militia', weight: 2, items: ['Spear, Medium', 'Shield, Medium'] },
-      { archetypeName: 'Veteran', weight: 3, items: ['Rifle, Light, Semi/A'] },
-      { archetypeName: 'Veteran', weight: 2, items: ['Pistol, Medium, Auto', 'Sword, Broad'] },
-      { archetypeName: 'Elite', weight: 1, items: ['Rifle, Light, Semi/A', 'Sword, Broad'] },
-    ];
+    const compositions = sideConfig.loadoutProfile === 'melee_only'
+      ? [
+          // Melee-only profile: no ranged classifications and no throwable traits.
+          { archetypeName: 'Average', weight: 4, items: ['Sword, Broad', 'Shield, Medium'] },
+          { archetypeName: 'Militia', weight: 2, items: ['Sword, Broad', 'Shield, Medium'] },
+          { archetypeName: 'Veteran', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },
+          { archetypeName: 'Elite', weight: 1, items: ['Sword, Broad', 'Shield, Medium'] },
+        ]
+      : [
+          { archetypeName: 'Average', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },
+          { archetypeName: 'Militia', weight: 2, items: ['Spear, Medium', 'Shield, Medium'] },
+          { archetypeName: 'Veteran', weight: 3, items: ['Rifle, Light, Semi/A'] },
+          { archetypeName: 'Veteran', weight: 2, items: ['Pistol, Medium, Auto', 'Sword, Broad'] },
+          { archetypeName: 'Elite', weight: 1, items: ['Rifle, Light, Semi/A', 'Sword, Broad'] },
+        ];
 
     const profiles = [];
     for (let i = 0; i < sideConfig.modelCount; i++) {
@@ -1289,7 +2165,8 @@ class AIBattleRunner {
     sideIndex: number,
     config: GameConfig
   ): Promise<ActivationAudit | null> {
-    const sideName = config.sides[sideIndex].name;
+    const sideConfig = config.sides[sideIndex];
+    const sideName = sideConfig.name;
     const initialAp = gameManager.beginActivation(character);
     const activationAudit: ActivationAudit = {
       activationSequence: ++this.activationSequence,
@@ -1309,6 +2186,8 @@ class AIBattleRunner {
       gameManager.endActivation(character);
       return activationAudit;
     }
+
+    this.applyDoctrineLoadoutConfig(aiController, character, sideConfig, config);
 
     let lastKnownAp = initialAp;
     try {
@@ -1443,6 +2322,8 @@ class AIBattleRunner {
 
             const opportunity = (moved as any)?.opportunityAttack;
             if (opportunity?.attacker) {
+              this.trackPassiveUsage('OpportunityAttack');
+              this.trackCombatExtras(opportunity.result);
               stepInteractions.push({
                 kind: 'opportunity_attack',
                 sourceModelId: opportunity.attacker.id,
@@ -1577,9 +2458,19 @@ class AIBattleRunner {
               result = 'detect=false:not-enough-ap';
               break;
             }
-            const detect = attemptDetect(battlefield, character, decision.target, enemies);
+            const useLean = this.shouldUseLeanForDetect(character, decision.target, battlefield);
+            const detect = attemptDetect(battlefield, character, decision.target, enemies, {
+              attackerLeaning: useLean,
+            });
+            this.trackSituationalModifiers({ isLeaning: useLean }, undefined);
+            if (useLean) {
+              this.incrementTypeBreakdown(this.advancedRules.situationalModifiers.byType, 'detect_lean');
+            }
             result = detect.success ? 'detect=true' : `detect=false:${detect.reason ?? 'failed'}`;
-            stepDetails = { detectResult: this.sanitizeForAudit(detect) as Record<string, unknown> };
+            stepDetails = {
+              detectResult: this.sanitizeForAudit(detect) as Record<string, unknown>,
+              leanApplied: useLean,
+            };
             if (detect.success) {
               this.trackSuccess(character, 'detect');
               actionExecuted = true;
@@ -1652,10 +2543,28 @@ class AIBattleRunner {
           if (startPos && endPos && movedDistance > 0) {
             stepVectors.push(this.createMovementVector(startPos, endPos, 0.5));
           }
+          if (movedDistance > 0) {
+            const movePassive = this.inspectMovePassiveOptions(
+              gameManager,
+              battlefield,
+              character,
+              enemies,
+              config.visibilityOrMu,
+              1
+            );
+            this.executeCounterChargeFromMove(
+              gameManager,
+              character,
+              movePassive.moveConcluded,
+              enemies,
+              config.visibilityOrMu
+            );
+          }
           const trigger = movedDistance > 0 ? 'Move' : 'NonMove';
           const reactResult = this.processReacts(character, enemies, gameManager, trigger, movedDistance, config.visibilityOrMu);
           if (reactResult.executed) {
             this.stats.reacts++;
+            this.trackPassiveUsage('React');
             if (reactResult.reactor) {
               this.trackAttempt(reactResult.reactor, 'react');
               this.trackSuccess(reactResult.reactor, 'react');
@@ -1741,6 +2650,11 @@ class AIBattleRunner {
               opportunityWeapon: opportunityWeapon ?? undefined,
             });
             if (moved.moved) {
+              const opportunity = (moved as any)?.opportunityAttack;
+              if (opportunity?.attacker) {
+                this.trackPassiveUsage('OpportunityAttack');
+                this.trackCombatExtras(opportunity.result);
+              }
               const fallbackEnd = battlefield.getCharacterPosition(character);
               const movedDistance = fallbackStart && fallbackEnd
                 ? Math.hypot(fallbackEnd.x - fallbackStart.x, fallbackEnd.y - fallbackStart.y)
@@ -1748,6 +2662,23 @@ class AIBattleRunner {
               this.stats.moves++;
               this.stats.totalActions++;
               this.trackPathMovement(character, movedDistance);
+              if (movedDistance > 0) {
+                const movePassive = this.inspectMovePassiveOptions(
+                  gameManager,
+                  battlefield,
+                  character,
+                  enemies,
+                  config.visibilityOrMu,
+                  1
+                );
+                this.executeCounterChargeFromMove(
+                  gameManager,
+                  character,
+                  movePassive.moveConcluded,
+                  enemies,
+                  config.visibilityOrMu
+                );
+              }
               this.log.push({
                 turn,
                 round: 1,
@@ -1768,6 +2699,7 @@ class AIBattleRunner {
               );
               if (reactResult.executed) {
                 this.stats.reacts++;
+                this.trackPassiveUsage('React');
                 if (reactResult.reactor) {
                   this.trackAttempt(reactResult.reactor, 'react');
                   this.trackSuccess(reactResult.reactor, 'react');
@@ -1933,6 +2865,7 @@ class AIBattleRunner {
         },
       };
     }
+    this.trackCombatExtras((react as any).result);
     return {
       executed: true,
       reactor: first.actor,
@@ -2143,10 +3076,56 @@ class AIBattleRunner {
     }
 
     try {
+      const declaredOptions = this.inspectPassiveOptions(gameManager, {
+        kind: 'CloseCombatAttackDeclared',
+        attacker,
+        defender,
+        battlefield,
+        weapon: weapon as any,
+      });
+      const useDefend = declaredOptions.some(option => option.type === 'Defend' && option.available);
+      if (useDefend) {
+        this.trackPassiveUsage('Defend');
+      }
       const result = gameManager.executeCloseCombatAttack(attacker, defender, weapon, {
         isCharge,
         isDefending: false,
+        defend: useDefend,
       });
+      const hitTestResult = (result as any)?.hitTestResult ?? (result as any)?.result?.hitTestResult;
+      if (hitTestResult && hitTestResult.pass === false) {
+        const failedOptions = this.inspectPassiveOptions(gameManager, {
+          kind: 'HitTestFailed',
+          attacker,
+          defender,
+          battlefield,
+          attackType: 'melee',
+          hitTestResult,
+          visibilityOrMu: config.visibilityOrMu,
+        });
+        const passiveResponse = this.executeFailedHitPassiveResponse({
+          gameManager,
+          attacker,
+          defender,
+          hitTestResult,
+          attackType: 'melee',
+          options: failedOptions,
+          visibilityOrMu: config.visibilityOrMu,
+        });
+        if (passiveResponse.result) {
+          (result as any).passiveResponse = this.sanitizeForAudit(passiveResponse.result) as Record<string, unknown>;
+        }
+      }
+      this.applyAutoBonusActionIfPossible({
+        result,
+        attacker,
+        target: defender,
+        battlefield,
+        opponents: [defender],
+        isCloseCombat: true,
+        isCharge,
+      });
+      this.trackCombatExtras(result);
       const normalized = this.normalizeAttackResult(result);
 
       if (config.verbose) {
@@ -2226,6 +3205,25 @@ class AIBattleRunner {
         return { executed: false, result: 'ranged=false:out-of-range', vectors };
       }
 
+      const declaredOptions = this.inspectPassiveOptions(gameManager, {
+        kind: 'RangedAttackDeclared',
+        attacker,
+        defender,
+        battlefield,
+        weapon: weapon as any,
+      });
+      const useDefend = declaredOptions.some(option => option.type === 'Defend' && option.available);
+      const canTakeCover = declaredOptions.some(option => option.type === 'TakeCover' && option.available);
+      const takeCoverPosition = canTakeCover
+        ? this.findTakeCoverPosition(defender, attacker, battlefield)
+        : undefined;
+      if (useDefend) {
+        this.trackPassiveUsage('Defend');
+      }
+      if (takeCoverPosition) {
+        this.trackPassiveUsage('TakeCover');
+      }
+
       let orm = rangeCheck.orm;
       let context = undefined as ReturnType<GameManager['buildConcentrateContext']> | undefined;
       let usedConcentrate = false;
@@ -2236,6 +3234,10 @@ class AIBattleRunner {
         orm = rangeCheck.concentratedOrm;
         context = gameManager.buildConcentrateContext('hit');
         usedConcentrate = true;
+      }
+      const useLean = this.shouldUseLeanForRanged(attacker, defender, battlefield);
+      if (useLean) {
+        context = { ...(context ?? {}), isLeaning: true };
       }
 
       const attackCost = gameManager.getAttackApCost(attacker, weapon as any);
@@ -2274,7 +3276,43 @@ class AIBattleRunner {
         orm,
         context,
         optimalRangeMu: rangeCheck.requiresConcentrate ? rangeCheck.concentratedOrMu : rangeCheck.effectiveOrMu,
+        defend: useDefend,
+        allowTakeCover: Boolean(takeCoverPosition),
+        takeCoverPosition,
       });
+      const hitTestResult = (result as any)?.result?.hitTestResult ?? (result as any)?.hitTestResult;
+      if (hitTestResult && hitTestResult.pass === false) {
+        const failedOptions = this.inspectPassiveOptions(gameManager, {
+          kind: 'HitTestFailed',
+          attacker,
+          defender,
+          battlefield,
+          attackType: 'ranged',
+          hitTestResult,
+          visibilityOrMu: config.visibilityOrMu,
+        });
+        const passiveResponse = this.executeFailedHitPassiveResponse({
+          gameManager,
+          attacker,
+          defender,
+          hitTestResult,
+          attackType: 'ranged',
+          options: failedOptions,
+          visibilityOrMu: config.visibilityOrMu,
+        });
+        if (passiveResponse.result) {
+          (result as any).passiveResponse = this.sanitizeForAudit(passiveResponse.result) as Record<string, unknown>;
+        }
+      }
+      this.applyAutoBonusActionIfPossible({
+        result,
+        attacker,
+        target: defender,
+        battlefield,
+        opponents: [defender],
+        isCloseCombat: false,
+      });
+      this.trackCombatExtras(result);
       const normalized = this.normalizeAttackResult(result);
       if (config.verbose) {
         console.log(`    → Hit: ${normalized.hit}, KO: ${normalized.ko}, Elim: ${normalized.eliminated}`);
@@ -2307,6 +3345,9 @@ class AIBattleRunner {
           attackResult: this.sanitizeForAudit(result) as Record<string, unknown>,
           ormUsed: orm,
           usedConcentrate,
+          usedLean: useLean,
+          usedDefend: useDefend,
+          takeCoverApplied: Boolean(takeCoverPosition),
         },
       };
     } catch (error) {
@@ -2341,6 +3382,15 @@ class AIBattleRunner {
       }
 
       const result = gameManager.executeDisengage(disengager, defender, weapon);
+      this.applyAutoBonusActionIfPossible({
+        result,
+        attacker: disengager,
+        target: defender,
+        battlefield,
+        opponents: [defender],
+        isCloseCombat: true,
+      });
+      this.trackCombatExtras(result);
 
       if (config.verbose) {
         const moved = result.pass && 'moved' in result && result.moved ? ', moved' : '';
@@ -2462,6 +3512,72 @@ function divideStats(total: BattleStats, runs: number): BattleStats {
     avg[key] = Number((total[key] / runs).toFixed(2));
   });
   return avg;
+}
+
+function mergeTypeBreakdown(total: RuleTypeBreakdown, add: RuleTypeBreakdown) {
+  for (const [type, count] of Object.entries(add)) {
+    total[type] = (total[type] ?? 0) + count;
+  }
+}
+
+function divideTypeBreakdown(total: RuleTypeBreakdown, runs: number): RuleTypeBreakdown {
+  const avg: RuleTypeBreakdown = {};
+  for (const [type, count] of Object.entries(total)) {
+    avg[type] = Number((count / runs).toFixed(2));
+  }
+  return avg;
+}
+
+function accumulateAdvancedRuleMetrics(total: AdvancedRuleMetrics, add: AdvancedRuleMetrics) {
+  total.bonusActions.opportunities += add.bonusActions.opportunities;
+  total.bonusActions.optionsOffered += add.bonusActions.optionsOffered;
+  total.bonusActions.optionsAvailable += add.bonusActions.optionsAvailable;
+  total.bonusActions.executed += add.bonusActions.executed;
+  mergeTypeBreakdown(total.bonusActions.offeredByType, add.bonusActions.offeredByType);
+  mergeTypeBreakdown(total.bonusActions.availableByType, add.bonusActions.availableByType);
+  mergeTypeBreakdown(total.bonusActions.executedByType, add.bonusActions.executedByType);
+
+  total.passiveOptions.opportunities += add.passiveOptions.opportunities;
+  total.passiveOptions.optionsOffered += add.passiveOptions.optionsOffered;
+  total.passiveOptions.optionsAvailable += add.passiveOptions.optionsAvailable;
+  total.passiveOptions.used += add.passiveOptions.used;
+  mergeTypeBreakdown(total.passiveOptions.offeredByType, add.passiveOptions.offeredByType);
+  mergeTypeBreakdown(total.passiveOptions.availableByType, add.passiveOptions.availableByType);
+  mergeTypeBreakdown(total.passiveOptions.usedByType, add.passiveOptions.usedByType);
+
+  total.situationalModifiers.testsObserved += add.situationalModifiers.testsObserved;
+  total.situationalModifiers.modifiedTests += add.situationalModifiers.modifiedTests;
+  total.situationalModifiers.modifiersApplied += add.situationalModifiers.modifiersApplied;
+  mergeTypeBreakdown(total.situationalModifiers.byType, add.situationalModifiers.byType);
+}
+
+function divideAdvancedRuleMetrics(total: AdvancedRuleMetrics, runs: number): AdvancedRuleMetrics {
+  return {
+    bonusActions: {
+      opportunities: Number((total.bonusActions.opportunities / runs).toFixed(2)),
+      optionsOffered: Number((total.bonusActions.optionsOffered / runs).toFixed(2)),
+      optionsAvailable: Number((total.bonusActions.optionsAvailable / runs).toFixed(2)),
+      offeredByType: divideTypeBreakdown(total.bonusActions.offeredByType, runs),
+      availableByType: divideTypeBreakdown(total.bonusActions.availableByType, runs),
+      executed: Number((total.bonusActions.executed / runs).toFixed(2)),
+      executedByType: divideTypeBreakdown(total.bonusActions.executedByType, runs),
+    },
+    passiveOptions: {
+      opportunities: Number((total.passiveOptions.opportunities / runs).toFixed(2)),
+      optionsOffered: Number((total.passiveOptions.optionsOffered / runs).toFixed(2)),
+      optionsAvailable: Number((total.passiveOptions.optionsAvailable / runs).toFixed(2)),
+      offeredByType: divideTypeBreakdown(total.passiveOptions.offeredByType, runs),
+      availableByType: divideTypeBreakdown(total.passiveOptions.availableByType, runs),
+      used: Number((total.passiveOptions.used / runs).toFixed(2)),
+      usedByType: divideTypeBreakdown(total.passiveOptions.usedByType, runs),
+    },
+    situationalModifiers: {
+      testsObserved: Number((total.situationalModifiers.testsObserved / runs).toFixed(2)),
+      modifiedTests: Number((total.situationalModifiers.modifiedTests / runs).toFixed(2)),
+      modifiersApplied: Number((total.situationalModifiers.modifiersApplied / runs).toFixed(2)),
+      byType: divideTypeBreakdown(total.situationalModifiers.byType, runs),
+    },
+  };
 }
 
 function emptyCoverage(): ValidationCoverage {
@@ -2639,12 +3755,104 @@ export function formatBattleReportFromJson(jsonText: string): string {
   return formatBattleReportHumanReadable(JSON.parse(jsonText) as BattleReport);
 }
 
+export function formatValidationAggregateReportHumanReadable(report: ValidationAggregateReport): string {
+  const advanced = report.advancedRuleTotals ?? createEmptyAdvancedRuleMetrics();
+  const lines: string[] = [];
+  lines.push('════════════════════════════════════════════════════════════');
+  lines.push('📊 VALIDATION REPORT');
+  lines.push('════════════════════════════════════════════════════════════');
+  lines.push('');
+  lines.push(`📋 Mission: ${report.missionId}`);
+  lines.push(`📏 Game Size: ${report.gameSize}`);
+  lines.push(`🌲 Terrain Density: ${report.densityRatio}%`);
+  lines.push(`💡 Lighting: ${report.lighting} (Visibility OR ${report.visibilityOrMu} MU)`);
+  lines.push(`⚔️  Doctrine: ${report.tacticalDoctrine}`);
+  if (Array.isArray(report.sideDoctrines) && report.sideDoctrines.length > 0) {
+    for (const sideDoctrine of report.sideDoctrines) {
+      lines.push(`  ${sideDoctrine.sideName}: ${sideDoctrine.tacticalDoctrine}`);
+    }
+  }
+  lines.push(`🧰 Loadout: ${report.loadoutProfile}`);
+  lines.push(`🎲 Runs: ${report.runs} (base seed ${report.baseSeed})`);
+  lines.push('');
+  lines.push('🏆 RESULTS');
+  lines.push(`  Winners: ${JSON.stringify(report.winners)}`);
+  lines.push(`  Turns Completed: ${report.totals.turnsCompleted}`);
+  lines.push(`  Total Actions: ${report.totals.totalActions}`);
+  lines.push(`  Moves: ${report.totals.moves}`);
+  lines.push(`  Ranged Combats: ${report.totals.rangedCombats}`);
+  lines.push(`  Close Combats: ${report.totals.closeCombats}`);
+  lines.push(`  KO's: ${report.totals.kos}`);
+  lines.push(`  Eliminations: ${report.totals.eliminations}`);
+  lines.push('');
+  lines.push('⚡ BONUS ACTIONS');
+  lines.push(`  Opportunities: ${advanced.bonusActions.opportunities}`);
+  lines.push(`  Options Offered: ${advanced.bonusActions.optionsOffered}`);
+  lines.push(`  Options Available: ${advanced.bonusActions.optionsAvailable}`);
+  lines.push(`  Executed: ${advanced.bonusActions.executed}`);
+  lines.push('  Available By Type:');
+  lines.push(...formatTypeBreakdownLines(advanced.bonusActions.availableByType, '    '));
+  lines.push('  Executed By Type:');
+  lines.push(...formatTypeBreakdownLines(advanced.bonusActions.executedByType, '    '));
+  lines.push('');
+  lines.push('🛡️  PASSIVE OPTIONS');
+  lines.push(`  Opportunities: ${advanced.passiveOptions.opportunities}`);
+  lines.push(`  Options Offered: ${advanced.passiveOptions.optionsOffered}`);
+  lines.push(`  Options Available: ${advanced.passiveOptions.optionsAvailable}`);
+  lines.push(`  Used: ${advanced.passiveOptions.used}`);
+  lines.push('  Available By Type:');
+  lines.push(...formatTypeBreakdownLines(advanced.passiveOptions.availableByType, '    '));
+  lines.push('  Used By Type:');
+  lines.push(...formatTypeBreakdownLines(advanced.passiveOptions.usedByType, '    '));
+  lines.push('');
+  lines.push('🎯 SITUATIONAL MODIFIERS');
+  lines.push(`  Tests Observed: ${advanced.situationalModifiers.testsObserved}`);
+  lines.push(`  Modified Tests: ${advanced.situationalModifiers.modifiedTests}`);
+  lines.push(`  Modifiers Applied: ${advanced.situationalModifiers.modifiersApplied}`);
+  const leanUses = (advanced.situationalModifiers.byType.leaning ?? 0)
+    + (advanced.situationalModifiers.byType.detect_lean ?? 0);
+  lines.push(`  Lean Uses: ${leanUses}`);
+  lines.push('  Breakdown By Type:');
+  lines.push(...formatTypeBreakdownLines(advanced.situationalModifiers.byType, '    '));
+  if (report.runReports.length > 0) {
+    lines.push('');
+    lines.push('🧱 NESTED SECTIONS (RUN 1)');
+    const nested = report.runReports[0].nestedSections ?? {
+      sides: [],
+      battlefieldLayout: {
+        widthMu: 0,
+        heightMu: 0,
+        densityRatio: report.densityRatio,
+        terrainFeatures: [],
+        deployments: [],
+      },
+    };
+    lines.push(`  Side Count: ${nested.sides.length}`);
+    for (const side of nested.sides) {
+      lines.push(`  Side: ${side.name}`);
+      for (const assembly of side.assemblies) {
+        lines.push(`    Assembly: ${assembly.name} (${assembly.characters.length} characters)`);
+      }
+    }
+    lines.push('  Battlefield Layout:');
+    lines.push(`    Size: ${nested.battlefieldLayout.widthMu}x${nested.battlefieldLayout.heightMu} MU`);
+    lines.push(`    Density: ${nested.battlefieldLayout.densityRatio}%`);
+    lines.push(`    Terrain Features: ${nested.battlefieldLayout.terrainFeatures.length}`);
+    lines.push(`    Deployments: ${nested.battlefieldLayout.deployments.length}`);
+  }
+  lines.push('');
+  lines.push('════════════════════════════════════════════════════════════');
+  return lines.join('\n');
+}
+
 async function runValidationBatch(
   gameSize: GameSize = GameSize.VERY_LARGE,
   densityRatio: number = 50,
   runs: number = 3,
   baseSeed: number = 424242,
-  lighting: LightingCondition = 'Day, Clear'
+  lighting: LightingCondition = 'Day, Clear',
+  sideDoctrines: [TacticalDoctrine, TacticalDoctrine] = [TacticalDoctrine.Operative, TacticalDoctrine.Operative],
+  loadoutProfile: 'default' | 'melee_only' = 'default'
 ) {
   if (runs < 1) {
     throw new Error('Validation runs must be >= 1.');
@@ -2652,8 +3860,14 @@ async function runValidationBatch(
 
   const winners: Record<string, number> = {};
   const totals = createEmptyStats();
+  const advancedRuleTotals = createEmptyAdvancedRuleMetrics();
   const runReports: ValidationAggregateReport['runReports'] = [];
   const visibilityOrMu = getVisibilityOrForLighting(lighting);
+  const doctrineAlpha = sideDoctrines[0];
+  const doctrineBravo = sideDoctrines[1];
+  const doctrineConfigAlpha = doctrineToAIConfig(doctrineAlpha);
+  const doctrineConfigBravo = doctrineToAIConfig(doctrineBravo);
+  const doctrineLabel = doctrineAlpha === doctrineBravo ? doctrineAlpha : `${doctrineAlpha} vs ${doctrineBravo}`;
   const baseConfig: GameConfig = {
     missionId: 'QAI_11',
     missionName: 'Elimination',
@@ -2666,19 +3880,21 @@ async function runValidationBatch(
         name: 'Alpha',
         bp: GAME_SIZE_CONFIG[gameSize].bpPerSide[1],
         modelCount: GAME_SIZE_CONFIG[gameSize].modelsPerSide[1],
-        tacticalDoctrine: TacticalDoctrine.Operative,
+        tacticalDoctrine: doctrineAlpha,
+        loadoutProfile,
         assemblyName: 'Alpha Assembly',
-        aggression: 0.5,
-        caution: 0.5,
+        aggression: doctrineConfigAlpha.aggression ?? 0.5,
+        caution: doctrineConfigAlpha.caution ?? 0.5,
       },
       {
         name: 'Bravo',
         bp: GAME_SIZE_CONFIG[gameSize].bpPerSide[1],
         modelCount: GAME_SIZE_CONFIG[gameSize].modelsPerSide[1],
-        tacticalDoctrine: TacticalDoctrine.Operative,
+        tacticalDoctrine: doctrineBravo,
+        loadoutProfile,
         assemblyName: 'Bravo Assembly',
-        aggression: 0.5,
-        caution: 0.5,
+        aggression: doctrineConfigBravo.aggression ?? 0.5,
+        caution: doctrineConfigBravo.caution ?? 0.5,
       },
     ],
     densityRatio,
@@ -2691,12 +3907,17 @@ async function runValidationBatch(
   };
 
   console.log(`\nRunning ${runs} validation battle(s) for Mission 11 (${gameSize})...`);
+  console.log(`  Doctrine: ${doctrineLabel}`);
+  console.log(`    Alpha: ${doctrineAlpha}`);
+  console.log(`    Bravo: ${doctrineBravo}`);
+  console.log(`  Loadout Profile: ${loadoutProfile}`);
   for (let i = 0; i < runs; i++) {
     const seed = baseSeed + i;
     const runner = new AIBattleRunner();
     const report = await runner.runBattle(baseConfig, { seed, suppressOutput: true });
     winners[report.winner] = (winners[report.winner] ?? 0) + 1;
     accumulateStats(totals, report.stats);
+    accumulateAdvancedRuleMetrics(advancedRuleTotals, report.advancedRules);
     runReports.push({
       run: i + 1,
       seed,
@@ -2715,6 +3936,8 @@ async function runValidationBatch(
         averagePathLengthPerModel: report.usage?.averagePathLengthPerModel ?? 0,
         topPathModels: report.usage?.topPathModels ?? [],
       },
+      nestedSections: report.nestedSections,
+      advancedRules: report.advancedRules,
     });
     console.log(
       `  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}, path=${(report.usage?.totalPathLength ?? 0).toFixed(2)}`
@@ -2729,6 +3952,12 @@ async function runValidationBatch(
     missionId: 'QAI_11',
     gameSize,
     densityRatio,
+    tacticalDoctrine: doctrineLabel,
+    sideDoctrines: [
+      { sideName: 'Alpha', tacticalDoctrine: doctrineAlpha, loadoutProfile },
+      { sideName: 'Bravo', tacticalDoctrine: doctrineBravo, loadoutProfile },
+    ],
+    loadoutProfile,
     lighting,
     visibilityOrMu,
     maxOrm: baseConfig.maxOrm,
@@ -2739,6 +3968,8 @@ async function runValidationBatch(
     winners,
     totals,
     averages: divideStats(totals, runs),
+    advancedRuleTotals,
+    advancedRuleAverages: divideAdvancedRuleMetrics(advancedRuleTotals, runs),
     coverage,
     runtimeCoverage,
     probeCoverage,
@@ -2752,13 +3983,29 @@ async function runValidationBatch(
   console.log(`  Runtime Coverage: ${JSON.stringify(runtimeCoverage)}`);
   console.log(`  Probe Coverage: ${JSON.stringify(probeCoverage)}`);
   console.log(`  Combined Coverage: ${JSON.stringify(coverage)}`);
+  console.log(`  Bonus Actions: offered=${advancedRuleTotals.bonusActions.optionsOffered}, executed=${advancedRuleTotals.bonusActions.executed}`);
+  console.log(`  Passive Options: offered=${advancedRuleTotals.passiveOptions.optionsOffered}, used=${advancedRuleTotals.passiveOptions.used}`);
+  console.log(`  Situational Modifiers: tests=${advancedRuleTotals.situationalModifiers.testsObserved}, applied=${advancedRuleTotals.situationalModifiers.modifiersApplied}`);
   console.log(`  Lighting: ${lighting} (Visibility OR ${visibilityOrMu} MU)`);
+  console.log(`  Doctrine: ${doctrineLabel}`);
+  console.log(`    Alpha: ${doctrineAlpha}`);
+  console.log(`    Bravo: ${doctrineBravo}`);
+  console.log(`  Loadout Profile: ${loadoutProfile}`);
   console.log(`  Report: ${outputPath}`);
 }
 
 function renderBattleReportFile(reportPath: string) {
   const jsonText = readFileSync(reportPath, 'utf-8');
-  console.log(`\n${formatBattleReportFromJson(jsonText)}\n`);
+  const parsed = JSON.parse(jsonText) as BattleReport | ValidationAggregateReport;
+  const isValidationAggregate =
+    typeof (parsed as ValidationAggregateReport).runs === 'number' &&
+    Array.isArray((parsed as ValidationAggregateReport).runReports) &&
+    Boolean((parsed as ValidationAggregateReport).totals);
+  if (isValidationAggregate) {
+    console.log(`\n${formatValidationAggregateReportHumanReadable(parsed as ValidationAggregateReport)}\n`);
+  } else {
+    console.log(`\n${formatBattleReportHumanReadable(parsed as BattleReport)}\n`);
+  }
 }
 
 function parseLightingArg(value: string | undefined): LightingCondition {
@@ -2773,6 +4020,48 @@ function parseLightingArg(value: string | undefined): LightingCondition {
     return 'Twilight, Overcast';
   }
   return 'Day, Clear';
+}
+
+function parseLoadoutProfileArg(value: string | undefined): 'default' | 'melee_only' {
+  const normalized = (value ?? '').trim().toLowerCase();
+  if (!normalized) return 'default';
+  if (normalized === 'melee' || normalized === 'melee_only' || normalized === 'melee-only') {
+    return 'melee_only';
+  }
+  return 'default';
+}
+
+function parseDoctrineArg(value: string | undefined, fallback: TacticalDoctrine = TacticalDoctrine.Operative): TacticalDoctrine {
+  const normalized = (value ?? '').trim().toLowerCase();
+  if (!normalized) return fallback;
+  for (const doctrine of Object.values(TacticalDoctrine)) {
+    if (String(doctrine).toLowerCase() === normalized) {
+      return doctrine;
+    }
+  }
+  return fallback;
+}
+
+function parseDoctrinePairArgs(
+  doctrineArg: string | undefined,
+  doctrineArgBravo: string | undefined,
+  fallback: TacticalDoctrine
+): [TacticalDoctrine, TacticalDoctrine] {
+  const raw = (doctrineArg ?? '').trim();
+  if (!raw) {
+    return [fallback, fallback];
+  }
+
+  if (raw.includes(',')) {
+    const [left, right] = raw.split(',', 2);
+    const alpha = parseDoctrineArg(left, fallback);
+    const bravo = parseDoctrineArg(right, alpha);
+    return [alpha, bravo];
+  }
+
+  const alpha = parseDoctrineArg(raw, fallback);
+  const bravo = parseDoctrineArg(doctrineArgBravo, alpha);
+  return [alpha, bravo];
 }
 
 // Main entry point
@@ -2803,6 +4092,12 @@ if (command === '--interactive' || command === '-i') {
   const runsArg = Number.isFinite(runsParsed) ? runsParsed : 3;
   const seedArg = Number.isFinite(seedParsed) ? seedParsed : 424242;
   const lighting = parseLightingArg(args[5]);
+  const loadoutProfile = parseLoadoutProfileArg(args[6]);
+  const doctrinePair = parseDoctrinePairArgs(
+    args[7],
+    args[8],
+    loadoutProfile === 'melee_only' ? TacticalDoctrine.Juggernaut : TacticalDoctrine.Operative
+  );
   const toGameSize: Record<string, GameSize> = {
     VERY_SMALL: GameSize.VERY_SMALL,
     SMALL: GameSize.SMALL,
@@ -2811,7 +4106,7 @@ if (command === '--interactive' || command === '-i') {
     VERY_LARGE: GameSize.VERY_LARGE,
   };
   const gameSize = toGameSize[sizeArg] ?? GameSize.VERY_LARGE;
-  runValidationBatch(gameSize, densityArg, runsArg, seedArg, lighting).catch((error) => {
+  runValidationBatch(gameSize, densityArg, runsArg, seedArg, lighting, doctrinePair, loadoutProfile).catch((error) => {
     console.error('\n❌ Validation failed with error:');
     console.error(error);
     process.exit(1);
@@ -2824,16 +4119,23 @@ Usage:
   npm run ai-battle                    # Quick battle (VERY_LARGE, density 50)
   npm run ai-battle -- -i              # Interactive setup
   npm run ai-battle -- -r REPORT_PATH
-  npm run ai-battle -- -v SIZE DENSITY RUNS SEED [LIGHTING]
+  npm run ai-battle -- -v SIZE DENSITY RUNS SEED [LIGHTING] [LOADOUT_PROFILE] [DOCTRINE_ALPHA[,DOCTRINE_BRAVO]]
+  npm run ai-battle -- -v SIZE DENSITY RUNS SEED [LIGHTING] [LOADOUT_PROFILE] [DOCTRINE_ALPHA] [DOCTRINE_BRAVO]
   npm run ai-battle -- SIZE DENSITY [LIGHTING]    # Quick battle with custom params
 
 Game Sizes: VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE
 Lighting: DAY (default) | TWILIGHT
+Loadout Profile: DEFAULT (default) | MELEE_ONLY
+Doctrine: Any tactical doctrine id (default: OPERATIVE, or JUGGERNAUT for MELEE_ONLY)
 
 Examples:
   npm run ai-battle -- VERY_LARGE 50   # Large battle, 50% terrain
   npm run ai-battle -- VERY_LARGE 50 TWILIGHT
   npm run ai-battle -- SMALL 30        # Small battle, 30% terrain
+  npm run ai-battle -- -v SMALL 50 1 424242 DAY MELEE_ONLY
+  npm run ai-battle -- -v SMALL 50 1 424242 DAY MELEE_ONLY juggernaut
+  npm run ai-battle -- -v SMALL 50 1 424242 DAY DEFAULT operative,watchman
+  npm run ai-battle -- -v SMALL 50 1 424242 DAY DEFAULT operative watchman
   npm run ai-battle -- -r generated/ai-battle-reports/battle-report-<ts>.json
   npm run ai-battle -- -v VERY_LARGE 50 5 424242 TWILIGHT
 `);

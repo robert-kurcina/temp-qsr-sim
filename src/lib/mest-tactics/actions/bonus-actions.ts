@@ -50,6 +50,7 @@ export interface BonusActionSelection {
 }
 
 export interface BonusActionOutcome {
+  type?: BonusActionType;
   executed: boolean;
   reason?: string;
   spentCascades?: number;
@@ -128,34 +129,45 @@ export function applyBonusAction(
 ): BonusActionOutcome {
   const budget = computeBonusActionBudget(context);
   if (budget.cascades <= 0) {
-    return { executed: false, reason: 'No bonus cascades available.' };
+    return { type: selection.type, executed: false, reason: 'No bonus cascades available.' };
   }
 
   const cost = computeBonusActionCost(context, selection);
   if (budget.cascades < cost) {
-    return { executed: false, reason: 'Not enough cascades.', spentCascades: 0 };
+    return { type: selection.type, executed: false, reason: 'Not enough cascades.', spentCascades: 0 };
   }
 
+  let outcome: BonusActionOutcome;
   switch (selection.type) {
     case 'Hide':
-      return applyHide(context, cost, selection);
+      outcome = applyHide(context, cost, selection);
+      break;
     case 'Refresh':
-      return { executed: true, spentCascades: cost, refreshApplied: true };
+      outcome = { executed: true, spentCascades: cost, refreshApplied: true };
+      break;
     case 'Reposition':
-      return applyReposition(context, cost, selection);
+      outcome = applyReposition(context, cost, selection);
+      break;
     case 'Circle':
-      return applyCircle(context, cost, selection);
+      outcome = applyCircle(context, cost, selection);
+      break;
     case 'Disengage':
-      return applyDisengage(context, cost, selection);
+      outcome = applyDisengage(context, cost, selection);
+      break;
     case 'PushBack':
-      return applyPushBack(context, cost, selection);
+      outcome = applyPushBack(context, cost, selection);
+      break;
     case 'PullBack':
-      return applyPullBack(context, cost, selection);
+      outcome = applyPullBack(context, cost, selection);
+      break;
     case 'Reversal':
-      return applyReversal(context, cost, selection);
+      outcome = applyReversal(context, cost, selection);
+      break;
     default:
-      return { executed: false, reason: 'Unknown bonus action.' };
+      outcome = { executed: false, reason: 'Unknown bonus action.' };
+      break;
   }
+  return { type: selection.type, ...outcome };
 }
 
 function buildOption(
