@@ -174,7 +174,7 @@ export const Conditions = {
       let rightCount = 0;
       
       for (const enemy of ctx.enemies) {
-        if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+        if (!isAttackableEnemy(ctx.character, enemy, ctx.config)) continue;
         const enemyPos = ctx.battlefield.getCharacterPosition(enemy);
         if (!enemyPos) continue;
         
@@ -211,7 +211,7 @@ export const Conditions = {
     name: 'Enemy Wounded',
     check: (ctx: AIContext) => {
       return ctx.enemies.some(e => {
-        if (!isAttackableEnemy(context.character, e, context.config)) return false;
+        if (!isAttackableEnemy(ctx.character, e, ctx.config)) return false;
         const siz = e.finalAttributes.siz ?? e.attributes.siz ?? 3;
         return e.state.wounds >= siz - 1;
       });
@@ -226,7 +226,7 @@ export const Conditions = {
         !a.state.isEliminated && !a.state.isKOd
       ).length;
       const enemyCount = ctx.enemies.filter(e => 
-        isAttackableEnemy(context.character, e, context.config)
+        isAttackableEnemy(ctx.character, e, ctx.config)
       ).length;
       return friendlyCount > enemyCount * 1.5;
     },
@@ -240,7 +240,7 @@ export const Conditions = {
         !a.state.isEliminated && !a.state.isKOd
       ).length + 1; // Include self
       const enemyCount = ctx.enemies.filter(e => 
-        isAttackableEnemy(context.character, e, context.config)
+        isAttackableEnemy(ctx.character, e, ctx.config)
       ).length;
       return enemyCount > friendlyCount * 1.5;
     },
@@ -257,7 +257,7 @@ export const Conditions = {
     name: 'Has LOS',
     check: (ctx: AIContext) => {
       return ctx.enemies.some(e => {
-        if (!isAttackableEnemy(context.character, e, context.config)) return false;
+        if (!isAttackableEnemy(ctx.character, e, ctx.config)) return false;
         // Simplified LOS check
         return true;
       });
@@ -311,7 +311,7 @@ export const Patterns = {
       let highestWoundRatio = 0;
 
       for (const enemy of ctx.enemies) {
-        if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+        if (!isAttackableEnemy(ctx.character, enemy, ctx.config)) continue;
         const siz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
         const woundRatio = enemy.state.wounds / siz;
         if (woundRatio > highestWoundRatio) {
@@ -348,7 +348,7 @@ export const Patterns = {
       
       // Find enemy to flank
       const nearestEnemy = ctx.enemies.find(e => 
-        isAttackableEnemy(context.character, e, context.config)
+        isAttackableEnemy(ctx.character, e, ctx.config)
       );
 
       if (nearestEnemy) {
@@ -468,7 +468,7 @@ export const Patterns = {
       // Disengage if engaged
       if (ctx.battlefield.isEngaged?.(ctx.character)) {
         const enemy = ctx.enemies.find(e => 
-          isAttackableEnemy(context.character, e, context.config)
+          isAttackableEnemy(ctx.character, e, ctx.config)
         );
         if (enemy) {
           actions.push({
@@ -515,7 +515,7 @@ export const Patterns = {
 
       // Attack enemies near objective
       const enemy = ctx.enemies.find(e => 
-        isAttackableEnemy(context.character, e, context.config)
+        isAttackableEnemy(ctx.character, e, ctx.config)
       );
       if (enemy) {
         actions.push({

@@ -8,6 +8,7 @@ import {
   calculateRollDown,
   checkBarrierCollision,
   calculateLOFAngle,
+  rollScatterDirection,
   ScatterOptions,
 } from './scatter';
 import { Battlefield } from '../battlefield/Battlefield';
@@ -93,6 +94,23 @@ describe('Scatter System - Direction', () => {
 
       const result2 = determineScatterDirectionFromRoll(7);
       expect(result2.directionIndex).toBe(5);
+    });
+  });
+
+  describe('rollScatterDirection', () => {
+    it('should bias toward forward when biased', () => {
+      const rng = () => 0.2;
+      const unbiased = rollScatterDirection({ rng, bias: 'unbiased' });
+      const biased = rollScatterDirection({ rng, bias: 'biased' });
+
+      expect(unbiased).toBe(2);
+      expect(biased).toBe(1);
+    });
+
+    it('should respect custom weights', () => {
+      const rng = () => 0.1;
+      const roll = rollScatterDirection({ rng, weights: [0, 0, 0, 0, 0, 1] });
+      expect(roll).toBe(6);
     });
   });
 

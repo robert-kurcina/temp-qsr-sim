@@ -41,8 +41,26 @@ export function parseOptimalRange(orString: string | undefined, attributes: Fina
                     case 'str':
                         value = attributes.str;
                         break;
+                    case 'agi':
+                        value = attributes.agi;
+                        break;
                     case 'int':
                         value = attributes.int;
+                        break;
+                    case 'per':
+                        value = attributes.per;
+                        break;
+                    case 'mov':
+                        value = attributes.mov;
+                        break;
+                    case 'rca':
+                        value = attributes.rca;
+                        break;
+                    case 'cca':
+                        value = attributes.cca;
+                        break;
+                    case 'ref':
+                        value = attributes.ref;
                         break;
                     default:
                         // Try to parse as number
