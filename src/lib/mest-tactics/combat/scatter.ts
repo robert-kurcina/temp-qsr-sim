@@ -45,10 +45,14 @@ export interface ScatterOptions {
   misses: number;
   /** Battlefield for collision detection */
   battlefield: Battlefield;
-  /** d6 roll for direction (1-6) */
-  directionRoll: number;
+  /** d6 roll for direction (1-6). If omitted, roll using bias settings. */
+  directionRoll?: number;
   /** Random number generator (default: Math.random) */
   rng?: () => number;
+  /** Scatter diagram bias */
+  bias?: 'biased' | 'unbiased';
+  /** Optional weights for directions 1-6 */
+  weights?: number[];
 }
 
 /**
@@ -97,6 +101,25 @@ export function determineScatterDirectionFromRoll(directionRoll: number): {
     angleDegrees: direction.angle,
     name: direction.name,
   };
+}
+
+export function rollScatterDirection(
+  options: { rng?: () => number; bias?: 'biased' | 'unbiased'; weights?: number[] } = {}
+): number {
+  const rng = options.rng ?? Math.random;
+  const bias = options.bias ?? 'unbiased';
+  const weights = options.weights ?? (bias === 'biased' ? [2, 1, 1, 1, 1, 1] : [1, 1, 1, 1, 1, 1]);
+  const normalized = weights.length === 6 ? weights : [1, 1, 1, 1, 1, 1];
+  const total = normalized.reduce((sum, value) => sum + Math.max(0, value), 0);
+  if (total <= 0) {
+    return Math.floor(rng() * 6) + 1;
+  }
+  let roll = rng() * total;
+  for (let i = 0; i < 6; i++) {
+    roll -= Math.max(0, normalized[i]);
+    if (roll <= 0) return i + 1;
+  }
+  return 6;
 }
 
 /**
@@ -359,6 +382,9 @@ export function resolveScatter(options: ScatterOptions): ScatterResult {
     misses,
     battlefield,
     directionRoll,
+    rng,
+    bias,
+    weights,
   } = options;
 
   // Calculate scatter distance (minimum 1 MU)
@@ -368,7 +394,8 @@ export function resolveScatter(options: ScatterOptions): ScatterResult {
   const lofAngle = calculateLOFAngle(attackerPosition, targetPosition);
 
   // Determine scatter direction from d6 roll
-  const directionInfo = determineScatterDirectionFromRoll(directionRoll);
+  const roll = directionRoll ?? rollScatterDirection({ rng, bias, weights });
+  const directionInfo = determineScatterDirectionFromRoll(roll);
   
   // Calculate final scatter angle (LOF angle + scatter direction offset)
   let scatterAngle = lofAngle + directionInfo.angleDegrees;

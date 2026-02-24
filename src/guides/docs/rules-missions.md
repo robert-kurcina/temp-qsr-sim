@@ -47,6 +47,6 @@ The Mission ends when one of the following conditions is met:
 
 *   **Last Man Standing:** The game ends immediately if a player has no more In-Play characters on the battlefield.
 *   **Round Limit:** The game ends at the conclusion of a pre-determined number of Game Rounds (e.g., 5 Rounds).
-*   **Sudden Death:** If both players have an equal number of VP at the end of the final Game Round, the player who currently holds the Initiative wins.
+*   **Sudden Death (Optional):** If both players have an equal number of VP at the end of the final Game Round, the player who currently holds the Initiative wins. This is **not** part of QSR by default and should be enabled as an optional setup toggle.
 
 At the end of the game, the player with the most Victory Points is declared the winner.

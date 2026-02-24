@@ -115,6 +115,7 @@ export class GameManager {
   public apPerActivation: number = 2;
   public roundsPerTurn: number = 1;
   public phase: TurnPhase = TurnPhase.Setup;
+  public lastInitiativeWinnerSideId: string | null = null;
 
   private characterStatus: Map<string, CharacterStatus> = new Map();
   private activeCharacterId: string | null = null;
@@ -237,6 +238,7 @@ export class GameManager {
     if (sides && initiativeResults.length > 0) {
       // Find winner (highest initiative)
       const winner = initiativeResults[0];
+      this.lastInitiativeWinnerSideId = winner.side?.id ?? null;
       const lowestScore = initiativeResults[initiativeResults.length - 1].initiative;
       
       // Group results by side

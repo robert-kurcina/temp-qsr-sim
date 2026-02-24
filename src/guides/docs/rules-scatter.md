@@ -136,7 +136,7 @@ The hexagonal scatter diagram provides **six discrete directions** rather than c
 - **6 directions** (not 8) — Matches hexagonal grid gameplay
 - **60° increments** — Natural hexagon angles
 - **d6 roll** — Single die, fast resolution
-- **Forward bias** — No bias; all directions equally likely
+- **Bias** — Depending on mission or optional rules, scatter may be **Unbiased** (equal probability) or **Biased** (forward-weighted). Use the agreed bias setting before play.
 
 ### Collision Detection
 

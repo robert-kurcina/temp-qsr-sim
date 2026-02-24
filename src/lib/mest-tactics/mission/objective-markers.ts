@@ -19,6 +19,32 @@ export enum ObjectiveMarkerType {
 }
 
 /**
+ * QSR objective marker kinds (may be combined)
+ */
+export enum ObjectiveMarkerKind {
+  Switch = 'Switch',
+  Lock = 'Lock',
+  Key = 'Key',
+  Idea = 'Idea',
+  Tiny = 'Tiny',
+  Small = 'Small',
+  Large = 'Large',
+  Bulky = 'Bulky',
+}
+
+export enum SwitchState {
+  On = 'On',
+  Off = 'Off',
+}
+
+export enum ObjectiveMarkerPhysicalSize {
+  Tiny = 'Tiny',
+  Small = 'Small',
+  Large = 'Large',
+  Bulky = 'Bulky',
+}
+
+/**
  * State of an objective marker
  */
 export enum MarkerState {
@@ -44,6 +70,8 @@ export interface ObjectiveMarker {
   name: string;
   /** Marker type */
   type: ObjectiveMarkerType;
+  /** QSR marker kinds (Switch/Lock/Key/Idea/Physical sizes) */
+  omTypes: ObjectiveMarkerKind[];
   /** Current state */
   state: MarkerState;
   /** Current position (undefined if carried or scored) */
@@ -56,6 +84,18 @@ export interface ObjectiveMarker {
   placedBy?: string;
   /** Which side currently controls/scored this marker */
   controlledBy?: string;
+  /** Which side is credited for scoring collection (RP/VP) */
+  scoringSideId?: string;
+  /** Whether this marker is currently neutral */
+  isNeutral?: boolean;
+  /** Idea holders by side (Idea OMs only) */
+  ideaHoldersBySide?: Record<string, string[]>;
+  /** Switch state for Switch/Lock markers */
+  switchState?: SwitchState;
+  /** Lock ID this Key belongs to */
+  lockId?: string;
+  /** Required key IDs for a Lock */
+  keyIds?: string[];
   /** Mission-specific metadata */
   metadata: Record<string, unknown>;
 }
@@ -67,9 +107,15 @@ export interface ObjectiveMarkerConfig {
   id?: string;
   name?: string;
   type?: ObjectiveMarkerType;
+  omTypes?: ObjectiveMarkerKind[];
+  switchState?: SwitchState;
+  lockId?: string;
+  keyIds?: string[];
   victoryPoints?: number;
   position?: Position;
   placedBy?: string;
+  scoringSideId?: string;
+  isNeutral?: boolean;
   metadata?: Record<string, unknown>;
 }
 
@@ -77,16 +123,27 @@ export interface ObjectiveMarkerConfig {
  * Create a new objective marker
  */
 export function createObjectiveMarker(config: ObjectiveMarkerConfig = {}): ObjectiveMarker {
+  const defaultOmTypes =
+    config.type === ObjectiveMarkerType.Beacon ? [ObjectiveMarkerKind.Switch] :
+    config.type === ObjectiveMarkerType.Intel ? [ObjectiveMarkerKind.Idea] :
+    [ObjectiveMarkerKind.Tiny];
+  const omTypes = config.omTypes ?? defaultOmTypes;
   return {
     id: config.id ?? `marker-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     name: config.name ?? 'Objective Marker',
     type: config.type ?? ObjectiveMarkerType.Standard,
+    omTypes,
     state: config.position ? MarkerState.Available : MarkerState.Scored,
     position: config.position,
     carriedBy: undefined,
     victoryPoints: config.victoryPoints ?? 1,
     placedBy: config.placedBy,
     controlledBy: undefined,
+    scoringSideId: config.scoringSideId,
+    isNeutral: config.isNeutral ?? false,
+    switchState: config.switchState ?? (omTypes.includes(ObjectiveMarkerKind.Switch) || omTypes.includes(ObjectiveMarkerKind.Lock) ? SwitchState.Off : undefined),
+    lockId: config.lockId,
+    keyIds: config.keyIds,
     metadata: config.metadata ?? {},
   };
 }
@@ -116,6 +173,31 @@ export interface MarkerMoveResult {
   previousPosition?: Position;
   previousCarrier?: string;
   reason?: string;
+}
+
+export interface MarkerAcquireResult {
+  success: boolean;
+  marker: ObjectiveMarker;
+  apCost: number;
+  switchToggled?: boolean;
+  carried?: boolean;
+  reason?: string;
+}
+
+export interface MarkerShareResult {
+  success: boolean;
+  marker: ObjectiveMarker;
+  apCost: number;
+  reason?: string;
+}
+
+export interface MarkerTransferOptions {
+  allowOpposing?: boolean;
+  opposingTransfer?: boolean;
+  requiresAttentiveOrdered?: boolean;
+  attackerAttentiveOrdered?: boolean;
+  targetAttentiveOrdered?: boolean;
+  isStunnedOrDisorderedOrDistracted?: boolean;
 }
 
 /**
@@ -274,6 +356,121 @@ export class ObjectiveMarkerManager {
   }
 
   /**
+   * Acquire a marker using QSR OM rules (Fiddle action)
+   */
+  acquireMarker(
+    markerId: string,
+    modelId: string,
+    sideId: string,
+    options: {
+      isFree?: boolean;
+      opposingInBaseContact?: boolean;
+      isAttentive?: boolean;
+      isOrdered?: boolean;
+      isAnimal?: boolean;
+      keyIdsInHand?: string[];
+    } = {}
+  ): MarkerAcquireResult {
+    const marker = this.getMarker(markerId);
+    if (!marker) {
+      return {
+        success: false,
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
+        apCost: 0,
+        reason: 'Marker not found',
+      };
+    }
+
+    if (options.opposingInBaseContact) {
+      return { success: false, marker, apCost: 0, reason: 'Opposing model in base-contact' };
+    }
+
+    const apCost = getMarkerAcquireApCost(marker);
+
+    if (isSwitchMarker(marker) || isLockMarker(marker)) {
+      if (!options.isFree) {
+        return { success: false, marker, apCost, reason: 'Must be Free to toggle switch/lock' };
+      }
+      if (isLockMarker(marker)) {
+        const requiredKeys = marker.keyIds ?? [];
+        const keysInHand = new Set(options.keyIdsInHand ?? []);
+        const hasAllKeys = requiredKeys.every(keyId => keysInHand.has(keyId));
+        if (requiredKeys.length > 0 && !hasAllKeys) {
+          return { success: false, marker, apCost, reason: 'Missing required key(s)' };
+        }
+      }
+      marker.switchState = marker.switchState === SwitchState.On ? SwitchState.Off : SwitchState.On;
+      if (!marker.scoringSideId) {
+        marker.scoringSideId = sideId;
+      }
+      return { success: true, marker, apCost, switchToggled: true };
+    }
+
+    if (isIdeaMarker(marker)) {
+      if (options.isAnimal) {
+        return { success: false, marker, apCost, reason: 'Animals cannot acquire Idea OMs' };
+      }
+      if (!marker.ideaHoldersBySide) marker.ideaHoldersBySide = {};
+      const holders = new Set(marker.ideaHoldersBySide[sideId] ?? []);
+      holders.add(modelId);
+      marker.ideaHoldersBySide[sideId] = Array.from(holders);
+      if (!marker.scoringSideId) {
+        marker.scoringSideId = sideId;
+      }
+      return { success: true, marker, apCost };
+    }
+
+    if (!isPhysicalMarker(marker)) {
+      return { success: false, marker, apCost, reason: 'Marker not acquireable' };
+    }
+
+    if (marker.state !== MarkerState.Available && marker.state !== MarkerState.Dropped) {
+      return { success: false, marker, apCost, reason: `Marker cannot be picked up (state: ${marker.state})` };
+    }
+
+    marker.position = undefined;
+    marker.carriedBy = modelId;
+    marker.state = MarkerState.Carried;
+    marker.isNeutral = false;
+    marker.scoringSideId = sideId;
+    return { success: true, marker, apCost, carried: true };
+  }
+
+  /**
+   * Share an Idea OM between friendly models
+   */
+  shareIdea(
+    markerId: string,
+    fromModelId: string,
+    toModelId: string,
+    sideId: string,
+    hindrance: number = 0
+  ): MarkerShareResult {
+    const marker = this.getMarker(markerId);
+    if (!marker) {
+      return {
+        success: false,
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
+        apCost: 0,
+        reason: 'Marker not found',
+      };
+    }
+    if (!isIdeaMarker(marker)) {
+      return { success: false, marker, apCost: 0, reason: 'Marker is not an Idea OM' };
+    }
+    const apCost = 1 + Math.max(0, hindrance);
+    if (!marker.ideaHoldersBySide) marker.ideaHoldersBySide = {};
+    const holders = new Set(marker.ideaHoldersBySide[sideId] ?? []);
+    holders.add(fromModelId);
+    holders.add(toModelId);
+    marker.ideaHoldersBySide[sideId] = Array.from(holders);
+    if (!marker.scoringSideId) {
+      marker.scoringSideId = sideId;
+    }
+    return { success: true, marker, apCost };
+  }
+
+  /**
    * Drop a marker at current position
    */
   dropMarker(markerId: string, position: Position): MarkerMoveResult {
@@ -368,6 +565,72 @@ export class ObjectiveMarkerManager {
   }
 
   /**
+   * Transfer a carried Physical OM between models
+   */
+  transferMarker(
+    markerId: string,
+    newCarrierId: string,
+    sideId: string,
+    options: MarkerTransferOptions = {}
+  ): MarkerMoveResult {
+    const marker = this.getMarker(markerId);
+    if (!marker) {
+      return {
+        success: false,
+        marker: { id: '', name: '', type: ObjectiveMarkerType.Standard, omTypes: [], state: MarkerState.Destroyed, victoryPoints: 0, metadata: {} },
+        reason: 'Marker not found',
+      };
+    }
+    if (!isPhysicalMarker(marker)) {
+      return {
+        success: false,
+        marker,
+        reason: 'Marker is not Physical',
+      };
+    }
+    if (marker.state !== MarkerState.Carried) {
+      return {
+        success: false,
+        marker,
+        reason: `Marker cannot be transferred (state: ${marker.state})`,
+      };
+    }
+    if (options.requiresAttentiveOrdered) {
+      const ok = options.attackerAttentiveOrdered || options.targetAttentiveOrdered;
+      if (!ok) {
+        return {
+          success: false,
+          marker,
+          reason: 'Requires Attentive Ordered model',
+        };
+      }
+    }
+    marker.carriedBy = newCarrierId;
+    marker.isNeutral = options.opposingTransfer ?? false;
+    if (!marker.isNeutral) {
+      marker.scoringSideId = sideId;
+    }
+    return { success: true, marker };
+  }
+
+  /**
+   * Drop all carried Physical OMs for a model (KO/Elimination)
+   */
+  dropAllPhysicalMarkers(modelId: string, position: Position): ObjectiveMarker[] {
+    const dropped: ObjectiveMarker[] = [];
+    for (const marker of this.getMarkersCarriedBy(modelId)) {
+      if (!isPhysicalMarker(marker)) continue;
+      marker.position = position;
+      marker.carriedBy = undefined;
+      marker.state = MarkerState.Dropped;
+      marker.isNeutral = true;
+      marker.scoringSideId = undefined;
+      dropped.push(marker);
+    }
+    return dropped;
+  }
+
+  /**
    * Destroy a marker
    */
   destroyMarker(markerId: string): boolean {
@@ -426,6 +689,59 @@ export class ObjectiveMarkerManager {
   }
 }
 
+export function isSwitchMarker(marker: ObjectiveMarker): boolean {
+  return marker.omTypes.includes(ObjectiveMarkerKind.Switch);
+}
+
+export function isLockMarker(marker: ObjectiveMarker): boolean {
+  return marker.omTypes.includes(ObjectiveMarkerKind.Lock);
+}
+
+export function isKeyMarker(marker: ObjectiveMarker): boolean {
+  return marker.omTypes.includes(ObjectiveMarkerKind.Key);
+}
+
+export function isIdeaMarker(marker: ObjectiveMarker): boolean {
+  return marker.omTypes.includes(ObjectiveMarkerKind.Idea);
+}
+
+export function getMarkerPhysicalSize(marker: ObjectiveMarker): ObjectiveMarkerPhysicalSize | null {
+  if (marker.omTypes.includes(ObjectiveMarkerKind.Bulky)) return ObjectiveMarkerPhysicalSize.Bulky;
+  if (marker.omTypes.includes(ObjectiveMarkerKind.Large)) return ObjectiveMarkerPhysicalSize.Large;
+  if (marker.omTypes.includes(ObjectiveMarkerKind.Small)) return ObjectiveMarkerPhysicalSize.Small;
+  if (marker.omTypes.includes(ObjectiveMarkerKind.Tiny)) return ObjectiveMarkerPhysicalSize.Tiny;
+  return null;
+}
+
+export function isPhysicalMarker(marker: ObjectiveMarker): boolean {
+  return getMarkerPhysicalSize(marker) !== null;
+}
+
+export function getMarkerHandsRequired(marker: ObjectiveMarker): number {
+  const size = getMarkerPhysicalSize(marker);
+  if (!size) return 0;
+  if (size === ObjectiveMarkerPhysicalSize.Bulky) return 2;
+  if (size === ObjectiveMarkerPhysicalSize.Large) return 1;
+  if (size === ObjectiveMarkerPhysicalSize.Small) return 1;
+  return 0;
+}
+
+export function getMarkerLadenLevel(marker: ObjectiveMarker): number {
+  const size = getMarkerPhysicalSize(marker);
+  if (size === ObjectiveMarkerPhysicalSize.Bulky) return 2;
+  if (size === ObjectiveMarkerPhysicalSize.Large) return 1;
+  return 0;
+}
+
+export function getMarkerAcquireApCost(marker: ObjectiveMarker): number {
+  if (isSwitchMarker(marker) || isLockMarker(marker)) return 1;
+  const size = getMarkerPhysicalSize(marker);
+  if (size === ObjectiveMarkerPhysicalSize.Tiny) return 2;
+  if (size) return 1;
+  if (isIdeaMarker(marker)) return 1;
+  return 1;
+}
+
 /**
  * Create a set of standard objective markers for a mission
  */
@@ -446,6 +762,7 @@ export function createStandardMarkers(
       id: `obj-${i + 1}`,
       name: `Objective ${i + 1}`,
       type: ObjectiveMarkerType.Standard,
+      omTypes: [ObjectiveMarkerKind.Tiny],
       victoryPoints: vp,
       placedBy: options.placedBy,
     };
@@ -479,6 +796,7 @@ export function createBeaconMarkers(
       id: `beacon-${i + 1}`,
       name: `Beacon ${i + 1}`,
       type: ObjectiveMarkerType.Beacon,
+      omTypes: [ObjectiveMarkerKind.Switch],
       victoryPoints: vp,
     };
 
@@ -511,6 +829,7 @@ export function createIntelMarkers(
       id: `intel-${i + 1}`,
       name: `Intel ${i + 1}`,
       type: ObjectiveMarkerType.Intel,
+      omTypes: [ObjectiveMarkerKind.Idea],
       victoryPoints: vp,
     };
 

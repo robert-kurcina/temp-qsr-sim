@@ -13,8 +13,9 @@ import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusA
 import { parseStatusTrait, applyStatusTraitOnHit } from '../status/status-system';
 import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
 import { makeIndirectRangedAttack } from '../combat/indirect-ranged-combat';
+import { resolveScatter, type ScatterResult } from '../combat/scatter';
 import { LOSOperations } from '../battlefield/los/LOSOperations';
-import { hasItemTrait } from '../traits/item-traits';
+import { hasItemTrait, hasItemTraitOnWeapon } from '../traits/item-traits';
 import {
   getFightBonusActions,
   getBrawlLevel,
@@ -40,6 +41,61 @@ import {
   recordWeaponUse,
   isMultipleAttackExempt,
 } from '../traits/combat-traits';
+
+function findTargetsInBaseContact(
+  position: Position,
+  characters: Character[],
+  getCharacterPosition: (character: Character) => Position | undefined
+): Character[] {
+  const results: Character[] = [];
+  for (const character of characters) {
+    const targetPos = getCharacterPosition(character);
+    if (!targetPos) continue;
+    const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+    const radius = getBaseDiameterFromSiz(siz) / 2;
+    const distance = Math.hypot(targetPos.x - position.x, targetPos.y - position.y);
+    if (distance <= radius) {
+      results.push(character);
+    }
+  }
+  return results;
+}
+
+function resolveScrambleMoves(options: {
+  characters: Character[];
+  getCharacterPosition: (character: Character) => Position | undefined;
+  moveCharacter: (character: Character, position: Position) => boolean;
+  targetPosition: Position;
+  allowScramble: boolean;
+  scrambleMoves?: Record<string, Position>;
+}): {
+  eligibleIds: string[];
+  movedIds: string[];
+} {
+  if (!options.allowScramble) {
+    return { eligibleIds: [], movedIds: [] };
+  }
+  const eligible = findTargetsInBaseContact(options.targetPosition, options.characters, options.getCharacterPosition);
+  const eligibleIds = eligible.map(character => character.id);
+  const movedIds: string[] = [];
+  if (!options.scrambleMoves) {
+    return { eligibleIds, movedIds };
+  }
+
+  for (const character of eligible) {
+    const target = options.scrambleMoves[character.id];
+    if (!target) continue;
+    const current = options.getCharacterPosition(character);
+    if (!current) continue;
+    const maxDistance = (character.finalAttributes.mov ?? character.attributes.mov ?? 0) * 0.5;
+    const distance = Math.hypot(target.x - current.x, target.y - current.y);
+    if (distance <= maxDistance) {
+      const moved = options.moveCharacter(character, target);
+      if (moved) movedIds.push(character.id);
+    }
+  }
+  return { eligibleIds, movedIds };
+}
 
 export interface CombatActionDeps {
   battlefield: import('../battlefield/Battlefield').Battlefield | null;
@@ -357,7 +413,15 @@ export function executeIndirectAttack(
   attacker: Character,
   weapon: Item,
   orm: number,
-  options: Partial<ActionContextInput> & { context?: TestContext; targetCharacter?: Character } = {}
+  options: Partial<ActionContextInput> & {
+    context?: TestContext;
+    targetCharacter?: Character;
+    directionRoll?: number;
+    scatterBias?: 'biased' | 'unbiased';
+    scatterWeights?: number[];
+    scrambleMoves?: Record<string, Position>;
+    allowScramble?: boolean;
+  } = {}
 ) {
   if (!deps.battlefield) {
     throw new Error('Battlefield not set.');
@@ -385,7 +449,63 @@ export function executeIndirectAttack(
 
   const context = buildRangedActionContext(spatial);
   const mergedContext: TestContext = { ...context, ...(options.context ?? {}) };
-  return makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial, options.targetCharacter);
+  const hitTestResult = makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial, options.targetCharacter);
+
+  const misses = hitTestResult.pass ? 0 : Math.max(1, Math.ceil(Math.abs(hitTestResult.score)));
+  const scatterResult: ScatterResult | undefined = hitTestResult.pass
+    ? undefined
+    : resolveScatter({
+        attackerPosition: attackerPos,
+        targetPosition: options.target!.position,
+        misses,
+        battlefield: deps.battlefield,
+        directionRoll: options.directionRoll,
+        bias: options.scatterBias,
+        weights: options.scatterWeights,
+      });
+
+  const finalPosition = scatterResult?.finalPosition ?? options.target!.position;
+
+  const scramble = resolveScrambleMoves({
+    characters: deps.characters,
+    getCharacterPosition: deps.getCharacterPosition,
+    moveCharacter: deps.moveCharacter,
+    targetPosition: options.target!.position,
+    allowScramble: options.allowScramble ?? false,
+    scrambleMoves: options.scrambleMoves,
+  });
+
+  const blastTargets = findTargetsInBaseContact(finalPosition, deps.characters, deps.getCharacterPosition);
+  const usesAoE = hasItemTraitOnWeapon(weapon, 'AoE') || hasItemTraitOnWeapon(weapon, 'Frag');
+  const hasFrag = hasItemTraitOnWeapon(weapon, 'Frag');
+
+  const damageResults: Array<{ targetId: string; damageResolution: DamageResolution }> = [];
+  if (usesAoE) {
+    for (const target of blastTargets) {
+      if (hasFrag && hitTestResult.pass) continue;
+      const damageResolution = resolveDamage(attacker, target, weapon, hitTestResult, mergedContext);
+      target.state.wounds = damageResolution.defenderState.wounds;
+      target.state.delayTokens = damageResolution.defenderState.delayTokens;
+      target.state.isKOd = damageResolution.defenderState.isKOd;
+      target.state.isEliminated = damageResolution.defenderState.isEliminated;
+      damageResults.push({ targetId: target.id, damageResolution });
+    }
+  } else if (options.targetCharacter) {
+    const damageResolution = resolveDamage(attacker, options.targetCharacter, weapon, hitTestResult, mergedContext);
+    options.targetCharacter.state.wounds = damageResolution.defenderState.wounds;
+    options.targetCharacter.state.delayTokens = damageResolution.defenderState.delayTokens;
+    options.targetCharacter.state.isKOd = damageResolution.defenderState.isKOd;
+    options.targetCharacter.state.isEliminated = damageResolution.defenderState.isEliminated;
+    damageResults.push({ targetId: options.targetCharacter.id, damageResolution });
+  }
+
+  return {
+    hitTestResult,
+    scatterResult,
+    finalPosition,
+    damageResults,
+    scramble,
+  };
 }
 
 export function executeCloseCombatAttack(

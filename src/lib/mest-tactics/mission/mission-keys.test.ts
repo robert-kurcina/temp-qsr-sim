@@ -19,7 +19,7 @@ import {
   MissionZone,
   SanctuaryState,
 } from '../missions/mission-keys';
-import { createObjectiveMarker } from '../missions/mission-objectives';
+import { createObjectiveMarker, ObjectiveMarkerKind } from '../mission/objective-markers';
 
 describe('mission-keys', () => {
   it('computes zone control for dominance', () => {
@@ -64,9 +64,9 @@ describe('mission-keys', () => {
 
   it('awards collection VP and RP from objectives', () => {
     const markers = [
-      createObjectiveMarker({ id: 'om1', kinds: ['Small'], position: { x: 0, y: 0 }, scoringSideId: 'A' }),
-      createObjectiveMarker({ id: 'om2', kinds: ['Small'], position: { x: 0, y: 0 }, scoringSideId: 'A' }),
-      createObjectiveMarker({ id: 'om3', kinds: ['Small'], position: { x: 0, y: 0 }, scoringSideId: 'B' }),
+      createObjectiveMarker({ id: 'om1', omTypes: [ObjectiveMarkerKind.Small], position: { x: 0, y: 0 }, scoringSideId: 'A' }),
+      createObjectiveMarker({ id: 'om2', omTypes: [ObjectiveMarkerKind.Small], position: { x: 0, y: 0 }, scoringSideId: 'A' }),
+      createObjectiveMarker({ id: 'om3', omTypes: [ObjectiveMarkerKind.Small], position: { x: 0, y: 0 }, scoringSideId: 'B' }),
     ];
     const delta = applyCollectionScores(markers);
     expect(delta.vpBySide.A).toBe(1);

@@ -46,6 +46,12 @@ export interface VIP {
   detectionLevel: DetectionLevel;
   /** Which side the VIP belongs to */
   affiliatedSide: string;
+  /** Whether the VIP is currently controlled by a guardian */
+  controlled: boolean;
+  /** Guardian model ID (if controlled) */
+  guardianId?: string;
+  /** Which side currently controls this VIP */
+  controlledBySideId?: string;
   /** Which side is trying to extract this VIP */
   extractingSide?: string;
   /** Extraction point position (if applicable) */
@@ -195,6 +201,7 @@ export class VIPManager {
       state: VIPState.Active,
       detectionLevel: DetectionLevel.Confirmed, // VIPs start known
       affiliatedSide: member.isVIP ? 'self' : 'unknown',
+      controlled: false,
       extractingSide: options.extractingSide,
       extractionPoint: options.extractionPoint,
       extractionVP: options.extractionVP ?? 5,
@@ -204,6 +211,114 @@ export class VIPManager {
     };
 
     return vip;
+  }
+
+  /**
+   * QSR VIP Control - check if a guardian can control the VIP
+   */
+  canControlVIP(
+    vipId: string,
+    guardian: Character,
+    guardianSideId: string,
+    options: {
+      vipPosition: Position;
+      guardianPosition: Position;
+      guardianBaseDiameter: number;
+      vipBaseDiameter: number;
+      opposingModels: Array<{
+        id: string;
+        position: Position;
+        baseDiameter: number;
+        isOrdered: boolean;
+      }>;
+      cohesionRangeMu?: number;
+    }
+  ): { allowed: boolean; reason?: string } {
+    const vip = this.getVIP(vipId);
+    if (!vip) return { allowed: false, reason: 'VIP not found' };
+    if (!guardian.state.isAttentive || !guardian.state.isOrdered) {
+      return { allowed: false, reason: 'Guardian must be Attentive and Ordered' };
+    }
+    const distance = this.distanceEdgeToEdge(
+      options.guardianPosition,
+      options.guardianBaseDiameter,
+      options.vipPosition,
+      options.vipBaseDiameter
+    );
+    if (distance > 0) {
+      return { allowed: false, reason: 'Guardian not in base-contact' };
+    }
+    const cohesion = options.cohesionRangeMu ?? 4;
+    for (const opposing of options.opposingModels) {
+      if (!opposing.isOrdered) continue;
+      const oppDistance = this.distanceEdgeToEdge(
+        options.vipPosition,
+        options.vipBaseDiameter,
+        opposing.position,
+        opposing.baseDiameter
+      );
+      if (oppDistance <= cohesion) {
+        return { allowed: false, reason: 'Opposing Ordered model within Cohesion' };
+      }
+    }
+    return { allowed: true };
+  }
+
+  /**
+   * Control a VIP with a guardian (QSR 2 AP Fiddle action)
+   */
+  controlVIP(
+    vipId: string,
+    guardian: Character,
+    guardianSideId: string
+  ): { success: boolean; vip?: VIP; reason?: string } {
+    const vip = this.getVIP(vipId);
+    if (!vip) return { success: false, reason: 'VIP not found' };
+    vip.controlled = true;
+    vip.guardianId = guardian.id;
+    vip.controlledBySideId = guardianSideId;
+    return { success: true, vip };
+  }
+
+  /**
+   * Transfer VIP control between friendly models (QSR 1 AP Fiddle action)
+   */
+  transferVIPControl(
+    vipId: string,
+    newGuardian: Character,
+    newGuardianSideId: string,
+    options: { withinCohesion: boolean }
+  ): { success: boolean; vip?: VIP; reason?: string } {
+    const vip = this.getVIP(vipId);
+    if (!vip) return { success: false, reason: 'VIP not found' };
+    if (!vip.controlled) return { success: false, reason: 'VIP not controlled' };
+    if (!newGuardian.state.isAttentive) return { success: false, reason: 'New guardian must be Attentive' };
+    if (!options.withinCohesion) return { success: false, reason: 'New guardian not within Cohesion' };
+    vip.guardianId = newGuardian.id;
+    vip.controlledBySideId = newGuardianSideId;
+    return { success: true, vip };
+  }
+
+  /**
+   * Release VIP control (guardian KO/Eliminated or manual release)
+   */
+  releaseVIPControl(vipId: string): { success: boolean; vip?: VIP; reason?: string } {
+    const vip = this.getVIP(vipId);
+    if (!vip) return { success: false, reason: 'VIP not found' };
+    vip.controlled = false;
+    vip.guardianId = undefined;
+    vip.controlledBySideId = undefined;
+    return { success: true, vip };
+  }
+
+  private distanceEdgeToEdge(
+    aPos: Position,
+    aDiameter: number,
+    bPos: Position,
+    bDiameter: number
+  ): number {
+    const distance = Math.hypot(aPos.x - bPos.x, aPos.y - bPos.y);
+    return Math.max(0, distance - aDiameter / 2 - bDiameter / 2);
   }
 
   /**
@@ -469,6 +584,7 @@ export function createVIP(
     state: VIPState.Active,
     detectionLevel: DetectionLevel.Confirmed,
     affiliatedSide,
+    controlled: false,
     extractingSide: options.extractingSide,
     extractionVP: options.extractionVP ?? 5,
     eliminationVP: options.eliminationVP ?? 3,

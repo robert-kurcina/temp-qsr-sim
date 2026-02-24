@@ -1,5 +1,5 @@
 import { Position } from '../battlefield/Position';
-import { ObjectiveMarker } from '../mission/objective-markers';
+import { ObjectiveMarker, MarkerState } from '../mission/objective-markers';
 
 export interface MissionZone {
   id: string;
@@ -203,7 +203,7 @@ export function applyCollectionScores(markers: ObjectiveMarker[]): MissionScoreD
   const delta = createEmptyDelta();
   const counts: Record<string, number> = {};
   for (const marker of markers) {
-    if (marker.state === 'Destroyed') continue;
+    if (marker.state === MarkerState.Destroyed) continue;
     if (!marker.scoringSideId) continue;
     counts[marker.scoringSideId] = (counts[marker.scoringSideId] || 0) + 1;
     addDelta(delta, marker.scoringSideId, 0, 1);

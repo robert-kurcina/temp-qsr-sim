@@ -46,6 +46,9 @@ export interface MissionScoreResult {
   vpBySide: Record<string, number>;
   rpBySide: Record<string, number>;
   breakdownBySide: Record<string, MissionScoreBreakdown>;
+  winnerSideId?: string;
+  tie?: boolean;
+  suddenDeathApplied?: boolean;
 }
 
 export interface EndGameStateInput {

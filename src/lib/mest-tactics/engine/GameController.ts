@@ -38,6 +38,8 @@ export interface MissionRunConfig extends SkirmishConfig, MissionFlowOptions {
   enableAI?: boolean;
   /** AI configuration (only used if enableAI is true) */
   aiConfig?: Partial<AIGameLoopConfig>;
+  /** Optional sudden death tie-breaker (not QSR default) */
+  suddenDeathOnTie?: boolean;
 }
 
 export interface MissionRunResult {
@@ -114,6 +116,7 @@ export class GameController {
 
     // Calculate final scores
     const outcome = this.calculateMissionOutcome(sides, state);
+    this.applySuddenDeathIfEnabled(outcome, config.suddenDeathOnTie ?? false);
 
     return { log: this.log, state, outcome };
   }
@@ -165,6 +168,7 @@ export class GameController {
 
     // Calculate final scores
     const outcome = this.calculateMissionOutcome(sides, state);
+    this.applySuddenDeathIfEnabled(outcome, config.suddenDeathOnTie ?? false);
 
     return { log: this.log, state, outcome };
   }
@@ -176,6 +180,24 @@ export class GameController {
     const sideStatus = sides.map(side => buildMissionSideStatus(side));
     
     return computeMissionOutcome(sides, state);
+  }
+
+  private applySuddenDeathIfEnabled(outcome: MissionScoreResult, enabled: boolean): void {
+    if (!enabled) return;
+    const entries = Object.entries(outcome.vpBySide);
+    if (entries.length === 0) return;
+    const sorted = entries.sort((a, b) => b[1] - a[1]);
+    const topValue = sorted[0][1];
+    const tied = sorted.filter(([, vp]) => vp === topValue);
+    outcome.tie = tied.length > 1;
+    if (!outcome.tie) {
+      outcome.winnerSideId = sorted[0][0];
+      return;
+    }
+    if (this.manager.lastInitiativeWinnerSideId) {
+      outcome.winnerSideId = this.manager.lastInitiativeWinnerSideId;
+      outcome.suddenDeathApplied = true;
+    }
   }
 
   private runTurns(
