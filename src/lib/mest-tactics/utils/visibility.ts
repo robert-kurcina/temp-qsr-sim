@@ -105,9 +105,13 @@ export function evaluateRangeWithVisibility(
   const orm = calculateOrm(distanceMu, effectiveOrMu);
   const normalInRange = effectiveOrMu > 0 && orm <= resolved.maxOrm;
 
+  // Concentrate uses "maximum OR": doubled OR distance cap, without normal ORM cap.
   const concentratedOrMu = effectiveOrMu > 0 ? effectiveOrMu * 2 : 0;
   const concentratedOrm = calculateOrm(distanceMu, concentratedOrMu);
-  const concentrateInRange = resolved.allowConcentrateRangeExtension && concentratedOrMu > 0;
+  const concentrateInRange =
+    resolved.allowConcentrateRangeExtension &&
+    concentratedOrMu > 0 &&
+    distanceMu <= concentratedOrMu + 1e-6;
 
   return {
     inRange: normalInRange || concentrateInRange,

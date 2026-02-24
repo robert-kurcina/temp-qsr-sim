@@ -46,14 +46,21 @@ describe('visibility helpers', () => {
   });
 
   it('supports concentrate extension (double OR, ignore max ORM)', () => {
-    const result = evaluateRangeWithVisibility(70, 24, {
+    const result = evaluateRangeWithVisibility(31, 24, {
       visibilityOrMu: 16,
-      maxOrm: 3,
+      maxOrm: 0,
       allowConcentrateRangeExtension: true,
     });
     expect(result.inRange).toBe(true);
     expect(result.requiresConcentrate).toBe(true);
     expect(result.concentratedOrMu).toBe(32);
+
+    const beyondMaxOr = evaluateRangeWithVisibility(33, 24, {
+      visibilityOrMu: 16,
+      maxOrm: 0,
+      allowConcentrateRangeExtension: true,
+    });
+    expect(beyondMaxOr.inRange).toBe(false);
   });
 
   it('parses thrown and expression-based OR values', () => {

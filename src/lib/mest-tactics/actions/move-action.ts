@@ -54,9 +54,10 @@ export function executeMoveAction(
   }
   const upgradedTerrain = getSurefootedTerrainBonus(mover, currentTerrain);
   
-  // Calculate effective movement allowance (base MOV + Sprint bonus)
+  // Calculate effective movement allowance per QSR:
+  // normal Move allowance is MOV + 2 MU, then apply trait-based bonuses.
   const baseMov = mover.finalAttributes.mov ?? 2;
-  const effectiveMov = baseMov + sprintBonus;
+  const effectiveMov = baseMov + 2 + sprintBonus;
   
   // Check if destination is within movement range (considering terrain costs)
   const dx = destination.x - start.x;

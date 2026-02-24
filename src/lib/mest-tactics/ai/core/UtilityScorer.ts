@@ -248,7 +248,7 @@ export class UtilityScorer {
     if (!characterPos) return positions;
     const movementAllowance = Math.max(
       1,
-      context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2
+      (context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2) + 2
     );
 
     // Local + strategic sampling:
@@ -256,7 +256,7 @@ export class UtilityScorer {
     // - board-aware path endpoints to avoid short-horizon stagnation
     const sampleRadius = Math.max(
       1,
-      context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2
+      (context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2) + 2
     );
     const localSamples = this.samplePositions(characterPos, sampleRadius, 16);
     const strategicSamples = this.sampleStrategicPositions(context, characterPos);
@@ -694,7 +694,7 @@ export class UtilityScorer {
 
   private sampleStrategicPositions(context: AIContext, characterPos: Position): Position[] {
     const mov = context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2;
-    const movementAllowance = Math.max(1, mov);
+    const movementAllowance = Math.max(1, mov + 2);
     const footprintDiameter = getBaseDiameterFromSiz(context.character.finalAttributes.siz ?? 3);
     const engine = new PathfindingEngine(context.battlefield);
     const strategic: Position[] = [];

@@ -194,12 +194,39 @@ The runtime does **not** currently consume these categories:
 This plan supersedes ad-hoc backlog ordering and is now the execution order for closing audited gaps.
 
 ### Priority Levels
-- **P0:** Correctness blockers (mission outcome, AI execution integrity)
+- **P0:** Correctness blockers + observability foundations required for auditable simulation
 - **P1:** Source-parity mismatches (docs + rule naming/terminology)
 - **P2:** Rule-completeness gaps (indirect/blind/arc/react wiring)
 - **P3:** Architecture consolidation (single mission runtime path)
 - **P4:** Simulation quality validation (VERY_LARGE Mission 11)
 - **P5:** Data and type-system hygiene (non-blocking but required for maintainability)
+
+### Phase A0 (P0): Turn-by-Turn Visual Audit API
+**Objective:** Produce a deterministic, model-by-model timeline API that can drive UI replay and SVG animation without re-simulating game logic.
+
+1. Add structured `audit` payloads to battle reports with:
+   - turn -> activation -> action-step hierarchy
+   - AP start/end and AP spent per action step
+   - actor/target state snapshots (before/after) and changed fields
+2. Capture vectors needed for visual audit:
+   - movement vectors with 0.5 MU sampled points
+   - LOS vectors
+   - LOF vectors (width-aware metadata)
+3. Capture interaction and opposed-test metadata:
+   - action effects on opposing models
+   - react/opportunity interactions
+   - opposed-test summaries (scores, rolls, final pool snapshot)
+4. Keep API headless/UI-agnostic and JSON-native, with deterministic ordering and stable IDs for UI binding.
+5. Add a dedicated mapper that converts `audit` JSON into SVG animation keyframes:
+   - movement arrow frames (0.5 MU cadence)
+   - LOS/LOF line frames
+   - action/interactions/oppose-test overlay events
+
+**Exit Criteria**
+- JSON battle report contains a complete timeline for every activation in every turn.
+- A UI client can render movement arrows, LOS/LOF lines, and interaction markers directly from the `audit` payload.
+- No replay-side inference is required for AP spending, action sequencing, or affected model mapping.
+- SVG keyframe mapping can be generated from one API call without re-running simulation.
 
 ### Phase A (P0): Mission Outcome Correctness
 **Objective:** Ensure mission results are always resolved correctly and deterministically.
@@ -288,6 +315,7 @@ This plan supersedes ad-hoc backlog ordering and is now the execution order for 
 ### 10.2.1 Execution Status Snapshot (2026-02-24)
 
 Implemented and validated in runtime/tests:
+- Phase A0: initial visual-audit API implemented in `scripts/ai-battle-setup.ts` battle report JSON (`audit` payload with turn/activation/action-step, AP spend, vectors, interactions, opposed tests, and before/after model-state effects).
 - Phase A: A1, A2, A3, A4.
 - Phase B: B1, B2, B3.
 - Phase C: C1, C2, C3, C4, C5.
@@ -303,6 +331,7 @@ Deferred or held by approval:
 - G1: Unused `gameData` key disposition policy (deferred).
 
 Remaining high-priority technical debt after current remediation:
+- Promote visual-audit API from script scope into shared runtime service module for UI consumption (non-script entry points).
 - Repository-wide TypeScript drift outside active mission/AI execution paths.
 - Legacy duplicate mission modules still present on disk (retained for compatibility/tests), while runtime authority is now consolidated through `GameController`.
 

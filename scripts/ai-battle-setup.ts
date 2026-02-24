@@ -128,6 +128,144 @@ interface UsageMetrics {
   modelUsage: ModelUsageStats[];
 }
 
+interface ModelStateAudit {
+  wounds: number;
+  delayTokens: number;
+  fearTokens: number;
+  isKOd: boolean;
+  isEliminated: boolean;
+  isHidden: boolean;
+  isWaiting: boolean;
+  isAttentive: boolean;
+  isOrdered: boolean;
+}
+
+interface OpposedTestAudit {
+  pass: boolean;
+  score?: number;
+  participant1Score?: number;
+  participant2Score?: number;
+  p1Rolls?: number[];
+  p2Rolls?: number[];
+  finalPools?: Record<string, unknown>;
+}
+
+interface AuditVector {
+  kind: 'movement' | 'los' | 'lof';
+  from: Position;
+  to: Position;
+  distanceMu: number;
+  widthMu?: number;
+  sampleStepMu?: number;
+  sampledPoints?: Position[];
+}
+
+interface ModelEffectAudit {
+  modelId: string;
+  modelName: string;
+  side?: string;
+  relation: 'self' | 'target' | 'opponent' | 'ally' | 'reactor';
+  before: ModelStateAudit;
+  after: ModelStateAudit;
+  changed: string[];
+}
+
+interface ActionStepAudit {
+  sequence: number;
+  actionType: string;
+  decisionReason?: string;
+  resultCode: string;
+  success: boolean;
+  apBefore: number;
+  apAfter: number;
+  apSpent: number;
+  actorPositionBefore?: Position;
+  actorPositionAfter?: Position;
+  actorStateBefore: ModelStateAudit;
+  actorStateAfter: ModelStateAudit;
+  vectors: AuditVector[];
+  targets: Array<{
+    modelId: string;
+    modelName: string;
+    side?: string;
+    relation: 'enemy' | 'ally' | 'self';
+  }>;
+  affectedModels: ModelEffectAudit[];
+  interactions: Array<{
+    kind: 'action' | 'react' | 'opportunity_attack' | 'status' | 'opposed_test';
+    sourceModelId: string;
+    targetModelId?: string;
+    success?: boolean;
+    detail?: string;
+  }>;
+  opposedTest?: OpposedTestAudit;
+  rangeCheck?: {
+    distanceMu: number;
+    weaponOrMu: number;
+    visibilityOrMu: number;
+    orm: number;
+    effectiveOrMu: number;
+    concentratedOrm: number;
+    concentratedOrMu: number;
+    requiresConcentrate: boolean;
+  };
+  details?: Record<string, unknown>;
+}
+
+interface ActivationAudit {
+  activationSequence: number;
+  turn: number;
+  sideIndex: number;
+  sideName: string;
+  modelId: string;
+  modelName: string;
+  initiative: number;
+  apStart: number;
+  apEnd: number;
+  steps: ActionStepAudit[];
+  skippedReason?: string;
+}
+
+interface TurnAudit {
+  turn: number;
+  activations: ActivationAudit[];
+  sideSummaries: Array<{
+    sideName: string;
+    activeModelsStart: number;
+    activeModelsEnd: number;
+  }>;
+}
+
+interface BattleAuditTrace {
+  version: '1.0';
+  session: {
+    missionId: string;
+    missionName: string;
+    seed?: number;
+    lighting: LightingCondition;
+    visibilityOrMu: number;
+    maxOrm: number;
+    allowConcentrateRangeExtension: boolean;
+    perCharacterFovLos: boolean;
+  };
+  battlefield: {
+    widthMu: number;
+    heightMu: number;
+    movementSampleStepMu: number;
+    lofWidthMu: number;
+  };
+  turns: TurnAudit[];
+}
+
+interface ReactAuditResult {
+  executed: boolean;
+  reactor?: Character;
+  resultCode?: string;
+  vector?: AuditVector;
+  opposedTest?: OpposedTestAudit;
+  details?: Record<string, unknown>;
+}
+
 export interface BattleReport {
   config: GameConfig;
   winner: string;
@@ -135,6 +273,7 @@ export interface BattleReport {
   stats: BattleStats;
   usage?: UsageMetrics;
   log: BattleLogEntry[];
+  audit?: BattleAuditTrace;
   seed?: number;
 }
 
@@ -154,12 +293,22 @@ interface ValidationAggregateReport {
   missionId: string;
   gameSize: GameSize;
   densityRatio: number;
+  lighting: LightingCondition;
+  visibilityOrMu: number;
+  maxOrm: number;
+  allowConcentrateRangeExtension: boolean;
+  perCharacterFovLos: boolean;
   runs: number;
   baseSeed: number;
   winners: Record<string, number>;
   totals: BattleStats;
   averages: BattleStats;
+  /** Union of runtime and probe coverage (legacy field). */
   coverage: ValidationCoverage;
+  /** Coverage observed in actual battle runs only. */
+  runtimeCoverage: ValidationCoverage;
+  /** Coverage observed from synthetic mechanic probes only. */
+  probeCoverage: ValidationCoverage;
   runReports: Array<{
     run: number;
     seed: number;
@@ -190,11 +339,12 @@ const GAME_SIZE_CONFIG: Record<GameSize, {
   maxTurns: number;
   endGameTurn: number;
 }> = {
-  VERY_SMALL: { name: 'Very Small', modelsPerSide: [2, 4], bpPerSide: [125, 250], battlefieldSize: 18, maxTurns: 10, endGameTurn: 10 },
-  SMALL: { name: 'Small', modelsPerSide: [4, 8], bpPerSide: [250, 500], battlefieldSize: 24, maxTurns: 10, endGameTurn: 10 },
-  MEDIUM: { name: 'Medium', modelsPerSide: [6, 12], bpPerSide: [500, 750], battlefieldSize: 36, maxTurns: 10, endGameTurn: 10 },
-  LARGE: { name: 'Large', modelsPerSide: [8, 16], bpPerSide: [750, 1000], battlefieldSize: 48, maxTurns: 10, endGameTurn: 10 },
-  VERY_LARGE: { name: 'Very Large', modelsPerSide: [16, 32], bpPerSide: [1000, 2000], battlefieldSize: 60, maxTurns: 10, endGameTurn: 10 },
+  // QSR end-game trigger starts: Small=4, Medium=6, Large=8.
+  VERY_SMALL: { name: 'Very Small', modelsPerSide: [2, 4], bpPerSide: [125, 250], battlefieldSize: 18, maxTurns: 10, endGameTurn: 4 },
+  SMALL: { name: 'Small', modelsPerSide: [4, 8], bpPerSide: [250, 500], battlefieldSize: 24, maxTurns: 10, endGameTurn: 4 },
+  MEDIUM: { name: 'Medium', modelsPerSide: [6, 12], bpPerSide: [500, 750], battlefieldSize: 36, maxTurns: 10, endGameTurn: 6 },
+  LARGE: { name: 'Large', modelsPerSide: [8, 16], bpPerSide: [750, 1000], battlefieldSize: 48, maxTurns: 10, endGameTurn: 8 },
+  VERY_LARGE: { name: 'Very Large', modelsPerSide: [16, 32], bpPerSide: [1000, 2000], battlefieldSize: 60, maxTurns: 10, endGameTurn: 8 },
 };
 
 // Map Tactical Doctrine to AI config
@@ -544,11 +694,17 @@ class AIBattleRunner {
   private log: BattleLogEntry[] = [];
   private stats: BattleStats = createEmptyStats();
   private modelUsageByCharacter = new Map<Character, ModelUsageStats>();
+  private sideNameByCharacterId = new Map<string, string>();
+  private auditTurns: TurnAudit[] = [];
+  private activationSequence = 0;
 
   private resetRunState() {
     this.log = [];
     this.stats = createEmptyStats();
     this.modelUsageByCharacter = new Map<Character, ModelUsageStats>();
+    this.sideNameByCharacterId = new Map<string, string>();
+    this.auditTurns = [];
+    this.activationSequence = 0;
   }
 
   private initializeModelUsage(
@@ -556,9 +712,11 @@ class AIBattleRunner {
     sides: Array<{ characters: Character[] }>
   ) {
     this.modelUsageByCharacter = new Map<Character, ModelUsageStats>();
+    this.sideNameByCharacterId = new Map<string, string>();
     for (let sideIndex = 0; sideIndex < sides.length; sideIndex++) {
       const sideName = config.sides[sideIndex]?.name ?? `Side ${sideIndex + 1}`;
       for (const character of sides[sideIndex].characters) {
+        this.sideNameByCharacterId.set(character.id, sideName);
         this.modelUsageByCharacter.set(character, {
           modelId: character.id,
           modelName: character.profile.name,
@@ -638,6 +796,185 @@ class AIBattleRunner {
       topPathModels,
       modelUsage: usage,
     };
+  }
+
+  private snapshotModelState(character: Character): ModelStateAudit {
+    return {
+      wounds: character.state.wounds ?? 0,
+      delayTokens: character.state.delayTokens ?? 0,
+      fearTokens: character.state.fearTokens ?? 0,
+      isKOd: Boolean(character.state.isKOd),
+      isEliminated: Boolean(character.state.isEliminated),
+      isHidden: Boolean(character.state.isHidden),
+      isWaiting: Boolean(character.state.isWaiting),
+      isAttentive: Boolean(character.state.isAttentive),
+      isOrdered: Boolean(character.state.isOrdered),
+    };
+  }
+
+  private diffModelState(before: ModelStateAudit, after: ModelStateAudit): string[] {
+    const changes: string[] = [];
+    const keys = Object.keys(before) as Array<keyof ModelStateAudit>;
+    for (const key of keys) {
+      if (before[key] !== after[key]) {
+        changes.push(String(key));
+      }
+    }
+    return changes;
+  }
+
+  private createMovementVector(
+    start: Position,
+    end: Position,
+    stepMu: number = 0.5
+  ): AuditVector {
+    const distance = Math.hypot(end.x - start.x, end.y - start.y);
+    const sampledPoints = this.sampleLinePoints(start, end, stepMu);
+    return {
+      kind: 'movement',
+      from: start,
+      to: end,
+      distanceMu: distance,
+      sampleStepMu: stepMu,
+      sampledPoints,
+    };
+  }
+
+  private sampleLinePoints(start: Position, end: Position, stepMu: number = 0.5): Position[] {
+    const distance = Math.hypot(end.x - start.x, end.y - start.y);
+    if (!Number.isFinite(distance) || distance <= 0) {
+      return [start];
+    }
+
+    const points: Position[] = [start];
+    const count = Math.floor(distance / stepMu);
+    for (let i = 1; i <= count; i++) {
+      const ratio = Math.min(1, (i * stepMu) / distance);
+      points.push({
+        x: Number((start.x + (end.x - start.x) * ratio).toFixed(3)),
+        y: Number((start.y + (end.y - start.y) * ratio).toFixed(3)),
+      });
+    }
+    if (points.length === 0 || points[points.length - 1].x !== end.x || points[points.length - 1].y !== end.y) {
+      points.push(end);
+    }
+    return points;
+  }
+
+  private toOpposedTestAudit(rawResult: any): OpposedTestAudit | undefined {
+    const hitTest = rawResult?.result?.hitTestResult ?? rawResult?.hitTestResult;
+    if (!hitTest || typeof hitTest !== 'object') {
+      return undefined;
+    }
+    return {
+      pass: Boolean(hitTest.pass),
+      score: typeof hitTest.score === 'number' ? hitTest.score : undefined,
+      participant1Score: typeof hitTest.participant1Score === 'number' ? hitTest.participant1Score : undefined,
+      participant2Score: typeof hitTest.participant2Score === 'number' ? hitTest.participant2Score : undefined,
+      p1Rolls: Array.isArray(hitTest.p1Rolls) ? hitTest.p1Rolls : undefined,
+      p2Rolls: Array.isArray(hitTest.p2Rolls) ? hitTest.p2Rolls : undefined,
+      finalPools: hitTest.finalPools && typeof hitTest.finalPools === 'object'
+        ? hitTest.finalPools as Record<string, unknown>
+        : undefined,
+    };
+  }
+
+  private createModelEffect(
+    character: Character,
+    relation: ModelEffectAudit['relation'],
+    before: ModelStateAudit,
+    after: ModelStateAudit
+  ): ModelEffectAudit | null {
+    const changed = this.diffModelState(before, after);
+    if (changed.length === 0) return null;
+    return {
+      modelId: character.id,
+      modelName: character.profile.name,
+      side: this.sideNameByCharacterId.get(character.id),
+      relation,
+      before,
+      after,
+      changed,
+    };
+  }
+
+  private createBattleAuditTrace(
+    config: GameConfig,
+    seed: number | undefined
+  ): BattleAuditTrace {
+    return {
+      version: '1.0',
+      session: {
+        missionId: config.missionId,
+        missionName: config.missionName,
+        seed,
+        lighting: config.lighting,
+        visibilityOrMu: config.visibilityOrMu,
+        maxOrm: config.maxOrm,
+        allowConcentrateRangeExtension: config.allowConcentrateRangeExtension,
+        perCharacterFovLos: config.perCharacterFovLos,
+      },
+      battlefield: {
+        widthMu: config.battlefieldSize,
+        heightMu: config.battlefieldSize,
+        movementSampleStepMu: 0.5,
+        lofWidthMu: 1,
+      },
+      turns: this.auditTurns,
+    };
+  }
+
+  private sanitizeForAudit(
+    value: unknown,
+    depth: number = 0,
+    seen: WeakSet<object> = new WeakSet<object>()
+  ): unknown {
+    if (value === null || value === undefined) return value;
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      return value;
+    }
+    if (depth >= 4) return '[truncated]';
+
+    if (Array.isArray(value)) {
+      return value.slice(0, 25).map(item => this.sanitizeForAudit(item, depth + 1, seen));
+    }
+
+    if (value instanceof Character) {
+      return {
+        id: value.id,
+        name: value.profile.name,
+        side: this.sideNameByCharacterId.get(value.id),
+        state: this.snapshotModelState(value),
+      };
+    }
+
+    if (value instanceof Battlefield) {
+      return {
+        width: value.width,
+        height: value.height,
+      };
+    }
+
+    if (value instanceof Map) {
+      const entries = Array.from(value.entries()).slice(0, 25).map(([k, v]) => [
+        this.sanitizeForAudit(k, depth + 1, seen),
+        this.sanitizeForAudit(v, depth + 1, seen),
+      ]);
+      return { mapEntries: entries };
+    }
+
+    if (typeof value === 'object') {
+      if (seen.has(value as object)) return '[circular]';
+      seen.add(value as object);
+      const output: Record<string, unknown> = {};
+      for (const [key, val] of Object.entries(value as Record<string, unknown>).slice(0, 40)) {
+        if (typeof val === 'function') continue;
+        output[key] = this.sanitizeForAudit(val, depth + 1, seen);
+      }
+      return output;
+    }
+
+    return String(value);
   }
 
   async runBattle(
@@ -721,6 +1058,16 @@ class AIBattleRunner {
         turn++;
         this.stats.turnsCompleted = turn;
         gameManager.startTurn();
+        const turnAudit: TurnAudit = {
+          turn,
+          activations: [],
+          sideSummaries: config.sides.map((side, idx) => ({
+            sideName: side.name,
+            activeModelsStart: sides[idx].characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length,
+            activeModelsEnd: 0,
+          })),
+        };
+        this.auditTurns.push(turnAudit);
 
         if (verbose) {
           out(`\n📍 Turn ${turn}\n`);
@@ -734,7 +1081,7 @@ class AIBattleRunner {
 
           for (const character of sideCharacters) {
             const aiController = aiControllers.get(character.id)!;
-            await this.resolveCharacterTurn(
+            const activationAudit = await this.resolveCharacterTurn(
               character,
               sides,
               battlefield,
@@ -744,8 +1091,16 @@ class AIBattleRunner {
               sideIndex,
               { ...config, verbose }
             );
+            if (activationAudit) {
+              turnAudit.activations.push(activationAudit);
+            }
           }
         }
+
+        turnAudit.sideSummaries = turnAudit.sideSummaries.map((summary, idx) => ({
+          ...summary,
+          activeModelsEnd: sides[idx].characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length,
+        }));
 
         // Check victory conditions
         const remainingPerSide = sides.map((side) =>
@@ -790,6 +1145,7 @@ class AIBattleRunner {
         stats: this.stats,
         usage,
         log: this.log,
+        audit: this.createBattleAuditTrace(config, seed),
         seed,
       };
 
@@ -932,14 +1288,29 @@ class AIBattleRunner {
     turn: number,
     sideIndex: number,
     config: GameConfig
-  ) {
+  ): Promise<ActivationAudit | null> {
     const sideName = config.sides[sideIndex].name;
     const initialAp = gameManager.beginActivation(character);
+    const activationAudit: ActivationAudit = {
+      activationSequence: ++this.activationSequence,
+      turn,
+      sideIndex,
+      sideName,
+      modelId: character.id,
+      modelName: character.profile.name,
+      initiative: character.finalAttributes.int ?? character.attributes.int ?? 0,
+      apStart: initialAp,
+      apEnd: initialAp,
+      steps: [],
+    };
     if (initialAp <= 0) {
+      activationAudit.apEnd = 0;
+      activationAudit.skippedReason = 'no_ap';
       gameManager.endActivation(character);
-      return;
+      return activationAudit;
     }
 
+    let lastKnownAp = initialAp;
     try {
       let guard = 0;
       while (gameManager.getApRemaining(character) > 0 && guard < 8) {
@@ -968,12 +1339,33 @@ class AIBattleRunner {
         const aiResult = await aiController.decideAction(context);
         const decision = aiResult.decision;
         if (!decision || decision.type === 'none') {
+          if (activationAudit.steps.length === 0) {
+            activationAudit.skippedReason = 'no_valid_action';
+          }
           break;
         }
 
         const startPos = battlefield.getCharacterPosition(character);
+        const actorStateBefore = this.snapshotModelState(character);
+        const stepVectors: AuditVector[] = [];
+        const stepTargets: ActionStepAudit['targets'] = [];
+        const stepAffectedModels: ModelEffectAudit[] = [];
+        const stepInteractions: ActionStepAudit['interactions'] = [];
+        let stepOpposedTest: OpposedTestAudit | undefined;
+        let stepRangeCheck: ActionStepAudit['rangeCheck'] | undefined;
+        let stepDetails: Record<string, unknown> | undefined;
         let actionExecuted = false;
         let result = '';
+        const targetStateBefore = decision.target ? this.snapshotModelState(decision.target) : undefined;
+        if (decision.target) {
+          const targetSide = this.sideNameByCharacterId.get(decision.target.id);
+          stepTargets.push({
+            modelId: decision.target.id,
+            modelName: decision.target.profile.name,
+            side: targetSide,
+            relation: decision.target.id === character.id ? 'self' : (targetSide === sideName ? 'ally' : 'enemy'),
+          });
+        }
 
         if (config.verbose) {
           console.log(`  ${character.profile.name} (${sideName}) [AP ${apBefore}]: ${decision.type}${decision.reason ? ` - ${decision.reason}` : ''}`);
@@ -994,6 +1386,7 @@ class AIBattleRunner {
                 this.stats.moves++;
                 actionExecuted = true;
                 result = 'move=true:from-hold';
+                stepDetails = { source: 'hold_fallback_move', moveResult: this.sanitizeForAudit(moved) as Record<string, unknown> };
                 break;
               }
             }
@@ -1002,6 +1395,7 @@ class AIBattleRunner {
             this.stats.waits++;
             const wait = gameManager.executeWait(character, { spendAp: true });
             result = wait.success ? 'wait=true' : `wait=false:${wait.reason ?? 'failed'}`;
+            stepDetails = { waitResult: this.sanitizeForAudit(wait) as Record<string, unknown> };
             if (wait.success) {
               this.trackSuccess(character, 'wait');
               actionExecuted = true;
@@ -1013,6 +1407,7 @@ class AIBattleRunner {
             this.stats.waits++;
             const wait = gameManager.executeWait(character, { spendAp: true });
             result = wait.success ? 'wait=true' : `wait=false:${wait.reason ?? 'failed'}`;
+            stepDetails = { waitResult: this.sanitizeForAudit(wait) as Record<string, unknown> };
             if (wait.success) {
               this.trackSuccess(character, 'wait');
               actionExecuted = true;
@@ -1040,8 +1435,26 @@ class AIBattleRunner {
               this.stats.moves++;
               actionExecuted = true;
               result = 'move=true';
+              stepDetails = { moveResult: this.sanitizeForAudit(moved) as Record<string, unknown> };
             } else {
               result = `move=false:${moved.reason ?? 'blocked'}`;
+              stepDetails = { moveResult: this.sanitizeForAudit(moved) as Record<string, unknown> };
+            }
+
+            const opportunity = (moved as any)?.opportunityAttack;
+            if (opportunity?.attacker) {
+              stepInteractions.push({
+                kind: 'opportunity_attack',
+                sourceModelId: opportunity.attacker.id,
+                targetModelId: character.id,
+                success: Boolean(opportunity.result?.result?.hit ?? opportunity.result?.hit),
+                detail: 'Opportunity attack triggered by movement disengage',
+              });
+              stepOpposedTest = this.toOpposedTestAudit(opportunity.result) ?? stepOpposedTest;
+              stepDetails = {
+                ...(stepDetails ?? {}),
+                opportunityAttack: opportunity as Record<string, unknown>,
+              };
             }
             break;
           }
@@ -1087,7 +1500,6 @@ class AIBattleRunner {
                 result = `close_combat=false:not-enough-ap(${attackCost})`;
                 break;
               }
-              this.stats.closeCombats++;
               const closeExecuted = await this.executeCloseCombat(
                 character,
                 decision.target,
@@ -1098,8 +1510,13 @@ class AIBattleRunner {
                 sideIndex,
                 decision.type === 'charge' || movedForEngagement
               );
-              actionExecuted = actionExecuted || closeExecuted;
-              result = closeExecuted ? 'close_combat=true' : 'close_combat=false:resolution';
+              actionExecuted = actionExecuted || closeExecuted.executed;
+              result = closeExecuted.resultCode;
+              if (closeExecuted.executed) {
+                this.stats.closeCombats++;
+              }
+              stepOpposedTest = closeExecuted.opposedTest;
+              stepDetails = closeExecuted.details;
             } else if (!actionExecuted) {
               result = 'close_combat=false:not-engaged';
             }
@@ -1124,6 +1541,12 @@ class AIBattleRunner {
             if (ranged.executed) {
               this.stats.rangedCombats++;
             }
+            stepOpposedTest = ranged.opposedTest;
+            stepRangeCheck = ranged.rangeCheck;
+            if (ranged.vectors.length > 0) {
+              stepVectors.push(...ranged.vectors);
+            }
+            stepDetails = ranged.details;
             break;
           }
           case 'disengage': {
@@ -1137,8 +1560,10 @@ class AIBattleRunner {
             }
             this.stats.disengages++;
             const disengage = await this.executeDisengage(character, decision.target, battlefield, gameManager, config, turn, sideIndex);
-            actionExecuted = disengage;
-            result = disengage ? 'disengage=true' : 'disengage=false';
+            actionExecuted = disengage.executed;
+            result = disengage.resultCode;
+            stepOpposedTest = disengage.opposedTest;
+            stepDetails = disengage.details;
             break;
           }
           case 'detect': {
@@ -1154,6 +1579,7 @@ class AIBattleRunner {
             }
             const detect = attemptDetect(battlefield, character, decision.target, enemies);
             result = detect.success ? 'detect=true' : `detect=false:${detect.reason ?? 'failed'}`;
+            stepDetails = { detectResult: this.sanitizeForAudit(detect) as Record<string, unknown> };
             if (detect.success) {
               this.trackSuccess(character, 'detect');
               actionExecuted = true;
@@ -1165,6 +1591,7 @@ class AIBattleRunner {
             this.stats.hides++;
             const hide = attemptHide(battlefield, character, enemies, (amount: number) => gameManager.spendAp(character, amount));
             result = hide.canHide ? 'hide=true' : `hide=false:${hide.reason ?? 'failed'}`;
+            stepDetails = { hideResult: this.sanitizeForAudit(hide) as Record<string, unknown> };
             if (hide.canHide) {
               this.trackSuccess(character, 'hide');
               actionExecuted = true;
@@ -1182,6 +1609,7 @@ class AIBattleRunner {
             }
             const rally = gameManager.executeRally(character, decision.target);
             result = rally.success ? 'rally=true' : `rally=false:${rally.reason ?? 'failed'}`;
+            stepDetails = { rallyResult: this.sanitizeForAudit(rally) as Record<string, unknown> };
             actionExecuted = rally.success;
             break;
           }
@@ -1196,6 +1624,7 @@ class AIBattleRunner {
             }
             const revive = gameManager.executeRevive(character, decision.target);
             result = revive.success ? 'revive=true' : `revive=false:${revive.reason ?? 'failed'}`;
+            stepDetails = { reviveResult: this.sanitizeForAudit(revive) as Record<string, unknown> };
             actionExecuted = revive.success;
             break;
           }
@@ -1215,11 +1644,14 @@ class AIBattleRunner {
           result,
         });
 
+        const endPos = battlefield.getCharacterPosition(character);
         if (actionExecuted) {
           this.stats.totalActions++;
-          const endPos = battlefield.getCharacterPosition(character);
           const movedDistance = startPos && endPos ? Math.hypot(endPos.x - startPos.x, endPos.y - startPos.y) : 0;
           this.trackPathMovement(character, movedDistance);
+          if (startPos && endPos && movedDistance > 0) {
+            stepVectors.push(this.createMovementVector(startPos, endPos, 0.5));
+          }
           const trigger = movedDistance > 0 ? 'Move' : 'NonMove';
           const reactResult = this.processReacts(character, enemies, gameManager, trigger, movedDistance, config.visibilityOrMu);
           if (reactResult.executed) {
@@ -1228,14 +1660,79 @@ class AIBattleRunner {
               this.trackAttempt(reactResult.reactor, 'react');
               this.trackSuccess(reactResult.reactor, 'react');
             }
+            stepInteractions.push({
+              kind: 'react',
+              sourceModelId: reactResult.reactor?.id ?? '',
+              targetModelId: character.id,
+              success: true,
+              detail: reactResult.resultCode,
+            });
+            if (reactResult.vector) {
+              stepVectors.push(reactResult.vector);
+            }
+            if (reactResult.opposedTest) {
+              stepOpposedTest = reactResult.opposedTest;
+            }
+            if (reactResult.details) {
+              stepDetails = {
+                ...(stepDetails ?? {}),
+                react: reactResult.details,
+              };
+            }
+          }
+        }
+
+        const actorStateAfter = this.snapshotModelState(character);
+        const actorEffect = this.createModelEffect(character, 'self', actorStateBefore, actorStateAfter);
+        if (actorEffect) {
+          stepAffectedModels.push(actorEffect);
+        }
+        if (decision.target && targetStateBefore) {
+          const targetStateAfter = this.snapshotModelState(decision.target);
+          const targetEffect = this.createModelEffect(decision.target, 'target', targetStateBefore, targetStateAfter);
+          if (targetEffect) {
+            stepAffectedModels.push(targetEffect);
           }
         }
 
         const apAfter = gameManager.getApRemaining(character);
+        lastKnownAp = apAfter;
+        if (stepOpposedTest) {
+          stepInteractions.push({
+            kind: 'opposed_test',
+            sourceModelId: character.id,
+            targetModelId: decision.target?.id,
+            success: stepOpposedTest.pass,
+            detail: `score=${stepOpposedTest.score ?? 'n/a'}`,
+          });
+        }
+        activationAudit.steps.push({
+          sequence: activationAudit.steps.length + 1,
+          actionType: decision.type,
+          decisionReason: decision.reason,
+          resultCode: result,
+          success: actionExecuted,
+          apBefore,
+          apAfter,
+          apSpent: Math.max(0, apBefore - apAfter),
+          actorPositionBefore: startPos,
+          actorPositionAfter: endPos,
+          actorStateBefore,
+          actorStateAfter,
+          vectors: stepVectors,
+          targets: stepTargets,
+          affectedModels: stepAffectedModels,
+          interactions: stepInteractions,
+          opposedTest: stepOpposedTest,
+          rangeCheck: stepRangeCheck,
+          details: stepDetails,
+        });
+
         if (apAfter >= apBefore) {
           const fallback = this.computeFallbackMovePosition(character, enemies, battlefield, config);
           if (fallback && gameManager.spendAp(character, 1)) {
             const fallbackStart = battlefield.getCharacterPosition(character);
+            const fallbackStateBefore = this.snapshotModelState(character);
             const equipment = (character.profile.equipment || character.profile.items || []).filter(Boolean);
             const opportunityWeapon = equipment.find(i => i?.classification === 'Melee' || i?.class === 'Melee') || equipment[0];
             const moved = gameManager.executeMove(character, fallback, {
@@ -1276,6 +1773,50 @@ class AIBattleRunner {
                   this.trackSuccess(reactResult.reactor, 'react');
                 }
               }
+              const fallbackStateAfter = this.snapshotModelState(character);
+              const fallbackApAfter = gameManager.getApRemaining(character);
+              lastKnownAp = fallbackApAfter;
+              const fallbackVectors: AuditVector[] = [];
+              if (fallbackStart && fallbackEnd && movedDistance > 0) {
+                fallbackVectors.push(this.createMovementVector(fallbackStart, fallbackEnd, 0.5));
+              }
+              if (reactResult.vector) {
+                fallbackVectors.push(reactResult.vector);
+              }
+              const fallbackEffects: ModelEffectAudit[] = [];
+              const fallbackSelfEffect = this.createModelEffect(character, 'self', fallbackStateBefore, fallbackStateAfter);
+              if (fallbackSelfEffect) {
+                fallbackEffects.push(fallbackSelfEffect);
+              }
+              activationAudit.steps.push({
+                sequence: activationAudit.steps.length + 1,
+                actionType: 'move',
+                decisionReason: 'Fallback advance after stalled decision',
+                resultCode: 'move=true:forced',
+                success: true,
+                apBefore: apAfter,
+                apAfter: fallbackApAfter,
+                apSpent: Math.max(0, apAfter - fallbackApAfter),
+                actorPositionBefore: fallbackStart,
+                actorPositionAfter: fallbackEnd,
+                actorStateBefore: fallbackStateBefore,
+                actorStateAfter: fallbackStateAfter,
+                vectors: fallbackVectors,
+                targets: [],
+                affectedModels: fallbackEffects,
+                interactions: reactResult.executed ? [{
+                  kind: 'react',
+                  sourceModelId: reactResult.reactor?.id ?? '',
+                  targetModelId: character.id,
+                  success: true,
+                  detail: reactResult.resultCode,
+                }] : [],
+                opposedTest: reactResult.opposedTest,
+                details: {
+                  moveResult: this.sanitizeForAudit(moved) as Record<string, unknown>,
+                  react: reactResult.details,
+                },
+              });
               continue;
             }
           }
@@ -1288,7 +1829,12 @@ class AIBattleRunner {
       }
     }
 
+    if (activationAudit.steps.length === 0 && !activationAudit.skippedReason) {
+      activationAudit.skippedReason = 'no_executed_steps';
+    }
+    activationAudit.apEnd = lastKnownAp;
     gameManager.endActivation(character);
+    return activationAudit;
   }
 
   private areEngaged(attacker: Character, defender: Character, battlefield: Battlefield): boolean {
@@ -1330,7 +1876,7 @@ class AIBattleRunner {
     const distance = Math.hypot(dx, dy);
     if (distance <= requiredDistance || distance === 0) return null;
 
-    const mov = attacker.finalAttributes.mov ?? attacker.attributes.mov ?? 2;
+    const mov = (attacker.finalAttributes.mov ?? attacker.attributes.mov ?? 2) + 2;
     const step = Math.min(mov, distance - requiredDistance);
     if (step <= 0) return null;
 
@@ -1348,7 +1894,7 @@ class AIBattleRunner {
     trigger: 'Move' | 'NonMove',
     movedDistance: number,
     visibilityOrMu: number
-  ): { executed: boolean; reactor?: Character } {
+  ): ReactAuditResult {
     const options = gameManager.getReactOptionsSorted({
       battlefield: gameManager.battlefield!,
       active,
@@ -1373,8 +1919,40 @@ class AIBattleRunner {
       return { executed: false };
     }
 
+    const reactorPos = gameManager.battlefield?.getCharacterPosition(first.actor);
+    const activePos = gameManager.battlefield?.getCharacterPosition(active);
     const react = gameManager.executeStandardReact(first.actor, active, weapon, { visibilityOrMu });
-    return { executed: react.executed, reactor: react.executed ? first.actor : undefined };
+    if (!react.executed) {
+      return {
+        executed: false,
+        details: {
+          actorId: first.actor.id,
+          targetId: active.id,
+          reason: 'standard-react-not-executed',
+          reactResult: this.sanitizeForAudit(react) as Record<string, unknown>,
+        },
+      };
+    }
+    return {
+      executed: true,
+      reactor: first.actor,
+      resultCode: 'react=true:standard',
+      vector: reactorPos && activePos ? {
+        kind: 'los',
+        from: reactorPos,
+        to: activePos,
+        distanceMu: Math.hypot(activePos.x - reactorPos.x, activePos.y - reactorPos.y),
+      } : undefined,
+      opposedTest: this.toOpposedTestAudit((react as any).result),
+      details: {
+        actorId: first.actor.id,
+        actorName: first.actor.profile.name,
+        targetId: active.id,
+        targetName: active.profile.name,
+        weaponName: (weapon as any).name ?? (weapon as any).id ?? 'weapon',
+        reactResult: this.sanitizeForAudit(react) as Record<string, unknown>,
+      },
+    };
   }
 
   private computeFallbackMovePosition(
@@ -1418,7 +1996,7 @@ class AIBattleRunner {
     }
 
     const mov = actor.finalAttributes.mov ?? actor.attributes.mov ?? 2;
-    const moveAllowance = Math.max(1, mov);
+    const moveAllowance = Math.max(1, mov + 2);
     const engine = new PathfindingEngine(battlefield);
     const path = engine.findPathWithMaxMu(
       actorPos,
@@ -1551,12 +2129,17 @@ class AIBattleRunner {
     turn: number,
     sideIndex: number,
     isCharge: boolean
-  ): Promise<boolean> {
+  ): Promise<{
+    executed: boolean;
+    resultCode: string;
+    opposedTest?: OpposedTestAudit;
+    details?: Record<string, unknown>;
+  }> {
     const weapon = this.pickMeleeWeapon(attacker);
 
     if (!weapon) {
       if (config.verbose) console.log(`    → No weapon available`);
-      return false;
+      return { executed: false, resultCode: 'close_combat=false:no-weapon' };
     }
 
     try {
@@ -1578,12 +2161,22 @@ class AIBattleRunner {
       if (normalized.eliminated) {
         this.stats.eliminations++;
       }
-      return true;
+      return {
+        executed: true,
+        resultCode: 'close_combat=true',
+        opposedTest: this.toOpposedTestAudit(result),
+        details: {
+          weaponName: (weapon as any).name ?? (weapon as any).id ?? 'weapon',
+          normalized,
+          attackResult: this.sanitizeForAudit(result) as Record<string, unknown>,
+          isCharge,
+        },
+      };
     } catch (error) {
       if (config.verbose) {
         console.error(`    Combat error: ${error}`);
       }
-      return false;
+      return { executed: false, resultCode: 'close_combat=false:error' };
     }
   }
 
@@ -1595,11 +2188,19 @@ class AIBattleRunner {
     config: GameConfig,
     turn: number,
     sideIndex: number
-  ): Promise<{ executed: boolean; result: string }> {
+  ): Promise<{
+    executed: boolean;
+    result: string;
+    opposedTest?: OpposedTestAudit;
+    rangeCheck?: ActionStepAudit['rangeCheck'];
+    vectors: AuditVector[];
+    details?: Record<string, unknown>;
+  }> {
+    const vectors: AuditVector[] = [];
     const weapon = this.pickRangedWeapon(attacker);
     if (!weapon) {
       if (config.verbose) console.log(`    → No ranged weapon available`);
-      return { executed: false, result: 'ranged=false:no-weapon' };
+      return { executed: false, result: 'ranged=false:no-weapon', vectors };
     }
 
     try {
@@ -1607,11 +2208,11 @@ class AIBattleRunner {
       const defenderPos = battlefield.getCharacterPosition(defender);
       if (!attackerPos || !defenderPos) {
         if (config.verbose) console.log(`    → Invalid positions`);
-        return { executed: false, result: 'ranged=false:invalid-position' };
+        return { executed: false, result: 'ranged=false:invalid-position', vectors };
       }
 
       if (config.perCharacterFovLos && !this.hasLos(attacker, defender, battlefield)) {
-        return { executed: false, result: 'ranged=false:no-los' };
+        return { executed: false, result: 'ranged=false:no-los', vectors };
       }
 
       const distance = Math.hypot(attackerPos.x - defenderPos.x, attackerPos.y - defenderPos.y);
@@ -1622,22 +2223,24 @@ class AIBattleRunner {
         allowConcentrateRangeExtension: config.allowConcentrateRangeExtension,
       });
       if (!rangeCheck.inRange) {
-        return { executed: false, result: 'ranged=false:out-of-range' };
+        return { executed: false, result: 'ranged=false:out-of-range', vectors };
       }
 
       let orm = rangeCheck.orm;
       let context = undefined as ReturnType<GameManager['buildConcentrateContext']> | undefined;
+      let usedConcentrate = false;
       if (rangeCheck.requiresConcentrate) {
         if (!gameManager.spendAp(attacker, 1)) {
-          return { executed: false, result: 'ranged=false:not-enough-ap-concentrate' };
+          return { executed: false, result: 'ranged=false:not-enough-ap-concentrate', vectors };
         }
         orm = rangeCheck.concentratedOrm;
         context = gameManager.buildConcentrateContext('hit');
+        usedConcentrate = true;
       }
 
       const attackCost = gameManager.getAttackApCost(attacker, weapon as any);
       if (!gameManager.spendAp(attacker, attackCost)) {
-        return { executed: false, result: `ranged=false:not-enough-ap(${attackCost})` };
+        return { executed: false, result: `ranged=false:not-enough-ap(${attackCost})`, vectors };
       }
 
       this.stats.losChecks++;
@@ -1653,6 +2256,19 @@ class AIBattleRunner {
         })),
         { lofWidth: 1 }
       );
+      vectors.push({
+        kind: 'los',
+        from: attackerPos,
+        to: defenderPos,
+        distanceMu: distance,
+      });
+      vectors.push({
+        kind: 'lof',
+        from: attackerPos,
+        to: defenderPos,
+        distanceMu: distance,
+        widthMu: 1,
+      });
 
       const result = gameManager.executeRangedAttack(attacker, defender, weapon, {
         orm,
@@ -1670,12 +2286,34 @@ class AIBattleRunner {
       if (normalized.eliminated) {
         this.stats.eliminations++;
       }
-      return { executed: true, result: `ranged=true:orm=${orm}${rangeCheck.requiresConcentrate ? ':concentrate' : ''}` };
+      return {
+        executed: true,
+        result: `ranged=true:orm=${orm}${rangeCheck.requiresConcentrate ? ':concentrate' : ''}`,
+        opposedTest: this.toOpposedTestAudit(result),
+        rangeCheck: {
+          distanceMu: distance,
+          weaponOrMu,
+          visibilityOrMu: config.visibilityOrMu,
+          orm: rangeCheck.orm,
+          effectiveOrMu: rangeCheck.effectiveOrMu,
+          concentratedOrm: rangeCheck.concentratedOrm,
+          concentratedOrMu: rangeCheck.concentratedOrMu,
+          requiresConcentrate: rangeCheck.requiresConcentrate,
+        },
+        vectors,
+        details: {
+          weaponName: (weapon as any).name ?? (weapon as any).id ?? 'weapon',
+          normalized,
+          attackResult: this.sanitizeForAudit(result) as Record<string, unknown>,
+          ormUsed: orm,
+          usedConcentrate,
+        },
+      };
     } catch (error) {
       if (config.verbose) {
         console.error(`    Ranged combat error: ${error}`);
       }
-      return { executed: false, result: 'ranged=false:error' };
+      return { executed: false, result: 'ranged=false:error', vectors };
     }
   }
 
@@ -1687,14 +2325,19 @@ class AIBattleRunner {
     config: GameConfig,
     turn: number,
     sideIndex: number
-  ): Promise<boolean> {
+  ): Promise<{
+    executed: boolean;
+    resultCode: string;
+    opposedTest?: OpposedTestAudit;
+    details?: Record<string, unknown>;
+  }> {
     try {
       // Get defender's melee weapon from equipment or items
       const weapon = this.pickMeleeWeapon(defender);
       
       if (!weapon) {
         if (config.verbose) console.log(`    → No weapon for disengage`);
-        return false;
+        return { executed: false, resultCode: 'disengage=false:no-weapon' };
       }
 
       const result = gameManager.executeDisengage(disengager, defender, weapon);
@@ -1703,12 +2346,20 @@ class AIBattleRunner {
         const moved = result.pass && 'moved' in result && result.moved ? ', moved' : '';
         console.log(`    → Disengage: ${result.pass ? `Success${moved}` : 'Failed'}`);
       }
-      return result.pass;
+      return {
+        executed: result.pass,
+        resultCode: result.pass ? 'disengage=true' : 'disengage=false',
+        opposedTest: this.toOpposedTestAudit(result),
+        details: {
+          defenderWeaponName: (weapon as any).name ?? (weapon as any).id ?? 'weapon',
+          disengageResult: this.sanitizeForAudit(result) as Record<string, unknown>,
+        },
+      };
     } catch (error) {
       if (config.verbose) {
         console.error(`    Disengage error: ${error}`);
       }
-      return false;
+      return { executed: false, resultCode: 'disengage=false:error' };
     }
   }
 
@@ -1811,6 +2462,20 @@ function divideStats(total: BattleStats, runs: number): BattleStats {
     avg[key] = Number((total[key] / runs).toFixed(2));
   });
   return avg;
+}
+
+function emptyCoverage(): ValidationCoverage {
+  return {
+    movement: false,
+    pathfinding: false,
+    rangedCombat: false,
+    closeCombat: false,
+    react: false,
+    wait: false,
+    detect: false,
+    los: false,
+    lof: false,
+  };
 }
 
 function baseCoverageFromStats(stats: BattleStats): ValidationCoverage {
@@ -2056,19 +2721,27 @@ async function runValidationBatch(
     );
   }
 
-  let coverage = baseCoverageFromStats(totals);
-  coverage = mergeCoverage(coverage, runMechanicProbes());
+  const runtimeCoverage = baseCoverageFromStats(totals);
+  const probeCoverage = mergeCoverage(emptyCoverage(), runMechanicProbes());
+  const coverage = mergeCoverage(runtimeCoverage, probeCoverage);
 
   const aggregateReport: ValidationAggregateReport = {
     missionId: 'QAI_11',
     gameSize,
     densityRatio,
+    lighting,
+    visibilityOrMu,
+    maxOrm: baseConfig.maxOrm,
+    allowConcentrateRangeExtension: baseConfig.allowConcentrateRangeExtension,
+    perCharacterFovLos: baseConfig.perCharacterFovLos,
     runs,
     baseSeed,
     winners,
     totals,
     averages: divideStats(totals, runs),
     coverage,
+    runtimeCoverage,
+    probeCoverage,
     runReports,
     generatedAt: new Date().toISOString(),
   };
@@ -2076,7 +2749,10 @@ async function runValidationBatch(
   const outputPath = writeValidationReport(aggregateReport);
   console.log('\nValidation aggregate:');
   console.log(`  Winners: ${JSON.stringify(winners)}`);
-  console.log(`  Coverage: ${JSON.stringify(coverage)}`);
+  console.log(`  Runtime Coverage: ${JSON.stringify(runtimeCoverage)}`);
+  console.log(`  Probe Coverage: ${JSON.stringify(probeCoverage)}`);
+  console.log(`  Combined Coverage: ${JSON.stringify(coverage)}`);
+  console.log(`  Lighting: ${lighting} (Visibility OR ${visibilityOrMu} MU)`);
   console.log(`  Report: ${outputPath}`);
 }
 
