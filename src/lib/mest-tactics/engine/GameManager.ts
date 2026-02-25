@@ -73,6 +73,7 @@ import {
   DEFAULT_END_GAME_TRIGGER_TURN,
 } from './end-game-trigger';
 import { MissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
+import { SideCoordinatorManager } from '../ai/core/SideAICoordinator';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -136,6 +137,7 @@ export class GameManager {
   private reactingNow: Set<string> = new Set();
   private endGameTriggerState: EndGameTriggerState;
   private missionRuntimeAdapter: MissionRuntimeAdapter | null = null;
+  private sideCoordinatorManager: SideCoordinatorManager | null = null;
 
   constructor(characters: Character[], battlefield: Battlefield | null = null, endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN) {
     this.characters = characters;
@@ -377,6 +379,55 @@ export class GameManager {
     return this.missionRuntimeAdapter?.getObjectiveMarkers() ?? [];
   }
 
+  // ============================================================================
+  // Side AI Coordinator Management (R1.5: God Mode AI Coordination)
+  // ============================================================================
+
+  /**
+   * Initialize Side AI Coordinator Manager
+   * Called when mission sides are set up
+   */
+  public initializeSideCoordinators(sides: MissionSide[], tacticalDoctrines?: Map<string, import('../ai/stratagems/AIStratagems').TacticalDoctrine>): void {
+    this.sideCoordinatorManager = new SideCoordinatorManager();
+    for (const side of sides) {
+      const doctrine = tacticalDoctrines?.get(side.id) ?? 'operative';
+      this.sideCoordinatorManager.getCoordinator(side.id, doctrine);
+    }
+  }
+
+  /**
+   * Get Side Coordinator Manager
+   */
+  public getSideCoordinatorManager(): SideCoordinatorManager | null {
+    return this.sideCoordinatorManager;
+  }
+
+  /**
+   * Update scoring context for all Sides at start of turn
+   * Called from startTurn() after mission state is updated
+   */
+  public updateAllScoringContexts(sideKeyScores: Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>): void {
+    if (!this.sideCoordinatorManager) return;
+    this.sideCoordinatorManager.updateAllScoringContexts(sideKeyScores, this.currentTurn);
+  }
+
+  /**
+   * Get strategic advice for all Sides (for battle reports)
+   */
+  public getSideStrategies(): Record<string, { doctrine: string; advice: string[]; context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null }> {
+    const strategies: Record<string, { doctrine: string; advice: string[]; context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null }> = {};
+    if (!this.sideCoordinatorManager) return strategies;
+
+    for (const coordinator of this.sideCoordinatorManager.getAllCoordinators()) {
+      strategies[coordinator.getSideId()] = {
+        doctrine: coordinator.getTacticalDoctrine(),
+        advice: coordinator.getStrategicAdvice(),
+        context: coordinator.getScoringContext(),
+      };
+    }
+    return strategies;
+  }
+
   public getCharacterPosition(character: Character): Position | undefined {
     if (!this.battlefield) return undefined;
     return this.battlefield.getCharacterPosition(character);
@@ -385,7 +436,7 @@ export class GameManager {
   /**
    * Start a new Turn
    * QSR: Start of Turn sequence
-   * 
+   *
    * @param roller - Random number generator
    * @param sides - Optional array of sides for IP awarding
    */
@@ -404,6 +455,15 @@ export class GameManager {
     this.reviveUsed.clear();
     this.reactedThisTurn.clear();
     this.phase = TurnPhase.Activation;
+
+    // R1.5: Update scoring context for all Sides at start of turn
+    if (sides && this.sideCoordinatorManager) {
+      const sideKeyScores = new Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>();
+      for (const side of sides) {
+        sideKeyScores.set(side.id, side.state.keyScores);
+      }
+      this.updateAllScoringContexts(sideKeyScores);
+    }
   }
 
   public startRound(): void {

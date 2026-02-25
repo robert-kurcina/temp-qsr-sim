@@ -481,10 +481,11 @@ describe('GameManager', () => {
 
     expect(projected.length).toBeGreaterThan(0);
     expect(projected.every(marker => marker.metadata['projectedFromMissionManager'] === true)).toBe(true);
-    expect(projected.every(marker => marker.metadata['aiInteractable'] === false)).toBe(true);
+    // Zone markers are now interactable for AI movement scoring
+    expect(projected.every(marker => marker.metadata['aiInteractable'] === true)).toBe(true);
   });
 
-  it('should reject read-only mission-projected marker interactions', () => {
+  it('should allow zone-control mission-projected marker interactions (automatic control)', () => {
     const battlefield = new Battlefield(12, 12);
     gameManager.setBattlefield(battlefield);
 
@@ -501,10 +502,11 @@ describe('GameManager', () => {
     gameManager.placeCharacter(characters[0], { x: 12, y: 12 });
     gameManager.beginActivation(characters[0]);
 
+    // Zone-control missions allow acquire but it's a no-op (control is automatic by positioning)
     const result = gameManager.executeAcquireObjectiveMarker(characters[0], markerId!, 'SideA');
-    expect(result.success).toBe(false);
-    expect(result.reason).toContain('read-only');
-    expect(gameManager.getApRemaining(characters[0])).toBe(2);
+    expect(result.success).toBe(true);
+    expect(result.reason).toContain('automatic');
+    expect(gameManager.getApRemaining(characters[0])).toBe(1);
   });
 
   it('should resolve projected assault marker interactions through mission semantics', () => {

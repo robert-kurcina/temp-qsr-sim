@@ -1,0 +1,733 @@
+Item,Period,Age
+"A/Grav, Belt",p06_Far_Future,18-Gravity
+"A/Grav, Ring",p06_Far_Future,18-Gravity
+Acid Spitter,p05_Near_Future,14-Robotics
+Agenda Document,p01_Ancient,02-Bronze
+"Ammo Belt, Bandolier",p03_Expansionist,08-Sail
+"Ammo Belt, Bandolier, Archaic",p03_Expansionist,08-Sail
+Ammo Box,p03_Expansionist,09-Industrial
+"Ammo, AP",p04_Modern,11-Modern
+"Ammo, AP-II",p04_Modern,11-Modern
+"Ammo, AT",p04_Modern,11-Modern
+"Ammo, AT-II",p04_Modern,11-Modern
+"Ammo, HE",p04_Modern,11-Modern
+"Ammo, HEAP",p04_Modern,11-Modern
+"Ammo, HEAP-II",p04_Modern,11-Modern
+"Ammo, HEAT",p04_Modern,12-Atomic
+"Ammo, HEAT-II",p04_Modern,12-Atomic
+"Ammo, HP",p04_Modern,11-Modern
+"Ammo, Tracer Round",p04_Modern,11-Modern
+Amulet of Eyes,p07_Fantastic,20-Symbolic
+Amulet of Fears,p07_Fantastic,20-Symbolic
+Anti-gravity Harness,p06_Far_Future,18-Gravity
+"Anti-tank Weapon, Bazooka, M1",p04_Modern,11-Modern
+"Anti-tank Weapon, Bazooka, M20",p04_Modern,11-Modern
+"Anti-tank Weapon, Faustpatrone",p04_Modern,11-Modern
+"Anti-tank Weapon, LAW",p04_Modern,11-Modern
+"Anti-tank Weapon, MAW",p04_Modern,11-Modern
+"Anti-tank Weapon, PIAT",p04_Modern,11-Modern
+"Anti-tank Weapon, Panzerfaust",p04_Modern,11-Modern
+"Anti-tank Weapon, Panzerschreck",p04_Modern,11-Modern
+"Anti-tank Weapon, RPG-7",p04_Modern,11-Modern
+"Anti-tank Weapon, Rocket",p04_Modern,11-Modern
+Arc Weapon,p06_Far_Future,17-Energy
+"Arcanum, Accessory, Amulet",p07_Fantastic,19-Symbolic
+"Arcanum, Accessory, Monstrum",p07_Fantastic,19-Symbolic
+"Arcanum, Accessory, Ring",p07_Fantastic,19-Symbolic
+"Arcanum, Accessory, Stone",p07_Fantastic,19-Symbolic
+"Arcanum, Accessory, Trinket",p07_Fantastic,19-Symbolic
+"Arcanum, Attachment, Large",p07_Fantastic,19-Symbolic
+"Arcanum, Attachment, Small",p07_Fantastic,19-Symbolic
+"Arcanum, Codex, Common",p07_Fantastic,19-Symbolic
+"Arcanum, Codex, Legendary",p07_Fantastic,19-Symbolic
+"Arcanum, Scroll, Major",p07_Fantastic,19-Symbolic
+"Arcanum, Scroll, Minor",p07_Fantastic,19-Symbolic
+"Arcanum, Tome, Greater",p07_Fantastic,19-Symbolic
+"Arcanum, Tome, Lesser",p07_Fantastic,19-Symbolic
+"Armor, Combat Suit",p01_Ancient,01-Stone
+"Armor, Field",p01_Ancient,01-Stone
+"Armor, Field Advanced",p05_Near_Future,15-Fusion
+"Armor, Field Bulletproof Flex",p05_Near_Future,14-Robotics
+"Armor, Field Flex",p05_Near_Future,14-Robotics
+"Armor, Field Mail",p01_Ancient,03-Iron
+"Armor, Field Nanoweave",p05_Near_Future,14-Robotics
+"Armor, Field Nanoweave BP",p05_Near_Future,14-Robotics
+"Armor, Field, Bulletproof",p04_Modern,12-Atomic
+"Armor, Field, Bulletproof Advanced",p05_Near_Future,15-Fusion
+"Armor, Heavy",p01_Ancient,01-Stone
+"Armor, Heavy Advanced",p05_Near_Future,15-Fusion
+"Armor, Heavy Bulletproof Flex",p05_Near_Future,14-Robotics
+"Armor, Heavy Flex",p05_Near_Future,14-Robotics
+"Armor, Heavy Mail",p01_Ancient,03-Iron
+"Armor, Heavy Nanoweave",p05_Near_Future,14-Robotics
+"Armor, Heavy Nanoweave BP",p05_Near_Future,14-Robotics
+"Armor, Heavy, Bulletproof",p04_Modern,12-Atomic
+"Armor, Heavy, Bulletproof Advanced",p05_Near_Future,15-Fusion
+"Armor, Light",p01_Ancient,01-Stone
+"Armor, Light Advanced",p05_Near_Future,15-Fusion
+"Armor, Light Bulletproof Flex",p05_Near_Future,14-Robotics
+"Armor, Light Flex",p05_Near_Future,14-Robotics
+"Armor, Light Mail",p01_Ancient,03-Iron
+"Armor, Light Nanoweave",p05_Near_Future,14-Robotics
+"Armor, Light Nanoweave BP",p05_Near_Future,14-Robotics
+"Armor, Light, Bulletproof",p04_Modern,12-Atomic
+"Armor, Light, Bulletproof Advanced",p05_Near_Future,15-Fusion
+"Armor, Medium",p01_Ancient,01-Stone
+"Armor, Medium Advanced",p05_Near_Future,15-Fusion
+"Armor, Medium Bulletproof Flex",p05_Near_Future,14-Robotics
+"Armor, Medium Flex",p05_Near_Future,14-Robotics
+"Armor, Medium Mail",p01_Ancient,03-Iron
+"Armor, Medium Nanoweave",p05_Near_Future,14-Robotics
+"Armor, Medium Nanoweave BP",p05_Near_Future,14-Robotics
+"Armor, Medium, Bulletproof",p04_Modern,12-Atomic
+"Armor, Medium, Bulletproof Advanced",p05_Near_Future,15-Fusion
+Armored Gear,p01_Ancient,03-Iron
+"Armored Gear, Bracer",p01_Ancient,03-Iron
+"Armored Gear, Bulletproof",p04_Modern,12-Atomic
+"Armored Gear, Padding",p01_Ancient,03-Iron
+"Armored Gear, Padding Bulletproof",p04_Modern,12-Atomic
+"Armored Gear, Vaumbrace",p01_Ancient,03-Iron
+"Arquebus, Heavy",p02_Archaic,07-Colonial
+"Arquebus, Light",p02_Archaic,07-Colonial
+"Arquebus, Medium",p02_Archaic,07-Colonial
+"Auto-cannon, Heavy",p04_Modern,13-Information
+"Auto-cannon, Light",p04_Modern,12-Atomic
+"Auto-cannon, Medium",p04_Modern,12-Atomic
+Automedic,p05_Near_Future,14-Robotics
+Axe,p01_Ancient,01-Stone
+"Axe, Battle",p01_Ancient,02-Bronze
+"Axe, Long",p01_Ancient,02-Bronze
+"Axe, Pick",p01_Ancient,03-Iron
+"Axe, Tactical",p04_Modern,11-Modern
+Axe-Sword of Tan-doc,p02_Archaic,05-Medieval
+"Ballista, Heavy",p02_Archaic,05-Medieval
+"Ballista, Medium",p01_Ancient,03-Iron
+"Balllista, Light",p01_Ancient,03-Iron
+Bayonet,p02_Archaic,07-Colonial
+Beam Cannon,p05_Near_Future,15-Fusion
+"Beam Cannon, Heavy",p06_Far_Future,17-Energy
+"Beam Cannon, Light",p06_Far_Future,17-Energy
+Beam Carbine,p05_Near_Future,15-Fusion
+"Beam Carbine, Advanced",p05_Near_Future,15-Fusion
+Beam Gun,p05_Near_Future,15-Fusion
+"Beam Gun, Advanced",p05_Near_Future,15-Fusion
+Beam Pistol,p06_Far_Future,16-Quantum
+"Beam Pistol, Advanced",p06_Far_Future,16-Quantum
+Beam Rifle,p05_Near_Future,15-Fusion
+"Beam Rifle, Advanced",p05_Near_Future,15-Fusion
+"Beam Rifle, Advanced Heavy",p05_Near_Future,15-Fusion
+"Beam Rifle, Early",p05_Near_Future,15-Fusion
+"Beam Rifle, Early Heavy",p05_Near_Future,15-Fusion
+"Beam Rifle, Heavy",p05_Near_Future,15-Fusion
+Belt of Strength,p07_Fantastic,19-Psionic
+Bite-1,p01_Ancient,01-Stone
+Bite-2,p01_Ancient,01-Stone
+Bite-3,p01_Ancient,01-Stone
+Black Jacks or Sap,p01_Ancient,01-Stone
+"Blast, 12Minor - Basic",p06_Far_Future,17-Energy
+"Blast, 12Minor - Burst",p06_Far_Future,17-Energy
+"Blast, 12Minor - Rapid",p06_Far_Future,17-Energy
+"Blast, 12Minor - RapidBurst",p06_Far_Future,17-Energy
+"Blast, 13Major - Basic",p06_Far_Future,17-Energy
+"Blast, 13Major - Burst",p06_Far_Future,17-Energy
+"Blast, 13Major - Rapid",p06_Far_Future,17-Energy
+"Blast, 13Major - RapidBurst",p06_Far_Future,17-Energy
+"Blast, 22Minor - Basic",p06_Far_Future,17-Energy
+"Blast, 22Minor - Burst",p06_Far_Future,17-Energy
+"Blast, 22Minor - Rapid",p06_Far_Future,17-Energy
+"Blast, 22Minor - RapidBurst",p06_Far_Future,17-Energy
+"Blast, 23Major - Basic",p06_Far_Future,17-Energy
+"Blast, 23Major - Burst",p06_Far_Future,17-Energy
+"Blast, 23Major - Rapid",p06_Far_Future,17-Energy
+"Blast, 23Major - RapidBurst",p06_Far_Future,17-Energy
+"Blast, 2Minor - Basic",p06_Far_Future,17-Energy
+"Blast, 2Minor - Burst",p06_Far_Future,17-Energy
+"Blast, 2Minor - Rapid",p06_Far_Future,17-Energy
+"Blast, 2Minor - RapidBurst",p06_Far_Future,17-Energy
+"Blast, 3Major - Basic",p06_Far_Future,17-Energy
+"Blast, 3Major - Burst",p06_Far_Future,17-Energy
+"Blast, 3Major - Rapid",p06_Far_Future,17-Energy
+"Blast, 3Major - RapidBurst",p06_Far_Future,17-Energy
+"Blast, 4Greater - Basic",p06_Far_Future,17-Energy
+"Blast, 4Greater - Burst",p06_Far_Future,17-Energy
+"Blast, 4Greater - Rapid",p06_Far_Future,17-Energy
+"Blast, 4Greater - RapidBurst",p06_Far_Future,17-Energy
+"Blast, 4Wondrous - Basic",p06_Far_Future,17-Energy
+"Blast, 4Wondrous - Burst",p06_Far_Future,17-Energy
+"Blast, 4Wondrous - Rapid",p06_Far_Future,17-Energy
+"Blast, 4Wondrous - RapidBurst",p06_Far_Future,17-Energy
+"Blast-suit, Advanced",p05_Near_Future,15-Fusion
+"Blast-suit, Early",p04_Modern,11-Modern
+"Blast-suit, Reinforced",p04_Modern,11-Modern
+Blaster Glove,p06_Far_Future,17-Energy
+Blaster Pistol,p06_Far_Future,17-Energy
+"Blaster Pistol, Magnum",p06_Far_Future,17-Energy
+Blaster Rifle,p06_Far_Future,17-Energy
+"Blaster Rifle, Magnum",p06_Far_Future,17-Energy
+Blow-dart Gun,p01_Ancient,01-Stone
+Bola,p01_Ancient,01-Stone
+Bolter Pistol,p05_Near_Future,15-Fusion
+Bolter Rifle,p05_Near_Future,15-Fusion
+"Bolter Rifle, Adv",p05_Near_Future,15-Fusion
+"Boomerang, War",p01_Ancient,02-Bronze
+"Bottle-Phial, Acid-1",p01_Ancient,01-Stone
+"Bottle-Phial, Burn-1",p01_Ancient,01-Stone
+"Bottle-Phial, Caustic-1",p01_Ancient,01-Stone
+"Bottle-Phial, Confuse-1",p01_Ancient,01-Stone
+"Bottle-Phial, Fire-1",p01_Ancient,01-Stone
+"Bottle-Phial, Poison-1",p01_Ancient,01-Stone
+"Bow, Light",p01_Ancient,01-Stone
+"Bow, Light Quickened",p01_Ancient,01-Stone
+"Bow, Long",p01_Ancient,01-Stone
+"Bow, Medium",p01_Ancient,01-Stone
+"Bow, Medium Heavy",p01_Ancient,01-Stone
+"Bow, Medium Quickened",p01_Ancient,01-Stone
+"Bow, Recurve",p01_Ancient,01-Stone
+"Bow, Recurve Heavy",p01_Ancient,01-Stone
+"Bow, War",p01_Ancient,01-Stone
+Bracers of Stealth,p07_Fantastic,20-Symbolic
+"Cannon, A 12.7mm",p03_Expansionist,10-Machine
+"Cannon, B 25mm (2-pdr)",p03_Expansionist,10-Machine
+"Cannon, C 42mm (6-pdr)",p03_Expansionist,10-Machine
+"Cannon, D 75mm (17-pdr)",p03_Expansionist,10-Machine
+"Carbine Light, Auto",p04_Modern,11-Modern
+"Carbine Light, Semi/A",p04_Modern,11-Modern
+"Carbine, Heavy, Auto",p04_Modern,11-Modern
+"Carbine, Heavy, Semi/A",p04_Modern,11-Modern
+"Carbine, Medium, Auto",p04_Modern,11-Modern
+"Carbine, Medium, Semi/A",p04_Modern,11-Modern
+"Chainsaw, Claw, Heavy",p04_Modern,11-Modern
+"Chainsaw, Claw, Light",p04_Modern,11-Modern
+"Chainsaw, Claw, Medium",p04_Modern,11-Modern
+"Chainsaw, Heavy",p04_Modern,11-Modern
+"Chainsaw, Light",p04_Modern,11-Modern
+"Chainsaw, Medium",p04_Modern,11-Modern
+Chakram Rings,p01_Ancient,02-Bronze
+"Chakram Rings, Serrated",p01_Ancient,02-Bronze
+Claw-1,p01_Ancient,01-Stone
+Claw-2,p01_Ancient,01-Stone
+Claw-3,p01_Ancient,01-Stone
+Claws-1,p01_Ancient,01-Stone
+Claws-2,p01_Ancient,01-Stone
+Claws-3,p01_Ancient,01-Stone
+Club,p01_Ancient,01-Stone
+"Club, Baton",p01_Ancient,01-Stone
+"Club, Circus Mallet",p01_Ancient,01-Stone
+"Club, Crowbar",p01_Ancient,01-Stone
+"Club, Heavy",p01_Ancient,01-Stone
+"Club, Mace",p01_Ancient,01-Stone
+"Club, Mace, Spiked",p01_Ancient,01-Stone
+"Club, Shovel",p01_Ancient,01-Stone
+"Coil-gun, Heavy",p05_Near_Future,14-Robotics
+"Coil-gun, Light",p05_Near_Future,14-Robotics
+"Coil-gun, Medium",p05_Near_Future,14-Robotics
+"Collar, Spiked",p01_Ancient,03-Iron
+Comm-helmet,p04_Modern,11-Modern
+"Comm-helmet, Early",p04_Modern,11-Modern
+Comm-link,p04_Modern,13-Information
+"Comm-link, Boosted",p04_Modern,12-Atomic
+"Comm-link, Box",p04_Modern,11-Modern
+"Comm-link, Box, Archaic",p04_Modern,11-Modern
+"Comm-link, Box, Early",p04_Modern,12-Atomic
+"Comm-link, Box, Early (Embedded)",p04_Modern,13-Information
+"Comm-link, Box-Hand-held",p04_Modern,13-Information
+"Comm-link, Early",p04_Modern,13-Information
+"Comm-link, Jammer, Early",p04_Modern,12-Atomic
+"Comm-link, Jammer, Modern",p04_Modern,13-Information
+"Crossbow, Heavy",p01_Ancient,03-Iron
+"Crossbow, Light",p01_Ancient,03-Iron
+"Crossbow, Medium",p01_Ancient,03-Iron
+"Crossbow, Repeating",p01_Ancient,03-Iron
+"Crossbow, Repeating Heavy",p01_Ancient,03-Iron
+"Crossbow, Single-hand Pistol",p01_Ancient,03-Iron
+"Crossbow, Single-hand Pistol, Hvy",p01_Ancient,03-Iron
+"Crossbow, Single-hand Pistol, Hvy, Masterwork",p01_Ancient,03-Iron
+"Crossbow, Single-hand Pistol, Masterwork",p01_Ancient,03-Iron
+"Dagger, Obsidian",p01_Ancient,01-Stone
+"Dagger, Stiletto",p01_Ancient,01-Stone
+Daggers,p01_Ancient,01-Stone
+"Daggers, Spectral",p07_Fantastic,20-Symbolic
+Damper 2 > Type,p05_Near_Future,14-Robotics
+Damper 3 > Type,p05_Near_Future,14-Robotics
+Damper 4 > Type,p05_Near_Future,14-Robotics
+Damper > Type,p05_Near_Future,14-Robotics
+Deceptor Pistol,p05_Near_Future,15-Fusion
+Deceptor Rifle,p05_Near_Future,15-Fusion
+Detonator,p03_Expansionist,09-Industrial
+"Device, Synchron, Archaic",p03_Expansionist,08-Sail
+"Device, Synchron, Early",p03_Expansionist,10-Machine
+"Device, Synchron-1.1",p04_Modern,11-Modern
+"Device, Synchron-2.1",p04_Modern,11-Modern
+"Device, Synchron-3.2",p04_Modern,11-Modern
+Discus,p01_Ancient,02-Bronze
+Displacer Device,p06_Far_Future,18-Gravity
+"Dynamic Armor, Heavy",p04_Modern,11-Modern
+"Dynamic Armor, Light",p04_Modern,11-Modern
+"Dynamic Armor, Medium",p04_Modern,11-Modern
+Electrocounter Orbs,p03_Expansionist,10-Machine
+Electrostaff,p05_Near_Future,15-Fusion
+"Electrostaff, Neon",p05_Near_Future,15-Fusion
+"Electroweapon, Early",p04_Modern,11-Modern
+"Electroweapon, Pulse, Pistol",p05_Near_Future,14-Robotics
+"Electroweapon, Pulse, Rifle",p05_Near_Future,14-Robotics
+"Explosives, Agenda Bomb, Large",p02_Archaic,05-Medieval
+"Explosives, Agenda Bomb, Small",p02_Archaic,05-Medieval
+"Explosives, Agenda Bomb,Medium",p02_Archaic,05-Medieval
+"Explosives, Bomb, Large",p02_Archaic,05-Medieval
+"Explosives, Bomb, Small",p02_Archaic,05-Medieval
+"Explosives, Bundle, Dynamite",p04_Modern,11-Modern
+"Explosives, Fire-bomb",p04_Modern,11-Modern
+"Explosives, Kettle-bomb",p04_Modern,11-Modern
+"Explosives, Mine, IED",p04_Modern,11-Modern
+"Explosives, Mine, Tank",p04_Modern,11-Modern
+"Explosives, Petard",p02_Archaic,07-Colonial
+"Explosives, Powderkeg",p02_Archaic,06-Renaissance
+"Explosives, Satchel",p04_Modern,11-Modern
+"Explosives, Satchel, Pulse",p05_Near_Future,14-Robotics
+"Explosives, Stick, Dynamite",p04_Modern,11-Modern
+"Exxo-skeleton, Heavy",p05_Near_Future,14-Robotics
+"Exxo-skeleton, Lifter Frame",p05_Near_Future,14-Robotics
+"Exxo-skeleton, Light",p05_Near_Future,14-Robotics
+Exxo-skin,p05_Near_Future,14-Robotics
+"Exxo-skin, Carapace",p05_Near_Future,14-Robotics
+"Exxo-skin, Scaled",p05_Near_Future,14-Robotics
+"Exxo-skin, Segmented",p05_Near_Future,14-Robotics
+Favored Passage,p00_ANY,.
+Field Harness,p01_Ancient,01-Stone
+Flail,p01_Ancient,01-Stone
+"Flail, Farming",p01_Ancient,01-Stone
+"Flail, Morningstar",p01_Ancient,01-Stone
+"Flail, Tri-section",p01_Ancient,01-Stone
+"Flame-thrower, Heavy",p04_Modern,11-Modern
+"Flame-thrower, Light",p04_Modern,11-Modern
+"Flame-thrower, Medium",p04_Modern,11-Modern
+"Flame-thrower, Mini",p04_Modern,11-Modern
+Flashlight,p04_Modern,12-Atomic
+"Flashlight, Advanced",p04_Modern,13-Information
+"Force Armor, Heavy",p04_Modern,11-Modern
+"Force Armor, Light",p04_Modern,11-Modern
+"Force Armor, Medium",p04_Modern,11-Modern
+Fusion Pistol,p05_Near_Future,15-Fusion
+"Gas Cannister, Blacksmoke",p04_Modern,11-Modern
+"Gas Cannister, Caustic",p04_Modern,11-Modern
+"Gas Cannister, Knockout",p04_Modern,11-Modern
+"Gas Cannister, Knockout-2",p04_Modern,11-Modern
+"Gas Cannister, Mustard",p04_Modern,11-Modern
+"Gas Cannister, Nerve",p04_Modern,11-Modern
+"Gas Cannister, Nerve-2",p04_Modern,11-Modern
+"Gas Cannister, Poison",p04_Modern,11-Modern
+"Gas Cannister, Poison 2",p04_Modern,11-Modern
+"Gas Cannister, Riot",p04_Modern,11-Modern
+"Gas Cannister, Riot-3",p04_Modern,11-Modern
+"Gas Cannister, Smoke",p04_Modern,11-Modern
+"Gas Cannister, Smoke-2",p04_Modern,11-Modern
+"Gas Cannister, Steam",p04_Modern,11-Modern
+"Gas Grenade, Acid",p04_Modern,11-Modern
+"Gas Grenade, Blacksmoke",p04_Modern,11-Modern
+"Gas Grenade, Caustic",p04_Modern,11-Modern
+"Gas Grenade, Knockout",p04_Modern,11-Modern
+"Gas Grenade, Mustard",p04_Modern,11-Modern
+"Gas Grenade, Nerve",p04_Modern,11-Modern
+"Gas Grenade, Poison",p04_Modern,11-Modern
+"Gas Grenade, Poison 2",p04_Modern,11-Modern
+"Gas Grenade, Riot",p04_Modern,11-Modern
+"Gas Grenade, Smoke",p04_Modern,11-Modern
+"Gas Grenade, Steam",p04_Modern,11-Modern
+Gas Grenade: Steam,p04_Modern,11-Modern
+Gas-mask,p04_Modern,11-Modern
+"Gas-mask, Hooded",p04_Modern,11-Modern
+"Gas-mask, Respirator",p04_Modern,11-Modern
+"Gatling Gun, 20mm",p04_Modern,12-Atomic
+"Gatling Gun, Archaic",p04_Modern,12-Atomic
+"Gatling Gun, Archaic-v2",p04_Modern,12-Atomic
+"Gatling Gun, Early",p04_Modern,12-Atomic
+"Gatling Gun, Early-v2",p04_Modern,12-Atomic
+"Gatling Gun, Mini",p03_Expansionist,10-Machine
+"Gatling Gun, Mini (Mounted)",p03_Expansionist,10-Machine
+"Gauntlet, Clawed",p01_Ancient,01-Stone
+"Gauntlet, Controller",p05_Near_Future,15-Fusion
+Goggles,p03_Expansionist,08-Sail
+"Goggles, Night-vision",p04_Modern,12-Atomic
+"Goggles, Night-vision, Adv.",p04_Modern,12-Atomic
+"Goggles, Optiplex",p05_Near_Future,14-Robotics
+"Goggles, Pin-point",p03_Expansionist,08-Sail
+"Goggles, Sensor",p05_Near_Future,14-Robotics
+"Grenade, Anti-magic",p07_Fantastic,19-Psionic
+"Grenade, Anti-psi",p07_Fantastic,19-Psionic
+"Grenade, Archaic",p04_Modern,11-Modern
+"Grenade, Concussion",p04_Modern,11-Modern
+"Grenade, Concussion, Adv.",p04_Modern,11-Modern
+"Grenade, Dancer",p04_Modern,11-Modern
+"Grenade, Flash",p04_Modern,11-Modern
+"Grenade, Flash-bang",p04_Modern,11-Modern
+"Grenade, Flash-bang, Adv.",p04_Modern,11-Modern
+"Grenade, Fragmentation",p04_Modern,11-Modern
+"Grenade, Fragmentation, Adv.",p04_Modern,11-Modern
+"Grenade, HE",p04_Modern,11-Modern
+"Grenade, HE, Adv.",p04_Modern,11-Modern
+"Grenade, Pulse",p05_Near_Future,14-Robotics
+"Grenade, Pulse, Adv.",p05_Near_Future,14-Robotics
+"Grenade, Shrapnel",p04_Modern,11-Modern
+"Grenade, Shrapnel, Adv.",p04_Modern,11-Modern
+"Grenade, Sonic",p04_Modern,11-Modern
+"Grenade, Sonic, Adv.",p04_Modern,11-Modern
+"Grenade, Web",p04_Modern,11-Modern
+"Grenade, Web Stunner",p04_Modern,11-Modern
+"Groundingsuit, Advanced",p04_Modern,11-Modern
+"Groundingsuit, Early",p04_Modern,11-Modern
+"Hammer, Forge",p01_Ancient,01-Stone
+"Hammer, Long",p01_Ancient,01-Stone
+"Hammer, Maul",p01_Ancient,01-Stone
+"Hammer, Sledge",p01_Ancient,01-Stone
+"Hammer, War",p01_Ancient,01-Stone
+"Hammer, War, Ban-1",p01_Ancient,01-Stone
+"Hammer, War, Ban-2",p01_Ancient,01-Stone
+Hand Cannon,p04_Modern,12-Atomic
+"Hardsuit, Archaic",p04_Modern,11-Modern
+"Hardsuit, Enhanced, Archaic",p04_Modern,11-Modern
+"Hardsuit, Platform, Archaic",p04_Modern,11-Modern
+"Hardsuit, Scout",p04_Modern,11-Modern
+"Hardsuit, Standard",p04_Modern,11-Modern
+"Hardsuit, War",p04_Modern,11-Modern
+"Hardsuit, Windup",p04_Modern,11-Modern
+Heirloom Weapon,p00_ANY,.
+"Helmet, Common",p01_Ancient,01-Stone
+"Helmet, Common, Bulletproof",p04_Modern,12-Atomic
+"Helmet, Full",p01_Ancient,01-Stone
+"Helmet, Full, Bulletproof",p04_Modern,12-Atomic
+"Helmet, Full-Elaborate",p01_Ancient,01-Stone
+"Helmet, Reinforced",p01_Ancient,01-Stone
+"Helmet, Reinforced Bulletproof",p04_Modern,12-Atomic
+"Helmet, Riot",p01_Ancient,01-Stone
+"Helmet, Riot Bulletproof",p04_Modern,12-Atomic
+"Hook, Crook",p01_Ancient,01-Stone
+"Hook, Meat",p01_Ancient,01-Stone
+"Hook, Scythe",p01_Ancient,01-Stone
+"Hook, Sickle, Fist",p01_Ancient,01-Stone
+"Hook, Sickle, Hand",p01_Ancient,01-Stone
+"Hook, Spearcrook",p01_Ancient,01-Stone
+"Hook, Swordcrook",p02_Archaic,05-Medieval
+Immune-Blast-1,p00_ANY,.
+Immune-Blast-2,p00_ANY,.
+Improvised Melee,p01_Ancient,01-Stone
+"Improvised Melee, Large",p01_Ancient,01-Stone
+Improvised Parry,p01_Ancient,01-Stone
+Improvised Thrown,p01_Ancient,01-Stone
+"Improvised Thrown, Large",p01_Ancient,01-Stone
+"Jet-pack, Gear",p05_Near_Future,14-Robotics
+"Jet-pack, Jump",p05_Near_Future,14-Robotics
+"Jet-pack, Suit",p05_Near_Future,14-Robotics
+"Jet-pack, Suit, Advanced",p05_Near_Future,14-Robotics
+"Kit, Glider Caped",p04_Modern,11-Modern
+"Kit, Glider Winged",p04_Modern,11-Modern
+"Kit, Medical, CFAK",p04_Modern,11-Modern
+"Kit, Medical, CFAK-v2",p04_Modern,11-Modern
+"Kit, Medical, Field",p04_Modern,11-Modern
+"Kit, Medical, Tactical",p04_Modern,11-Modern
+"Knife, Large",p01_Ancient,01-Stone
+"Knife, Medium",p01_Ancient,01-Stone
+"Knife, Small",p01_Ancient,01-Stone
+"Knife, Tactical",p04_Modern,11-Modern
+Knuckledusters,p01_Ancient,01-Stone
+"Knuckledusters, Spiked",p01_Ancient,01-Stone
+Lamp or Candle,p01_Ancient,01-Stone
+Lamp or Candle. Large,p01_Ancient,01-Stone
+"Lantern, Basic",p01_Ancient,01-Stone
+"Lantern, Basic, Large",p01_Ancient,01-Stone
+"Lantern, Electric",p03_Expansionist,10-Machine
+"Lantern, Electric, Small",p03_Expansionist,10-Machine
+"Lantern, Fueled",p03_Expansionist,08-Sail
+"Lantern, Fueled, Small",p03_Expansionist,08-Sail
+"Launcher, Grenade Early",p04_Modern,11-Modern
+"Launcher, Grenade Modern",p04_Modern,11-Modern
+"Launcher, Grenade, Multi-rapid",p04_Modern,11-Modern
+"Launcher, Grenade, Rapid",p04_Modern,11-Modern
+Leash,p01_Ancient,01-Stone
+"Machine Gun, Heavy",p04_Modern,12-Atomic
+"Machine Gun, Heavy (Mounted)",p04_Modern,11-Modern
+"Machine Gun, Light",p04_Modern,11-Modern
+"Machine Gun, Light (Mounted)",p04_Modern,11-Modern
+"Machine Gun, Medium",p04_Modern,12-Atomic
+"Machine Gun, Medium (Mounted)",p04_Modern,11-Modern
+"Machine Gun, Mitrailleuse",p04_Modern,12-Atomic
+"Mage Armor, Heavy",p04_Modern,11-Modern
+"Mage Armor, Light",p04_Modern,11-Modern
+"Mage Armor, Medium",p04_Modern,11-Modern
+Mask of Command,p07_Fantastic,19-Psionic
+"Medicinals, Alcohol",p01_Ancient,01-Stone
+"Medicinals, Alcohol, Copious",p01_Ancient,01-Stone
+"Medicinals, Euphorics",p01_Ancient,01-Stone
+"Medicinals, Euphorics, Copious",p01_Ancient,01-Stone
+"Medicinals, Hallucenogenics",p01_Ancient,01-Stone
+"Medicinals, Hallucenogenics, Copious",p01_Ancient,01-Stone
+"Medicinals, Healing Potion",p01_Ancient,01-Stone
+"Medicinals, Healing Potion, Pure",p01_Ancient,01-Stone
+"Medicinals, Painkillers",p01_Ancient,01-Stone
+"Medicinals, Painkillers, Copious",p01_Ancient,01-Stone
+"Medicinals, Psychoactives",p01_Ancient,01-Stone
+"Medicinals, Stimulants",p01_Ancient,01-Stone
+"Medicinals, Stimulants, Copious",p01_Ancient,01-Stone
+"Mine, Acid, Small",p04_Modern,11-Modern
+"Mine, Anti-personnel",p04_Modern,11-Modern
+"Mine, Anti-personnel, Micromag",p04_Modern,11-Modern
+"Mine, Heat, Medium",p04_Modern,11-Modern
+"Mine, Heat, Small",p04_Modern,11-Modern
+Mirror,p01_Ancient,02-Bronze
+"Module, Control",p05_Near_Future,14-Robotics
+"Module, Manipulator",p05_Near_Future,14-Robotics
+"Module, System",p05_Near_Future,14-Robotics
+"Module, Trigger",p05_Near_Future,14-Robotics
+"Mortar, Heavy",p04_Modern,12-Atomic
+"Mortar, Light",p04_Modern,12-Atomic
+"Mortar, Medium",p04_Modern,12-Atomic
+"Mortar, Mini-mortar",p04_Modern,12-Atomic
+"Mortar, Mini-mortar (Mounted)",p04_Modern,11-Modern
+Mounted Bolter Weapon,p05_Near_Future,15-Fusion
+Mounted Flame-thrower,p05_Near_Future,14-Robotics
+"Mounted Mortar, Mini-mortar",p04_Modern,11-Modern
+Mounted Rail-gun,p04_Modern,13-Information
+"Musket, Blunderbuss",p03_Expansionist,08-Sail
+"Musket, Heavy Smoothbore",p02_Archaic,07-Colonial
+"Musket, Light, Smoothbore",p02_Archaic,07-Colonial
+"Musket, Medium, Smoothbore",p02_Archaic,07-Colonial
+Nanotech:Rage,p05_Near_Future,14-Robotics
+Nanotech:Rampage,p05_Near_Future,14-Robotics
+Nanotech:Resist,p05_Near_Future,14-Robotics
+Nanotech:Run,p05_Near_Future,14-Robotics
+Necklace of Comfort,p07_Fantastic,19-Psionic
+Needle Rifle,p05_Near_Future,14-Robotics
+"Needle Rifle, Adv",p05_Near_Future,15-Fusion
+Needler Pistol,p05_Near_Future,14-Robotics
+"Needler Pistol, Adv",p05_Near_Future,15-Fusion
+"Net, Deathnet",p01_Ancient,01-Stone
+"Net, Retarius",p01_Ancient,01-Stone
+"Net-gun, Large",p05_Near_Future,15-Fusion
+"Net-gun, Small",p05_Near_Future,15-Fusion
+"Notebook, Leadership",p01_Ancient,02-Bronze
+"Notebook, Scholarship",p01_Ancient,02-Bronze
+"Notebook, Tactics",p01_Ancient,02-Bronze
+"PDW, Heavy",p04_Modern,11-Modern
+"PDW, Light",p04_Modern,11-Modern
+"PDW, Medium",p04_Modern,11-Modern
+"Package, Assassin",p00_ANY,.
+"Package, Berserker",p00_ANY,.
+"Package, Predict",p00_ANY,.
+"Package, Recon",p00_ANY,.
+"Package, Timer",p00_ANY,.
+"Package, Warrior",p00_ANY,.
+Phlogiston Suit,p01_Ancient,01-Stone
+"Phlogiston Suit, Fireproof",p01_Ancient,01-Stone
+"Phlogiston Suit, Improved",p04_Modern,11-Modern
+"Phlogiston Suit, Improved BP",p04_Modern,11-Modern
+"Pipe Cannon, 1-pdr",p04_Modern,12-Atomic
+"Pipe Cannon, 2-pdr",p04_Modern,12-Atomic
+"Pistol, Coach",p02_Archaic,05-Medieval
+"Pistol, Dueling",p02_Archaic,05-Medieval
+"Pistol, Heavy, Auto",p04_Modern,11-Modern
+"Pistol, Heavy, Semi/A",p04_Modern,11-Modern
+"Pistol, Light, Auto",p04_Modern,11-Modern
+"Pistol, Light, Semi/A",p04_Modern,11-Modern
+"Pistol, Medium, Auto",p04_Modern,11-Modern
+"Pistol, Medium, Semi/A",p04_Modern,11-Modern
+"Pistol, Pepperbox",p03_Expansionist,10-Machine
+Plasma Cannon,p05_Near_Future,15-Fusion
+"Plasma Cannon, Heavy",p05_Near_Future,15-Fusion
+Plasma Pistol,p05_Near_Future,15-Fusion
+Plasma Rifle,p05_Near_Future,15-Fusion
+Plasmablade,p05_Near_Future,15-Fusion
+"Plasmashield, Heavy",p05_Near_Future,15-Fusion
+"Plasmashield, Light",p05_Near_Future,15-Fusion
+"Plasmashield, Medium",p05_Near_Future,15-Fusion
+Poisoned Weapon,p01_Ancient,01-Stone
+"Poisoned Weapon, Deadly",p01_Ancient,01-Stone
+"Polearm, Glaive",p01_Ancient,01-Stone
+"Polearm, Halberd",p01_Ancient,01-Stone
+"Polearm, Pike",p01_Ancient,01-Stone
+"Polearm, Scythe",p01_Ancient,01-Stone
+"Power-gem, Light",p07_Fantastic,20-Symbolic
+"Power-gem, Medium",p07_Fantastic,20-Symbolic
+Powered Armor-Battle,p06_Far_Future,17-Energy
+Powered Armor-Combat,p06_Far_Future,16-Quantum
+Powered Armor-Early,p05_Near_Future,14-Robotics
+Powered Armor-Exxo,p05_Near_Future,14-Robotics
+Powered Armor-ExxoHvy,p05_Near_Future,15-Fusion
+Powered Armor-Standard,p05_Near_Future,15-Fusion
+Powered Armor-Stealth,p06_Far_Future,17-Energy
+Powered Gauntlets,p05_Near_Future,15-Fusion
+Powered Gloves,p05_Near_Future,15-Fusion
+Powered Shielding,p05_Near_Future,15-Fusion
+Powered Shielding-Heavy,p05_Near_Future,15-Fusion
+Powered Staff,p05_Near_Future,15-Fusion
+Prayer-Book,p02_Archaic,05-Medieval
+Prayer-Relic,p02_Archaic,05-Medieval
+"Proximity Suit, Fireproof",p01_Ancient,01-Stone
+"Proximity Suit, Fireproof BP",p04_Modern,11-Modern
+"Psi Armor, Heavy",p04_Modern,11-Modern
+"Psi Armor, Light",p04_Modern,11-Modern
+"Psi Armor, Medium",p04_Modern,11-Modern
+Pummel-1,p01_Ancient,01-Stone
+Pummel-2,p01_Ancient,01-Stone
+Pummel-3,p01_Ancient,01-Stone
+"Rail-gun, Heavy",p04_Modern,13-Information
+"Rail-gun, Light",p04_Modern,13-Information
+"Rail-gun, Medium",p04_Modern,13-Information
+"Reinforced, Polearm",p01_Ancient,03-Iron
+"Reinforced, Standard",p01_Ancient,03-Iron
+"Revolver, Heavy",p04_Modern,11-Modern
+"Revolver, Heavy, Archaic",p03_Expansionist,10-Machine
+"Revolver, Light",p04_Modern,11-Modern
+"Revolver, Light, Archaic",p03_Expansionist,10-Machine
+"Revolver, Medium",p04_Modern,11-Modern
+"Revolver, Medium, Archaic",p03_Expansionist,10-Machine
+"Rifle, Heavy, Archaic",p02_Archaic,05-Medieval
+"Rifle, Heavy, Auto",p04_Modern,11-Modern
+"Rifle, Heavy, Bolt/A",p04_Modern,11-Modern
+"Rifle, Heavy, Semi/A",p04_Modern,11-Modern
+"Rifle, Heavy, Single/A",p04_Modern,11-Modern
+"Rifle, Light, Archaic",p02_Archaic,05-Medieval
+"Rifle, Light, Auto",p04_Modern,11-Modern
+"Rifle, Light, Bolt/A",p04_Modern,11-Modern
+"Rifle, Light, Semi/A",p04_Modern,11-Modern
+"Rifle, Light, Single/A",p04_Modern,11-Modern
+"Rifle, Medium, Archaic",p02_Archaic,05-Medieval
+"Rifle, Medium, Auto",p04_Modern,11-Modern
+"Rifle, Medium, Bolt/A",p04_Modern,11-Modern
+"Rifle, Medium, Semi/A",p04_Modern,11-Modern
+"Rifle, Medium, Single/A",p04_Modern,11-Modern
+Ring of Flight,p07_Fantastic,20-Symbolic
+Ring of Leaping,p07_Fantastic,20-Symbolic
+Ring of Running,p07_Fantastic,20-Symbolic
+"Rod, Emerald Flame",p04_Modern,11-Modern
+"Rod, Eternal Flame",p04_Modern,11-Modern
+"Rod, Last Rites",p04_Modern,11-Modern
+"Rod, Stinging Blight",p04_Modern,11-Modern
+"Rod, Suffering Light",p04_Modern,11-Modern
+Rope,p04_Modern,12-Atomic
+Seal of Arrows,p07_Fantastic,20-Symbolic
+Seal of Daggers,p07_Fantastic,20-Symbolic
+Sensor Array,p05_Near_Future,14-Robotics
+"Shield, Heavy-Large",p01_Ancient,01-Stone
+"Shield, Heavy-Medium",p01_Ancient,01-Stone
+"Shield, Heavy-Small",p01_Ancient,01-Stone
+"Shield, Improvised-Large",p01_Ancient,01-Stone
+"Shield, Improvised-Small",p01_Ancient,01-Stone
+"Shield, Large",p01_Ancient,01-Stone
+"Shield, Large, Bulletproof",p04_Modern,12-Atomic
+"Shield, Light",p01_Ancient,01-Stone
+"Shield, Medium",p01_Ancient,01-Stone
+"Shield, Medium, Bulletproof",p04_Modern,12-Atomic
+"Shield, Medium-Spiked",p01_Ancient,01-Stone
+"Shield, Riot",p04_Modern,11-Modern
+"Shield, Riot, Large",p04_Modern,11-Modern
+"Shield, Small",p01_Ancient,01-Stone
+"Shield, Small, Bulletproof",p04_Modern,12-Atomic
+"Shield, Small, Spiked",p04_Modern,11-Modern
+"Shield, Small-Buckle",p01_Ancient,01-Stone
+"Shotgun, Auto",p04_Modern,11-Modern
+"Shotgun, Auto, Heavy",p04_Modern,11-Modern
+"Shotgun, Fletch",p04_Modern,11-Modern
+"Shotgun, Pump-action",p04_Modern,11-Modern
+"Shotgun, Pump-action, Heavy",p04_Modern,11-Modern
+"Shotgun, Sawed-off",p04_Modern,11-Modern
+"Shotgun, Semi/A",p04_Modern,11-Modern
+"Shotgun, Slug",p04_Modern,11-Modern
+"Shotgun, Slug, Heavy",p04_Modern,11-Modern
+Sickstick,p05_Near_Future,15-Fusion
+Sigil of Athletics,p07_Fantastic,20-Symbolic
+Sigil of Hunting,p07_Fantastic,20-Symbolic
+Silencer,p04_Modern,11-Modern
+"Silencer, Advanced",p04_Modern,11-Modern
+Sling,p01_Ancient,01-Stone
+"Sling, Staff",p01_Ancient,01-Stone
+Slingshot,p01_Ancient,01-Stone
+"Sniper Scope, Advanced",p04_Modern,13-Information
+"Sniper Scope, Advanced, Starlight",p04_Modern,13-Information
+"Sniper Scope, Basic",p04_Modern,11-Modern
+"Sniper Scope, Laser",p04_Modern,11-Modern
+"Sniper Scope, Starlight",p04_Modern,11-Modern
+Sonic Pistol,p05_Near_Future,14-Robotics
+Sonic Rifle,p05_Near_Future,14-Robotics
+"Sonic Rifle, Heavy",p05_Near_Future,14-Robotics
+"Spear, Long",p01_Ancient,01-Stone
+"Spear, Medium",p01_Ancient,01-Stone
+"Spear, Short",p01_Ancient,01-Stone
+"Spear, Throwing",p01_Ancient,01-Stone
+"Spear, of Stealth",p01_Ancient,01-Stone
+Spectral Claws-1,p07_Fantastic,20-Symbolic
+"Spectral Claws-1, Limited",p07_Fantastic,20-Symbolic
+Spectral Claws-2,p07_Fantastic,20-Symbolic
+"Spectral Claws-2, Limited",p07_Fantastic,20-Symbolic
+Spectral Claws-3,p07_Fantastic,20-Symbolic
+"Spectral Claws-3, Limited",p07_Fantastic,20-Symbolic
+Spell - Pyrotechnics,p07_Fantastic,20-Symbolic
+"Spotlight, S1-Small",p04_Modern,12-Atomic
+"Spotlight, S2-Large",p04_Modern,12-Atomic
+Springsuit,p03_Expansionist,10-Machine
+"Springsuit, Combat",p03_Expansionist,10-Machine
+Spy-glass,p03_Expansionist,08-Sail
+Staff,p01_Ancient,01-Stone
+"Staff, Club",p01_Ancient,01-Stone
+"Staff, Greater Mage",p01_Ancient,01-Stone
+"Staff, Lesser Mage",p01_Ancient,01-Stone
+"Staff, Sling",p01_Ancient,01-Stone
+Stealth Suit,p01_Ancient,01-Stone
+"Stunner, Pistol",p05_Near_Future,15-Fusion
+"Stunner, Rifle",p05_Near_Future,15-Fusion
+"Stunner, Riot",p05_Near_Future,15-Fusion
+"Submachine-gun, Archaic",p04_Modern,11-Modern
+"Submachine-gun, Heavy",p04_Modern,11-Modern
+"Submachine-gun, Light",p04_Modern,11-Modern
+"Submachine-gun, Medium",p04_Modern,11-Modern
+"Sword, Broad",p02_Archaic,05-Medieval
+"Sword, Cutlass",p03_Expansionist,08-Sail
+"Sword, Great",p02_Archaic,05-Medieval
+"Sword, Long",p02_Archaic,05-Medieval
+"Sword, Rapier",p02_Archaic,06-Renaissance
+"Sword, Saber",p03_Expansionist,09-Industrial
+"Sword, Scimitar",p02_Archaic,05-Medieval
+"Sword, Scimitar, Grand",p02_Archaic,05-Medieval
+"Sword, Short",p02_Archaic,05-Medieval
+Targeting System,p04_Modern,11-Modern
+"Taser, Personal",p05_Near_Future,15-Fusion
+"Taser, Prod",p05_Near_Future,15-Fusion
+"Taser, Rifle",p05_Near_Future,15-Fusion
+Teleporter Beacons,p07_Fantastic,20-Symbolic
+Teleporter Pack,p07_Fantastic,20-Symbolic
+Throwing Axes,p01_Ancient,01-Stone
+Throwing Dart,p01_Ancient,01-Stone
+Throwing Knives,p01_Ancient,01-Stone
+Throwing Stars,p01_Ancient,01-Stone
+Throwing Sticks,p01_Ancient,01-Stone
+"Torch, Basic",p01_Ancient,01-Stone
+"Torch, Basic, Large",p01_Ancient,01-Stone
+"Torch, Flaming",p01_Ancient,01-Stone
+"Torch, Flaming, Large",p01_Ancient,01-Stone
+"Torch, Flashlight",p01_Ancient,01-Stone
+"Torch, Staff",p01_Ancient,01-Stone
+Trident,p01_Ancient,01-Stone
+"Trident, Long",p01_Ancient,01-Stone
+"Trident, Pitchfork",p01_Ancient,01-Stone
+Unarmed,p01_Ancient,01-Stone
+Upgrade:Balanced,p00_ANY,.
+Upgrade:Masterworks,p00_ANY,.
+Upgrade:Poisoned,p00_ANY,.
+"Upgrade:Poisoned, Deadly",p00_ANY,.
+Upgrade:Reinforced,p00_ANY,.
+"Upgrade:Reinforced, Polearm",p00_ANY,.
+Upgrade:Well-honed,p00_ANY,.
+Vibrodagger,p06_Far_Future,16-Quantum
+Vibrosword,p06_Far_Future,16-Quantum
+"Waldo, Claws, Long",p01_Ancient,01-Stone
+"Waldo, Claws, Short",p01_Ancient,01-Stone
+"Waldo, Hand",p01_Ancient,01-Stone
+"Waldo, Saw, Large",p01_Ancient,01-Stone
+"Waldo, Saw, Small",p01_Ancient,01-Stone
+"Wheeled, Armored-pedaler",p04_Modern,11-Modern
+"Wheeled, Gun Carriage, Large",p04_Modern,11-Modern
+"Wheeled, Gun Carriage, Tricycle",p04_Modern,11-Modern
+"Wheeled, Steam-chair",p04_Modern,11-Modern
+"Wheeled, Tankette",p04_Modern,11-Modern
+"Whip, Bull",p01_Ancient,01-Stone
+"Whip, Metal Chain",p01_Ancient,03-Iron
+"Whip, Mollysword",p02_Archaic,05-Medieval
+"Whip, Monowire",p06_Far_Future,16-Quantum

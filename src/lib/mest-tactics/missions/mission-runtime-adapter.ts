@@ -344,7 +344,7 @@ export class MissionRuntimeAdapter {
         switchState: controller ? SwitchState.On : SwitchState.Off,
         metadata: {
           projectedFromMissionManager: true,
-          aiInteractable: false,
+          aiInteractable: true, // Zone markers are interactable for AI movement scoring
           missionSource: source,
           zoneRadius: zone.radius,
         },
@@ -1003,6 +1003,17 @@ export class MissionRuntimeAdapter {
           options.actorPosition,
           options.modelPositions
         );
+      }
+      // Zone-control missions (convergence, dominion, triumvirate) use automatic zone control
+      // based on model positioning at turn end. Acquire action is a no-op but valid for AI planning.
+      if (source === 'convergence' || source === 'dominion' || source === 'triumvirate') {
+        return {
+          success: true,
+          marker,
+          apCost: options.isFree ? 0 : 1,
+          carried: false,
+          reason: `Zone control is automatic based on positioning in ${source} mission`,
+        };
       }
       return {
         success: false,

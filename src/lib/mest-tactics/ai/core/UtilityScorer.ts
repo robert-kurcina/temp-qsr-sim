@@ -104,6 +104,9 @@ export interface ScoredPosition {
     visibility: number;
     cohesion: number;
     threatRelief: number;
+    // R3: Cover-seeking quality factors
+    leanOpportunity: number;
+    exposureRisk: number;
   };
 }
 
@@ -465,6 +468,11 @@ export class UtilityScorer {
         const waitDelayAvoidance = waitForecast.potentialReactTargets > 0
           ? Math.min(1.8, 0.3 + (waitForecast.expectedTriggerCount * 0.5) + (existingDelay * 0.25))
           : 0;
+
+        // R2: Tactical Condition Weighting for Wait Uptake
+        // Add multipliers when specific tactical conditions favor Wait
+        const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions);
+
         const hasAttackOption = attackActions.length > 0;
         const bestAttackScore = attackActions[0]?.score ?? 0;
         const bestMoveScore = actions
@@ -483,7 +491,8 @@ export class UtilityScorer {
           (exposure * 0.22) +
           waitRefBonus +
           waitDelayAvoidance +
-          waitMissionBias;
+          waitMissionBias +
+          waitTacticalBonus;
         const immediateScore = hasAttackOption ? bestAttackScore : Math.max(0.5, bestMoveScore * 0.85);
         const waitRollout = rolloutWaitReactBranches(context, {
           immediateScore,
@@ -608,6 +617,11 @@ export class UtilityScorer {
     const strategicSamples = this.sampleStrategicPositions(context, characterPos);
     const samples = this.dedupePositions([...localSamples, ...strategicSamples], context.battlefield);
 
+    // R3: Get loadout for doctrine-aware scoring
+    const loadout = this.getLoadoutProfile(context.character);
+    const isRanged = loadout.hasRangedWeapons && !loadout.hasMeleeWeapons;
+    const isMelee = loadout.hasMeleeWeapons && !loadout.hasRangedWeapons;
+
     for (const pos of samples) {
       if (pos.x === characterPos.x && pos.y === characterPos.y) continue;
       const distance = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
@@ -621,17 +635,36 @@ export class UtilityScorer {
       const cohesion = this.evaluateCohesion(pos, context);
       const threatRelief = this.evaluateThreatRelief(pos, context);
 
+      // R3: Add lean opportunity and exposure risk evaluation
+      const leanOpportunity = isRanged ? this.evaluateLeanOpportunity(pos, context) : 0;
+      const exposureRisk = this.evaluateExposureRisk(pos, context);
+
+      // R3: Doctrine-aware scoring weights
+      const coverWeight = this.weights.coverValue * (isRanged ? 1.3 : 1.0);
+      const leanWeight = isRanged ? 1.5 : 0; // Only ranged models benefit from lean
+      const exposurePenalty = isRanged ? 1.8 : 1.2; // Ranged models more exposed = bad
+
       const score =
-        cover * this.weights.coverValue +
+        cover * coverWeight +
         distanceScore * this.weights.distanceToTarget +
         threatRelief * (1.5 + this.weights.riskAvoidance) +
         visibility * 0.5 +
-        cohesion * this.weights.cohesionValue;
+        cohesion * this.weights.cohesionValue +
+        (leanOpportunity * leanWeight) -
+        (exposureRisk * exposurePenalty);
 
       positions.push({
         position: pos,
         score,
-        factors: { cover, distance: distanceScore, visibility, cohesion, threatRelief },
+        factors: {
+          cover,
+          distance: distanceScore,
+          visibility,
+          cohesion,
+          threatRelief,
+          leanOpportunity,
+          exposureRisk,
+        },
       });
     }
 
@@ -749,6 +782,139 @@ export class UtilityScorer {
     }
 
     const result = Math.min(1.5, bestCover * coverPriority);
+    session.coverCache.set(cacheKey, result);
+    return result;
+  }
+
+  /**
+   * R3: Evaluate lean opportunity at position
+   * Returns score for positions with partial cover that allow shooting
+   */
+  private evaluateLeanOpportunity(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = `lean:${this.positionKey(position)}`;
+    const cached = session.coverCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const loadout = this.getLoadoutProfile(context.character);
+    // Only ranged models benefit from lean
+    if (!loadout.hasRangedWeapons) {
+      session.coverCache.set(cacheKey, 0);
+      return 0;
+    }
+
+    // Check for lean opportunities: position has LOS to enemies but is near cover
+    let leanScore = 0;
+    const characterPos = context.battlefield.getCharacterPosition(context.character);
+    if (!characterPos) {
+      session.coverCache.set(cacheKey, 0);
+      return 0;
+    }
+
+    // Count enemies visible from this position
+    let visibleEnemies = 0;
+    for (const enemy of context.enemies) {
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      if (this.hasLineOfSightBetweenPositions(position, enemyPos, context)) {
+        visibleEnemies++;
+      }
+    }
+
+    // Check if position is near cover (within 1 MU of cover edge)
+    const nearCover = this.isNearCoverEdge(position, context);
+
+    // Lean opportunity: can see enemies AND is near cover
+    if (visibleEnemies > 0 && nearCover) {
+      leanScore = 0.5 + (visibleEnemies * 0.15); // Base 0.5 + 0.15 per visible enemy
+    }
+
+    const result = Math.min(1.0, leanScore);
+    session.coverCache.set(cacheKey, result);
+    return result;
+  }
+
+  /**
+   * R3: Check if position is near cover edge (within 1 MU)
+   */
+  private isNearCoverEdge(position: Position, context: AIContext): boolean {
+    // Sample points around position to check for cover transitions
+    const sampleRadius = 1.0;
+    const sampleCount = 8;
+    let hasCoverNearby = false;
+    let hasExposedNearby = false;
+
+    for (let i = 0; i < sampleCount; i++) {
+      const angle = (i / sampleCount) * Math.PI * 2;
+      const samplePos = {
+        x: position.x + Math.cos(angle) * sampleRadius,
+        y: position.y + Math.sin(angle) * sampleRadius,
+      };
+
+      // Check if sample is in cover (no LOS from any enemy)
+      let isInCover = true;
+      for (const enemy of context.enemies) {
+        if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+        const enemyPos = context.battlefield.getCharacterPosition(enemy);
+        if (!enemyPos) continue;
+        if (!this.hasLineOfSightBetweenPositions(enemyPos, samplePos, context)) {
+          isInCover = false;
+          break;
+        }
+      }
+
+      if (isInCover) {
+        hasCoverNearby = true;
+      } else {
+        hasExposedNearby = true;
+      }
+
+      // If we have both, position is near cover edge
+      if (hasCoverNearby && hasExposedNearby) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * R3: Evaluate exposure risk at position
+   * Returns score based on how many enemies can see this position
+   */
+  private evaluateExposureRisk(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = `exposure:${this.positionKey(position)}`;
+    const cached = session.coverCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const enemyCount = context.enemies.filter(e =>
+      isAttackableEnemy(context.character, e, context.config)
+    ).length;
+
+    if (enemyCount === 0) {
+      session.coverCache.set(cacheKey, 0);
+      return 0;
+    }
+
+    // Count sight lines from enemies to this position
+    let sightLines = 0;
+    for (const enemy of context.enemies) {
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      if (this.hasLineOfSightBetweenPositions(enemyPos, position, context)) {
+        sightLines++;
+      }
+    }
+
+    // Exposure risk: ratio of visible enemies
+    const result = sightLines / enemyCount;
     session.coverCache.set(cacheKey, result);
     return result;
   }
@@ -1624,6 +1790,75 @@ export class UtilityScorer {
     }
     session.objectiveAdvanceCache.set(cacheKey, bestAdvance);
     return bestAdvance;
+  }
+
+  /**
+   * R2: Evaluate tactical conditions that favor Wait action
+   * Returns bonus score to add to waitBaseline
+   */
+  private evaluateWaitTacticalConditions(
+    context: AIContext,
+    waitForecast: any,
+    attackActions: ScoredAction[]
+  ): number {
+    let tacticalBonus = 0;
+
+    // Condition 1: Enemy in LOS with low REF (high react success probability)
+    // REF breakpoint is at 4+, so REF <= 2 means high success chance
+    const lowRefEnemies = context.enemies.filter(enemy => {
+      if (enemy.state.isEliminated || enemy.state.isKOd) return false;
+      const enemyRef = enemy.finalAttributes.ref ?? enemy.attributes.ref ?? 2;
+      return enemyRef <= 2;
+    }).length;
+    if (lowRefEnemies > 0) {
+      tacticalBonus += lowRefEnemies * 0.6; // +0.6 per low-REF enemy
+    }
+
+    // Condition 2: Multiple enemies approaching (multi-trigger potential)
+    // If expected trigger count is 2+, add bonus
+    const expectedTriggers = waitForecast.expectedTriggerCount ?? 0;
+    if (expectedTriggers >= 2) {
+      tacticalBonus += (expectedTriggers - 1) * 0.4; // +0.4 for each trigger beyond first
+    }
+
+    // Condition 3: Holding chokepoint/zone (defensive value)
+    // Check if character is near mission objective markers or zones
+    const markers = this.getInteractableObjectiveMarkers(context);
+    const characterPos = context.battlefield.getCharacterPosition(context.character);
+    if (characterPos) {
+      const nearMarker = markers.some(marker => {
+        if (!marker.position) return false;
+        const dist = Math.hypot(
+          characterPos.x - marker.position.x,
+          characterPos.y - marker.position.y
+        );
+        return dist <= 4; // Within 4 MU of marker
+      });
+      if (nearMarker) {
+        tacticalBonus += 0.8; // Defensive position bonus
+      }
+    }
+
+    // Condition 4: Low AP remaining (Wait preserves future options)
+    // If character has 0-1 AP, Wait is more valuable
+    const apRemaining = context.apRemaining ?? 2;
+    if (apRemaining <= 1) {
+      tacticalBonus += (1 - apRemaining) * 0.5; // +0.5 at 0 AP, +0 at 2 AP
+    }
+
+    // Condition 5: Scoring context - leading and playing for time
+    if (context.scoringContext?.amILeading && context.scoringContext.vpMargin >= 2) {
+      tacticalBonus += 0.5; // Leading by 2+ VP, play defensively
+    }
+
+    // Condition 6: Scoring context - losing and need react opportunities
+    if (!context.scoringContext?.amILeading && 
+        context.scoringContext?.losingKeys?.includes('elimination')) {
+      tacticalBonus += 0.4; // Behind on eliminations, need reactive opportunities
+    }
+
+    // Cap total tactical bonus to prevent runaway scores
+    return Math.min(tacticalBonus, 3.0);
   }
 
   private getDoctrinePlanning(context: AIContext): 'aggression' | 'keys_to_victory' | 'balanced' {

@@ -484,6 +484,17 @@ export interface BattleReport {
       }>;
     };
   };
+  /** Side-level AI strategies (R1.5: God Mode Coordination) */
+  sideStrategies?: Record<string, {
+    doctrine: string;
+    advice: string[];
+    context?: {
+      amILeading: boolean;
+      vpMargin: number;
+      winningKeys: string[];
+      losingKeys: string[];
+    };
+  }>;
   usage?: UsageMetrics;
   nestedSections: NestedSections;
   advancedRules: AdvancedRuleMetrics;
@@ -1448,6 +1459,54 @@ class AIBattleRunner {
     // Only include if there's actual predicted scoring data
     const hasData = Object.values(bySide).some(s => s.predictedVp > 0 || s.predictedRp > 0 || Object.keys(s.keyScores).length > 0);
     return hasData ? { bySide } : undefined;
+  }
+
+  /**
+   * Build side-level AI strategies for battle report (R1.5: God Mode Coordination)
+   * Captures strategic context and advice from all Side Coordinators
+   */
+  private buildSideStrategies(): Record<string, {
+    doctrine: string;
+    advice: string[];
+    context?: {
+      amILeading: boolean;
+      vpMargin: number;
+      winningKeys: string[];
+      losingKeys: string[];
+    };
+  }> | undefined {
+    const gameManager = this.gameManager;
+    if (!gameManager) return undefined;
+
+    const coordinatorManager = gameManager.getSideCoordinatorManager();
+    if (!coordinatorManager) return undefined;
+
+    const strategies: Record<string, {
+      doctrine: string;
+      advice: string[];
+      context?: {
+        amILeading: boolean;
+        vpMargin: number;
+        winningKeys: string[];
+        losingKeys: string[];
+      };
+    }> = {};
+
+    for (const coordinator of coordinatorManager.getAllCoordinators()) {
+      const context = coordinator.getScoringContext();
+      strategies[coordinator.getSideId()] = {
+        doctrine: coordinator.getTacticalDoctrine(),
+        advice: coordinator.getStrategicAdvice(),
+        context: context ? {
+          amILeading: context.amILeading,
+          vpMargin: context.vpMargin,
+          winningKeys: context.winningKeys,
+          losingKeys: context.losingKeys,
+        } : undefined,
+      };
+    }
+
+    return Object.keys(strategies).length > 0 ? strategies : undefined;
   }
 
   private buildPerformanceSummary(battlefield?: Battlefield): BattlePerformanceSummary | undefined {
@@ -3687,6 +3746,8 @@ class AIBattleRunner {
           // Predicted scoring for AI planning (R1.5)
           predictedScoring: this.buildPredictedScoring(sides),
         },
+        // Side-level AI strategies (R1.5: God Mode Coordination)
+        sideStrategies: this.buildSideStrategies(),
         usage,
         nestedSections: this.buildNestedSections(config, sides, battlefield, startPositions),
         advancedRules: this.advancedRules,

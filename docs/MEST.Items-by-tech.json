@@ -1,0 +1,3662 @@
+[
+  {
+    "Item": "A/Grav, Belt",
+    "Period": "p06_Far_Future",
+    "Age": "18-Gravity"
+  },
+  {
+    "Item": "A/Grav, Ring",
+    "Period": "p06_Far_Future",
+    "Age": "18-Gravity"
+  },
+  {
+    "Item": "Acid Spitter",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Agenda Document",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Ammo Belt, Bandolier",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Ammo Belt, Bandolier, Archaic",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Ammo Box",
+    "Period": "p03_Expansionist",
+    "Age": "09-Industrial"
+  },
+  {
+    "Item": "Ammo, AP",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, AP-II",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, AT",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, AT-II",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, HE",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, HEAP",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, HEAP-II",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, HEAT",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Ammo, HEAT-II",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Ammo, HP",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ammo, Tracer Round",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Amulet of Eyes",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Amulet of Fears",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Anti-gravity Harness",
+    "Period": "p06_Far_Future",
+    "Age": "18-Gravity"
+  },
+  {
+    "Item": "Anti-tank Weapon, Bazooka, M1",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, Bazooka, M20",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, Faustpatrone",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, LAW",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, MAW",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, PIAT",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, Panzerfaust",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, Panzerschreck",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, RPG-7",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Anti-tank Weapon, Rocket",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Arc Weapon",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Arcanum, Accessory, Amulet",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Accessory, Monstrum",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Accessory, Ring",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Accessory, Stone",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Accessory, Trinket",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Attachment, Large",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Attachment, Small",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Codex, Common",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Codex, Legendary",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Scroll, Major",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Scroll, Minor",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Tome, Greater",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Arcanum, Tome, Lesser",
+    "Period": "p07_Fantastic",
+    "Age": "19-Symbolic"
+  },
+  {
+    "Item": "Armor, Combat Suit",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Armor, Field",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Armor, Field Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armor, Field Bulletproof Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Field Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Field Mail",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Armor, Field Nanoweave",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Field Nanoweave BP",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Field, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Armor, Field, Bulletproof Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armor, Heavy",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Armor, Heavy Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armor, Heavy Bulletproof Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Heavy Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Heavy Mail",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Armor, Heavy Nanoweave",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Heavy Nanoweave BP",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Heavy, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Armor, Heavy, Bulletproof Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armor, Light",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Armor, Light Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armor, Light Bulletproof Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Light Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Light Mail",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Armor, Light Nanoweave",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Light Nanoweave BP",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Light, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Armor, Light, Bulletproof Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armor, Medium",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Armor, Medium Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armor, Medium Bulletproof Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Medium Flex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Medium Mail",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Armor, Medium Nanoweave",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Medium Nanoweave BP",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Armor, Medium, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Armor, Medium, Bulletproof Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Armored Gear",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Armored Gear, Bracer",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Armored Gear, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Armored Gear, Padding",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Armored Gear, Padding Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Armored Gear, Vaumbrace",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Arquebus, Heavy",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Arquebus, Light",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Arquebus, Medium",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Auto-cannon, Heavy",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Auto-cannon, Light",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Auto-cannon, Medium",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Automedic",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Axe",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Axe, Battle",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Axe, Long",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Axe, Pick",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Axe, Tactical",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Axe-Sword of Tan-doc",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Ballista, Heavy",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Ballista, Medium",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Balllista, Light",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Bayonet",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Beam Cannon",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Cannon, Heavy",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Beam Cannon, Light",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Beam Carbine",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Carbine, Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Gun",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Gun, Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Pistol",
+    "Period": "p06_Far_Future",
+    "Age": "16-Quantum"
+  },
+  {
+    "Item": "Beam Pistol, Advanced",
+    "Period": "p06_Far_Future",
+    "Age": "16-Quantum"
+  },
+  {
+    "Item": "Beam Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Rifle, Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Rifle, Advanced Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Rifle, Early",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Rifle, Early Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Beam Rifle, Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Belt of Strength",
+    "Period": "p07_Fantastic",
+    "Age": "19-Psionic"
+  },
+  {
+    "Item": "Bite-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bite-2",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bite-3",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Black Jacks or Sap",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Blast, 12Minor - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 12Minor - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 12Minor - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 12Minor - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 13Major - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 13Major - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 13Major - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 13Major - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 22Minor - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 22Minor - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 22Minor - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 22Minor - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 23Major - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 23Major - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 23Major - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 23Major - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 2Minor - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 2Minor - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 2Minor - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 2Minor - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 3Major - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 3Major - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 3Major - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 3Major - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Greater - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Greater - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Greater - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Greater - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Wondrous - Basic",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Wondrous - Burst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Wondrous - Rapid",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast, 4Wondrous - RapidBurst",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blast-suit, Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Blast-suit, Early",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Blast-suit, Reinforced",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Blaster Glove",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blaster Pistol",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blaster Pistol, Magnum",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blaster Rifle",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blaster Rifle, Magnum",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Blow-dart Gun",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bola",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bolter Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Bolter Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Bolter Rifle, Adv",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Boomerang, War",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Bottle-Phial, Acid-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bottle-Phial, Burn-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bottle-Phial, Caustic-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bottle-Phial, Confuse-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bottle-Phial, Fire-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bottle-Phial, Poison-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Light",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Light Quickened",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Long",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Medium",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Medium Heavy",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Medium Quickened",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Recurve",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, Recurve Heavy",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bow, War",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Bracers of Stealth",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Cannon, A 12.7mm",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Cannon, B 25mm (2-pdr)",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Cannon, C 42mm (6-pdr)",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Cannon, D 75mm (17-pdr)",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Carbine Light, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Carbine Light, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Carbine, Heavy, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Carbine, Heavy, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Carbine, Medium, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Carbine, Medium, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Chainsaw, Claw, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Chainsaw, Claw, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Chainsaw, Claw, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Chainsaw, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Chainsaw, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Chainsaw, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Chakram Rings",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Chakram Rings, Serrated",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Claw-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Claw-2",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Claw-3",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Claws-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Claws-2",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Claws-3",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club, Baton",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club, Circus Mallet",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club, Crowbar",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club, Heavy",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club, Mace",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club, Mace, Spiked",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Club, Shovel",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Coil-gun, Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Coil-gun, Light",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Coil-gun, Medium",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Collar, Spiked",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Comm-helmet",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Comm-helmet, Early",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Comm-link",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Comm-link, Boosted",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Comm-link, Box",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Comm-link, Box, Archaic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Comm-link, Box, Early",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Comm-link, Box, Early (Embedded)",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Comm-link, Box-Hand-held",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Comm-link, Early",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Comm-link, Jammer, Early",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Comm-link, Jammer, Modern",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Crossbow, Heavy",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Light",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Medium",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Repeating",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Repeating Heavy",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Single-hand Pistol",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Single-hand Pistol, Hvy",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Single-hand Pistol, Hvy, Masterwork",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Crossbow, Single-hand Pistol, Masterwork",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Dagger, Obsidian",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Dagger, Stiletto",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Daggers",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Daggers, Spectral",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Damper 2 > Type",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Damper 3 > Type",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Damper 4 > Type",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Damper > Type",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Deceptor Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Deceptor Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Detonator",
+    "Period": "p03_Expansionist",
+    "Age": "09-Industrial"
+  },
+  {
+    "Item": "Device, Synchron, Archaic",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Device, Synchron, Early",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Device, Synchron-1.1",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Device, Synchron-2.1",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Device, Synchron-3.2",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Discus",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Displacer Device",
+    "Period": "p06_Far_Future",
+    "Age": "18-Gravity"
+  },
+  {
+    "Item": "Dynamic Armor, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Dynamic Armor, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Dynamic Armor, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Electrocounter Orbs",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Electrostaff",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Electrostaff, Neon",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Electroweapon, Early",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Electroweapon, Pulse, Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Electroweapon, Pulse, Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Explosives, Agenda Bomb, Large",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Explosives, Agenda Bomb, Small",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Explosives, Agenda Bomb,Medium",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Explosives, Bomb, Large",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Explosives, Bomb, Small",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Explosives, Bundle, Dynamite",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Explosives, Fire-bomb",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Explosives, Kettle-bomb",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Explosives, Mine, IED",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Explosives, Mine, Tank",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Explosives, Petard",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Explosives, Powderkeg",
+    "Period": "p02_Archaic",
+    "Age": "06-Renaissance"
+  },
+  {
+    "Item": "Explosives, Satchel",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Explosives, Satchel, Pulse",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Explosives, Stick, Dynamite",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Exxo-skeleton, Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Exxo-skeleton, Lifter Frame",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Exxo-skeleton, Light",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Exxo-skin",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Exxo-skin, Carapace",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Exxo-skin, Scaled",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Exxo-skin, Segmented",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Favored Passage",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Field Harness",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Flail",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Flail, Farming",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Flail, Morningstar",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Flail, Tri-section",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Flame-thrower, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Flame-thrower, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Flame-thrower, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Flame-thrower, Mini",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Flashlight",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Flashlight, Advanced",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Force Armor, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Force Armor, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Force Armor, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Fusion Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Gas Cannister, Blacksmoke",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Caustic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Knockout",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Knockout-2",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Mustard",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Nerve",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Nerve-2",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Poison",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Poison 2",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Riot",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Riot-3",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Smoke",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Smoke-2",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Cannister, Steam",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Acid",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Blacksmoke",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Caustic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Knockout",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Mustard",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Nerve",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Poison",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Poison 2",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Riot",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Smoke",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade, Steam",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas Grenade: Steam",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas-mask",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas-mask, Hooded",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gas-mask, Respirator",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Gatling Gun, 20mm",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Gatling Gun, Archaic",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Gatling Gun, Archaic-v2",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Gatling Gun, Early",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Gatling Gun, Early-v2",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Gatling Gun, Mini",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Gatling Gun, Mini (Mounted)",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Gauntlet, Clawed",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Gauntlet, Controller",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Goggles",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Goggles, Night-vision",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Goggles, Night-vision, Adv.",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Goggles, Optiplex",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Goggles, Pin-point",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Goggles, Sensor",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Grenade, Anti-magic",
+    "Period": "p07_Fantastic",
+    "Age": "19-Psionic"
+  },
+  {
+    "Item": "Grenade, Anti-psi",
+    "Period": "p07_Fantastic",
+    "Age": "19-Psionic"
+  },
+  {
+    "Item": "Grenade, Archaic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Concussion",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Concussion, Adv.",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Dancer",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Flash",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Flash-bang",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Flash-bang, Adv.",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Fragmentation",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Fragmentation, Adv.",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, HE",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, HE, Adv.",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Pulse",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Grenade, Pulse, Adv.",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Grenade, Shrapnel",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Shrapnel, Adv.",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Sonic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Sonic, Adv.",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Web",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Grenade, Web Stunner",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Groundingsuit, Advanced",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Groundingsuit, Early",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Hammer, Forge",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hammer, Long",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hammer, Maul",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hammer, Sledge",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hammer, War",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hammer, War, Ban-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hammer, War, Ban-2",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hand Cannon",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Hardsuit, Archaic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Hardsuit, Enhanced, Archaic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Hardsuit, Platform, Archaic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Hardsuit, Scout",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Hardsuit, Standard",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Hardsuit, War",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Hardsuit, Windup",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Heirloom Weapon",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Helmet, Common",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Helmet, Common, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Helmet, Full",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Helmet, Full, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Helmet, Full-Elaborate",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Helmet, Reinforced",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Helmet, Reinforced Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Helmet, Riot",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Helmet, Riot Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Hook, Crook",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hook, Meat",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hook, Scythe",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hook, Sickle, Fist",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hook, Sickle, Hand",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hook, Spearcrook",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Hook, Swordcrook",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Immune-Blast-1",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Immune-Blast-2",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Improvised Melee",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Improvised Melee, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Improvised Parry",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Improvised Thrown",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Improvised Thrown, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Jet-pack, Gear",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Jet-pack, Jump",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Jet-pack, Suit",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Jet-pack, Suit, Advanced",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Kit, Glider Caped",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Kit, Glider Winged",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Kit, Medical, CFAK",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Kit, Medical, CFAK-v2",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Kit, Medical, Field",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Kit, Medical, Tactical",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Knife, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Knife, Medium",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Knife, Small",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Knife, Tactical",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Knuckledusters",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Knuckledusters, Spiked",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Lamp or Candle",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Lamp or Candle. Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Lantern, Basic",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Lantern, Basic, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Lantern, Electric",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Lantern, Electric, Small",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Lantern, Fueled",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Lantern, Fueled, Small",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Launcher, Grenade Early",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Launcher, Grenade Modern",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Launcher, Grenade, Multi-rapid",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Launcher, Grenade, Rapid",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Leash",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Machine Gun, Heavy",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Machine Gun, Heavy (Mounted)",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Machine Gun, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Machine Gun, Light (Mounted)",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Machine Gun, Medium",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Machine Gun, Medium (Mounted)",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Machine Gun, Mitrailleuse",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Mage Armor, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mage Armor, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mage Armor, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mask of Command",
+    "Period": "p07_Fantastic",
+    "Age": "19-Psionic"
+  },
+  {
+    "Item": "Medicinals, Alcohol",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Alcohol, Copious",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Euphorics",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Euphorics, Copious",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Hallucenogenics",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Hallucenogenics, Copious",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Healing Potion",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Healing Potion, Pure",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Painkillers",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Painkillers, Copious",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Psychoactives",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Stimulants",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Medicinals, Stimulants, Copious",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Mine, Acid, Small",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mine, Anti-personnel",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mine, Anti-personnel, Micromag",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mine, Heat, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mine, Heat, Small",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mirror",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Module, Control",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Module, Manipulator",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Module, System",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Module, Trigger",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Mortar, Heavy",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Mortar, Light",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Mortar, Medium",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Mortar, Mini-mortar",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Mortar, Mini-mortar (Mounted)",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mounted Bolter Weapon",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Mounted Flame-thrower",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Mounted Mortar, Mini-mortar",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Mounted Rail-gun",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Musket, Blunderbuss",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Musket, Heavy Smoothbore",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Musket, Light, Smoothbore",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Musket, Medium, Smoothbore",
+    "Period": "p02_Archaic",
+    "Age": "07-Colonial"
+  },
+  {
+    "Item": "Nanotech:Rage",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Nanotech:Rampage",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Nanotech:Resist",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Nanotech:Run",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Necklace of Comfort",
+    "Period": "p07_Fantastic",
+    "Age": "19-Psionic"
+  },
+  {
+    "Item": "Needle Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Needle Rifle, Adv",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Needler Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Needler Pistol, Adv",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Net, Deathnet",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Net, Retarius",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Net-gun, Large",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Net-gun, Small",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Notebook, Leadership",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Notebook, Scholarship",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "Notebook, Tactics",
+    "Period": "p01_Ancient",
+    "Age": "02-Bronze"
+  },
+  {
+    "Item": "PDW, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "PDW, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "PDW, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Package, Assassin",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Package, Berserker",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Package, Predict",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Package, Recon",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Package, Timer",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Package, Warrior",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Phlogiston Suit",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Phlogiston Suit, Fireproof",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Phlogiston Suit, Improved",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Phlogiston Suit, Improved BP",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pipe Cannon, 1-pdr",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Pipe Cannon, 2-pdr",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Pistol, Coach",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Pistol, Dueling",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Pistol, Heavy, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pistol, Heavy, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pistol, Light, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pistol, Light, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pistol, Medium, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pistol, Medium, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pistol, Pepperbox",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Plasma Cannon",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Plasma Cannon, Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Plasma Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Plasma Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Plasmablade",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Plasmashield, Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Plasmashield, Light",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Plasmashield, Medium",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Poisoned Weapon",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Poisoned Weapon, Deadly",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Polearm, Glaive",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Polearm, Halberd",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Polearm, Pike",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Polearm, Scythe",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Power-gem, Light",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Power-gem, Medium",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Powered Armor-Battle",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Powered Armor-Combat",
+    "Period": "p06_Far_Future",
+    "Age": "16-Quantum"
+  },
+  {
+    "Item": "Powered Armor-Early",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Powered Armor-Exxo",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Powered Armor-ExxoHvy",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Powered Armor-Standard",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Powered Armor-Stealth",
+    "Period": "p06_Far_Future",
+    "Age": "17-Energy"
+  },
+  {
+    "Item": "Powered Gauntlets",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Powered Gloves",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Powered Shielding",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Powered Shielding-Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Powered Staff",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Prayer-Book",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Prayer-Relic",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Proximity Suit, Fireproof",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Proximity Suit, Fireproof BP",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Psi Armor, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Psi Armor, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Psi Armor, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Pummel-1",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Pummel-2",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Pummel-3",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Rail-gun, Heavy",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Rail-gun, Light",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Rail-gun, Medium",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Reinforced, Polearm",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Reinforced, Standard",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Revolver, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Revolver, Heavy, Archaic",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Revolver, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Revolver, Light, Archaic",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Revolver, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Revolver, Medium, Archaic",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Rifle, Heavy, Archaic",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Rifle, Heavy, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Heavy, Bolt/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Heavy, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Heavy, Single/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Light, Archaic",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Rifle, Light, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Light, Bolt/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Light, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Light, Single/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Medium, Archaic",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Rifle, Medium, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Medium, Bolt/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Medium, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rifle, Medium, Single/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Ring of Flight",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Ring of Leaping",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Ring of Running",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Rod, Emerald Flame",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rod, Eternal Flame",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rod, Last Rites",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rod, Stinging Blight",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rod, Suffering Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Rope",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Seal of Arrows",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Seal of Daggers",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Sensor Array",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Shield, Heavy-Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Heavy-Medium",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Heavy-Small",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Improvised-Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Improvised-Small",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Large, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Shield, Light",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Medium",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Medium, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Shield, Medium-Spiked",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Riot",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shield, Riot, Large",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shield, Small",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shield, Small, Bulletproof",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Shield, Small, Spiked",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shield, Small-Buckle",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Shotgun, Auto",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Auto, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Fletch",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Pump-action",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Pump-action, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Sawed-off",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Semi/A",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Slug",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Shotgun, Slug, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Sickstick",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Sigil of Athletics",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Sigil of Hunting",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Silencer",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Silencer, Advanced",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Sling",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Sling, Staff",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Slingshot",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Sniper Scope, Advanced",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Sniper Scope, Advanced, Starlight",
+    "Period": "p04_Modern",
+    "Age": "13-Information"
+  },
+  {
+    "Item": "Sniper Scope, Basic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Sniper Scope, Laser",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Sniper Scope, Starlight",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Sonic Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Sonic Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Sonic Rifle, Heavy",
+    "Period": "p05_Near_Future",
+    "Age": "14-Robotics"
+  },
+  {
+    "Item": "Spear, Long",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Spear, Medium",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Spear, Short",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Spear, Throwing",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Spear, of Stealth",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Spectral Claws-1",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Spectral Claws-1, Limited",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Spectral Claws-2",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Spectral Claws-2, Limited",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Spectral Claws-3",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Spectral Claws-3, Limited",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Spell - Pyrotechnics",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Spotlight, S1-Small",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Spotlight, S2-Large",
+    "Period": "p04_Modern",
+    "Age": "12-Atomic"
+  },
+  {
+    "Item": "Springsuit",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Springsuit, Combat",
+    "Period": "p03_Expansionist",
+    "Age": "10-Machine"
+  },
+  {
+    "Item": "Spy-glass",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Staff",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Staff, Club",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Staff, Greater Mage",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Staff, Lesser Mage",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Staff, Sling",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Stealth Suit",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Stunner, Pistol",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Stunner, Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Stunner, Riot",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Submachine-gun, Archaic",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Submachine-gun, Heavy",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Submachine-gun, Light",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Submachine-gun, Medium",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Sword, Broad",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Sword, Cutlass",
+    "Period": "p03_Expansionist",
+    "Age": "08-Sail"
+  },
+  {
+    "Item": "Sword, Great",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Sword, Long",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Sword, Rapier",
+    "Period": "p02_Archaic",
+    "Age": "06-Renaissance"
+  },
+  {
+    "Item": "Sword, Saber",
+    "Period": "p03_Expansionist",
+    "Age": "09-Industrial"
+  },
+  {
+    "Item": "Sword, Scimitar",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Sword, Scimitar, Grand",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Sword, Short",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Targeting System",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Taser, Personal",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Taser, Prod",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Taser, Rifle",
+    "Period": "p05_Near_Future",
+    "Age": "15-Fusion"
+  },
+  {
+    "Item": "Teleporter Beacons",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Teleporter Pack",
+    "Period": "p07_Fantastic",
+    "Age": "20-Symbolic"
+  },
+  {
+    "Item": "Throwing Axes",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Throwing Dart",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Throwing Knives",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Throwing Stars",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Throwing Sticks",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Torch, Basic",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Torch, Basic, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Torch, Flaming",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Torch, Flaming, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Torch, Flashlight",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Torch, Staff",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Trident",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Trident, Long",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Trident, Pitchfork",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Unarmed",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Upgrade:Balanced",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Upgrade:Masterworks",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Upgrade:Poisoned",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Upgrade:Poisoned, Deadly",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Upgrade:Reinforced",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Upgrade:Reinforced, Polearm",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Upgrade:Well-honed",
+    "Period": "p00_ANY",
+    "Age": "."
+  },
+  {
+    "Item": "Vibrodagger",
+    "Period": "p06_Far_Future",
+    "Age": "16-Quantum"
+  },
+  {
+    "Item": "Vibrosword",
+    "Period": "p06_Far_Future",
+    "Age": "16-Quantum"
+  },
+  {
+    "Item": "Waldo, Claws, Long",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Waldo, Claws, Short",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Waldo, Hand",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Waldo, Saw, Large",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Waldo, Saw, Small",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Wheeled, Armored-pedaler",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Wheeled, Gun Carriage, Large",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Wheeled, Gun Carriage, Tricycle",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Wheeled, Steam-chair",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Wheeled, Tankette",
+    "Period": "p04_Modern",
+    "Age": "11-Modern"
+  },
+  {
+    "Item": "Whip, Bull",
+    "Period": "p01_Ancient",
+    "Age": "01-Stone"
+  },
+  {
+    "Item": "Whip, Metal Chain",
+    "Period": "p01_Ancient",
+    "Age": "03-Iron"
+  },
+  {
+    "Item": "Whip, Mollysword",
+    "Period": "p02_Archaic",
+    "Age": "05-Medieval"
+  },
+  {
+    "Item": "Whip, Monowire",
+    "Period": "p06_Far_Future",
+    "Age": "16-Quantum"
+  }
+]
