@@ -19,7 +19,8 @@
     "ai-battle:very-large": "node --import tsx scripts/ai-battle-setup.ts VERY_LARGE 50",
     "ai-battle:validate": "node --import tsx scripts/ai-battle-setup.ts -v VERY_LARGE 50 3 424242",
     "ai-battle:render": "node --import tsx scripts/ai-battle-setup.ts -r",
-    "ai-battle:interactive": "node --import tsx scripts/ai-battle-setup.ts --interactive"
+    "ai-battle:interactive": "node --import tsx scripts/ai-battle-setup.ts --interactive",
+    "validate:r4": "node --import tsx scripts/mission-validation-scan.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

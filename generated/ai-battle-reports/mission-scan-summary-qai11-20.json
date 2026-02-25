@@ -13,66 +13,99 @@
   "results": [
     {
       "mission": "QAI_11",
-      "report": "generated/ai-battle-reports/qai-11-validation-2026-02-25T02-51-50-134Z.json",
+      "report": "generated/ai-battle-reports/qai-11-validation-2026-02-25T08-05-30-904Z.json",
       "winner": "Bravo",
-      "turns": 5,
-      "actions": 93,
-      "moves": 18,
-      "ranged": 62,
-      "close": 8,
-      "waits": 5,
-      "reacts": 4,
-      "vp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "turns": 8,
+      "actions": 40,
+      "moves": 24,
+      "ranged": 15,
+      "close": 0,
+      "waits": 15,
+      "reacts": 0,
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.6,
+          "ranged": 0.375,
+          "close": 0,
+          "waits": 0.375,
+          "reacts": 0,
+          "other": -0.3500000000000001
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.375,
+          "reactRate": 0,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_12",
-      "report": "generated/ai-battle-reports/qai-12-validation-2026-02-25T02-52-01-437Z.json",
+      "report": "generated/ai-battle-reports/qai-12-validation-2026-02-25T06-19-13-917Z.json",
       "winner": "Alpha",
-      "turns": 6,
-      "actions": 103,
-      "moves": 25,
-      "ranged": 63,
-      "close": 9,
-      "waits": 6,
-      "reacts": 5,
-      "vp": {
-        "Alpha": 13,
-        "Bravo": 3
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "turns": 5,
+      "actions": 70,
+      "moves": 24,
+      "ranged": 26,
+      "close": 8,
+      "waits": 12,
+      "reacts": 11,
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.34285714285714286,
+          "ranged": 0.37142857142857144,
+          "close": 0.11428571428571428,
+          "waits": 0.17142857142857143,
+          "reacts": 0.15714285714285714,
+          "other": -0.15714285714285725
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.17142857142857143,
+          "reactRate": 0.15714285714285714,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_13",
-      "report": "generated/ai-battle-reports/qai-13-validation-2026-02-25T02-52-11-427Z.json",
+      "report": "generated/ai-battle-reports/qai-13-validation-2026-02-25T03-32-38-335Z.json",
       "winner": "Alpha",
-      "turns": 6,
-      "actions": 98,
-      "moves": 21,
-      "ranged": 67,
-      "close": 8,
-      "waits": 1,
-      "reacts": 8,
-      "vp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "turns": 4,
+      "actions": 72,
+      "moves": 19,
+      "ranged": 46,
+      "close": 6,
+      "waits": 0,
+      "reacts": 7,
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.2638888888888889,
+          "ranged": 0.6388888888888888,
+          "close": 0.08333333333333333,
+          "waits": 0,
+          "reacts": 0.09722222222222222,
+          "other": -0.08333333333333326
+        },
+        "tacticalMechanics": {
+          "waitRate": 0,
+          "reactRate": 0.09722222222222222,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_14",
@@ -85,15 +118,26 @@
       "close": 9,
       "waits": 6,
       "reacts": 5,
-      "vp": {
-        "Alpha": 4,
-        "Bravo": 4
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.24271844660194175,
+          "ranged": 0.6116504854368932,
+          "close": 0.08737864077669903,
+          "waits": 0.05825242718446602,
+          "reacts": 0.04854368932038835,
+          "other": -0.04854368932038833
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.05825242718446602,
+          "reactRate": 0.04854368932038835,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_15",
@@ -106,15 +150,26 @@
       "close": 6,
       "waits": 3,
       "reacts": 3,
-      "vp": {
-        "Alpha": 13,
-        "Bravo": 0
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": "Alpha"
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.22950819672131148,
+          "ranged": 0.6229508196721312,
+          "close": 0.09836065573770492,
+          "waits": 0.04918032786885246,
+          "reacts": 0.04918032786885246,
+          "other": -0.049180327868852514
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.04918032786885246,
+          "reactRate": 0.04918032786885246,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_16",
@@ -127,15 +182,26 @@
       "close": 5,
       "waits": 1,
       "reacts": 6,
-      "vp": {
-        "Alpha": 8,
-        "Bravo": 8
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.24615384615384617,
+          "ranged": 0.6461538461538462,
+          "close": 0.07692307692307693,
+          "waits": 0.015384615384615385,
+          "reacts": 0.09230769230769231,
+          "other": -0.07692307692307687
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.015384615384615385,
+          "reactRate": 0.09230769230769231,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_17",
@@ -148,15 +214,26 @@
       "close": 9,
       "waits": 6,
       "reacts": 5,
-      "vp": {
-        "Alpha": 18,
-        "Bravo": 21
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.24271844660194175,
+          "ranged": 0.6116504854368932,
+          "close": 0.08737864077669903,
+          "waits": 0.05825242718446602,
+          "reacts": 0.04854368932038835,
+          "other": -0.04854368932038833
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.05825242718446602,
+          "reactRate": 0.04854368932038835,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_18",
@@ -169,15 +246,26 @@
       "close": 7,
       "waits": 3,
       "reacts": 7,
-      "vp": {
-        "Alpha": 16,
-        "Bravo": 2
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.21052631578947367,
+          "ranged": 0.6736842105263158,
+          "close": 0.07368421052631578,
+          "waits": 0.031578947368421054,
+          "reacts": 0.07368421052631578,
+          "other": -0.06315789473684208
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.031578947368421054,
+          "reactRate": 0.07368421052631578,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_19",
@@ -190,36 +278,575 @@
       "close": 5,
       "waits": 1,
       "reacts": 6,
-      "vp": {
-        "Alpha": 52,
-        "Bravo": 46
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.23529411764705882,
+          "ranged": 0.6764705882352942,
+          "close": 0.07352941176470588,
+          "waits": 0.014705882352941176,
+          "reacts": 0.08823529411764706,
+          "other": -0.08823529411764697
+        },
+        "tacticalMechanics": {
+          "waitRate": 0.014705882352941176,
+          "reactRate": 0.08823529411764706,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     },
     {
       "mission": "QAI_20",
-      "report": "generated/ai-battle-reports/qai-20-validation-2026-02-25T02-53-12-155Z.json",
+      "report": "generated/ai-battle-reports/qai-20-validation-2026-02-25T08-03-34-683Z.json",
       "winner": "Alpha",
-      "turns": 4,
-      "actions": 62,
-      "moves": 17,
-      "ranged": 40,
-      "close": 4,
+      "turns": 6,
+      "actions": 149,
+      "moves": 29,
+      "ranged": 0,
+      "close": 119,
       "waits": 0,
       "reacts": 7,
-      "vp": {
-        "Alpha": 25,
-        "Bravo": 14
-      },
-      "rp": {
-        "Alpha": 0,
-        "Bravo": 0
-      },
-      "immediate": null
+      "vp": {},
+      "rp": {},
+      "immediate": null,
+      "diagnostics": {
+        "actionDistribution": {
+          "moves": 0.19463087248322147,
+          "ranged": 0,
+          "close": 0.7986577181208053,
+          "waits": 0,
+          "reacts": 0.04697986577181208,
+          "other": -0.04026845637583887
+        },
+        "tacticalMechanics": {
+          "waitRate": 0,
+          "reactRate": 0.04697986577181208,
+          "bonusActionRate": 0,
+          "passiveOptionRate": 0
+        },
+        "behaviorFingerprint": "unknown"
+      }
     }
-  ]
+  ],
+  "classification": {
+    "expectedDivergence": false,
+    "suspiciousConvergence": true,
+    "flags": [
+      {
+        "type": "low-react-usage",
+        "severity": "warning",
+        "mission": "QAI_11",
+        "description": "React usage (0.0%) below minimum threshold",
+        "details": {
+          "reactRate": 0,
+          "threshold": 0.02,
+          "totalActions": 40,
+          "reacts": 0
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_11",
+        "description": "Suspicious behavior similarity with QAI_12 (90.0%)",
+        "details": {
+          "similarity": 0.8997979559983366,
+          "comparedWith": "QAI_12",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_12",
+        "description": "Suspicious behavior similarity with QAI_11 (90.0%)",
+        "details": {
+          "similarity": 0.8997979559983366,
+          "comparedWith": "QAI_11",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_12",
+        "description": "Suspicious behavior similarity with QAI_13 (88.3%)",
+        "details": {
+          "similarity": 0.882941500273803,
+          "comparedWith": "QAI_13",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_12",
+        "description": "Suspicious behavior similarity with QAI_15 (88.1%)",
+        "details": {
+          "similarity": 0.8805242940650654,
+          "comparedWith": "QAI_15",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_12",
+        "description": "Suspicious behavior similarity with QAI_16 (87.9%)",
+        "details": {
+          "similarity": 0.8785814297538314,
+          "comparedWith": "QAI_16",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_12",
+        "description": "Suspicious behavior similarity with QAI_18 (85.7%)",
+        "details": {
+          "similarity": 0.8574113147849183,
+          "comparedWith": "QAI_18",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_12",
+        "description": "Suspicious behavior similarity with QAI_19 (86.6%)",
+        "details": {
+          "similarity": 0.8655884723472606,
+          "comparedWith": "QAI_19",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_13",
+        "description": "Suspicious behavior similarity with QAI_12 (88.3%)",
+        "details": {
+          "similarity": 0.882941500273803,
+          "comparedWith": "QAI_12",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_13",
+        "description": "Suspicious behavior similarity with QAI_14 (99.4%)",
+        "details": {
+          "similarity": 0.9938747425728752,
+          "comparedWith": "QAI_14",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_13",
+        "description": "Suspicious behavior similarity with QAI_15 (99.4%)",
+        "details": {
+          "similarity": 0.9941086052902078,
+          "comparedWith": "QAI_15",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_13",
+        "description": "Suspicious behavior similarity with QAI_16 (99.9%)",
+        "details": {
+          "similarity": 0.9993229910862143,
+          "comparedWith": "QAI_16",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_13",
+        "description": "Suspicious behavior similarity with QAI_17 (99.4%)",
+        "details": {
+          "similarity": 0.9938747425728752,
+          "comparedWith": "QAI_17",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_13",
+        "description": "Suspicious behavior similarity with QAI_18 (99.4%)",
+        "details": {
+          "similarity": 0.9944447466734456,
+          "comparedWith": "QAI_18",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_13",
+        "description": "Suspicious behavior similarity with QAI_19 (99.8%)",
+        "details": {
+          "similarity": 0.9979256563359546,
+          "comparedWith": "QAI_19",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_14",
+        "description": "Suspicious behavior similarity with QAI_13 (99.4%)",
+        "details": {
+          "similarity": 0.9938747425728752,
+          "comparedWith": "QAI_13",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_14",
+        "description": "Suspicious behavior similarity with QAI_15 (99.9%)",
+        "details": {
+          "similarity": 0.9994873906530666,
+          "comparedWith": "QAI_15",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_14",
+        "description": "Suspicious behavior similarity with QAI_16 (99.6%)",
+        "details": {
+          "similarity": 0.9958218972479479,
+          "comparedWith": "QAI_16",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_14",
+        "description": "Suspicious behavior similarity with QAI_18 (99.5%)",
+        "details": {
+          "similarity": 0.9954966091526805,
+          "comparedWith": "QAI_18",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_14",
+        "description": "Suspicious behavior similarity with QAI_19 (99.5%)",
+        "details": {
+          "similarity": 0.9952267898068781,
+          "comparedWith": "QAI_19",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_15",
+        "description": "Suspicious behavior similarity with QAI_12 (88.1%)",
+        "details": {
+          "similarity": 0.8805242940650654,
+          "comparedWith": "QAI_12",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_15",
+        "description": "Suspicious behavior similarity with QAI_13 (99.4%)",
+        "details": {
+          "similarity": 0.9941086052902078,
+          "comparedWith": "QAI_13",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_15",
+        "description": "Suspicious behavior similarity with QAI_14 (99.9%)",
+        "details": {
+          "similarity": 0.9994873906530666,
+          "comparedWith": "QAI_14",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_15",
+        "description": "Suspicious behavior similarity with QAI_17 (99.9%)",
+        "details": {
+          "similarity": 0.9994873906530666,
+          "comparedWith": "QAI_17",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_16",
+        "description": "Suspicious behavior similarity with QAI_12 (87.9%)",
+        "details": {
+          "similarity": 0.8785814297538314,
+          "comparedWith": "QAI_12",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_16",
+        "description": "Suspicious behavior similarity with QAI_13 (99.9%)",
+        "details": {
+          "similarity": 0.9993229910862143,
+          "comparedWith": "QAI_13",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_16",
+        "description": "Suspicious behavior similarity with QAI_14 (99.6%)",
+        "details": {
+          "similarity": 0.9958218972479479,
+          "comparedWith": "QAI_14",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_16",
+        "description": "Suspicious behavior similarity with QAI_17 (99.6%)",
+        "details": {
+          "similarity": 0.9958218972479479,
+          "comparedWith": "QAI_17",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_17",
+        "description": "Suspicious behavior similarity with QAI_13 (99.4%)",
+        "details": {
+          "similarity": 0.9938747425728752,
+          "comparedWith": "QAI_13",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_17",
+        "description": "Suspicious behavior similarity with QAI_15 (99.9%)",
+        "details": {
+          "similarity": 0.9994873906530666,
+          "comparedWith": "QAI_15",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_17",
+        "description": "Suspicious behavior similarity with QAI_16 (99.6%)",
+        "details": {
+          "similarity": 0.9958218972479479,
+          "comparedWith": "QAI_16",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_17",
+        "description": "Suspicious behavior similarity with QAI_18 (99.5%)",
+        "details": {
+          "similarity": 0.9954966091526805,
+          "comparedWith": "QAI_18",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_17",
+        "description": "Suspicious behavior similarity with QAI_19 (99.5%)",
+        "details": {
+          "similarity": 0.9952267898068781,
+          "comparedWith": "QAI_19",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_18",
+        "description": "Suspicious behavior similarity with QAI_12 (85.7%)",
+        "details": {
+          "similarity": 0.8574113147849183,
+          "comparedWith": "QAI_12",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_18",
+        "description": "Suspicious behavior similarity with QAI_13 (99.4%)",
+        "details": {
+          "similarity": 0.9944447466734456,
+          "comparedWith": "QAI_13",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_18",
+        "description": "Suspicious behavior similarity with QAI_14 (99.5%)",
+        "details": {
+          "similarity": 0.9954966091526805,
+          "comparedWith": "QAI_14",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_18",
+        "description": "Suspicious behavior similarity with QAI_17 (99.5%)",
+        "details": {
+          "similarity": 0.9954966091526805,
+          "comparedWith": "QAI_17",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "low-wait-usage",
+        "severity": "warning",
+        "mission": "QAI_19",
+        "description": "Wait usage (1.5%) below threshold for defensive mission",
+        "details": {
+          "waitRate": 0.014705882352941176,
+          "threshold": 0.05,
+          "totalActions": 68,
+          "waits": 1
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_19",
+        "description": "Suspicious behavior similarity with QAI_12 (86.6%)",
+        "details": {
+          "similarity": 0.8655884723472606,
+          "comparedWith": "QAI_12",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_19",
+        "description": "Suspicious behavior similarity with QAI_13 (99.8%)",
+        "details": {
+          "similarity": 0.9979256563359546,
+          "comparedWith": "QAI_13",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_19",
+        "description": "Suspicious behavior similarity with QAI_14 (99.5%)",
+        "details": {
+          "similarity": 0.9952267898068781,
+          "comparedWith": "QAI_14",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      },
+      {
+        "type": "suspicious-convergence",
+        "severity": "error",
+        "mission": "QAI_19",
+        "description": "Suspicious behavior similarity with QAI_17 (99.5%)",
+        "details": {
+          "similarity": 0.9952267898068781,
+          "comparedWith": "QAI_17",
+          "inSameGroup": false,
+          "threshold": 0.85
+        }
+      }
+    ]
+  },
+  "summary": {
+    "totalMissions": 10,
+    "passedMissions": -30,
+    "failedMissions": 40,
+    "warningCount": 2,
+    "errorCount": 40
+  }
 }
