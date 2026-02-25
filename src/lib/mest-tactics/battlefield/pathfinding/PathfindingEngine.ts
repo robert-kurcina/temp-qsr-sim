@@ -44,12 +44,198 @@ export interface PathfindingOptions {
 }
 
 const defaultGridResolution = 0.5;
+const MAX_GRID_CACHE_ENTRIES = 32;
+const MAX_PATH_CACHE_ENTRIES = 8000;
+
+interface CachedGridData {
+  gridWidth: number;
+  gridHeight: number;
+  walkable: boolean[][];
+  terrainCost: number[][];
+  terrainGrid: TerrainType[][];
+}
+
+interface BattlefieldPathCache {
+  lastTerrainVersion: number;
+  grids: Map<string, CachedGridData>;
+  paths: Map<string, PathResult>;
+  stats: {
+    gridHits: number;
+    gridMisses: number;
+    pathHits: number;
+    pathMisses: number;
+  };
+}
+
+export interface PathfindingCacheStats {
+  terrainVersion: number;
+  gridCacheSize: number;
+  gridCacheMaxSize: number;
+  pathCacheSize: number;
+  pathCacheMaxSize: number;
+  gridHits: number;
+  gridMisses: number;
+  pathHits: number;
+  pathMisses: number;
+}
 
 export class PathfindingEngine {
   private battlefield: Battlefield;
+  private static battlefieldCaches = new WeakMap<Battlefield, BattlefieldPathCache>();
 
   constructor(battlefield: Battlefield) {
     this.battlefield = battlefield;
+  }
+
+  private getTerrainVersion(): number {
+    return this.battlefield.getTerrainVersion();
+  }
+
+  private getBattlefieldCache(): BattlefieldPathCache {
+    let cache = PathfindingEngine.battlefieldCaches.get(this.battlefield);
+    if (!cache) {
+      cache = {
+        lastTerrainVersion: this.getTerrainVersion(),
+        grids: new Map<string, CachedGridData>(),
+        paths: new Map<string, PathResult>(),
+        stats: {
+          gridHits: 0,
+          gridMisses: 0,
+          pathHits: 0,
+          pathMisses: 0,
+        },
+      };
+      PathfindingEngine.battlefieldCaches.set(this.battlefield, cache);
+      return cache;
+    }
+
+    const terrainVersion = this.getTerrainVersion();
+    if (cache.lastTerrainVersion !== terrainVersion) {
+      cache.lastTerrainVersion = terrainVersion;
+      cache.grids.clear();
+      cache.paths.clear();
+    }
+    return cache;
+  }
+
+  private touchMapEntry<K, V>(map: Map<K, V>, key: K, value: V): void {
+    map.delete(key);
+    map.set(key, value);
+  }
+
+  private setBoundedCacheEntry<K, V>(map: Map<K, V>, key: K, value: V, maxEntries: number): void {
+    this.touchMapEntry(map, key, value);
+    while (map.size > maxEntries) {
+      const oldestKey = map.keys().next().value;
+      if (oldestKey === undefined) break;
+      map.delete(oldestKey);
+    }
+  }
+
+  private quantize(value: number): string {
+    return value.toFixed(3);
+  }
+
+  private buildGridCacheKey(
+    gridResolution: number,
+    footprintDiameter: number,
+    tightSpotFraction: number,
+    clearancePenalty: number
+  ): string {
+    return [
+      this.getTerrainVersion(),
+      this.quantize(gridResolution),
+      this.quantize(footprintDiameter),
+      this.quantize(tightSpotFraction),
+      this.quantize(clearancePenalty),
+    ].join(':');
+  }
+
+  private buildPathCacheKey(
+    start: Position,
+    end: Position,
+    gridCacheKey: string,
+    options: {
+      useNavMesh: boolean;
+      useHierarchical: boolean;
+      optimizeWithLOS: boolean;
+      useTheta: boolean;
+      turnPenalty: number;
+      hierarchicalChunkSize: number;
+    }
+  ): string {
+    const startKey = `${this.quantize(start.x)},${this.quantize(start.y)}`;
+    const endKey = `${this.quantize(end.x)},${this.quantize(end.y)}`;
+    return [
+      gridCacheKey,
+      startKey,
+      endKey,
+      options.useNavMesh ? 1 : 0,
+      options.useHierarchical ? 1 : 0,
+      options.optimizeWithLOS ? 1 : 0,
+      options.useTheta ? 1 : 0,
+      this.quantize(options.turnPenalty),
+      options.hierarchicalChunkSize,
+    ].join('|');
+  }
+
+  private buildGridData(
+    gridResolution: number,
+    footprintRadius: number,
+    fullRadius: number,
+    clearancePenalty: number
+  ): CachedGridData {
+    const gridWidth = Math.max(1, Math.round(this.battlefield.width / gridResolution));
+    const gridHeight = Math.max(1, Math.round(this.battlefield.height / gridResolution));
+    const walkable: boolean[][] = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(true));
+    const terrainCost: number[][] = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(1));
+    const terrainGrid: TerrainType[][] = [];
+
+    for (let y = 0; y < gridHeight; y++) {
+      const row: TerrainType[] = [];
+      for (let x = 0; x < gridWidth; x++) {
+        const center = {
+          x: (x + 0.5) * gridResolution,
+          y: (y + 0.5) * gridResolution,
+        };
+        const terrainType = this.getTerrainTypeAt(center);
+        row.push(terrainType);
+
+        const halfWalkable = this.isWalkable(center, footprintRadius);
+        if (!halfWalkable) {
+          walkable[y][x] = false;
+          continue;
+        }
+        const fullWalkable = fullRadius > 0 ? this.isWalkable(center, fullRadius) : true;
+        const clearancePenaltyFactor = fullWalkable ? 1 : clearancePenalty;
+        const weight = terrainType === TerrainType.Rough || terrainType === TerrainType.Difficult ? 2 : 1;
+        terrainCost[y][x] = weight * clearancePenaltyFactor;
+      }
+      terrainGrid.push(row);
+    }
+
+    return {
+      gridWidth,
+      gridHeight,
+      walkable,
+      terrainCost,
+      terrainGrid,
+    };
+  }
+
+  public getCacheStats(): PathfindingCacheStats {
+    const cache = this.getBattlefieldCache();
+    return {
+      terrainVersion: cache.lastTerrainVersion,
+      gridCacheSize: cache.grids.size,
+      gridCacheMaxSize: MAX_GRID_CACHE_ENTRIES,
+      pathCacheSize: cache.paths.size,
+      pathCacheMaxSize: MAX_PATH_CACHE_ENTRIES,
+      gridHits: cache.stats.gridHits,
+      gridMisses: cache.stats.gridMisses,
+      pathHits: cache.stats.pathHits,
+      pathMisses: cache.stats.pathMisses,
+    };
   }
 
   /**
@@ -78,35 +264,53 @@ export class PathfindingEngine {
     const clearancePenalty = options.clearancePenalty ?? 1;
     const useTheta = options.useTheta ?? true;
     const turnPenalty = options.turnPenalty ?? 0.1;
-
-    const gridWidth = Math.max(1, Math.round(this.battlefield.width / gridResolution));
-    const gridHeight = Math.max(1, Math.round(this.battlefield.height / gridResolution));
-    const walkable: boolean[][] = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(true));
-    const terrainCost: number[][] = Array.from({ length: gridHeight }, () => Array(gridWidth).fill(1));
-
-    const terrainGrid: TerrainType[][] = [];
-    for (let y = 0; y < gridHeight; y++) {
-      const row: TerrainType[] = [];
-      for (let x = 0; x < gridWidth; x++) {
-        const center = {
-          x: (x + 0.5) * gridResolution,
-          y: (y + 0.5) * gridResolution,
-        };
-        const terrainType = this.getTerrainTypeAt(center);
-        row.push(terrainType);
-
-        const halfWalkable = this.isWalkable(center, footprintRadius);
-        if (!halfWalkable) {
-          walkable[y][x] = false;
-          continue;
-        }
-        const fullWalkable = fullRadius > 0 ? this.isWalkable(center, fullRadius) : true;
-        const clearancePenaltyFactor = fullWalkable ? 1 : clearancePenalty;
-        const weight = terrainType === TerrainType.Rough || terrainType === TerrainType.Difficult ? 2 : 1;
-        terrainCost[y][x] = weight * clearancePenaltyFactor;
-      }
-      terrainGrid.push(row);
+    const hierarchicalChunkSize = Math.max(2, options.hierarchicalChunkSize ?? 8);
+    const tightSpotFraction = Math.max(0, Math.min(1, options.tightSpotFraction ?? 0.5));
+    const cache = this.getBattlefieldCache();
+    const gridCacheKey = this.buildGridCacheKey(
+      gridResolution,
+      footprintDiameter,
+      tightSpotFraction,
+      clearancePenalty
+    );
+    let cachedGrid = cache.grids.get(gridCacheKey);
+    if (cachedGrid) {
+      cache.stats.gridHits += 1;
+      this.touchMapEntry(cache.grids, gridCacheKey, cachedGrid);
+    } else {
+      cache.stats.gridMisses += 1;
+      cachedGrid = this.buildGridData(
+        gridResolution,
+        footprintRadius,
+        fullRadius,
+        clearancePenalty
+      );
+      this.setBoundedCacheEntry(cache.grids, gridCacheKey, cachedGrid, MAX_GRID_CACHE_ENTRIES);
     }
+
+    const pathCacheKey = this.buildPathCacheKey(start, end, gridCacheKey, {
+      useNavMesh,
+      useHierarchical,
+      optimizeWithLOS,
+      useTheta,
+      turnPenalty,
+      hierarchicalChunkSize,
+    });
+    const cachedPath = cache.paths.get(pathCacheKey);
+    if (cachedPath) {
+      cache.stats.pathHits += 1;
+      this.touchMapEntry(cache.paths, pathCacheKey, cachedPath);
+      return cachedPath;
+    }
+    cache.stats.pathMisses += 1;
+
+    const {
+      gridWidth,
+      gridHeight,
+      walkable,
+      terrainCost,
+      terrainGrid,
+    } = cachedGrid;
 
     const startNode = this.toGridCoordinate(start, gridResolution, gridWidth, gridHeight);
     const endNode = this.toGridCoordinate(end, gridResolution, gridWidth, gridHeight);
@@ -179,11 +383,13 @@ export class PathfindingEngine {
     const vectors = this.buildTerrainAwareVectors(optimizedPoints);
     const totals = this.computeTotals(vectors);
 
-    return {
+    const pathResult: PathResult = {
       vectors,
       totalLength: totals.totalLength,
       totalEffectMu: totals.totalEffectMu,
     };
+    this.setBoundedCacheEntry(cache.paths, pathCacheKey, pathResult, MAX_PATH_CACHE_ENTRIES);
+    return pathResult;
   }
 
   findPathWithMaxMu(

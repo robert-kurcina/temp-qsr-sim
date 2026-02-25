@@ -4,7 +4,7 @@
  * Tests for the hierarchical AI system foundation.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   BehaviorTree,
   SelectorNode,
@@ -25,6 +25,7 @@ import {
 import { Character } from '../../core/Character';
 import { Profile } from '../../core/Profile';
 import { Battlefield } from '../../battlefield/Battlefield';
+import { PathfindingEngine } from '../../battlefield/pathfinding/PathfindingEngine';
 
 function makeTestProfile(name: string): Profile {
   return {
@@ -421,6 +422,47 @@ describe('UtilityScorer', () => {
     expect(waitAction).toBeDefined();
     expect((waitAction?.factors['waitRefBonus'] as number) ?? 0).toBeGreaterThan(0);
     expect((waitAction?.factors['waitDelayAvoidance'] as number) ?? 0).toBeGreaterThan(0);
+  });
+
+  it('should cap strategic path probes on very large battlefields', () => {
+    const scorer = new UtilityScorer();
+    const battlefield = new Battlefield(60, 60);
+    const character = makeTestCharacter('anchor');
+    battlefield.placeCharacter(character, { x: 5, y: 5 });
+
+    const enemies: Character[] = [];
+    for (let i = 0; i < 20; i++) {
+      const enemy = makeTestCharacter(`enemy-${i}`);
+      enemies.push(enemy);
+      battlefield.placeCharacter(enemy, { x: 30 + (i % 6), y: 30 + Math.floor(i / 6) });
+    }
+
+    const spy = vi.spyOn(PathfindingEngine.prototype, 'findPathWithMaxMu');
+    try {
+      scorer.evaluateActions({
+        character,
+        allies: [],
+        enemies,
+        battlefield,
+        currentTurn: 1,
+        currentRound: 1,
+        apRemaining: 2,
+        knowledge: {
+          knownEnemies: new Map(),
+          knownTerrain: new Map(),
+          lastKnownPositions: new Map(),
+          threatZones: [],
+          safeZones: [],
+          lastUpdated: 1,
+        },
+        config: DEFAULT_AI_CONFIG,
+      });
+    } finally {
+      spy.mockRestore();
+    }
+
+    // Very-large budgets should prevent path probe explosion.
+    expect(spy.mock.calls.length).toBeLessThanOrEqual(10);
   });
 });
 

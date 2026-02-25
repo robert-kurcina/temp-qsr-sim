@@ -473,6 +473,132 @@ Still open in R2:
 1. Wait uptake is still low in this doctrine/mission profile and needs targeted tactical-condition weighting (not global inflation).
 2. Mission-specific projected OM semantics are still incomplete for non-Assault/Breach objective sources (zone-centric missions still use projection for AI context but not direct objective action semantics).
 
+### 10.2.5 Performance Remediation Plan (2026-02-25)
+
+#### Baseline (Profiled)
+- `VERY_LARGE` + `QAI_20` is currently non-feasible for practical iteration speed.
+- Profiled runtime showed:
+  - Turn 1: ~389,143 ms (~6.5 min) for 64 activations.
+  - Multiple single-activation spikes: ~30,000-76,000 ms.
+  - Effective throughput observed near ~10 activations/min in worst windows.
+- GOAP/pattern planner cost is not the primary driver in this path (`enablePatterns=false`, `enableGOAP=false` in AI validation runner).
+
+#### Relevance Assessment (Current Architecture)
+
+| Candidate | Relevance | Current Status | Estimated Efficiency Impact |
+| --- | --- | --- | --- |
+| Terrain affecting Delaunay/constrained navmesh | High | Implemented | Already helping route validity; not enough alone |
+| 0.5 MU grid movement cost | High | Implemented (movement) | Already helping movement fidelity; no major cache reuse |
+| Grid LOS-block flags + LOS memoization | Very High | Not implemented | ~20-45% overall runtime reduction |
+| Path query memoization (terrain-versioned) | Very High | Not implemented | ~35-60% overall runtime reduction |
+| Utility scorer per-activation memo + query budgets | Very High | Not implemented | ~20-40% overall runtime reduction |
+| Adaptive granularity (coarse rank, fine refine top-K) | High | Not implemented | ~15-35% overall runtime reduction |
+| Delaunay edge threshold-crossing weights (portal/chokepoint penalties) | Medium | Not implemented | ~8-18% after cache stack; quality-oriented |
+| Delaunay edge LOS flags | Low-Medium | Not implemented | Limited direct impact vs endpoint LOS cache |
+| HMLPA*-style hierarchical multi-target reuse | Medium (Phase 2) | Not implemented | Additional ~10-25% after baseline caching is done |
+
+**Combined forecast (non-additive):**
+- Near-term P0 + P1 package is expected to deliver approximately **3x-8x** throughput improvement on `VERY_LARGE` mission validation runs.
+- Target envelope after remediation: reduce pathological >30s activation spikes into mostly sub-5s activations, with occasional outliers.
+
+#### Priority Order (Performance Workstream)
+
+##### R6 (P0): Terrain-Versioned Caching + Query Budgets
+1. Implement `terrainVersion` and cache-invalidation hooks in battlefield/pathfinding services.
+2. Add `PathfindingEngine` cache layers:
+   - reusable walkability/terrain-cost grids keyed by `(terrainVersion, gridResolution, footprintDiameter, tightSpotFraction, options)`,
+   - path-result memo keyed by quantized `(start,end,options,terrainVersion)`.
+3. Add LOS memoization in `Battlefield` keyed by quantized segment endpoints + `terrainVersion`.
+4. Add per-activation utility scorer memo (cover/exposure/LOS/path endpoint queries).
+5. Add hard budgets per activation for expensive calls (path and LOS), with deterministic fallback heuristics when budget is exceeded.
+
+**Predicted impact:** ~2.5x-5x runtime throughput improvement by itself.
+
+**Exit Criteria**
+- `VERY_LARGE` + `QAI_20` no longer stalls in turn 1/2 under profiled seeds.
+- Profiling report shows major reduction in `ai.decide_action`, `action.move`, and LOS-heavy phase totals.
+- Path and LOS cache hit rates are emitted in battle performance diagnostics.
+
+##### R7 (P1): Adaptive Granularity Routing
+1. Use coarse routing for candidate ranking, then refine top-K candidates at high granularity.
+2. Keep 0.5 MU default, and only escalate to 0.25 MU around chokepoints/clearance contention.
+3. Restrict strategic path probes on large boards to nearest K enemies/objectives per activation.
+4. Preserve deterministic behavior under seeded runs (same seed => same choices).
+5. Evaluate navmesh edge threshold-crossing weights at bottlenecks (portal width/turn-transition penalties) as a quality+throughput tradeoff, gated by benchmarks.
+
+**Predicted impact:** additional ~1.2x-1.8x throughput improvement after R6.
+
+**Exit Criteria**
+- Pathfinding query count per activation drops materially on `LARGE`/`VERY_LARGE`.
+- Tactical behavior quality does not regress (movement/cover/objective rates remain credible).
+
+##### R8 (P2): Advanced Hierarchical Reuse (HMLPA*-Style)
+1. Evaluate one-to-many hierarchical path reuse for shared-start tactical queries.
+2. Integrate only if it outperforms R6+R7 stack in measured benchmarks.
+3. Keep as optional advanced planner mode until stability parity is proven.
+
+**Predicted impact:** additional ~10-25% in heavy one-to-many query workloads.
+
+**Exit Criteria**
+- Benchmark evidence shows clear net gain vs existing hierarchical+cache pipeline.
+- No regressions in determinism or path legality.
+
+#### Performance Acceptance Gates
+1. Add performance gates to validation output for `VERY_LARGE` runs:
+   - turn elapsed time,
+   - activation latency percentiles,
+   - path/LOS query counts and cache hit rates.
+2. Initial gate targets (seeded validation profile):
+   - Turn 1 <= 120s (stretch <= 90s).
+   - P95 activation latency <= 8s (stretch <= 5s).
+   - Full `VERY_LARGE` `QAI_20` single-run validation completes in <= 20 min (stretch <= 12 min).
+
+### 10.2.6 R6 Progress Update (2026-02-25)
+
+Implemented now:
+1. Added battlefield terrain-version invalidation primitives in `src/lib/mest-tactics/battlefield/Battlefield.ts`:
+   - `terrainVersion` counter,
+   - centralized invalidation that resets navmesh derivatives and LOS caches when terrain mutates.
+2. Added LOS memoization in `Battlefield.hasLineOfSight()`:
+   - quantized, terrain-versioned cache keys,
+   - bounded cache size (LRU-like eviction by insertion order),
+   - cache hit/miss counters for diagnostics.
+3. Added runtime inspection helpers:
+   - `getTerrainVersion()`,
+   - `getLosCacheStats()` for profiling and validation harness visibility.
+4. Added regression coverage in `src/lib/mest-tactics/battlefield/battlefield.test.ts`:
+   - verifies LOS cache hit/miss behavior,
+   - verifies cache invalidation and terrain-version bump on terrain changes.
+5. Added terrain-versioned pathfinding cache layers in `src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.ts`:
+   - reusable grid/terrain-cost cache keyed by `(terrainVersion, gridResolution, footprint, tight-spot fraction, clearance penalty)`,
+   - reusable full-path memo keyed by `(start, end, grid key, hierarchical/navmesh/LOS optimization options)`,
+   - bounded caches with insertion-order eviction and cache-hit diagnostics via `getCacheStats()`.
+6. Added pathfinding cache regression tests in `src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.test.ts`:
+   - verifies repeated-query reuse (grid + path hits),
+   - verifies automatic cache invalidation on terrain-version change.
+7. Re-profiled `VERY_LARGE` `QAI_20` with `AI_BATTLE_MAX_TURNS=1`:
+   - latest run (`generated/ai-battle-reports/qai-20-validation-2026-02-25T05-24-03-703Z.json`) completed Turn 1 in ~70.1s,
+   - previous baseline Turn 1 was ~389.1s,
+   - observed Turn-1 speedup: ~5.5x (within predicted R6 envelope).
+8. Added utility-scorer per-activation memo + query budgets in `src/lib/mest-tactics/ai/core/UtilityScorer.ts`:
+   - memoized LOS pair checks, exposure counts, cover values, nearest-enemy distance, visibility scores, and objective-advance values within an evaluation pass,
+   - added strategic path-probe budgets and board-size-aware caps (enemy/objective probe limits + local sample count reduction),
+   - reused a single `PathfindingEngine` instance per evaluation session.
+9. Added regression coverage in `src/lib/mest-tactics/ai/core/ai.test.ts`:
+   - verifies strategic path probe caps on very-large battlefield contexts.
+10. Re-profiled `VERY_LARGE` `QAI_20` again with scorer memo/budgets:
+   - run: `generated/ai-battle-reports/qai-20-validation-2026-02-25T05-36-15-982Z.json`
+   - Turn 1: ~18.7s for 64 activations (~3.7 activations/sec),
+   - incremental gain vs prior cached-path run (~70.1s): ~3.7x,
+   - cumulative gain vs original baseline (~389.1s): ~20.8x.
+11. Integrated cache-hit diagnostics into performance reporting payloads (`scripts/ai-battle-setup.ts`):
+   - `performance.caches.los` and `performance.caches.pathfinding` now included in per-run JSON reports when profiling is enabled,
+   - human-readable battle/validation report rendering now includes LOS/path/grid cache hit rates.
+
+Still open in R6:
+1. Publish per-run cache-hit diagnostics into standard validation artifact review checklist.
+2. Move cache metrics into automated performance acceptance gate checks (turn/activation/cache thresholds).
+
 ## 11. Mission Engine Roadmap
 
 ### Scope Summary

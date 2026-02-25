@@ -17,7 +17,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Character } from '../src/lib/mest-tactics/core/Character';
 import type { Item } from '../src/lib/mest-tactics/core/Item';
-import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
+import { Battlefield, type BattlefieldLosCacheStats } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
 import { Position } from '../src/lib/mest-tactics/battlefield/Position';
@@ -46,7 +46,7 @@ import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../src/lib/mest-tactic
 import { AIContext, AIControllerConfig, CharacterKnowledge } from '../src/lib/mest-tactics/ai/core/AIController';
 import { attemptHide, attemptDetect } from '../src/lib/mest-tactics/status/concealment';
 import { LOFOperations } from '../src/lib/mest-tactics/battlefield/los/LOFOperations';
-import { PathfindingEngine } from '../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
+import { PathfindingEngine, type PathfindingCacheStats } from '../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
 import {
   applyBonusAction,
   type BonusActionOption,
@@ -389,6 +389,47 @@ interface BattleAuditTrace {
   turns: TurnAudit[];
 }
 
+interface PhaseTimingSummary {
+  count: number;
+  totalMs: number;
+  avgMs: number;
+  maxMs: number;
+}
+
+interface TurnTimingSummary {
+  turn: number;
+  elapsedMs: number;
+  activations: number;
+}
+
+interface SlowActivationSummary {
+  turn: number;
+  sideName: string;
+  modelId: string;
+  modelName: string;
+  elapsedMs: number;
+  steps: number;
+}
+
+interface BattlePerformanceSummary {
+  elapsedMs: number;
+  activationsProcessed: number;
+  heartbeatEveryActivations: number;
+  activationLatency: {
+    avgMs: number;
+    p50Ms: number;
+    p95Ms: number;
+    maxMs: number;
+  };
+  phases: Record<string, PhaseTimingSummary>;
+  turns: TurnTimingSummary[];
+  slowestActivations: SlowActivationSummary[];
+  caches?: {
+    los: BattlefieldLosCacheStats;
+    pathfinding: PathfindingCacheStats;
+  };
+}
+
 interface ReactAuditResult {
   executed: boolean;
   reactor?: Character;
@@ -414,6 +455,7 @@ export interface BattleReport {
   advancedRules: AdvancedRuleMetrics;
   log: BattleLogEntry[];
   audit?: BattleAuditTrace;
+  performance?: BattlePerformanceSummary;
   seed?: number;
 }
 
@@ -458,6 +500,32 @@ interface ValidationAggregateReport {
   runtimeCoverage: ValidationCoverage;
   /** Coverage observed from synthetic mechanic probes only. */
   probeCoverage: ValidationCoverage;
+  performanceGates?: {
+    enabled: boolean;
+    runsEvaluated: number;
+    thresholds: {
+      turn1ElapsedMsMax: number;
+      activationP95MsMax: number;
+      minLosCacheHitRate: number;
+      minPathCacheHitRate: number;
+      minGridCacheHitRate: number;
+    };
+    observed: {
+      avgTurn1ElapsedMs: number | null;
+      avgActivationP95Ms: number | null;
+      avgLosCacheHitRate: number | null;
+      avgPathCacheHitRate: number | null;
+      avgGridCacheHitRate: number | null;
+    };
+    pass: {
+      turn1Elapsed: boolean | null;
+      activationP95: boolean | null;
+      losCacheHitRate: boolean | null;
+      pathCacheHitRate: boolean | null;
+      gridCacheHitRate: boolean | null;
+      overall: boolean | null;
+    };
+  };
   runReports: Array<{
     run: number;
     seed: number;
@@ -483,6 +551,7 @@ interface ValidationAggregateReport {
     };
     nestedSections: NestedSections;
     advancedRules: AdvancedRuleMetrics;
+    performance?: BattlePerformanceSummary;
   }>;
   generatedAt: string;
 }
@@ -780,6 +849,52 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push('  Breakdown By Type:');
   lines.push(...formatTypeBreakdownLines(advancedRules.situationalModifiers.byType, '    '));
   lines.push('');
+  if (report.performance) {
+    lines.push('⏱️  PERFORMANCE');
+    lines.push(`  Elapsed: ${report.performance.elapsedMs.toFixed(2)} ms`);
+    lines.push(`  Activations Processed: ${report.performance.activationsProcessed}`);
+    lines.push(`  Heartbeat Every N Activations: ${report.performance.heartbeatEveryActivations}`);
+    lines.push('  Phase Timings:');
+    const phaseEntries = Object.entries(report.performance.phases)
+      .sort((a, b) => b[1].totalMs - a[1].totalMs);
+    if (phaseEntries.length === 0) {
+      lines.push('    none');
+    } else {
+      phaseEntries.forEach(([phase, stats]) => {
+        lines.push(
+          `    ${phase}: total=${stats.totalMs.toFixed(2)}ms avg=${stats.avgMs.toFixed(2)}ms max=${stats.maxMs.toFixed(2)}ms count=${stats.count}`
+        );
+      });
+    }
+    lines.push('  Slowest Activations:');
+    if (report.performance.slowestActivations.length === 0) {
+      lines.push('    none');
+    } else {
+      report.performance.slowestActivations.forEach(entry => {
+        lines.push(
+          `    turn=${entry.turn} side=${entry.sideName} model=${entry.modelName} ms=${entry.elapsedMs.toFixed(2)} steps=${entry.steps}`
+        );
+      });
+    }
+    if (report.performance.caches) {
+      const los = report.performance.caches.los;
+      const path = report.performance.caches.pathfinding;
+      const losTotal = los.hits + los.misses;
+      const pathTotal = path.pathHits + path.pathMisses;
+      const gridTotal = path.gridHits + path.gridMisses;
+      lines.push('  Cache Stats:');
+      lines.push(
+        `    LOS cache: hits=${los.hits} misses=${los.misses} hitRate=${losTotal > 0 ? ((los.hits / losTotal) * 100).toFixed(1) : '0.0'}% size=${los.size}/${los.maxSize}`
+      );
+      lines.push(
+        `    Path cache: hits=${path.pathHits} misses=${path.pathMisses} hitRate=${pathTotal > 0 ? ((path.pathHits / pathTotal) * 100).toFixed(1) : '0.0'}% size=${path.pathCacheSize}/${path.pathCacheMaxSize}`
+      );
+      lines.push(
+        `    Grid cache: hits=${path.gridHits} misses=${path.gridMisses} hitRate=${gridTotal > 0 ? ((path.gridHits / gridTotal) * 100).toFixed(1) : '0.0'}% size=${path.gridCacheSize}/${path.gridCacheMaxSize}`
+      );
+    }
+    lines.push('');
+  }
   lines.push('🧱 NESTED SECTIONS');
   lines.push(`  Side Count: ${nestedSections.sides.length}`);
   for (const side of nestedSections.sides) {
@@ -1024,6 +1139,15 @@ class AIBattleRunner {
   private missionImmediateWinnerSideId: string | null = null;
   private auditTurns: TurnAudit[] = [];
   private activationSequence = 0;
+  private performanceProfilingEnabled = false;
+  private performanceProgressEnabled = false;
+  private performanceProgressEachActivation = false;
+  private performanceHeartbeatEveryActivations = 25;
+  private performanceRunStartMs = 0;
+  private performancePhases: Record<string, { count: number; totalMs: number; maxMs: number }> = {};
+  private performanceTurns: TurnTimingSummary[] = [];
+  private performanceSlowestActivations: SlowActivationSummary[] = [];
+  private activationsProcessed = 0;
 
   private resetRunState() {
     this.log = [];
@@ -1041,6 +1165,106 @@ class AIBattleRunner {
     this.missionImmediateWinnerSideId = null;
     this.auditTurns = [];
     this.activationSequence = 0;
+    this.performanceProfilingEnabled = false;
+    this.performanceProgressEnabled = false;
+    this.performanceProgressEachActivation = false;
+    this.performanceHeartbeatEveryActivations = 25;
+    this.performanceRunStartMs = 0;
+    this.performancePhases = {};
+    this.performanceTurns = [];
+    this.performanceSlowestActivations = [];
+    this.activationsProcessed = 0;
+  }
+
+  private setupPerformanceInstrumentation(): void {
+    this.performanceProfilingEnabled =
+      process.env.AI_BATTLE_PROFILE === '1' || process.env.AI_BATTLE_PROGRESS === '1';
+    this.performanceProgressEnabled = process.env.AI_BATTLE_PROGRESS === '1';
+    this.performanceProgressEachActivation = process.env.AI_BATTLE_PROGRESS_EACH_ACTIVATION === '1';
+    const rawHeartbeat = Number.parseInt(process.env.AI_BATTLE_HEARTBEAT_EVERY ?? '', 10);
+    if (Number.isFinite(rawHeartbeat) && rawHeartbeat > 0) {
+      this.performanceHeartbeatEveryActivations = rawHeartbeat;
+    }
+    this.performanceRunStartMs = Date.now();
+  }
+
+  private recordPhaseDuration(phase: string, elapsedMs: number): void {
+    if (!this.performanceProfilingEnabled) return;
+    const safeElapsedMs = Number.isFinite(elapsedMs) ? Math.max(0, elapsedMs) : 0;
+    const bucket = this.performancePhases[phase] ?? { count: 0, totalMs: 0, maxMs: 0 };
+    bucket.count += 1;
+    bucket.totalMs += safeElapsedMs;
+    bucket.maxMs = Math.max(bucket.maxMs, safeElapsedMs);
+    this.performancePhases[phase] = bucket;
+  }
+
+  private withPhaseTiming<T>(phase: string, fn: () => T): T {
+    const startedMs = Date.now();
+    try {
+      return fn();
+    } finally {
+      this.recordPhaseDuration(phase, Date.now() - startedMs);
+    }
+  }
+
+  private async withAsyncPhaseTiming<T>(phase: string, fn: () => Promise<T>): Promise<T> {
+    const startedMs = Date.now();
+    try {
+      return await fn();
+    } finally {
+      this.recordPhaseDuration(phase, Date.now() - startedMs);
+    }
+  }
+
+  private maybeLogActivationHeartbeat(
+    turn: number,
+    sideName: string,
+    character: Character,
+    elapsedMs: number
+  ): void {
+    if (!this.performanceProgressEnabled) return;
+    if (this.activationsProcessed % this.performanceHeartbeatEveryActivations !== 0) return;
+    const elapsedRunMs = Date.now() - this.performanceRunStartMs;
+    console.log(
+      `[PROFILE] act=${this.activationsProcessed} turn=${turn} side=${sideName} model=${character.profile.name} activationMs=${elapsedMs.toFixed(1)} totalMs=${elapsedRunMs}`
+    );
+  }
+
+  private recordSlowActivation(entry: SlowActivationSummary): void {
+    if (!this.performanceProfilingEnabled) return;
+    this.performanceSlowestActivations.push(entry);
+    this.performanceSlowestActivations
+      .sort((a, b) => b.elapsedMs - a.elapsedMs);
+    if (this.performanceSlowestActivations.length > 10) {
+      this.performanceSlowestActivations.length = 10;
+    }
+  }
+
+  private buildPerformanceSummary(battlefield?: Battlefield): BattlePerformanceSummary | undefined {
+    if (!this.performanceProfilingEnabled) return undefined;
+    const phases: Record<string, PhaseTimingSummary> = {};
+    for (const [phase, stats] of Object.entries(this.performancePhases)) {
+      phases[phase] = {
+        count: stats.count,
+        totalMs: Number(stats.totalMs.toFixed(2)),
+        avgMs: Number((stats.totalMs / Math.max(1, stats.count)).toFixed(2)),
+        maxMs: Number(stats.maxMs.toFixed(2)),
+      };
+    }
+    const summary: BattlePerformanceSummary = {
+      elapsedMs: Number((Date.now() - this.performanceRunStartMs).toFixed(2)),
+      activationsProcessed: this.activationsProcessed,
+      heartbeatEveryActivations: this.performanceHeartbeatEveryActivations,
+      phases,
+      turns: this.performanceTurns,
+      slowestActivations: this.performanceSlowestActivations,
+    };
+    if (battlefield) {
+      const los = battlefield.getLosCacheStats();
+      const pathfinding = new PathfindingEngine(battlefield).getCacheStats();
+      summary.caches = { los, pathfinding };
+    }
+    return summary;
   }
 
   private initializeModelUsage(
@@ -2401,6 +2625,7 @@ class AIBattleRunner {
     options: { seed?: number; suppressOutput?: boolean } = {}
   ): Promise<BattleReport> {
     this.resetRunState();
+    this.setupPerformanceInstrumentation();
     const seed = options.seed ?? config.seed;
     const originalRandom = Math.random;
     if (typeof seed === 'number') {
@@ -2420,9 +2645,17 @@ class AIBattleRunner {
       out(`Mission: ${config.missionName}`);
       out(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
       out(`Max Turns: ${config.maxTurns}\n`);
+      if (this.performanceProgressEnabled) {
+        console.log(
+          `[PROFILE] start mission=${config.missionId} size=${config.gameSize} turns=${config.maxTurns} modelsPerSide=${config.sides.map(s => s.modelCount).join(',')}`
+        );
+      }
 
       // Build assemblies
-      const sides = await Promise.all(config.sides.map(side => this.createAssembly(side)));
+      const sides = await this.withAsyncPhaseTiming(
+        'setup.create_assemblies',
+        () => Promise.all(config.sides.map(side => this.createAssembly(side)))
+      );
       this.initializeModelUsage(config, sides);
 
       out('Assemblies built:');
@@ -2432,12 +2665,17 @@ class AIBattleRunner {
       out();
 
       // Create battlefield
-      const battlefield = this.createBattlefield(config.battlefieldSize, config.densityRatio);
+      const battlefield = this.withPhaseTiming(
+        'setup.create_battlefield',
+        () => this.createBattlefield(config.battlefieldSize, config.densityRatio)
+      );
       this.currentBattlefield = battlefield;
 
       // Deploy models
-      sides.forEach((side, i) => {
-        this.deployModels(side, battlefield, i, config.battlefieldSize);
+      this.withPhaseTiming('setup.deploy_models', () => {
+        sides.forEach((side, i) => {
+          this.deployModels(side, battlefield, i, config.battlefieldSize);
+        });
       });
       const allCharacters = sides.flatMap(s => s.characters);
       const startPositions = new Map<string, Position>();
@@ -2489,11 +2727,15 @@ class AIBattleRunner {
       let turn = 0;
 
       while (!gameOver && turn < config.maxTurns) {
+        const turnStartedMs = Date.now();
         turn++;
         this.stats.turnsCompleted = turn;
-        gameManager.startTurn();
+        this.withPhaseTiming('turn.start', () => gameManager.startTurn());
         if (this.missionRuntimeAdapter) {
-          const turnStartUpdate = this.missionRuntimeAdapter.onTurnStart(turn, this.buildMissionModels(battlefield));
+          const turnStartUpdate = this.withPhaseTiming(
+            'turn.mission_start_update',
+            () => this.missionRuntimeAdapter!.onTurnStart(turn, this.buildMissionModels(battlefield))
+          );
           this.applyMissionRuntimeUpdate(turnStartUpdate);
         }
         const turnAudit: TurnAudit = {
@@ -2507,6 +2749,11 @@ class AIBattleRunner {
         };
         this.auditTurns.push(turnAudit);
 
+        if (this.performanceProgressEnabled) {
+          const elapsedRunMs = Date.now() - this.performanceRunStartMs;
+          console.log(`[PROFILE] turn-start turn=${turn}/${config.maxTurns} elapsedMs=${elapsedRunMs}`);
+        }
+
         if (verbose) {
           out(`\n📍 Turn ${turn}\n`);
         }
@@ -2518,6 +2765,11 @@ class AIBattleRunner {
             .sort((a, b) => (b.finalAttributes?.int ?? b.attributes?.int ?? 0) - (a.finalAttributes?.int ?? a.attributes?.int ?? 0));
 
           for (const character of sideCharacters) {
+            if (this.performanceProgressEnabled && this.performanceProgressEachActivation) {
+              console.log(
+                `[PROFILE] activation-start turn=${turn} side=${config.sides[sideIndex].name} model=${character.profile.name}`
+              );
+            }
             const aiController = aiControllers.get(character.id)!;
             const activationAudit = await this.resolveCharacterTurn(
               character,
@@ -2541,7 +2793,10 @@ class AIBattleRunner {
         }));
 
         if (this.missionRuntimeAdapter) {
-          const turnEndUpdate = this.missionRuntimeAdapter.onTurnEnd(turn, this.buildMissionModels(battlefield));
+          const turnEndUpdate = this.withPhaseTiming(
+            'turn.mission_end_update',
+            () => this.missionRuntimeAdapter!.onTurnEnd(turn, this.buildMissionModels(battlefield))
+          );
           this.applyMissionRuntimeUpdate(turnEndUpdate);
         }
 
@@ -2577,10 +2832,27 @@ class AIBattleRunner {
             out(`  ${side.name}: ${remainingPerSide[i]}/${sides[i].characters.length} models`);
           });
         }
+
+        const turnElapsedMs = Date.now() - turnStartedMs;
+        this.performanceTurns.push({
+          turn,
+          elapsedMs: Number(turnElapsedMs.toFixed(2)),
+          activations: turnAudit.activations.length,
+        });
+        this.recordPhaseDuration('turn.total', turnElapsedMs);
+        if (this.performanceProgressEnabled) {
+          const elapsedRunMs = Date.now() - this.performanceRunStartMs;
+          console.log(
+            `[PROFILE] turn-end turn=${turn}/${config.maxTurns} turnMs=${turnElapsedMs} activations=${turnAudit.activations.length} elapsedMs=${elapsedRunMs}`
+          );
+        }
       }
 
       if (this.missionRuntimeAdapter) {
-        const finalUpdate = this.missionRuntimeAdapter.finalize(this.buildMissionModels(battlefield));
+        const finalUpdate = this.withPhaseTiming(
+          'mission.finalize',
+          () => this.missionRuntimeAdapter!.finalize(this.buildMissionModels(battlefield))
+        );
         this.applyMissionRuntimeUpdate(finalUpdate);
       }
 
@@ -2612,6 +2884,7 @@ class AIBattleRunner {
         advancedRules: this.advancedRules,
         log: this.log,
         audit: this.createBattleAuditTrace(config, seed),
+        performance: this.buildPerformanceSummary(battlefield),
         seed,
       };
 
@@ -2765,6 +3038,7 @@ class AIBattleRunner {
   ): Promise<ActivationAudit | null> {
     const sideConfig = config.sides[sideIndex];
     const sideName = sideConfig.name;
+    const activationStartedMs = Date.now();
     const waitAtStart = character.state.isWaiting;
     const delayTokensAtStart = character.state.delayTokens;
     const enemiesAtStart = allSides
@@ -2804,6 +3078,19 @@ class AIBattleRunner {
       activationAudit.apEnd = 0;
       activationAudit.skippedReason = 'no_ap';
       gameManager.endActivation(character);
+      const activationElapsedMs = Date.now() - activationStartedMs;
+      this.recordPhaseDuration('activation.total', activationElapsedMs);
+      this.recordPhaseDuration('activation.no_ap', activationElapsedMs);
+      this.activationsProcessed += 1;
+      this.recordSlowActivation({
+        turn,
+        sideName,
+        modelId: character.id,
+        modelName: character.profile.name,
+        elapsedMs: Number(activationElapsedMs.toFixed(2)),
+        steps: 0,
+      });
+      this.maybeLogActivationHeartbeat(turn, sideName, character, activationElapsedMs);
       return activationAudit;
     }
 
@@ -2837,7 +3124,10 @@ class AIBattleRunner {
         };
         context.knowledge = aiController.updateKnowledge(context);
 
-        const aiResult = await aiController.decideAction(context);
+        const aiResult = await this.withAsyncPhaseTiming(
+          'ai.decide_action',
+          () => aiController.decideAction(context)
+        );
         const decision = aiResult.decision;
         if (!decision || decision.type === 'none') {
           if (activationAudit.steps.length === 0) {
@@ -2886,6 +3176,7 @@ class AIBattleRunner {
           console.log(`  ${character.profile.name} (${sideName}) [AP ${apBefore}]: ${decision.type}${decision.reason ? ` - ${decision.reason}` : ''}`);
         }
 
+        const actionStartedMs = Date.now();
         switch (decision.type) {
           case 'hold': {
             const fallback = this.computeFallbackMovePosition(character, enemies, battlefield, config);
@@ -3324,6 +3615,9 @@ class AIBattleRunner {
             result = `${decision.type}=false:unsupported`;
             break;
         }
+        const actionElapsedMs = Date.now() - actionStartedMs;
+        this.recordPhaseDuration(`action.${decision.type}`, actionElapsedMs);
+        this.recordPhaseDuration('action.total', actionElapsedMs);
 
         this.log.push({
           turn,
@@ -3364,7 +3658,10 @@ class AIBattleRunner {
           }
           const trigger = movedDistance > 0 ? 'Move' : 'NonMove';
           const actorStateBeforeReact = this.snapshotModelState(character);
-          const reactResult = this.processReacts(character, enemies, gameManager, trigger, movedDistance, config.visibilityOrMu);
+          const reactResult = this.withPhaseTiming(
+            'react.process',
+            () => this.processReacts(character, enemies, gameManager, trigger, movedDistance, config.visibilityOrMu)
+          );
           const actorStateAfterReact = this.snapshotModelState(character);
           if (reactResult.executed && reactResult.reactor) {
             this.syncMissionRuntimeForAttack(
@@ -3521,13 +3818,16 @@ class AIBattleRunner {
                 result: 'move=true:forced',
               });
               const fallbackStateBeforeReact = this.snapshotModelState(character);
-              const reactResult = this.processReacts(
-                character,
-                enemies,
-                gameManager,
-                movedDistance > 0 ? 'Move' : 'NonMove',
-                movedDistance,
-                config.visibilityOrMu
+              const reactResult = this.withPhaseTiming(
+                'react.process',
+                () => this.processReacts(
+                  character,
+                  enemies,
+                  gameManager,
+                  movedDistance > 0 ? 'Move' : 'NonMove',
+                  movedDistance,
+                  config.visibilityOrMu
+                )
               );
               if (reactResult.executed && reactResult.reactor) {
                 this.syncMissionRuntimeForAttack(
@@ -3607,6 +3907,18 @@ class AIBattleRunner {
     }
     activationAudit.apEnd = lastKnownAp;
     gameManager.endActivation(character);
+    const activationElapsedMs = Date.now() - activationStartedMs;
+    this.recordPhaseDuration('activation.total', activationElapsedMs);
+    this.activationsProcessed += 1;
+    this.recordSlowActivation({
+      turn,
+      sideName,
+      modelId: character.id,
+      modelName: character.profile.name,
+      elapsedMs: Number(activationElapsedMs.toFixed(2)),
+      steps: activationAudit.steps.length,
+    });
+    this.maybeLogActivationHeartbeat(turn, sideName, character, activationElapsedMs);
     return activationAudit;
   }
 
@@ -4678,6 +4990,36 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   lines.push(`  Wait Upkeep Paid: ${report.totals.waitUpkeepPaid}`);
   lines.push(`  KO's: ${report.totals.kos}`);
   lines.push(`  Eliminations: ${report.totals.eliminations}`);
+  const runPerf = report.runReports
+    .map(run => run.performance)
+    .filter((value): value is BattlePerformanceSummary => Boolean(value));
+  if (runPerf.length > 0) {
+    const avgElapsed = runPerf.reduce((sum, perf) => sum + perf.elapsedMs, 0) / runPerf.length;
+    const avgActivations = runPerf.reduce((sum, perf) => sum + perf.activationsProcessed, 0) / runPerf.length;
+    lines.push(`  Avg Run Elapsed: ${avgElapsed.toFixed(2)} ms`);
+    lines.push(`  Avg Activations Processed: ${avgActivations.toFixed(2)}`);
+    const perfWithCache = runPerf.filter(perf => Boolean(perf.caches));
+    if (perfWithCache.length > 0) {
+      const losHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.los.hits ?? 0), 0);
+      const losMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.los.misses ?? 0), 0);
+      const pathHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.pathfinding.pathHits ?? 0), 0);
+      const pathMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.pathfinding.pathMisses ?? 0), 0);
+      const gridHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.pathfinding.gridHits ?? 0), 0);
+      const gridMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.pathfinding.gridMisses ?? 0), 0);
+      const losTotal = losHits + losMisses;
+      const pathTotal = pathHits + pathMisses;
+      const gridTotal = gridHits + gridMisses;
+      lines.push(
+        `  Avg LOS Cache Hit Rate: ${losTotal > 0 ? ((losHits / losTotal) * 100).toFixed(1) : '0.0'}% (${losHits}/${losTotal})`
+      );
+      lines.push(
+        `  Avg Path Cache Hit Rate: ${pathTotal > 0 ? ((pathHits / pathTotal) * 100).toFixed(1) : '0.0'}% (${pathHits}/${pathTotal})`
+      );
+      lines.push(
+        `  Avg Grid Cache Hit Rate: ${gridTotal > 0 ? ((gridHits / gridTotal) * 100).toFixed(1) : '0.0'}% (${gridHits}/${gridTotal})`
+      );
+    }
+  }
   lines.push('');
   lines.push('⚡ BONUS ACTIONS');
   lines.push(`  Opportunities: ${advanced.bonusActions.opportunities}`);
@@ -4765,13 +5107,18 @@ async function runValidationBatch(
   const doctrineLabel = doctrineAlpha === doctrineBravo ? doctrineAlpha : `${doctrineAlpha} vs ${doctrineBravo}`;
   const resolvedMissionId = parseMissionIdArg(missionId, 'QAI_11');
   const missionName = MISSION_NAME_BY_ID[resolvedMissionId] ?? resolvedMissionId;
+  const configuredMaxTurns = GAME_SIZE_CONFIG[gameSize].maxTurns;
+  const maxTurnsOverride = Number.parseInt(process.env.AI_BATTLE_MAX_TURNS ?? '', 10);
+  const maxTurns = Number.isFinite(maxTurnsOverride) && maxTurnsOverride > 0
+    ? Math.min(configuredMaxTurns, maxTurnsOverride)
+    : configuredMaxTurns;
   const baseConfig: GameConfig = {
     missionId: resolvedMissionId,
     missionName,
     gameSize,
     battlefieldSize: GAME_SIZE_CONFIG[gameSize].battlefieldSize,
-    maxTurns: GAME_SIZE_CONFIG[gameSize].maxTurns,
-    endGameTurn: GAME_SIZE_CONFIG[gameSize].endGameTurn,
+    maxTurns,
+    endGameTurn: Math.min(GAME_SIZE_CONFIG[gameSize].endGameTurn, maxTurns),
     sides: [
       {
         name: 'Alpha',
@@ -4804,6 +5151,9 @@ async function runValidationBatch(
   };
 
   console.log(`\nRunning ${runs} validation battle(s) for ${missionName} (${resolvedMissionId}, ${gameSize})...`);
+  if (maxTurns !== configuredMaxTurns) {
+    console.log(`  Max turns override: ${maxTurns}/${configuredMaxTurns}`);
+  }
   console.log(`  Doctrine: ${doctrineLabel}`);
   console.log(`    Alpha: ${doctrineAlpha}`);
   console.log(`    Bravo: ${doctrineBravo}`);
@@ -4836,9 +5186,11 @@ async function runValidationBatch(
       missionRuntime: report.missionRuntime,
       nestedSections: report.nestedSections,
       advancedRules: report.advancedRules,
+      performance: report.performance,
     });
+    const elapsedLabel = report.performance ? `, elapsedMs=${report.performance.elapsedMs.toFixed(2)}` : '';
     console.log(
-      `  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}, path=${(report.usage?.totalPathLength ?? 0).toFixed(2)}`
+      `  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}, path=${(report.usage?.totalPathLength ?? 0).toFixed(2)}${elapsedLabel}`
     );
   }
 

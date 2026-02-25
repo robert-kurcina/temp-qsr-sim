@@ -67,6 +67,35 @@ describe('Battlefield Framework', () => {
     expect(battlefield.hasLineOfSight(start, end)).toBe(true);
   });
 
+  it('should memoize LOS checks and invalidate cache when terrain changes', () => {
+    const start = { x: 1, y: 2 };
+    const end = { x: 5, y: 2 };
+
+    expect(battlefield.hasLineOfSight(start, end)).toBe(true);
+    expect(battlefield.hasLineOfSight(start, end)).toBe(true);
+
+    const before = battlefield.getLosCacheStats();
+    expect(before.misses).toBe(1);
+    expect(before.hits).toBe(1);
+    expect(before.size).toBe(1);
+
+    const obstacle = {
+      id: 'obs-cache-1',
+      type: TerrainType.Obstacle,
+      vertices: [{ x: 3, y: 0 }, { x: 3, y: 5 }],
+    };
+    battlefield.addTerrain(obstacle);
+
+    expect(battlefield.hasLineOfSight(start, end)).toBe(false);
+    expect(battlefield.hasLineOfSight(start, end)).toBe(false);
+
+    const after = battlefield.getLosCacheStats();
+    expect(after.terrainVersion).toBeGreaterThan(before.terrainVersion);
+    expect(after.misses).toBe(2);
+    expect(after.hits).toBe(2);
+    expect(after.size).toBe(1);
+  });
+
   it('should find a path around an obstacle', () => {
     const obstacle = {
         id: 'obs1',
