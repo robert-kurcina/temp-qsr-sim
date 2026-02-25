@@ -1,0 +1,225 @@
+{
+  "config": {
+    "gameSize": "SMALL",
+    "density": 50,
+    "runs": 1,
+    "seed": 424242,
+    "lighting": "TWILIGHT",
+    "doctrine": [
+      "watchman",
+      "watchman"
+    ]
+  },
+  "results": [
+    {
+      "mission": "QAI_11",
+      "report": "generated/ai-battle-reports/qai-11-validation-2026-02-25T02-51-50-134Z.json",
+      "winner": "Bravo",
+      "turns": 5,
+      "actions": 93,
+      "moves": 18,
+      "ranged": 62,
+      "close": 8,
+      "waits": 5,
+      "reacts": 4,
+      "vp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_12",
+      "report": "generated/ai-battle-reports/qai-12-validation-2026-02-25T02-52-01-437Z.json",
+      "winner": "Alpha",
+      "turns": 6,
+      "actions": 103,
+      "moves": 25,
+      "ranged": 63,
+      "close": 9,
+      "waits": 6,
+      "reacts": 5,
+      "vp": {
+        "Alpha": 13,
+        "Bravo": 3
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_13",
+      "report": "generated/ai-battle-reports/qai-13-validation-2026-02-25T02-52-11-427Z.json",
+      "winner": "Alpha",
+      "turns": 6,
+      "actions": 98,
+      "moves": 21,
+      "ranged": 67,
+      "close": 8,
+      "waits": 1,
+      "reacts": 8,
+      "vp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_14",
+      "report": "generated/ai-battle-reports/qai-14-validation-2026-02-25T02-52-23-012Z.json",
+      "winner": "Bravo",
+      "turns": 6,
+      "actions": 103,
+      "moves": 25,
+      "ranged": 63,
+      "close": 9,
+      "waits": 6,
+      "reacts": 5,
+      "vp": {
+        "Alpha": 4,
+        "Bravo": 4
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_15",
+      "report": "generated/ai-battle-reports/qai-15-validation-2026-02-25T02-52-30-220Z.json",
+      "winner": "Alpha",
+      "turns": 4,
+      "actions": 61,
+      "moves": 14,
+      "ranged": 38,
+      "close": 6,
+      "waits": 3,
+      "reacts": 3,
+      "vp": {
+        "Alpha": 13,
+        "Bravo": 0
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": "Alpha"
+    },
+    {
+      "mission": "QAI_16",
+      "report": "generated/ai-battle-reports/qai-16-validation-2026-02-25T02-52-36-806Z.json",
+      "winner": "Alpha",
+      "turns": 4,
+      "actions": 65,
+      "moves": 16,
+      "ranged": 42,
+      "close": 5,
+      "waits": 1,
+      "reacts": 6,
+      "vp": {
+        "Alpha": 8,
+        "Bravo": 8
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_17",
+      "report": "generated/ai-battle-reports/qai-17-validation-2026-02-25T02-52-49-283Z.json",
+      "winner": "Bravo",
+      "turns": 6,
+      "actions": 103,
+      "moves": 25,
+      "ranged": 63,
+      "close": 9,
+      "waits": 6,
+      "reacts": 5,
+      "vp": {
+        "Alpha": 18,
+        "Bravo": 21
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_18",
+      "report": "generated/ai-battle-reports/qai-18-validation-2026-02-25T02-52-57-291Z.json",
+      "winner": "Alpha",
+      "turns": 6,
+      "actions": 95,
+      "moves": 20,
+      "ranged": 64,
+      "close": 7,
+      "waits": 3,
+      "reacts": 7,
+      "vp": {
+        "Alpha": 16,
+        "Bravo": 2
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_19",
+      "report": "generated/ai-battle-reports/qai-19-validation-2026-02-25T02-53-04-785Z.json",
+      "winner": "Alpha",
+      "turns": 4,
+      "actions": 68,
+      "moves": 16,
+      "ranged": 46,
+      "close": 5,
+      "waits": 1,
+      "reacts": 6,
+      "vp": {
+        "Alpha": 52,
+        "Bravo": 46
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    },
+    {
+      "mission": "QAI_20",
+      "report": "generated/ai-battle-reports/qai-20-validation-2026-02-25T02-53-12-155Z.json",
+      "winner": "Alpha",
+      "turns": 4,
+      "actions": 62,
+      "moves": 17,
+      "ranged": 40,
+      "close": 4,
+      "waits": 0,
+      "reacts": 7,
+      "vp": {
+        "Alpha": 25,
+        "Bravo": 14
+      },
+      "rp": {
+        "Alpha": 0,
+        "Bravo": 0
+      },
+      "immediate": null
+    }
+  ]
+}

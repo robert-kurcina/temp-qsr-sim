@@ -5,6 +5,7 @@ import {
   ObjectiveMarker,
   ObjectiveMarkerManager,
   ObjectiveMarkerKind,
+  ObjectiveMarkerType,
   MarkerAcquireResult,
   MarkerShareResult,
   MarkerState,
@@ -25,7 +26,7 @@ import {
 } from './mission-keys';
 import { createEliminationMission, EliminationMissionManager } from './elimination-manager';
 import { createConvergenceMission, ConvergenceMissionManager } from './convergence-manager';
-import { createAssaultMission, AssaultMissionManager } from './assault-manager';
+import { AssaultMarkerType, createAssaultMission, AssaultMissionManager } from './assault-manager';
 import { createDominionMission, DominionMissionManager } from './dominion-manager';
 import { createRecoveryMission, RecoveryMissionManager } from './recovery-manager';
 import { createEscortMission, EscortMissionManager } from './escort-manager';
@@ -70,6 +71,20 @@ export interface DestroyMarkerResult {
   apCost: number;
   marker?: ObjectiveMarker;
   reason?: string;
+}
+
+interface ProjectedObjectiveMarkerSpec {
+  id: string;
+  name: string;
+  type: ObjectiveMarkerType;
+  omTypes: ObjectiveMarkerKind[];
+  state: MarkerState;
+  position?: Position;
+  controlledBy?: string;
+  scoringSideId?: string;
+  switchState?: SwitchState;
+  isNeutral?: boolean;
+  metadata: Record<string, unknown>;
 }
 
 function mergeDelta(target: MissionScoreDelta, source: MissionScoreDelta): MissionScoreDelta {
@@ -124,6 +139,8 @@ export class MissionRuntimeAdapter {
   private readonly targetedAwardedForModel = new Set<string>();
   private readonly vipMemberIdsBySide = new Map<string, string>();
   private readonly memberIdByCharacterId = new Map<string, string>();
+  private readonly projectedMarkerIds = new Set<string>();
+  private readonly assaultMarkersInteractedThisTurn = new Set<string>();
   private manager: AnyMissionManager | null = null;
   private managerVpBySide: Record<string, number> = {};
   private firstBloodSideId?: string;
@@ -158,6 +175,360 @@ export class MissionRuntimeAdapter {
       for (const sideId of this.sideIds) {
         this.managerVpBySide[sideId] = this.manager.getVictoryPoints(sideId);
       }
+    }
+    this.refreshProjectedObjectiveMarkers();
+  }
+
+  private getProjectedMarkerId(sourceId: string): string {
+    return `mission:${this.missionId}:${sourceId}`;
+  }
+
+  private isProjectedMarker(marker: ObjectiveMarker): boolean {
+    return marker.metadata['projectedFromMissionManager'] === true;
+  }
+
+  private isProjectedMarkerInteractable(marker: ObjectiveMarker): boolean {
+    return marker.metadata['aiInteractable'] === true;
+  }
+
+  private isReadOnlyProjectedMarker(marker: ObjectiveMarker): boolean {
+    return this.isProjectedMarker(marker) && !this.isProjectedMarkerInteractable(marker);
+  }
+
+  private getProjectedMarkerSource(marker: ObjectiveMarker): string | undefined {
+    const source = marker.metadata['missionSource'];
+    return typeof source === 'string' ? source : undefined;
+  }
+
+  private getProjectedSourceMarkerId(projectedMarker: ObjectiveMarker, markerId: string): string {
+    const sourceMarkerId = projectedMarker.metadata['sourceMarkerId'];
+    if (typeof sourceMarkerId === 'string' && sourceMarkerId.length > 0) {
+      return sourceMarkerId;
+    }
+    const prefix = this.getProjectedMarkerId('');
+    if (markerId.startsWith(prefix)) {
+      return markerId.slice(prefix.length);
+    }
+    return markerId;
+  }
+
+  private updateMissionMemberPosition(modelId: string, position: Position): void {
+    const memberId = this.memberIdByCharacterId.get(modelId) ?? modelId;
+    for (const side of this.sides) {
+      const member = side.members.find(candidate => candidate.id === memberId);
+      if (member) {
+        member.position = position;
+        return;
+      }
+    }
+  }
+
+  private performAssaultMarkerInteraction(
+    projectedMarker: ObjectiveMarker,
+    markerId: string,
+    modelId: string,
+    actorPosition?: Position
+  ): MarkerAcquireResult {
+    if (!(this.manager instanceof AssaultMissionManager)) {
+      return {
+        success: false,
+        marker: projectedMarker,
+        apCost: 1,
+        reason: 'Assault mission manager is not active',
+      };
+    }
+    if (!actorPosition) {
+      return {
+        success: false,
+        marker: projectedMarker,
+        apCost: 1,
+        reason: 'Actor position required for assault marker interaction',
+      };
+    }
+
+    const sourceMarkerId = this.getProjectedSourceMarkerId(projectedMarker, markerId);
+    const assaultMarker = this.manager.getMarker(sourceMarkerId);
+    if (!assaultMarker) {
+      return {
+        success: false,
+        marker: projectedMarker,
+        apCost: 1,
+        reason: 'Assault marker not found',
+      };
+    }
+
+    this.updateMissionMemberPosition(modelId, actorPosition);
+    const normalizedModelId = this.memberIdByCharacterId.get(modelId) ?? modelId;
+
+    const actionResult = !assaultMarker.assaulted
+      ? this.manager.assaultMarker(normalizedModelId, sourceMarkerId)
+      : this.manager.harvestMarker(normalizedModelId, sourceMarkerId);
+
+    if (actionResult.success) {
+      this.assaultMarkersInteractedThisTurn.add(sourceMarkerId);
+      this.manager.checkForVictory();
+    }
+
+    this.refreshProjectedObjectiveMarkers();
+
+    return {
+      success: actionResult.success,
+      marker: this.objectiveMarkers.getMarker(markerId) ?? projectedMarker,
+      apCost: 1,
+      carried: false,
+      switchToggled: actionResult.success,
+      reason: actionResult.reason,
+    };
+  }
+
+  private performBreachMarkerInteraction(
+    projectedMarker: ObjectiveMarker,
+    markerId: string,
+    modelId: string,
+    actorPosition?: Position,
+    modelPositions?: Array<{ id: string; position: Position }>
+  ): MarkerAcquireResult {
+    if (!(this.manager instanceof BreachMissionManager)) {
+      return {
+        success: false,
+        marker: projectedMarker,
+        apCost: 1,
+        reason: 'Breach mission manager is not active',
+      };
+    }
+    if (!actorPosition) {
+      return {
+        success: false,
+        marker: projectedMarker,
+        apCost: 1,
+        reason: 'Actor position required for breach marker interaction',
+      };
+    }
+
+    const sourceMarkerId = this.getProjectedSourceMarkerId(projectedMarker, markerId);
+    for (const model of modelPositions ?? []) {
+      this.updateMissionMemberPosition(model.id, model.position);
+    }
+    this.updateMissionMemberPosition(modelId, actorPosition);
+    const normalizedModelId = this.memberIdByCharacterId.get(modelId) ?? modelId;
+    const controlResult = this.manager.attemptControlMarker(normalizedModelId, sourceMarkerId);
+
+    this.refreshProjectedObjectiveMarkers();
+
+    return {
+      success: controlResult.success,
+      marker: this.objectiveMarkers.getMarker(markerId) ?? projectedMarker,
+      apCost: 1,
+      carried: false,
+      switchToggled: controlResult.newController !== controlResult.previousController,
+      reason: controlResult.reason,
+    };
+  }
+
+  private buildZoneProjectionSpecs(
+    source: string,
+    zones: Array<{ id: string; name: string; position: Position; radius?: number }>,
+    controllerByZone: Map<string, string | null>
+  ): ProjectedObjectiveMarkerSpec[] {
+    return zones.map(zone => {
+      const controller = controllerByZone.get(zone.id) ?? undefined;
+      return {
+        id: zone.id,
+        name: zone.name,
+        type: ObjectiveMarkerType.Special,
+        omTypes: [ObjectiveMarkerKind.Switch],
+        state: MarkerState.Available,
+        position: zone.position,
+        controlledBy: controller ?? undefined,
+        scoringSideId: controller ?? undefined,
+        switchState: controller ? SwitchState.On : SwitchState.Off,
+        metadata: {
+          projectedFromMissionManager: true,
+          aiInteractable: false,
+          missionSource: source,
+          zoneRadius: zone.radius,
+        },
+      };
+    });
+  }
+
+  private buildProjectedMarkerSpecs(): ProjectedObjectiveMarkerSpec[] {
+    if (!this.manager) return [];
+
+    if (this.manager instanceof AssaultMissionManager) {
+      return this.manager.getAllMarkers().map(marker => {
+        const resourceDepleted = marker.type === AssaultMarkerType.Resource &&
+          marker.maxHarvests > 0 &&
+          marker.harvestCount >= marker.maxHarvests;
+        const isResolved = marker.assaulted && (marker.type !== AssaultMarkerType.Resource || resourceDepleted);
+        return {
+          id: marker.id,
+          name: marker.id,
+          type: ObjectiveMarkerType.Special,
+          omTypes: [ObjectiveMarkerKind.Switch],
+          state: isResolved ? MarkerState.Scored : MarkerState.Available,
+          position: marker.position,
+          controlledBy: marker.assaultedBy,
+          scoringSideId: marker.assaultedBy,
+          switchState: marker.assaulted ? SwitchState.On : SwitchState.Off,
+          metadata: {
+            projectedFromMissionManager: true,
+            aiInteractable: !isResolved,
+            missionSource: 'assault',
+            sourceMarkerId: marker.id,
+            markerType: marker.type,
+            harvestCount: marker.harvestCount,
+            maxHarvests: marker.maxHarvests,
+          },
+        };
+      });
+    }
+
+    if (this.manager instanceof BreachMissionManager) {
+      const controllerByMarker = this.manager.getMarkerControllers();
+      return this.manager.getMarkers().map(marker => {
+        const controller = controllerByMarker.get(marker.id) ?? undefined;
+        return {
+          id: marker.id,
+          name: marker.name,
+          type: ObjectiveMarkerType.Special,
+          omTypes: [ObjectiveMarkerKind.Switch],
+          state: MarkerState.Available,
+          position: marker.position,
+          controlledBy: controller ?? undefined,
+          scoringSideId: controller ?? undefined,
+          switchState: controller ? SwitchState.On : SwitchState.Off,
+          metadata: {
+            projectedFromMissionManager: true,
+            aiInteractable: true,
+            missionSource: 'breach',
+            sourceMarkerId: marker.id,
+          },
+        };
+      });
+    }
+
+    if (this.manager instanceof ConvergenceMissionManager) {
+      return this.buildZoneProjectionSpecs(
+        'convergence',
+        this.manager.getZones(),
+        this.manager.getZoneControllers()
+      );
+    }
+
+    if (this.manager instanceof DominionMissionManager) {
+      return this.buildZoneProjectionSpecs(
+        'dominion',
+        this.manager.getZones(),
+        this.manager.getZoneControllers()
+      );
+    }
+
+    if (this.manager instanceof TriumvirateMissionManager) {
+      return this.buildZoneProjectionSpecs(
+        'triumvirate',
+        this.manager.getZones(),
+        this.manager.getZoneControllers()
+      );
+    }
+
+    if (this.manager instanceof RecoveryMissionManager) {
+      const state = this.manager.getState();
+      return this.buildZoneProjectionSpecs(
+        'recovery',
+        this.manager.getZones(),
+        state.zoneControl
+      );
+    }
+
+    if (this.manager instanceof EscortMissionManager) {
+      const escortZone = this.manager.getEscortZone();
+      const controllerByZone = new Map<string, string | null>();
+      if (escortZone) {
+        controllerByZone.set(escortZone.id, this.manager.getEscortZoneController());
+        return this.buildZoneProjectionSpecs('escort', [escortZone], controllerByZone);
+      }
+      return [];
+    }
+
+    if (this.manager instanceof StealthMissionManager) {
+      const state = this.manager.getState();
+      const controllerByZone = new Map<string, string | null>(state.zoneControl);
+      controllerByZone.set('extraction-zone', state.extractionZoneControl);
+      return this.buildZoneProjectionSpecs(
+        'stealth',
+        this.manager.getZones(),
+        controllerByZone
+      );
+    }
+
+    if (this.manager instanceof DefianceMissionManager) {
+      const state = this.manager.getState();
+      return this.buildZoneProjectionSpecs(
+        'defiance',
+        this.manager.getZones(),
+        state.zoneControl
+      );
+    }
+
+    return [];
+  }
+
+  private upsertProjectedObjectiveMarker(spec: ProjectedObjectiveMarkerSpec): void {
+    const markerId = this.getProjectedMarkerId(spec.id);
+    const existing = this.objectiveMarkers.getMarker(markerId);
+    if (existing) {
+      existing.name = spec.name;
+      existing.type = spec.type;
+      existing.omTypes = [...spec.omTypes];
+      existing.state = spec.state;
+      existing.position = spec.position;
+      existing.carriedBy = undefined;
+      existing.controlledBy = spec.controlledBy;
+      existing.scoringSideId = spec.scoringSideId;
+      existing.switchState = spec.switchState;
+      existing.isNeutral = spec.isNeutral;
+      existing.metadata = { ...spec.metadata };
+      this.projectedMarkerIds.add(markerId);
+      return;
+    }
+
+    const created = createObjectiveMarker({
+      id: markerId,
+      name: spec.name,
+      type: spec.type,
+      omTypes: [...spec.omTypes],
+      position: spec.position,
+      scoringSideId: spec.scoringSideId,
+      isNeutral: spec.isNeutral,
+      metadata: { ...spec.metadata },
+    });
+    created.state = spec.state;
+    created.carriedBy = undefined;
+    created.controlledBy = spec.controlledBy;
+    created.switchState = spec.switchState;
+    this.objectiveMarkers.addMarker(created);
+    this.projectedMarkerIds.add(markerId);
+  }
+
+  private refreshProjectedObjectiveMarkers(): void {
+    const projectedSpecs = this.buildProjectedMarkerSpecs();
+    const activeProjectedIds = new Set<string>();
+
+    for (const spec of projectedSpecs) {
+      const markerId = this.getProjectedMarkerId(spec.id);
+      activeProjectedIds.add(markerId);
+      this.upsertProjectedObjectiveMarker(spec);
+    }
+
+    for (const markerId of this.projectedMarkerIds) {
+      if (activeProjectedIds.has(markerId)) continue;
+      this.objectiveMarkers.removeMarker(markerId);
+    }
+
+    this.projectedMarkerIds.clear();
+    for (const markerId of activeProjectedIds) {
+      this.projectedMarkerIds.add(markerId);
     }
   }
 
@@ -363,6 +734,7 @@ export class MissionRuntimeAdapter {
     for (const model of models) {
       for (const marker of markers) {
         if (processedMarkers.has(marker.id)) continue;
+        if (this.assaultMarkersInteractedThisTurn.has(marker.id)) continue;
 
         const dx = model.position.x - marker.position.x;
         const dy = model.position.y - marker.position.y;
@@ -384,16 +756,21 @@ export class MissionRuntimeAdapter {
   }
 
   public onTurnStart(turn: number, models: MissionModel[]): MissionRuntimeUpdate {
+    this.assaultMarkersInteractedThisTurn.clear();
     this.synchronizeSideMembers(models);
+    const delta = this.runMissionSpecificTurnStart(turn);
+    this.refreshProjectedObjectiveMarkers();
     return {
-      delta: this.runMissionSpecificTurnStart(turn),
+      delta,
     };
   }
 
   public onTurnEnd(turn: number, models: MissionModel[]): MissionRuntimeUpdate {
     this.synchronizeSideMembers(models);
+    const delta = this.runMissionSpecificTurnEnd(turn, models);
+    this.refreshProjectedObjectiveMarkers();
     return {
-      delta: this.runMissionSpecificTurnEnd(turn, models),
+      delta,
     };
   }
 
@@ -502,6 +879,8 @@ export class MissionRuntimeAdapter {
   public getObjectiveMarkerAcquireApCost(markerId: string): number {
     const marker = this.objectiveMarkers.getMarker(markerId);
     if (!marker) return 0;
+    if (this.isReadOnlyProjectedMarker(marker)) return 0;
+    if (this.isProjectedMarker(marker) && !this.isProjectedMarkerInteractable(marker)) return 0;
 
     if (isSwitchMarker(marker)) return 1;
     if (!isPhysicalMarker(marker) && !isIdeaMarker(marker)) return 1;
@@ -520,14 +899,52 @@ export class MissionRuntimeAdapter {
       isOrdered?: boolean;
       isAnimal?: boolean;
       keyIdsInHand?: string[];
+      actorPosition?: Position;
+      modelPositions?: Array<{ id: string; position: Position }>;
     } = {}
   ): MarkerAcquireResult {
+    const marker = this.objectiveMarkers.getMarker(markerId);
+    if (marker && this.isProjectedMarker(marker)) {
+      if (!this.isProjectedMarkerInteractable(marker)) {
+        return {
+          success: false,
+          marker,
+          apCost: 0,
+          reason: 'Mission-projected markers are read-only in objective APIs',
+        };
+      }
+      const source = this.getProjectedMarkerSource(marker);
+      if (source === 'assault') {
+        return this.performAssaultMarkerInteraction(
+          marker,
+          markerId,
+          modelId,
+          options.actorPosition
+        );
+      }
+      if (source === 'breach') {
+        return this.performBreachMarkerInteraction(
+          marker,
+          markerId,
+          modelId,
+          options.actorPosition,
+          options.modelPositions
+        );
+      }
+      return {
+        success: false,
+        marker,
+        apCost: 0,
+        reason: 'Projected marker does not support direct interaction',
+      };
+    }
+
     const result = this.objectiveMarkers.acquireMarker(markerId, modelId, sideId, options);
     if (!result.success) return result;
 
-    const marker = result.marker;
-    if (marker && !marker.scoringSideId) {
-      marker.scoringSideId = sideId;
+    const acquiredMarker = result.marker;
+    if (acquiredMarker && !acquiredMarker.scoringSideId) {
+      acquiredMarker.scoringSideId = sideId;
     }
     return result;
   }
@@ -539,6 +956,15 @@ export class MissionRuntimeAdapter {
     sideId: string,
     hindrance = 0
   ): MarkerShareResult {
+    const marker = this.objectiveMarkers.getMarker(markerId);
+    if (marker && this.isProjectedMarker(marker)) {
+      return {
+        success: false,
+        marker,
+        apCost: 0,
+        reason: 'Mission-projected markers do not support share interactions',
+      };
+    }
     return this.objectiveMarkers.shareIdea(markerId, fromModelId, toModelId, sideId, hindrance);
   }
 
@@ -548,6 +974,16 @@ export class MissionRuntimeAdapter {
     sideId: string,
     options: MarkerTransferOptions = {}
   ): TransferMarkerResult {
+    const marker = this.objectiveMarkers.getMarker(markerId);
+    if (marker && this.isProjectedMarker(marker)) {
+      return {
+        success: false,
+        apCost: 0,
+        marker,
+        reason: 'Mission-projected markers do not support transfer interactions',
+      };
+    }
+
     const apCost = options.isStunnedOrDisorderedOrDistracted ? 2 : 1;
     const transfer = this.objectiveMarkers.transferMarker(markerId, newCarrierId, sideId, options);
     return {
@@ -565,6 +1001,9 @@ export class MissionRuntimeAdapter {
     const marker = this.objectiveMarkers.getMarker(markerId);
     if (!marker) {
       return { success: false, apCost: 1, reason: 'Marker not found' };
+    }
+    if (this.isProjectedMarker(marker)) {
+      return { success: false, apCost: 0, marker, reason: 'Mission-projected markers do not support destroy interactions' };
     }
     if (isSwitchMarker(marker) && !options.allowDestroySwitch) {
       return { success: false, apCost: 1, marker, reason: 'Switch OMs cannot be destroyed unless mission allows it' };

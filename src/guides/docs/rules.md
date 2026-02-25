@@ -7,10 +7,19 @@ description: Complete index of all MEST Tactics rule modules.
 
 This document provides links to all rule modules for the MEST Tactics game system.
 
+## Rule Precedence
+
+When rule documents conflict, use this precedence order:
+
+1. [Overrides](./rules-overrides)
+2. `rules*.md` modules in this folder
+3. Legacy source instructions in `docs/*.txt`
+
 ## Core Rules
 
 | Rule Module | Description |
 |-------------|-------------|
+| [Overrides](./rules-overrides) | Active rule overrides that supersede legacy `docs/*.txt` text |
 | [Introduction](./rules-introduction) | Overview of the game and its core concepts |
 | [General Terms](./rules-general-terms) | Glossary of common game terminology |
 | [Characters & Attributes](./rules-characters-and-attributes) | Character creation, attributes, and functions |
@@ -82,7 +91,8 @@ This document provides links to all rule modules for the MEST Tactics game syste
 1. [Introduction](./rules-introduction)
 2. [Materials](./rules-materials)
 3. [General Terms](./rules-general-terms)
-4. [Assemblies & Setup](./rules-assemblies-and-setup)
+4. [Overrides](./rules-overrides)
+5. [Assemblies & Setup](./rules-assemblies-and-setup)
 
 ### Character Creation
 1. [Characters & Attributes](./rules-characters-and-attributes)

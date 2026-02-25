@@ -1,0 +1,2060 @@
+{
+  "missionId": "QAI_18",
+  "gameSize": "SMALL",
+  "densityRatio": 50,
+  "tacticalDoctrine": "watchman",
+  "sideDoctrines": [
+    {
+      "sideName": "Alpha",
+      "tacticalDoctrine": "watchman",
+      "loadoutProfile": "default"
+    },
+    {
+      "sideName": "Bravo",
+      "tacticalDoctrine": "watchman",
+      "loadoutProfile": "default"
+    }
+  ],
+  "loadoutProfile": "default",
+  "lighting": "Twilight, Overcast",
+  "visibilityOrMu": 8,
+  "maxOrm": 3,
+  "allowConcentrateRangeExtension": true,
+  "perCharacterFovLos": false,
+  "runs": 1,
+  "baseSeed": 424242,
+  "winners": {
+    "Alpha": 1
+  },
+  "totals": {
+    "totalActions": 71,
+    "moves": 16,
+    "closeCombats": 10,
+    "rangedCombats": 45,
+    "disengages": 0,
+    "waits": 0,
+    "detects": 0,
+    "hides": 35,
+    "reacts": 7,
+    "eliminations": 0,
+    "kos": 1,
+    "turnsCompleted": 4,
+    "losChecks": 45,
+    "lofChecks": 45,
+    "totalPathLength": 53.28606727592561,
+    "modelsMoved": 10
+  },
+  "averages": {
+    "totalActions": 71,
+    "moves": 16,
+    "closeCombats": 10,
+    "rangedCombats": 45,
+    "disengages": 0,
+    "waits": 0,
+    "detects": 0,
+    "hides": 35,
+    "reacts": 7,
+    "eliminations": 0,
+    "kos": 1,
+    "turnsCompleted": 4,
+    "losChecks": 45,
+    "lofChecks": 45,
+    "totalPathLength": 53.29,
+    "modelsMoved": 10
+  },
+  "advancedRuleTotals": {
+    "bonusActions": {
+      "opportunities": 9,
+      "optionsOffered": 32,
+      "optionsAvailable": 26,
+      "offeredByType": {
+        "Hide": 9,
+        "Refresh": 9,
+        "Reposition": 9,
+        "Circle": 1,
+        "Disengage": 1,
+        "PushBack": 1,
+        "PullBack": 1,
+        "Reversal": 1
+      },
+      "availableByType": {
+        "Hide": 7,
+        "Refresh": 7,
+        "Reposition": 7,
+        "Circle": 1,
+        "Disengage": 1,
+        "PushBack": 1,
+        "PullBack": 1,
+        "Reversal": 1
+      },
+      "executed": 6,
+      "executedByType": {
+        "Refresh": 5,
+        "Disengage": 1
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 136,
+      "optionsOffered": 556,
+      "optionsAvailable": 73,
+      "offeredByType": {
+        "CounterCharge": 134,
+        "OpportunityAttack": 134,
+        "TakeCover": 45,
+        "Defend": 55,
+        "CounterAction": 47,
+        "React": 47,
+        "CounterStrike": 47,
+        "CounterFire": 47
+      },
+      "availableByType": {
+        "TakeCover": 13,
+        "Defend": 29,
+        "React": 20,
+        "CounterFire": 6,
+        "CounterCharge": 3,
+        "OpportunityAttack": 2
+      },
+      "used": 57,
+      "usedByType": {
+        "Defend": 29,
+        "TakeCover": 13,
+        "CounterFire": 6,
+        "CounterCharge": 2,
+        "React": 7
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 62,
+      "modifiedTests": 60,
+      "modifiersApplied": 120,
+      "byType": {
+        "defend": 29,
+        "obscuring_models": 27,
+        "leaning": 3,
+        "intervening_cover": 4,
+        "distance_orm": 36,
+        "hand_penalty": 21
+      }
+    }
+  },
+  "advancedRuleAverages": {
+    "bonusActions": {
+      "opportunities": 9,
+      "optionsOffered": 32,
+      "optionsAvailable": 26,
+      "offeredByType": {
+        "Hide": 9,
+        "Refresh": 9,
+        "Reposition": 9,
+        "Circle": 1,
+        "Disengage": 1,
+        "PushBack": 1,
+        "PullBack": 1,
+        "Reversal": 1
+      },
+      "availableByType": {
+        "Hide": 7,
+        "Refresh": 7,
+        "Reposition": 7,
+        "Circle": 1,
+        "Disengage": 1,
+        "PushBack": 1,
+        "PullBack": 1,
+        "Reversal": 1
+      },
+      "executed": 6,
+      "executedByType": {
+        "Refresh": 5,
+        "Disengage": 1
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 136,
+      "optionsOffered": 556,
+      "optionsAvailable": 73,
+      "offeredByType": {
+        "CounterCharge": 134,
+        "OpportunityAttack": 134,
+        "TakeCover": 45,
+        "Defend": 55,
+        "CounterAction": 47,
+        "React": 47,
+        "CounterStrike": 47,
+        "CounterFire": 47
+      },
+      "availableByType": {
+        "TakeCover": 13,
+        "Defend": 29,
+        "React": 20,
+        "CounterFire": 6,
+        "CounterCharge": 3,
+        "OpportunityAttack": 2
+      },
+      "used": 57,
+      "usedByType": {
+        "Defend": 29,
+        "TakeCover": 13,
+        "CounterFire": 6,
+        "CounterCharge": 2,
+        "React": 7
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 62,
+      "modifiedTests": 60,
+      "modifiersApplied": 120,
+      "byType": {
+        "defend": 29,
+        "obscuring_models": 27,
+        "leaning": 3,
+        "intervening_cover": 4,
+        "distance_orm": 36,
+        "hand_penalty": 21
+      }
+    }
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runtimeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": false,
+    "detect": false,
+    "los": true,
+    "lof": true
+  },
+  "probeCoverage": {
+    "movement": false,
+    "pathfinding": false,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 7
+        },
+        {
+          "name": "Bravo",
+          "remaining": 7
+        }
+      ],
+      "stats": {
+        "totalActions": 71,
+        "moves": 16,
+        "closeCombats": 10,
+        "rangedCombats": 45,
+        "disengages": 0,
+        "waits": 0,
+        "detects": 0,
+        "hides": 35,
+        "reacts": 7,
+        "eliminations": 0,
+        "kos": 1,
+        "turnsCompleted": 4,
+        "losChecks": 45,
+        "lofChecks": 45,
+        "totalPathLength": 53.28606727592561,
+        "modelsMoved": 10
+      },
+      "usage": {
+        "modelCount": 16,
+        "modelsMoved": 10,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 7,
+        "totalPathLength": 53.28606727592561,
+        "averagePathLengthPerMovedModel": 5.328606727592561,
+        "averagePathLengthPerModel": 3.3303792047453507,
+        "topPathModels": [
+          {
+            "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 9.26240552495637,
+            "moveActions": 3,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 5,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-5-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 8.60555127546399,
+            "moveActions": 3,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 1,
+            "hideSuccesses": 0,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Bravo Assembly-5-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 7.16227766016838,
+            "moveActions": 2,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 4,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 7,
+            "moveActions": 2,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-pistol-medium-auto-sword-broad-loadout",
+            "modelName": "veteran-pistol-medium-auto-sword-broad-loadout",
+            "side": "Bravo",
+            "pathLength": 5.0197648378370845,
+            "moveActions": 2,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 2,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-1-veteran-rifle-light-semi/a-loadout",
+            "modelName": "veteran-rifle-light-semi/a-loadout",
+            "side": "Alpha",
+            "pathLength": 4,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 3,
+            "hideSuccesses": 0,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Alpha Assembly-3-veteran-pistol-medium-auto-sword-broad-loadout",
+            "modelName": "veteran-pistol-medium-auto-sword-broad-loadout",
+            "side": "Alpha",
+            "pathLength": 4,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 1,
+            "hideSuccesses": 0,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Bravo Assembly-8-veteran-rifle-light-semi/a-loadout",
+            "modelName": "veteran-rifle-light-semi/a-loadout",
+            "side": "Bravo",
+            "pathLength": 4,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 5,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-7-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 2.23606797749979,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 2,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-2-veteran-rifle-light-semi/a-loadout",
+            "modelName": "veteran-rifle-light-semi/a-loadout",
+            "side": "Bravo",
+            "pathLength": 2,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 2,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 12,
+          "Bravo": 2
+        },
+        "rpBySide": {}
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 751,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-rifle-light-semi/a-loadout",
+                    "name": "veteran-rifle-light-semi/a-loadout",
+                    "profile": {
+                      "name": "veteran-rifle-light-semi/a-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 91,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Rifle, Light, Semi/A",
+                          "classification": "Firearm",
+                          "traits": [
+                            "ROF",
+                            "[2H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 1,
+                      "y": 8
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-rifle-light-semi/a-loadout",
+                    "name": "veteran-rifle-light-semi/a-loadout",
+                    "profile": {
+                      "name": "veteran-rifle-light-semi/a-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 91,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Rifle, Light, Semi/A",
+                          "classification": "Firearm",
+                          "traits": [
+                            "ROF",
+                            "[2H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 3
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-veteran-pistol-medium-auto-sword-broad-loadout",
+                    "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 125,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Pistol, Medium, Auto",
+                          "classification": "Firearm",
+                          "traits": [
+                            "Melee",
+                            "Conceal",
+                            "ROF 2",
+                            "Burst",
+                            "[1H]",
+                            "[Jitter]",
+                            "[Feed]"
+                          ]
+                        },
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 10,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 9,
+                      "y": 7
+                    },
+                    "state": {
+                      "wounds": 3,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": true,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": false
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-4-veteran-rifle-light-semi/a-loadout",
+                    "name": "veteran-rifle-light-semi/a-loadout",
+                    "profile": {
+                      "name": "veteran-rifle-light-semi/a-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 91,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Rifle, Light, Semi/A",
+                          "classification": "Firearm",
+                          "traits": [
+                            "ROF",
+                            "[2H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 13,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 3
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-5-militia-spear-medium-shield-medium-loadout",
+                    "name": "militia-spear-medium-shield-medium-loadout",
+                    "profile": {
+                      "name": "militia-spear-medium-shield-medium-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 60,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Spear, Medium",
+                          "classification": "Melee",
+                          "traits": [
+                            "Reach",
+                            "Throwable",
+                            "Charge",
+                            "Perimeter",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 17,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 15,
+                      "y": 9
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-6-elite-rifle-light-semi/a-sword-broad-loadout",
+                    "name": "elite-rifle-light-semi/a-sword-broad-loadout",
+                    "profile": {
+                      "name": "elite-rifle-light-semi/a-sword-broad-loadout",
+                      "archetype": "Elite",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "totalBp": 176,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Rifle, Light, Semi/A",
+                          "classification": "Firearm",
+                          "traits": [
+                            "ROF",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 20,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 20,
+                      "y": 3
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-7-militia-spear-medium-shield-medium-loadout",
+                    "name": "militia-spear-medium-shield-medium-loadout",
+                    "profile": {
+                      "name": "militia-spear-medium-shield-medium-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 60,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Spear, Medium",
+                          "classification": "Melee",
+                          "traits": [
+                            "Reach",
+                            "Throwable",
+                            "Charge",
+                            "Perimeter",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 8
+                    },
+                    "endPosition": {
+                      "x": 4,
+                      "y": 10
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 8
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 15
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 799,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-pistol-medium-auto-sword-broad-loadout",
+                    "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 125,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Pistol, Medium, Auto",
+                          "classification": "Firearm",
+                          "traits": [
+                            "Melee",
+                            "Conceal",
+                            "ROF 2",
+                            "Burst",
+                            "[1H]",
+                            "[Jitter]",
+                            "[Feed]"
+                          ]
+                        },
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 4,
+                      "y": 14
+                    },
+                    "state": {
+                      "wounds": 4,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": true,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": false
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-veteran-rifle-light-semi/a-loadout",
+                    "name": "veteran-rifle-light-semi/a-loadout",
+                    "profile": {
+                      "name": "veteran-rifle-light-semi/a-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 91,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Rifle, Light, Semi/A",
+                          "classification": "Firearm",
+                          "traits": [
+                            "ROF",
+                            "[2H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 4,
+                      "y": 15
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+                    "name": "militia-spear-medium-shield-medium-loadout",
+                    "profile": {
+                      "name": "militia-spear-medium-shield-medium-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 60,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Spear, Medium",
+                          "classification": "Melee",
+                          "traits": [
+                            "Reach",
+                            "Throwable",
+                            "Charge",
+                            "Perimeter",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 10,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 3,
+                      "y": 9
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-4-veteran-pistol-medium-auto-sword-broad-loadout",
+                    "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 125,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Pistol, Medium, Auto",
+                          "classification": "Firearm",
+                          "traits": [
+                            "Melee",
+                            "Conceal",
+                            "ROF 2",
+                            "Burst",
+                            "[1H]",
+                            "[Jitter]",
+                            "[Feed]"
+                          ]
+                        },
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 13,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 10,
+                      "y": 15
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-5-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 17,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 8
+                    },
+                    "state": {
+                      "wounds": 1,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-6-veteran-pistol-medium-auto-sword-broad-loadout",
+                    "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 125,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Pistol, Medium, Auto",
+                          "classification": "Firearm",
+                          "traits": [
+                            "Melee",
+                            "Conceal",
+                            "ROF 2",
+                            "Burst",
+                            "[1H]",
+                            "[Jitter]",
+                            "[Feed]"
+                          ]
+                        },
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 20,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 20,
+                      "y": 15
+                    },
+                    "state": {
+                      "wounds": 1,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-7-veteran-pistol-medium-auto-sword-broad-loadout",
+                    "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-pistol-medium-auto-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 125,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Pistol, Medium, Auto",
+                          "classification": "Firearm",
+                          "traits": [
+                            "Melee",
+                            "Conceal",
+                            "ROF 2",
+                            "Burst",
+                            "[1H]",
+                            "[Jitter]",
+                            "[Feed]"
+                          ]
+                        },
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 20
+                    },
+                    "endPosition": {
+                      "x": 3,
+                      "y": 20
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-8-veteran-rifle-light-semi/a-loadout",
+                    "name": "veteran-rifle-light-semi/a-loadout",
+                    "profile": {
+                      "name": "veteran-rifle-light-semi/a-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 91,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Rifle, Light, Semi/A",
+                          "classification": "Firearm",
+                          "traits": [
+                            "ROF",
+                            "[2H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 20
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 16
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 24,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 98,
+              "vertices": [
+                {
+                  "x": 19.860826899039935,
+                  "y": 8.990268068741571
+                },
+                {
+                  "x": 19.4924616370393,
+                  "y": 8.861629160441526
+                },
+                {
+                  "x": 19.20136448995271,
+                  "y": 8.601815023152048
+                },
+                {
+                  "x": 19.031852359621894,
+                  "y": 8.250380004054442
+                },
+                {
+                  "x": 19.00973193125843,
+                  "y": 7.860826899039934
+                },
+                {
+                  "x": 19.138370839558476,
+                  "y": 7.492461637039295
+                },
+                {
+                  "x": 19.39818497684795,
+                  "y": 7.2013644899527085
+                },
+                {
+                  "x": 19.749619995945558,
+                  "y": 7.031852359621893
+                },
+                {
+                  "x": 20.139173100960065,
+                  "y": 7.00973193125843
+                },
+                {
+                  "x": 20.5075383629607,
+                  "y": 7.138370839558475
+                },
+                {
+                  "x": 20.79863551004729,
+                  "y": 7.398184976847953
+                },
+                {
+                  "x": 20.968147640378106,
+                  "y": 7.749619995945556
+                },
+                {
+                  "x": 20.99026806874157,
+                  "y": 8.139173100960065
+                },
+                {
+                  "x": 20.861629160441527,
+                  "y": 8.507538362960705
+                },
+                {
+                  "x": 20.60181502315205,
+                  "y": 8.798635510047292
+                },
+                {
+                  "x": 20.250380004054442,
+                  "y": 8.968147640378108
+                }
+              ]
+            },
+            {
+              "id": "Medium Rocks",
+              "type": "Rough",
+              "metaName": "Medium Rocks",
+              "movement": "Rough",
+              "los": "Hard",
+              "rotationDegrees": 141,
+              "vertices": [
+                {
+                  "x": 4.222854038543029,
+                  "y": 7.629320391049838
+                },
+                {
+                  "x": 3.800349777827514,
+                  "y": 6.986614460724902
+                },
+                {
+                  "x": 3.560481388581416,
+                  "y": 6.345946357414383
+                },
+                {
+                  "x": 3.5397666586550898,
+                  "y": 5.8048519921764905
+                },
+                {
+                  "x": 3.7413592179003246,
+                  "y": 5.445708077086058
+                },
+                {
+                  "x": 4.134568426613132,
+                  "y": 5.323191017567907
+                },
+                {
+                  "x": 4.6595317472173425,
+                  "y": 5.455952925313762
+                },
+                {
+                  "x": 5.2363282729553156,
+                  "y": 5.823782003359012
+                },
+                {
+                  "x": 5.777145961456971,
+                  "y": 6.370679608950162
+                },
+                {
+                  "x": 6.199650222172486,
+                  "y": 7.013385539275098
+                },
+                {
+                  "x": 6.439518611418583,
+                  "y": 7.654053642585616
+                },
+                {
+                  "x": 6.46023334134491,
+                  "y": 8.195148007823509
+                },
+                {
+                  "x": 6.2586407820996754,
+                  "y": 8.554291922913942
+                },
+                {
+                  "x": 5.865431573386867,
+                  "y": 8.676808982432092
+                },
+                {
+                  "x": 5.3404682527826575,
+                  "y": 8.544047074686237
+                },
+                {
+                  "x": 4.763671727044685,
+                  "y": 8.176217996640988
+                }
+              ]
+            }
+          ],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-rifle-light-semi/a-loadout",
+              "characterName": "veteran-rifle-light-semi/a-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 1,
+                "y": 8
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-rifle-light-semi/a-loadout",
+              "characterName": "veteran-rifle-light-semi/a-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 3
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-veteran-pistol-medium-auto-sword-broad-loadout",
+              "characterName": "veteran-pistol-medium-auto-sword-broad-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 10,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 9,
+                "y": 7
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-4-veteran-rifle-light-semi/a-loadout",
+              "characterName": "veteran-rifle-light-semi/a-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 13,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 3
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-5-militia-spear-medium-shield-medium-loadout",
+              "characterName": "militia-spear-medium-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 17,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 15,
+                "y": 9
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-6-elite-rifle-light-semi/a-sword-broad-loadout",
+              "characterName": "elite-rifle-light-semi/a-sword-broad-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 20,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 20,
+                "y": 3
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-7-militia-spear-medium-shield-medium-loadout",
+              "characterName": "militia-spear-medium-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 8
+              },
+              "endPosition": {
+                "x": 4,
+                "y": 10
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 8
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 15
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-pistol-medium-auto-sword-broad-loadout",
+              "characterName": "veteran-pistol-medium-auto-sword-broad-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 4,
+                "y": 14
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-veteran-rifle-light-semi/a-loadout",
+              "characterName": "veteran-rifle-light-semi/a-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 4,
+                "y": 15
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+              "characterName": "militia-spear-medium-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 10,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 3,
+                "y": 9
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-4-veteran-pistol-medium-auto-sword-broad-loadout",
+              "characterName": "veteran-pistol-medium-auto-sword-broad-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 13,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 10,
+                "y": 15
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-5-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 17,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 8
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-6-veteran-pistol-medium-auto-sword-broad-loadout",
+              "characterName": "veteran-pistol-medium-auto-sword-broad-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 20,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 20,
+                "y": 15
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-7-veteran-pistol-medium-auto-sword-broad-loadout",
+              "characterName": "veteran-pistol-medium-auto-sword-broad-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 20
+              },
+              "endPosition": {
+                "x": 3,
+                "y": 20
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-8-veteran-rifle-light-semi/a-loadout",
+              "characterName": "veteran-rifle-light-semi/a-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 20
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 16
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 9,
+          "optionsOffered": 32,
+          "optionsAvailable": 26,
+          "offeredByType": {
+            "Hide": 9,
+            "Refresh": 9,
+            "Reposition": 9,
+            "Circle": 1,
+            "Disengage": 1,
+            "PushBack": 1,
+            "PullBack": 1,
+            "Reversal": 1
+          },
+          "availableByType": {
+            "Hide": 7,
+            "Refresh": 7,
+            "Reposition": 7,
+            "Circle": 1,
+            "Disengage": 1,
+            "PushBack": 1,
+            "PullBack": 1,
+            "Reversal": 1
+          },
+          "executed": 6,
+          "executedByType": {
+            "Refresh": 5,
+            "Disengage": 1
+          }
+        },
+        "passiveOptions": {
+          "opportunities": 136,
+          "optionsOffered": 556,
+          "optionsAvailable": 73,
+          "offeredByType": {
+            "CounterCharge": 134,
+            "OpportunityAttack": 134,
+            "TakeCover": 45,
+            "Defend": 55,
+            "CounterAction": 47,
+            "React": 47,
+            "CounterStrike": 47,
+            "CounterFire": 47
+          },
+          "availableByType": {
+            "TakeCover": 13,
+            "Defend": 29,
+            "React": 20,
+            "CounterFire": 6,
+            "CounterCharge": 3,
+            "OpportunityAttack": 2
+          },
+          "used": 57,
+          "usedByType": {
+            "Defend": 29,
+            "TakeCover": 13,
+            "CounterFire": 6,
+            "CounterCharge": 2,
+            "React": 7
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 62,
+          "modifiedTests": 60,
+          "modifiersApplied": 120,
+          "byType": {
+            "defend": 29,
+            "obscuring_models": 27,
+            "leaning": 3,
+            "intervening_cover": 4,
+            "distance_orm": 36,
+            "hand_penalty": 21
+          }
+        }
+      }
+    }
+  ],
+  "generatedAt": "2026-02-25T02:05:19.819Z"
+}

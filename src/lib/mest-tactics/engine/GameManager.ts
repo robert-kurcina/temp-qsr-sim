@@ -744,7 +744,18 @@ export class GameManager {
       return { success: false, reason: `Insufficient AP (${apCost} required)` };
     }
 
-    const result = this.missionRuntimeAdapter.acquireObjectiveMarker(markerId, actor.id, sideId, options);
+    const actorPosition = this.getCharacterPosition(actor);
+    const modelPositions: Array<{ id: string; position: Position }> = [];
+    for (const candidate of this.characters) {
+      const candidatePosition = this.getCharacterPosition(candidate);
+      if (!candidatePosition) continue;
+      modelPositions.push({ id: candidate.id, position: candidatePosition });
+    }
+    const result = this.missionRuntimeAdapter.acquireObjectiveMarker(markerId, actor.id, sideId, {
+      ...options,
+      actorPosition,
+      modelPositions,
+    });
     if (!result.success) return result;
     if (spendAp && result.apCost > 0) {
       this.spendAp(actor, result.apCost);
@@ -826,8 +837,34 @@ export class GameManager {
     return result;
   }
 
-  public executeWait(actor: Character, options: { spendAp?: boolean; maintain?: boolean } = {}) {
-    return executeWaitAction(this.simpleActionDeps(), actor, options);
+  public executeWait(
+    actor: Character,
+    options: {
+      spendAp?: boolean;
+      maintain?: boolean;
+      opponents?: Character[];
+      visibilityOrMu?: number;
+      allowRevealReposition?: boolean;
+    } = {}
+  ) {
+    const wait = executeWaitAction(this.simpleActionDeps(), actor, options);
+    if (!wait.success || !this.battlefield || !options.opponents || options.opponents.length === 0) {
+      return wait;
+    }
+
+    const reveal = resolveWaitReveal(this.battlefield, actor, options.opponents, {
+      allowReposition: options.allowRevealReposition ?? false,
+      visibilityOrMu: options.visibilityOrMu,
+    });
+
+    return {
+      ...wait,
+      revealedCount: reveal.revealed.length,
+      revealedOpponents: reveal.revealed.map(opponent => ({
+        id: opponent.id,
+        name: opponent.profile.name,
+      })),
+    };
   }
 
   public buildConcentrateContext(target: 'hit' | 'damage' | 'any' = 'hit'): TestContext {
@@ -980,6 +1017,52 @@ export class GameManager {
     return runBuildSpatialModel(this.battlefield, (target: Character) => this.getCharacterPosition(target), character);
   }
 
+  private getOtherActiveCharacters(character: Character): Character[] {
+    return this.characters.filter(
+      candidate => candidate.id !== character.id && !candidate.state.isEliminated && !candidate.state.isKOd
+    );
+  }
+
+  private isFreeFromEngagement(character: Character): boolean {
+    if (!this.battlefield) return true;
+    const actor = this.buildSpatialModel(character);
+    if (!actor) return true;
+    const blockers = this.battlefield.getModelBlockers([character.id]);
+    return !blockers.some(blocker => SpatialRules.isEngaged(actor, blocker));
+  }
+
+  private isOutnumberedForWait(character: Character): boolean {
+    if (!this.battlefield) return false;
+    const actor = this.buildSpatialModel(character);
+    if (!actor) return false;
+    const blockers = this.battlefield.getModelBlockers([character.id]);
+    const engagedCount = blockers.filter(blocker => SpatialRules.isEngaged(actor, blocker)).length;
+    return engagedCount > 1;
+  }
+
+  private hasCoverAgainstOpposition(character: Character, opponents: Character[]): boolean {
+    if (!this.battlefield) return false;
+    const actor = this.buildSpatialModel(character);
+    if (!actor) return false;
+    for (const opponent of opponents) {
+      const other = this.buildSpatialModel(opponent);
+      if (!other) continue;
+      const cover = SpatialRules.getCoverResult(this.battlefield, other, actor);
+      if (cover.hasLOS && (cover.hasDirectCover || cover.hasInterveningCover)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private hasLosAgainst(character: Character, other: Character): boolean {
+    if (!this.battlefield) return false;
+    const actor = this.buildSpatialModel(character);
+    const target = this.buildSpatialModel(other);
+    if (!actor || !target) return false;
+    return SpatialRules.hasLineOfSight(this.battlefield, actor, target);
+  }
+
   private applyInterruptCost(character: Character): { removedWait: boolean; delayAdded: boolean } {
     return runInterruptCost(this.interruptDeps(), character);
   }
@@ -1070,6 +1153,13 @@ export class GameManager {
       clearFiddleUsed: (characterId: string) => { this.freeFiddleUsed.delete(characterId); },
       getApRemaining: (characterId: string) => this.apRemaining.get(characterId) ?? 0,
       setApRemaining: (characterId: string, value: number) => { this.apRemaining.set(characterId, value); },
+      getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+      isBehindCover: (character: Character) => this.hasCoverAgainstOpposition(character, this.getOtherActiveCharacters(character)),
+      isInLos: (character: Character, opposingCharacter: Character) => this.hasLosAgainst(character, opposingCharacter),
+      getOpposingCharacters: () => this.characters.filter(
+        candidate => candidate.id !== this.activeCharacterId && !candidate.state.isEliminated && !candidate.state.isKOd
+      ),
+      isFreeFromEngagement: (character: Character) => this.isFreeFromEngagement(character),
     };
   }
 
@@ -1077,6 +1167,7 @@ export class GameManager {
     return {
       spendAp: (character: Character, cost: number) => this.spendAp(character, cost),
       setWaiting: (character: Character) => this.setWaiting(character),
+      isOutnumberedForWait: (character: Character) => this.isOutnumberedForWait(character),
       setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
       markRallyUsed: (characterId: string) => { this.rallyUsed.add(characterId); },
       markReviveUsed: (characterId: string) => { this.reviveUsed.add(characterId); },

@@ -37,6 +37,14 @@ export interface SwitchResult {
   vpAwarded: number;
 }
 
+export interface BreachMarkerControlActionResult {
+  success: boolean;
+  markerId: string;
+  previousController: string | null;
+  newController: string | null;
+  reason?: string;
+}
+
 /**
  * Breach Mission Manager
  * Handles all Breach mission logic with automatic marker switching
@@ -161,6 +169,124 @@ export class BreachMissionManager {
       }
     }
     return undefined;
+  }
+
+  private getModelPosition(modelId: string): Position | undefined {
+    for (const side of this.sides.values()) {
+      const member = side.members.find(candidate => candidate.id === modelId);
+      if (member?.position) {
+        return member.position;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Attempt immediate marker control through a marker interaction action.
+   * This mirrors zone-presence control semantics and does not award VP directly.
+   */
+  attemptControlMarker(modelId: string, markerId: string): BreachMarkerControlActionResult {
+    const marker = this.poiManager.getPOI(markerId);
+    if (!marker) {
+      return {
+        success: false,
+        markerId,
+        previousController: null,
+        newController: null,
+        reason: 'Marker not found',
+      };
+    }
+
+    const actorSideId = this.getSideForModel(modelId);
+    if (!actorSideId) {
+      return {
+        success: false,
+        markerId,
+        previousController: this.state.markerControl.get(markerId) ?? null,
+        newController: this.state.markerControl.get(markerId) ?? null,
+        reason: 'Model side not found',
+      };
+    }
+
+    const actorPosition = this.getModelPosition(modelId);
+    if (!actorPosition) {
+      return {
+        success: false,
+        markerId,
+        previousController: this.state.markerControl.get(markerId) ?? null,
+        newController: this.state.markerControl.get(markerId) ?? null,
+        reason: 'Model position not found',
+      };
+    }
+
+    const dx = actorPosition.x - marker.position.x;
+    const dy = actorPosition.y - marker.position.y;
+    if ((dx * dx + dy * dy) > (marker.radius * marker.radius)) {
+      return {
+        success: false,
+        markerId,
+        previousController: this.state.markerControl.get(markerId) ?? null,
+        newController: this.state.markerControl.get(markerId) ?? null,
+        reason: 'Model not in marker zone',
+      };
+    }
+
+    const sidesPresent = new Set<string>();
+    for (const [sideId, side] of this.sides.entries()) {
+      for (const member of side.members) {
+        if (!member.position) continue;
+        const mdx = member.position.x - marker.position.x;
+        const mdy = member.position.y - marker.position.y;
+        if ((mdx * mdx + mdy * mdy) <= (marker.radius * marker.radius)) {
+          sidesPresent.add(sideId);
+          break;
+        }
+      }
+    }
+
+    const previousController = this.state.markerControl.get(markerId) ?? null;
+    if (sidesPresent.size > 1) {
+      this.state.markerControl.set(markerId, null);
+      return {
+        success: false,
+        markerId,
+        previousController,
+        newController: null,
+        reason: 'Marker is contested',
+      };
+    }
+
+    if (sidesPresent.size === 0 || !sidesPresent.has(actorSideId)) {
+      return {
+        success: false,
+        markerId,
+        previousController,
+        newController: previousController,
+        reason: 'No allied control in marker zone',
+      };
+    }
+
+    if (previousController === actorSideId) {
+      return {
+        success: false,
+        markerId,
+        previousController,
+        newController: previousController,
+        reason: 'Marker already controlled by side',
+      };
+    }
+
+    this.state.markerControl.set(markerId, actorSideId);
+    if (!this.state.originalControl.get(markerId)) {
+      this.state.originalControl.set(markerId, actorSideId);
+    }
+
+    return {
+      success: true,
+      markerId,
+      previousController,
+      newController: actorSideId,
+    };
   }
 
   /**

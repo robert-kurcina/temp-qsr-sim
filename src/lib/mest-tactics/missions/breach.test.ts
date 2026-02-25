@@ -83,6 +83,39 @@ describe('Breach Mission', () => {
     });
   });
 
+  describe('attemptControlMarker', () => {
+    it('should allow manual marker control when actor side is alone in zone', () => {
+      sideA.members[0].position = { x: 12, y: 6 };
+
+      const result = manager.attemptControlMarker(sideA.members[0].id, 'breach-marker-1');
+
+      expect(result.success).toBe(true);
+      expect(result.newController).toBe(sideA.id);
+      expect(manager.getMarkerController('breach-marker-1')).toBe(sideA.id);
+    });
+
+    it('should fail manual control when marker is contested', () => {
+      sideA.members[0].position = { x: 12, y: 6 };
+      sideB.members[0].position = { x: 12, y: 6 };
+
+      const result = manager.attemptControlMarker(sideA.members[0].id, 'breach-marker-1');
+
+      expect(result.success).toBe(false);
+      expect(result.reason).toContain('contested');
+      expect(manager.getMarkerController('breach-marker-1')).toBeNull();
+    });
+
+    it('should fail manual control when marker is already controlled by actor side', () => {
+      sideA.members[0].position = { x: 12, y: 6 };
+      manager.updateMarkerControl([{ id: sideA.members[0].id, position: sideA.members[0].position! }]);
+
+      const result = manager.attemptControlMarker(sideA.members[0].id, 'breach-marker-1');
+
+      expect(result.success).toBe(false);
+      expect(result.reason).toContain('already controlled');
+    });
+  });
+
   describe('executeSwitches', () => {
     it('should not switch on non-switch turns', () => {
       sideA.members[0].position = { x: 12, y: 6 };

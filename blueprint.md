@@ -27,6 +27,7 @@ My update process for this document is to **Read, Modify, and Write**. I will al
 ## 3. Core Operating Principles
 
 1.  **Single Source of Truth:** The project's local files are the absolute and only source of truth. All data, including but not limited to character archetypes, items, weapons, armor, and game rules, MUST be drawn directly from the JSON files in `src/data/` and the markdown files (e.g., `rules.md`).
+    Rule precedence is explicit: `src/guides/docs/rules-overrides.md` > `src/guides/docs/rules*.md` > `docs/*.txt`.
 2.  **No Fabrication:** Under no circumstances should information be invented, fabricated, or inferred from external knowledge. If a piece of data does not exist explicitly in the project's files, it cannot be used.
 3.  **Filesystem First:** Before making any changes or additions to the codebase, the filesystem must be scanned to confirm the presence or absence of relevant files.
 4.  **Headless First Development:** All development must be focused on the core, headless simulation logic. UI-related files, dependencies (Astro, React, etc.), and configurations are to be ignored until explicitly commanded to work on them. The primary interface for the application is the command line.
@@ -73,6 +74,7 @@ To ensure a stable and predictable codebase, the following systematic approach w
 
 *   [Mastery](src/guides/docs/mastery.md)
 *   [Rules](src/guides/docs/rules.md)
+*   [Rules Overrides](src/guides/docs/rules-overrides.md)
 
 ## 8.1 Context Anchors (Non-UI Docs)
 
@@ -167,6 +169,9 @@ These are known gaps/mismatches to be addressed later and treated as a prioritiz
 - **Objective Markers:** QSR OM types/actions consolidated; remaining gaps are per-mission wiring and UI exposure.
 - **Indirect Combat:** Scatter/AoE/Frag/Scrambling are implemented; remaining gap is terrain/elevation fidelity for roll-down.
 - **Mission Keys Wiring:** Several keys exist but are not fully wired into gameplay events.
+- **Mission AI objective behavior:** Mission runtime scoring now updates in AI validation runs, but AI action-selection remains mostly objective-agnostic in several missions (e.g., QAI_12/14/15/17 showed QAI_11-like action profiles under identical seed/loadout). See `generated/ai-battle-reports/mission-scan-summary-qai11-20.json`.
+- **Mission scoring parity:** Current mission scan shows empty mission VP payloads for QAI_11 and QAI_13 (`vp: {}`), which must be resolved by rule-confirmed scoring semantics or explicit mission-level no-VP documentation.
+- **Mission event hook coverage:** Mission runtime hooks are still strongest on direct-attack paths; reactive/passive/interrupt attack consequences are not yet fully reflected into mission event/scoring updates.
 - **Movement/Terrain:** Terrain categories and movement constraints require full QSR fidelity.
 
 ### Optional Rule Toggle (Required)
@@ -340,6 +345,133 @@ Remaining high-priority technical debt after current remediation:
 - Promote visual-audit API from script scope into shared runtime service module for UI consumption (non-script entry points).
 - Repository-wide TypeScript drift outside active mission/AI execution paths.
 - Legacy duplicate mission modules still present on disk (retained for compatibility/tests), while runtime authority is now consolidated through `GameController`.
+
+### 10.2.2 Active Remediation Plan (2026-02-25)
+
+This is the current execution plan for the latest identified gaps (mission scan + scoring behavior).
+
+#### R1 (P0): Mission Scoring Correctness and Event Coverage
+1. Validate QAI_11 and QAI_13 scoring expectations from source rules and ensure runtime emits explicit mission scoring payloads for those missions (`vpBySide`, `rpBySide`, or explicit `notApplicable` semantics).
+2. Extend mission runtime event forwarding so direct, reactive, passive-option, and interrupt attack outcomes all feed mission state transitions and key scoring hooks.
+3. Add regression tests across QAI_11..QAI_20 for mission-runtime payload presence, winner resolution consistency, and tie metadata correctness.
+
+**Exit Criteria**
+- No mission returns ambiguous empty scoring payloads when scoring should exist.
+- Reactive/passive/interrupt eliminations and model-state changes affect mission scoring exactly once.
+- Mission winner/tie resolution remains deterministic under seeded replays.
+
+#### R2 (P0): AI Scoring Behavior Patch (Strategem-Level)
+1. Patch utility scoring at tactical strategem level (not doctrine container only) to increase mission-objective pressure by mission keys (POI, courier, sabotage, switches, caches, extraction, etc.).
+2. Add role-aware action valuation:
+   - ranged-capable models prioritize survivability lanes (cover, lean, hidden-preserving fire positions) plus OR-multiple pressure.
+   - close-combat-centric models prioritize long-horizon closing, engagement traps, and anti-exposure pathing.
+3. Increase valuation of `Wait`, `React`, bonus actions, and passive options when tactical conditions create clear expected-value gains.
+
+**Exit Criteria**
+- Mission-scan behavior profiles diverge meaningfully where mission objectives differ.
+- Bonus/passive/wait/react usage rates increase when tactical opportunities exist.
+- Utility output clearly explains why non-attack actions were selected.
+
+#### R3 (P1): Movement + Cover-Seeking Quality (All Game Sizes)
+1. Replace short-horizon movement bias with board-scale route selection backed by mesh/quadtree-aware path targets.
+2. Incorporate cover quality, lean opportunity, and exposure risk into movement score before attack score arbitration.
+3. Keep behavior size-agnostic (SMALL through VERY_LARGE) with OR/visibility and terrain constraints applied consistently.
+
+**Exit Criteria**
+- Movement rates are tactically credible for ranged and close doctrines across sizes.
+- Cover-seeking and lean-assisted lanes are visible in audit/reports without manual overrides.
+
+#### R4 (P1): Cross-Mission Validation Harness and Failure Flags
+1. Keep automated QAI_11..QAI_20 scan report (`mission-scan-summary-qai11-20.json`) as a standard artifact.
+2. Add automated diff flags for suspicious profile cloning across missions under fixed seeds/doctrines.
+3. Add report-level diagnostics for low-use tactical mechanics (wait/react/bonus/passive/detect/lean) to catch scoring regressions quickly.
+
+**Exit Criteria**
+- Scan output classifies mission behavior as expected divergence vs suspicious convergence.
+- CI/local validation can fail fast on mission-behavior regressions.
+
+#### R5 (P2): Documentation and Traceability Sync
+1. Update `qsr-traceability.md` and `rules*.md` to reflect finalized mission scoring semantics and action-economy behavior.
+2. Keep `rules-overrides.md` as authoritative override index when runtime differs from source text by design.
+
+**Exit Criteria**
+- Traceability entries match runtime behavior and tests.
+- No known doc/runtime mismatch remains untracked in blueprint backlog.
+
+### 10.2.3 R1 Progress Update (2026-02-25)
+
+Implemented now:
+1. Mission runtime payloads in AI validation reports now always include side-scoped VP/RP keys (including explicit `0` values), removing ambiguous empty scoring maps for missions like QAI_11/QAI_13.
+2. Mission event forwarding was expanded in AI validation runtime to include additional combat pathways beyond direct selected attacks:
+   - passive counter responses from failed-hit pathways (`CounterStrike` / `CounterFire`),
+   - move-triggered opportunity attacks,
+   - `React`/`Standard react` attacks,
+   - carrier-down handling on KO/elimination transitions.
+3. Mission scan artifact was rerun and refreshed at `generated/ai-battle-reports/mission-scan-summary-qai11-20.json`.
+
+Still open in R1:
+1. Add dedicated regression tests for mission event forwarding across reactive/passive/interrupt pathways (currently covered by validation runs, but not yet by focused unit tests).
+2. Confirm any mission-specific semantics where all-zero VP is expected vs indicates missed mission objectives under a given doctrine/loadout/seed profile.
+
+### 10.2.4 R2 Progress Update (2026-02-25)
+
+Implemented now:
+1. Added stratagem-component propagation into AI runtime config (engagement/planning/aggression + mission id/role) so utility scoring can respond to tactical strategem composition, not only generic aggression/caution.
+2. Patched utility scoring to apply mission+stratagem pressure at action-selection time:
+   - mission-aware attack pressure vs move pressure,
+   - doctrine-aware melee/ranged preference scaling,
+   - objective-focused pressure for Keys-to-Victory planning,
+   - expanded wait scoring bias using mission context and defensive posture.
+3. Added mission-aware target-priority heuristics (center-pressure and VIP-pressure families) to reduce cross-mission behavior cloning.
+4. Improved action reasoning strings to include top scoring factors for easier audit of non-attack decisions.
+5. Added regression tests in `src/lib/mest-tactics/ai/core/ai.test.ts` for:
+   - objective mission move-pressure behavior,
+   - factorized utility reason strings.
+6. Re-ran cross-mission scan (`generated/ai-battle-reports/mission-scan-summary-qai11-20.json`):
+   - no mission now matches QAI_11 action-shape exactly under the same seed/doctrine profile.
+7. Re-ran QAI_20 (20-run, watchman vs watchman):
+   - report: `generated/ai-battle-reports/qai-20-validation-2026-02-25T02-42-52-498Z.json`
+   - bonus actions: `offered=729, executed=207`
+   - passive options: `offered=13548, used=1115`
+   - reacts remained active (`103` total).
+8. Added objective-marker interaction decision path:
+   - Utility scorer now emits `fiddle` objective actions (`acquire/share/transfer/destroy`) when OM snapshots indicate local opportunities.
+   - Character decision payload now carries marker action metadata.
+   - AI battle runtime executes objective marker APIs in `GameManager` for those decisions.
+   - Regression coverage added for objective-marker `fiddle` action generation.
+9. Refreshed current validation artifacts:
+   - mission scan: `generated/ai-battle-reports/mission-scan-summary-qai11-20.json`
+   - QAI_20 20-run: `generated/ai-battle-reports/qai-20-validation-2026-02-25T02-55-38-471Z.json`
+10. Added mission runtime OM projection parity layer:
+   - `MissionRuntimeAdapter` now projects mission-manager zone/marker state into shared OM snapshots for QAI_12..QAI_20 (plus Assault/Breach manager markers).
+   - Projected entries are tagged for interaction policy (`projectedFromMissionManager`, `aiInteractable`) and objective APIs enforce supported operations per mission source.
+   - AI objective-action scoring now ignores non-interactable projected markers to prevent AP-wasting no-op interactions.
+   - Regression coverage added for projected-marker snapshots and read-only protection.
+11. Added first mission-specific projected OM semantics:
+   - QAI_13 Assault projected markers are now interactable through `acquire` and routed to mission-native `assault/harvest` operations (not generic OM carry logic).
+   - Turn-end auto marker processing now skips markers already interacted this turn to avoid double scoring.
+   - Non-supported operations (`share`, `transfer`, `destroy`) are blocked for all mission-projected markers.
+12. Fixed Assault marker provisioning bug:
+   - `createAssaultMission()` no longer forces empty marker arrays that collapse default marker count to zero.
+   - Default QAI_13 runtime now correctly provisions mission markers for projection and mission logic.
+13. Added first Breach projected OM interaction mapping:
+   - QAI_20 projected breach markers are now interactable through `acquire`, routed to mission-native zone-control semantics (`attemptControlMarker`), and do not use generic OM carry state.
+   - Contested breach markers reject interaction attempts; unchanged controllers reject redundant AP-spend interactions.
+14. Improved objective-seeking movement pressure:
+   - Utility scoring now adds objective-advance weighting to move actions (distance reduction toward interactable mission markers).
+   - Strategic movement sampling now includes path endpoints toward nearest interactable objective markers (not just enemy-focused endpoints).
+   - Objective-action scoring now applies mission-source boosts (`assault`, `breach`) for `acquire_marker` decisions near mission-projected markers.
+15. Updated Wait upkeep override and runtime ordering:
+   - Wait upkeep now resolves after Delay upkeep: maintain at `0 AP` if Free, otherwise pay `1 AP` to maintain or remove Wait.
+   - Runtime activation flow and regression tests were updated to enforce this sequence.
+16. Patched AI Wait utility valuation:
+   - Wait scoring now explicitly values reactive REF breakpoint advantages (`+1 REF` enabling marginal React checks).
+   - Wait scoring now explicitly values Delay-token avoidance opportunities from interrupt/react pathways.
+   - Added objective-scoped wait factors to action reasoning payloads for traceability.
+
+Still open in R2:
+1. Wait uptake is still low in this doctrine/mission profile and needs targeted tactical-condition weighting (not global inflation).
+2. Mission-specific projected OM semantics are still incomplete for non-Assault/Breach objective sources (zone-centric missions still use projection for AI context but not direct objective action semantics).
 
 ## 11. Mission Engine Roadmap
 

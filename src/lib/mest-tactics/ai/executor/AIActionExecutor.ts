@@ -281,7 +281,7 @@ export class AIActionExecutor {
         return this.executeRevive(character, decision.target, context);
 
       case 'wait':
-        return this.executeWait(character);
+        return this.executeWait(character, context);
 
       case 'hide':
         return this.executeHide(character, context);
@@ -291,6 +291,9 @@ export class AIActionExecutor {
           return this.createFailure(decision, character, 'Detect requires target');
         }
         return this.executeDetect(character, decision.target, context);
+
+      case 'fiddle':
+        return this.executeFiddle(character);
 
       case 'none':
         return this.createSuccess(decision, character, 'No action taken');
@@ -585,9 +588,13 @@ export class AIActionExecutor {
   /**
    * Execute Wait action
    */
-  private executeWait(character: Character): ExecutionResult {
+  private executeWait(character: Character, context: AIExecutionContext): ExecutionResult {
     try {
-      const result = this.manager.executeWait(character, { spendAp: true });
+      const result = this.manager.executeWait(character, {
+        spendAp: true,
+        opponents: context.enemies,
+        allowRevealReposition: false,
+      });
       if (!result.success) {
         return this.createFailure(
           { type: 'wait', reason: 'Wait', priority: 2, requiresAP: true },
@@ -694,6 +701,42 @@ export class AIActionExecutor {
     }
   }
 
+  /**
+   * Execute Fiddle action
+   */
+  private executeFiddle(character: Character): ExecutionResult {
+    if (!this.manager.battlefield) {
+      return this.createFailure({ type: 'fiddle', reason: '', priority: 0, requiresAP: true }, character, 'No battlefield');
+    }
+
+    try {
+      const result = this.manager.executeFiddle(character, {
+        spendAp: true,
+        attribute: 'int',
+        difficulty: 2,
+      });
+      if (!result.success) {
+        return this.createFailure(
+          { type: 'fiddle', reason: 'Fiddle', priority: 2, requiresAP: true },
+          character,
+          'Fiddle failed'
+        );
+      }
+
+      return this.createSuccess(
+        { type: 'fiddle', reason: 'Fiddle interaction', priority: 2, requiresAP: true },
+        character,
+        'Fiddle successful'
+      );
+    } catch (error) {
+      return this.createFailure(
+        { type: 'fiddle', reason: 'Fiddle', priority: 2, requiresAP: true },
+        character,
+        error instanceof Error ? error.message : 'Fiddle failed'
+      );
+    }
+  }
+
   // ============================================================================
   // Helper Methods
   // ============================================================================
@@ -739,6 +782,7 @@ export class AIActionExecutor {
       'wait': 'wait',
       'hide': 'hide',
       'detect': 'detect',
+      'fiddle': 'fiddle',
       'none': 'hold',
     };
     return mapping[type] || 'hold';

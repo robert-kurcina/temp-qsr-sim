@@ -134,6 +134,96 @@ describe('GameManager', () => {
     expect(gameManager.isTurnOver()).toBe(true);
   });
 
+  it('should prevent wait acquisition while outnumbered in engagement', () => {
+    const battlefield = new Battlefield(12, 12);
+    const actor = characters[0];
+    const enemyA = characters[1];
+    const enemyB = new Character({
+      ...enemyA.profile,
+      name: 'Charlie',
+    });
+    const localManager = new GameManager([actor, enemyA, enemyB], battlefield);
+
+    localManager.placeCharacter(actor, { x: 5, y: 5 });
+    localManager.placeCharacter(enemyA, { x: 6, y: 5 });
+    localManager.placeCharacter(enemyB, { x: 5, y: 6 });
+
+    const wait = localManager.executeWait(actor, { spendAp: true, opponents: [enemyA, enemyB] });
+    expect(wait.success).toBe(false);
+    expect(wait.reason).toContain('outnumbered');
+  });
+
+  it('should pay 1 AP to maintain wait when not free at activation start', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const actor = characters[0];
+    const enemy = characters[1];
+    actor.state.isWaiting = true;
+    actor.state.delayTokens = 1;
+
+    gameManager.placeCharacter(actor, { x: 5, y: 5 });
+    gameManager.placeCharacter(enemy, { x: 6, y: 5 });
+
+    const ap = gameManager.beginActivation(actor);
+    expect(ap).toBe(0);
+    expect(actor.state.isWaiting).toBe(true);
+  });
+
+  it('should maintain wait for free model with zero AP upkeep', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const actor = characters[0];
+    actor.state.isWaiting = true;
+    actor.state.isAttentive = false;
+    actor.state.delayTokens = 0;
+    gameManager.placeCharacter(actor, { x: 2, y: 2 });
+
+    const ap = gameManager.beginActivation(actor);
+    expect(ap).toBe(gameManager.apPerActivation);
+    expect(actor.state.isWaiting).toBe(true);
+  });
+
+  it('should remove wait when not free and unable to pay upkeep AP', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const actor = characters[0];
+    const enemy = characters[1];
+    actor.state.isWaiting = true;
+    actor.state.delayTokens = 2;
+
+    gameManager.placeCharacter(actor, { x: 5, y: 5 });
+    gameManager.placeCharacter(enemy, { x: 6, y: 5 });
+
+    const ap = gameManager.beginActivation(actor);
+    expect(ap).toBe(0);
+    expect(actor.state.isWaiting).toBe(false);
+  });
+
+  it('should reveal hidden opponents when wait is acquired', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const actor = characters[0];
+    const enemy = characters[1];
+    enemy.state.isHidden = true;
+    gameManager.placeCharacter(actor, { x: 2, y: 6 });
+    gameManager.placeCharacter(enemy, { x: 10, y: 6 });
+
+    const wait = gameManager.executeWait(actor, {
+      spendAp: true,
+      opponents: [enemy],
+      visibilityOrMu: 16,
+      allowRevealReposition: false,
+    });
+
+    expect(wait.success).toBe(true);
+    expect(wait.revealedCount).toBe(1);
+    expect(enemy.state.isHidden).toBe(false);
+  });
+
   it('should advance phases through a turn', () => {
     expect(gameManager.phase).toBe(TurnPhase.Setup);
     gameManager.advancePhase({ roller: () => 0 });
@@ -377,5 +467,152 @@ describe('GameManager', () => {
       allowDestroySwitch: true,
     });
     expect(allowed.success).toBe(true);
+  });
+
+  it('should project mission-manager zones into objective marker snapshots', () => {
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_12', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    const projected = gameManager
+      .getObjectiveMarkers()
+      .filter(marker => marker.id.startsWith('mission:QAI_12:'));
+
+    expect(projected.length).toBeGreaterThan(0);
+    expect(projected.every(marker => marker.metadata['projectedFromMissionManager'] === true)).toBe(true);
+    expect(projected.every(marker => marker.metadata['aiInteractable'] === false)).toBe(true);
+  });
+
+  it('should reject read-only mission-projected marker interactions', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_12', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    const markerId = gameManager
+      .getObjectiveMarkers()
+      .find(marker => marker.id.startsWith('mission:QAI_12:'))?.id;
+
+    expect(markerId).toBeDefined();
+    gameManager.placeCharacter(characters[0], { x: 12, y: 12 });
+    gameManager.beginActivation(characters[0]);
+
+    const result = gameManager.executeAcquireObjectiveMarker(characters[0], markerId!, 'SideA');
+    expect(result.success).toBe(false);
+    expect(result.reason).toContain('read-only');
+    expect(gameManager.getApRemaining(characters[0])).toBe(2);
+  });
+
+  it('should resolve projected assault marker interactions through mission semantics', () => {
+    const battlefield = new Battlefield(24, 24);
+    gameManager.setBattlefield(battlefield);
+
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_13', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    const markerId = gameManager
+      .getObjectiveMarkers()
+      .find(marker =>
+        marker.metadata['projectedFromMissionManager'] === true &&
+        marker.metadata['missionSource'] === 'assault' &&
+        marker.metadata['aiInteractable'] === true
+      )?.id;
+
+    expect(markerId).toBeDefined();
+    gameManager.placeCharacter(characters[0], { x: 6, y: 6 });
+    gameManager.beginActivation(characters[0]);
+
+    const result = gameManager.executeAcquireObjectiveMarker(characters[0], markerId!, 'SideA');
+    expect(result.success).toBe(true);
+    expect(gameManager.getApRemaining(characters[0])).toBe(1);
+
+    const markerAfter = gameManager.getObjectiveMarkers().find(marker => marker.id === markerId);
+    expect(markerAfter?.controlledBy).toBe('SideA');
+    expect(markerAfter?.switchState).toBe('On');
+    expect(markerAfter?.metadata['aiInteractable']).toBe(false);
+    expect(markerAfter?.carriedBy).toBeUndefined();
+  });
+
+  it('should block destroy on projected assault markers', () => {
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_13', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    const markerId = gameManager
+      .getObjectiveMarkers()
+      .find(marker =>
+        marker.metadata['projectedFromMissionManager'] === true &&
+        marker.metadata['missionSource'] === 'assault'
+      )?.id;
+
+    expect(markerId).toBeDefined();
+    const blocked = gameManager.executeDestroyObjectiveMarker(characters[0], markerId!, { spendAp: false });
+    expect(blocked.success).toBe(false);
+    expect(blocked.reason).toContain('do not support destroy');
+  });
+
+  it('should resolve projected breach marker interactions through mission semantics', () => {
+    const battlefield = new Battlefield(24, 24);
+    gameManager.setBattlefield(battlefield);
+
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_20', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    const markerId = gameManager
+      .getObjectiveMarkers()
+      .find(marker =>
+        marker.metadata['projectedFromMissionManager'] === true &&
+        marker.metadata['missionSource'] === 'breach' &&
+        marker.metadata['aiInteractable'] === true
+      )?.id;
+
+    expect(markerId).toBeDefined();
+    gameManager.placeCharacter(characters[0], { x: 12, y: 6 });
+    gameManager.beginActivation(characters[0]);
+
+    const result = gameManager.executeAcquireObjectiveMarker(characters[0], markerId!, 'SideA');
+    expect(result.success).toBe(true);
+    expect(gameManager.getApRemaining(characters[0])).toBe(1);
+
+    const markerAfter = gameManager.getObjectiveMarkers().find(marker => marker.id === markerId);
+    expect(markerAfter?.controlledBy).toBe('SideA');
+    expect(markerAfter?.switchState).toBe('On');
+  });
+
+  it('should block projected breach marker interaction when contested', () => {
+    const battlefield = new Battlefield(24, 24);
+    gameManager.setBattlefield(battlefield);
+
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    const runtime = createMissionRuntimeAdapter('QAI_20', [sideA, sideB]);
+    gameManager.setMissionRuntimeAdapter(runtime);
+
+    const markerId = gameManager
+      .getObjectiveMarkers()
+      .find(marker =>
+        marker.metadata['projectedFromMissionManager'] === true &&
+        marker.metadata['missionSource'] === 'breach' &&
+        marker.metadata['aiInteractable'] === true
+      )?.id;
+
+    expect(markerId).toBeDefined();
+    gameManager.placeCharacter(characters[0], { x: 12, y: 6 });
+    gameManager.placeCharacter(characters[1], { x: 13, y: 6 });
+    gameManager.beginActivation(characters[0]);
+
+    const result = gameManager.executeAcquireObjectiveMarker(characters[0], markerId!, 'SideA');
+    expect(result.success).toBe(false);
+    expect(result.reason).toContain('contested');
+    expect(gameManager.getApRemaining(characters[0])).toBe(2);
   });
 });

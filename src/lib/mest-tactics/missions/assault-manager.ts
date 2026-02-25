@@ -85,7 +85,8 @@ export class AssaultMissionManager {
 
   constructor(sides: MissionSide[], markerPositions?: Position[], markerCount?: number) {
     this.sides = new Map();
-    this.markerCount = markerCount ?? markerPositions?.length ?? 4;
+    const providedCount = markerPositions && markerPositions.length > 0 ? markerPositions.length : undefined;
+    this.markerCount = markerCount ?? providedCount ?? 4;
     this.state = {
       sideIds: sides.map(s => s.id),
       markers: new Map(),
@@ -110,7 +111,7 @@ export class AssaultMissionManager {
   /**
    * Set up assault markers
    */
-  private setupAssaultMarkers(positions: Position[]): void {
+  private setupAssaultMarkers(positions?: Position[]): void {
     const defaultPositions: Position[] = [
       { x: 6, y: 6 },
       { x: 18, y: 6 },
@@ -120,7 +121,10 @@ export class AssaultMissionManager {
       { x: 12, y: 3 },
     ];
 
-    const markerPositions = positions.length > 0 ? positions : defaultPositions.slice(0, this.markerCount);
+    const suppliedPositions = positions ?? [];
+    const markerPositions = suppliedPositions.length > 0
+      ? suppliedPositions
+      : defaultPositions.slice(0, this.markerCount);
 
     for (let i = 0; i < markerPositions.length; i++) {
       const isResource = i % 3 === 0; // Every 3rd marker is a resource
@@ -525,5 +529,5 @@ export function createAssaultMission(
   markerPositions?: Position[],
   markerCount?: number
 ): AssaultMissionManager {
-  return new AssaultMissionManager(sides, markerPositions ?? [], markerCount);
+  return new AssaultMissionManager(sides, markerPositions, markerCount);
 }

@@ -307,7 +307,10 @@ export class CharacterAI implements IAIController {
       type: bestAction.action,
       target: bestAction.target,
       position: bestAction.position,
-      reason: `Best action (score: ${bestAction.score.toFixed(2)})`,
+      objectiveAction: bestAction.objectiveAction,
+      markerId: bestAction.markerId,
+      markerTargetModelId: bestAction.markerTargetModelId,
+      reason: this.formatDecisionReason(bestAction),
       priority: bestAction.score,
       requiresAP: this.actionRequiresAP(bestAction.action),
     };
@@ -461,6 +464,18 @@ export class CharacterAI implements IAIController {
     };
   }
 
+  private formatDecisionReason(action: ScoredAction): string {
+    const factors = Object.entries(action.factors ?? {})
+      .filter(([, value]) => Number.isFinite(value) && Math.abs(value) >= 0.05)
+      .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
+      .slice(0, 3)
+      .map(([name, value]) => `${name}=${value.toFixed(2)}`);
+    if (factors.length === 0) {
+      return `Best action (score: ${action.score.toFixed(2)})`;
+    }
+    return `Best action (score: ${action.score.toFixed(2)}; ${factors.join(', ')})`;
+  }
+
   /**
    * Get AI configuration
    */
@@ -600,6 +615,7 @@ export class CharacterAI implements IAIController {
       case 'rally':
       case 'revive':
       case 'wait':
+      case 'fiddle':
       case 'combined':
         return true;
       case 'hold':

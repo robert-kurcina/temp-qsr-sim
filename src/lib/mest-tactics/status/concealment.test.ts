@@ -95,4 +95,16 @@ describe('concealment', () => {
     expect(result.revealed.length).toBe(1);
     expect(defender.state.isHidden).toBe(false);
   });
+
+  it('should not reveal hidden targets outside doubled wait visibility', () => {
+    defender.state.isHidden = true;
+    attacker.state.isWaiting = true;
+    // Force small base visibility to verify doubled range gating.
+    const result = resolveWaitReveal(battlefield, attacker, [defender], {
+      allowReposition: false,
+      visibilityOrMu: 2,
+    });
+    expect(result.revealed.length).toBe(0);
+    expect(defender.state.isHidden).toBe(true);
+  });
 });

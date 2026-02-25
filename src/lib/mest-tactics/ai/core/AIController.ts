@@ -9,6 +9,11 @@ import { Battlefield } from '../battlefield/Battlefield';
 import { Position } from '../battlefield/Position';
 import { Item } from '../core/Item';
 
+export type DoctrineEngagement = 'melee' | 'ranged' | 'balanced';
+export type DoctrinePlanning = 'aggression' | 'keys_to_victory' | 'balanced';
+export type DoctrineAggression = 'aggressive' | 'balanced' | 'defensive';
+export type MissionRole = 'attacker' | 'defender' | 'neutral';
+
 export interface AIControllerConfig {
   /** Aggression level 0-1 (higher = more aggressive targeting) */
   aggression: number;
@@ -34,6 +39,16 @@ export interface AIControllerConfig {
   allowConcentrateRangeExtension?: boolean;
   /** If true, AI range/target checks require per-character LOS/FOV gates */
   perCharacterFovLos?: boolean;
+  /** Mission identifier for mission-aware utility scoring */
+  missionId?: string;
+  /** Role for asymmetric missions */
+  missionRole?: MissionRole;
+  /** Doctrine engagement stratagem component */
+  doctrineEngagement?: DoctrineEngagement;
+  /** Doctrine planning stratagem component */
+  doctrinePlanning?: DoctrinePlanning;
+  /** Doctrine aggression stratagem component */
+  doctrineAggression?: DoctrineAggression;
 }
 
 export interface ActionDecision {
@@ -45,6 +60,12 @@ export interface ActionDecision {
   position?: Position;
   /** Weapon to use (for attacks) */
   weapon?: Item;
+  /** Objective marker action subtype (for `fiddle`) */
+  objectiveAction?: 'acquire_marker' | 'share_marker' | 'transfer_marker' | 'destroy_marker';
+  /** Target objective marker ID (for objective interactions) */
+  markerId?: string;
+  /** Secondary model target for marker transfer/share */
+  markerTargetModelId?: string;
   /** Reason for this decision (debug/logging) */
   reason: string;
   /** Priority score (higher = more urgent) */
@@ -150,10 +171,29 @@ export interface AIContext {
   currentRound: number;
   /** AP remaining for this character */
   apRemaining: number;
+  /** Side ID/name for mission-aware objective action gating */
+  sideId?: string;
+  /** Objective marker snapshot available to this decision frame */
+  objectiveMarkers?: AIObjectiveMarkerInfo[];
   /** Character's current knowledge */
   knowledge: CharacterKnowledge;
   /** AI configuration */
   config: AIControllerConfig;
+}
+
+export interface AIObjectiveMarkerInfo {
+  id: string;
+  name: string;
+  state: string;
+  position?: Position;
+  carriedBy?: string;
+  scoringSideId?: string;
+  controlledBy?: string;
+  omTypes: string[];
+  switchState?: string;
+  isNeutral?: boolean;
+  interactable?: boolean;
+  missionSource?: string;
 }
 
 export interface AIResult {
@@ -222,6 +262,10 @@ export const DEFAULT_AI_CONFIG: AIControllerConfig = {
   maxOrm: 3,
   allowConcentrateRangeExtension: true,
   perCharacterFovLos: false,
+  missionRole: 'neutral',
+  doctrineEngagement: 'balanced',
+  doctrinePlanning: 'balanced',
+  doctrineAggression: 'balanced',
 };
 
 /**
@@ -241,5 +285,10 @@ export function validateAIConfig(config: AIControllerConfig): AIControllerConfig
     maxOrm: Math.max(0, Math.floor(config.maxOrm ?? 3)),
     allowConcentrateRangeExtension: config.allowConcentrateRangeExtension ?? true,
     perCharacterFovLos: config.perCharacterFovLos ?? false,
+    missionId: config.missionId,
+    missionRole: config.missionRole ?? 'neutral',
+    doctrineEngagement: config.doctrineEngagement ?? 'balanced',
+    doctrinePlanning: config.doctrinePlanning ?? 'balanced',
+    doctrineAggression: config.doctrineAggression ?? 'balanced',
   };
 }
