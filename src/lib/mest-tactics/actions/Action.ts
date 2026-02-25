@@ -1,5 +1,5 @@
 import { Character } from '../character/Character';
-import { GameManager } from '../GameManager';
+import { GameManager } from '../engine/GameManager';
 
 export abstract class Action {
   constructor(public character: Character) {}

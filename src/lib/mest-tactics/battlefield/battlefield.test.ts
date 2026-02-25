@@ -1,10 +1,10 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Battlefield } from './Battlefield';
-import { Pathfinder } from './Pathfinder';
-import { TerrainType } from './Terrain';
-import { Character } from '../Character';
-import { Profile } from '../Profile';
+import { Pathfinder } from './pathfinding/Pathfinder';
+import { TerrainType } from './terrain/Terrain';
+import { Character } from '../core/Character';
+import { Profile } from '../core/Profile';
 
 describe('Battlefield Framework', () => {
   let battlefield: Battlefield;

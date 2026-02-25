@@ -1,9 +1,10 @@
 
-import { Character } from '../Character';
-import { resolveTest, TestParticipant, ResolveTestResult, DiceType } from '../dice-roller';
-import { TestContext } from '../TestContext';
-import { TestDice } from '../dice-roller';
-import { metricsService } from '../MetricsService';
+import { Character } from '../core/Character';
+import { resolveTest, TestParticipant, ResolveTestResult, DiceType } from '../subroutines/dice-roller';
+import { TestContext } from '../utils/TestContext';
+import { TestDice } from '../subroutines/dice-roller';
+import { metricsService } from '../engine/MetricsService';
+import { getLeadershipBonusDice, isImmuneToHindranceMoralePenalties } from '../traits/combat-traits';
 
 export function resolveMoraleTest(
   character: Character,
@@ -15,7 +16,10 @@ export function resolveMoraleTest(
   const bonusDice: TestDice = {};
   const penaltyDice: TestDice = {};
 
-  if (fearTokens > 0) {
+  // Insane trait: not affected by Hindrance penalties for Morale Tests
+  const isImmuneToHindrancePenalties = isImmuneToHindranceMoralePenalties(character);
+  
+  if (fearTokens > 0 && !isImmuneToHindrancePenalties) {
     penaltyDice[DiceType.Modifier] = fearTokens;
   }
 
@@ -25,6 +29,12 @@ export function resolveMoraleTest(
 
   if (context.isDisadvantaged) {
     penaltyDice[DiceType.Wild] = 1;
+  }
+
+  // Leadership X: +X Base dice for Morale Tests from nearby leader
+  // (Caller must set context.leadershipBonus if applicable)
+  if (context.leadershipBonus) {
+    bonusDice[DiceType.Base] = (bonusDice[DiceType.Base] || 0) + context.leadershipBonus;
   }
 
   const participant: TestParticipant = {
@@ -39,16 +49,6 @@ export function resolveMoraleTest(
   };
 
   const result = resolveTest(participant, systemPlayer, p1Rolls);
-
-  metricsService.logEvent('diceTestResolved', {
-    finalPools: {
-      p1FinalBonus: participant.bonusDice,
-      p1FinalPenalty: participant.penaltyDice,
-      p2FinalBonus: systemPlayer.bonusDice,
-      p2FinalPenalty: systemPlayer.penaltyDice,
-    },
-    result,
-  });
 
   return result;
 }

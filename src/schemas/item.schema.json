@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mest-tactics.com/schemas/item.schema.json",
+  "title": "Item",
+  "description": "A weapon, armor, or equipment item in MEST Tactics",
+  "type": "object",
+  "required": ["name", "class", "bp", "traits"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Item name",
+      "minLength": 1
+    },
+    "class": {
+      "type": "string",
+      "description": "Item class (e.g., 'Melee', 'Range - Energy', 'Armor - Gear')"
+    },
+    "bp": {
+      "type": "number",
+      "description": "Battle Point cost",
+      "minimum": 0
+    },
+    "or": {
+      "oneOf": [
+        { "type": "string", "enum": ["-"] },
+        { "type": "number", "minimum": 0 }
+      ],
+      "description": "Optimal Range (number or '-' for N/A)"
+    },
+    "accuracy": {
+      "oneOf": [
+        { "type": "string", "enum": ["-"] },
+        { "type": "number" }
+      ],
+      "description": "Accuracy modifier"
+    },
+    "impact": {
+      "type": "integer",
+      "description": "Impact value",
+      "minimum": 0
+    },
+    "dmg": {
+      "oneOf": [
+        { "type": "string", "enum": ["-"] },
+        { "type": "string", "pattern": "^[0-9+bdm]+$" }
+      ],
+      "description": "Damage formula (e.g., '2+1b', '3', '-')"
+    },
+    "traits": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "List of trait names"
+    },
+    "classification": {
+      "type": "string",
+      "enum": ["Melee", "Range", "Armor", "Equipment"],
+      "description": "Item classification"
+    },
+    "type": {
+      "type": "string",
+      "description": "Item type (e.g., 'Gear', 'Energy', 'Melee')"
+    }
+  },
+  "additionalProperties": false
+}

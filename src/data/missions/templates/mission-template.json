@@ -1,0 +1,94 @@
+{
+  "$schema": "../../../schemas/mission.schema.json",
+  "id": "QAI_XX",
+  "name": "Your Mission Name",
+  "description": "Your mission description here (10-500 characters)",
+  "sides": { 
+    "min": 2,
+    "max": 2,
+    "//_notes": "Recommended: 2 for competitive, 3-4 for free-for-all"
+  },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      {
+        "type": "poi",
+        "count": 3,
+        "formation": "triangle",
+        "spacing": 12,
+        "radius": 3,
+        "//_notes": "Zone types: poi, signal, cache, focal_node, threshold, mechanism"
+      }
+    ],
+    "deployment": "opposing_edges",
+    "//_notes": "Deployment: opposing_edges, corners, custom"
+  },
+  "victoryConditions": [
+    {
+      "type": "dominance",
+      "threshold": 5,
+      "immediate": true,
+      "description": "First to 5 VP wins",
+      "//_notes": "Types: elimination, dominance, extraction, survival, vp_majority, courier, rupture, harvest"
+    },
+    {
+      "type": "vp_majority",
+      "description": "Most VP at game end"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "turn.end.zone_control",
+      "vp": 1,
+      "description": "1 VP per zone controlled",
+      "//_notes": "Triggers: turn.end, turn.end.zone_control, model.eliminated, zone.captured, courier.edge_reach, vip.extracted, vp.destroyed, cache.harvested, first_blood, objective.complete"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "your_rule_id",
+      "name": "Your Rule Name",
+      "description": "Rule description",
+      "effect": "Mechanical effect",
+      "config": {}
+    }
+  ],
+  "turnLimit": 10,
+  "//_turnLimit_notes": "Recommended: 6-12 turns",
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "//_endGameDieStart_notes": "Recommended: 4-8",
+  "sizeConfig": {
+    "SMALL": {
+      "bpMin": 250,
+      "bpMax": 500,
+      "modelMin": 4,
+      "modelMax": 8,
+      "vpThreshold": 3,
+      "zoneCount": 2
+    },
+    "MEDIUM": {
+      "bpMin": 500,
+      "bpMax": 750,
+      "modelMin": 6,
+      "modelMax": 12,
+      "vpThreshold": 4,
+      "zoneCount": 3
+    },
+    "LARGE": {
+      "bpMin": 750,
+      "bpMax": 1000,
+      "modelMin": 8,
+      "modelMax": 16,
+      "vpThreshold": 5,
+      "zoneCount": 4
+    }
+  },
+  "_balance": {
+    "expectedTurns": 6,
+    "//_expectedTurns_notes": "Target: 5-8 turns for standard game",
+    "difficulty": "medium",
+    "//_difficulty_notes": "easy, medium, hard",
+    "notes": "Design notes and playtesting reminders"
+  }
+}

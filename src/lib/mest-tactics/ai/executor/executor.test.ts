@@ -1,0 +1,379 @@
+/**
+ * Phase 4 Integration Tests
+ * 
+ * Tests for AI Action Executor and Game Loop.
+ */
+
+import { describe, it, expect, beforeEach } from 'vitest';
+import { Character } from '../../core/Character';
+import { Profile } from '../../core/Profile';
+import { Battlefield } from '../../battlefield/Battlefield';
+import { GameManager } from '../../engine/GameManager';
+import { createMissionSide } from '../../mission/MissionSide';
+import { buildAssembly } from '../../mission/assembly-builder';
+import { createAIExecutor, AIActionExecutor } from './AIActionExecutor';
+import { createAIGameLoop, AIGameLoop } from './AIGameLoop';
+import { ActionDecision } from '../core/AIController';
+
+function makeTestProfile(name: string): Profile {
+  return {
+    name,
+    archetype: { 
+      name: 'Average',
+      attributes: { 
+        cca: 2, 
+        rca: 2, 
+        ref: 2, 
+        int: 2, 
+        pow: 2, 
+        str: 2, 
+        for: 2, 
+        mov: 4, 
+        siz: 3 
+      },
+      traits: [],
+      bp: 30,
+    },
+    items: [],
+    totalBp: 30,
+    adjustedBp: 0,
+    adjustedItemCosts: { meleeBp: [], rangedBp: [], equipmentBp: [] },
+    physicality: 3,
+    adjPhysicality: 3,
+    durability: 3,
+    adjDurability: 3,
+    burden: { totalLaden: 0, totalBurden: 0 },
+    totalHands: 2,
+    totalDeflect: 0,
+    totalAR: 0,
+    finalTraits: [],
+    allTraits: [],
+  };
+}
+
+function makeTestCharacter(name: string): Character {
+  const character = new Character(makeTestProfile(name));
+  character.finalAttributes = character.attributes;
+  return character;
+}
+
+function makeTestSides(
+  battlefield: Battlefield,
+  sideAName: string = 'SideA',
+  sideBName: string = 'SideB'
+): { sideA: any; sideB: any; charactersA: Character[]; charactersB: Character[] } {
+  const charactersA: Character[] = [];
+  const charactersB: Character[] = [];
+
+  for (let i = 0; i < 3; i++) {
+    const charA = makeTestCharacter(`${sideAName}-${i}`);
+    charactersA.push(charA);
+    battlefield.placeCharacter(charA, { x: 2 + i * 2, y: 12 });
+
+    const charB = makeTestCharacter(`${sideBName}-${i}`);
+    charactersB.push(charB);
+    battlefield.placeCharacter(charB, { x: 18 - i * 2, y: 12 });
+  }
+
+  const rosterA = buildAssembly(`${sideAName} Assembly`, charactersA.map(c => c.profile));
+  const rosterB = buildAssembly(`${sideBName} Assembly`, charactersB.map(c => c.profile));
+
+  const sideA = createMissionSide(sideAName, [rosterA], { startingIndex: 0 });
+  const sideB = createMissionSide(sideBName, [rosterB], { startingIndex: 3 });
+
+  return { sideA, sideB, charactersA, charactersB };
+}
+
+describe('AIActionExecutor', () => {
+  let battlefield: Battlefield;
+  let manager: GameManager;
+  let executor: AIActionExecutor;
+  let character: Character;
+  let target: Character;
+
+  beforeEach(() => {
+    battlefield = new Battlefield(24, 24);
+    const char1 = makeTestCharacter('char1');
+    const char2 = makeTestCharacter('char2');
+    battlefield.placeCharacter(char1, { x: 10, y: 12 });
+    battlefield.placeCharacter(char2, { x: 14, y: 12 });
+
+    manager = new GameManager([char1, char2], battlefield);
+    executor = createAIExecutor(manager, { verboseLogging: false });
+    
+    character = char1;
+    target = char2;
+  });
+
+  it('should create executor with default config', () => {
+    expect(executor).toBeDefined();
+    expect(executor.config.validateActions).toBe(true);
+    expect(executor.config.enableReplanning).toBe(true);
+  });
+
+  it('should execute hold action', () => {
+    const decision: ActionDecision = {
+      type: 'hold',
+      reason: 'Test hold',
+      priority: 0,
+      requiresAP: false,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    const result = executor.executeAction(decision, character, context);
+    expect(result.success).toBe(true);
+  });
+
+  it('should validate action before execution', () => {
+    const decision: ActionDecision = {
+      type: 'move',
+      position: { x: 12, y: 12 },
+      reason: 'Test move',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    const result = executor.executeAction(decision, character, context);
+    // Should attempt validation and execution
+    expect(result).toBeDefined();
+  });
+
+  it('should handle execution failure gracefully', () => {
+    const decision: ActionDecision = {
+      type: 'close_combat',
+      target,
+      reason: 'Test attack',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    // Characters are not engaged, so this should fail validation
+    const result = executor.executeAction(decision, character, context);
+    expect(result.success).toBe(false);
+    expect(result.replanningRecommended).toBe(true);
+  });
+
+  it('should track replan attempts', () => {
+    const decision: ActionDecision = {
+      type: 'close_combat',
+      target,
+      reason: 'Test attack',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    // Execute multiple failing actions
+    for (let i = 0; i < 3; i++) {
+      executor.executeAction(decision, character, context);
+    }
+
+    // After max attempts, should stop recommending replanning
+    const result = executor.executeAction(decision, character, context);
+    expect(result.replanningRecommended).toBe(false);
+  });
+
+  it('should reset replan attempts between turns', () => {
+    const decision: ActionDecision = {
+      type: 'close_combat',
+      target,
+      reason: 'Test attack',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    // Exhaust replan attempts
+    for (let i = 0; i < 3; i++) {
+      executor.executeAction(decision, character, context);
+    }
+
+    // Reset
+    executor.resetReplanAttempts();
+
+    // Should allow replanning again
+    const result = executor.executeAction(decision, character, context);
+    expect(result.replanningRecommended).toBe(true);
+  });
+
+  it('should execute disengage via GameManager API', () => {
+    target.profile.items = [
+      {
+        name: 'Defender Blade',
+        class: 'Melee',
+        classification: 'Melee',
+        type: 'Melee',
+        bp: 0,
+        traits: [],
+      } as any,
+    ];
+
+    const decision: ActionDecision = {
+      type: 'disengage',
+      target,
+      reason: 'Test disengage',
+      priority: 2,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    const result = executor.executeAction(decision, character, context);
+    expect(result.error ?? '').not.toContain('executeDisengageAction');
+    expect(result.action.type).toBe('disengage');
+  });
+});
+
+describe('AIGameLoop', () => {
+  let battlefield: Battlefield;
+  let manager: GameManager;
+  let gameLoop: AIGameLoop;
+  let sides: { sideA: any; sideB: any; charactersA: Character[]; charactersB: Character[] };
+
+  beforeEach(() => {
+    battlefield = new Battlefield(24, 24);
+    sides = makeTestSides(battlefield);
+    
+    const allCharacters = [...sides.charactersA, ...sides.charactersB];
+    manager = new GameManager(allCharacters, battlefield);
+    
+    // Set up activation order
+    manager.activationOrder = allCharacters;
+
+    gameLoop = createAIGameLoop(manager, battlefield, [sides.sideA, sides.sideB], {
+      verboseLogging: false,
+      maxActionsPerTurn: 3,
+    });
+  });
+
+  it('should create game loop with default config', () => {
+    expect(gameLoop).toBeDefined();
+  });
+
+  it('should run a turn of AI actions', () => {
+    const result = gameLoop.runTurn(1);
+    
+    expect(result).toBeDefined();
+    expect(result.totalActions).toBeGreaterThanOrEqual(0);
+    expect(manager.isTurnOver()).toBe(true);
+  });
+
+  it('should run a complete game', () => {
+    const result = gameLoop.runGame(5);
+    
+    expect(result).toBeDefined();
+    expect(result.finalTurn).toBeGreaterThanOrEqual(1);
+    expect(result.finalTurn).toBeLessThanOrEqual(5);
+    expect(result.totalActions).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should handle all AI layers', () => {
+    const result = gameLoop.runGame(3);
+    
+    // Should have attempted actions
+    expect(result.totalActions).toBeGreaterThan(0);
+  });
+
+  it('should execute character-AI decisions when strategic/tactical layers are disabled', () => {
+    const gameLoopWithCharacterOnly = createAIGameLoop(manager, battlefield, [sides.sideA, sides.sideB], {
+      enableStrategic: false,
+      enableTactical: false,
+      enableCharacterAI: true,
+      verboseLogging: false,
+    });
+
+    const result = gameLoopWithCharacterOnly.runTurn(1);
+    expect(result.totalActions).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe('Phase 4 Integration', () => {
+  it('should integrate full AI pipeline', () => {
+    const battlefield = new Battlefield(24, 24);
+    const sides = makeTestSides(battlefield);
+    
+    const allCharacters = [...sides.charactersA, ...sides.charactersB];
+    const manager = new GameManager(allCharacters, battlefield);
+    manager.activationOrder = allCharacters;
+
+    const executor = createAIExecutor(manager);
+    const gameLoop = createAIGameLoop(manager, battlefield, [sides.sideA, sides.sideB]);
+
+    // Verify all components are connected
+    expect(executor).toBeDefined();
+    expect(gameLoop).toBeDefined();
+
+    // Run a short game
+    const result = gameLoop.runGame(3);
+    expect(result.finalTurn).toBeGreaterThanOrEqual(1);
+  });
+
+  it('should handle action validation failures', () => {
+    const battlefield = new Battlefield(24, 24);
+    const sides = makeTestSides(battlefield);
+    
+    const allCharacters = [...sides.charactersA, ...sides.charactersB];
+    const manager = new GameManager(allCharacters, battlefield);
+    manager.activationOrder = allCharacters;
+
+    const gameLoop = createAIGameLoop(manager, battlefield, [sides.sideA, sides.sideB], {
+      enableValidation: true,
+      enableReplanning: true,
+    });
+
+    const result = gameLoop.runGame(2);
+    
+    // Should have handled failures gracefully
+    expect(result).toBeDefined();
+    expect(result.failedActions).toBeGreaterThanOrEqual(0);
+  });
+});

@@ -1,29 +1,47 @@
 {
-  "small": {
+  "VERY_SMALL": {
+    "name": "Very Small",
+    "minBP": 125,
+    "maxBP": 250,
+    "minModels": 2,
+    "maxModels": 4,
+    "battlefieldWidthMU": 18,
+    "battlefieldHeightMU": 24
+  },
+  "SMALL": {
     "name": "Small",
     "minBP": 250,
     "maxBP": 500,
     "minModels": 4,
     "maxModels": 8,
-    "battlefieldSizeMU": 24,
-    "endGameThreshold": 4
+    "battlefieldWidthMU": 24,
+    "battlefieldHeightMU": 24
   },
-  "medium": {
+  "MEDIUM": {
     "name": "Medium",
     "minBP": 500,
     "maxBP": 750,
     "minModels": 6,
     "maxModels": 12,
-    "battlefieldSizeMU": 36,
-    "endGameThreshold": 6
+    "battlefieldWidthMU": 36,
+    "battlefieldHeightMU": 36
   },
-  "large": {
+  "LARGE": {
     "name": "Large",
     "minBP": 750,
     "maxBP": 1000,
     "minModels": 8,
-    "maxModels": 16,
-    "battlefieldSizeMU": 48,
-    "endGameThreshold": 8
+    "maxModels": 12,
+    "battlefieldWidthMU": 48,
+    "battlefieldHeightMU": 48
+  },
+  "VERY_LARGE": {
+    "name": "Very Large",
+    "minBP": 1000,
+    "maxBP": 1250,
+    "minModels": 10,
+    "maxModels": 20,
+    "battlefieldWidthMU": 72,
+    "battlefieldHeightMU": 48
   }
 }

@@ -1,0 +1,77 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_14",
+  "name": "Dominion",
+  "description": "Both Sides race to activate and hold markers that call in powerful outside support. The first to achieve sustained signal dominance wins.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "signal", "count": 3, "formation": "triangle", "spacing": 12, "radius": 3 }
+    ],
+    "deployment": "opposing_edges"
+  },
+  "victoryConditions": [
+    {
+      "type": "dominance",
+      "threshold": 5,
+      "immediate": true,
+      "description": "First to 5 VP wins immediately"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "turn.end.zone_control",
+      "vp": 1,
+      "description": "+1 VP per Controlled Signal Zone at End of Turn"
+    },
+    {
+      "trigger": "courier.edge_reach",
+      "vp": 1,
+      "description": "+1 VP for Courier reaching Opposing edge, +1 VP per Turn while remaining"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "dominance",
+      "name": "Dominance",
+      "description": "Signal Zone is Controlled when at least 1 Friendly model is within zone and no Opposing models are within",
+      "effect": "Zone control mechanic",
+      "config": { "controlDistance": 4 }
+    },
+    {
+      "id": "courier",
+      "name": "Courier",
+      "description": "Each Side designates one Courier. Reaching Opposing edge awards +1 VP immediately",
+      "effect": "Objective runner"
+    },
+    {
+      "id": "sanctuary",
+      "name": "Sanctuary",
+      "description": "+1 VP for maintaining at least 25% of starting BP within deployment edge",
+      "effect": "Defensive bonus"
+    }
+  ],
+  "turnLimit": 10,
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "sizeConfig": {
+    "SMALL": {
+      "vpThreshold": 3,
+      "zoneCount": 2
+    },
+    "MEDIUM": {
+      "vpThreshold": 4,
+      "zoneCount": 3
+    },
+    "LARGE": {
+      "vpThreshold": 5,
+      "zoneCount": 4
+    }
+  },
+  "_balance": {
+    "expectedTurns": 6,
+    "difficulty": "medium",
+    "notes": "Balanced between aggression and defense"
+  }
+}

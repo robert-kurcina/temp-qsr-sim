@@ -1,0 +1,78 @@
+Objective Markers
+Each Mission will describe if there will be Objective
+Markers [ OMs ] present, their type and number, and how
+to place them upon the battlefield.
+Typically place OMs near Obstacle terrain to indicate
+something important is present.
+ OM Types — There are several different types of OMs,
+and how they are acquired during play and how they
+enable scoring varies. An OM could be one or more of:
+ Switches — A Switch OM. These change the state of some
+game element. These do not move, and may not be
+acquired or collected. Switches have and “On” and “Off”
+state.
+ Lock — A Switch OM. Similar to Switches, but its state
+may only be toggled if the paired Idea or Physical OMs
+are In Hand.
+ Key — A Key OM. These either an Idea or Physical OM
+paired with a specifically named Lock OM.
+ Idea — An Idea OM. These represents abstract bits of
+information either something that is seen, heard, or
+learned at the location of the OM. No limit to how many
+can be In Hand.
+ Tiny — A Physical OM. This is the default OM type. It is a
+tiny physical Item which can be pocketed. Tiny OMs
+always require at least 2 AP to acquire.
+ Small — A Physical OM. These are small physical Items
+which can be held in hand. These are assigned the [1H]
+and [Stub] traits, and are about the size of a loaf of bread.
+ Large — A Physical OM. These are large physical Items
+which are assigned the [1H] trait. Having 2 gives the set
+the [Laden] trait. About the size of a small bag of flour.
+ Bulky — A Physical OM. These are bulky physical Items
+which are assigned [2H] and [Laden 2] traits. About 10-kg
+in mass or about the size of a large bag of dog food.
+
+Actions
+OMs may be acquired transferred, and shared.
+ Acquire — While Free, if there are no other Attentive
+Opposing models which are also in base-contact with
+the OM; acquire by spending 1 AP for a Fiddle action.
+ Unless the OM represents a Switch OM, keep it with the
+model when acquired. Note or identify that it is acquired
+and are “In Hand”.
+ Animals may never acquire Idea OMs, but may alter
+Switch OMs.
+ Per the standard rules, characters usually have 2 Hands to
+carry Items, and can use effectively an additional Hand,
+but it is -1 Base die for all Combat Tests and Fiddle Test.
+ Transfer — While in base-contact, any Physical OMs can
+be transferred as a 1 AP Fiddle action to the Active
+character between Friendly characters if at least one is
+Attentive Ordered.
+ The Fiddle action will require 2 AP if it involves Stunned or
+Disordered Distracted characters. This includes Opposing
+characters.
+ Physical OMs transferred from an Opposing model are
+always regarded as Neutral OMs.
+ Shared — Idea OMs require 1 AP, plus one per total
+Hindrance between two Free Friendly Attentive
+characters within Cohesion. Both will have a copy, but
+only one copy will ever benefit a player for scoring.
+Concerns
+ Scoring — Each OM acquired awards +1 RP. Switch OMs
+are acquired when first toggled, and Physical OMs are
+not scored if character with it becomes Eliminated.
+ Dropping — Characters which are KO’d or Eliminated
+drop all their Physical OMs at their location. They are
+dropped as Neutral OMs valuable to all Sides.
+ Improvised Weapons — All Physical OMs may be used
+as an Improvised weapon. However, they immediately
+break and become worthless when performing a
+Damage test using them. When broken, they are worth
+zero RP.
+ Destroying — All Switch OMs may never be attacked or
+destroyed unless specified by a Mission. Physical OMs
+may be attacked using a Fiddle action for 1 AP to destroy
+them. Idea OMs are usually destroyed when a character
+which acquired it has been Eliminated.

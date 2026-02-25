@@ -1,0 +1,449 @@
+{
+  "config": {
+    "missionId": "QAI_11",
+    "missionName": "Elimination",
+    "gameSize": "VERY_SMALL",
+    "battlefieldSize": 18,
+    "maxTurns": 10,
+    "endGameTurn": 10,
+    "sides": [
+      {
+        "name": "Alpha",
+        "bp": 250,
+        "modelCount": 4,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Alpha Assembly",
+        "aggression": 0.5,
+        "caution": 0.5
+      },
+      {
+        "name": "Bravo",
+        "bp": 250,
+        "modelCount": 4,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Bravo Assembly",
+        "aggression": 0.5,
+        "caution": 0.5
+      }
+    ],
+    "densityRatio": 30,
+    "verbose": true
+  },
+  "winner": "Bravo",
+  "finalCounts": [
+    {
+      "name": "Alpha",
+      "remaining": 0
+    },
+    {
+      "name": "Bravo",
+      "remaining": 4
+    }
+  ],
+  "stats": {
+    "totalActions": 22,
+    "moves": 3,
+    "closeCombats": 4,
+    "rangedCombats": 11,
+    "disengages": 0,
+    "waits": 2,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "eliminations": 0,
+    "kos": 4,
+    "turnsCompleted": 6,
+    "losChecks": 11,
+    "lofChecks": 11,
+    "totalPathLength": 6,
+    "modelsMoved": 3
+  },
+  "usage": {
+    "modelCount": 8,
+    "modelsMoved": 3,
+    "modelsUsedWait": 2,
+    "modelsUsedDetect": 0,
+    "modelsUsedHide": 0,
+    "modelsUsedReact": 0,
+    "totalPathLength": 6,
+    "averagePathLengthPerMovedModel": 2,
+    "averagePathLengthPerModel": 0.75,
+    "topPathModels": [
+      {
+        "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+        "modelName": "elite-rifle-light-semi/a-sword-broad-loadout",
+        "side": "Bravo",
+        "pathLength": 3,
+        "moveActions": 1,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "veteran-rifle-light-semi/a-loadout",
+        "modelName": "veteran-rifle-light-semi/a-loadout",
+        "side": "Alpha",
+        "pathLength": 2,
+        "moveActions": 1,
+        "waitAttempts": 4,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Bravo",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      }
+    ],
+    "modelUsage": [
+      {
+        "modelId": "veteran-rifle-light-semi/a-loadout",
+        "modelName": "veteran-rifle-light-semi/a-loadout",
+        "side": "Alpha",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitAttempts": 1,
+        "waitSuccesses": 1,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "veteran-rifle-light-semi/a-loadout",
+        "modelName": "veteran-rifle-light-semi/a-loadout",
+        "side": "Alpha",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitAttempts": 3,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "veteran-rifle-light-semi/a-loadout",
+        "modelName": "veteran-rifle-light-semi/a-loadout",
+        "side": "Alpha",
+        "pathLength": 2,
+        "moveActions": 1,
+        "waitAttempts": 4,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "veteran-rifle-light-semi/a-loadout",
+        "modelName": "veteran-rifle-light-semi/a-loadout",
+        "side": "Alpha",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitAttempts": 6,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Bravo",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "veteran-pistol-medium-auto-sword-broad-loadout",
+        "modelName": "veteran-pistol-medium-auto-sword-broad-loadout",
+        "side": "Bravo",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitAttempts": 5,
+        "waitSuccesses": 1,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+        "modelName": "elite-rifle-light-semi/a-sword-broad-loadout",
+        "side": "Bravo",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+        "modelName": "elite-rifle-light-semi/a-sword-broad-loadout",
+        "side": "Bravo",
+        "pathLength": 3,
+        "moveActions": 1,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      }
+    ]
+  },
+  "log": [
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "veteran-rifle-light-semi/a-loadout",
+      "side": "Alpha",
+      "model": "veteran-rifle-light-semi/a-loadout",
+      "action": "wait",
+      "detail": "Hold defensive position",
+      "result": "wait=true"
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 9.75)"
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 10.25)"
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 9.48)"
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "veteran-pistol-medium-auto-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "veteran-pistol-medium-auto-sword-broad-loadout",
+      "action": "wait",
+      "detail": "No valid actions",
+      "result": "wait=true"
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 9.75)"
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 10.25)"
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 9.98)"
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 10.25)"
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 9.75)"
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 9.48)"
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 10.25)"
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Focus fire on wounded target"
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "close_combat",
+      "detail": "Focus fire on wounded target",
+      "result": "close_combat=false:not-engaged"
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "veteran-pistol-medium-auto-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "veteran-pistol-medium-auto-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Focus fire on wounded target",
+      "result": "close_combat=false:not-engaged"
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "veteran-rifle-light-semi/a-loadout",
+      "side": "Alpha",
+      "model": "veteran-rifle-light-semi/a-loadout",
+      "action": "move",
+      "detail": "Retreat to safety"
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Focus fire on wounded target",
+      "result": "hit=true, KO=true, Elim=false"
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Best action (score: 11.95)",
+      "result": "hit=true, KO=false, Elim=false"
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Best action (score: 9.51)"
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Best action (score: 11.95)",
+      "result": "hit=true, KO=false, Elim=false"
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "side": "Bravo",
+      "model": "elite-rifle-light-semi/a-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Best action (score: 12.55)",
+      "result": "hit=true, KO=true, Elim=false"
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 0.40)"
+    }
+  ]
+}

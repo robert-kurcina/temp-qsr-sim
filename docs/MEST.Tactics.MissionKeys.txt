@@ -1,0 +1,171 @@
+MISSIONS & SCENARIOS
+Most of the time players will want to just have a fray and
+throw their forces at each other. At other times they’ll
+want to have nuanced game-play. Missions provide this.
+Overview
+Missions define starting, end, and victory conditions.
+These allow players to form their own battlefields and
+freely choose Archetypes to build their own Assemblies.
+Scenarios are also Missions, but also specify what terrain
+and Assemblies are to be used.
+Mission Elements
+There are several types of game elements introduced into
+most Missions. These are Battlefield Edges, Points-of-
+Interests, Very-Important-Persons, Resource Points,
+Objective Markers, and Keys to Victory.
+Battlefield Edges, Zones, and Corners
+A Battlefield is the play-area and is typically a square or
+rectangle with four “battlefield edges”.
+ Edges — When players deploy their models, it will be
+from one of these edges.
+ Zones — Each Battlefield zone runs the entire length of
+the play-area at each Battlefield edge, and be 2, 4, or 8
+MU in width for a Small, Medium, or Large game.
+ In a game with two Sides, Opposing players will deploy on
+opposing sides of the battlefield.
+ If there are 3 or 4 Sides, each picks one of the edges.
+However, each edge will stop before the corners by 2, 4,
+or 8 MU for a Small, Medium, or Large game.
+ Corners — Some Missions may describe Battlefield
+corners. These will be one of the four corners of the
+play-area going outward a radius of 4, 8, or 16 MU for a
+Small, Medium, or Large game.
+Points of Interest
+A Point-of-Interest [ POI ] is a large terrain piece about 12" × 12" such as a building, a hill, a crashed vehicle, a dead giant, or a fountain which is placed at the center of the battlefield.
+ It should be traversable and may optionally have gates and doors at its exterior leading within from all directions.
+ Such entrances are initially closed requiring a Fiddle Action to open or to close again.
+ Control — Refer to the Dominance Key to Victory for turn-based control scoring. Refer to the POI Key to Victory for end-game control scoring.
+
+VIP (Very-Important-Person)
+A VIP is a character that serves appears or will appear upon the battlefield.
+ Archetype — The VIP will be an Untrained, Scholarly archetype unless otherwise specified. It will never be assigned any Items unless specified by the description for a Mission. Represent the VIP with any easy to recognize model.
+ Controlling — A player controls the VIP when a Friendly Attentive Ordered model is in base-contact with it, and there are no Ordered Opposing models within Cohesion. That Friendly model becomes the Guardian character and the VIP becomes Controlled.
+ This will be a Fiddle action and require 2 AP.
+ If a Guardian starts in base-contact, a Controlled VIP will automatically reposition to maintain base-contact.
+ When a Controlled VIP is not in base-contact with a Guardian, it must either move towards Cover or towards the Guardian if it has LOS.
+ If the Guardian is KO'd or Eliminated, the VIP is no longer considered Controlled.
+ Transfer — Control of the VIP can be transferred to any Friendly model within Cohesion if the VIP and the other two models are Attentive. This will be a Fiddle action and require 1 AP. That model becomes the new Guardian.
+ Abilities — The VIP possesses one ability (chosen at deployment) usable once per game when Attentive Ordered within 8 MU of an objective.
+
+
+Resource Points
+The Side which acquires the most Victory Points [ VP ] by
+the end of a Mission achieves victory and wins.
+Resource Points [ RPs ] are used as a secondary way to gain
+an additional VP and to also break ties in the highest VP
+totals.
+ +1 VP to the Side awarded the most Resource Points.
+ Having double the RP of the next Opposing Side, but by
+at least 10 RPs more, is +2 VP instead.
+ If there is still a tie for VPs then the Side with the most
+total RPs win.
+
+Objective Markers
+Each Mission will describe if there will be Objective
+Markers [ OMs ] present, their type and number, and how
+to place them upon the battlefield.
+Typically place OMs near Obstacle terrain to indicate
+something important is present.
+ OM Types — There are several different types of OMs,
+and how they are acquired during play and how they
+enable scoring varies. An OM could be one or more of:
+ Switches — A Switch OM. These change the state of some
+game element. These do not move, and may not be
+acquired or collected. Switches have and “On” and “Off”
+state.
+ Lock — A Switch OM. Similar to Switches, but its state
+may only be toggled if the paired Idea or Physical OMs
+are In Hand.
+ Key — A Key OM. These either an Idea or Physical OM
+paired with a specifically named Lock OM.
+ Idea — An Idea OM. These represents abstract bits of
+information either something that is seen, heard, or
+learned at the location of the OM. No limit to how many
+can be In Hand.
+ Tiny — A Physical OM. This is the default OM type. It is a
+tiny physical Item which can be pocketed. Tiny OMs
+always require at least 2 AP to acquire.
+ Small — A Physical OM. These are small physical Items
+which can be held in hand. These are assigned the [1H]
+and [Stub] traits, and are about the size of a loaf of bread.
+ Large — A Physical OM. These are large physical Items
+which are assigned the [1H] trait. Having 2 gives the set
+the [Laden] trait. About the size of a small bag of flour.
+ Bulky — A Physical OM. These are bulky physical Items
+which are assigned [2H] and [Laden 2] traits. About 10-kg
+in mass or about the size of a large bag of dog food.
+
+Actions
+OMs may be acquired transferred, and shared.
+ Acquire — While Free, if there are no other Attentive
+Opposing models which are also in base-contact with
+the OM; acquire by spending 1 AP for a Fiddle action.
+ Unless the OM represents a Switch OM, keep it with the
+model when acquired. Note or identify that it is acquired
+and are “In Hand”.
+ Animals may never acquire Idea OMs, but may alter
+Switch OMs.
+ Per the standard rules, characters usually have 2 Hands to
+carry Items, and can use effectively an additional Hand,
+but it is -1 Base die for all Combat Tests and Fiddle Test.
+ Transfer — While in base-contact, any Physical OMs can
+be transferred as a 1 AP Fiddle action to the Active
+character between Friendly characters if at least one is
+Attentive Ordered.
+ The Fiddle action will require 2 AP if it involves Stunned or
+Disordered Distracted characters. This includes Opposing
+characters.
+ Physical OMs transferred from an Opposing model are
+always regarded as Neutral OMs.
+ Shared — Idea OMs require 1 AP, plus one per total
+Hindrance between two Free Friendly Attentive
+characters within Cohesion. Both will have a copy, but
+only one copy will ever benefit a player for scoring.
+Concerns
+ Scoring — Each OM acquired awards +1 RP. Switch OMs
+are acquired when first toggled, and Physical OMs are
+not scored if character with it becomes Eliminated.
+ Dropping — Characters which are KO’d or Eliminated
+drop all their Physical OMs at their location. They are
+dropped as Neutral OMs valuable to all Sides.
+ Improvised Weapons — All Physical OMs may be used
+as an Improvised weapon. However, they immediately
+break and become worthless when performing a
+Damage test using them. When broken, they are worth
+zero RP.
+ Destroying — All Switch OMs may never be attacked or
+destroyed unless specified by a Mission. Physical OMs
+may be attacked using a Fiddle action for 1 AP to destroy
+them. Idea OMs are usually destroyed when a character
+which acquired it has been Eliminated.
+
+Keys to Victory
+There are many common victory conditions, and they are
+given keywords (“Keys to Victory”) described here.
+ Within each of the Missions there will be a list of these
+keywords so just refer back to this section as needed.
+ When the game ends, the Side with the most Victory
+Points (VP) is the winner.
+
+Here are the keywords and their effect on victory.
+There are many common victory conditions, and they are given keywords ("Keys to Victory") described here.
+ Within each of the Missions there will be a list of these keywords so just refer back to this section as needed.
+ When the game ends, the Side with the most Victory Points (VP) is the winner.
+Here are the keywords and their effect on victory.
+ Acquisition — +1 VP to the Mission Attacker for taking one or more Objective Markers off the battlefield.
+ Aggression — +1 VP if at least half of the Assembly's models, by starting count, cross an imaginary line across the middle of the battlefield. Award +1 RP to the first model to cross.
+ VIP — +1 VP to Side protecting a designated model with special abilities; +2 VP to Opponent if Eliminated. The VIP may utilize a special ability once per game when Attentive Ordered within 8 MU of an objective.
+ Bottled — +1 VP if the Opposing Side fails its Bottle Test ["Bottled Out"] or has no Ordered characters. In games with 3 or more Sides, if there are at least two Opposing Sides still remaining in play, reward those sides each +3 Resource Points instead each time a side has "Bottled Out".
+ Catalyst — +1 VP to Side that first triggers a specified battlefield condition or event. Player may spend 2 AP Fiddle action to trigger Catalyst condition; first Side to trigger awards VP and modifies battlefield state (e.g., terrain degradation, Visibility reduction).
+ Collection — +1 VP to player with the most OMs acquired. Each OM acquired awards +1 Resource Point at game end.
+ Courier — +1 VP if a model from its Side makes base-contact with a designated location. Model reaching delivery point awards +1 VP immediately, then +1 VP per subsequent Turn it remains within 4 MU. Model may voluntarily leave to reset delivery elsewhere.
+ Dominance — +1 VP per Turn a Side maintains exclusive control of designated zones or objectives. Zone awards VP per full Turn a Side maintains exclusive control (no Opposing models within Cohesion). VP accrues at End of Turn.
+ Elimination — +1 VP if have most Opposing KO'd and Eliminated characters by BP total at game end.
+ Encroachment — Score 1 VP to be the first Side with a model to cross the mid-point line of the battlefield toward an Opposing Assembly.
+ Exit — +1 VP to Mission Defender if at least half of its original assembly has exited the battlefield at the designated areas.
+ First Blood — +1 VP if first Side to Wound an Opposing model, or if in Range Combat to KO'd or Eliminate it.
+ Flawless — Automatic Victory goes to the last player with a character not Eliminated nor KO'd at game end.
+ Outnumbered — +1 VP to the Side that is outnumbered 3:2 models or greater at start of game, but +2 VP if outnumbered by 2:1 models or greater. If there are multiple Sides remaining at the end of the game, do not award this keyword.
+ POI — +1 VP to the Side "In Control" of the majority of Points-of-Interest at game end. A Friendly character within 4 MU of the center of the POI but with no Opposing models within Cohesion of that character is considered "In Control".
+ Sanctuary — +1 VP per Turn a Side maintains a specified percentage of BP within designated deployment zones. Models within Sanctuary zone receive +1 Wild die Defender Tests but cannot perform Attack actions.
+ Targeted — +1 VP when a specified character or model is KO'd or Eliminated. By default, this is the character with the highest BP value at the start of the Mission. A further +1 RP per Officer Rank and +1 RP per Reputation it has.

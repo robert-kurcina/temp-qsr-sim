@@ -1,0 +1,119 @@
+Performing Indirect Range Combat ()
+Indirect Range Attacks are Range Attack actions against a
+target that is a battlefield location which is within LOF.
+This may or may not be within LOS. The weapon is usually
+a Grenade (has the Grenade trait), or an Item with the AoE
+keyword.
+Overview
+Unless using a Natural weapon, the Active character
+acquires a Delay token if this is not its first attack this
+Initiative.
+ Announce a Ranged weapon to be used; the weapon
+must have an OR value. It must be a Thrown weapon,
+have the Throwable trait, or have the [Arc] trait.
+ Thrown weapons have an OR written as STR or STR + X"
+to indicate that is the equal to the Attacker’s STR.
+ If OR is zero it becomes 0.5 MU. If negative, disallow the
+Attack.
+ If the weapon has the [Reveal] trait, remove Attacker's
+Hidden status if in LOS. This is all Firearms weapons.
+ Announce a battlefield location within LOF to become
+the target of the Range Combat Attack.
+ Place a small reminder pawn or token at the desired
+target location for ease of reference. Remove this after
+resolving the attack.
+ There must exist a midpoint above the battlefield
+between the target location and Attacker which is no
+higher than the distance between the Attacker and the
+target, with LOS to both.
+Resolving Indirect Range Hit Test
+The goal is to determine if the intended target location is
+where the weapon lands, or if it will become repositioned
+by Scatter.
+ Resolve the Indirect Attack Hit Test as an Unopposed
+RCA Test ˗1 Base die per OR Multiple [ ORM ]. If fail,
+note any misses.
+ Apply any Situational Test Modifiers as necessary such
+as “Hindrance”, “Distance”, “Point-blank”, and “Direct
+Cover” or “Intervening Cover”.
+ Add weapon's Accuracy bonus. This appears as “Acc” on
+the weapon’s stat line on the Weapons list.
+
+Scatter
+Scatter causes the target location for an Indirect Range
+Attack, via the reminder pawn or token, to reposition a
+distance and a direction. The direction is determined by
+using a Scatter diagram.
+ Reposition — When Scatter occurs; the targeted
+location repositions a distance equal to misses × 1", but
+at least 1 MU.
+ Determine the Scatter direction using a Biased
+Scatter diagram, along the LOF from the Attacker to
+the target location.
+ If the target location was into a Wall, it repositions
+the remainder distance on the reflected angle of the
+incident angle.
+ If the attack again repositions into a barrier such as a
+Wall, Obstacle, Building or Vehicle, it stops at the
+point of contact.
+ Roll-down — Indirect Range Attacks with at least one
+miss will reposition additional distance according to
+gravity, displacing the location of the attack down slopes
+and off precipices.
+ The distance repositioned off a cliff or precipice is 0.5 MU
+per 1 MU dropped, plus 1 MU per miss.
+ Check slopes. Note the rise over run as the slope, such as
+1 MU rise per 2 MU run is 0.5. This is the default.
+Whenever repositioned atop yet another slope, increase
+the MU to be repositioned. Repeat.
+ Stop the reposition if it hits a Wall or Obstacle.
+Scrambling ()
+Scrambling is a form of React action for when a target
+location is attacked. It is allowed whenever performing an
+Indirect Range Attack, or if the [Scatter] trait is involved.
+See more information within the Advanced Game Rules
+section under Passive Player options.
+Apply Weapon Traits
+Apply the weapon traits, starting with those with the AoE
+keyword.
+ If the weapon doesn’t have the Frag trait, have any
+targets in base-contact perform an Unopposed Damage
+Test against the weapon’s Dmg ratings.
+ Otherwise, apply the weapon’s Dmg rating according to
+the Frag trait, and only against those targets that failed
+its Hit Test.
+
+
+Scatter Diagrams
+Scatter diagrams are used to pick a random directly for
+moving or placing game-play elements. There are two
+kinds of Scatter diagrams:
+ Unbiased — The Unbiased Scatter diagram will pick a
+random direction equally.
+ This should form a vague hexagon shape.
+ Roll a six-sided die and count clock-wise with the ‘1’ point
+towards the other player and the ‘4’ pointing away.
+ Biased — The Biased Scatter diagram is like the
+Unbiased Scatter diagram but the ‘1’ points to a
+“desired” direction picked by the Active player. Re-roll
+the first ‘3’, ‘4’, or ‘5, and then re-roll the next ‘4’.
+
+Blind Attacks
+Indirect Range Attacks can target battlefield locations that
+an attacking model does not currently have LOS.
+ Target locations which are in LOF but not in LOS to the
+Attacker may be attacked only if at least one of these
+following conditions apply and if so, the attack is
+“Blind”:
+ Spotter — if a Free Attentive Ordered Friendly model
+within Cohesion has LOS to the target (as a “Spotter”)
+ Known — if the target was in LOS at the start of
+Attacker's Initiative,
+ If the attack involves the [Scatter] trait and is also
+“Blind”, use the Unbiased Scatter diagram with an extra
+Wild die for distance but do not re-roll the direction.
+ Blind — Penalize the Active character -1 Wild die for the
+Attacker Range Combat Hit Test if this is a Blind Indirect
+attack. See Performing Indirect Range Combat for more
+information.
+

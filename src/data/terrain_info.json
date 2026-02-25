@@ -1,0 +1,143 @@
+{
+  "Shrub": {
+    "category": "shrub",
+    "distribution": 3,
+    "color": "#006400",
+    "shape": "circle",
+    "dimensions": { "diameter": 1 },
+    "movement": "Difficult",
+    "los": "Soft",
+    "initialMovement": "Impassable"
+  },
+  "Tree": {
+    "category": "tree",
+    "distribution": 3,
+    "color": "#90EE90",
+    "shape": "circle",
+    "dimensions": { "diameter": 2 },
+    "movement": "Difficult",
+    "los": "Soft",
+    "initialMovement": "Impassable"
+  },
+  "Small Rocks": {
+    "category": "rocks",
+    "distribution": 3,
+    "color": "#D3D3D3",
+    "shape": "ellipse",
+    "dimensions": { "width": 1, "length": 2 },
+    "movement": "Rough",
+    "los": "Hard",
+    "initialMovement": "Impassable",
+    "dimensionsNote": "Height inferred from Medium/Large pattern in rules-terrain.md."
+  },
+  "Medium Rocks": {
+    "category": "rocks",
+    "distribution": 2,
+    "color": "#D3D3D3",
+    "shape": "ellipse",
+    "dimensions": { "width": 2, "length": 4 },
+    "movement": "Rough",
+    "los": "Hard",
+    "initialMovement": "Impassable"
+  },
+  "Large Rocks": {
+    "category": "rocks",
+    "distribution": 1,
+    "color": "#D3D3D3",
+    "shape": "ellipse",
+    "dimensions": { "width": 3, "length": 6 },
+    "movement": "Rough",
+    "los": "Hard",
+    "initialMovement": "Impassable"
+  },
+  "Short Wall": {
+    "category": "wall",
+    "distribution": 3,
+    "color": "#555555",
+    "shape": "rectangle",
+    "dimensions": { "width": 0.5, "length": 6 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Medium Wall": {
+    "category": "wall",
+    "distribution": 2,
+    "color": "#555555",
+    "shape": "rectangle",
+    "dimensions": { "width": 1, "length": 8 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Large Wall": {
+    "category": "wall",
+    "distribution": 1,
+    "color": "#555555",
+    "shape": "rectangle",
+    "dimensions": { "width": 2, "length": 12 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Small Building": {
+    "category": "building",
+    "distribution": 3,
+    "color": "#000000",
+    "shape": "rectangle",
+    "dimensions": { "width": 4, "length": 6 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Medium Building": {
+    "category": "building",
+    "distribution": 2,
+    "color": "#000000",
+    "shape": "rectangle",
+    "dimensions": { "width": 6, "length": 8 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Large Building": {
+    "category": "building",
+    "distribution": 1,
+    "color": "#000000",
+    "shape": "rectangle",
+    "dimensions": { "width": 8, "length": 10 },
+    "movement": "Impassable",
+    "los": "Blocking",
+    "initialMovement": "Impassable"
+  },
+  "Small Rough Patch": {
+    "category": "area",
+    "distribution": 3,
+    "color": "#C49A6C",
+    "shape": "rectangle",
+    "dimensions": { "width": 6, "length": 9 },
+    "movement": "Rough",
+    "los": "Clear",
+    "initialMovement": "Impassable"
+  },
+  "Medium Rough Patch": {
+    "category": "area",
+    "distribution": 2,
+    "color": "#C49A6C",
+    "shape": "rectangle",
+    "dimensions": { "width": 9, "length": 12 },
+    "movement": "Rough",
+    "los": "Clear",
+    "initialMovement": "Impassable"
+  },
+  "Large Rough Patch": {
+    "category": "area",
+    "distribution": 1,
+    "color": "#C49A6C",
+    "shape": "rectangle",
+    "dimensions": { "width": 12, "length": 15 },
+    "movement": "Rough",
+    "los": "Clear",
+    "initialMovement": "Impassable"
+  }
+}

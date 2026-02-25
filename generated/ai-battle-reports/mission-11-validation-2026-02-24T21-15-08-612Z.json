@@ -1,0 +1,181 @@
+{
+  "missionId": "QAI_11",
+  "gameSize": "MEDIUM",
+  "densityRatio": 50,
+  "runs": 1,
+  "baseSeed": 424242,
+  "winners": {
+    "Bravo": 1
+  },
+  "totals": {
+    "totalActions": 232,
+    "moves": 14,
+    "closeCombats": 0,
+    "rangedCombats": 218,
+    "disengages": 0,
+    "waits": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "eliminations": 0,
+    "kos": 13,
+    "turnsCompleted": 10,
+    "losChecks": 218,
+    "lofChecks": 218,
+    "totalPathLength": 27.414213562373096,
+    "modelsMoved": 5
+  },
+  "averages": {
+    "totalActions": 232,
+    "moves": 14,
+    "closeCombats": 0,
+    "rangedCombats": 218,
+    "disengages": 0,
+    "waits": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "eliminations": 0,
+    "kos": 13,
+    "turnsCompleted": 10,
+    "losChecks": 218,
+    "lofChecks": 218,
+    "totalPathLength": 27.41,
+    "modelsMoved": 5
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Bravo",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 3
+        },
+        {
+          "name": "Bravo",
+          "remaining": 8
+        }
+      ],
+      "stats": {
+        "totalActions": 232,
+        "moves": 14,
+        "closeCombats": 0,
+        "rangedCombats": 218,
+        "disengages": 0,
+        "waits": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "eliminations": 0,
+        "kos": 13,
+        "turnsCompleted": 10,
+        "losChecks": 218,
+        "lofChecks": 218,
+        "totalPathLength": 27.414213562373096,
+        "modelsMoved": 5
+      },
+      "usage": {
+        "modelCount": 24,
+        "modelsMoved": 5,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 27.414213562373096,
+        "averagePathLengthPerMovedModel": 5.4828427124746195,
+        "averagePathLengthPerModel": 1.1422588984322124,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 16,
+            "moveActions": 8,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-10-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 4,
+            "moveActions": 2,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-11-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 4,
+            "moveActions": 2,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-7-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 2,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 1.4142135623730951,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          }
+        ]
+      }
+    }
+  ],
+  "generatedAt": "2026-02-24T21:15:08.611Z"
+}

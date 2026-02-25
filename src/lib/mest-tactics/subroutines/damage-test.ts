@@ -1,7 +1,8 @@
-import { Character } from '../Character';
-import { resolveTest, TestParticipant, TestDice, DiceType, TestResult } from '../dice-roller';
-import { Item } from '../Item';
-import { TestContext } from '../TestContext';
+import { Character } from '../core/Character';
+import { resolveTest, TestParticipant, TestDice, DiceType, TestResult } from '../subroutines/dice-roller';
+import { Item } from '../core/Item';
+import { TestContext } from '../utils/TestContext';
+import { getCoverageBonus, getStunLevel, calculateStunEffect, hasCharge, hasImpale, getImpalePenalty, hasGrit, applyProtective } from '../traits/combat-traits';
 
 // --- Sub-functions for parsing --- //
 
@@ -48,6 +49,7 @@ export interface DamageResolution {
         isEliminated: boolean;
     };
     damageTestResult?: TestResult;
+    bashCascadeBonus?: number; // From Bash trait
 }
 
 /**
@@ -67,9 +69,32 @@ export function resolveDamage(
     let finalDelayTokens = defender.state.delayTokens;
     let totalImpact = 0;
 
-    // 1. Resolve Stun Damage (e.g., from 'Delay' trait)
+    // 1. Resolve Stun Damage from weapon traits
     const apAllotment = 2; // Default AP
-    const newDelayTokens = context.delayTokensAdded || 0;
+    
+    // Check for Stun X trait on weapon
+    const stunLevel = getStunLevel(attacker);
+    let stunDelayTokens = 0;
+    
+    if (stunLevel > 0 && hitTestResult.cascades) {
+        // Calculate Stun effect: Add X to successes, subtract Durability
+        const stunResult = calculateStunEffect(attacker, defender, hitTestResult.cascades, true);
+        stunDelayTokens = stunResult.delayTokensApplied;
+    }
+    
+    const protective = applyProtective(
+        defender,
+        stunDelayTokens,
+        context.isConcentrating ?? false,
+        context.isCloseCombat ?? false,
+        defender.state.isInCover,
+        defender.state.isAttentive
+    );
+    stunDelayTokens = protective.tokensRemaining;
+
+    // Add delay tokens from context (e.g., from weapon traits applied earlier)
+    const newDelayTokens = (context.delayTokensAdded || 0) + stunDelayTokens;
+    
     if (newDelayTokens > 0) {
         const totalDelay = defender.state.delayTokens + newDelayTokens;
         if (totalDelay > apAllotment) {
@@ -86,45 +111,79 @@ export function resolveDamage(
 
     if (damageFormula && damageFormula !== '-') {
         // Impact is a property of the hit, calculated before the damage roll.
-        const baseImpact = weapon.impact || 0;
+        let baseImpact = weapon.impact || 0;
+        
+        // Charge trait: +1 Impact when charging
+        if (context.isCharge || hasCharge(attacker)) {
+            baseImpact += 1;
+        }
+        
         const assistImpact = context.assistingModels || 0;
         totalImpact = baseImpact + assistImpact;
 
         const { value: damageValue, dice: damageDice } = parseDamageFormula(damageFormula, attacker);
-        
+
+        const bonusDice = { ...damageDice, ...hitTestResult.carryOverDice };
+        if (context.isConcentrating && (context.concentrateTarget ?? 'hit') === 'damage') {
+            bonusDice[DiceType.Wild] = (bonusDice[DiceType.Wild] || 0) + 1;
+        }
+        if (context.isFocusing) {
+            bonusDice[DiceType.Wild] = (bonusDice[DiceType.Wild] || 0) + 1;
+        }
+
         const damageTestAttacker: TestParticipant = {
             attributeValue: damageValue,
-            bonusDice: { ...damageDice, ...hitTestResult.carryOverDice },
+            bonusDice,
         };
-        
+
         const damageTestDefender: TestParticipant = {
             attributeValue: defender.finalAttributes.for,
+            bonusDice: context.hasHardCover ? { [DiceType.Wild]: 1 } : undefined,
         };
-      
+        
+        // Impale: Distracted targets are penalized -1 Base die Defender Damage Test plus 1 per 3 Impact remaining
+        if (hasImpale(attacker) && defender.state.isDistracted) {
+            const impalePenalty = getImpalePenalty(defender, true, totalImpact);
+            if (impalePenalty > 0) {
+                damageTestDefender.penaltyDice = { 
+                    ...damageTestDefender.penaltyDice, 
+                    base: (damageTestDefender.penaltyDice?.base ?? 0) + impalePenalty 
+                };
+            }
+        }
+
         damageTestResult = resolveTest(damageTestAttacker, damageTestDefender);
 
         // 3. Calculate Wounds from the roll (if it passed)
         if (damageTestResult.pass) {
-            const effectiveAR = Math.max(0, defender.state.armor.total - totalImpact);
-            const netScore = Math.max(0, (damageTestResult.score || 0) - effectiveAR);
+            const cascades = damageTestResult.cascades || 0;
 
-            if (netScore > defender.finalAttributes.for) {
-                woundsFromDamage = netScore - defender.finalAttributes.for;
-            } else {
-                woundsFromDamage = 1; // Minimum 1 wound on a successful damage roll
-            }
+            // Apply Coverage bonus to AR
+            const coverageBonus = getCoverageBonus(defender);
+            const baseAR = defender.state.armor.total;
+            const effectiveAR = Math.max(0, baseAR + coverageBonus - totalImpact);
+
+            // Calculate base wounds from cascades
+            let calculatedWounds = Math.max(0, cascades - effectiveAR);
+
+            woundsFromDamage = calculatedWounds;
         }
     }
-    
+
     if (context.forceHit) {
-        woundsFromDamage = 2;
+        woundsFromDamage = Math.max(woundsFromDamage, 2);
+    }
+
+    if (woundsFromDamage > 0 && hasGrit(defender) && !defender.state.gritWoundIgnored) {
+        woundsFromDamage = Math.max(0, woundsFromDamage - 1);
+        defender.state.gritWoundIgnored = true;
     }
 
     // 4. Sum all wounds and update defender state
     const totalWoundsToAdd = woundsFromStun + woundsFromDamage;
     const finalWounds = defender.state.wounds + totalWoundsToAdd;
     const siz = defender.finalAttributes.siz || 1;
-    
+
     const isKOd = finalWounds >= siz;
     const isEliminated = finalWounds >= siz + 3;
 

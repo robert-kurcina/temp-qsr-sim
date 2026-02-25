@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mest-tactics.com/schemas/assembly.schema.json",
+  "title": "Assembly",
+  "description": "An assembly of characters for a mission",
+  "type": "object",
+  "required": ["name", "characters", "totalBP", "totalCharacters"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Assembly name",
+      "minLength": 1
+    },
+    "characters": {
+      "type": "array",
+      "items": {
+        "$ref": "character.schema.json"
+      },
+      "minItems": 1,
+      "description": "List of characters in the assembly"
+    },
+    "totalBP": {
+      "type": "number",
+      "description": "Total Battle Point cost for the assembly",
+      "minimum": 0
+    },
+    "totalCharacters": {
+      "type": "number",
+      "description": "Number of characters in the assembly",
+      "minimum": 1
+    }
+  },
+  "additionalProperties": false
+}

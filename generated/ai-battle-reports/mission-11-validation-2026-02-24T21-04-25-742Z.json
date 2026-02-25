@@ -1,0 +1,166 @@
+{
+  "missionId": "QAI_11",
+  "gameSize": "VERY_LARGE",
+  "densityRatio": 50,
+  "runs": 1,
+  "baseSeed": 424242,
+  "winners": {
+    "Bravo": 1
+  },
+  "totals": {
+    "totalActions": 616,
+    "moves": 29,
+    "closeCombats": 0,
+    "rangedCombats": 47,
+    "disengages": 0,
+    "waits": 540,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "eliminations": 0,
+    "kos": 4,
+    "turnsCompleted": 10,
+    "losChecks": 47,
+    "lofChecks": 47,
+    "totalPathLength": 29,
+    "modelsMoved": 4
+  },
+  "averages": {
+    "totalActions": 616,
+    "moves": 29,
+    "closeCombats": 0,
+    "rangedCombats": 47,
+    "disengages": 0,
+    "waits": 540,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "eliminations": 0,
+    "kos": 4,
+    "turnsCompleted": 10,
+    "losChecks": 47,
+    "lofChecks": 47,
+    "totalPathLength": 29,
+    "modelsMoved": 4
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Bravo",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 28
+        },
+        {
+          "name": "Bravo",
+          "remaining": 32
+        }
+      ],
+      "stats": {
+        "totalActions": 616,
+        "moves": 29,
+        "closeCombats": 0,
+        "rangedCombats": 47,
+        "disengages": 0,
+        "waits": 540,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "eliminations": 0,
+        "kos": 4,
+        "turnsCompleted": 10,
+        "losChecks": 47,
+        "lofChecks": 47,
+        "totalPathLength": 29,
+        "modelsMoved": 4
+      },
+      "usage": {
+        "modelCount": 64,
+        "modelsMoved": 4,
+        "modelsUsedWait": 54,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 29,
+        "averagePathLengthPerMovedModel": 7.25,
+        "averagePathLengthPerModel": 0.453125,
+        "topPathModels": [
+          {
+            "modelId": "Bravo Assembly-14-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 20,
+            "moveActions": 20,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-13-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 3,
+            "moveActions": 3,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-26-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 3,
+            "moveActions": 3,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-26-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 3,
+            "moveActions": 3,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          }
+        ]
+      }
+    }
+  ],
+  "generatedAt": "2026-02-24T21:04:25.740Z"
+}

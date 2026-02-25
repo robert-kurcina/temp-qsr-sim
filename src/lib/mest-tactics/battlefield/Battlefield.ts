@@ -1,8 +1,11 @@
-import { Character } from '../Character';
+import { Character } from '../core/Character';
 import { Delaunay } from 'd3-delaunay';
-import { Grid } from './Grid';
+import { Grid } from './pathfinding/Grid';
 import { Position } from './Position';
-import { TerrainFeature, TerrainType } from './Terrain';
+import { TerrainFeature, TerrainType } from './terrain/Terrain';
+import { TerrainElement } from './TerrainElement';
+import { ConstrainedNavMesh } from './pathfinding/ConstrainedNavMesh';
+import { getBaseDiameterFromSiz } from './spatial/size-utils';
 
 function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
     function orientation(p: Position, q: Position, r: Position): number {
@@ -32,24 +35,77 @@ function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Positio
     return false;
 }
 
+function pointOnSegment(point: Position, a: Position, b: Position): boolean {
+  const cross = (point.y - a.y) * (b.x - a.x) - (point.x - a.x) * (b.y - a.y);
+  if (Math.abs(cross) > 1e-9) return false;
+  const dot = (point.x - a.x) * (b.x - a.x) + (point.y - a.y) * (b.y - a.y);
+  if (dot < 0) return false;
+  const squaredLength = (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
+  return dot <= squaredLength;
+}
+
+function pointInPolygon(point: Position, polygon: Position[]): boolean {
+  if (polygon.length < 3) return false;
+
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    if (pointOnSegment(point, polygon[j], polygon[i])) {
+      return true;
+    }
+  }
+
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+    const xi = polygon[i].x;
+    const yi = polygon[i].y;
+    const xj = polygon[j].x;
+    const yj = polygon[j].y;
+    const intersects = ((yi > point.y) !== (yj > point.y))
+      && (point.x < (xj - xi) * (point.y - yi) / ((yj - yi) || Number.EPSILON) + xi);
+    if (intersects) {
+      inside = !inside;
+    }
+  }
+  return inside;
+}
+
 export class Battlefield {
   public grid: Grid;
   public terrain: TerrainFeature[] = [];
+  public opennessStats?: BattlefieldOpennessStats;
   private navigationMesh: Delaunay<Position> | null = null;
+  private constrainedNavMesh: ConstrainedNavMesh | null = null;
   private characterPositions: Map<string, Position> = new Map();
+  private characterRegistry: Map<string, Character> = new Map();
 
   constructor(public width: number, public height: number) {
     this.grid = new Grid(width, height);
   }
 
-  addTerrain(feature: TerrainFeature): void {
+  addTerrain(feature: TerrainFeature, deferNavMesh = false): void {
     this.terrain.push(feature);
-    this.generateNavigationMesh();
+    if (!deferNavMesh) {
+      this.finalizeTerrain();
+    }
+  }
+
+  removeTerrain(feature: TerrainFeature, deferNavMesh = false): void {
+    const index = this.terrain.lastIndexOf(feature);
+    if (index >= 0) {
+      this.terrain.splice(index, 1);
+      if (!deferNavMesh) {
+        this.finalizeTerrain();
+      }
+    }
+  }
+
+  addTerrainElement(element: TerrainElement, deferNavMesh = false): void {
+    this.addTerrain(element.toFeature(), deferNavMesh);
   }
 
   placeCharacter(character: Character, position: Position): boolean {
     if (this.grid.setOccupant(position, character)) {
         this.characterPositions.set(character.id, position);
+        this.characterRegistry.set(character.id, character);
         return true;
     }
     return false;
@@ -63,9 +119,10 @@ export class Battlefield {
 
     const fromCell = this.grid.getCell(from);
     if (fromCell && fromCell.occupant?.id === character.id) {
-        if (this.grid.setOccupant(to, character)) {
+      if (this.grid.setOccupant(to, character)) {
             fromCell.occupant = null;
             this.characterPositions.set(character.id, to);
+            this.characterRegistry.set(character.id, character);
             return true;
         }
     }
@@ -80,9 +137,33 @@ export class Battlefield {
     return this.grid.getCell(position)?.occupant || null;
   }
 
+  getCharacterById(id: string): Character | null {
+    return this.characterRegistry.get(id) ?? null;
+  }
+
+  getModelBlockers(excludeIds: string[] = []): { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] {
+    const excluded = new Set(excludeIds);
+    const blockers: { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] = [];
+    for (const [id, character] of this.characterRegistry.entries()) {
+      if (excluded.has(id)) continue;
+      const position = this.characterPositions.get(id);
+      if (!position) continue;
+      const siz = character.finalAttributes?.siz ?? character.attributes?.siz ?? 3;
+      blockers.push({
+        id,
+        position,
+        baseDiameter: getBaseDiameterFromSiz(siz),
+        siz,
+        isKOd: character.state?.isKOd ?? false,
+      });
+    }
+    return blockers;
+  }
+
   public hasLineOfSight(start: Position, end: Position): boolean {
     for (const feature of this.terrain) {
-      if (feature.type === TerrainType.Obstacle) {
+      const los = feature.meta?.los ?? 'Clear';
+      if (feature.type === TerrainType.Obstacle || los === 'Blocking') {
         for (let i = 0, j = feature.vertices.length - 1; i < feature.vertices.length; j = i++) {
           const p1 = feature.vertices[j];
           const p2 = feature.vertices[i];
@@ -103,15 +184,55 @@ export class Battlefield {
     points.push({ x: this.width, y: this.height });
 
     this.terrain.forEach(feature => {
-      if (feature.type !== TerrainType.Obstacle) {
-        points.push(...feature.vertices);
-      }
+      points.push(...feature.vertices);
     });
 
     this.navigationMesh = Delaunay.from(points, p => p.x, p => p.y);
   }
 
+  public finalizeTerrain(): void {
+    this.generateNavigationMesh();
+    this.constrainedNavMesh = ConstrainedNavMesh.build(this);
+  }
+
   getNavMesh(): Delaunay<Position> | null {
       return this.navigationMesh;
   }
+
+  getConstrainedNavMesh(): ConstrainedNavMesh | null {
+    return this.constrainedNavMesh;
+  }
+
+  getTerrainAt(position: Position): TerrainFeature {
+    const containing = this.terrain.filter(feature => pointInPolygon(position, feature.vertices));
+    if (containing.length === 0) {
+      return {
+        id: 'clear',
+        type: TerrainType.Clear,
+        vertices: [],
+      };
+    }
+
+    const priority: Record<TerrainType, number> = {
+      [TerrainType.Clear]: 0,
+      [TerrainType.Rough]: 1,
+      [TerrainType.Difficult]: 2,
+      [TerrainType.Impassable]: 3,
+      [TerrainType.Obstacle]: 4,
+    };
+
+    return containing.reduce((best, current) =>
+      (priority[current.type] > priority[best.type] ? current : best)
+    );
+  }
+}
+
+export interface BattlefieldOpennessStats {
+  chunkSize: number;
+  losThreshold: number;
+  totalChunks: number;
+  totalPairs: number;
+  longLosPairs: number;
+  longLosPairRatio: number;
+  meanChunkLongLosRatio: number;
 }

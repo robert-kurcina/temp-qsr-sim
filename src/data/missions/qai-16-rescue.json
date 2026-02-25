@@ -1,0 +1,73 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_16",
+  "name": "Escort",
+  "description": "Extract the VIP before enemy reinforcements seal the perimeter. Every moment counts, but rushing invites disaster.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "threshold", "count": 1, "formation": "custom", "radius": 4 }
+    ],
+    "deployment": "opposing_edges"
+  },
+  "victoryConditions": [
+    {
+      "type": "courier",
+      "immediate": true,
+      "description": "Attacker wins immediately if VIP survives inside Threshold until Turn 3/4/5"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "vip.extracted",
+      "vp": 1,
+      "description": "+1 VP immediately when VIP enters Threshold, +1 VP per Turn remaining inside"
+    },
+    {
+      "trigger": "model.eliminated",
+      "vp": 2,
+      "description": "+2 VP to Defender for VIP Elimination"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "courier",
+      "name": "Courier",
+      "description": "VIP entering Threshold awards +1 VP immediately and +1 VP per Turn remaining inside",
+      "effect": "Extraction scoring"
+    },
+    {
+      "id": "catalyst",
+      "name": "Catalyst (Reinforcements)",
+      "description": "At End of Turn 2/3/4, Defender rolls for reinforcements (4+ on 1d6). If VIP reaches Threshold before this, reinforcements are cancelled",
+      "effect": "Race against time",
+      "config": { "small": 2, "medium": 3, "large": 4, "rollTarget": 4 }
+    },
+    {
+      "id": "vip_stats",
+      "name": "VIP Profile",
+      "description": "VIP uses Elite archetype (129 BP)",
+      "effect": "Special unit"
+    }
+  ],
+  "turnLimit": 8,
+  "endGameDieRoll": true,
+  "endGameDieStart": 5,
+  "sizeConfig": {
+    "SMALL": {
+      "survivalTurn": 3
+    },
+    "MEDIUM": {
+      "survivalTurn": 4
+    },
+    "LARGE": {
+      "survivalTurn": 5
+    }
+  },
+  "_balance": {
+    "expectedTurns": 4,
+    "difficulty": "hard",
+    "notes": "Asymmetric - Attacker races, Defender delays"
+  }
+}

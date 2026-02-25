@@ -1,0 +1,36 @@
+{
+  "Elimination": {
+    "name": "Elimination",
+    "description": "Default mission: eliminate opposing models.",
+    "gameSize": "VERY_SMALL",
+    "sideA": {
+      "name": "Side A",
+      "deployment": "standard",
+      "ai": false
+    },
+    "sideB": {
+      "name": "Side B",
+      "deployment": "standard",
+      "ai": false
+    },
+    "objectives": [
+      {
+        "type": "eliminate",
+        "points": 1,
+        "side": "both",
+        "description": "Score by eliminating opposing models."
+      }
+    ],
+    "victoryConditions": {
+      "sideA": {
+        "primary": ["Eliminate opposing models"]
+      },
+      "sideB": {
+        "primary": ["Eliminate opposing models"]
+      }
+    },
+    "specialRules": {
+      "turnLimit": 10
+    }
+  }
+}

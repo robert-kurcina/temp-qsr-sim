@@ -1,6 +1,6 @@
 
 import type { TestDice } from '../dice-roller';
-import type { Attributes } from '../Character';
+import type { Attributes } from '../Attributes';
 
 /**
  * Parses a damage string (e.g., "STR+1", "POW+2b", "int-1m") into a numeric value and a dice pool.
@@ -21,11 +21,16 @@ export function parseDamage(damage: string, attributes: Attributes): { value: nu
   let remaining = damage.trim().toUpperCase();
 
   // 1. Extract Attribute (case-insensitive)
-  const attributeKeys = ['STR', 'POW', 'INT', 'FOR'];
-  const attributePart = attributeKeys.find(attr => remaining.startsWith(attr));
+  const attributeKeys: Array<{ token: string; key: keyof Attributes }> = [
+    { token: 'STR', key: 'str' },
+    { token: 'POW', key: 'pow' },
+    { token: 'INT', key: 'int' },
+    { token: 'FOR', key: 'for' },
+  ];
+  const attributePart = attributeKeys.find(attr => remaining.startsWith(attr.token));
   if (attributePart) {
-    value = attributes[attributePart as keyof Attributes] || 0;
-    remaining = remaining.substring(attributePart.length).trim();
+    value = attributes[attributePart.key] || 0;
+    remaining = remaining.substring(attributePart.token.length).trim();
   }
 
   // 2. Loop through and parse all modifiers (+-1, +-1b, etc.)

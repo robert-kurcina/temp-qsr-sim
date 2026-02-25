@@ -6,30 +6,22 @@ export const MISSION_SCHEMA = {
   type: 'object',
   required: ['name', 'sideA', 'sideB', 'objectives', 'victoryConditions'],
   properties: {
-    name: { type: 'string' },
+    name: { 
+      type: 'string',
+      enum: ['Elimination']
+    },
     description: { type: 'string' },
     gameSize: { 
       type: 'string', 
-      enum: ['small', 'medium', 'large'] 
-    },
-    battlefield: { 
-      type: 'string',
-      pattern: '^\\d+x\\d+$' // e.g., "36x36"
+      enum: ['VERY_SMALL', 'SMALL', 'MEDIUM', 'LARGE', 'VERY_LARGE'] 
     },
     
     sideA: {
       type: 'object',
-      required: ['name', 'bp', 'models', 'deployment', 'ai'],
+      required: ['name', 'deployment', 'ai'],
       properties: {
         name: { type: 'string' },
-        bp: { type: 'integer', minimum: 500, maximum: 1000 },
         assembly: { type: 'string' },
-        models: { 
-          type: 'array', 
-          items: { type: 'string' },
-          minItems: 4,
-          maxItems: 16
-        },
         deployment: { 
           type: 'string', 
           enum: ['infiltration', 'standard', 'reinforcements', 'custom'] 
@@ -51,17 +43,10 @@ export const MISSION_SCHEMA = {
     
     sideB: {
       type: 'object',
-      required: ['name', 'bp', 'models', 'deployment', 'ai'],
+      required: ['name', 'deployment', 'ai'],
       properties: {
         name: { type: 'string' },
-        bp: { type: 'integer', minimum: 500, maximum: 1000 },
         assembly: { type: 'string' },
-        models: { 
-          type: 'array', 
-          items: { type: 'string' },
-          minItems: 4,
-          maxItems: 16
-        },
         deployment: { 
           type: 'string', 
           enum: ['infiltration', 'standard', 'reinforcements', 'custom'] 

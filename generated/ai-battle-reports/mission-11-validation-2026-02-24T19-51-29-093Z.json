@@ -1,0 +1,136 @@
+{
+  "missionId": "QAI_11",
+  "gameSize": "VERY_SMALL",
+  "densityRatio": 30,
+  "runs": 1,
+  "baseSeed": 100,
+  "winners": {
+    "Bravo": 1
+  },
+  "totals": {
+    "totalActions": 45,
+    "moves": 12,
+    "closeCombats": 20,
+    "rangedCombats": 0,
+    "disengages": 0,
+    "waits": 1,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 1,
+    "eliminations": 0,
+    "kos": 2,
+    "turnsCompleted": 10,
+    "losChecks": 0,
+    "lofChecks": 0,
+    "totalPathLength": 2.414213562373095,
+    "modelsMoved": 2
+  },
+  "averages": {
+    "totalActions": 45,
+    "moves": 12,
+    "closeCombats": 20,
+    "rangedCombats": 0,
+    "disengages": 0,
+    "waits": 1,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 1,
+    "eliminations": 0,
+    "kos": 2,
+    "turnsCompleted": 10,
+    "losChecks": 0,
+    "lofChecks": 0,
+    "totalPathLength": 2.41,
+    "modelsMoved": 2
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 100,
+      "winner": "Bravo",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 2
+        },
+        {
+          "name": "Bravo",
+          "remaining": 4
+        }
+      ],
+      "stats": {
+        "totalActions": 45,
+        "moves": 12,
+        "closeCombats": 20,
+        "rangedCombats": 0,
+        "disengages": 0,
+        "waits": 1,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 1,
+        "eliminations": 0,
+        "kos": 2,
+        "turnsCompleted": 10,
+        "losChecks": 0,
+        "lofChecks": 0,
+        "totalPathLength": 2.414213562373095,
+        "modelsMoved": 2
+      },
+      "usage": {
+        "modelCount": 8,
+        "modelsMoved": 2,
+        "modelsUsedWait": 1,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 1,
+        "totalPathLength": 2.414213562373095,
+        "averagePathLengthPerMovedModel": 1.2071067811865475,
+        "averagePathLengthPerModel": 0.30177669529663687,
+        "topPathModels": [
+          {
+            "modelId": "average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 1.4142135623730951,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 1,
+            "moveActions": 1,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          }
+        ]
+      }
+    }
+  ],
+  "generatedAt": "2026-02-24T19:51:29.092Z"
+}

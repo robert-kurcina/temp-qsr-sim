@@ -1,0 +1,82 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_20",
+  "name": "Breach",
+  "description": "The apex contains three mechanisms. Activate them all to unlock the threshold, but every movement risks detection. The defenders stand vigilant.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "mechanism", "count": 3, "formation": "triangle", "spacing": 12, "radius": 2 },
+      { "type": "threshold", "count": 1, "formation": "custom", "radius": 3 }
+    ],
+    "deployment": "opposing_edges"
+  },
+  "victoryConditions": [
+    {
+      "type": "courier",
+      "immediate": true,
+      "description": "Infiltrator victory via extraction (3/4/5 models)"
+    },
+    {
+      "type": "dominance",
+      "immediate": true,
+      "description": "Sentinel victory via VP threshold"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "turn.end.zone_control",
+      "vp": 1,
+      "description": "Sentinel +1 VP per Mechanism controlled"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "activation",
+      "name": "Activation",
+      "description": "Toggling a Mechanism is a 2 AP Fiddle action",
+      "effect": "Objective interaction",
+      "config": { "apCost": 2 }
+    },
+    {
+      "id": "vigilance",
+      "name": "Vigilance",
+      "description": "Sentinels in Wait status have doubled Visibility (16 MU)",
+      "effect": "Enhanced detection",
+      "config": { "waitVisibility": 16 }
+    },
+    {
+      "id": "threshold_corridor",
+      "name": "Threshold Corridor",
+      "description": "6 MU strip opposite Infiltrator edge; stays closed until all Mechanisms are On",
+      "effect": "Progressive unlock"
+    },
+    {
+      "id": "extraction",
+      "name": "Extraction",
+      "description": "Once Threshold opens, Infiltrators win by extracting models",
+      "effect": "Escape mechanic",
+      "config": { "small": 3, "medium": 4, "large": 5 }
+    }
+  ],
+  "turnLimit": 10,
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "sizeConfig": {
+    "SMALL": {
+      "extractionCount": 3
+    },
+    "MEDIUM": {
+      "extractionCount": 4
+    },
+    "LARGE": {
+      "extractionCount": 5
+    }
+  },
+  "_balance": {
+    "expectedTurns": 7,
+    "difficulty": "hard",
+    "notes": "Stealth/puzzle hybrid - activate then escape"
+  }
+}

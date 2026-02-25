@@ -1,0 +1,73 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_13",
+  "name": "Assault",
+  "description": "Infiltrate a guarded location and destroy its vital assets before the enemy can muster a full defense.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "cache", "count": 2, "formation": "line", "spacing": 16, "radius": 2 }
+    ],
+    "deployment": "opposing_edges"
+  },
+  "victoryConditions": [
+    {
+      "type": "vp_majority",
+      "description": "Most VP at game end"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "vp.destroyed",
+      "vp": 2,
+      "description": "+2 VP per destroyed Vulnerability Point"
+    },
+    {
+      "trigger": "turn.end.zone_control",
+      "vp": 1,
+      "description": "+1 VP to Side controlling majority of remaining VPs at game end"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "rupture_action",
+      "name": "Rupture Action",
+      "description": "Free Attacker model in base-contact with VP spends 2 AP Fiddle action and passes Unopposed INT Test (DR 2) to destroy it",
+      "effect": "Sabotage mechanic",
+      "config": { "apCost": 2, "testDifficulty": 2 }
+    },
+    {
+      "id": "time_pressure",
+      "name": "Time Pressure",
+      "description": "If no VP is destroyed by End of Turn 3/4/5, the game ends immediately",
+      "effect": "Game length limit",
+      "config": { "small": 3, "medium": 4, "large": 5 }
+    }
+  ],
+  "turnLimit": 8,
+  "endGameDieRoll": false,
+  "endGameDieStart": 6,
+  "sizeConfig": {
+    "SMALL": {
+      "bpAttacker": 375,
+      "bpDefender": 250,
+      "zoneCount": 1
+    },
+    "MEDIUM": {
+      "bpAttacker": 750,
+      "bpDefender": 500,
+      "zoneCount": 2
+    },
+    "LARGE": {
+      "bpAttacker": 1000,
+      "bpDefender": 750,
+      "zoneCount": 3
+    }
+  },
+  "_balance": {
+    "expectedTurns": 4,
+    "difficulty": "medium",
+    "notes": "Asymmetric - Attacker has BP advantage but time pressure"
+  }
+}

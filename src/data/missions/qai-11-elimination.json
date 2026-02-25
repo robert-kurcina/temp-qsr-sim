@@ -1,0 +1,71 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_11",
+  "name": "Elimination",
+  "description": "Two forces meet on the battlefield. Destroy your opponent's fighting strength before they destroy yours.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "SMALL",
+  "battlefield": {
+    "deployment": "opposing_edges"
+  },
+  "victoryConditions": [
+    {
+      "type": "elimination",
+      "immediate": true,
+      "description": "Eliminate all enemy models"
+    },
+    {
+      "type": "vp_majority",
+      "description": "Most VP at game end"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "model.eliminated",
+      "vp": 1,
+      "description": "+1 VP per enemy model eliminated"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "bottled",
+      "name": "Bottled",
+      "description": "+1 VP if Opposing Side fails Bottle Test or has no Ordered models remaining at game end",
+      "effect": "Morale victory"
+    },
+    {
+      "id": "outnumbered",
+      "name": "Outnumbered",
+      "description": "+1 VP to Side outnumbered 3:2 or greater; +2 VP if outnumbered 2:1 or greater",
+      "effect": "Underdog bonus"
+    }
+  ],
+  "turnLimit": 10,
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "sizeConfig": {
+    "SMALL": {
+      "bpMin": 250,
+      "bpMax": 500,
+      "modelMin": 4,
+      "modelMax": 8
+    },
+    "MEDIUM": {
+      "bpMin": 500,
+      "bpMax": 750,
+      "modelMin": 6,
+      "modelMax": 12
+    },
+    "LARGE": {
+      "bpMin": 750,
+      "bpMax": 1000,
+      "modelMin": 8,
+      "modelMax": 16
+    }
+  },
+  "_balance": {
+    "expectedTurns": 6,
+    "difficulty": "easy",
+    "notes": "Basic mission - good for teaching core mechanics"
+  }
+}

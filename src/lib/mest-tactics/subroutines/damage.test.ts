@@ -1,12 +1,12 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { Character } from '../Character';
-import type { Item } from '../Item';
+import type { Character } from '../core/Character';
+import type { Item } from '../core/Item';
 import { resolveDamageTest } from './damage';
-import * as diceRoller from '../dice-roller';
+import * as diceRoller from '../subroutines/dice-roller';
 
 // Mock the dice-roller module to control the outcome of resolveTest
-vi.mock('../dice-roller', () => ({
+vi.mock('../subroutines/dice-roller', () => ({
   resolveTest: vi.fn().mockReturnValue({ pass: false, cascades: 0 }), // Default mock
 }));
 
@@ -19,20 +19,20 @@ describe('resolveDamageTest', () => {
     vi.clearAllMocks();
     attacker = {
       id: 'attacker', name: 'Attacker', archetype: 'soldier',
-      attributes: { STR: 3, POW: 3, INT: 3, FOR: 3, SIZ: 10 },
-      finalAttributes: { STR: 3, POW: 3, INT: 3, FOR: 3, SIZ: 10 },
+      attributes: { str: 3, pow: 3, int: 3, for: 3, siz: 10, cca: 0, rca: 0, ref: 0, mov: 0 },
+      finalAttributes: { str: 3, pow: 3, int: 3, for: 3, siz: 10, cca: 0, rca: 0, ref: 0, mov: 0 },
       state: { wounds: 0, delayTokens: 0, isKOd: false, isEliminated: false, armor: { total: 0 } },
       items: [],
     };
     defender = {
       id: 'defender', name: 'Defender', archetype: 'soldier',
-      attributes: { STR: 3, POW: 3, INT: 3, FOR: 3, SIZ: 5 },
-      finalAttributes: { STR: 3, POW: 3, INT: 3, FOR: 3, SIZ: 5 },
+      attributes: { str: 3, pow: 3, int: 3, for: 3, siz: 5, cca: 0, rca: 0, ref: 0, mov: 0 },
+      finalAttributes: { str: 3, pow: 3, int: 3, for: 3, siz: 5, cca: 0, rca: 0, ref: 0, mov: 0 },
       state: { wounds: 0, delayTokens: 0, isKOd: false, isEliminated: false, armor: { total: 0 } },
       items: [],
     };
     weapon = {
-      id: 'weapon', name: 'Sword', type: 'weapon', damage: 'STR+1', impact: 1,
+      id: 'weapon', name: 'Sword', type: 'weapon', dmg: 'STR+1', impact: 1,
     };
   });
 
@@ -46,7 +46,7 @@ describe('resolveDamageTest', () => {
 
   it('should apply KO status when total wounds equal SIZ', () => {
     defender.state.wounds = 3;
-    defender.finalAttributes.SIZ = 5;
+    defender.finalAttributes.siz = 5;
     vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 2, carryOverDice: {} });
     resolveDamageTest(attacker, defender, weapon, 0);
     expect(defender.state.isKOd).toBe(true);
@@ -54,7 +54,7 @@ describe('resolveDamageTest', () => {
 
   it('should apply Eliminated status when total wounds equal or exceed SIZ + 3', () => {
     defender.state.wounds = 6;
-    defender.finalAttributes.SIZ = 5;
+    defender.finalAttributes.siz = 5;
     vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 2, carryOverDice: {} });
     resolveDamageTest(attacker, defender, weapon, 0);
     expect(defender.state.isEliminated).toBe(true);
@@ -62,8 +62,8 @@ describe('resolveDamageTest', () => {
 
   it('should correctly parse and use dice modifiers in the damage formula', () => {
     // Arrange: Corrected to use a valid dice specifier 'b' instead of 'd'
-    weapon.damage = 'STR+2b'; // Damage includes 2 bonus base dice
-    attacker.finalAttributes.STR = 4;
+    weapon.dmg = 'STR+2b'; // Damage includes 2 bonus base dice
+    attacker.finalAttributes.str = 4;
 
     // Act
     resolveDamageTest(attacker, defender, weapon, 0);

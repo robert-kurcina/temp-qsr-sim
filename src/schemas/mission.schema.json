@@ -1,0 +1,199 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mest-tactics.com/schemas/mission.schema.json",
+  "title": "MEST Tactics Mission Configuration",
+  "description": "Configuration schema for custom mission definitions",
+  "type": "object",
+  "required": ["id", "name", "description", "sides", "victoryConditions", "scoringRules"],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON Schema reference"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^QAI_[0-9]+$",
+      "description": "Unique mission identifier (e.g., QAI_21)"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "description": "Mission display name"
+    },
+    "description": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 500,
+      "description": "Mission description for players"
+    },
+    "sides": {
+      "type": "object",
+      "required": ["min", "max"],
+      "properties": {
+        "min": { "type": "integer", "minimum": 2, "maximum": 4 },
+        "max": { "type": "integer", "minimum": 2, "maximum": 4 }
+      }
+    },
+    "defaultGameSize": {
+      "type": "string",
+      "enum": ["VERY_SMALL", "SMALL", "MEDIUM", "LARGE", "VERY_LARGE"],
+      "default": "VERY_SMALL"
+    },
+    "battlefield": {
+      "type": "object",
+      "properties": {
+        "zones": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/zoneConfig" }
+        },
+        "deployment": {
+          "type": "string",
+          "enum": ["opposing_edges", "corners", "custom"]
+        }
+      }
+    },
+    "victoryConditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/victoryCondition" }
+    },
+    "scoringRules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/definitions/scoringRule" }
+    },
+    "specialRules": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/specialRule" }
+    },
+    "turnLimit": {
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 15,
+      "default": 10
+    },
+    "endGameDieRoll": {
+      "type": "boolean",
+      "default": true
+    },
+    "endGameDieStart": {
+      "type": "integer",
+      "minimum": 4,
+      "maximum": 10,
+      "default": 6
+    },
+    "sizeConfig": {
+      "type": "object",
+      "properties": {
+        "VERY_SMALL": { "$ref": "#/definitions/sizeSpecifics" },
+        "SMALL": { "$ref": "#/definitions/sizeSpecifics" },
+        "MEDIUM": { "$ref": "#/definitions/sizeSpecifics" },
+        "LARGE": { "$ref": "#/definitions/sizeSpecifics" },
+        "VERY_LARGE": { "$ref": "#/definitions/sizeSpecifics" }
+      }
+    },
+    "_balance": {
+      "type": "object",
+      "description": "Balance hints and recommendations (ignored by engine)",
+      "properties": {
+        "expectedTurns": { "type": "integer" },
+        "difficulty": { "type": "string", "enum": ["easy", "medium", "hard"] },
+        "notes": { "type": "string" }
+      }
+    }
+  },
+  "definitions": {
+    "zoneConfig": {
+      "type": "object",
+      "required": ["type", "count"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["poi", "signal", "cache", "focal_node", "threshold", "mechanism"]
+        },
+        "count": { "type": "integer", "minimum": 1, "maximum": 10 },
+        "formation": {
+          "type": "string",
+          "enum": ["triangle", "diamond", "circle", "line", "custom"]
+        },
+        "spacing": { "type": "number", "minimum": 4, "maximum": 24 },
+        "radius": { "type": "number", "minimum": 2, "maximum": 6, "default": 3 }
+      }
+    },
+    "victoryCondition": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "elimination",
+            "dominance",
+            "extraction",
+            "survival",
+            "vp_majority",
+            "courier",
+            "rupture",
+            "harvest"
+          ]
+        },
+        "threshold": { "type": "integer", "minimum": 1 },
+        "immediate": { "type": "boolean", "default": false },
+        "description": { "type": "string" }
+      },
+      "if": { "properties": { "type": { "const": "dominance" } } },
+      "then": { "required": ["threshold"] }
+    },
+    "scoringRule": {
+      "type": "object",
+      "required": ["trigger", "vp"],
+      "properties": {
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "turn.end",
+            "turn.end.zone_control",
+            "model.eliminated",
+            "zone.captured",
+            "courier.edge_reach",
+            "vip.extracted",
+            "vp.destroyed",
+            "cache.harvested",
+            "first_blood",
+            "objective.complete"
+          ]
+        },
+        "vp": {
+          "oneOf": [
+            { "type": "integer", "minimum": 1 },
+            { "type": "object", "properties": { "per": { "type": "string" } } }
+          ]
+        },
+        "description": { "type": "string" }
+      }
+    },
+    "specialRule": {
+      "type": "object",
+      "required": ["id", "name", "description"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "effect": { "type": "string" },
+        "config": { "type": "object" }
+      }
+    },
+    "sizeSpecifics": {
+      "type": "object",
+      "properties": {
+        "vpThreshold": { "type": "integer" },
+        "zoneCount": { "type": "integer" },
+        "bpMin": { "type": "integer" },
+        "bpMax": { "type": "integer" },
+        "modelMin": { "type": "integer" },
+        "modelMax": { "type": "integer" }
+      }
+    }
+  }
+}

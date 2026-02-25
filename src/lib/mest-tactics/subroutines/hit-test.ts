@@ -1,7 +1,7 @@
 
-import { Character } from '../Character';
-import { resolveTest, TestParticipant, TestDice, ResolveTestResult, mergeTestDices } from '../dice-roller';
-import { Item } from '../Item';
+import { Character } from '../core/Character';
+import { resolveTest, TestParticipant, TestDice, ResolveTestResult, mergeTestDice } from '../subroutines/dice-roller';
+import { Item } from '../core/Item';
 import { parseAccuracy } from './accuracy-parser';
 
 export function resolveHitTest(
@@ -15,7 +15,7 @@ export function resolveHitTest(
     p1Rolls: number[] | null = null,
     p2Rolls: number[] | null = null,
 ): ResolveTestResult {
-    
+
     const attackerAttribute = weapon.classification === 'Melee' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
     const defenderAttribute = weapon.classification === 'Melee' ? defender.finalAttributes.cca : defender.finalAttributes.ref;
 
@@ -23,8 +23,8 @@ export function resolveHitTest(
 
     const attackerParticipant: TestParticipant = {
         attributeValue: attackerAttribute,
-        bonusDice: mergeTestDices(attackerBonus, accBonus),
-        penaltyDice: mergeTestDices(attackerPenalty, accPenalty),
+        bonusDice: mergeTestDice(attackerBonus, accBonus),
+        penaltyDice: mergeTestDice(attackerPenalty, accPenalty),
     };
 
     const defenderParticipant: TestParticipant = {

@@ -1,0 +1,82 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_15",
+  "name": "Recovery",
+  "description": "Scattered vital caches contain valuable assets. Recover them before the opposition, but each claim triggers alert protocols that escalate the battlefield's danger.",
+  "sides": { "min": 2, "max": 2 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "cache", "count": 5, "formation": "circle", "spacing": 12, "radius": 2 }
+    ],
+    "deployment": "opposing_edges"
+  },
+  "victoryConditions": [
+    {
+      "type": "harvest",
+      "threshold": 4,
+      "immediate": true,
+      "description": "Immediate victory upon extracting 4 VCs"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "cache.harvested",
+      "vp": 1,
+      "description": "+1 VP immediately for each VC extracted"
+    },
+    {
+      "trigger": "objective.complete",
+      "vp": 1,
+      "description": "+1 VP to Side that triggered maximum Threat Level"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "harvest",
+      "name": "Harvest",
+      "description": "Acquire VC: 1 AP Fiddle action. Extract VC: 1 AP while in base-contact with battlefield edge",
+      "effect": "Two-step collection",
+      "config": { "acquireAP": 1, "extractAP": 1 }
+    },
+    {
+      "id": "catalyst",
+      "name": "Catalyst (Threat Level)",
+      "description": "Each extraction increases Threat Level. Level 2+: -1 Range Combat Hit. Level 4+: -1 Close Combat Hit. Max: Hard Cover degrades to Soft",
+      "effect": "Escalating danger",
+      "config": {
+        "level2Effect": "-1 Base die Range Combat Hit Tests",
+        "level4Effect": "-1 Base die Close Combat Hit Tests",
+        "maxEffect": "Hard Cover degrades to Soft Cover"
+      }
+    },
+    {
+      "id": "hidden_caches",
+      "name": "Hidden Caches",
+      "description": "Roll 1d6 per VC; on 4+ the VC begins Hidden (revealed within 4 MU)",
+      "effect": "Fog of war"
+    }
+  ],
+  "turnLimit": 10,
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "sizeConfig": {
+    "SMALL": {
+      "zoneCount": 3,
+      "vpThreshold": 3
+    },
+    "MEDIUM": {
+      "zoneCount": 5,
+      "vpThreshold": 4
+    },
+    "LARGE": {
+      "zoneCount": 7,
+      "vpThreshold": 5
+    }
+  },
+  "_balance": {
+    "expectedTurns": 7,
+    "difficulty": "hard",
+    "notes": "Risk/reward - faster extraction = higher threat"
+  }
+}

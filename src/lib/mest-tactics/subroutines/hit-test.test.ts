@@ -1,11 +1,11 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { createCharacter } from '../character-factory';
+import { createCharacter } from '../utils/character-factory';
 import { resolveHitTest } from './hit-test';
-import { DiceType, TestDice } from '../dice-roller';
-import type { Profile } from '../Profile';
-import type { Item } from '../Item';
-import type { Character } from '../Character';
+import { DiceType, TestDice } from '../subroutines/dice-roller';
+import type { Profile } from '../core/Profile';
+import type { Item } from '../core/Item';
+import type { Character } from '../core/Character';
 import { gameData } from '../../data';
 
 const { archetypes, melee_weapons } = gameData;

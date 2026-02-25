@@ -1,0 +1,71 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_12",
+  "name": "Convergence",
+  "description": "Forces arrive in waves from all directions to seize contested ground. Timing and positioning are the only path to victory.",
+  "sides": { "min": 2, "max": 4 },
+  "defaultGameSize": "MEDIUM",
+  "battlefield": {
+    "zones": [
+      { "type": "focal_node", "count": 3, "formation": "triangle", "spacing": 12, "radius": 3 }
+    ],
+    "deployment": "corners"
+  },
+  "victoryConditions": [
+    {
+      "type": "dominance",
+      "threshold": 5,
+      "immediate": true,
+      "description": "First to 5 VP wins immediately"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "turn.end.zone_control",
+      "vp": 1,
+      "description": "+1 VP per Focal Node controlled at End of Turn"
+    },
+    {
+      "trigger": "first_blood",
+      "vp": 1,
+      "description": "+1 VP to first Side to Wound an Opposing model"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "reinforcements",
+      "name": "Reinforcements",
+      "description": "At Start of each Turn, each Side rolls Reinforcement dice. Each die showing 4+ deploys one Reinforcement Group within 6 MU of Entry Edge",
+      "effect": "Wave deployment",
+      "config": { "rollTarget": 4, "deploymentDistance": 6 }
+    },
+    {
+      "id": "entry_edges",
+      "name": "Entry Edges",
+      "description": "Divide battlefield perimeter into equal Entry Edges (one per Side)",
+      "effect": "Multi-directional deployment"
+    }
+  ],
+  "turnLimit": 10,
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "sizeConfig": {
+    "SMALL": {
+      "vpThreshold": 3,
+      "zoneCount": 2
+    },
+    "MEDIUM": {
+      "vpThreshold": 4,
+      "zoneCount": 3
+    },
+    "LARGE": {
+      "vpThreshold": 5,
+      "zoneCount": 4
+    }
+  },
+  "_balance": {
+    "expectedTurns": 7,
+    "difficulty": "medium",
+    "notes": "Favors aggressive play and reinforcement timing"
+  }
+}

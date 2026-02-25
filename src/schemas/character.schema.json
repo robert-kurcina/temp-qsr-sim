@@ -1,0 +1,80 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mest-tactics.com/schemas/character.schema.json",
+  "title": "Character",
+  "description": "A character instance with profile and state",
+  "type": "object",
+  "required": ["id", "name", "profile", "allTraits", "finalAttributes", "state"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique character identifier"
+    },
+    "name": {
+      "type": "string",
+      "description": "Character name"
+    },
+    "profile": {
+      "$ref": "profile.schema.json"
+    },
+    "allTraits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "source"],
+        "properties": {
+          "name": { "type": "string" },
+          "source": { "type": "string" },
+          "isDisability": { "type": "boolean" },
+          "level": { "type": "number", "minimum": 0 },
+          "type": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "finalAttributes": {
+      "type": "object",
+      "required": ["cca", "rca", "ref", "int", "pow", "str", "for", "mov", "siz"],
+      "properties": {
+        "cca": { "type": "number", "minimum": 0 },
+        "rca": { "type": "number", "minimum": 0 },
+        "ref": { "type": "number", "minimum": 0 },
+        "int": { "type": "number", "minimum": 0 },
+        "pow": { "type": "number", "minimum": 0 },
+        "str": { "type": "number", "minimum": 0 },
+        "for": { "type": "number", "minimum": 0 },
+        "mov": { "type": "number", "minimum": 0 },
+        "siz": { "type": "number", "minimum": 1 }
+      },
+      "additionalProperties": false
+    },
+    "state": {
+      "type": "object",
+      "properties": {
+        "wounds": { "type": "number", "minimum": 0 },
+        "delayTokens": { "type": "number", "minimum": 0 },
+        "fearTokens": { "type": "number", "minimum": 0 },
+        "isHidden": { "type": "boolean" },
+        "isWaiting": { "type": "boolean" },
+        "isDisordered": { "type": "boolean" },
+        "isDistracted": { "type": "boolean" },
+        "statusEffects": { "type": "array", "items": { "type": "string" } },
+        "armor": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "number" },
+            "suit": { "type": "number" },
+            "gear": { "type": "number" },
+            "shield": { "type": "number" },
+            "helm": { "type": "number" }
+          },
+          "required": ["total", "suit", "gear", "shield", "helm"],
+          "additionalProperties": false
+        }
+      },
+      "required": ["wounds", "delayTokens", "fearTokens", "isHidden", "isWaiting", "isDisordered", "isDistracted", "statusEffects", "armor"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

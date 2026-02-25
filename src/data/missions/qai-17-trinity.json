@@ -1,0 +1,68 @@
+{
+  "$schema": "../../schemas/mission.schema.json",
+  "id": "QAI_17",
+  "name": "Triumvirate",
+  "description": "Multiple factions converge on a site containing three focal nodes. Control the nodes to unlock the central prize, but alliances shift with every Turn.",
+  "sides": { "min": 3, "max": 4 },
+  "defaultGameSize": "LARGE",
+  "battlefield": {
+    "zones": [
+      { "type": "focal_node", "count": 3, "formation": "triangle", "spacing": 12, "radius": 3 }
+    ],
+    "deployment": "corners"
+  },
+  "victoryConditions": [
+    {
+      "type": "dominance",
+      "threshold": 4,
+      "immediate": true,
+      "description": "First to 4 VP wins immediately"
+    }
+  ],
+  "scoringRules": [
+    {
+      "trigger": "turn.end.zone_control",
+      "vp": 1,
+      "description": "+1 VP per FN controlled per Turn"
+    },
+    {
+      "trigger": "model.eliminated",
+      "vp": 2,
+      "description": "+2 VP for eliminating Opposing Commander"
+    },
+    {
+      "trigger": "cache.harvested",
+      "vp": 1,
+      "description": "+1 VP per Neutral Asset (NA) extracted"
+    }
+  ],
+  "specialRules": [
+    {
+      "id": "dominance",
+      "name": "Dominance",
+      "description": "At End of Turn, each Side controlling a FN awards +1 VP",
+      "effect": "Zone control"
+    },
+    {
+      "id": "commander",
+      "name": "Commander",
+      "description": "Each side designates one Commander (61+ BP). If your Commander is KO'd, you cannot gain Dominance VP on the following Turn",
+      "effect": "Leader mechanic",
+      "config": { "bpMinimum": 61 }
+    },
+    {
+      "id": "central_apex",
+      "name": "Central Apex",
+      "description": "No terrain within 4 MU of center point",
+      "effect": "Open kill zone"
+    }
+  ],
+  "turnLimit": 10,
+  "endGameDieRoll": true,
+  "endGameDieStart": 6,
+  "_balance": {
+    "expectedTurns": 6,
+    "difficulty": "hard",
+    "notes": "Multi-player free-for-all - favors diplomacy"
+  }
+}
