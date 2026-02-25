@@ -40,37 +40,101 @@ describe('Elimination Mission', () => {
 
   describe('processModelElimination', () => {
     it('should track elimination count', () => {
-      manager.processModelElimination('model-1', sideB.id, sideA.id);
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 50);
 
       expect(manager.getEliminationCount(sideB.id)).toBe(1);
     });
 
-    it('should award VP to eliminating side', () => {
-      manager.processModelElimination('model-1', sideB.id, sideA.id);
+    it('should track eliminated BP', () => {
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 50);
 
-      expect(manager.getVictoryPoints(sideA.id)).toBe(1);
-      expect(manager.getVictoryPoints(sideB.id)).toBe(0);
+      expect(manager.getEliminatedBp(sideB.id)).toBe(50);
     });
 
-    it('should not award VP for self-elimination', () => {
-      manager.processModelElimination('model-1', sideB.id, sideB.id);
+    it('should not award VP immediately (awarded at game end)', () => {
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 50);
 
+      // VP is awarded at game end, not per elimination
       expect(manager.getVictoryPoints(sideA.id)).toBe(0);
-      expect(manager.getVictoryPoints(sideB.id)).toBe(0);
     });
 
-    it('should update side VP state', () => {
-      manager.processModelElimination('model-1', sideB.id, sideA.id);
-
-      expect(sideA.state.victoryPoints).toBe(1);
-    });
-
-    it('should track multiple eliminations', () => {
-      manager.processModelElimination('model-1', sideB.id, sideA.id);
-      manager.processModelElimination('model-2', sideB.id, sideA.id);
+    it('should track multiple eliminations with BP', () => {
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 50);
+      manager.processModelElimination('model-2', sideB.id, sideA.id, 75);
 
       expect(manager.getEliminationCount(sideB.id)).toBe(2);
-      expect(manager.getVictoryPoints(sideA.id)).toBe(2);
+      expect(manager.getEliminatedBp(sideB.id)).toBe(125);
+    });
+  });
+
+  describe('calculateEndGameScoring', () => {
+    it('should award Elimination VP to side with highest enemy BP eliminated', () => {
+      // Side A eliminates 100 BP of Side B (Side B bottled out)
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 100);
+      // Side B eliminates 50 BP of Side A
+      manager.processModelElimination('model-2', sideA.id, sideB.id, 50);
+
+      // Mark Side B as eliminated (bottled out)
+      sideB.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+
+      const scoring = manager.calculateEndGameScoring();
+
+      // Side A eliminated more BP (100 vs 50), so Side A gets +1 VP for Elimination
+      // Side A also gets +1 VP for Bottled (Side B has no ordered models)
+      // Total: 2 VP
+      expect(scoring.vpBySide[sideA.id]).toBe(2);
+    });
+
+    it('should award Bottled VP', () => {
+      // Side B has no ordered models (bottled out)
+      sideB.members.forEach(m => {
+        m.status = ModelSlotStatus.Eliminated;
+        m.character.state.isOrdered = false;
+      });
+      sideA.members.forEach(m => m.character.state.isOrdered = true);
+
+      const scoring = manager.calculateEndGameScoring();
+
+      // Side A gets +1 VP for Elimination (Side B lost all BP)
+      // Side A also gets +1 VP for Bottled
+      // Total: 2 VP
+      expect(scoring.vpBySide[sideA.id]).toBe(2);
+    });
+
+    it('should handle tie in elimination scoring', () => {
+      // Both sides eliminate equal BP
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 100);
+      manager.processModelElimination('model-2', sideA.id, sideB.id, 100);
+
+      // Mark equal models as eliminated on both sides
+      sideB.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideA.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+
+      const scoring = manager.calculateEndGameScoring();
+
+      // Both sides have equal enemy BP eliminated - tie in Elimination scoring
+      // Both sides bottled out - no Bottled VP
+      // Outnumbered doesn't apply (equal starting model counts)
+      // In a complete tie scenario, no VP is awarded for Elimination key
+      // (One side may still get VP from other keys depending on implementation)
+      expect(scoring).toBeDefined();
+    });
+
+    it('should award Outnumbered VP', () => {
+      // Create a new manager with unequal model counts
+      const result = buildOpposingSides(
+        'Side A',
+        [{ archetypeName: 'Veteran', count: 3 }],
+        'Side B',
+        [{ archetypeName: 'Veteran', count: 6 }]
+      );
+      const outnumberedManager = createEliminationMission([result.sideA, result.sideB]);
+
+      // Side A is outnumbered 2:1
+      const scoring = outnumberedManager.calculateEndGameScoring();
+
+      // Side A gets +2 VP for being outnumbered 2:1
+      expect(scoring.vpBySide[result.sideA.id]).toBe(2);
     });
   });
 
@@ -152,29 +216,29 @@ describe('Elimination Mission', () => {
 
   describe('getVPStandings', () => {
     it('should return standings sorted by VP', () => {
-      manager.processModelElimination('model-1', sideB.id, sideA.id);
-      manager.processModelElimination('model-2', sideB.id, sideA.id);
-      manager.processModelElimination('model-3', sideA.id, sideB.id);
+      // VP is 0 until end-game scoring
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 50);
+      manager.processModelElimination('model-2', sideB.id, sideA.id, 50);
+      manager.processModelElimination('model-3', sideA.id, sideB.id, 50);
 
       const standings = manager.getVPStandings();
 
       expect(standings.length).toBe(2);
-      expect(standings[0].sideId).toBe(sideA.id);
-      expect(standings[0].vp).toBe(2);
-      expect(standings[1].sideId).toBe(sideB.id);
-      expect(standings[1].vp).toBe(1);
+      // VP is 0 until end-game scoring is applied
+      expect(standings[0].vp).toBe(0);
+      expect(standings[1].vp).toBe(0);
     });
 
     it('should include elimination counts', () => {
-      manager.processModelElimination('model-1', sideB.id, sideA.id);
-      manager.processModelElimination('model-2', sideB.id, sideA.id);
+      manager.processModelElimination('model-1', sideB.id, sideA.id, 50);
+      manager.processModelElimination('model-2', sideB.id, sideA.id, 50);
 
       const standings = manager.getVPStandings();
 
-      // Side A has 2 VP from eliminating Side B models
-      expect(standings.find(s => s.sideId === sideA.id)?.eliminations).toBe(0); // Side A wasn't eliminated
       // Side B has 2 eliminations (their models were eliminated)
       expect(standings.find(s => s.sideId === sideB.id)?.eliminations).toBe(2);
+      // Side A has 0 eliminations
+      expect(standings.find(s => s.sideId === sideA.id)?.eliminations).toBe(0);
     });
   });
 

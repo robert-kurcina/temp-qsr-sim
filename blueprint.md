@@ -11,6 +11,11 @@ This project is a wargame simulator designed to run in Firebase Studio. The goal
 - **Phase 3 (Planned):** Web UI for local play
 - **Phase 4 (Planned):** Online multiplayer platform with authentication, social features, and cloud deployment
 - **Phase 4E (Planned):** Enterprise platform foundation (RBAC, audit logs, observability)
+- **Phase 5 (Future - Non-QSR):** Character Progression & Champion System
+  - Track per-character statistics: RPs scored, OMs acquired, VPs earned, eliminations, etc.
+  - Enable character advancement with enhanced abilities
+  - Create "Champion" characters that grow across multiple games
+  - **Note:** This is a post-QSR feature for campaign/play style variety, not part of core QSR rules
 
 ## 2. The Blueprint: Our Shared Source of Truth
 
@@ -323,7 +328,7 @@ This plan supersedes ad-hoc backlog ordering and is now the execution order for 
 - Documented disposition for each currently-unused data category.
 - Core runtime and required validation scripts are type-clean (or tracked exceptions are explicitly documented).
 
-### 10.2.1 Execution Status Snapshot (2026-02-24)
+### 10.2.1 Execution Status Snapshot (2026-02-25)
 
 Implemented and validated in runtime/tests:
 - Phase A0: initial visual-audit API implemented in `scripts/ai-battle-setup.ts` battle report JSON (`audit` payload with turn/activation/action-step, AP spend, vectors, interactions, opposed tests, and before/after model-state effects).
@@ -334,12 +339,17 @@ Implemented and validated in runtime/tests:
 - Phase E: E1, E2, E3, E4 (authoritative path is `GameController.runMission()` with mission runtime adapter + mission manager wiring + OM APIs).
 - Phase F: F2 and F3 are implemented through `scripts/ai-battle-setup.ts -v` validation mode (repeatable seeded Mission 11 runs, aggregate metrics, coverage checks, and persisted reports under `generated/ai-battle-reports/`).
 - Phase G: G2 and G3 are partially completed for active mission/game-controller/game-manager paths; global repo-wide type drift remains open.
+- **R1 (P0):** Mission Scoring Correctness for Elimination (QAI_11) - VP awarded at game end based on BP, Bottled and Outnumbered keys implemented.
+- **R1.5 (P0):** Predicted VP/RP Scoring System - All 10 missions have `calculatePredictedScoring()`, battle reports include predicted scoring, AI stratagem integration complete with 12 tests.
 
 Deferred or held by approval:
 - B4: Action-type alignment/fallback mapping across all AI pathways (deferred).
 - D3: Indirect midpoint/arc terrain-height fidelity (deferred pending terrain-height clarification).
 - F1: Original non-interactive profile step was rejected and superseded by interactive CLI + validation mode in `scripts/ai-battle-setup.ts`.
 - G1: Unused `gameData` key disposition policy (deferred).
+
+**Active Development:**
+- **R2 (P0):** AI Scoring Behavior Patch - Integrating predicted scoring into AI utility system (IN PROGRESS)
 
 Remaining high-priority technical debt after current remediation:
 - Promote visual-audit API from script scope into shared runtime service module for UI consumption (non-script entry points).
@@ -359,6 +369,106 @@ This is the current execution plan for the latest identified gaps (mission scan 
 - No mission returns ambiguous empty scoring payloads when scoring should exist.
 - Reactive/passive/interrupt eliminations and model-state changes affect mission scoring exactly once.
 - Mission winner/tie resolution remains deterministic under seeded replays.
+
+**Status:** ✅ COMPLETE (2026-02-25) - Elimination mission scoring fixed to award VP at game end based on BP value, with Bottled and Outnumbered keys implemented.
+
+#### R1.5 (P0): Predicted VP/RP Scoring System for AI Planning
+**Objective:** Provide AI with real-time scoring visibility to enable strategic decision-making based on current battlefield state.
+
+**Concept:** Each side tracks **Predicted VP/RP** (what they would score if game ended now) separately from **Final VP/RP** (awarded at game end). This enables AI to:
+- Identify which Keys to Victory they are leading/trailing in
+- Prioritize actions based on scoring position (e.g., "behind in Dominance, focus on zones")
+- Assess risk tolerance (ahead = defensive, behind = aggressive)
+- Diversify key efforts (don't put all eggs in one basket)
+
+**Implementation:**
+1. **Add Predicted Scoring to MissionSide State:**
+   ```typescript
+   interface MissionSideState {
+     victoryPoints: number;      // Final VP (awarded at game end)
+     resourcePoints: number;     // Final RP (awarded at game end)
+     predictedVp: number;        // VP if game ended now
+     predictedRp: number;        // RP if game ended now
+     keyScores: {                // Per-key breakdown for AI
+       elimination?: KeyScore;
+       bottled?: KeyScore;
+       outnumbered?: KeyScore;
+       dominance?: KeyScore;
+       // ... etc for each key type
+     };
+   }
+   
+   interface KeyScore {
+     current: number;    // Current VP from this key
+     predicted: number;  // Predicted VP if game ended now
+     confidence: number; // 0.0-1.0, how secure is this lead
+   }
+   ```
+
+2. **Update Mission Managers to Calculate Predicted Scores Each Turn:**
+   - At end of each turn, call `calculateEndGameScoring()` and store results as `predictedVp`/`predictedRp`
+   - Calculate per-key breakdown for each side
+   - Calculate confidence metrics based on lead margins
+
+3. **Confidence Metric Calculation:**
+   - `confidence = 1.0 - (opponentBP / myBP)` for Elimination (e.g., 100 BP vs 50 BP = 0.5 confidence)
+   - `confidence = 1.0` for immediate victory conditions
+   - `confidence = zoneControlRatio` for Dominance
+   - Expose confidence in battle reports for analysis
+
+4. **Expose to AI Utility Scoring:**
+   - AI strategem system reads `side.state.keyScores` to determine leading/trailing keys
+   - Action valuations modified based on scoring position:
+     - Behind in multiple keys → increase aggressive action weights
+     - Ahead in Elimination, behind in Dominance → prioritize zone control actions
+     - High confidence lead → defensive positioning, risk mitigation
+     - Low confidence lead → consolidate advantages, deny enemy opportunities
+
+5. **Battle Report Visibility:**
+   - Add `predictedScoring` section to battle report JSON
+   - Include per-key breakdown with confidence metrics
+   - Enable post-game analysis of AI decision quality
+
+**Exit Criteria**
+- Each MissionSide tracks `predictedVp`, `predictedRp`, and `keyScores` updated each turn.
+- Battle reports include predicted scoring breakdown with confidence metrics.
+- AI utility scoring system reads predicted scores and adjusts action valuations.
+- Unit tests verify predicted scoring accuracy and AI response to scoring positions.
+- Validation runs show AI behavior diverges based on scoring position (ahead vs behind).
+
+**Priority:** P0 (blocks R2 AI Scoring Behavior)
+
+**Dependencies:** R1 (Mission Scoring Correctness) must be complete first.
+
+**Status:** ✅ COMPLETE (2026-02-25)
+- All 10 QAI mission managers implement `calculatePredictedScoring()`
+- MissionRuntimeAdapter updates predicted scores each turn
+- Battle reports include `predictedScoring` section with per-key breakdown
+- `KeyScoresBreakdown` interface covers all 17 Keys to Victory from rules-mission-keys.md
+- **SideAICoordinator architecture** (god mode, perfect coordination):
+  - `SideAICoordinator` - Side/Player-level strategy coordinator
+  - Computes `scoringContext` ONCE per turn for entire Side
+  - Distributes strategic context to all CharacterAI instances
+  - Characters are puppets with no autonomy - execute Side strategy
+  - `SideCoordinatorManager` manages coordinators for all Sides
+- AI stratagem integration (`PredictedScoringIntegration.ts`) provides:
+  - `ScoringContext` - AI's view of current scoring state (leading/trailing, winning/losing keys)
+  - `ScoringModifiers` - action multipliers based on scoring position:
+    - Leading comfortably (3+ VP): defense +30%, wait +2, risk -30%, play for time
+    - Trailing badly (4+ VP deficit): desperate mode, aggression +50%, risk +50%, wait -2
+    - Key-specific adjustments for all 17 keys (dominance, elimination, courier, etc.)
+  - `combineModifiers()` - merges stratagem + scoring modifiers
+  - `getScoringAdvice()` - tactical advice based on scoring position and key state
+- `UtilityScorer.evaluateActions()` now applies combined stratagem + scoring modifiers
+- `AIContext` extended with optional `scoringContext` field
+- `AIControllerConfig` extended with `tacticalDoctrine` field
+- 29 unit tests validate scoring context, modifiers, advice generation, and SideAICoordinator
+- Backward compatible: works without scoringContext (legacy stratagem-only behavior)
+
+**Future: Character Progression (Phase 5 - Non-QSR)**
+- Track per-character statistics: RPs scored, OMs acquired, VPs earned, eliminations
+- Enable character advancement with enhanced abilities across multiple games
+- Create "Champion" characters that grow over time
 
 #### R2 (P0): AI Scoring Behavior Patch (Strategem-Level)
 1. Patch utility scoring at tactical strategem level (not doctrine container only) to increase mission-objective pressure by mission keys (POI, courier, sabotage, switches, caches, extraction, etc.).
@@ -477,6 +587,98 @@ Still open in R2:
 1. Wait uptake is still low in this doctrine/mission profile and needs targeted tactical-condition weighting (not global inflation).
 2. Mission-specific projected OM semantics are still incomplete for non-Assault/Breach objective sources (zone-centric missions still use projection for AI context but not direct objective action semantics).
 3. React/Wait planning remains mostly single-ply in active validation runtime (heuristic valuation + immediate react selection), with no explicit multi-step GOAP interruption rollout.
+
+### 10.2.5 R1.5 Progress Update (2026-02-25): Predicted Scoring + Side-Level Coordination
+
+**Architecture Decision: God Mode AI**
+- Players control Sides with perfect information and full coordination
+- Characters are puppets with NO autonomy - they execute Side-level strategy
+- `SideAICoordinator` computes strategy once per turn and distributes to all characters
+
+**Implemented:**
+1. **`SideAICoordinator` class** (`src/lib/mest-tactics/ai/core/SideAICoordinator.ts`):
+   - Computes `scoringContext` ONCE per turn for entire Side
+   - Distributes strategic context to all CharacterAI instances on that Side
+   - Provides `getStrategicAdvice()` for debug/logging
+   - State export/import for serialization
+
+2. **`SideCoordinatorManager` class**:
+   - Manages coordinators for all Sides in a game
+   - `updateAllScoringContexts()` called at start of each turn
+   - Computes opponent comparison automatically
+
+3. **Integration Points**:
+   - `AIContext.scoringContext` - receives context from Side coordinator
+   - `UtilityScorer.evaluateActions()` - applies combined stratagem + scoring modifiers
+   - All characters on same Side make coherent strategic choices
+
+4. **Key-Specific Adjustments** (17 Keys to Victory):
+   - Zone keys (dominance, control, poi): contest harder when losing, defend when winning
+   - Elimination keys: aggressive when behind, cautious when ahead
+   - Objective keys (courier, harvest, sabotage): prioritize when trailing
+   - Movement keys (aggression, encroachment, exit): push forward when losing
+   - Defensive keys (sanctuary, lastStand): maintain position when winning
+
+5. **Scoring-Based Behavior Modifiers**:
+   - Leading 3+ VP: defense +30%, wait +2, risk -30%, play for time
+   - Trailing 4+ VP: desperate mode, aggression +50%, risk +50%, wait -2
+   - Key-specific: up to +40% objective focus when losing specific keys
+
+6. **Test Coverage** (29 tests):
+   - `PredictedScoringIntegration.test.ts` (12 tests)
+   - `SideAICoordinator.test.ts` (17 tests)
+   - Validates context computation, distribution, strategic advice
+
+**Integration Plan (Remaining Work):**
+1. **GameManager** creates `SideCoordinatorManager` at game start:
+   ```typescript
+   const coordinatorManager = new SideCoordinatorManager();
+   for (const side of missionSides) {
+     const doctrine = side.config?.tacticalDoctrine ?? 'operative';
+     coordinatorManager.getCoordinator(side.id, doctrine);
+   }
+   ```
+
+2. **Start of each turn**, call `updateAllScoringContexts()`:
+   ```typescript
+   // In GameManager.endTurn() or MissionRuntimeAdapter
+   const sideKeyScores = new Map();
+   for (const side of missionSides) {
+     sideKeyScores.set(side.id, side.state.keyScores);
+   }
+   coordinatorManager.updateAllScoringContexts(sideKeyScores, currentTurn);
+   ```
+
+3. **CharacterAI.decide()** gets coordinator reference:
+   ```typescript
+   // In CharacterAI constructor or decide()
+   const coordinator = coordinatorManager.getCoordinator(this.sideId);
+   const scoringContext = coordinator.getScoringContext();
+   
+   const context: AIContext = {
+     // ... existing fields
+     scoringContext: scoringContext ?? undefined,
+   };
+   ```
+
+4. **Battle Report** includes strategic advice:
+   ```typescript
+   for (const coordinator of coordinatorManager.getAllCoordinators()) {
+     report.sideStrategies[coordinator.getSideId()] = {
+       doctrine: coordinator.getTacticalDoctrine(),
+       advice: coordinator.getStrategicAdvice(),
+       context: coordinator.getScoringContext(),
+     };
+   }
+   ```
+
+**Exit Criteria for Full Integration:**
+- [ ] GameManager instantiates SideCoordinatorManager
+- [ ] Turn loop calls updateAllScoringContexts()
+- [ ] CharacterAI receives scoringContext from coordinator
+- [ ] Battle reports include sideStrategies section
+- [ ] Validation runs show coherent Side-level behavior
+- [ ] All characters on same Side make strategically consistent choices
 
 ### 10.2.4A Planned Feature: GOAP Interrupt Planning (Wait + React)
 
@@ -829,7 +1031,7 @@ Transform the headless simulator into a full-featured online gaming platform whe
 │  │  Lobby   │ │  Game    │ │  Profile │ │  Social/Dashboard│   │
 │  │  Screen  │ │  Board   │ │  Screen  │ │  (Leaderboards)  │   │
 │  └──────────┘ └──────────┘ └──────────┘ └──────────────────┘   │
-└─────────────────────────────────────────────────────────────────┘
+└───────────────────��─────────────────────────────────────────────┘
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -843,7 +1045,7 @@ Transform the headless simulator into a full-featured online gaming platform whe
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                      Data Layer (Firebase)                      │
-│  ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────────┐   │
+│  ┌─���────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────────┐   │
 │  │Firestore │ │  Auth    │ │  Storage │ │  Realtime DB     │   │
 │  │  (DB)    │ │  (Users) │ │(Avatars) │ │  (Presence)      │   │
 │  └──────────┘ └──────────┘ └──────────┘ └──────────────────┘   │

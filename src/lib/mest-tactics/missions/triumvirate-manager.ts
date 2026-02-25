@@ -331,6 +331,165 @@ export class TriumvirateMissionManager {
       }))
       .sort((a, b) => b.vp - a.vp);
   }
+
+  /**
+   * Calculate predicted scoring with key breakdown for AI planning
+   * Keys: Dominance (zones), Harvest (NA extraction), Commander Elimination, Sanctuary, Bottled
+   */
+  calculatePredictedScoring(): {
+    sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }>;
+  } {
+    const sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }> = {};
+
+    // Initialize side scores
+    for (const sideId of this.state.sideIds) {
+      sideScores[sideId] = {
+        predictedVp: 0,
+        predictedRp: 0,
+        keyScores: {},
+      };
+    }
+
+    // Build side status for scoring functions
+    const sideStatuses = Array.from(this.sides.values()).map(side => {
+      let koCount = 0;
+      let eliminatedCount = 0;
+      let orderedCount = 0;
+      let koBp = 0;
+      let eliminatedBp = 0;
+
+      for (const member of side.members) {
+        const bp = member.profile?.totalBp ?? 0;
+        if (member.status === 'Eliminated' as any) {
+          eliminatedCount++;
+          eliminatedBp += bp;
+        } else if (member.status === 'KO' as any) {
+          koCount++;
+          koBp += bp;
+        } else if (member.status === 'Ready' as any || member.status === 'Distracted' as any) {
+          orderedCount++;
+        }
+      }
+
+      return {
+        sideId: side.id,
+        startingCount: side.members.length,
+        inPlayCount: side.members.length - koCount - eliminatedCount,
+        orderedCount,
+        koCount,
+        eliminatedCount,
+        koBp,
+        eliminatedBp,
+        totalBp: side.totalBP,
+        bottledOut: orderedCount === 0,
+      };
+    });
+
+    // Dominance: +1 VP per zone controlled
+    const zoneControllers = this.getZoneControllers();
+    const zonesBySide: Record<string, number> = {};
+    for (const sideId of this.state.sideIds) {
+      zonesBySide[sideId] = 0;
+    }
+    for (const [zoneId, controller] of zoneControllers.entries()) {
+      if (controller && controller !== 'null') {
+        zonesBySide[controller] = (zonesBySide[controller] ?? 0) + 1;
+      }
+    }
+
+    const sortedZones = Object.entries(zonesBySide).sort((a, b) => b[1] - a[1]);
+    for (const [sideId, zoneCount] of Object.entries(zonesBySide)) {
+      const predicted = zoneCount;
+      const secondZoneCount = sortedZones[1]?.[1] ?? 0;
+      const leadMargin = zoneCount - secondZoneCount;
+      const opponentBest = sideId === sortedZones[0]?.[0] ? secondZoneCount : (sortedZones[0]?.[1] ?? 0);
+      const confidence = zoneCount > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / zoneCount)))
+        : (zoneCount > opponentBest ? 1 : 0);
+
+      sideScores[sideId].keyScores['dominance'] = {
+        current: this.state.vpBySide.get(sideId) ?? 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Harvest: +1 VP per NA extracted (already awarded in VP)
+    // Use VP as proxy since extraction awards VP immediately
+    const sortedVP = Array.from(this.state.vpBySide.entries()).sort((a, b) => b[1] - a[1]);
+    for (const [sideId, vp] of this.state.vpBySide.entries()) {
+      // Subtract dominance VP to estimate harvest VP
+      const dominanceVP = zonesBySide[sideId] ?? 0;
+      const harvestVP = Math.max(0, vp - dominanceVP);
+      
+      sideScores[sideId].keyScores['harvest'] = {
+        current: harvestVP,
+        predicted: harvestVP,
+        confidence: harvestVP > 0 ? 0.8 : 0.3,
+        leadMargin: harvestVP,
+      };
+    }
+
+    // Commander Elimination: +2 VP for eliminating enemy commander
+    // Check if any side's commander was eliminated
+    for (const [sideId, eliminated] of this.state.commanderEliminated.entries()) {
+      if (eliminated) {
+        // Find enemy sides and award VP
+        for (const enemyId of this.state.sideIds) {
+          if (enemyId !== sideId) {
+            const current = sideScores[enemyId].keyScores['commander_elimination']?.current ?? 0;
+            sideScores[enemyId].keyScores['commander_elimination'] = {
+              current: current + 2,
+              predicted: current + 2,
+              confidence: 1.0,
+              leadMargin: 2,
+            };
+            sideScores[enemyId].predictedVp += 2;
+          }
+        }
+      }
+    }
+
+    // Sanctuary: +1 VP per turn maintaining 25% BP in entry edge zone
+    for (const side of sideStatuses) {
+      const sanctuaryVP = side.inPlayCount >= Math.ceil(side.startingCount * 0.25) ? 1 : 0;
+      
+      sideScores[side.sideId].keyScores['sanctuary'] = {
+        current: 0,
+        predicted: sanctuaryVP,
+        confidence: sanctuaryVP > 0 ? 0.7 : 0.0,
+        leadMargin: sanctuaryVP,
+      };
+      sideScores[side.sideId].predictedVp += sanctuaryVP;
+    }
+
+    // Bottled: +1 VP if opponent bottles out
+    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const side of sideStatuses) {
+      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
+      const predicted = isOpponentBottled ? 1 : 0;
+
+      sideScores[side.sideId].keyScores['bottled'] = {
+        current: 0,
+        predicted,
+        confidence: isOpponentBottled ? 1.0 : 0.0,
+        leadMargin: isOpponentBottled ? 1 : 0,
+      };
+      sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    return { sideScores };
+  }
 }
 
 /**

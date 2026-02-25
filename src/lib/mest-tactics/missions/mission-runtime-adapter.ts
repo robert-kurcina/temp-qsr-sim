@@ -1,5 +1,5 @@
 import { Position } from '../battlefield/Position';
-import { ModelSlotStatus, MissionSide } from '../mission/MissionSide';
+import { ModelSlotStatus, MissionSide, updatePredictedScoring, createKeyScore } from '../mission/MissionSide';
 import { AssemblyRoster } from '../mission/assembly-builder';
 import {
   ObjectiveMarker,
@@ -719,10 +719,73 @@ export class MissionRuntimeAdapter {
       this.manager.checkForVictory();
     } else if (this.manager instanceof EliminationMissionManager) {
       this.manager.checkForVictory();
+      // Apply end-game scoring when mission ends
+      if (this.manager.hasEnded()) {
+        const endGameScoring = this.manager.calculateEndGameScoring();
+        for (const [sideId, vp] of Object.entries(endGameScoring.vpBySide)) {
+          addDelta(delta, sideId, vp, 0);
+        }
+        for (const [sideId, rp] of Object.entries(endGameScoring.rpBySide)) {
+          addDelta(delta, sideId, 0, rp);
+        }
+      }
     }
+
+    // Calculate and apply predicted scoring for all mission types (for AI planning)
+    this.updatePredictedScoring();
 
     mergeDelta(delta, this.getManagerVpDelta());
     return delta;
+  }
+
+  /**
+   * Update predicted scoring for all sides based on current battlefield state
+   * Called at end of each turn to refresh AI planning data
+   */
+  private updatePredictedScoring(): void {
+    if (!this.manager) return;
+
+    // Get predicted scoring from mission manager if it supports it
+    let sideScores: Record<string, { predictedVp: number; predictedRp: number; keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }> }> = {};
+
+    if (this.manager instanceof EliminationMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof ConvergenceMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof DominionMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof AssaultMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof RecoveryMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof EscortMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof StealthMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof TriumvirateMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof DefianceMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    } else if (this.manager instanceof BreachMissionManager) {
+      const predicted = this.manager.calculatePredictedScoring();
+      sideScores = predicted.sideScores;
+    }
+    // All 10 QAI missions now have predicted scoring support!
+
+    // Update each side's state with predicted scores
+    for (const side of this.sides) {
+      const scores = sideScores[side.id] ?? { predictedVp: 0, predictedRp: 0, keyScores: {} };
+      updatePredictedScoring(side, scores.predictedVp, scores.predictedRp, scores.keyScores);
+    }
   }
 
   private resolveAssaultMarkers(models: Array<{ id: string; position: Position }>): void {
@@ -795,6 +858,16 @@ export class MissionRuntimeAdapter {
     const eliminatingSideId = eliminatingModelId ? this.characterToSide.get(eliminatingModelId) : undefined;
     const eliminatedMemberId = this.memberIdByCharacterId.get(eliminatedModelId) ?? eliminatedModelId;
 
+    // Get BP of eliminated model
+    let eliminatedBp = 0;
+    for (const side of this.sides) {
+      const member = side.members.find(m => m.id === eliminatedMemberId || m.character.id === eliminatedModelId);
+      if (member) {
+        eliminatedBp = member.profile?.totalBp ?? 0;
+        break;
+      }
+    }
+
     if (eliminatingSideId && eliminatedSideId && eliminatingSideId !== eliminatedSideId) {
       for (const [sideId, targetedModelId] of this.targetedModelBySide.entries()) {
         if (targetedModelId !== eliminatedModelId) continue;
@@ -806,7 +879,7 @@ export class MissionRuntimeAdapter {
     }
 
     if (this.manager instanceof EliminationMissionManager && eliminatedSideId) {
-      this.manager.processModelElimination(eliminatedMemberId, eliminatedSideId, eliminatingSideId);
+      this.manager.processModelElimination(eliminatedMemberId, eliminatedSideId, eliminatingSideId, eliminatedBp);
     } else if (this.manager instanceof DefianceMissionManager) {
       this.manager.handleVIPElimination(eliminatedMemberId, eliminatingSideId);
     } else if (this.manager instanceof RecoveryMissionManager) {

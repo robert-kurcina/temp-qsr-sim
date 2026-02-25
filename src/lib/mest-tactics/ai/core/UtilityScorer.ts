@@ -1,6 +1,6 @@
 /**
  * Utility Scoring System
- * 
+ *
  * Evaluates actions, positions, and targets using weighted factors.
  * Allows fine-tuning AI behavior without code changes.
  */
@@ -17,6 +17,9 @@ import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 import { PathfindingEngine } from '../../battlefield/pathfinding/PathfindingEngine';
 import { evaluateRangeWithVisibility, parseWeaponOptimalRangeMu } from '../../utils/visibility';
 import { forecastWaitReact, rolloutWaitReactBranches } from '../tactical/GOAP';
+import { calculateStratagemModifiers, TacticalDoctrine } from '../stratagems/AIStratagems';
+import { buildScoringContext, calculateScoringModifiers, combineModifiers } from '../stratagems/PredictedScoringIntegration';
+import { applyCombinedModifiersToActions } from '../stratagems/StratagemIntegration';
 
 /**
  * Weight configuration for utility scoring
@@ -545,7 +548,37 @@ export class UtilityScorer {
       // Sort by score
       actions.sort((a, b) => b.score - a.score);
 
-      return actions;
+      // Apply stratagem + predicted scoring modifiers
+      const doctrine = context.config.tacticalDoctrine ?? TacticalDoctrine.Operative;
+      const stratagemModifiers = calculateStratagemModifiers(doctrine);
+      
+      let finalActions = actions;
+      
+      // Apply scoring modifiers if scoring context is available
+      if (context.scoringContext) {
+        const scoringContext = buildScoringContext(
+          context.scoringContext.myKeyScores,
+          context.scoringContext.opponentKeyScores
+        );
+        const scoringModifiers = calculateScoringModifiers(scoringContext);
+        finalActions = applyCombinedModifiersToActions(actions, stratagemModifiers, scoringModifiers);
+      } else {
+        // Apply stratagem modifiers only (legacy behavior)
+        finalActions = applyCombinedModifiersToActions(actions, stratagemModifiers, {
+          aggressionMultiplier: 1.0,
+          defenseMultiplier: 1.0,
+          objectiveMultiplier: 1.0,
+          riskMultiplier: 1.0,
+          waitBonus: 0,
+          playForTime: false,
+          desperateMode: false,
+        });
+      }
+
+      // Re-sort after applying modifiers
+      finalActions.sort((a, b) => b.score - a.score);
+
+      return finalActions;
     } finally {
       this.activeEvaluationSession = previousSession;
     }

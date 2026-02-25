@@ -519,6 +519,157 @@ export class BreachMissionManager {
       }))
       .sort((a, b) => b.vp - a.vp);
   }
+
+  /**
+   * Calculate predicted scoring with key breakdown for AI planning
+   * Keys: Control (markers), Switches, Elimination, Bottled
+   */
+  calculatePredictedScoring(): {
+    sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }>;
+  } {
+    const sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }> = {};
+
+    // Initialize side scores
+    for (const sideId of this.state.sideIds) {
+      sideScores[sideId] = {
+        predictedVp: 0,
+        predictedRp: 0,
+        keyScores: {},
+      };
+    }
+
+    // Build side status for scoring functions
+    const sideStatuses = Array.from(this.sides.values()).map(side => {
+      let koCount = 0;
+      let eliminatedCount = 0;
+      let orderedCount = 0;
+      let koBp = 0;
+      let eliminatedBp = 0;
+
+      for (const member of side.members) {
+        const bp = member.profile?.totalBp ?? 0;
+        if (member.status === 'Eliminated' as any) {
+          eliminatedCount++;
+          eliminatedBp += bp;
+        } else if (member.status === 'KO' as any) {
+          koCount++;
+          koBp += bp;
+        } else if (member.status === 'Ready' as any || member.status === 'Distracted' as any) {
+          orderedCount++;
+        }
+      }
+
+      return {
+        sideId: side.id,
+        startingCount: side.members.length,
+        inPlayCount: side.members.length - koCount - eliminatedCount,
+        orderedCount,
+        koCount,
+        eliminatedCount,
+        koBp,
+        eliminatedBp,
+        totalBp: side.totalBP,
+        bottledOut: orderedCount === 0,
+      };
+    });
+
+    // Control: VP for controlling markers (already awarded per turn)
+    const markersBySide: Record<string, number> = {};
+    for (const sideId of this.state.sideIds) {
+      markersBySide[sideId] = this.state.markersControlledThisTurn.get(sideId) ?? 0;
+    }
+
+    const sortedMarkers = Object.entries(markersBySide).sort((a, b) => b[1] - a[1]);
+    for (const [sideId, markerCount] of Object.entries(markersBySide)) {
+      const predicted = markerCount; // 1 VP per marker controlled
+      const secondMarkerCount = sortedMarkers[1]?.[1] ?? 0;
+      const leadMargin = markerCount - secondMarkerCount;
+      const opponentBest = sideId === sortedMarkers[0]?.[0] ? secondMarkerCount : (sortedMarkers[0]?.[1] ?? 0);
+      const confidence = markerCount > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / markerCount)))
+        : (markerCount > opponentBest ? 1 : 0);
+
+      sideScores[sideId].keyScores['control'] = {
+        current: this.state.vpBySide.get(sideId) ?? 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Switches: VP for executing switches (already awarded)
+    // Estimate from remaining VP after control
+    for (const [sideId, vp] of this.state.vpBySide.entries()) {
+      const controlVP = markersBySide[sideId] ?? 0;
+      const switchVP = Math.max(0, vp - controlVP);
+      
+      sideScores[sideId].keyScores['switches'] = {
+        current: switchVP,
+        predicted: switchVP,
+        confidence: switchVP > 0 ? 0.8 : 0.3,
+        leadMargin: switchVP,
+      };
+    }
+
+    // Elimination: +1 VP for most BP eliminated
+    const eliminationBpBySide: Record<string, number> = {};
+    for (const side of sideStatuses) {
+      let totalEnemyBpEliminated = 0;
+      for (const opponent of sideStatuses) {
+        if (opponent.sideId === side.sideId) continue;
+        totalEnemyBpEliminated += opponent.koBp + opponent.eliminatedBp;
+      }
+      eliminationBpBySide[side.sideId] = totalEnemyBpEliminated;
+    }
+
+    const sortedElimination = Object.entries(eliminationBpBySide).sort((a, b) => b[1] - a[1]);
+    const bestElimination = sortedElimination[0];
+    const secondElimination = sortedElimination[1];
+
+    for (const [sideId, bp] of Object.entries(eliminationBpBySide)) {
+      const isBest = bestElimination && sideId === bestElimination[0];
+      const predicted = isBest && (!secondElimination || bestElimination[1] > secondElimination[1]) ? 1 : 0;
+      const leadMargin = isBest && secondElimination ? bestElimination[1] - secondElimination[1] : 0;
+      const opponentBest = isBest && secondElimination ? secondElimination[1] : (bestElimination?.[1] ?? 0);
+      const confidence = bp > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / bp)))
+        : (isBest ? 1 : 0);
+
+      sideScores[sideId].keyScores['elimination'] = {
+        current: 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Bottled: +1 VP if opponent bottles out
+    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const side of sideStatuses) {
+      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
+      const predicted = isOpponentBottled ? 1 : 0;
+
+      sideScores[side.sideId].keyScores['bottled'] = {
+        current: 0,
+        predicted,
+        confidence: isOpponentBottled ? 1.0 : 0.0,
+        leadMargin: isOpponentBottled ? 1 : 0,
+      };
+      sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    return { sideScores };
+  }
 }
 
 /**

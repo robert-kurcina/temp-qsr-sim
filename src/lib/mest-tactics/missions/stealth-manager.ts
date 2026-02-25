@@ -768,6 +768,137 @@ export class StealthMissionManager {
       })
       .sort((a, b) => b.vp - a.vp);
   }
+
+  /**
+   * Calculate predicted scoring with key breakdown for AI planning
+   * Keys: Courier (Core extraction), Lockdown, Elimination, Bottled
+   */
+  calculatePredictedScoring(): {
+    sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }>;
+  } {
+    const sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }> = {};
+
+    // Initialize side scores
+    for (const sideId of this.state.sideIds) {
+      sideScores[sideId] = {
+        predictedVp: 0,
+        predictedRp: 0,
+        keyScores: {},
+      };
+    }
+
+    // Build side status for scoring functions
+    const sideStatuses = Array.from(this.sides.values()).map(side => {
+      let koCount = 0;
+      let eliminatedCount = 0;
+      let orderedCount = 0;
+      let koBp = 0;
+      let eliminatedBp = 0;
+
+      for (const member of side.members) {
+        const bp = member.profile?.totalBp ?? 0;
+        if (member.status === 'Eliminated' as any) {
+          eliminatedCount++;
+          eliminatedBp += bp;
+        } else if (member.status === 'KO' as any) {
+          koCount++;
+          koBp += bp;
+        } else if (member.status === 'Ready' as any || member.status === 'Distracted' as any) {
+          orderedCount++;
+        }
+      }
+
+      return {
+        sideId: side.id,
+        startingCount: side.members.length,
+        inPlayCount: side.members.length - koCount - eliminatedCount,
+        orderedCount,
+        koCount,
+        eliminatedCount,
+        koBp,
+        eliminatedBp,
+        totalBp: side.totalBP,
+        bottledOut: orderedCount === 0,
+      };
+    });
+
+    // Courier: +3 VP for extracting Authentic Core (immediate victory)
+    // Check if core was extracted (VP already awarded)
+    const sortedVP = Array.from(this.state.vpBySide.entries()).sort((a, b) => b[1] - a[1]);
+    for (const [sideId, vp] of this.state.vpBySide.entries()) {
+      // Assume high VP means core was extracted
+      const coreExtracted = vp >= 3;
+      const predicted = coreExtracted ? 3 : 0;
+      
+      sideScores[sideId].keyScores['courier'] = {
+        current: vp,
+        predicted,
+        confidence: coreExtracted ? 1.0 : 0.3, // Low confidence if not yet extracted
+        leadMargin: coreExtracted ? 3 : 0,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Lockdown: Security victory when Alarm Level reaches threshold
+    // Defender (Security) wins if alarm level is high
+    const alarmLevel = this.state.alarmLevel ?? 0;
+    const lockdownThreshold = this.state.lockdownThreshold ?? 6;
+    const lockdownAchieved = alarmLevel >= lockdownThreshold;
+    
+    // Find defender side (typically the one with VIP at center)
+    for (const side of sideStatuses) {
+      sideScores[side.sideId].keyScores['lockdown'] = {
+        current: lockdownAchieved ? 1 : 0,
+        predicted: lockdownAchieved ? 1 : 0,
+        confidence: lockdownAchieved ? 1.0 : Math.min(1, alarmLevel / lockdownThreshold),
+        leadMargin: lockdownAchieved ? 1 : 0,
+      };
+      if (lockdownAchieved) {
+        sideScores[side.sideId].predictedVp += 1;
+      }
+    }
+
+    // Elimination: Security victory if all Infiltrators eliminated
+    const infiltratorsEliminated = sideStatuses
+      .filter(s => s.sideId !== sortedVP[0]?.[0]) // Assume attacker is not leading
+      .every(s => s.eliminatedCount === s.startingCount);
+    
+    if (infiltratorsEliminated && sortedVP[0]) {
+      const defenderId = sortedVP[0][0];
+      sideScores[defenderId].keyScores['elimination'] = {
+        current: 1,
+        predicted: 1,
+        confidence: 1.0,
+        leadMargin: 1,
+      };
+      sideScores[defenderId].predictedVp += 1;
+    }
+
+    // Bottled: +1 VP if opponent bottles out
+    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const side of sideStatuses) {
+      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
+      const predicted = isOpponentBottled ? 1 : 0;
+
+      sideScores[side.sideId].keyScores['bottled'] = {
+        current: 0,
+        predicted,
+        confidence: isOpponentBottled ? 1.0 : 0.0,
+        leadMargin: isOpponentBottled ? 1 : 0,
+      };
+      sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    return { sideScores };
+  }
 }
 
 /**

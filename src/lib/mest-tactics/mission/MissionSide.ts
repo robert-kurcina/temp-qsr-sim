@@ -11,6 +11,67 @@ import {
 import { ObjectiveMarkerManager, ObjectiveMarker } from './objective-markers';
 
 /**
+ * Key to Victory score tracking with confidence metric
+ */
+export interface KeyScore {
+  /** Current VP from this key (already awarded) */
+  current: number;
+  /** Predicted VP if game ended now */
+  predicted: number;
+  /** Confidence level 0.0-1.0 (how secure is this lead) */
+  confidence: number;
+  /** Lead margin over closest opponent */
+  leadMargin: number;
+}
+
+/**
+ * Per-key breakdown for predicted scoring
+ * Matches Keys to Victory from rules-mission-keys.md
+ */
+export interface KeyScoresBreakdown {
+  // Universal keys (all missions)
+  elimination?: KeyScore;
+  bottled?: KeyScore;
+  outnumbered?: KeyScore;
+  firstBlood?: KeyScore;
+  
+  // Zone control keys
+  dominance?: KeyScore;
+  sanctuary?: KeyScore;
+  poi?: KeyScore;
+  
+  // Objective marker keys
+  collection?: KeyScore;
+  acquisition?: KeyScore;
+  
+  // Movement/position keys
+  aggression?: KeyScore;
+  encroachment?: KeyScore;
+  exit?: KeyScore;
+  courier?: KeyScore;
+  
+  // Special objective keys
+  sabotage?: KeyScore;
+  harvest?: KeyScore;
+  control?: KeyScore;
+  switches?: KeyScore;
+  
+  // VIP-related keys
+  vip?: KeyScore;
+  vip_elimination?: KeyScore;
+  
+  // Special conditions
+  lockdown?: KeyScore;
+  lastStand?: KeyScore;
+  breakthrough?: KeyScore;
+  sallyForth?: KeyScore;
+  commander_elimination?: KeyScore;
+  
+  // Catch-all for mission-specific keys
+  [key: string]: KeyScore | undefined;
+}
+
+/**
  * Model slot status for tracking model state on the battlefield
  */
 export enum ModelSlotStatus {
@@ -90,8 +151,16 @@ export interface MissionSide {
     woundsThisTurn: number;
     /** Models eliminated this mission */
     eliminatedModels: string[];
-    /** Victory points earned */
+    /** Victory points earned (final, awarded at game end) */
     victoryPoints: number;
+    /** Resource points earned (final, awarded at game end) */
+    resourcePoints: number;
+    /** Predicted VP if game ended now */
+    predictedVp: number;
+    /** Predicted RP if game ended now */
+    predictedRp: number;
+    /** Per-key scoring breakdown with confidence metrics */
+    keyScores: KeyScoresBreakdown;
     /** Initiative Points held by this Side (QSR: Start of Turn) */
     initiativePoints: number;
     /** Mission-specific state (flexible for different mission types) */
@@ -180,6 +249,10 @@ export function createMissionSide(
       woundsThisTurn: 0,
       eliminatedModels: [],
       victoryPoints: 0,
+      resourcePoints: 0,
+      predictedVp: 0,
+      predictedRp: 0,
+      keyScores: {},
       initiativePoints: 0,
       missionState: {},
     },
@@ -568,4 +641,87 @@ export function forceInitiative(side: MissionSide): boolean {
  */
 export function refreshInitiative(side: MissionSide): boolean {
   return spendInitiativePoints(side, 1);
+}
+
+// ============================================================================
+// Predicted Scoring Management (R1.5: AI Planning Support)
+// ============================================================================
+
+/**
+ * Update predicted VP/RP and key scores for a side
+ * Called at end of each turn to refresh AI planning data
+ */
+export function updatePredictedScoring(
+  side: MissionSide,
+  predictedVp: number,
+  predictedRp: number,
+  keyScores: KeyScoresBreakdown
+): void {
+  side.state.predictedVp = predictedVp;
+  side.state.predictedRp = predictedRp;
+  side.state.keyScores = keyScores;
+}
+
+/**
+ * Get predicted VP for a side
+ */
+export function getPredictedVp(side: MissionSide): number {
+  return side.state.predictedVp;
+}
+
+/**
+ * Get predicted RP for a side
+ */
+export function getPredictedRp(side: MissionSide): number {
+  return side.state.predictedRp;
+}
+
+/**
+ * Get key score breakdown for a side
+ */
+export function getKeyScores(side: MissionSide): KeyScoresBreakdown {
+  return side.state.keyScores;
+}
+
+/**
+ * Get a specific key score
+ */
+export function getKeyScore(side: MissionSide, key: string): KeyScore | undefined {
+  return side.state.keyScores[key];
+}
+
+/**
+ * Calculate confidence metric for a lead
+ * @param myValue - This side's value
+ * @param opponentValue - Best opponent's value
+ * @returns Confidence 0.0-1.0 (1.0 = insurmountable lead, 0.0 = certain loss)
+ */
+export function calculateConfidence(myValue: number, opponentValue: number): number {
+  if (myValue <= 0 && opponentValue <= 0) return 0.5; // No data
+  if (opponentValue <= 0) return 1.0; // Insurmountable lead
+  if (myValue <= 0) return 0.0; // Certain loss
+  
+  const ratio = opponentValue / myValue;
+  // Confidence = 1 - (opponent/my), clamped to 0-1
+  // e.g., 100 vs 50 = 1 - 0.5 = 0.5 confidence
+  // e.g., 100 vs 10 = 1 - 0.1 = 0.9 confidence
+  // e.g., 100 vs 90 = 1 - 0.9 = 0.1 confidence
+  return Math.max(0, Math.min(1, 1 - ratio));
+}
+
+/**
+ * Create a KeyScore object
+ */
+export function createKeyScore(
+  current: number,
+  predicted: number,
+  leadMargin: number
+): KeyScore {
+  const confidence = calculateConfidence(predicted, Math.max(0, predicted - leadMargin));
+  return {
+    current,
+    predicted,
+    confidence,
+    leadMargin,
+  };
 }

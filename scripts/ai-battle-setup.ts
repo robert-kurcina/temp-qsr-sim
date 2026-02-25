@@ -470,6 +470,19 @@ export interface BattleReport {
     vpBySide: Record<string, number>;
     rpBySide: Record<string, number>;
     immediateWinnerSideId?: string;
+    /** Predicted scoring if game ended now (R1.5: AI Planning) */
+    predictedScoring?: {
+      bySide: Record<string, {
+        predictedVp: number;
+        predictedRp: number;
+        keyScores: Record<string, {
+          current: number;
+          predicted: number;
+          confidence: number;
+          leadMargin: number;
+        }>;
+      }>;
+    };
   };
   usage?: UsageMetrics;
   nestedSections: NestedSections;
@@ -1383,6 +1396,58 @@ class AIBattleRunner {
     if (this.performanceSlowestActivations.length > 10) {
       this.performanceSlowestActivations.length = 10;
     }
+  }
+
+  /**
+   * Build predicted scoring data for battle report (R1.5: AI Planning)
+   * Captures the final predicted scoring state from all sides
+   */
+  private buildPredictedScoring(sides: MissionSide[]): {
+    bySide: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, {
+        current: number;
+        predicted: number;
+        confidence: number;
+        leadMargin: number;
+      }>;
+    }>;
+  } | undefined {
+    const bySide: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, {
+        current: number;
+        predicted: number;
+        confidence: number;
+        leadMargin: number;
+      }>;
+    }> = {};
+
+    for (const side of sides) {
+      bySide[side.id] = {
+        predictedVp: side.state.predictedVp,
+        predictedRp: side.state.predictedRp,
+        keyScores: {},
+      };
+
+      // Convert key scores to plain object for JSON serialization
+      for (const [key, score] of Object.entries(side.state.keyScores)) {
+        if (score) {
+          bySide[side.id].keyScores[key] = {
+            current: score.current,
+            predicted: score.predicted,
+            confidence: score.confidence,
+            leadMargin: score.leadMargin,
+          };
+        }
+      }
+    }
+
+    // Only include if there's actual predicted scoring data
+    const hasData = Object.values(bySide).some(s => s.predictedVp > 0 || s.predictedRp > 0 || Object.keys(s.keyScores).length > 0);
+    return hasData ? { bySide } : undefined;
   }
 
   private buildPerformanceSummary(battlefield?: Battlefield): BattlePerformanceSummary | undefined {
@@ -3619,6 +3684,8 @@ class AIBattleRunner {
           vpBySide: { ...this.missionVpBySide },
           rpBySide: { ...this.missionRpBySide },
           immediateWinnerSideId: this.missionImmediateWinnerSideId ?? undefined,
+          // Predicted scoring for AI planning (R1.5)
+          predictedScoring: this.buildPredictedScoring(sides),
         },
         usage,
         nestedSections: this.buildNestedSections(config, sides, battlefield, startPositions),

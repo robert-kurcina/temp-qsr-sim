@@ -49,6 +49,8 @@ export interface AIControllerConfig {
   doctrinePlanning?: DoctrinePlanning;
   /** Doctrine aggression stratagem component */
   doctrineAggression?: DoctrineAggression;
+  /** Tactical Doctrine (encapsulates engagement, planning, aggression) */
+  tacticalDoctrine?: import('../stratagems/AIStratagems').TacticalDoctrine;
 }
 
 export interface ActionDecision {
@@ -188,6 +190,21 @@ export interface AIContext {
   knowledge: CharacterKnowledge;
   /** AI configuration */
   config: AIControllerConfig;
+  /** Predicted scoring context for strategic decision-making (R1.5) */
+  scoringContext?: {
+    /** My side's predicted key scores */
+    myKeyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    /** Best opponent's predicted key scores */
+    opponentKeyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    /** Am I leading in overall VP? */
+    amILeading: boolean;
+    /** VP lead margin */
+    vpMargin: number;
+    /** Which keys am I winning? */
+    winningKeys: string[];
+    /** Which keys am I losing? */
+    losingKeys: string[];
+  };
 }
 
 export interface AIObjectiveMarkerInfo {
