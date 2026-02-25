@@ -112,8 +112,10 @@ export class MoveValidator {
         // Breaking engagement is not invalid, but requires disengage action
       }
 
-      const wouldGain = this.engagementManager.getPotentialEngagements(character.id, to).length > 0;
-      if (wouldGain && !this.engagementManager.getEngagedModels(character.id).length) {
+      const potentialEngagements = this.engagementManager.getPotentialEngagements(character.id, to);
+      const wouldGain = potentialEngagements.length > 0;
+      const currentlyEngaged = this.engagementManager.getEngagedModels(character.id);
+      if (wouldGain && !currentlyEngaged.length) {
         result.engagementGained = true;
       }
     }
@@ -163,8 +165,8 @@ export class MoveValidator {
    * Check if terrain blocks movement between two points
    */
   private checkTerrainBlocking(from: Position, to: Position): { blocked: boolean; blockedBy?: string } {
-    // Check if endpoints are in bounds
-    if (!this.battlefield.grid.isValid(from) || !this.battlefield.grid.isValid(to)) {
+    // Check if endpoints are in bounds (continuous space, not grid)
+    if (!this.isInBounds(from) || !this.isInBounds(to)) {
       return { blocked: true, blockedBy: 'out_of_bounds' };
     }
 
@@ -183,6 +185,16 @@ export class MoveValidator {
     }
 
     return { blocked: false };
+  }
+
+  /**
+   * Check if a position is within battlefield bounds (continuous space)
+   */
+  private isInBounds(position: Position): boolean {
+    return position.x >= 0 &&
+           position.x <= this.battlefield.grid.width &&
+           position.y >= 0 &&
+           position.y <= this.battlefield.grid.height;
   }
 
   /**
