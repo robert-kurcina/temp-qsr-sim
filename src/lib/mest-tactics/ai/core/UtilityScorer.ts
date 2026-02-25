@@ -139,6 +139,9 @@ interface EvaluationSession {
   strategicPathQueryBudget: number;
   strategicEnemyLimit: number;
   strategicObjectiveLimit: number;
+  strategicRefineTopK: number;
+  strategicCoarseResolution: number;
+  strategicDefaultResolution: number;
   localSampleCount: number;
   pathBudgetExceeded: boolean;
 }
@@ -170,22 +173,28 @@ export class UtilityScorer {
     let strategicPathQueryBudget = 24;
     let strategicEnemyLimit = 12;
     let strategicObjectiveLimit = 3;
+    let strategicRefineTopK = 4;
+    let strategicCoarseResolution = 1.0;
+    let strategicDefaultResolution = 0.5;
     let localSampleCount = 16;
 
     if (boardArea >= 3000) {
       strategicPathQueryBudget = 10;
       strategicEnemyLimit = 4;
       strategicObjectiveLimit = 2;
+      strategicRefineTopK = 2;
       localSampleCount = 10;
     } else if (boardArea >= 1600) {
       strategicPathQueryBudget = 14;
       strategicEnemyLimit = 6;
       strategicObjectiveLimit = 3;
+      strategicRefineTopK = 3;
       localSampleCount = 12;
     } else if (boardArea >= 900) {
       strategicPathQueryBudget = 18;
       strategicEnemyLimit = 8;
       strategicObjectiveLimit = 3;
+      strategicRefineTopK = 3;
       localSampleCount = 14;
     }
 
@@ -203,6 +212,9 @@ export class UtilityScorer {
       strategicPathQueryBudget,
       strategicEnemyLimit,
       strategicObjectiveLimit,
+      strategicRefineTopK,
+      strategicCoarseResolution,
+      strategicDefaultResolution,
       localSampleCount,
       pathBudgetExceeded: false,
     };
@@ -1213,7 +1225,24 @@ export class UtilityScorer {
     const movementAllowance = Math.max(1, mov + 2);
     const footprintDiameter = getBaseDiameterFromSiz(context.character.finalAttributes.siz ?? 3);
     const engine = session.pathEngine;
-    const strategic: Position[] = [];
+    type StrategicTarget = {
+      source: 'enemy' | 'objective';
+      index: number;
+      position: Position;
+      distance: number;
+      sourcePriority: number;
+    };
+    type StrategicProbe = {
+      source: 'enemy' | 'objective';
+      index: number;
+      targetPosition: Position;
+      endpoint: Position;
+      score: number;
+      needsFineResolution: boolean;
+      distanceToTarget: number;
+    };
+
+    const candidates: StrategicTarget[] = [];
 
     const candidateEnemies = context.enemies
       .map(enemy => {
@@ -1232,23 +1261,14 @@ export class UtilityScorer {
       .sort((a, b) => a.distance - b.distance)
       .slice(0, session.strategicEnemyLimit);
 
-    for (const candidate of candidateEnemies) {
-      if (!this.tryConsumeStrategicPathBudget(session)) break;
-      const limited = engine.findPathWithMaxMu(
-        characterPos,
-        candidate.position,
-        {
-          footprintDiameter,
-          movementMetric: 'length',
-          useNavMesh: true,
-          useHierarchical: true,
-          optimizeWithLOS: true,
-        },
-        movementAllowance
-      );
-      const end = limited.points[limited.points.length - 1];
-      if (!end) continue;
-      strategic.push(this.snapToBoardCell(end, context.battlefield));
+    for (const enemy of candidateEnemies) {
+      candidates.push({
+        source: 'enemy',
+        index: candidates.length,
+        position: enemy.position,
+        distance: enemy.distance,
+        sourcePriority: 1.0,
+      });
     }
 
     const objectiveMarkers = this.getInteractableObjectiveMarkers(context)
@@ -1263,26 +1283,120 @@ export class UtilityScorer {
       .slice(0, session.strategicObjectiveLimit);
 
     for (const marker of objectiveMarkers) {
-      if (!this.tryConsumeStrategicPathBudget(session)) break;
       const markerPos = marker.position as Position;
-      const limited = engine.findPathWithMaxMu(
+      const markerDistance = Math.hypot(characterPos.x - markerPos.x, characterPos.y - markerPos.y);
+      candidates.push({
+        source: 'objective',
+        index: candidates.length,
+        position: markerPos,
+        distance: markerDistance,
+        sourcePriority: 1.12,
+      });
+    }
+
+    if (candidates.length === 0) {
+      return [];
+    }
+
+    const reserveForRefinement = Math.min(session.strategicRefineTopK, session.strategicPathQueryBudget);
+    const maxCoarseProbes = Math.max(1, session.strategicPathQueryBudget - reserveForRefinement);
+    const coarseProbes: StrategicProbe[] = [];
+
+    for (let i = 0; i < candidates.length && i < maxCoarseProbes; i++) {
+      const candidate = candidates[i];
+      if (!this.tryConsumeStrategicPathBudget(session)) break;
+      const coarse = engine.findPathWithMaxMu(
         characterPos,
-        markerPos,
+        candidate.position,
+        {
+          footprintDiameter,
+          movementMetric: 'length',
+          useNavMesh: true,
+          useHierarchical: true,
+          optimizeWithLOS: false,
+          useTheta: false,
+          turnPenalty: 0,
+          portalNarrowPenalty: 0.08,
+          portalNarrowThresholdFactor: 1.25,
+          gridResolution: session.strategicCoarseResolution,
+        },
+        movementAllowance
+      );
+      const coarseEnd = coarse.points[coarse.points.length - 1];
+      if (!coarseEnd) continue;
+
+      const distanceToTarget = Math.hypot(coarseEnd.x - candidate.position.x, coarseEnd.y - candidate.position.y);
+      const progress = Math.max(0, candidate.distance - distanceToTarget) / Math.max(1, candidate.distance);
+      const coarseTravelBase = Math.max(0.25, Math.min(candidate.distance, movementAllowance));
+      const detourRatio = coarse.totalLength / coarseTravelBase;
+      const needsFineResolution =
+        detourRatio >= 1.35 ||
+        (!coarse.reachedEnd && distanceToTarget > 1.25) ||
+        (footprintDiameter <= 1.0 && detourRatio >= 1.18);
+      const score =
+        (progress * 1.8) +
+        (candidate.sourcePriority * 0.6) +
+        (coarse.reachedEnd ? 0.35 : 0) -
+        (Math.max(0, detourRatio - 1.15) * 0.2);
+
+      coarseProbes.push({
+        source: candidate.source,
+        index: candidate.index,
+        targetPosition: candidate.position,
+        endpoint: this.snapToBoardCell(coarseEnd, context.battlefield),
+        score,
+        needsFineResolution,
+        distanceToTarget,
+      });
+    }
+
+    if (coarseProbes.length === 0) {
+      return [];
+    }
+
+    // Adaptive granularity:
+    // - use coarse probes for broad ranking,
+    // - refine only top-K trajectories with 0.5 MU default,
+    // - escalate to 0.25 MU when coarse probe indicates chokepoint/clearance contention.
+    const topForRefinement = coarseProbes
+      .slice()
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.distanceToTarget !== b.distanceToTarget) return a.distanceToTarget - b.distanceToTarget;
+        return a.index - b.index;
+      })
+      .slice(0, session.strategicRefineTopK);
+    const refinedByIndex = new Map<number, Position>();
+
+    for (const probe of topForRefinement) {
+      if (!this.tryConsumeStrategicPathBudget(session)) break;
+      const refined = engine.findPathWithMaxMu(
+        characterPos,
+        probe.targetPosition,
         {
           footprintDiameter,
           movementMetric: 'length',
           useNavMesh: true,
           useHierarchical: true,
           optimizeWithLOS: true,
+          useTheta: true,
+          turnPenalty: 0.1,
+          portalNarrowPenalty: 0.18,
+          portalNarrowThresholdFactor: 1.35,
+          gridResolution: probe.needsFineResolution ? 0.25 : session.strategicDefaultResolution,
         },
         movementAllowance
       );
-      const end = limited.points[limited.points.length - 1];
-      if (!end) continue;
-      strategic.push(this.snapToBoardCell(end, context.battlefield));
+      const refinedEnd = refined.points[refined.points.length - 1];
+      if (!refinedEnd) continue;
+      refinedByIndex.set(probe.index, this.snapToBoardCell(refinedEnd, context.battlefield));
     }
 
-    return strategic;
+    const refinedFirst = coarseProbes
+      .slice()
+      .sort((a, b) => a.index - b.index)
+      .map(probe => refinedByIndex.get(probe.index) ?? probe.endpoint);
+    return refinedFirst;
   }
 
   private snapToBoardCell(position: Position, battlefield: Battlefield): Position {

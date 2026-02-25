@@ -41,6 +41,8 @@ export interface PathfindingOptions {
   clearancePenalty?: number; // cost multiplier when only half-width clearance exists
   useTheta?: boolean;
   turnPenalty?: number; // cost added per direction change
+  portalNarrowPenalty?: number; // additional cost on near-threshold portal crossings in navmesh
+  portalNarrowThresholdFactor?: number; // preferred portal width multiplier vs diameter
 }
 
 const defaultGridResolution = 0.5;
@@ -162,6 +164,8 @@ export class PathfindingEngine {
       useTheta: boolean;
       turnPenalty: number;
       hierarchicalChunkSize: number;
+      portalNarrowPenalty: number;
+      portalNarrowThresholdFactor: number;
     }
   ): string {
     const startKey = `${this.quantize(start.x)},${this.quantize(start.y)}`;
@@ -176,6 +180,8 @@ export class PathfindingEngine {
       options.useTheta ? 1 : 0,
       this.quantize(options.turnPenalty),
       options.hierarchicalChunkSize,
+      this.quantize(options.portalNarrowPenalty),
+      this.quantize(options.portalNarrowThresholdFactor),
     ].join('|');
   }
 
@@ -264,6 +270,8 @@ export class PathfindingEngine {
     const clearancePenalty = options.clearancePenalty ?? 1;
     const useTheta = options.useTheta ?? true;
     const turnPenalty = options.turnPenalty ?? 0.1;
+    const portalNarrowPenalty = Math.max(0, options.portalNarrowPenalty ?? 0);
+    const portalNarrowThresholdFactor = Math.max(1, options.portalNarrowThresholdFactor ?? 1.35);
     const hierarchicalChunkSize = Math.max(2, options.hierarchicalChunkSize ?? 8);
     const tightSpotFraction = Math.max(0, Math.min(1, options.tightSpotFraction ?? 0.5));
     const cache = this.getBattlefieldCache();
@@ -295,6 +303,8 @@ export class PathfindingEngine {
       useTheta,
       turnPenalty,
       hierarchicalChunkSize,
+      portalNarrowPenalty,
+      portalNarrowThresholdFactor,
     });
     const cachedPath = cache.paths.get(pathCacheKey);
     if (cachedPath) {
@@ -317,7 +327,10 @@ export class PathfindingEngine {
 
     const gridPath: number[][] = [];
     const waypoints = useNavMesh
-      ? this.findNavMeshWaypoints(start, end, tightSpotDiameter)
+      ? this.findNavMeshWaypoints(start, end, tightSpotDiameter, {
+        portalNarrowPenalty,
+        portalNarrowThresholdFactor,
+      })
       : [start, end];
 
     for (let i = 0; i < waypoints.length - 1; i++) {
@@ -817,7 +830,12 @@ export class PathfindingEngine {
     return current;
   }
 
-  private findNavMeshWaypoints(start: Position, end: Position, diameter: number): Position[] {
+  private findNavMeshWaypoints(
+    start: Position,
+    end: Position,
+    diameter: number,
+    options: { portalNarrowPenalty: number; portalNarrowThresholdFactor: number }
+  ): Position[] {
     const mesh = this.battlefield.getConstrainedNavMesh();
     if (!mesh) {
       this.battlefield.finalizeTerrain();
@@ -827,7 +845,10 @@ export class PathfindingEngine {
       return [start, end];
     }
 
-    const trianglePath = navMesh.findTrianglePath(start, end, diameter);
+    const trianglePath = navMesh.findTrianglePath(start, end, diameter, {
+      portalNarrowPenalty: options.portalNarrowPenalty,
+      portalNarrowThresholdFactor: options.portalNarrowThresholdFactor,
+    });
     if (trianglePath.length === 0) {
       return [start, end];
     }

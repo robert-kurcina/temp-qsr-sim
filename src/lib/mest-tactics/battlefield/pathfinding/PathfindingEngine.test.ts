@@ -76,5 +76,44 @@ describe('PathfindingEngine caching', () => {
     expect(after.gridMisses).toBeGreaterThan(before.gridMisses);
     expect(after.pathMisses).toBeGreaterThan(before.pathMisses);
   });
-});
 
+  it('should differentiate cached paths by portal penalty options', () => {
+    const battlefield = new Battlefield(24, 24);
+    battlefield.addTerrain(createRectObstacle('obs-a', 10, 4, 14, 20));
+    const engine = new PathfindingEngine(battlefield);
+    const start = { x: 2, y: 12 };
+    const end = { x: 22, y: 12 };
+
+    engine.findPath(start, end, {
+      footprintDiameter: 1,
+      useNavMesh: true,
+      useHierarchical: true,
+      optimizeWithLOS: true,
+      portalNarrowPenalty: 0,
+    });
+    const baselineStats = engine.getCacheStats();
+
+    engine.findPath(start, end, {
+      footprintDiameter: 1,
+      useNavMesh: true,
+      useHierarchical: true,
+      optimizeWithLOS: true,
+      portalNarrowPenalty: 0.2,
+      portalNarrowThresholdFactor: 1.4,
+    });
+    const penalizedStats = engine.getCacheStats();
+
+    expect(penalizedStats.pathMisses).toBeGreaterThan(baselineStats.pathMisses);
+    // Repeating with same penalty profile should now hit cache.
+    engine.findPath(start, end, {
+      footprintDiameter: 1,
+      useNavMesh: true,
+      useHierarchical: true,
+      optimizeWithLOS: true,
+      portalNarrowPenalty: 0.2,
+      portalNarrowThresholdFactor: 1.4,
+    });
+    const repeatedStats = engine.getCacheStats();
+    expect(repeatedStats.pathHits).toBeGreaterThan(penalizedStats.pathHits);
+  });
+});

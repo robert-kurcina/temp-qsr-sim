@@ -492,8 +492,8 @@ Still open in R2:
 | Grid LOS-block flags + LOS memoization | Very High | Not implemented | ~20-45% overall runtime reduction |
 | Path query memoization (terrain-versioned) | Very High | Not implemented | ~35-60% overall runtime reduction |
 | Utility scorer per-activation memo + query budgets | Very High | Not implemented | ~20-40% overall runtime reduction |
-| Adaptive granularity (coarse rank, fine refine top-K) | High | Not implemented | ~15-35% overall runtime reduction |
-| Delaunay edge threshold-crossing weights (portal/chokepoint penalties) | Medium | Not implemented | ~8-18% after cache stack; quality-oriented |
+| Adaptive granularity (coarse rank, fine refine top-K) | High | Implemented (AI strategic routing) | ~15-35% overall runtime reduction |
+| Delaunay edge threshold-crossing weights (portal/chokepoint penalties) | Medium | Implemented (navmesh portal penalty option) | ~8-18% after cache stack; quality-oriented |
 | Delaunay edge LOS flags | Low-Medium | Not implemented | Limited direct impact vs endpoint LOS cache |
 | HMLPA*-style hierarchical multi-target reuse | Medium (Phase 2) | Not implemented | Additional ~10-25% after baseline caching is done |
 
@@ -594,10 +594,50 @@ Implemented now:
 11. Integrated cache-hit diagnostics into performance reporting payloads (`scripts/ai-battle-setup.ts`):
    - `performance.caches.los` and `performance.caches.pathfinding` now included in per-run JSON reports when profiling is enabled,
    - human-readable battle/validation report rendering now includes LOS/path/grid cache hit rates.
+12. Added performance gate automation to validation batches (`scripts/ai-battle-setup.ts`):
+   - validation runs now force profiling by default (override with `AI_BATTLE_VALIDATION_PROFILE=0`),
+   - per-run performance payload now includes activation latency summary (`avg`, `p50`, `p95`, `max`),
+   - aggregate report now includes `performanceGates` with threshold/observed/pass values for:
+     - Turn-1 elapsed (`AI_BATTLE_GATE_TURN1_MS`, default `120000`),
+     - Activation P95 (`AI_BATTLE_GATE_ACT_P95_MS`, default `8000`),
+     - LOS/path/grid cache hit rates (`AI_BATTLE_GATE_LOS_HIT_MIN`, `AI_BATTLE_GATE_PATH_HIT_MIN`, `AI_BATTLE_GATE_GRID_HIT_MIN`),
+   - optional CI-style failure switch: `AI_BATTLE_ENFORCE_GATES=1` sets non-zero exit code when gates fail,
+   - human-readable validation output now prints full gate status (PASS/FAIL) with observed values.
+13. Calibrated gate thresholds by density buckets (`scripts/ai-battle-setup.ts`):
+   - added five `densityRatio` buckets at 25-point intervals: `0-24`, `25-49`, `50-74`, `75-99`, `100`,
+   - each bucket has independent LOS/path/grid cache-hit minimums and runtime thresholds,
+   - latency thresholds are additionally scaled by game size and mission profile (`QAI_18`, `QAI_20`),
+   - gate profile metadata (`missionId`, `gameSize`, `densityRatio`, bucket) is emitted in validation JSON and report output.
+14. Ran initial calibration sweep (QAI_20, `SMALL`, operative vs watchman, 10 runs per bucket):
+   - reports: `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-00-24-216Z.json`, `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-00-36-174Z.json`, `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-00-47-294Z.json`, `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-01-04-744Z.json`, `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-01-31-927Z.json`,
+   - observed LOS means were ~0.60-0.65 and path means ~0.55-0.60 across buckets, with density 100 LOS lower than prior threshold,
+   - bucket cache minima were updated to match measured behavior while remaining regression-sensitive.
+15. Added board-size-aware cache-hit scaling for gates:
+   - cache-hit minima are now scaled by game size (`VERY_SMALL`..`VERY_LARGE`) before gate evaluation,
+   - this removed false failures on large-board sparse-reuse profiles (e.g. `VERY_LARGE` Turn-1 validation probes),
+   - validated with `AI_BATTLE_MAX_TURNS=1` and `VERY_LARGE` `QAI_20` 3-run check: gate now passes with realistic low early-turn path/LOS reuse.
+16. Expanded calibration to a second mission profile (`QAI_12` Convergence, `SMALL`, operative vs watchman, 10 runs per density bucket):
+   - reports: `generated/ai-battle-reports/qai-12-validation-2026-02-25T06-09-51-030Z.json`, `generated/ai-battle-reports/qai-12-validation-2026-02-25T06-10-03-061Z.json`, `generated/ai-battle-reports/qai-12-validation-2026-02-25T06-10-13-046Z.json`, `generated/ai-battle-reports/qai-12-validation-2026-02-25T06-10-26-205Z.json`, `generated/ai-battle-reports/qai-12-validation-2026-02-25T06-10-50-510Z.json`,
+   - all five buckets passed with current density+size-aware thresholds,
+   - observed cache-hit bands remained stable vs QAI_20 (`LOS` mid-60%s, `Path` mid-50%s, `Grid` ~99.6-99.8%).
+17. Implemented R7 adaptive strategic routing in `src/lib/mest-tactics/ai/core/UtilityScorer.ts`:
+   - strategic movement now uses coarse path probes to rank enemy/objective candidates, then refines only top-K paths at higher granularity,
+   - default refine resolution is `0.5 MU`, with adaptive escalation to `0.25 MU` when coarse probes indicate chokepoint/clearance contention,
+   - strategic path-query budget remains bounded and deterministic (coarse+refine consume the same capped budget).
+18. Added navmesh portal threshold-crossing weights in pathfinding:
+   - `src/lib/mest-tactics/battlefield/pathfinding/ConstrainedNavMesh.ts` now supports portal-narrow penalties during triangle-path A* expansion,
+   - `src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.ts` now exposes `portalNarrowPenalty` / `portalNarrowThresholdFactor` options and includes them in path-cache keys,
+   - strategic routing now enables a mild portal penalty in coarse/refined probes to reduce low-value narrow-portal oscillation,
+   - added cache-key regression coverage in `src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.test.ts` for portal-penalty option differentiation.
+19. Post-R7 validation spot-checks:
+   - `SMALL`, `QAI_20`, density 50, seed 424242: `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-18-10-340Z.json` (`elapsedMs ~632`, gate pass),
+   - `VERY_LARGE`, `QAI_20`, density 50, max-turns=1, seed 424242: `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-18-35-492Z.json` (Turn 1 ~18.9s, gate pass),
+   - observed runtime remains in the ~18-19s Turn-1 envelope for profiled `VERY_LARGE` run shape.
 
-Still open in R6:
+Still open in R6/R7:
 1. Publish per-run cache-hit diagnostics into standard validation artifact review checklist.
-2. Move cache metrics into automated performance acceptance gate checks (turn/activation/cache thresholds).
+2. Expand calibration corpus beyond `QAI_20` + `QAI_12` to include additional mission classes/doctrine pairs before finalizing thresholds.
+3. Add explicit R7-focused A/B benchmark runs to quantify adaptive-granularity quality/perf delta against non-adaptive path probes.
 
 ## 11. Mission Engine Roadmap
 

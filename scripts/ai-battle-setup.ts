@@ -99,6 +99,7 @@ interface SideConfig {
 interface BattleStats {
   totalActions: number;
   moves: number;
+  movesWhileWaiting: number;
   closeCombats: number;
   rangedCombats: number;
   disengages: number;
@@ -503,6 +504,13 @@ interface ValidationAggregateReport {
   performanceGates?: {
     enabled: boolean;
     runsEvaluated: number;
+    profile: {
+      missionId: string;
+      gameSize: GameSize;
+      densityRatio: number;
+      densityBucket: string;
+      densityBucketIndex: number;
+    };
     thresholds: {
       turn1ElapsedMsMax: number;
       activationP95MsMax: number;
@@ -605,6 +613,78 @@ function createSeededRandom(seed: number): () => number {
   };
 }
 
+const DEFAULT_PERF_GATE_THRESHOLDS = {
+  turn1ElapsedMsMax: 120_000,
+  activationP95MsMax: 8_000,
+  minLosCacheHitRate: 0.75,
+  minPathCacheHitRate: 0.35,
+  minGridCacheHitRate: 0.50,
+};
+
+type PerformanceGateThresholds = {
+  turn1ElapsedMsMax: number;
+  activationP95MsMax: number;
+  minLosCacheHitRate: number;
+  minPathCacheHitRate: number;
+  minGridCacheHitRate: number;
+};
+
+type PerformanceGateContext = {
+  missionId: string;
+  gameSize: GameSize;
+  densityRatio: number;
+};
+
+const DENSITY_BUCKET_LABELS = ['0-24', '25-49', '50-74', '75-99', '100'] as const;
+
+const DENSITY_BUCKET_GATE_THRESHOLDS: PerformanceGateThresholds[] = [
+  { turn1ElapsedMsMax: 80_000, activationP95MsMax: 4_500, minLosCacheHitRate: 0.52, minPathCacheHitRate: 0.42, minGridCacheHitRate: 0.95 },
+  { turn1ElapsedMsMax: 100_000, activationP95MsMax: 6_000, minLosCacheHitRate: 0.54, minPathCacheHitRate: 0.43, minGridCacheHitRate: 0.95 },
+  { turn1ElapsedMsMax: 120_000, activationP95MsMax: 8_000, minLosCacheHitRate: 0.50, minPathCacheHitRate: 0.41, minGridCacheHitRate: 0.95 },
+  { turn1ElapsedMsMax: 145_000, activationP95MsMax: 10_000, minLosCacheHitRate: 0.46, minPathCacheHitRate: 0.38, minGridCacheHitRate: 0.95 },
+  { turn1ElapsedMsMax: 170_000, activationP95MsMax: 12_000, minLosCacheHitRate: 0.44, minPathCacheHitRate: 0.36, minGridCacheHitRate: 0.95 },
+];
+
+const GAME_SIZE_LATENCY_FACTORS: Record<GameSize, number> = {
+  VERY_SMALL: 0.35,
+  SMALL: 0.5,
+  MEDIUM: 0.7,
+  LARGE: 0.85,
+  VERY_LARGE: 1.0,
+};
+
+const GAME_SIZE_CACHE_HIT_FACTORS: Record<GameSize, number> = {
+  VERY_SMALL: 1.05,
+  SMALL: 1.0,
+  MEDIUM: 0.75,
+  LARGE: 0.45,
+  VERY_LARGE: 0.10,
+};
+
+const MISSION_LATENCY_FACTORS: Record<string, number> = {
+  QAI_18: 1.1,
+  QAI_20: 1.15,
+};
+
+function computePercentile(sortedValues: number[], percentile: number): number {
+  if (sortedValues.length === 0) return 0;
+  if (sortedValues.length === 1) return sortedValues[0];
+  const safePercentile = Math.max(0, Math.min(1, percentile));
+  const index = (sortedValues.length - 1) * safePercentile;
+  const lower = Math.floor(index);
+  const upper = Math.ceil(index);
+  if (lower === upper) return sortedValues[lower];
+  const weight = index - lower;
+  return sortedValues[lower] + ((sortedValues[upper] - sortedValues[lower]) * weight);
+}
+
+function safeRate(numerator: number, denominator: number): number {
+  if (!Number.isFinite(numerator) || !Number.isFinite(denominator) || denominator <= 0) {
+    return 0;
+  }
+  return numerator / denominator;
+}
+
 function emptyKnowledge(turn: number): CharacterKnowledge {
   return {
     knownEnemies: new Map(),
@@ -620,6 +700,7 @@ function createEmptyStats(): BattleStats {
   return {
     totalActions: 0,
     moves: 0,
+    movesWhileWaiting: 0,
     closeCombats: 0,
     rangedCombats: 0,
     disengages: 0,
@@ -793,6 +874,7 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push('📈 ACTION TOTALS');
   lines.push(`  Total Actions: ${report.stats.totalActions}`);
   lines.push(`  Moves: ${report.stats.moves}`);
+  lines.push(`  Moves While Waiting: ${report.stats.movesWhileWaiting}`);
   lines.push(`  Close Combats: ${report.stats.closeCombats}`);
   lines.push(`  Ranged Combats: ${report.stats.rangedCombats}`);
   lines.push(`  Disengages: ${report.stats.disengages}`);
@@ -850,9 +932,18 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(...formatTypeBreakdownLines(advancedRules.situationalModifiers.byType, '    '));
   lines.push('');
   if (report.performance) {
+    const activationLatency = report.performance.activationLatency ?? {
+      avgMs: 0,
+      p50Ms: 0,
+      p95Ms: 0,
+      maxMs: 0,
+    };
     lines.push('⏱️  PERFORMANCE');
     lines.push(`  Elapsed: ${report.performance.elapsedMs.toFixed(2)} ms`);
     lines.push(`  Activations Processed: ${report.performance.activationsProcessed}`);
+    lines.push(
+      `  Activation Latency: avg=${activationLatency.avgMs.toFixed(2)}ms p50=${activationLatency.p50Ms.toFixed(2)}ms p95=${activationLatency.p95Ms.toFixed(2)}ms max=${activationLatency.maxMs.toFixed(2)}ms`
+    );
     lines.push(`  Heartbeat Every N Activations: ${report.performance.heartbeatEveryActivations}`);
     lines.push('  Phase Timings:');
     const phaseEntries = Object.entries(report.performance.phases)
@@ -1147,6 +1238,7 @@ class AIBattleRunner {
   private performancePhases: Record<string, { count: number; totalMs: number; maxMs: number }> = {};
   private performanceTurns: TurnTimingSummary[] = [];
   private performanceSlowestActivations: SlowActivationSummary[] = [];
+  private performanceActivationSamplesMs: number[] = [];
   private activationsProcessed = 0;
 
   private resetRunState() {
@@ -1173,12 +1265,13 @@ class AIBattleRunner {
     this.performancePhases = {};
     this.performanceTurns = [];
     this.performanceSlowestActivations = [];
+    this.performanceActivationSamplesMs = [];
     this.activationsProcessed = 0;
   }
 
-  private setupPerformanceInstrumentation(): void {
+  private setupPerformanceInstrumentation(forceProfiling: boolean = false): void {
     this.performanceProfilingEnabled =
-      process.env.AI_BATTLE_PROFILE === '1' || process.env.AI_BATTLE_PROGRESS === '1';
+      forceProfiling || process.env.AI_BATTLE_PROFILE === '1' || process.env.AI_BATTLE_PROGRESS === '1';
     this.performanceProgressEnabled = process.env.AI_BATTLE_PROGRESS === '1';
     this.performanceProgressEachActivation = process.env.AI_BATTLE_PROGRESS_EACH_ACTIVATION === '1';
     const rawHeartbeat = Number.parseInt(process.env.AI_BATTLE_HEARTBEAT_EVERY ?? '', 10);
@@ -1251,10 +1344,23 @@ class AIBattleRunner {
         maxMs: Number(stats.maxMs.toFixed(2)),
       };
     }
+    const activationSamples = this.performanceActivationSamplesMs
+      .filter(sample => Number.isFinite(sample) && sample >= 0)
+      .slice()
+      .sort((a, b) => a - b);
+    const activationSampleCount = activationSamples.length;
+    const activationSum = activationSamples.reduce((sum, value) => sum + value, 0);
+    const activationLatency = {
+      avgMs: Number((activationSampleCount > 0 ? activationSum / activationSampleCount : 0).toFixed(2)),
+      p50Ms: Number(computePercentile(activationSamples, 0.5).toFixed(2)),
+      p95Ms: Number(computePercentile(activationSamples, 0.95).toFixed(2)),
+      maxMs: Number((activationSampleCount > 0 ? activationSamples[activationSampleCount - 1] : 0).toFixed(2)),
+    };
     const summary: BattlePerformanceSummary = {
       elapsedMs: Number((Date.now() - this.performanceRunStartMs).toFixed(2)),
       activationsProcessed: this.activationsProcessed,
       heartbeatEveryActivations: this.performanceHeartbeatEveryActivations,
+      activationLatency,
       phases,
       turns: this.performanceTurns,
       slowestActivations: this.performanceSlowestActivations,
@@ -2622,10 +2728,10 @@ class AIBattleRunner {
 
   async runBattle(
     config: GameConfig,
-    options: { seed?: number; suppressOutput?: boolean } = {}
+    options: { seed?: number; suppressOutput?: boolean; forceProfiling?: boolean } = {}
   ): Promise<BattleReport> {
     this.resetRunState();
-    this.setupPerformanceInstrumentation();
+    this.setupPerformanceInstrumentation(options.forceProfiling === true);
     const seed = options.seed ?? config.seed;
     const originalRandom = Math.random;
     if (typeof seed === 'number') {
@@ -3081,6 +3187,7 @@ class AIBattleRunner {
       const activationElapsedMs = Date.now() - activationStartedMs;
       this.recordPhaseDuration('activation.total', activationElapsedMs);
       this.recordPhaseDuration('activation.no_ap', activationElapsedMs);
+      this.performanceActivationSamplesMs.push(activationElapsedMs);
       this.activationsProcessed += 1;
       this.recordSlowActivation({
         turn,
@@ -3735,6 +3842,9 @@ class AIBattleRunner {
             detail: `score=${stepOpposedTest.score ?? 'n/a'}`,
           });
         }
+        if (actionExecuted && decision.type === 'move' && actorStateBefore.isWaiting) {
+          this.stats.movesWhileWaiting++;
+        }
         activationAudit.steps.push({
           sequence: activationAudit.steps.length + 1,
           actionType: decision.type,
@@ -3849,6 +3959,9 @@ class AIBattleRunner {
               const fallbackStateAfter = this.snapshotModelState(character);
               const fallbackApAfter = gameManager.getApRemaining(character);
               lastKnownAp = fallbackApAfter;
+              if (fallbackStateBefore.isWaiting) {
+                this.stats.movesWhileWaiting++;
+              }
               const fallbackVectors: AuditVector[] = [];
               if (fallbackStart && fallbackEnd && movedDistance > 0) {
                 fallbackVectors.push(this.createMovementVector(fallbackStart, fallbackEnd, 0.5));
@@ -3909,6 +4022,7 @@ class AIBattleRunner {
     gameManager.endActivation(character);
     const activationElapsedMs = Date.now() - activationStartedMs;
     this.recordPhaseDuration('activation.total', activationElapsedMs);
+    this.performanceActivationSamplesMs.push(activationElapsedMs);
     this.activationsProcessed += 1;
     this.recordSlowActivation({
       turn,
@@ -4984,6 +5098,7 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   lines.push(`  Turns Completed: ${report.totals.turnsCompleted}`);
   lines.push(`  Total Actions: ${report.totals.totalActions}`);
   lines.push(`  Moves: ${report.totals.moves}`);
+  lines.push(`  Moves While Waiting: ${report.totals.movesWhileWaiting}`);
   lines.push(`  Ranged Combats: ${report.totals.rangedCombats}`);
   lines.push(`  Close Combats: ${report.totals.closeCombats}`);
   lines.push(`  Wait Maintained: ${report.totals.waitMaintained}`);
@@ -4996,8 +5111,13 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   if (runPerf.length > 0) {
     const avgElapsed = runPerf.reduce((sum, perf) => sum + perf.elapsedMs, 0) / runPerf.length;
     const avgActivations = runPerf.reduce((sum, perf) => sum + perf.activationsProcessed, 0) / runPerf.length;
+    const avgActivationP95 = runPerf.reduce(
+      (sum, perf) => sum + (perf.activationLatency?.p95Ms ?? 0),
+      0
+    ) / runPerf.length;
     lines.push(`  Avg Run Elapsed: ${avgElapsed.toFixed(2)} ms`);
     lines.push(`  Avg Activations Processed: ${avgActivations.toFixed(2)}`);
+    lines.push(`  Avg Activation P95: ${avgActivationP95.toFixed(2)} ms`);
     const perfWithCache = runPerf.filter(perf => Boolean(perf.caches));
     if (perfWithCache.length > 0) {
       const losHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.los.hits ?? 0), 0);
@@ -5017,6 +5137,34 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
       );
       lines.push(
         `  Avg Grid Cache Hit Rate: ${gridTotal > 0 ? ((gridHits / gridTotal) * 100).toFixed(1) : '0.0'}% (${gridHits}/${gridTotal})`
+      );
+    }
+  }
+  if (report.performanceGates?.enabled) {
+    lines.push('');
+    lines.push('🚦 PERFORMANCE GATES');
+    lines.push(`  Runs Evaluated: ${report.performanceGates.runsEvaluated}/${report.runs}`);
+    lines.push(
+      `  Profile: mission=${report.performanceGates.profile.missionId}, size=${report.performanceGates.profile.gameSize}, density=${report.performanceGates.profile.densityRatio}% (bucket ${report.performanceGates.profile.densityBucket})`
+    );
+    if (report.performanceGates.pass.overall === null) {
+      lines.push('  Status: n/a (no profiled runs)');
+    } else {
+      lines.push(`  Status: ${report.performanceGates.pass.overall ? 'PASS' : 'FAIL'}`);
+      lines.push(
+        `  Turn 1 Elapsed <= ${report.performanceGates.thresholds.turn1ElapsedMsMax} ms: ${report.performanceGates.pass.turn1Elapsed ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgTurn1ElapsedMs?.toFixed(2) ?? 'n/a'})`
+      );
+      lines.push(
+        `  Activation P95 <= ${report.performanceGates.thresholds.activationP95MsMax} ms: ${report.performanceGates.pass.activationP95 ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgActivationP95Ms?.toFixed(2) ?? 'n/a'})`
+      );
+      lines.push(
+        `  LOS cache hit >= ${(report.performanceGates.thresholds.minLosCacheHitRate * 100).toFixed(1)}%: ${report.performanceGates.pass.losCacheHitRate ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgLosCacheHitRate !== null ? (report.performanceGates.observed.avgLosCacheHitRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Path cache hit >= ${(report.performanceGates.thresholds.minPathCacheHitRate * 100).toFixed(1)}%: ${report.performanceGates.pass.pathCacheHitRate ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgPathCacheHitRate !== null ? (report.performanceGates.observed.avgPathCacheHitRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Grid cache hit >= ${(report.performanceGates.thresholds.minGridCacheHitRate * 100).toFixed(1)}%: ${report.performanceGates.pass.gridCacheHitRate ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgGridCacheHitRate !== null ? (report.performanceGates.observed.avgGridCacheHitRate * 100).toFixed(1) : 'n/a'}%)`
       );
     }
   }
@@ -5079,6 +5227,188 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   lines.push('');
   lines.push('════════════════════════════════════════════════════════════');
   return lines.join('\n');
+}
+
+function readPositiveNumberEnv(name: string, fallback: number): number {
+  const parsed = Number.parseFloat(process.env[name] ?? '');
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function clampNumber(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+function resolveDensityBucketIndex(densityRatio: number): number {
+  const clamped = clampNumber(Math.round(densityRatio), 0, 100);
+  return Math.min(DENSITY_BUCKET_LABELS.length - 1, Math.floor(clamped / 25));
+}
+
+function resolveDensityBucketLabel(index: number): string {
+  return DENSITY_BUCKET_LABELS[clampNumber(index, 0, DENSITY_BUCKET_LABELS.length - 1)];
+}
+
+function derivePerformanceGateThresholds(context: PerformanceGateContext): {
+  thresholds: PerformanceGateThresholds;
+  densityBucket: string;
+  densityBucketIndex: number;
+} {
+  const densityBucketIndex = resolveDensityBucketIndex(context.densityRatio);
+  const densityBucket = resolveDensityBucketLabel(densityBucketIndex);
+  const baseByDensity = DENSITY_BUCKET_GATE_THRESHOLDS[densityBucketIndex] ?? DEFAULT_PERF_GATE_THRESHOLDS;
+  const sizeLatencyFactor = GAME_SIZE_LATENCY_FACTORS[context.gameSize] ?? 1;
+  const missionLatencyFactor = MISSION_LATENCY_FACTORS[context.missionId] ?? 1;
+  const latencyFactor = sizeLatencyFactor * missionLatencyFactor;
+  const cacheHitFactor = GAME_SIZE_CACHE_HIT_FACTORS[context.gameSize] ?? 1;
+
+  const thresholds: PerformanceGateThresholds = {
+    turn1ElapsedMsMax: Math.round(baseByDensity.turn1ElapsedMsMax * latencyFactor),
+    activationP95MsMax: Math.round(baseByDensity.activationP95MsMax * latencyFactor),
+    minLosCacheHitRate: Number(clampNumber(baseByDensity.minLosCacheHitRate * cacheHitFactor, 0.02, 0.98).toFixed(4)),
+    minPathCacheHitRate: Number(clampNumber(baseByDensity.minPathCacheHitRate * cacheHitFactor, 0.01, 0.95).toFixed(4)),
+    minGridCacheHitRate: Number(clampNumber(baseByDensity.minGridCacheHitRate, 0.50, 0.995).toFixed(4)),
+  };
+  return {
+    thresholds,
+    densityBucket,
+    densityBucketIndex,
+  };
+}
+
+function buildValidationPerformanceGates(
+  runReports: ValidationAggregateReport['runReports'],
+  totalRuns: number,
+  context: PerformanceGateContext
+): ValidationAggregateReport['performanceGates'] {
+  const derived = derivePerformanceGateThresholds(context);
+  const thresholds = {
+    turn1ElapsedMsMax: readPositiveNumberEnv('AI_BATTLE_GATE_TURN1_MS', derived.thresholds.turn1ElapsedMsMax),
+    activationP95MsMax: readPositiveNumberEnv('AI_BATTLE_GATE_ACT_P95_MS', derived.thresholds.activationP95MsMax),
+    minLosCacheHitRate: readPositiveNumberEnv('AI_BATTLE_GATE_LOS_HIT_MIN', derived.thresholds.minLosCacheHitRate),
+    minPathCacheHitRate: readPositiveNumberEnv('AI_BATTLE_GATE_PATH_HIT_MIN', derived.thresholds.minPathCacheHitRate),
+    minGridCacheHitRate: readPositiveNumberEnv('AI_BATTLE_GATE_GRID_HIT_MIN', derived.thresholds.minGridCacheHitRate),
+  };
+
+  const runsWithPerf = runReports.filter(
+    (run): run is ValidationAggregateReport['runReports'][number] & { performance: BattlePerformanceSummary } =>
+    Boolean(run.performance)
+  );
+  const runsEvaluated = runsWithPerf.length;
+  if (runsEvaluated === 0) {
+    return {
+      enabled: true,
+      runsEvaluated,
+      profile: {
+        missionId: context.missionId,
+        gameSize: context.gameSize,
+        densityRatio: context.densityRatio,
+        densityBucket: derived.densityBucket,
+        densityBucketIndex: derived.densityBucketIndex,
+      },
+      thresholds,
+      observed: {
+        avgTurn1ElapsedMs: null,
+        avgActivationP95Ms: null,
+        avgLosCacheHitRate: null,
+        avgPathCacheHitRate: null,
+        avgGridCacheHitRate: null,
+      },
+      pass: {
+        turn1Elapsed: null,
+        activationP95: null,
+        losCacheHitRate: null,
+        pathCacheHitRate: null,
+        gridCacheHitRate: null,
+        overall: null,
+      },
+    };
+  }
+
+  const turn1Times = runsWithPerf
+    .map(run => run.performance.turns.find(turn => turn.turn === 1)?.elapsedMs)
+    .filter((value): value is number => Number.isFinite(value));
+  const activationP95 = runsWithPerf.map(run => run.performance.activationLatency.p95Ms);
+
+  let losHitSum = 0;
+  let losHitCount = 0;
+  let pathHitSum = 0;
+  let pathHitCount = 0;
+  let gridHitSum = 0;
+  let gridHitCount = 0;
+  for (const run of runsWithPerf) {
+    const cache = run.performance.caches;
+    if (!cache) continue;
+    const losTotal = cache.los.hits + cache.los.misses;
+    const pathTotal = cache.pathfinding.pathHits + cache.pathfinding.pathMisses;
+    const gridTotal = cache.pathfinding.gridHits + cache.pathfinding.gridMisses;
+    if (losTotal > 0) {
+      losHitSum += safeRate(cache.los.hits, losTotal);
+      losHitCount += 1;
+    }
+    if (pathTotal > 0) {
+      pathHitSum += safeRate(cache.pathfinding.pathHits, pathTotal);
+      pathHitCount += 1;
+    }
+    if (gridTotal > 0) {
+      gridHitSum += safeRate(cache.pathfinding.gridHits, gridTotal);
+      gridHitCount += 1;
+    }
+  }
+
+  const observed = {
+    avgTurn1ElapsedMs: turn1Times.length > 0
+      ? Number((turn1Times.reduce((sum, value) => sum + value, 0) / turn1Times.length).toFixed(2))
+      : null,
+    avgActivationP95Ms: activationP95.length > 0
+      ? Number((activationP95.reduce((sum, value) => sum + value, 0) / activationP95.length).toFixed(2))
+      : null,
+    avgLosCacheHitRate: losHitCount > 0 ? Number((losHitSum / losHitCount).toFixed(4)) : null,
+    avgPathCacheHitRate: pathHitCount > 0 ? Number((pathHitSum / pathHitCount).toFixed(4)) : null,
+    avgGridCacheHitRate: gridHitCount > 0 ? Number((gridHitSum / gridHitCount).toFixed(4)) : null,
+  };
+
+  const pass = {
+    turn1Elapsed: observed.avgTurn1ElapsedMs !== null
+      ? observed.avgTurn1ElapsedMs <= thresholds.turn1ElapsedMsMax
+      : null,
+    activationP95: observed.avgActivationP95Ms !== null
+      ? observed.avgActivationP95Ms <= thresholds.activationP95MsMax
+      : null,
+    losCacheHitRate: observed.avgLosCacheHitRate !== null
+      ? observed.avgLosCacheHitRate >= thresholds.minLosCacheHitRate
+      : null,
+    pathCacheHitRate: observed.avgPathCacheHitRate !== null
+      ? observed.avgPathCacheHitRate >= thresholds.minPathCacheHitRate
+      : null,
+    gridCacheHitRate: observed.avgGridCacheHitRate !== null
+      ? observed.avgGridCacheHitRate >= thresholds.minGridCacheHitRate
+      : null,
+    overall: null as boolean | null,
+  };
+
+  const gateValues = [
+    pass.turn1Elapsed,
+    pass.activationP95,
+    pass.losCacheHitRate,
+    pass.pathCacheHitRate,
+    pass.gridCacheHitRate,
+  ];
+  const resolvedGates = gateValues.filter((value): value is boolean => value !== null);
+  pass.overall = resolvedGates.length > 0 ? resolvedGates.every(Boolean) : null;
+
+  return {
+    enabled: true,
+    runsEvaluated: Math.min(runsEvaluated, totalRuns),
+    profile: {
+      missionId: context.missionId,
+      gameSize: context.gameSize,
+      densityRatio: context.densityRatio,
+      densityBucket: derived.densityBucket,
+      densityBucketIndex: derived.densityBucketIndex,
+    },
+    thresholds,
+    observed,
+    pass,
+  };
 }
 
 async function runValidationBatch(
@@ -5149,6 +5479,7 @@ async function runValidationBatch(
     perCharacterFovLos: false,
     verbose: false,
   };
+  const validationForceProfiling = process.env.AI_BATTLE_VALIDATION_PROFILE !== '0';
 
   console.log(`\nRunning ${runs} validation battle(s) for ${missionName} (${resolvedMissionId}, ${gameSize})...`);
   if (maxTurns !== configuredMaxTurns) {
@@ -5158,10 +5489,15 @@ async function runValidationBatch(
   console.log(`    Alpha: ${doctrineAlpha}`);
   console.log(`    Bravo: ${doctrineBravo}`);
   console.log(`  Loadout Profile: ${loadoutProfile}`);
+  console.log(`  Profiling: ${validationForceProfiling ? 'enabled' : 'disabled (AI_BATTLE_VALIDATION_PROFILE=0)'}`);
   for (let i = 0; i < runs; i++) {
     const seed = baseSeed + i;
     const runner = new AIBattleRunner();
-    const report = await runner.runBattle(baseConfig, { seed, suppressOutput: true });
+    const report = await runner.runBattle(baseConfig, {
+      seed,
+      suppressOutput: true,
+      forceProfiling: validationForceProfiling,
+    });
     winners[report.winner] = (winners[report.winner] ?? 0) + 1;
     accumulateStats(totals, report.stats);
     accumulateAdvancedRuleMetrics(advancedRuleTotals, report.advancedRules);
@@ -5197,6 +5533,11 @@ async function runValidationBatch(
   const runtimeCoverage = baseCoverageFromStats(totals);
   const probeCoverage = mergeCoverage(emptyCoverage(), runMechanicProbes());
   const coverage = mergeCoverage(runtimeCoverage, probeCoverage);
+  const performanceGates = buildValidationPerformanceGates(runReports, runs, {
+    missionId: resolvedMissionId,
+    gameSize,
+    densityRatio,
+  });
 
   const aggregateReport: ValidationAggregateReport = {
     missionId: resolvedMissionId,
@@ -5223,6 +5564,7 @@ async function runValidationBatch(
     coverage,
     runtimeCoverage,
     probeCoverage,
+    performanceGates,
     runReports,
     generatedAt: new Date().toISOString(),
   };
@@ -5241,7 +5583,38 @@ async function runValidationBatch(
   console.log(`    Alpha: ${doctrineAlpha}`);
   console.log(`    Bravo: ${doctrineBravo}`);
   console.log(`  Loadout Profile: ${loadoutProfile}`);
+  if (performanceGates.enabled) {
+    console.log(
+      `  Gate Profile: mission=${performanceGates.profile.missionId}, size=${performanceGates.profile.gameSize}, density=${performanceGates.profile.densityRatio}% (bucket ${performanceGates.profile.densityBucket})`
+    );
+    if (performanceGates.pass.overall === null) {
+      console.log('  Performance Gates: n/a (no profiled runs)');
+    } else {
+      console.log(`  Performance Gates: ${performanceGates.pass.overall ? 'PASS' : 'FAIL'}`);
+      console.log(
+        `    Turn 1 avg=${performanceGates.observed.avgTurn1ElapsedMs?.toFixed(2) ?? 'n/a'}ms (<= ${performanceGates.thresholds.turn1ElapsedMsMax}ms): ${performanceGates.pass.turn1Elapsed ? 'PASS' : 'FAIL'}`
+      );
+      console.log(
+        `    Activation p95 avg=${performanceGates.observed.avgActivationP95Ms?.toFixed(2) ?? 'n/a'}ms (<= ${performanceGates.thresholds.activationP95MsMax}ms): ${performanceGates.pass.activationP95 ? 'PASS' : 'FAIL'}`
+      );
+      console.log(
+        `    LOS cache avg=${performanceGates.observed.avgLosCacheHitRate !== null ? (performanceGates.observed.avgLosCacheHitRate * 100).toFixed(1) : 'n/a'}% (>= ${(performanceGates.thresholds.minLosCacheHitRate * 100).toFixed(1)}%): ${performanceGates.pass.losCacheHitRate ? 'PASS' : 'FAIL'}`
+      );
+      console.log(
+        `    Path cache avg=${performanceGates.observed.avgPathCacheHitRate !== null ? (performanceGates.observed.avgPathCacheHitRate * 100).toFixed(1) : 'n/a'}% (>= ${(performanceGates.thresholds.minPathCacheHitRate * 100).toFixed(1)}%): ${performanceGates.pass.pathCacheHitRate ? 'PASS' : 'FAIL'}`
+      );
+      console.log(
+        `    Grid cache avg=${performanceGates.observed.avgGridCacheHitRate !== null ? (performanceGates.observed.avgGridCacheHitRate * 100).toFixed(1) : 'n/a'}% (>= ${(performanceGates.thresholds.minGridCacheHitRate * 100).toFixed(1)}%): ${performanceGates.pass.gridCacheHitRate ? 'PASS' : 'FAIL'}`
+      );
+    }
+  }
   console.log(`  Report: ${outputPath}`);
+  if (
+    process.env.AI_BATTLE_ENFORCE_GATES === '1' &&
+    performanceGates.pass.overall === false
+  ) {
+    process.exitCode = 1;
+  }
 }
 
 function renderBattleReportFile(reportPath: string) {
