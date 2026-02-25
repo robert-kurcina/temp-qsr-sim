@@ -730,12 +730,41 @@ Early AI validation showed behavior cloning - the same doctrine/loadout/seed pro
 **R4 Status:** ✅ COMPLETE
 
 #### R5 (P2): Documentation and Traceability Sync
-1. Update `qsr-traceability.md` and `rules*.md` to reflect finalized mission scoring semantics and action-economy behavior.
-2. Keep `rules-overrides.md` as authoritative override index when runtime differs from source text by design.
 
-**Exit Criteria**
-- Traceability entries match runtime behavior and tests.
-- No known doc/runtime mismatch remains untracked in blueprint backlog.
+**Objective:** Ensure all documentation reflects the current runtime behavior and all mismatches are tracked.
+
+**Implementation:**
+
+1. **QSR Traceability Matrix Updated** ✅
+   - `docs/qsr-traceability.md` updated with R1-R4 implementation status
+   - All mission/Keys/OM entries marked as **Implemented**
+   - New "AI Behavior & Scoring" section added for R1.5-R4 features
+   - "Resolved Mismatches (R1-R4)" section documents all fixes
+
+2. **Rules Overrides Maintained** ✅
+   - `src/guides/docs/rules-overrides.md` remains authoritative for approved overrides
+   - OVR-001: Wait Action (Revised) - current and accurate
+   - Precedence order documented: overrides > rules*.md > docs/*.txt
+
+3. **Remaining Mismatches Tracked** ✅
+   - Only 1 known mismatch remaining: Indirect Arc/Height Fidelity
+   - Resolution plan: Deferred to Phase 3 (requires 3D terrain)
+   - All R1-R4 mismatches resolved and documented
+
+**Exit Criteria:**
+- [x] Traceability entries match runtime behavior and tests
+  - All R1-R4 features documented in traceability matrix
+  - Status updated from "Partial" to "Implemented" where applicable
+  - Code paths referenced for each feature
+- [x] No known doc/runtime mismatch remains untracked in blueprint backlog
+  - "Resolved Mismatches" section documents all R1-R4 fixes
+  - "Known Doc Mismatches" section tracks remaining item with resolution plan
+
+**Files Updated:**
+- `docs/qsr-traceability.md` - Full traceability matrix update
+- `blueprint.md` - R5 section expanded with implementation details
+
+**R5 Status:** ✅ COMPLETE
 
 ### 10.2.3 R1 Progress Update (2026-02-25)
 
