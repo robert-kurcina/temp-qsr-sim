@@ -228,6 +228,12 @@ This plan supersedes ad-hoc backlog ordering and is now the execution order for 
 - No replay-side inference is required for AP spending, action sequencing, or affected model mapping.
 - SVG keyframe mapping can be generated from one API call without re-running simulation.
 
+**Nice-to-Have (Non-Blocking)**
+- Add a replay-list stream alongside `audit`, where each entry is an atomic state delta tied to a single engine function call.
+- Require replay-list entries to be deterministic and strictly ordered so playback can step forward one atomic event at a time.
+- Design replay-list events to be undo-ready (inverse metadata or reversible checkpoint references), but do not implement undo execution yet.
+- Treat replay-list atomic playback as the canonical source for full-battle SVG animation timelines.
+
 ### Phase A (P0): Mission Outcome Correctness
 **Objective:** Ensure mission results are always resolved correctly and deterministically.
 
