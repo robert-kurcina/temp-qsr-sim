@@ -408,9 +408,13 @@ Implemented now:
    - `React`/`Standard react` attacks,
    - carrier-down handling on KO/elimination transitions.
 3. Mission scan artifact was rerun and refreshed at `generated/ai-battle-reports/mission-scan-summary-qai11-20.json`.
+4. Added focused mission runtime adapter regression tests in `src/lib/mest-tactics/missions/mission-runtime-adapter.test.ts`:
+   - first-blood award idempotence (`recordAttack` only awards once),
+   - targeted elimination bonus idempotence (`onModelEliminated` awards once per targeted model),
+   - carrier-down drop semantics for physical markers across KO/elimination transitions.
 
 Still open in R1:
-1. Add dedicated regression tests for mission event forwarding across reactive/passive/interrupt pathways (currently covered by validation runs, but not yet by focused unit tests).
+1. Add dedicated regression tests that assert forwarding from concrete reactive/passive/interrupt combat call sites (current tests cover mission-runtime event semantics but not every upstream attack pathway integration point).
 2. Confirm any mission-specific semantics where all-zero VP is expected vs indicates missed mission objectives under a given doctrine/loadout/seed profile.
 
 ### 10.2.4 R2 Progress Update (2026-02-25)
@@ -472,6 +476,115 @@ Implemented now:
 Still open in R2:
 1. Wait uptake is still low in this doctrine/mission profile and needs targeted tactical-condition weighting (not global inflation).
 2. Mission-specific projected OM semantics are still incomplete for non-Assault/Breach objective sources (zone-centric missions still use projection for AI context but not direct objective action semantics).
+3. React/Wait planning remains mostly single-ply in active validation runtime (heuristic valuation + immediate react selection), with no explicit multi-step GOAP interruption rollout.
+
+### 10.2.4A Planned Feature: GOAP Interrupt Planning (Wait + React)
+
+Objective:
+- Add explicit forward planning for interrupt chains so Wait is selected when it improves expected-value React outcomes, not only by static utility heuristics.
+
+Scope:
+1. Add an interrupt-aware GOAP planning mode that simulates short-horizon branches:
+   - branch A: spend AP now on direct action,
+   - branch B: enter/maintain Wait and reserve react posture,
+   - branch C: move-to-lane then Wait for likely enemy movement/action triggers.
+2. Add explicit react-opportunity forecasting features for planning:
+   - expected trigger count by enemy type/action profile,
+   - expected REF gate pass probability with Wait bonus,
+   - expected damage/prevention delta from likely React execution.
+3. Integrate planner output into action selection:
+   - planner selects Wait only when projected interrupt value beats immediate alternatives under mission-aware scoring,
+   - preserve deterministic seed behavior for equivalent states.
+4. Expand reporting for interrupt planning quality:
+   - planned-react opportunities vs realized reacts,
+   - waits selected from planner vs waits selected from fallback utility,
+   - realized value from wait-enabled react chains (damage dealt/prevented proxies).
+5. Add focused unit tests + validation scenarios:
+   - cases where Wait should be selected due to projected React value,
+   - cases where immediate attack should still win,
+   - mission/doctrine profiles where Wait+React should naturally emerge.
+
+Exit Criteria:
+- Wait selection is materially correlated with realized React opportunities.
+- React usage increases in profiles where Wait posture is tactically sound, without global over-selection.
+- Planner decisions remain deterministic and traceable in audit/report output.
+
+### 10.2.4B Progress Update (2026-02-25)
+
+Implemented now:
+1. Added a GOAP-style interrupt forecast primitive in `src/lib/mest-tactics/ai/tactical/GOAP.ts`:
+   - new `forecastWaitReact()` output includes projected react targets, REF gate pass count, expected trigger count/value, hidden-reveal opportunities, and exposure count.
+2. Wired GOAP interrupt forecast into utility action scoring in `src/lib/mest-tactics/ai/core/UtilityScorer.ts`:
+   - `wait` scoring now includes projected trigger/value terms (`waitExpectedTriggerCount`, `waitExpectedReactValue`, `waitGoapBranchScore`),
+   - movement scoring now includes future wait/react posture pressure (`goapFutureWaitValue`) to reduce short-horizon action bias.
+3. Added regression coverage:
+   - `src/lib/mest-tactics/ai/core/ai.test.ts` now verifies forecast-derived wait factors are present and positive in reactive wait scenarios.
+   - `src/lib/mest-tactics/ai/tactical/tactical.test.ts` now verifies GOAP forecast surfaces non-zero react opportunity/value in a valid wait/react setup.
+4. Validation spot-check:
+   - `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-50-07-942Z.json` reports non-zero wait/react usage (`waits=3`, `waitMaintained=7`, `reacts=3`) with coverage pass.
+5. Added planner-origin attribution for Wait selection in runtime reports:
+   - `scripts/ai-battle-setup.ts` now records `waitsSelectedPlanner` and `waitsSelectedUtility` in `BattleStats`.
+   - Wait decision planning metadata is carried through `ActionDecision.planning` and persisted in per-step audit details.
+   - Validation aggregate report now emits planner-vs-utility wait selection totals.
+   - Spot-check: `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-53-50-449Z.json` reports `waits=3`, `waitsSelectedPlanner=3`, `waitsSelectedUtility=0`.
+6. Added short-horizon branch arbitration in utility selection:
+   - wait selection now explicitly compares branch envelopes (`immediateBranchScore`, `moveThenWaitBranchScore`, `waitBranchScore`) before choosing Wait.
+   - move scoring retains `move->wait` future posture value so tactical reposition + interrupt posture is no longer purely implicit.
+   - Spot-check rerun: `generated/ai-battle-reports/qai-20-validation-2026-02-25T06-55-08-946Z.json` still shows non-zero wait/react with planner-tagged selection.
+7. Consolidated branch arbitration onto explicit rollout helper:
+   - `src/lib/mest-tactics/ai/tactical/GOAP.ts` now provides `rolloutWaitReactBranches(...)` with concrete branch outputs (`immediate_action`, `wait_now`, `move_then_wait`) and preferred-branch selection.
+   - `src/lib/mest-tactics/ai/core/UtilityScorer.ts` now uses rollout outputs directly for wait branch thresholds/factors (`waitBaselineScore`, `rolloutPreferredScore`) instead of ad-hoc branch reconstruction.
+   - `src/lib/mest-tactics/ai/core/CharacterAI.ts` now forwards preferred-branch metadata into `ActionDecision.planning` for report/audit attribution.
+   - Added regression coverage for rollout branch generation in `src/lib/mest-tactics/ai/tactical/tactical.test.ts`.
+8. Post-rollout validation spot-check:
+   - `generated/ai-battle-reports/qai-20-validation-2026-02-25T07-07-30-474Z.json` reports stronger interrupt posture activity (`waits=14`, `reacts=18`, `waitMaintained=12`, `waitsSelectedPlanner=14`) with full combined coverage.
+9. Added Wait/React efficacy instrumentation (choices given vs choices taken):
+   - `BattleStats` now captures:
+     - wait: `waitChoicesGiven`, `waitChoicesTaken`, `waitChoicesSucceeded`,
+     - react: `reactChoiceWindows`, `reactChoicesGiven`, `reactChoicesTaken`,
+     - coupling/effect: `waitTriggeredReacts`, `reactWoundsInflicted`, `waitReactWoundsInflicted`.
+   - AI debug output now includes action availability counts (`AIResult.debug.actionAvailability`) so wait-choice availability is measured from the decision choice-set.
+   - Validation and human-readable reports now show take/success/conversion rates for Wait and React.
+   - Spot-check: `generated/ai-battle-reports/qai-20-validation-2026-02-25T07-18-59-915Z.json`
+     - wait: given=14, taken=14, success=14,
+     - react: windows=18, choices=76, taken=18,
+     - wait->react triggers=18, wait->react wounds=7.
+
+### 10.2.4C Validation Slice (2026-02-25): Wait/React Efficacy A/B
+
+Setup:
+- Mission: `QAI_20` (Breach), `SMALL`, density `50`, lighting `Day, Clear`.
+- PRNG policy: mirrored seed schedule using the same base (`424242`) for A/B and side-swapped mirrors.
+- Batches (20 runs each):
+  - `operative vs watchman` (`generated/ai-battle-reports/qai-20-validation-2026-02-25T07-22-31-058Z.json`)
+  - `watchman vs operative` (`generated/ai-battle-reports/qai-20-validation-2026-02-25T07-22-48-598Z.json`)
+  - `juggernaut vs watchman` (`generated/ai-battle-reports/qai-20-validation-2026-02-25T07-23-04-436Z.json`)
+  - `watchman vs juggernaut` (`generated/ai-battle-reports/qai-20-validation-2026-02-25T07-23-19-074Z.json`)
+
+Observed:
+1. Wait is consistently available and selected in this profile (`waitChoicesTaken == waitChoicesGiven` across all batches).
+2. Wait+React chains occur frequently (`waitTriggeredReacts` high) and generate non-trivial wound output.
+3. React selection remains selective among available options (option-selection rate ~24-26%).
+
+### 10.2.4D Passive Option Patch Set (2026-02-25)
+
+Implemented:
+1. Passive-option follow-through for failed-hit responses in `scripts/ai-battle-setup.ts`:
+   - `CounterAction` now auto-consumes awarded bonus-action cascades and executes doctrine-prioritized bonus actions.
+   - `CounterStrike` / `CounterFire` now apply bonus-action follow-through when eligible, using carry-over-derived cascades.
+2. Take Cover behavior improved in `scripts/ai-battle-setup.ts`:
+   - relocation scoring now prioritizes break-LOS first, then direct/intervening cover, then proximity cost.
+3. Push-back terrain-delay semantics improved in `src/lib/mest-tactics/actions/bonus-actions.ts`:
+   - Push-back into obstacle/impassable/boundary now applies Delay.
+   - Push-back into rough/difficult terrain now applies Delay.
+   - Blocked-by-model remains disallowed.
+4. Added regression tests in `src/lib/mest-tactics/actions/bonus-actions.test.ts` for Push-back delay behavior in degraded and blocked terrain cases.
+
+Validation spot-check:
+- `generated/ai-battle-reports/qai-20-validation-2026-02-25T07-41-50-994Z.json` confirms live usage of `TakeCover`, `CounterFire`, and `CounterCharge` in advanced-rule breakdowns.
+
+Still open:
+1. Full multi-step GOAP branch execution remains pending (current integration is forecast-driven scoring + branch-envelope arbitration, not full branch rollouts with explicit action-chain simulation).
 
 ### 10.2.5 Performance Remediation Plan (2026-02-25)
 

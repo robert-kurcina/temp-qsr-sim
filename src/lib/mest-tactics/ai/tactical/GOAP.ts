@@ -10,6 +10,8 @@ import { Battlefield } from '../../battlefield/Battlefield';
 import { Position } from '../../battlefield/Position';
 import { ActionDecision, AIContext, ActionType } from '../core/AIController';
 import { isAttackableEnemy } from '../core/ai-utils';
+import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
+import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 
 /**
  * World state representation
@@ -439,6 +441,250 @@ export class GOAPPlanner {
 
     return Math.max(0.1, Math.min(1.0, probability));
   }
+}
+
+export interface WaitReactForecast {
+  potentialReactTargets: number;
+  refGatePassCount: number;
+  expectedTriggerCount: number;
+  expectedReactValue: number;
+  hiddenRevealTargets: number;
+  exposureCount: number;
+}
+
+export type InterruptBranchId = 'immediate_action' | 'wait_now' | 'move_then_wait';
+
+export interface InterruptBranchPlan {
+  id: InterruptBranchId;
+  score: number;
+  projectedSteps: ActionType[];
+  forecast: WaitReactForecast;
+  movePosition?: Position;
+}
+
+export interface WaitReactRolloutPlan {
+  branches: InterruptBranchPlan[];
+  preferred: InterruptBranchPlan;
+}
+
+function classifyLoadout(character: Character): { hasRanged: boolean; hasMelee: boolean } {
+  const items = (character.profile?.equipment || character.profile?.items || []).filter(Boolean);
+  let hasRanged = false;
+  let hasMelee = false;
+  for (const item of items) {
+    const cls = String(item?.classification || item?.class || '').toLowerCase();
+    if (cls === 'bow' || cls === 'thrown' || cls === 'range' || cls === 'firearm' || cls === 'support') {
+      hasRanged = true;
+      continue;
+    }
+    if (cls === 'melee' || cls === 'natural') {
+      hasMelee = true;
+      continue;
+    }
+  }
+  return { hasRanged, hasMelee };
+}
+
+function buildModelSnapshot(character: Character, position: Position) {
+  const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+  return {
+    id: character.id,
+    position,
+    baseDiameter: getBaseDiameterFromSiz(siz),
+    siz,
+  };
+}
+
+/**
+ * GOAP-style short-horizon forecast for Wait + React value.
+ *
+ * This is intentionally lightweight (single-state projection) so it can run
+ * inside utility evaluation without the full GOAP graph search cost.
+ */
+export function forecastWaitReact(
+  context: AIContext,
+  actorPosition?: Position
+): WaitReactForecast {
+  const actorPos = actorPosition ?? context.battlefield.getCharacterPosition(context.character);
+  if (!actorPos) {
+    return {
+      potentialReactTargets: 0,
+      refGatePassCount: 0,
+      expectedTriggerCount: 0,
+      expectedReactValue: 0,
+      hiddenRevealTargets: 0,
+      exposureCount: 0,
+    };
+  }
+
+  const actorModel = buildModelSnapshot(context.character, actorPos);
+  const effectiveRef = (context.character.finalAttributes.ref ?? context.character.attributes.ref ?? 0) + 1;
+  const baseVisibility = Math.max(1, context.config.visibilityOrMu ?? 16);
+  const waitVisibility = baseVisibility * 2;
+
+  let potentialReactTargets = 0;
+  let refGatePassCount = 0;
+  let expectedTriggerCount = 0;
+  let expectedReactValue = 0;
+  let hiddenRevealTargets = 0;
+
+  for (const enemy of context.enemies) {
+    if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+    const enemyPos = context.battlefield.getCharacterPosition(enemy);
+    if (!enemyPos) continue;
+
+    const enemyModel = buildModelSnapshot(enemy, enemyPos);
+    if (!SpatialRules.hasLineOfSight(context.battlefield, actorModel, enemyModel)) {
+      continue;
+    }
+
+    const edgeDistance = SpatialRules.distanceEdgeToEdge(actorModel, enemyModel);
+    if (edgeDistance > waitVisibility) {
+      continue;
+    }
+
+    potentialReactTargets += 1;
+
+    const enemyRef = enemy.finalAttributes.ref ?? enemy.attributes.ref ?? 0;
+    const enemyMov = enemy.finalAttributes.mov ?? enemy.attributes.mov ?? 0;
+    const requiredRef = Math.max(enemyRef, enemyMov);
+    const refDelta = effectiveRef - requiredRef;
+    const refGatePass = refDelta >= 0;
+    if (refGatePass) {
+      refGatePassCount += 1;
+    }
+    const refFactor = refGatePass
+      ? 1
+      : Math.max(0.05, 1 - (Math.abs(refDelta) * 0.35));
+
+    const enemyLoadout = classifyLoadout(enemy);
+    let triggerProbability = 0.45;
+    if (enemyLoadout.hasMelee && !enemyLoadout.hasRanged) {
+      triggerProbability = edgeDistance > 1.2 ? 0.78 : 0.28;
+    } else if (enemyLoadout.hasRanged && !enemyLoadout.hasMelee) {
+      triggerProbability = edgeDistance > 8 ? 0.28 : 0.42;
+    } else {
+      triggerProbability = edgeDistance > 4 ? 0.58 : 0.4;
+    }
+    if (context.battlefield.isEngaged?.(enemy)) {
+      triggerProbability *= 0.65;
+    }
+    triggerProbability = Math.max(0.05, Math.min(0.9, triggerProbability));
+
+    expectedTriggerCount += triggerProbability;
+
+    const threatWeight =
+      1 +
+      (enemyLoadout.hasRanged ? 0.25 : 0.12) +
+      ((enemy.state.wounds ?? 0) > 0 ? 0.1 : 0);
+    expectedReactValue += triggerProbability * refFactor * threatWeight;
+
+    if (enemy.state.isHidden) {
+      const cover = SpatialRules.getCoverResult(context.battlefield, actorModel, enemyModel);
+      const inCover = cover.hasDirectCover || cover.hasInterveningCover;
+      if (!inCover) {
+        hiddenRevealTargets += 1;
+      }
+    }
+  }
+
+  let exposureCount = 0;
+  for (const enemy of context.enemies) {
+    if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+    const enemyPos = context.battlefield.getCharacterPosition(enemy);
+    if (!enemyPos) continue;
+    const enemyModel = buildModelSnapshot(enemy, enemyPos);
+    if (!SpatialRules.hasLineOfSight(context.battlefield, enemyModel, actorModel)) continue;
+    const edgeDistance = SpatialRules.distanceEdgeToEdge(enemyModel, actorModel);
+    if (edgeDistance <= baseVisibility) {
+      exposureCount += 1;
+    }
+  }
+
+  return {
+    potentialReactTargets,
+    refGatePassCount,
+    expectedTriggerCount,
+    expectedReactValue,
+    hiddenRevealTargets,
+    exposureCount,
+  };
+}
+
+export function rolloutWaitReactBranches(
+  context: AIContext,
+  params: {
+    immediateScore: number;
+    waitBaseline: number;
+    moveCandidates?: Position[];
+    maxMoveCandidates?: number;
+  }
+): WaitReactRolloutPlan {
+  const actorPos = context.battlefield.getCharacterPosition(context.character);
+  const baselineForecast = forecastWaitReact(context, actorPos ?? undefined);
+  const immediateScore = Math.max(0, params.immediateScore);
+  const waitBaseline = Math.max(0, params.waitBaseline);
+
+  const immediateBranch: InterruptBranchPlan = {
+    id: 'immediate_action',
+    score: immediateScore,
+    projectedSteps: ['ranged_combat'],
+    forecast: baselineForecast,
+  };
+
+  const waitNowScore =
+    waitBaseline +
+    (baselineForecast.expectedReactValue * 0.95) +
+    (baselineForecast.expectedTriggerCount * 0.42) +
+    (baselineForecast.hiddenRevealTargets * 0.65) +
+    (baselineForecast.refGatePassCount * 0.22);
+  const waitNowBranch: InterruptBranchPlan = {
+    id: 'wait_now',
+    score: waitNowScore,
+    projectedSteps: ['wait', 'react-move'],
+    forecast: baselineForecast,
+  };
+
+  const moveCandidates = (params.moveCandidates ?? []).slice(0, Math.max(0, params.maxMoveCandidates ?? 3));
+  let bestMoveBranch: InterruptBranchPlan = {
+    id: 'move_then_wait',
+    score: waitBaseline * 0.75,
+    projectedSteps: ['move', 'wait', 'react-move'],
+    forecast: baselineForecast,
+  };
+
+  if (actorPos && moveCandidates.length > 0) {
+    for (const candidate of moveCandidates) {
+      const forecastAfterMove = forecastWaitReact(context, candidate);
+      const moveDistance = Math.hypot(candidate.x - actorPos.x, candidate.y - actorPos.y);
+      const exposureReduction = Math.max(0, baselineForecast.exposureCount - forecastAfterMove.exposureCount);
+      const score =
+        (waitBaseline * 0.85) +
+        (forecastAfterMove.expectedReactValue * 0.95) +
+        (forecastAfterMove.expectedTriggerCount * 0.4) +
+        (forecastAfterMove.hiddenRevealTargets * 0.6) +
+        (exposureReduction * 0.2) -
+        (moveDistance * 0.08);
+      if (score > bestMoveBranch.score) {
+        bestMoveBranch = {
+          id: 'move_then_wait',
+          score,
+          projectedSteps: ['move', 'wait', 'react-move'],
+          forecast: forecastAfterMove,
+          movePosition: candidate,
+        };
+      }
+    }
+  }
+
+  const branches: InterruptBranchPlan[] = [immediateBranch, waitNowBranch, bestMoveBranch];
+  let preferred = branches[0];
+  for (const branch of branches) {
+    if (branch.score > preferred.score) {
+      preferred = branch;
+    }
+  }
+  return { branches, preferred };
 }
 
 // ============================================================================

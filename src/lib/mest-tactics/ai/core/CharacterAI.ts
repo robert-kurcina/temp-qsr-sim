@@ -221,10 +221,16 @@ export class CharacterAI implements IAIController {
       if (patternMatch && patternMatch.actions.length > 0) {
         const action = patternMatch.actions[0];
         return {
-          decision: action,
+          decision: {
+            ...action,
+            planning: {
+              source: 'pattern',
+            },
+          },
           debug: {
             consideredActions: [patternMatch.pattern.name],
             scores: { [patternMatch.pattern.name]: patternMatch.confidence },
+            actionAvailability: { [action.type]: 1 },
             reasoning: `Tactical pattern: ${patternMatch.pattern.name} (confidence: ${patternMatch.confidence.toFixed(2)})`,
           },
         };
@@ -241,6 +247,7 @@ export class CharacterAI implements IAIController {
           debug: {
             consideredActions: plan.actions.map(a => a.name),
             scores: { plan: plan.successProbability },
+            actionAvailability: { [action.type]: 1 },
             reasoning: `GOAP plan: ${plan.actions.length} actions (success: ${(plan.successProbability * 100).toFixed(0)}%)`,
           },
         };
@@ -254,12 +261,16 @@ export class CharacterAI implements IAIController {
         decision: {
           type: 'hide',
           reason: hideDecision.reason,
+          planning: {
+            source: 'utility',
+          },
           priority: hideDecision.priority ?? 3.0,
           requiresAP: true,
         },
         debug: {
           consideredActions: ['hide'],
           scores: { hide: hideDecision.priority ?? 3.0 },
+          actionAvailability: { hide: 1 },
           reasoning: hideDecision.reason,
         },
       };
@@ -272,12 +283,16 @@ export class CharacterAI implements IAIController {
           type: 'detect',
           target: detectDecision.targets[0],
           reason: detectDecision.reason ?? 'Detect hidden enemies',
+          planning: {
+            source: 'utility',
+          },
           priority: detectDecision.priority ?? 2.5,
           requiresAP: true,
         },
         debug: {
           consideredActions: ['detect'],
           scores: { detect: detectDecision.priority ?? 2.5 },
+          actionAvailability: { detect: 1 },
           reasoning: detectDecision.reason ?? 'Detect hidden enemies',
         },
       };
@@ -298,6 +313,7 @@ export class CharacterAI implements IAIController {
         debug: {
           consideredActions: [],
           scores: {},
+          actionAvailability: {},
           reasoning: 'No valid actions available',
         },
       };
@@ -311,6 +327,7 @@ export class CharacterAI implements IAIController {
       markerId: bestAction.markerId,
       markerTargetModelId: bestAction.markerTargetModelId,
       reason: this.formatDecisionReason(bestAction),
+      planning: this.inferPlanningMetadata(bestAction),
       priority: bestAction.score,
       requiresAP: this.actionRequiresAP(bestAction.action),
     };
@@ -322,6 +339,10 @@ export class CharacterAI implements IAIController {
         scores: Object.fromEntries(
           scoredActions.slice(0, 5).map(a => [a.action, a.score])
         ),
+        actionAvailability: scoredActions.reduce<Record<string, number>>((availability, action) => {
+          availability[action.action] = (availability[action.action] ?? 0) + 1;
+          return availability;
+        }, {}),
         reasoning: decision.reason,
       },
     };
@@ -459,8 +480,48 @@ export class CharacterAI implements IAIController {
     return {
       type: goapAction.type,
       reason: `GOAP: ${goapAction.name}`,
+      planning: {
+        source: 'goap_plan',
+      },
       priority: 3.0,
       requiresAP: goapAction.cost > 0,
+    };
+  }
+
+  private inferPlanningMetadata(action: ScoredAction): ActionDecision['planning'] {
+    const expectedTriggerCount = Number(action.factors?.['waitExpectedTriggerCount'] ?? 0);
+    const expectedReactValue = Number(action.factors?.['waitExpectedReactValue'] ?? 0);
+    const waitGoapBranchScore = Number(action.factors?.['waitGoapBranchScore'] ?? 0);
+    const rolloutPreferredScore = Number(action.factors?.['rolloutPreferredScore'] ?? 0);
+    const preferredWaitNow = Number(action.factors?.['preferredBranchWaitNow'] ?? 0) > 0;
+    const preferredMoveThenWait = Number(action.factors?.['preferredBranchMoveThenWait'] ?? 0) > 0;
+    const preferredImmediate = Number(action.factors?.['preferredBranchImmediateAction'] ?? 0) > 0;
+    const waitPreferredBranch = preferredWaitNow
+      ? 'wait_now'
+      : preferredMoveThenWait
+        ? 'move_then_wait'
+        : preferredImmediate
+          ? 'immediate_action'
+          : undefined;
+    const hasWaitForecastSignal =
+      Number.isFinite(expectedTriggerCount) &&
+      Number.isFinite(expectedReactValue) &&
+      Number.isFinite(waitGoapBranchScore) &&
+      (expectedTriggerCount > 0 || expectedReactValue > 0 || waitGoapBranchScore > 0);
+
+    if (hasWaitForecastSignal) {
+      return {
+        source: 'goap_forecast',
+        waitExpectedTriggerCount: expectedTriggerCount,
+        waitExpectedReactValue: expectedReactValue,
+        waitGoapBranchScore,
+        waitPreferredBranch,
+        waitRolloutPreferredScore: Number.isFinite(rolloutPreferredScore) ? rolloutPreferredScore : undefined,
+      };
+    }
+
+    return {
+      source: 'utility',
     };
   }
 

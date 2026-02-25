@@ -18,6 +18,7 @@ import { join } from 'node:path';
 import { Character } from '../src/lib/mest-tactics/core/Character';
 import type { Item } from '../src/lib/mest-tactics/core/Item';
 import { Battlefield, type BattlefieldLosCacheStats } from '../src/lib/mest-tactics/battlefield/Battlefield';
+import { TerrainType } from '../src/lib/mest-tactics/battlefield/terrain/Terrain';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
 import { Position } from '../src/lib/mest-tactics/battlefield/Position';
@@ -43,8 +44,9 @@ import {
   AggressionLevel,
 } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../src/lib/mest-tactics/ai/core/CharacterAI';
-import { AIContext, AIControllerConfig, CharacterKnowledge } from '../src/lib/mest-tactics/ai/core/AIController';
+import { AIContext, AIControllerConfig, AIResult, CharacterKnowledge } from '../src/lib/mest-tactics/ai/core/AIController';
 import { attemptHide, attemptDetect } from '../src/lib/mest-tactics/status/concealment';
+import { getCharacterTraitLevel } from '../src/lib/mest-tactics/status/status-system';
 import { LOFOperations } from '../src/lib/mest-tactics/battlefield/los/LOFOperations';
 import { PathfindingEngine, type PathfindingCacheStats } from '../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
 import {
@@ -56,6 +58,7 @@ import {
 } from '../src/lib/mest-tactics/actions/bonus-actions';
 import type { PassiveEvent, PassiveOption, PassiveOptionType } from '../src/lib/mest-tactics/status/passive-options';
 import type { TestContext } from '../src/lib/mest-tactics/utils/TestContext';
+import { performTest, type TestDice } from '../src/lib/mest-tactics/subroutines/dice-roller';
 import {
   LightingCondition,
   evaluateRangeWithVisibility,
@@ -104,11 +107,22 @@ interface BattleStats {
   rangedCombats: number;
   disengages: number;
   waits: number;
+  waitsSelectedPlanner: number;
+  waitsSelectedUtility: number;
+  waitChoicesGiven: number;
+  waitChoicesTaken: number;
+  waitChoicesSucceeded: number;
   waitMaintained: number;
   waitUpkeepPaid: number;
   detects: number;
   hides: number;
   reacts: number;
+  reactChoiceWindows: number;
+  reactChoicesGiven: number;
+  reactChoicesTaken: number;
+  waitTriggeredReacts: number;
+  reactWoundsInflicted: number;
+  waitReactWoundsInflicted: number;
   eliminations: number;
   kos: number;
   turnsCompleted: number;
@@ -135,12 +149,15 @@ interface ModelUsageStats {
   side: string;
   pathLength: number;
   moveActions: number;
+  waitChoicesGiven: number;
   waitAttempts: number;
   waitSuccesses: number;
   detectAttempts: number;
   detectSuccesses: number;
   hideAttempts: number;
   hideSuccesses: number;
+  reactChoiceWindows: number;
+  reactChoicesGiven: number;
   reactAttempts: number;
   reactSuccesses: number;
 }
@@ -434,6 +451,9 @@ interface BattlePerformanceSummary {
 interface ReactAuditResult {
   executed: boolean;
   reactor?: Character;
+  reactorWasWaiting?: boolean;
+  choiceWindowOffered?: boolean;
+  choicesGiven?: number;
   resultCode?: string;
   vector?: AuditVector;
   opposedTest?: OpposedTestAudit;
@@ -705,11 +725,22 @@ function createEmptyStats(): BattleStats {
     rangedCombats: 0,
     disengages: 0,
     waits: 0,
+    waitsSelectedPlanner: 0,
+    waitsSelectedUtility: 0,
+    waitChoicesGiven: 0,
+    waitChoicesTaken: 0,
+    waitChoicesSucceeded: 0,
     waitMaintained: 0,
     waitUpkeepPaid: 0,
     detects: 0,
     hides: 0,
     reacts: 0,
+    reactChoiceWindows: 0,
+    reactChoicesGiven: 0,
+    reactChoicesTaken: 0,
+    waitTriggeredReacts: 0,
+    reactWoundsInflicted: 0,
+    waitReactWoundsInflicted: 0,
     eliminations: 0,
     kos: 0,
     turnsCompleted: 0,
@@ -836,6 +867,11 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   if (usage.averagePathLengthPerModel === 0 && usage.modelCount > 0) {
     usage.averagePathLengthPerModel = usage.totalPathLength / usage.modelCount;
   }
+  const waitTakeRate = safeRate(report.stats.waitChoicesTaken, report.stats.waitChoicesGiven);
+  const waitSuccessRate = safeRate(report.stats.waitChoicesSucceeded, report.stats.waitChoicesTaken);
+  const reactTakeRate = safeRate(report.stats.reactChoicesTaken, report.stats.reactChoiceWindows);
+  const reactOptionSelectionRate = safeRate(report.stats.reactChoicesTaken, report.stats.reactChoicesGiven);
+  const waitReactPerSuccessfulWait = safeRate(report.stats.waitTriggeredReacts, report.stats.waitChoicesSucceeded);
 
   const lines: string[] = [];
   lines.push('════════════════════════════════════════════════════════════');
@@ -879,11 +915,27 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(`  Ranged Combats: ${report.stats.rangedCombats}`);
   lines.push(`  Disengages: ${report.stats.disengages}`);
   lines.push(`  Waits: ${report.stats.waits}`);
+  lines.push(`  Waits Selected (Planner): ${report.stats.waitsSelectedPlanner}`);
+  lines.push(`  Waits Selected (Utility): ${report.stats.waitsSelectedUtility}`);
+  lines.push(`  Wait Choices Given: ${report.stats.waitChoicesGiven}`);
+  lines.push(`  Wait Choices Taken: ${report.stats.waitChoicesTaken}`);
+  lines.push(`  Wait Choices Succeeded: ${report.stats.waitChoicesSucceeded}`);
+  lines.push(`  Wait Take Rate: ${(waitTakeRate * 100).toFixed(1)}%`);
+  lines.push(`  Wait Success Rate: ${(waitSuccessRate * 100).toFixed(1)}%`);
   lines.push(`  Wait Maintained: ${report.stats.waitMaintained}`);
   lines.push(`  Wait Upkeep Paid: ${report.stats.waitUpkeepPaid}`);
   lines.push(`  Detects: ${report.stats.detects}`);
   lines.push(`  Hides: ${report.stats.hides}`);
   lines.push(`  Reacts: ${report.stats.reacts}`);
+  lines.push(`  React Choice Windows: ${report.stats.reactChoiceWindows}`);
+  lines.push(`  React Choices Given: ${report.stats.reactChoicesGiven}`);
+  lines.push(`  React Choices Taken: ${report.stats.reactChoicesTaken}`);
+  lines.push(`  React Take Rate: ${(reactTakeRate * 100).toFixed(1)}%`);
+  lines.push(`  React Option Selection Rate: ${(reactOptionSelectionRate * 100).toFixed(1)}%`);
+  lines.push(`  Wait->React Triggers: ${report.stats.waitTriggeredReacts}`);
+  lines.push(`  Wait->React per Successful Wait: ${waitReactPerSuccessfulWait.toFixed(2)}x`);
+  lines.push(`  React Wounds Inflicted: ${report.stats.reactWoundsInflicted}`);
+  lines.push(`  Wait->React Wounds Inflicted: ${report.stats.waitReactWoundsInflicted}`);
   lines.push(`  LOS Checks: ${report.stats.losChecks}`);
   lines.push(`  LOF Checks: ${report.stats.lofChecks}`);
   lines.push(`  Eliminations: ${report.stats.eliminations}`);
@@ -1392,12 +1444,15 @@ class AIBattleRunner {
           side: sideName,
           pathLength: 0,
           moveActions: 0,
+          waitChoicesGiven: 0,
           waitAttempts: 0,
           waitSuccesses: 0,
           detectAttempts: 0,
           detectSuccesses: 0,
           hideAttempts: 0,
           hideSuccesses: 0,
+          reactChoiceWindows: 0,
+          reactChoicesGiven: 0,
           reactAttempts: 0,
           reactSuccesses: 0,
         });
@@ -1670,6 +1725,48 @@ class AIBattleRunner {
     this.stats.totalPathLength += movedDistance;
   }
 
+  private trackWaitChoiceGiven(character: Character) {
+    this.stats.waitChoicesGiven += 1;
+    const usage = this.modelUsageByCharacter.get(character);
+    if (!usage) return;
+    usage.waitChoicesGiven += 1;
+  }
+
+  private trackReactChoiceWindow(
+    options: Array<{ actor: Character; available: boolean; type: string }>
+  ) {
+    const available = options.filter(option => option.available && option.type === 'StandardReact');
+    if (available.length === 0) {
+      return;
+    }
+    this.stats.reactChoiceWindows += 1;
+    this.stats.reactChoicesGiven += available.length;
+    const byActor = new Map<string, { actor: Character; count: number }>();
+    for (const option of available) {
+      const entry = byActor.get(option.actor.id);
+      if (entry) {
+        entry.count += 1;
+      } else {
+        byActor.set(option.actor.id, { actor: option.actor, count: 1 });
+      }
+    }
+    for (const { actor, count } of byActor.values()) {
+      const usage = this.modelUsageByCharacter.get(actor);
+      if (!usage) continue;
+      usage.reactChoiceWindows += 1;
+      usage.reactChoicesGiven += count;
+    }
+  }
+
+  private trackDecisionChoiceSet(character: Character, debug: AIResult['debug'] | undefined) {
+    const availability = debug?.actionAvailability;
+    if (!availability) return;
+    const waitChoices = Number(availability.wait ?? 0);
+    if (Number.isFinite(waitChoices) && waitChoices > 0) {
+      this.trackWaitChoiceGiven(character);
+    }
+  }
+
   private trackAttempt(character: Character, action: 'wait' | 'detect' | 'hide' | 'react') {
     const usage = this.modelUsageByCharacter.get(character);
     if (!usage) return;
@@ -1686,6 +1783,14 @@ class AIBattleRunner {
     if (action === 'detect') usage.detectSuccesses += 1;
     if (action === 'hide') usage.hideSuccesses += 1;
     if (action === 'react') usage.reactSuccesses += 1;
+  }
+
+  private trackWaitSelection(planningSource?: string) {
+    if (planningSource === 'goap_forecast' || planningSource === 'goap_plan') {
+      this.stats.waitsSelectedPlanner += 1;
+      return;
+    }
+    this.stats.waitsSelectedUtility += 1;
   }
 
   private incrementTypeBreakdown(breakdown: RuleTypeBreakdown, type: string, amount: number = 1) {
@@ -1935,12 +2040,259 @@ class AIBattleRunner {
     return this.doctrineByCharacterId.get(character.id) ?? fallback;
   }
 
+  private isCombatantActive(character: Character): boolean {
+    return !character.state.isEliminated && !character.state.isKOd;
+  }
+
+  private countEngagers(subject: Character, candidates: Character[], battlefield: Battlefield): number {
+    let count = 0;
+    for (const candidate of candidates) {
+      if (!this.isCombatantActive(candidate)) continue;
+      if (candidate.id === subject.id) continue;
+      if (this.areEngaged(subject, candidate, battlefield)) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  private isEngagedAtPositions(
+    first: Character,
+    firstPosition: Position,
+    second: Character,
+    secondPosition: Position
+  ): boolean {
+    const firstSiz = first.finalAttributes.siz ?? first.attributes.siz ?? 3;
+    const secondSiz = second.finalAttributes.siz ?? second.attributes.siz ?? 3;
+    return SpatialRules.isEngaged(
+      {
+        id: first.id,
+        position: firstPosition,
+        baseDiameter: getBaseDiameterFromSiz(firstSiz),
+        siz: firstSiz,
+      },
+      {
+        id: second.id,
+        position: secondPosition,
+        baseDiameter: getBaseDiameterFromSiz(secondSiz),
+        siz: secondSiz,
+      }
+    );
+  }
+
+  private countEngagersAtPosition(
+    target: Character,
+    targetPosition: Position,
+    candidates: Character[],
+    battlefield: Battlefield
+  ): number {
+    let count = 0;
+    for (const candidate of candidates) {
+      if (!this.isCombatantActive(candidate)) continue;
+      if (candidate.id === target.id) continue;
+      const candidatePos = battlefield.getCharacterPosition(candidate);
+      if (!candidatePos) continue;
+      if (this.isEngagedAtPositions(target, targetPosition, candidate, candidatePos)) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  private scoreIncomingThreatAtPosition(
+    character: Character,
+    position: Position,
+    enemies: Character[],
+    battlefield: Battlefield
+  ): number {
+    let threat = 0;
+    for (const enemy of enemies) {
+      if (!this.isCombatantActive(enemy)) continue;
+      const enemyPos = battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      const distance = Math.hypot(position.x - enemyPos.x, position.y - enemyPos.y);
+      if (distance <= 0.01) {
+        threat += 2;
+      } else {
+        threat += Math.max(0, 1.6 - distance / 12);
+      }
+      if (battlefield.hasLineOfSight(enemyPos, position)) {
+        threat += 0.8;
+      }
+      if (this.isEngagedAtPositions(character, position, enemy, enemyPos)) {
+        threat += 2.5;
+      }
+    }
+    return threat;
+  }
+
+  private findBestRetreatPosition(
+    actor: Character,
+    reference: Character,
+    battlefield: Battlefield,
+    enemies: Character[],
+    maxDistance: number
+  ): Position | undefined {
+    const actorPos = battlefield.getCharacterPosition(actor);
+    const referencePos = battlefield.getCharacterPosition(reference);
+    if (!actorPos || !referencePos) return undefined;
+
+    const baseDirection = {
+      x: actorPos.x - referencePos.x,
+      y: actorPos.y - referencePos.y,
+    };
+    const baseLength = Math.hypot(baseDirection.x, baseDirection.y) || 1;
+    const dirX = baseDirection.x / baseLength;
+    const dirY = baseDirection.y / baseLength;
+
+    const candidateVectors = [
+      { x: dirX, y: dirY },
+      { x: dirX + dirY * 0.5, y: dirY - dirX * 0.5 },
+      { x: dirX - dirY * 0.5, y: dirY + dirX * 0.5 },
+      { x: -dirY, y: dirX },
+      { x: dirY, y: -dirX },
+    ];
+
+    let best: { score: number; position: Position } | null = null;
+
+    for (const vector of candidateVectors) {
+      const length = Math.hypot(vector.x, vector.y) || 1;
+      const unit = { x: vector.x / length, y: vector.y / length };
+      const candidate = {
+        x: Math.round(actorPos.x + unit.x * maxDistance),
+        y: Math.round(actorPos.y + unit.y * maxDistance),
+      };
+      if (candidate.x < 0 || candidate.x >= battlefield.width || candidate.y < 0 || candidate.y >= battlefield.height) {
+        continue;
+      }
+      const occupant = battlefield.getCharacterAt(candidate);
+      if (occupant && occupant.id !== actor.id) continue;
+
+      const distanceFromReference = Math.hypot(candidate.x - referencePos.x, candidate.y - referencePos.y);
+      const breaksLos = !battlefield.hasLineOfSight(referencePos, candidate);
+      const threat = this.scoreIncomingThreatAtPosition(actor, candidate, enemies, battlefield);
+      const score = distanceFromReference * 0.35 + (breaksLos ? 2.5 : 0) - threat;
+
+      if (!best || score > best.score) {
+        best = { score, position: candidate };
+      }
+    }
+
+    return best?.position;
+  }
+
+  private findPushBackSelection(
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    allies: Character[],
+    opponents: Character[]
+  ): BonusActionSelection {
+    const attackerPos = battlefield.getCharacterPosition(attacker);
+    const targetPos = battlefield.getCharacterPosition(target);
+    if (!attackerPos || !targetPos) {
+      return { type: 'PushBack' };
+    }
+
+    const attackerBase = getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3);
+    const pushDistance = Math.max(1, Math.round(attackerBase));
+    const baseDx = targetPos.x - attackerPos.x;
+    const baseDy = targetPos.y - attackerPos.y;
+    const baseLength = Math.hypot(baseDx, baseDy) || 1;
+    const forward = { x: baseDx / baseLength, y: baseDy / baseLength };
+
+    const directions = [
+      forward,
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: -1 },
+      { x: 1, y: 1 },
+      { x: -1, y: 1 },
+      { x: 1, y: -1 },
+      { x: -1, y: -1 },
+    ];
+
+    const friendlyGroup = [attacker, ...allies.filter(ally => ally.id !== attacker.id)];
+    const enemySupportGroup = opponents.filter(candidate => candidate.id !== target.id);
+    const beforeFriendlyEngagers = this.countEngagersAtPosition(target, targetPos, friendlyGroup, battlefield);
+    const beforeEnemySupport = this.countEngagersAtPosition(target, targetPos, enemySupportGroup, battlefield);
+
+    let best: { score: number; position: Position } | null = null;
+
+    for (const direction of directions) {
+      const magnitude = Math.hypot(direction.x, direction.y) || 1;
+      const unit = { x: direction.x / magnitude, y: direction.y / magnitude };
+      const destination = {
+        x: Math.round(targetPos.x + unit.x * pushDistance),
+        y: Math.round(targetPos.y + unit.y * pushDistance),
+      };
+
+      let score = 0;
+      if (destination.x < 0 || destination.x >= battlefield.width || destination.y < 0 || destination.y >= battlefield.height) {
+        score += 6;
+      } else {
+        const occupant = battlefield.getCharacterAt(destination);
+        if (occupant && occupant.id !== target.id) {
+          continue;
+        }
+        const terrain = battlefield.getTerrainAt(destination).type;
+        const isBlocked = terrain === TerrainType.Impassable || terrain === TerrainType.Obstacle;
+        const isDegraded = terrain === TerrainType.Rough || terrain === TerrainType.Difficult;
+
+        // Prefer Delay-token outcomes and local outnumber pressure.
+        if (isBlocked) {
+          score += 5;
+        } else if (isDegraded) {
+          score += 3;
+        }
+
+        const afterFriendlyEngagers = this.countEngagersAtPosition(target, destination, friendlyGroup, battlefield);
+        const afterEnemySupport = this.countEngagersAtPosition(target, destination, enemySupportGroup, battlefield);
+        score += (afterFriendlyEngagers - beforeFriendlyEngagers) * 1.5;
+        score += (beforeEnemySupport - afterEnemySupport) * 1.25;
+      }
+
+      if (!best || score > best.score) {
+        best = { score, position: destination };
+      }
+    }
+
+    if (best) {
+      return { type: 'PushBack', targetPosition: best.position };
+    }
+    return { type: 'PushBack' };
+  }
+
   private getBonusActionPriority(
     doctrine: TacticalDoctrine,
     isCloseCombat: boolean,
-    attacker: Character
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    allies: Character[],
+    opponents: Character[]
   ): BonusActionType[] {
     const components = getDoctrineComponents(doctrine);
+    const loadout = this.getLoadoutProfile(attacker);
+    const fightLevel = getCharacterTraitLevel(attacker, 'Fight');
+    const brawlLevel = getCharacterTraitLevel(attacker, 'Brawl');
+    const archetypeName = typeof attacker.profile.archetype === 'string'
+      ? attacker.profile.archetype.toLowerCase()
+      : '';
+    const isBrawlerArchetype = attacker.profile.name.toLowerCase().includes('brawler') || archetypeName.includes('brawler');
+    const closeCombatSpecialist = (fightLevel + brawlLevel) > 0 || isBrawlerArchetype;
+
+    const attackerEnemyEngagers = this.countEngagers(attacker, opponents, battlefield);
+    const attackerAllySupport = this.countEngagers(attacker, allies, battlefield);
+    const attackerOutnumbered = attackerEnemyEngagers > Math.max(1, attackerAllySupport);
+
+    const friendlyGroup = [attacker, ...allies.filter(ally => ally.id !== attacker.id)];
+    const targetSupportGroup = opponents.filter(candidate => candidate.id !== target.id);
+    const targetFriendlyPressure = this.countEngagers(target, friendlyGroup, battlefield);
+    const targetEnemySupport = this.countEngagers(target, targetSupportGroup, battlefield);
+    const needsOutnumberLeverage = targetFriendlyPressure <= targetEnemySupport;
+
     const prioritize = (list: BonusActionType[], preferred: BonusActionType[]): BonusActionType[] => {
       const seen = new Set<BonusActionType>();
       const ordered: BonusActionType[] = [];
@@ -1963,39 +2315,65 @@ class AIBattleRunner {
     if (components.aggression === AggressionLevel.Aggressive) {
       if (isCloseCombat) {
         base = components.engagement === EngagementStyle.Melee
-          ? ['PushBack', 'Circle', 'Reversal', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh']
-          : ['Reposition', 'PushBack', 'Circle', 'Hide', 'Refresh', 'PullBack', 'Disengage', 'Reversal'];
+          ? ['PushBack', 'Reversal', 'Circle', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh']
+          : ['Reposition', 'PushBack', 'Circle', 'PullBack', 'Hide', 'Disengage', 'Reversal', 'Refresh'];
       } else {
         base = components.engagement === EngagementStyle.Ranged
           ? ['Reposition', 'Hide', 'Refresh']
-          : ['Reposition', 'Refresh', 'Hide'];
+          : ['Reposition', 'Hide', 'Refresh'];
       }
     } else if (components.aggression === AggressionLevel.Defensive) {
       if (isCloseCombat) {
         base = components.engagement === EngagementStyle.Ranged
-          ? ['Refresh', 'Disengage', 'PullBack', 'Reposition', 'Hide', 'Circle', 'PushBack', 'Reversal']
-          : ['Refresh', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Circle', 'PushBack', 'Reversal'];
+          ? ['Disengage', 'PullBack', 'Reposition', 'Hide', 'Refresh', 'Circle', 'PushBack', 'Reversal']
+          : ['PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh', 'Circle', 'PushBack', 'Reversal'];
       } else {
-        base = ['Refresh', 'Hide', 'Reposition'];
+        base = ['Hide', 'Reposition', 'Refresh'];
       }
     } else {
       base = isCloseCombat
-        ? ['Refresh', 'PushBack', 'Circle', 'Reposition', 'Hide', 'PullBack', 'Disengage', 'Reversal']
-        : ['Refresh', 'Reposition', 'Hide'];
-    }
-
-    if (attacker.state.delayTokens > 0) {
-      base = ['Refresh', ...base];
+        ? ['PushBack', 'Circle', 'Reversal', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh']
+        : ['Reposition', 'Hide', 'Refresh'];
     }
 
     if (components.planning === PlanningPriority.KeysToVictory) {
       base = isCloseCombat
-        ? prioritize(base, ['Reposition', 'Disengage', 'Refresh', 'Hide'])
+        ? prioritize(base, ['Reposition', 'Disengage', 'Hide', 'Refresh'])
         : prioritize(base, ['Reposition', 'Hide', 'Refresh']);
     } else if (components.planning === PlanningPriority.Aggressive) {
       base = isCloseCombat
-        ? prioritize(base, ['PushBack', 'Circle', 'Reversal', 'PullBack'])
+        ? prioritize(base, ['PushBack', 'Reversal', 'Circle', 'PullBack'])
         : prioritize(base, ['Reposition', 'Refresh', 'Hide']);
+    }
+
+    if (isCloseCombat) {
+      if (attackerOutnumbered) {
+        base = prioritize(base, ['Disengage', 'PullBack', 'Reversal', 'Reposition']);
+      }
+      if (needsOutnumberLeverage) {
+        base = prioritize(base, ['PushBack', 'Reversal', 'PullBack', 'Circle']);
+      }
+      if (closeCombatSpecialist) {
+        base = prioritize(base, ['PushBack', 'Reversal', 'Circle', 'PullBack']);
+      }
+      if (brawlLevel > 0 || isBrawlerArchetype) {
+        base = prioritize(base, ['PushBack', 'Circle']);
+      }
+      if (fightLevel > 0) {
+        base = prioritize(base, ['Reversal', 'Disengage', 'PullBack']);
+      }
+      if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+        base = prioritize(base, ['PushBack', 'Reversal', 'Disengage']);
+      }
+    } else if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+      base = prioritize(base, ['Reposition', 'Hide', 'Refresh']);
+    }
+
+    if (attacker.state.delayTokens > 0) {
+      const shouldRefreshEarly = attackerOutnumbered || components.aggression === AggressionLevel.Defensive || attacker.state.delayTokens > 1;
+      base = shouldRefreshEarly
+        ? prioritize(base, ['Refresh'])
+        : prioritize(base, ['PushBack', 'Disengage', 'Refresh']);
     }
 
     const unique: BonusActionType[] = [];
@@ -2012,14 +2390,55 @@ class AIBattleRunner {
     attacker: Character,
     target: Character,
     battlefield: Battlefield,
+    allies: Character[],
     opponents: Character[]
   ): BonusActionSelection | undefined {
     if (type === 'Hide') {
       return attacker.state.isHidden ? undefined : { type: 'Hide', opponents };
     }
     if (type === 'Reposition') {
-      const relocation = this.findRelocationPosition(attacker, battlefield, target);
+      const relocation = this.findRelocationPositionAgainstThreats(attacker, battlefield, opponents, target);
       return relocation ? { type: 'Reposition', attackerPosition: relocation } : undefined;
+    }
+    if (type === 'Disengage') {
+      const mov = attacker.finalAttributes.mov ?? attacker.attributes.mov ?? 0;
+      const attackerBase = getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3);
+      const targetBase = getBaseDiameterFromSiz(target.finalAttributes.siz ?? target.attributes.siz ?? 3);
+      const disengageDistance = Math.max(Math.max(attackerBase, targetBase), mov / 2);
+      const retreat = this.findBestRetreatPosition(attacker, target, battlefield, opponents, disengageDistance);
+      return retreat ? { type: 'Disengage', attackerPosition: retreat } : undefined;
+    }
+    if (type === 'PullBack') {
+      const attackerBase = getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3);
+      const targetBase = getBaseDiameterFromSiz(target.finalAttributes.siz ?? target.attributes.siz ?? 3);
+      const pullDistance = Math.max(attackerBase, targetBase);
+      const retreat = this.findBestRetreatPosition(attacker, target, battlefield, opponents, pullDistance);
+      return retreat ? { type: 'PullBack', attackerPosition: retreat } : undefined;
+    }
+    if (type === 'PushBack') {
+      return this.findPushBackSelection(attacker, target, battlefield, allies, opponents);
+    }
+    if (type === 'Circle') {
+      const attackerPos = battlefield.getCharacterPosition(attacker);
+      const targetPos = battlefield.getCharacterPosition(target);
+      if (!attackerPos || !targetPos) return undefined;
+      const circlePos = {
+        x: Math.round(targetPos.x - (attackerPos.x - targetPos.x)),
+        y: Math.round(targetPos.y - (attackerPos.y - targetPos.y)),
+      };
+      if (
+        circlePos.x < 0 ||
+        circlePos.x >= battlefield.width ||
+        circlePos.y < 0 ||
+        circlePos.y >= battlefield.height
+      ) {
+        return undefined;
+      }
+      const occupant = battlefield.getCharacterAt(circlePos);
+      if (occupant && occupant.id !== attacker.id) {
+        return undefined;
+      }
+      return { type: 'Circle', attackerPosition: circlePos };
     }
     return { type };
   }
@@ -2185,16 +2604,21 @@ class AIBattleRunner {
     character.refreshStatusFlags();
   }
 
-  private findRelocationPosition(
+  private findRelocationPositionAgainstThreats(
     character: Character,
     battlefield: Battlefield,
-    threatSource?: Character
+    threatSources: Character[],
+    primaryThreat?: Character
   ): Position | undefined {
     const start = battlefield.getCharacterPosition(character);
     if (!start) return undefined;
     const mov = Math.max(1, character.finalAttributes.mov ?? character.attributes.mov ?? 0);
-    const maxDistance = mov;
-    const threatPos = threatSource ? battlefield.getCharacterPosition(threatSource) : undefined;
+    const maxDistance = mov + 2;
+    const activeThreats = threatSources
+      .filter(threat => this.isCombatantActive(threat))
+      .map(threat => ({ threat, position: battlefield.getCharacterPosition(threat) }))
+      .filter((entry): entry is { threat: Character; position: Position } => Boolean(entry.position));
+    const primaryThreatPos = primaryThreat ? battlefield.getCharacterPosition(primaryThreat) : undefined;
     let best: { score: number; pos: Position } | null = null;
 
     for (let dx = -maxDistance; dx <= maxDistance; dx++) {
@@ -2206,10 +2630,20 @@ class AIBattleRunner {
         const occupant = battlefield.getCharacterAt(candidate);
         if (occupant && occupant.id !== character.id) continue;
 
-        let score = -distance * 0.1;
-        if (threatPos) {
-          const hasLos = battlefield.hasLineOfSight(threatPos, candidate);
-          score += hasLos ? 0 : 2;
+        let score = -distance * 0.12;
+        if (primaryThreatPos) {
+          const breaksPrimaryLos = !battlefield.hasLineOfSight(primaryThreatPos, candidate);
+          score += breaksPrimaryLos ? 2.5 : 0;
+        }
+        if (activeThreats.length > 0) {
+          let losExposure = 0;
+          for (const { position } of activeThreats) {
+            if (battlefield.hasLineOfSight(position, candidate)) {
+              losExposure += 1;
+            }
+          }
+          score -= losExposure * 0.5;
+          score -= this.scoreIncomingThreatAtPosition(character, candidate, threatSources, battlefield);
         }
 
         if (!best || score > best.score) {
@@ -2221,18 +2655,81 @@ class AIBattleRunner {
     return best?.pos;
   }
 
+  private findRelocationPosition(
+    character: Character,
+    battlefield: Battlefield,
+    threatSource?: Character
+  ): Position | undefined {
+    const threatSources = threatSource ? [threatSource] : [];
+    return this.findRelocationPositionAgainstThreats(character, battlefield, threatSources, threatSource);
+  }
+
   private findTakeCoverPosition(
     defender: Character,
     attacker: Character,
     battlefield: Battlefield
   ): Position | undefined {
-    return this.findRelocationPosition(defender, battlefield, attacker);
+    const start = battlefield.getCharacterPosition(defender);
+    const attackerPos = battlefield.getCharacterPosition(attacker);
+    if (!start || !attackerPos) {
+      return this.findRelocationPosition(defender, battlefield, attacker);
+    }
+
+    const mov = Math.max(1, defender.finalAttributes.mov ?? defender.attributes.mov ?? 0);
+    const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
+    const defenderSiz = defender.finalAttributes.siz ?? defender.attributes.siz ?? 3;
+    const attackerModel = {
+      id: attacker.id,
+      position: attackerPos,
+      baseDiameter: getBaseDiameterFromSiz(attackerSiz),
+      siz: attackerSiz,
+    };
+
+    let best: { score: number; pos: Position } | null = null;
+    for (let dx = -mov; dx <= mov; dx++) {
+      for (let dy = -mov; dy <= mov; dy++) {
+        const distance = Math.hypot(dx, dy);
+        if (distance <= 0 || distance > mov) continue;
+        const candidate = {
+          x: Math.round(start.x + dx),
+          y: Math.round(start.y + dy),
+        };
+        if (candidate.x < 0 || candidate.x >= battlefield.width || candidate.y < 0 || candidate.y >= battlefield.height) continue;
+        const occupant = battlefield.getCharacterAt(candidate);
+        if (occupant && occupant.id !== defender.id) continue;
+
+        const defenderModel = {
+          id: defender.id,
+          position: candidate,
+          baseDiameter: getBaseDiameterFromSiz(defenderSiz),
+          siz: defenderSiz,
+        };
+        const cover = SpatialRules.getCoverResult(battlefield, attackerModel, defenderModel);
+        const hasCover = cover.hasDirectCover || cover.hasInterveningCover;
+        const hasHardCover = cover.directCoverFeatures.some(feature => feature.meta?.los === 'Hard');
+        const inLos = cover.hasLOS;
+
+        // Preference order: break LOS > gain cover > reduce move cost.
+        let score = 0;
+        if (!inLos) score += 8;
+        if (hasCover) score += 4;
+        if (hasHardCover) score += 1.5;
+        score -= distance * 0.15;
+
+        if (!best || score > best.score) {
+          best = { score, pos: candidate };
+        }
+      }
+    }
+
+    return best?.pos ?? this.findRelocationPosition(defender, battlefield, attacker);
   }
 
   private buildAutoBonusActionSelections(
     attacker: Character,
     target: Character,
     battlefield: Battlefield,
+    allies: Character[],
     opponents: Character[],
     options: BonusActionOption[],
     isCloseCombat: boolean,
@@ -2248,10 +2745,18 @@ class AIBattleRunner {
       }
     };
 
-    const prioritizedTypes = this.getBonusActionPriority(doctrine, isCloseCombat, attacker);
+    const prioritizedTypes = this.getBonusActionPriority(
+      doctrine,
+      isCloseCombat,
+      attacker,
+      target,
+      battlefield,
+      allies,
+      opponents
+    );
     for (const type of prioritizedTypes) {
       if (!byType.has(type)) continue;
-      const selection = this.createBonusSelectionForType(type, attacker, target, battlefield, opponents);
+      const selection = this.createBonusSelectionForType(type, attacker, target, battlefield, allies, opponents);
       if (selection) {
         push(selection);
       }
@@ -2259,7 +2764,7 @@ class AIBattleRunner {
 
     // Add any remaining available options as doctrine-agnostic fallbacks.
     for (const option of available) {
-      const selection = this.createBonusSelectionForType(option.type, attacker, target, battlefield, opponents);
+      const selection = this.createBonusSelectionForType(option.type, attacker, target, battlefield, allies, opponents);
       if (selection) {
         push(selection);
       }
@@ -2273,12 +2778,13 @@ class AIBattleRunner {
     attacker: Character;
     target: Character;
     battlefield: Battlefield;
+    allies: Character[];
     opponents: Character[];
     isCloseCombat: boolean;
     doctrine: TacticalDoctrine;
     isCharge?: boolean;
   }) {
-    const { result, attacker, target, battlefield, opponents, isCloseCombat, doctrine, isCharge } = params;
+    const { result, attacker, target, battlefield, allies, opponents, isCloseCombat, doctrine, isCharge } = params;
     if (!result || typeof result !== 'object') return;
     const existing = result.bonusActionOutcome as BonusActionOutcome | undefined;
     if (existing?.executed) return;
@@ -2290,7 +2796,16 @@ class AIBattleRunner {
       ?? 0;
     const cascades = Number.isFinite(cascadesRaw) ? Number(cascadesRaw) : 0;
 
-    const selections = this.buildAutoBonusActionSelections(attacker, target, battlefield, opponents, options, isCloseCombat, doctrine);
+    const selections = this.buildAutoBonusActionSelections(
+      attacker,
+      target,
+      battlefield,
+      allies,
+      opponents,
+      options,
+      isCloseCombat,
+      doctrine
+    );
     if (selections.length === 0) return;
 
     for (const selection of selections) {
@@ -2315,6 +2830,93 @@ class AIBattleRunner {
         break;
       }
     }
+  }
+
+  private countDiceInPool(dice: TestDice | undefined): number {
+    if (!dice) return 0;
+    return (dice.base ?? 0) + (dice.modifier ?? 0) + (dice.wild ?? 0);
+  }
+
+  private resolveCarryOverBonusCascades(hitTestResult: any): number {
+    const carryOverDice = (hitTestResult?.p2Result?.carryOverDice ?? {}) as TestDice;
+    const totalDice = this.countDiceInPool(carryOverDice);
+    if (totalDice <= 0) return 0;
+    const rolls = Array.from({ length: totalDice }, () => Math.floor(Math.random() * 6) + 1);
+    return Math.max(0, performTest(carryOverDice, 0, rolls).score);
+  }
+
+  private applyPassiveFollowupBonusActions(params: {
+    defender: Character;
+    attacker: Character;
+    battlefield: Battlefield;
+    doctrine: TacticalDoctrine;
+    attackType: 'melee' | 'ranged';
+    cascades: number;
+  }): {
+    bonusActionCascades: number;
+    bonusActionOptions?: BonusActionOption[];
+    bonusActionOutcome?: BonusActionOutcome;
+  } {
+    const { defender, attacker, battlefield, doctrine, attackType } = params;
+    const cascades = Math.max(0, Math.floor(params.cascades));
+    if (cascades <= 0) {
+      return { bonusActionCascades: 0 };
+    }
+
+    const isCloseCombat = attackType === 'melee';
+    const engaged = this.areEngaged(defender, attacker, battlefield);
+    const bonusActionOptions = buildBonusActionOptions({
+      battlefield,
+      attacker: defender,
+      target: attacker,
+      cascades,
+      isCloseCombat,
+      engaged,
+    });
+    this.trackBonusActionOptions(bonusActionOptions);
+
+    const selections = this.buildAutoBonusActionSelections(
+      defender,
+      attacker,
+      battlefield,
+      [],
+      [attacker],
+      bonusActionOptions,
+      isCloseCombat,
+      doctrine
+    );
+
+    let bonusActionOutcome: BonusActionOutcome | undefined;
+    for (const selection of selections) {
+      const outcome = applyBonusAction(
+        {
+          battlefield,
+          attacker: defender,
+          target: attacker,
+          cascades,
+          isCloseCombat,
+          engaged,
+        },
+        selection
+      );
+      if (outcome.refreshApplied) {
+        this.applyRefreshLocally(defender);
+      }
+      if (outcome.executed) {
+        bonusActionOutcome = outcome;
+        break;
+      }
+      bonusActionOutcome = outcome;
+    }
+    if (bonusActionOutcome) {
+      this.trackBonusActionOutcome(bonusActionOutcome);
+    }
+
+    return {
+      bonusActionCascades: cascades,
+      bonusActionOptions,
+      bonusActionOutcome,
+    };
   }
 
   private executeFailedHitPassiveResponse(params: {
@@ -2344,7 +2946,18 @@ class AIBattleRunner {
           const result = gameManager.executeCounterStrike(defender, attacker, weapon as any, hitTestResult as any);
           if (result.executed) {
             this.trackPassiveUsage('CounterStrike');
-            return { type: 'CounterStrike', result };
+            const battlefield = gameManager.battlefield;
+            const bonusFollowup = battlefield && result.bonusActionEligible
+              ? this.applyPassiveFollowupBonusActions({
+                  defender,
+                  attacker,
+                  battlefield,
+                  doctrine,
+                  attackType,
+                  cascades: this.resolveCarryOverBonusCascades(hitTestResult),
+                })
+              : { bonusActionCascades: 0 };
+            return { type: 'CounterStrike', result: { ...result, ...bonusFollowup } };
           }
         }
       }
@@ -2354,7 +2967,18 @@ class AIBattleRunner {
           const result = gameManager.executeCounterFire(defender, attacker, weapon as any, hitTestResult as any, { visibilityOrMu });
           if (result.executed) {
             this.trackPassiveUsage('CounterFire');
-            return { type: 'CounterFire', result };
+            const battlefield = gameManager.battlefield;
+            const bonusFollowup = battlefield && result.bonusActionEligible
+              ? this.applyPassiveFollowupBonusActions({
+                  defender,
+                  attacker,
+                  battlefield,
+                  doctrine,
+                  attackType,
+                  cascades: this.resolveCarryOverBonusCascades(hitTestResult),
+                })
+              : { bonusActionCascades: 0 };
+            return { type: 'CounterFire', result: { ...result, ...bonusFollowup } };
           }
         }
       }
@@ -2362,7 +2986,18 @@ class AIBattleRunner {
         const result = gameManager.executeCounterAction(defender, attacker, hitTestResult as any, { attackType });
         if (result.executed) {
           this.trackPassiveUsage('CounterAction');
-          return { type: 'CounterAction', result };
+          const battlefield = gameManager.battlefield;
+          const bonusFollowup = battlefield
+            ? this.applyPassiveFollowupBonusActions({
+                defender,
+                attacker,
+                battlefield,
+                doctrine,
+                attackType,
+                cascades: result.bonusActionCascades ?? 0,
+              })
+            : { bonusActionCascades: result.bonusActionCascades ?? 0 };
+          return { type: 'CounterAction', result: { ...result, ...bonusFollowup } };
         }
       }
     }
@@ -3235,6 +3870,7 @@ class AIBattleRunner {
           'ai.decide_action',
           () => aiController.decideAction(context)
         );
+        this.trackDecisionChoiceSet(character, aiResult.debug);
         const decision = aiResult.decision;
         if (!decision || decision.type === 'none') {
           if (activationAudit.steps.length === 0) {
@@ -3331,6 +3967,8 @@ class AIBattleRunner {
 
             this.trackAttempt(character, 'wait');
             this.stats.waits++;
+            this.stats.waitChoicesTaken++;
+            this.trackWaitSelection('utility');
             const wait = gameManager.executeWait(character, {
               spendAp: true,
               opponents: enemies,
@@ -3341,6 +3979,7 @@ class AIBattleRunner {
             stepDetails = { waitResult: this.sanitizeForAudit(wait) as Record<string, unknown> };
             if (wait.success) {
               this.trackSuccess(character, 'wait');
+              this.stats.waitChoicesSucceeded++;
               actionExecuted = true;
             }
             break;
@@ -3348,6 +3987,8 @@ class AIBattleRunner {
           case 'wait': {
             this.trackAttempt(character, 'wait');
             this.stats.waits++;
+            this.stats.waitChoicesTaken++;
+            this.trackWaitSelection(decision.planning?.source);
             const wait = gameManager.executeWait(character, {
               spendAp: true,
               opponents: enemies,
@@ -3358,6 +3999,7 @@ class AIBattleRunner {
             stepDetails = { waitResult: this.sanitizeForAudit(wait) as Record<string, unknown> };
             if (wait.success) {
               this.trackSuccess(character, 'wait');
+              this.stats.waitChoicesSucceeded++;
               actionExecuted = true;
             }
             break;
@@ -3497,6 +4139,8 @@ class AIBattleRunner {
                 config,
                 turn,
                 sideIndex,
+                allies,
+                enemies,
                 decision.type === 'charge' || movedForEngagement
               );
               actionExecuted = actionExecuted || closeExecuted.executed;
@@ -3523,7 +4167,9 @@ class AIBattleRunner {
               gameManager,
               config,
               turn,
-              sideIndex
+              sideIndex,
+              allies,
+              enemies
             );
             actionExecuted = ranged.executed;
             result = ranged.result;
@@ -3548,7 +4194,17 @@ class AIBattleRunner {
               break;
             }
             this.stats.disengages++;
-            const disengage = await this.executeDisengage(character, decision.target, battlefield, gameManager, config, turn, sideIndex);
+            const disengage = await this.executeDisengage(
+              character,
+              decision.target,
+              battlefield,
+              gameManager,
+              config,
+              turn,
+              sideIndex,
+              allies,
+              enemies
+            );
             actionExecuted = disengage.executed;
             result = disengage.resultCode;
             stepOpposedTest = disengage.opposedTest;
@@ -3771,6 +4427,7 @@ class AIBattleRunner {
           );
           const actorStateAfterReact = this.snapshotModelState(character);
           if (reactResult.executed && reactResult.reactor) {
+            this.stats.reactChoicesTaken++;
             this.syncMissionRuntimeForAttack(
               reactResult.reactor,
               character,
@@ -3778,6 +4435,16 @@ class AIBattleRunner {
               actorStateAfterReact,
               this.extractDamageResolutionFromUnknown(reactResult.rawResult)
             );
+            const reactWounds = this.extractWoundsAddedFromDamageResolution(
+              this.extractDamageResolutionFromUnknown(reactResult.rawResult),
+              actorStateBeforeReact,
+              actorStateAfterReact
+            );
+            this.stats.reactWoundsInflicted += reactWounds;
+            if (reactResult.reactorWasWaiting) {
+              this.stats.waitTriggeredReacts++;
+              this.stats.waitReactWoundsInflicted += reactWounds;
+            }
           }
           if (reactResult.executed) {
             this.stats.reacts++;
@@ -3844,6 +4511,12 @@ class AIBattleRunner {
         }
         if (actionExecuted && decision.type === 'move' && actorStateBefore.isWaiting) {
           this.stats.movesWhileWaiting++;
+        }
+        if (decision.planning) {
+          stepDetails = {
+            ...(stepDetails ?? {}),
+            planning: this.sanitizeForAudit(decision.planning) as Record<string, unknown>,
+          };
         }
         activationAudit.steps.push({
           sequence: activationAudit.steps.length + 1,
@@ -3940,6 +4613,7 @@ class AIBattleRunner {
                 )
               );
               if (reactResult.executed && reactResult.reactor) {
+                this.stats.reactChoicesTaken++;
                 this.syncMissionRuntimeForAttack(
                   reactResult.reactor,
                   character,
@@ -3947,6 +4621,17 @@ class AIBattleRunner {
                   this.snapshotModelState(character),
                   this.extractDamageResolutionFromUnknown(reactResult.rawResult)
                 );
+                const fallbackStateAfterReact = this.snapshotModelState(character);
+                const reactWounds = this.extractWoundsAddedFromDamageResolution(
+                  this.extractDamageResolutionFromUnknown(reactResult.rawResult),
+                  fallbackStateBeforeReact,
+                  fallbackStateAfterReact
+                );
+                this.stats.reactWoundsInflicted += reactWounds;
+                if (reactResult.reactorWasWaiting) {
+                  this.stats.waitTriggeredReacts++;
+                  this.stats.waitReactWoundsInflicted += reactWounds;
+                }
               }
               if (reactResult.executed) {
                 this.stats.reacts++;
@@ -4110,9 +4795,15 @@ class AIBattleRunner {
       movedDistance,
       visibilityOrMu,
     });
+    this.trackReactChoiceWindow(options);
+    const choicesGiven = options.filter(option => option.available && option.type === 'StandardReact').length;
     const first = options.find(option => option.available && option.type === 'StandardReact');
     if (!first) {
-      return { executed: false };
+      return {
+        executed: false,
+        choiceWindowOffered: choicesGiven > 0,
+        choicesGiven,
+      };
     }
 
     const equipment = (first.actor.profile.equipment || first.actor.profile.items || []).filter(Boolean);
@@ -4124,15 +4815,26 @@ class AIBattleRunner {
       i?.classification === 'Support'
     ) || equipment[0];
     if (!weapon) {
-      return { executed: false };
+      return {
+        executed: false,
+        reactor: first.actor,
+        reactorWasWaiting: Boolean(first.actor.state.isWaiting),
+        choiceWindowOffered: choicesGiven > 0,
+        choicesGiven,
+      };
     }
 
+    const reactorWasWaiting = Boolean(first.actor.state.isWaiting);
     const reactorPos = gameManager.battlefield?.getCharacterPosition(first.actor);
     const activePos = gameManager.battlefield?.getCharacterPosition(active);
     const react = gameManager.executeStandardReact(first.actor, active, weapon, { visibilityOrMu });
     if (!react.executed) {
       return {
         executed: false,
+        reactor: first.actor,
+        reactorWasWaiting,
+        choiceWindowOffered: choicesGiven > 0,
+        choicesGiven,
         details: {
           actorId: first.actor.id,
           targetId: active.id,
@@ -4145,6 +4847,9 @@ class AIBattleRunner {
     return {
       executed: true,
       reactor: first.actor,
+      reactorWasWaiting,
+      choiceWindowOffered: choicesGiven > 0,
+      choicesGiven,
       resultCode: 'react=true:standard',
       rawResult: (react as any).result ?? react,
       vector: reactorPos && activePos ? {
@@ -4338,6 +5043,8 @@ class AIBattleRunner {
     config: GameConfig,
     turn: number,
     sideIndex: number,
+    allies: Character[],
+    opponents: Character[],
     isCharge: boolean
   ): Promise<{
     executed: boolean;
@@ -4411,7 +5118,8 @@ class AIBattleRunner {
         attacker,
         target: defender,
         battlefield,
-        opponents: [defender],
+        allies,
+        opponents,
         isCloseCombat: true,
         doctrine: attackerDoctrine,
         isCharge,
@@ -4457,7 +5165,9 @@ class AIBattleRunner {
     gameManager: GameManager,
     config: GameConfig,
     turn: number,
-    sideIndex: number
+    sideIndex: number,
+    allies: Character[],
+    opponents: Character[]
   ): Promise<{
     executed: boolean;
     result: string;
@@ -4614,7 +5324,8 @@ class AIBattleRunner {
         attacker,
         target: defender,
         battlefield,
-        opponents: [defender],
+        allies,
+        opponents,
         isCloseCombat: false,
         doctrine: attackerDoctrine,
       });
@@ -4671,7 +5382,9 @@ class AIBattleRunner {
     gameManager: GameManager,
     config: GameConfig,
     turn: number,
-    sideIndex: number
+    sideIndex: number,
+    allies: Character[],
+    opponents: Character[]
   ): Promise<{
     executed: boolean;
     resultCode: string;
@@ -4694,7 +5407,8 @@ class AIBattleRunner {
         attacker: disengager,
         target: defender,
         battlefield,
-        opponents: [defender],
+        allies,
+        opponents,
         isCloseCombat: true,
         doctrine: disengagerDoctrine,
       });
@@ -5075,6 +5789,11 @@ export function formatBattleReportFromJson(jsonText: string): string {
 
 export function formatValidationAggregateReportHumanReadable(report: ValidationAggregateReport): string {
   const advanced = report.advancedRuleTotals ?? createEmptyAdvancedRuleMetrics();
+  const waitTakeRate = safeRate(report.totals.waitChoicesTaken, report.totals.waitChoicesGiven);
+  const waitSuccessRate = safeRate(report.totals.waitChoicesSucceeded, report.totals.waitChoicesTaken);
+  const reactTakeRate = safeRate(report.totals.reactChoicesTaken, report.totals.reactChoiceWindows);
+  const reactOptionSelectionRate = safeRate(report.totals.reactChoicesTaken, report.totals.reactChoicesGiven);
+  const waitReactPerSuccessfulWait = safeRate(report.totals.waitTriggeredReacts, report.totals.waitChoicesSucceeded);
   const lines: string[] = [];
   lines.push('════════════════════════════════════════════════════════════');
   lines.push('📊 VALIDATION REPORT');
@@ -5101,8 +5820,24 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   lines.push(`  Moves While Waiting: ${report.totals.movesWhileWaiting}`);
   lines.push(`  Ranged Combats: ${report.totals.rangedCombats}`);
   lines.push(`  Close Combats: ${report.totals.closeCombats}`);
+  lines.push(`  Waits Selected (Planner): ${report.totals.waitsSelectedPlanner}`);
+  lines.push(`  Waits Selected (Utility): ${report.totals.waitsSelectedUtility}`);
+  lines.push(`  Wait Choices Given: ${report.totals.waitChoicesGiven}`);
+  lines.push(`  Wait Choices Taken: ${report.totals.waitChoicesTaken}`);
+  lines.push(`  Wait Choices Succeeded: ${report.totals.waitChoicesSucceeded}`);
+  lines.push(`  Wait Take Rate: ${(waitTakeRate * 100).toFixed(1)}%`);
+  lines.push(`  Wait Success Rate: ${(waitSuccessRate * 100).toFixed(1)}%`);
   lines.push(`  Wait Maintained: ${report.totals.waitMaintained}`);
   lines.push(`  Wait Upkeep Paid: ${report.totals.waitUpkeepPaid}`);
+  lines.push(`  React Choice Windows: ${report.totals.reactChoiceWindows}`);
+  lines.push(`  React Choices Given: ${report.totals.reactChoicesGiven}`);
+  lines.push(`  React Choices Taken: ${report.totals.reactChoicesTaken}`);
+  lines.push(`  React Take Rate: ${(reactTakeRate * 100).toFixed(1)}%`);
+  lines.push(`  React Option Selection Rate: ${(reactOptionSelectionRate * 100).toFixed(1)}%`);
+  lines.push(`  Wait->React Triggers: ${report.totals.waitTriggeredReacts}`);
+  lines.push(`  Wait->React per Successful Wait: ${waitReactPerSuccessfulWait.toFixed(2)}x`);
+  lines.push(`  React Wounds Inflicted: ${report.totals.reactWoundsInflicted}`);
+  lines.push(`  Wait->React Wounds Inflicted: ${report.totals.waitReactWoundsInflicted}`);
   lines.push(`  KO's: ${report.totals.kos}`);
   lines.push(`  Eliminations: ${report.totals.eliminations}`);
   const runPerf = report.runReports
@@ -5578,6 +6313,12 @@ async function runValidationBatch(
   console.log(`  Bonus Actions: offered=${advancedRuleTotals.bonusActions.optionsOffered}, executed=${advancedRuleTotals.bonusActions.executed}`);
   console.log(`  Passive Options: offered=${advancedRuleTotals.passiveOptions.optionsOffered}, used=${advancedRuleTotals.passiveOptions.used}`);
   console.log(`  Situational Modifiers: tests=${advancedRuleTotals.situationalModifiers.testsObserved}, applied=${advancedRuleTotals.situationalModifiers.modifiersApplied}`);
+  console.log(
+    `  Wait Efficacy: given=${totals.waitChoicesGiven}, taken=${totals.waitChoicesTaken}, success=${totals.waitChoicesSucceeded}, takeRate=${(safeRate(totals.waitChoicesTaken, totals.waitChoicesGiven) * 100).toFixed(1)}%, successRate=${(safeRate(totals.waitChoicesSucceeded, totals.waitChoicesTaken) * 100).toFixed(1)}%`
+  );
+  console.log(
+    `  React Efficacy: windows=${totals.reactChoiceWindows}, choices=${totals.reactChoicesGiven}, taken=${totals.reactChoicesTaken}, takeRate=${(safeRate(totals.reactChoicesTaken, totals.reactChoiceWindows) * 100).toFixed(1)}%, optionSelectRate=${(safeRate(totals.reactChoicesTaken, totals.reactChoicesGiven) * 100).toFixed(1)}%, waitReact=${totals.waitTriggeredReacts}, waitReactWounds=${totals.waitReactWoundsInflicted.toFixed(2)}`
+  );
   console.log(`  Lighting: ${lighting} (Visibility OR ${visibilityOrMu} MU)`);
   console.log(`  Doctrine: ${doctrineLabel}`);
   console.log(`    Alpha: ${doctrineAlpha}`);

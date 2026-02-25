@@ -68,6 +68,15 @@ export interface ActionDecision {
   markerTargetModelId?: string;
   /** Reason for this decision (debug/logging) */
   reason: string;
+  /** Optional planning metadata for audit/report attribution */
+  planning?: {
+    source: 'pattern' | 'goap_plan' | 'goap_forecast' | 'utility' | 'behavior_tree';
+    waitExpectedTriggerCount?: number;
+    waitExpectedReactValue?: number;
+    waitGoapBranchScore?: number;
+    waitPreferredBranch?: 'immediate_action' | 'wait_now' | 'move_then_wait';
+    waitRolloutPreferredScore?: number;
+  };
   /** Priority score (higher = more urgent) */
   priority: number;
   /** Whether this action requires AP */
@@ -203,6 +212,7 @@ export interface AIResult {
   debug?: {
     consideredActions: string[];
     scores: Record<string, number>;
+    actionAvailability?: Record<string, number>;
     reasoning: string;
   };
 }

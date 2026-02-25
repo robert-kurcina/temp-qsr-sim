@@ -16,6 +16,7 @@ import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 import { PathfindingEngine } from '../../battlefield/pathfinding/PathfindingEngine';
 import { evaluateRangeWithVisibility, parseWeaponOptimalRangeMu } from '../../utils/visibility';
+import { forecastWaitReact, rolloutWaitReactBranches } from '../tactical/GOAP';
 
 /**
  * Weight configuration for utility scoring
@@ -378,6 +379,19 @@ export class UtilityScorer {
         (doctrinePlanning === 'keys_to_victory' ? 4.2 : doctrinePlanning === 'balanced' ? 2.6 : 1.4);
       for (const pos of movePositions.slice(0, 3)) {
         const objectiveAdvance = this.evaluateObjectiveAdvance(pos.position, context);
+        const moveWaitForecast = loadout.hasRangedWeapons
+          ? forecastWaitReact(context, pos.position)
+          : null;
+        const exposureReduction = moveWaitForecast
+          ? Math.max(0, currentExposure - moveWaitForecast.exposureCount)
+          : 0;
+        const goapFutureWaitValue = moveWaitForecast
+          ? (moveWaitForecast.expectedReactValue * 0.55) +
+            (moveWaitForecast.hiddenRevealTargets * 0.8) +
+            (moveWaitForecast.refGatePassCount * 0.22) +
+            (exposureReduction * 0.2)
+          : 0;
+        const goapFutureWaitWeight = context.apRemaining >= 2 ? 0.45 : 0.25;
         actions.push({
           action: 'move',
           position: pos.position,
@@ -385,13 +399,17 @@ export class UtilityScorer {
             pos.score * moveMultiplier +
             advanceBonus +
             (missionBias.objectiveActionPressure * pos.factors.visibility * 0.35) +
-            (objectiveAdvance * objectiveAdvanceWeight),
+            (objectiveAdvance * objectiveAdvanceWeight) +
+            (goapFutureWaitValue * goapFutureWaitWeight),
           factors: {
             ...pos.factors,
             moveMultiplier,
             advanceBonus,
             objectiveAdvance,
             objectiveAdvanceWeight,
+            goapFutureWaitValue,
+            goapFutureWaitWeight,
+            goapExposureReduction: exposureReduction,
             strategicPathBudgetExceeded: session.pathBudgetExceeded ? 1 : 0,
             objectivePressure: missionBias.objectiveActionPressure,
           },
@@ -433,46 +451,95 @@ export class UtilityScorer {
         !context.battlefield.isEngaged?.(context.character) &&
         loadout.hasRangedWeapons;
       if (canConsiderWait) {
-      const currentPos = context.battlefield.getCharacterPosition(context.character);
-      const exposure = currentPos ? this.countEnemySightLinesToPosition(currentPos, context) : 0;
-      const hiddenRevealTargets = this.countWaitRevealTargets(context);
-      const waitReactiveProfile = this.evaluateWaitReactiveProfile(context);
-      const waitRefBonus =
-        (waitReactiveProfile.refBreakpointCount * 0.72) +
-        (waitReactiveProfile.potentialReactTargets * 0.18);
-      const waitDelayAvoidance = waitReactiveProfile.delayAvoidanceScore;
-      const hasAttackOption = attackActions.length > 0;
-      const bestAttackScore = attackActions[0]?.score ?? 0;
-      const waitMissionBias = missionBias.waitPressure + (doctrinePlanning === 'keys_to_victory' ? missionBias.objectiveActionPressure * 0.35 : 0);
-      const waitScore =
-        2.15 +
-        (hasAttackOption ? 0 : 0.9) +
-        (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons ? 0.55 : 0.2) +
-        (context.config.caution * 1.9) +
-        (exposure * 0.22) +
-        (hiddenRevealTargets * 1.1) +
-        waitRefBonus +
-        waitDelayAvoidance +
-        waitMissionBias;
-      const threshold = (hiddenRevealTargets > 0 || waitRefBonus + waitDelayAvoidance >= 0.75) ? 0.64 : 0.78;
-      if (!hasAttackOption || waitScore >= bestAttackScore * threshold) {
-        actions.push({
-          action: 'wait',
-          score: waitScore,
-          factors: {
-            passiveReadiness: 1,
-            caution: context.config.caution,
-            exposure,
-            hiddenRevealTargets,
-            potentialReactTargets: waitReactiveProfile.potentialReactTargets,
-            refBreakpointCount: waitReactiveProfile.refBreakpointCount,
-            waitRefBonus,
-            waitDelayAvoidance,
-            objectivePressure: missionBias.objectiveActionPressure,
-            waitMissionBias,
-          },
+        const waitForecast = forecastWaitReact(context);
+        const exposure = waitForecast.exposureCount;
+        const potentialReactTargets = waitForecast.potentialReactTargets;
+        const refBreakpointCount = waitForecast.refGatePassCount;
+        const waitRefBonus =
+          (refBreakpointCount * 0.78) +
+          (Math.max(0, potentialReactTargets - refBreakpointCount) * 0.2);
+        const existingDelay = Math.max(0, context.character.state.delayTokens ?? 0);
+        const waitDelayAvoidance = waitForecast.potentialReactTargets > 0
+          ? Math.min(1.8, 0.3 + (waitForecast.expectedTriggerCount * 0.5) + (existingDelay * 0.25))
+          : 0;
+        const hasAttackOption = attackActions.length > 0;
+        const bestAttackScore = attackActions[0]?.score ?? 0;
+        const bestMoveScore = actions
+          .filter(candidate => candidate.action === 'move')
+          .reduce((best, candidate) => Math.max(best, candidate.score), 0);
+        const waitMissionBias = missionBias.waitPressure + (
+          doctrinePlanning === 'keys_to_victory'
+            ? missionBias.objectiveActionPressure * 0.35
+            : 0
+        );
+        const waitBaseline =
+          2.15 +
+          (hasAttackOption ? 0 : 0.9) +
+          (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons ? 0.55 : 0.2) +
+          (context.config.caution * 1.9) +
+          (exposure * 0.22) +
+          waitRefBonus +
+          waitDelayAvoidance +
+          waitMissionBias;
+        const immediateScore = hasAttackOption ? bestAttackScore : Math.max(0.5, bestMoveScore * 0.85);
+        const waitRollout = rolloutWaitReactBranches(context, {
+          immediateScore,
+          waitBaseline,
+          moveCandidates: movePositions.slice(0, 3).map(candidate => candidate.position),
+          maxMoveCandidates: 3,
         });
-      }
+        const immediateBranchScore =
+          waitRollout.branches.find(branch => branch.id === 'immediate_action')?.score ??
+          immediateScore;
+        const moveThenWaitBranchScore =
+          waitRollout.branches.find(branch => branch.id === 'move_then_wait')?.score ??
+          bestMoveScore;
+        const waitBranch =
+          waitRollout.branches.find(branch => branch.id === 'wait_now');
+        const waitBranchScore = waitBranch?.score ?? waitBaseline;
+        const waitBranchForecast = waitBranch?.forecast ?? waitForecast;
+        const hiddenRevealTargets = waitBranchForecast.hiddenRevealTargets;
+        const waitTriggerForecast = waitBranchForecast.expectedTriggerCount;
+        const waitExpectedReactValue = waitBranchForecast.expectedReactValue;
+        const waitGoapBranchScore = Math.max(0, waitBranchScore - waitBaseline);
+        const preferredBranch = waitRollout.preferred.id;
+        const preferredBranchScore = waitRollout.preferred.score;
+        const threshold = (
+          hiddenRevealTargets > 0 ||
+          waitRefBonus + waitDelayAvoidance + waitGoapBranchScore >= 1.15
+        ) ? 0.62 : 0.76;
+        const beatsImmediate = !hasAttackOption || waitBranchScore >= immediateBranchScore * threshold;
+        const branchTolerance = preferredBranch === 'wait_now' ? 1 : 0.95;
+        const closeToBestBranch = waitBranchScore >= preferredBranchScore * branchTolerance;
+        if (beatsImmediate && closeToBestBranch) {
+          actions.push({
+            action: 'wait',
+            score: waitBranchScore,
+            factors: {
+              passiveReadiness: 1,
+              caution: context.config.caution,
+              exposure,
+              hiddenRevealTargets,
+              potentialReactTargets,
+              refBreakpointCount,
+              waitRefBonus,
+              waitDelayAvoidance,
+              waitExpectedTriggerCount: waitTriggerForecast,
+              waitExpectedReactValue,
+              waitBaselineScore: waitBaseline,
+              waitGoapBranchScore,
+              immediateBranchScore,
+              moveThenWaitBranchScore,
+              waitBranchScore,
+              rolloutPreferredScore: preferredBranchScore,
+              preferredBranchWaitNow: preferredBranch === 'wait_now' ? 1 : 0,
+              preferredBranchMoveThenWait: preferredBranch === 'move_then_wait' ? 1 : 0,
+              preferredBranchImmediateAction: preferredBranch === 'immediate_action' ? 1 : 0,
+              objectivePressure: missionBias.objectiveActionPressure,
+              waitMissionBias,
+            },
+          });
+        }
       }
 
       // Sort by score
@@ -684,120 +751,6 @@ export class UtilityScorer {
     }
     session.positionExposureCache.set(cacheKey, count);
     return count;
-  }
-
-  private countWaitRevealTargets(context: AIContext): number {
-    const actorPos = context.battlefield.getCharacterPosition(context.character);
-    if (!actorPos) return 0;
-
-    const actorSiz = context.character.finalAttributes.siz ?? context.character.attributes.siz ?? 3;
-    const actorModel = {
-      id: context.character.id,
-      position: actorPos,
-      baseDiameter: getBaseDiameterFromSiz(actorSiz),
-      siz: actorSiz,
-    };
-    const waitVisibility = Math.max(1, (context.config.visibilityOrMu ?? 16) * 2);
-
-    let count = 0;
-    for (const enemy of context.enemies) {
-      if (!enemy.state.isHidden) continue;
-      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
-      const enemyPos = context.battlefield.getCharacterPosition(enemy);
-      if (!enemyPos) continue;
-      const enemySiz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
-      const enemyModel = {
-        id: enemy.id,
-        position: enemyPos,
-        baseDiameter: getBaseDiameterFromSiz(enemySiz),
-        siz: enemySiz,
-      };
-      if (!SpatialRules.hasLineOfSight(context.battlefield, actorModel, enemyModel)) {
-        continue;
-      }
-      const edgeDistance = SpatialRules.distanceEdgeToEdge(actorModel, enemyModel);
-      if (edgeDistance > waitVisibility) {
-        continue;
-      }
-      const cover = SpatialRules.getCoverResult(context.battlefield, actorModel, enemyModel);
-      const inCover = cover.hasDirectCover || cover.hasInterveningCover;
-      if (!inCover) {
-        count += 1;
-      }
-    }
-
-    return count;
-  }
-
-  private getWaitVisibleEnemies(context: AIContext): Character[] {
-    const actorPos = context.battlefield.getCharacterPosition(context.character);
-    if (!actorPos) return [];
-
-    const actorSiz = context.character.finalAttributes.siz ?? context.character.attributes.siz ?? 3;
-    const actorModel = {
-      id: context.character.id,
-      position: actorPos,
-      baseDiameter: getBaseDiameterFromSiz(actorSiz),
-      siz: actorSiz,
-    };
-    const waitVisibility = Math.max(1, (context.config.visibilityOrMu ?? 16) * 2);
-
-    const visibleEnemies: Character[] = [];
-    for (const enemy of context.enemies) {
-      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
-      const enemyPos = context.battlefield.getCharacterPosition(enemy);
-      if (!enemyPos) continue;
-      const enemySiz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
-      const enemyModel = {
-        id: enemy.id,
-        position: enemyPos,
-        baseDiameter: getBaseDiameterFromSiz(enemySiz),
-        siz: enemySiz,
-      };
-      if (!SpatialRules.hasLineOfSight(context.battlefield, actorModel, enemyModel)) {
-        continue;
-      }
-      const edgeDistance = SpatialRules.distanceEdgeToEdge(actorModel, enemyModel);
-      if (edgeDistance <= waitVisibility) {
-        visibleEnemies.push(enemy);
-      }
-    }
-
-    return visibleEnemies;
-  }
-
-  private evaluateWaitReactiveProfile(context: AIContext): {
-    potentialReactTargets: number;
-    refBreakpointCount: number;
-    delayAvoidanceScore: number;
-  } {
-    const visibleEnemies = this.getWaitVisibleEnemies(context);
-    const potentialReactTargets = visibleEnemies.length;
-
-    const reactorRef = context.character.finalAttributes.ref ?? context.character.attributes.ref ?? 0;
-    let refBreakpointCount = 0;
-    for (const enemy of visibleEnemies) {
-      const enemyRef = enemy.finalAttributes.ref ?? enemy.attributes.ref ?? 0;
-      const enemyMov = enemy.finalAttributes.mov ?? enemy.attributes.mov ?? 0;
-      if (reactorRef < enemyRef && reactorRef + 1 >= enemyRef) {
-        refBreakpointCount += 1;
-      }
-      if (reactorRef < enemyMov && reactorRef + 1 >= enemyMov) {
-        refBreakpointCount += 1;
-      }
-    }
-
-    const reactWindowPressure = Math.min(1.4, potentialReactTargets * 0.35);
-    const existingDelay = Math.max(0, context.character.state.delayTokens ?? 0);
-    const delayAvoidanceScore = potentialReactTargets > 0
-      ? Math.min(1.6, 0.35 + reactWindowPressure + (existingDelay * 0.2))
-      : 0;
-
-    return {
-      potentialReactTargets,
-      refBreakpointCount,
-      delayAvoidanceScore,
-    };
   }
 
   private evaluateDistance(position: Position, context: AIContext): number {

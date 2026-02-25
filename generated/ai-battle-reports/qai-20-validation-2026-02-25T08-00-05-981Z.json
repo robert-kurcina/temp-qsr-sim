@@ -1,0 +1,2368 @@
+{
+  "missionId": "QAI_20",
+  "gameSize": "SMALL",
+  "densityRatio": 50,
+  "tacticalDoctrine": "juggernaut vs watchman",
+  "sideDoctrines": [
+    {
+      "sideName": "Alpha",
+      "tacticalDoctrine": "juggernaut",
+      "loadoutProfile": "melee_only"
+    },
+    {
+      "sideName": "Bravo",
+      "tacticalDoctrine": "watchman",
+      "loadoutProfile": "melee_only"
+    }
+  ],
+  "loadoutProfile": "melee_only",
+  "lighting": "Day, Clear",
+  "visibilityOrMu": 16,
+  "maxOrm": 3,
+  "allowConcentrateRangeExtension": true,
+  "perCharacterFovLos": false,
+  "runs": 1,
+  "baseSeed": 424242,
+  "winners": {
+    "Alpha": 1
+  },
+  "totals": {
+    "totalActions": 149,
+    "moves": 29,
+    "movesWhileWaiting": 9,
+    "closeCombats": 119,
+    "rangedCombats": 0,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 8,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 28,
+    "reacts": 7,
+    "reactChoiceWindows": 7,
+    "reactChoicesGiven": 28,
+    "reactChoicesTaken": 7,
+    "waitTriggeredReacts": 7,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 6,
+    "losChecks": 0,
+    "lofChecks": 0,
+    "totalPathLength": 101.97709960811748,
+    "modelsMoved": 13
+  },
+  "averages": {
+    "totalActions": 149,
+    "moves": 29,
+    "movesWhileWaiting": 9,
+    "closeCombats": 119,
+    "rangedCombats": 0,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 8,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 28,
+    "reacts": 7,
+    "reactChoiceWindows": 7,
+    "reactChoicesGiven": 28,
+    "reactChoicesTaken": 7,
+    "waitTriggeredReacts": 7,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 6,
+    "losChecks": 0,
+    "lofChecks": 0,
+    "totalPathLength": 101.98,
+    "modelsMoved": 13
+  },
+  "advancedRuleTotals": {
+    "bonusActions": {
+      "opportunities": 0,
+      "optionsOffered": 0,
+      "optionsAvailable": 0,
+      "offeredByType": {},
+      "availableByType": {},
+      "executed": 0,
+      "executedByType": {}
+    },
+    "passiveOptions": {
+      "opportunities": 296,
+      "optionsOffered": 1059,
+      "optionsAvailable": 262,
+      "offeredByType": {
+        "CounterCharge": 232,
+        "OpportunityAttack": 232,
+        "Defend": 119,
+        "CounterAction": 119,
+        "React": 119,
+        "CounterStrike": 119,
+        "CounterFire": 119
+      },
+      "availableByType": {
+        "CounterCharge": 19,
+        "Defend": 117,
+        "React": 117,
+        "OpportunityAttack": 9
+      },
+      "used": 127,
+      "usedByType": {
+        "CounterCharge": 3,
+        "Defend": 117,
+        "React": 7
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 126,
+      "modifiedTests": 122,
+      "modifiersApplied": 122,
+      "byType": {
+        "defend": 117,
+        "obscuring_models": 5
+      }
+    }
+  },
+  "advancedRuleAverages": {
+    "bonusActions": {
+      "opportunities": 0,
+      "optionsOffered": 0,
+      "optionsAvailable": 0,
+      "offeredByType": {},
+      "availableByType": {},
+      "executed": 0,
+      "executedByType": {}
+    },
+    "passiveOptions": {
+      "opportunities": 296,
+      "optionsOffered": 1059,
+      "optionsAvailable": 262,
+      "offeredByType": {
+        "CounterCharge": 232,
+        "OpportunityAttack": 232,
+        "Defend": 119,
+        "CounterAction": 119,
+        "React": 119,
+        "CounterStrike": 119,
+        "CounterFire": 119
+      },
+      "availableByType": {
+        "CounterCharge": 19,
+        "Defend": 117,
+        "React": 117,
+        "OpportunityAttack": 9
+      },
+      "used": 127,
+      "usedByType": {
+        "CounterCharge": 3,
+        "Defend": 117,
+        "React": 7
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 126,
+      "modifiedTests": 122,
+      "modifiersApplied": 122,
+      "byType": {
+        "defend": 117,
+        "obscuring_models": 5
+      }
+    }
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runtimeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": false,
+    "closeCombat": true,
+    "react": true,
+    "wait": false,
+    "detect": false,
+    "los": false,
+    "lof": false
+  },
+  "probeCoverage": {
+    "movement": false,
+    "pathfinding": false,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "performanceGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_20",
+      "gameSize": "SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2
+    },
+    "thresholds": {
+      "turn1ElapsedMsMax": 69000,
+      "activationP95MsMax": 4600,
+      "minLosCacheHitRate": 0.5,
+      "minPathCacheHitRate": 0.41,
+      "minGridCacheHitRate": 0.95
+    },
+    "observed": {
+      "avgTurn1ElapsedMs": 464,
+      "avgActivationP95Ms": 31.25,
+      "avgLosCacheHitRate": 0.7588,
+      "avgPathCacheHitRate": 0.7431,
+      "avgGridCacheHitRate": 0.9986
+    },
+    "pass": {
+      "turn1Elapsed": true,
+      "activationP95": true,
+      "losCacheHitRate": true,
+      "pathCacheHitRate": true,
+      "gridCacheHitRate": true,
+      "overall": true
+    }
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 8
+        },
+        {
+          "name": "Bravo",
+          "remaining": 8
+        }
+      ],
+      "stats": {
+        "totalActions": 149,
+        "moves": 29,
+        "movesWhileWaiting": 9,
+        "closeCombats": 119,
+        "rangedCombats": 0,
+        "disengages": 0,
+        "waits": 0,
+        "waitsSelectedPlanner": 0,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 0,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 8,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 28,
+        "reacts": 7,
+        "reactChoiceWindows": 7,
+        "reactChoicesGiven": 28,
+        "reactChoicesTaken": 7,
+        "waitTriggeredReacts": 7,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 0,
+        "turnsCompleted": 6,
+        "losChecks": 0,
+        "lofChecks": 0,
+        "totalPathLength": 101.97709960811748,
+        "modelsMoved": 13
+      },
+      "usage": {
+        "modelCount": 16,
+        "modelsMoved": 13,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 7,
+        "totalPathLength": 101.97709960811748,
+        "averagePathLengthPerMovedModel": 7.844392277547499,
+        "averagePathLengthPerModel": 6.373568725507343,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-4-militia-sword-broad-shield-medium-loadout",
+            "modelName": "militia-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 13.978931486560349,
+            "moveActions": 4,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 7,
+            "reactChoicesGiven": 7,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 12,
+            "moveActions": 3,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 1,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 2,
+            "reactChoicesGiven": 2,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Bravo Assembly-8-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 10.32455532033676,
+            "moveActions": 3,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 6,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 0,
+            "reactChoicesGiven": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-7-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 9.84161925296378,
+            "moveActions": 3,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 2,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 0,
+            "reactChoicesGiven": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-6-elite-sword-broad-shield-medium-loadout",
+            "modelName": "elite-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 9.47213595499958,
+            "moveActions": 2,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 2,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 1,
+            "reactChoicesGiven": 1,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Bravo Assembly-6-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 8.67004637770997,
+            "moveActions": 3,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 1,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 0,
+            "reactChoicesGiven": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 8,
+            "moveActions": 2,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 1,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 1,
+            "reactChoicesGiven": 1,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Alpha Assembly-5-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 8,
+            "moveActions": 2,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 4,
+            "reactChoicesGiven": 4,
+            "reactAttempts": 1,
+            "reactSuccesses": 1
+          },
+          {
+            "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 6.433978400210179,
+            "moveActions": 2,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 1,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 0,
+            "reactChoicesGiven": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          },
+          {
+            "modelId": "Bravo Assembly-4-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 5.0197648378370845,
+            "moveActions": 2,
+            "waitChoicesGiven": 0,
+            "waitAttempts": 0,
+            "waitSuccesses": 0,
+            "detectAttempts": 0,
+            "detectSuccesses": 0,
+            "hideAttempts": 0,
+            "hideSuccesses": 0,
+            "reactChoiceWindows": 0,
+            "reactChoicesGiven": 0,
+            "reactAttempts": 0,
+            "reactSuccesses": 0
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 17,
+          "Bravo": 11
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 638,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 4,
+                      "y": 11
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 3
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 10,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 11
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-4-militia-sword-broad-shield-medium-loadout",
+                    "name": "militia-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "militia-sword-broad-shield-medium-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 47,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 13,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 4,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-5-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 17,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 17,
+                      "y": 11
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-6-elite-sword-broad-shield-medium-loadout",
+                    "name": "elite-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "elite-sword-broad-shield-medium-loadout",
+                      "archetype": "Elite",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "totalBp": 156,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 20,
+                      "y": 3
+                    },
+                    "endPosition": {
+                      "x": 18,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-7-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 8
+                    },
+                    "endPosition": {
+                      "x": 3,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 8
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 642,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 3,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 10,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 5,
+                      "y": 11
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-4-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 13,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 17,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-5-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 17,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 18,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-6-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 20,
+                      "y": 15
+                    },
+                    "endPosition": {
+                      "x": 18,
+                      "y": 11
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-7-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 3,
+                      "y": 20
+                    },
+                    "endPosition": {
+                      "x": 5,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-8-veteran-sword-broad-shield-medium-loadout",
+                    "name": "veteran-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-shield-medium-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 88,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 6,
+                      "y": 20
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 10
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 24,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 98,
+              "vertices": [
+                {
+                  "x": 19.860826899039935,
+                  "y": 8.990268068741571
+                },
+                {
+                  "x": 19.4924616370393,
+                  "y": 8.861629160441526
+                },
+                {
+                  "x": 19.20136448995271,
+                  "y": 8.601815023152048
+                },
+                {
+                  "x": 19.031852359621894,
+                  "y": 8.250380004054442
+                },
+                {
+                  "x": 19.00973193125843,
+                  "y": 7.860826899039934
+                },
+                {
+                  "x": 19.138370839558476,
+                  "y": 7.492461637039295
+                },
+                {
+                  "x": 19.39818497684795,
+                  "y": 7.2013644899527085
+                },
+                {
+                  "x": 19.749619995945558,
+                  "y": 7.031852359621893
+                },
+                {
+                  "x": 20.139173100960065,
+                  "y": 7.00973193125843
+                },
+                {
+                  "x": 20.5075383629607,
+                  "y": 7.138370839558475
+                },
+                {
+                  "x": 20.79863551004729,
+                  "y": 7.398184976847953
+                },
+                {
+                  "x": 20.968147640378106,
+                  "y": 7.749619995945556
+                },
+                {
+                  "x": 20.99026806874157,
+                  "y": 8.139173100960065
+                },
+                {
+                  "x": 20.861629160441527,
+                  "y": 8.507538362960705
+                },
+                {
+                  "x": 20.60181502315205,
+                  "y": 8.798635510047292
+                },
+                {
+                  "x": 20.250380004054442,
+                  "y": 8.968147640378108
+                }
+              ]
+            },
+            {
+              "id": "Medium Rocks",
+              "type": "Rough",
+              "metaName": "Medium Rocks",
+              "movement": "Rough",
+              "los": "Hard",
+              "rotationDegrees": 141,
+              "vertices": [
+                {
+                  "x": 4.222854038543029,
+                  "y": 7.629320391049838
+                },
+                {
+                  "x": 3.800349777827514,
+                  "y": 6.986614460724902
+                },
+                {
+                  "x": 3.560481388581416,
+                  "y": 6.345946357414383
+                },
+                {
+                  "x": 3.5397666586550898,
+                  "y": 5.8048519921764905
+                },
+                {
+                  "x": 3.7413592179003246,
+                  "y": 5.445708077086058
+                },
+                {
+                  "x": 4.134568426613132,
+                  "y": 5.323191017567907
+                },
+                {
+                  "x": 4.6595317472173425,
+                  "y": 5.455952925313762
+                },
+                {
+                  "x": 5.2363282729553156,
+                  "y": 5.823782003359012
+                },
+                {
+                  "x": 5.777145961456971,
+                  "y": 6.370679608950162
+                },
+                {
+                  "x": 6.199650222172486,
+                  "y": 7.013385539275098
+                },
+                {
+                  "x": 6.439518611418583,
+                  "y": 7.654053642585616
+                },
+                {
+                  "x": 6.46023334134491,
+                  "y": 8.195148007823509
+                },
+                {
+                  "x": 6.2586407820996754,
+                  "y": 8.554291922913942
+                },
+                {
+                  "x": 5.865431573386867,
+                  "y": 8.676808982432092
+                },
+                {
+                  "x": 5.3404682527826575,
+                  "y": 8.544047074686237
+                },
+                {
+                  "x": 4.763671727044685,
+                  "y": 8.176217996640988
+                }
+              ]
+            }
+          ],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 4,
+                "y": 11
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 3
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 10,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 11
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-4-militia-sword-broad-shield-medium-loadout",
+              "characterName": "militia-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 13,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 4,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-5-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 17,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 17,
+                "y": 11
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-6-elite-sword-broad-shield-medium-loadout",
+              "characterName": "elite-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 20,
+                "y": 3
+              },
+              "endPosition": {
+                "x": 18,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-7-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 8
+              },
+              "endPosition": {
+                "x": 3,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 8
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 3,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 10,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 5,
+                "y": 11
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-4-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 13,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 17,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-5-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 17,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 18,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-6-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 20,
+                "y": 15
+              },
+              "endPosition": {
+                "x": 18,
+                "y": 11
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-7-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 3,
+                "y": 20
+              },
+              "endPosition": {
+                "x": 5,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-8-veteran-sword-broad-shield-medium-loadout",
+              "characterName": "veteran-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 6,
+                "y": 20
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 10
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 0,
+          "optionsOffered": 0,
+          "optionsAvailable": 0,
+          "offeredByType": {},
+          "availableByType": {},
+          "executed": 0,
+          "executedByType": {}
+        },
+        "passiveOptions": {
+          "opportunities": 296,
+          "optionsOffered": 1059,
+          "optionsAvailable": 262,
+          "offeredByType": {
+            "CounterCharge": 232,
+            "OpportunityAttack": 232,
+            "Defend": 119,
+            "CounterAction": 119,
+            "React": 119,
+            "CounterStrike": 119,
+            "CounterFire": 119
+          },
+          "availableByType": {
+            "CounterCharge": 19,
+            "Defend": 117,
+            "React": 117,
+            "OpportunityAttack": 9
+          },
+          "used": 127,
+          "usedByType": {
+            "CounterCharge": 3,
+            "Defend": 117,
+            "React": 7
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 126,
+          "modifiedTests": 122,
+          "modifiersApplied": 122,
+          "byType": {
+            "defend": 117,
+            "obscuring_models": 5
+          }
+        }
+      },
+      "performance": {
+        "elapsedMs": 792,
+        "activationsProcessed": 96,
+        "heartbeatEveryActivations": 25,
+        "activationLatency": {
+          "avgMs": 7.68,
+          "p50Ms": 3,
+          "p95Ms": 31.25,
+          "maxMs": 80
+        },
+        "phases": {
+          "setup.create_assemblies": {
+            "count": 1,
+            "totalMs": 7,
+            "avgMs": 7,
+            "maxMs": 7
+          },
+          "setup.create_battlefield": {
+            "count": 1,
+            "totalMs": 8,
+            "avgMs": 8,
+            "maxMs": 8
+          },
+          "setup.deploy_models": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "turn.start": {
+            "count": 6,
+            "totalMs": 18,
+            "avgMs": 3,
+            "maxMs": 17
+          },
+          "turn.mission_start_update": {
+            "count": 6,
+            "totalMs": 1,
+            "avgMs": 0.17,
+            "maxMs": 1
+          },
+          "ai.decide_action": {
+            "count": 169,
+            "totalMs": 539,
+            "avgMs": 3.19,
+            "maxMs": 69
+          },
+          "action.hide": {
+            "count": 28,
+            "totalMs": 16,
+            "avgMs": 0.57,
+            "maxMs": 3
+          },
+          "action.total": {
+            "count": 169,
+            "totalMs": 49,
+            "avgMs": 0.29,
+            "maxMs": 6
+          },
+          "activation.total": {
+            "count": 96,
+            "totalMs": 737,
+            "avgMs": 7.68,
+            "maxMs": 80
+          },
+          "react.process": {
+            "count": 145,
+            "totalMs": 6,
+            "avgMs": 0.04,
+            "maxMs": 2
+          },
+          "action.move": {
+            "count": 18,
+            "totalMs": 3,
+            "avgMs": 0.17,
+            "maxMs": 1
+          },
+          "action.fiddle": {
+            "count": 4,
+            "totalMs": 2,
+            "avgMs": 0.5,
+            "maxMs": 1
+          },
+          "action.close_combat": {
+            "count": 119,
+            "totalMs": 28,
+            "avgMs": 0.24,
+            "maxMs": 6
+          },
+          "turn.mission_end_update": {
+            "count": 6,
+            "totalMs": 2,
+            "avgMs": 0.33,
+            "maxMs": 1
+          },
+          "turn.total": {
+            "count": 6,
+            "totalMs": 765,
+            "avgMs": 127.5,
+            "maxMs": 464
+          },
+          "mission.finalize": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          }
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "elapsedMs": 464,
+            "activations": 16
+          },
+          {
+            "turn": 2,
+            "elapsedMs": 119,
+            "activations": 16
+          },
+          {
+            "turn": 3,
+            "elapsedMs": 55,
+            "activations": 16
+          },
+          {
+            "turn": 4,
+            "elapsedMs": 55,
+            "activations": 16
+          },
+          {
+            "turn": 5,
+            "elapsedMs": 39,
+            "activations": 16
+          },
+          {
+            "turn": 6,
+            "elapsedMs": 33,
+            "activations": 16
+          }
+        ],
+        "slowestActivations": [
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "elapsedMs": 80,
+            "steps": 3
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-6-elite-sword-broad-shield-medium-loadout",
+            "modelName": "elite-sword-broad-shield-medium-loadout",
+            "elapsedMs": 62,
+            "steps": 1
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-4-militia-sword-broad-shield-medium-loadout",
+            "modelName": "militia-sword-broad-shield-medium-loadout",
+            "elapsedMs": 55,
+            "steps": 2
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-5-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 51,
+            "steps": 2
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-8-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 35,
+            "steps": 2
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "elapsedMs": 30,
+            "steps": 3
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-4-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "elapsedMs": 29,
+            "steps": 2
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-7-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 21,
+            "steps": 3
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-6-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "elapsedMs": 17,
+            "steps": 3
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-7-veteran-sword-broad-shield-medium-loadout",
+            "modelName": "veteran-sword-broad-shield-medium-loadout",
+            "elapsedMs": 17,
+            "steps": 3
+          }
+        ],
+        "caches": {
+          "los": {
+            "terrainVersion": 2,
+            "size": 3245,
+            "maxSize": 25000,
+            "hits": 10211,
+            "misses": 3245
+          },
+          "pathfinding": {
+            "terrainVersion": 2,
+            "gridCacheSize": 3,
+            "gridCacheMaxSize": 32,
+            "pathCacheSize": 549,
+            "pathCacheMaxSize": 8000,
+            "gridHits": 2134,
+            "gridMisses": 3,
+            "pathHits": 1588,
+            "pathMisses": 549
+          }
+        }
+      }
+    }
+  ],
+  "generatedAt": "2026-02-25T08:00:05.980Z"
+}

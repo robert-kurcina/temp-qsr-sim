@@ -16,7 +16,7 @@ export class Grid {
 
   getCell(position: Position): Cell | undefined {
     if (this.isValid(position)) {
-      return this.cells[position.y][position.x];
+      return this.cells[position.y]?.[position.x];
     }
     return undefined;
   }
@@ -31,7 +31,11 @@ export class Grid {
   }
 
   isValid(position: Position): boolean {
-    return position.x >= 0 && position.x < this.width &&
-           position.y >= 0 && position.y < this.height;
+    return Number.isInteger(position.x) &&
+           Number.isInteger(position.y) &&
+           position.x >= 0 &&
+           position.x < this.width &&
+           position.y >= 0 &&
+           position.y < this.height;
   }
 }

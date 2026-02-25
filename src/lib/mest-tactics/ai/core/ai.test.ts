@@ -422,6 +422,10 @@ describe('UtilityScorer', () => {
     expect(waitAction).toBeDefined();
     expect((waitAction?.factors['waitRefBonus'] as number) ?? 0).toBeGreaterThan(0);
     expect((waitAction?.factors['waitDelayAvoidance'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['waitExpectedTriggerCount'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['waitExpectedReactValue'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['waitBaselineScore'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['rolloutPreferredScore'] as number) ?? 0).toBeGreaterThan(0);
   });
 
   it('should cap strategic path probes on very large battlefields', () => {

@@ -17,6 +17,8 @@ import {
   createDefaultGOAPPlanner,
   createStandardActions,
   StandardGoals,
+  forecastWaitReact,
+  rolloutWaitReactBranches,
   validateAction,
 } from '../tactical/GOAP';
 import { Character } from '../../core/Character';
@@ -230,6 +232,95 @@ describe('GOAP', () => {
     // Plan may or may not succeed depending on preconditions
     // Just verify it runs without error
     expect(plan === null || plan.actions.length >= 0).toBe(true);
+  });
+
+  it('should forecast wait+react opportunities from current position', () => {
+    const context = makeTestContext();
+    context.character.profile.items = [{ id: 'rifle', classification: 'Firearm' } as any];
+    context.character.finalAttributes.ref = 2;
+    context.character.attributes.ref = 2;
+    const enemy = context.enemies[0];
+    enemy.profile.items = [{ id: 'blade', classification: 'Melee' } as any];
+    enemy.finalAttributes.ref = 3;
+    enemy.attributes.ref = 3;
+    enemy.finalAttributes.mov = 3;
+    enemy.attributes.mov = 3;
+    enemy.state.isHidden = true;
+
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        aggression: 0.5,
+        caution: 0.5,
+        accuracyModifier: 0,
+        godMode: true,
+        visibilityOrMu: 16,
+      },
+    };
+
+    const forecast = forecastWaitReact(aiContext);
+    expect(forecast.potentialReactTargets).toBeGreaterThan(0);
+    expect(forecast.expectedTriggerCount).toBeGreaterThan(0);
+    expect(forecast.expectedReactValue).toBeGreaterThan(0);
+    expect(forecast.refGatePassCount).toBeGreaterThan(0);
+  });
+
+  it('should roll out wait-react branches and pick a preferred branch', () => {
+    const context = makeTestContext();
+    context.character.profile.items = [{ id: 'rifle', classification: 'Firearm' } as any];
+    context.character.finalAttributes.ref = 3;
+    context.character.attributes.ref = 3;
+
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        aggression: 0.5,
+        caution: 0.5,
+        accuracyModifier: 0,
+        godMode: true,
+        visibilityOrMu: 16,
+      },
+    };
+
+    const rollout = rolloutWaitReactBranches(aiContext, {
+      immediateScore: 1.4,
+      waitBaseline: 2.2,
+      moveCandidates: [{ x: 13, y: 12 }, { x: 12, y: 13 }],
+      maxMoveCandidates: 2,
+    });
+
+    expect(rollout.branches.length).toBe(3);
+    expect(rollout.preferred.score).toBeGreaterThan(0);
+    expect(rollout.branches.some(branch => branch.id === 'wait_now')).toBe(true);
+    expect(rollout.branches.some(branch => branch.id === 'move_then_wait')).toBe(true);
   });
 
   it('should evaluate world state conditions', () => {
