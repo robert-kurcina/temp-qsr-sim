@@ -12,6 +12,7 @@ import { resolveTest, TestParticipant, TestDice, DiceType, mergeTestDice, Resolv
 import { parseAccuracy } from '../subroutines/accuracy-parser';
 import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusActionOptions } from './bonus-actions';
 import { parseStatusTrait, applyStatusTraitOnHit } from '../status/status-system';
+import { parseTrait } from '../traits/trait-parser';
 import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
 import { makeIndirectRangedAttack } from '../combat/indirect-ranged-combat';
 import { resolveScatter, type ScatterResult } from '../combat/scatter';
@@ -1231,13 +1232,32 @@ export function executeCloseCombatAttack(
     allowDamage = SpatialRules.isEngaged(updatedAttacker, updatedDefender);
   }
 
+  // Parse Cleave level from weapon traits
+  let cleaveLevel = 0;
+  if (weapon.traits) {
+    for (const trait of weapon.traits) {
+      const parsed = parseTrait(trait);
+      if (parsed && parsed.name.toLowerCase() === 'cleave') {
+        cleaveLevel = parsed.level ?? 1;
+        break;
+      }
+    }
+  }
+  const cleaveExtraWounds = cleaveLevel >= 2 ? cleaveLevel - 1 : 0;
+
   let damageResolution: DamageResolution | undefined;
   if (allowDamage) {
-    damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult as unknown as ResolveTestResult, mergedContext);
+    damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult as unknown as ResolveTestResult, mergedContext, cleaveExtraWounds);
     defender.state.wounds = damageResolution.defenderState.wounds;
     defender.state.delayTokens = damageResolution.defenderState.delayTokens;
     defender.state.isKOd = damageResolution.defenderState.isKOd;
     defender.state.isEliminated = damageResolution.defenderState.isEliminated;
+    
+    // Cleave trait: If target is KO'd by an attack with Cleave, it is instead Eliminated
+    if (cleaveLevel > 0 && defender.state.isKOd && !defender.state.isEliminated) {
+      defender.state.isEliminated = true;
+      defender.state.isKOd = false;
+    }
   }
 
   if (weapon.traits?.includes('[Reveal]')) {

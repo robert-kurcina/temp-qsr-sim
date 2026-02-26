@@ -3772,11 +3772,8 @@ class AIBattleRunner {
   private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number }> {
     const compositions = sideConfig.loadoutProfile === 'melee_only'
       ? [
-          // Melee-only profile: no ranged classifications and no throwable traits.
-          { archetypeName: 'Average', weight: 4, items: ['Sword, Broad', 'Shield, Medium'] },
-          { archetypeName: 'Militia', weight: 2, items: ['Sword, Broad', 'Shield, Medium'] },
-          { archetypeName: 'Veteran', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },
-          { archetypeName: 'Elite', weight: 1, items: ['Sword, Broad', 'Shield, Medium'] },
+          // Melee-only profile: Average with Sword, Broad + Armored Gear + Armor, Light + Shield, Small
+          { archetypeName: 'Average', weight: 4, items: ['Sword, Broad', 'Armored Gear', 'Armor, Light', 'Shield, Small'] },
         ]
       : [
           { archetypeName: 'Average', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },

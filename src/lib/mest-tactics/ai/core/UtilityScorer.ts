@@ -290,13 +290,21 @@ export class UtilityScorer {
           score *= 1.08;
         }
         score *= missionBias.attackPressure;
-        
+
         // Multiple Weapons bonus consideration for melee
         if (qualifiesForMultipleWeapons(context.character, true)) {
           const bonus = getMultipleWeaponsBonus(context.character, 0, true);
           score += bonus * 0.3;
         }
-        
+
+        // Priority 1: Bonus Action potential (Push-back, Pull-back, Reversal)
+        // Evaluate after we know we have a valid melee target
+        const attackerPosition = context.battlefield.getCharacterPosition(context.character);
+        const bonusActionEval = this.evaluateBonusActions(context, target.target, 2, attackerPosition);
+        if (bonusActionEval.score > 0) {
+          score += bonusActionEval.score * 0.5; // Weight bonus actions moderately
+        }
+
         attackActions.push({
           action: 'close_combat',
           target: target.target,
@@ -318,8 +326,19 @@ export class UtilityScorer {
         // Heavier ORM penalties make long, low-probability shots less dominant.
         score *= 1 / (1 + (rangedOpportunity.orm * 0.35));
         if (rangedOpportunity.requiresConcentrate) {
-          // Keep this viable, but less preferred than immediate fire.
-          score *= 0.8;
+          // Priority 3: Prefer Concentrate + Attack when Outnumbered
+          // Concentrate removes +1 Wild die from Opposing Outnumber bonus
+          const friendsNearby = this.countFriendlyInMeleeRange(context, characterPos, 1.5);
+          const enemiesNearby = this.countEnemyInMeleeRange(context, characterPos, 1.5);
+          const isOutnumbered = enemiesNearby > friendsNearby;
+          
+          if (isOutnumbered) {
+            // Strongly prefer Concentrate when outnumbered - removes enemy outnumber bonus
+            score *= 1.4;
+          } else {
+            // Keep this viable, but less preferred than immediate fire
+            score *= 0.8;
+          }
         }
         if (rangedOpportunity.leanOpportunity) {
           score += 1.2;
@@ -461,9 +480,25 @@ export class UtilityScorer {
         const exposure = waitForecast.exposureCount;
         const potentialReactTargets = waitForecast.potentialReactTargets;
         const refBreakpointCount = waitForecast.refGatePassCount;
+        
+        // Cap react-related bonuses to prevent runaway Wait scores
+        // Caps scale with game size - more models = more valid react opportunities
+        // But we cap to prevent 64-model battles from generating 40+ Wait scores
+        const gameSize = context.config.gameSize || 'SMALL';
+        const sizeMultiplier = {
+          'VERY_SMALL': 0.5,
+          'SMALL': 1.0,
+          'MEDIUM': 1.5,
+          'LARGE': 2.0,
+          'VERY_LARGE': 2.5,
+        }[gameSize] || 1.0;
+        
+        const cappedRefBreakpoints = Math.min(refBreakpointCount, Math.round(3 * sizeMultiplier));
+        const cappedReactTargets = Math.min(potentialReactTargets, Math.round(4 * sizeMultiplier));
+        
         const waitRefBonus =
-          (refBreakpointCount * 0.78) +
-          (Math.max(0, potentialReactTargets - refBreakpointCount) * 0.2);
+          (cappedRefBreakpoints * 0.78) +
+          (Math.max(0, cappedReactTargets - cappedRefBreakpoints) * 0.2);
         const existingDelay = Math.max(0, context.character.state.delayTokens ?? 0);
         const waitDelayAvoidance = waitForecast.potentialReactTargets > 0
           ? Math.min(1.8, 0.3 + (waitForecast.expectedTriggerCount * 0.5) + (existingDelay * 0.25))
@@ -478,6 +513,34 @@ export class UtilityScorer {
         const missionId = context.config.missionId;
         const currentTurn = context.currentTurn ?? 1;
         const eliminationWaitPenalty = missionId === 'QAI_11' ? 1.5 : 0;
+        
+        // R2.2: ZERO VP DESPERATION - Strong penalty for zero VP as turns progress
+        // This directly reduces waitBaseline to force action in Elimination missions
+        const sideVP = context.side?.state.victoryPoints ?? 0;
+        const sideRP = context.side?.state.resourcePoints ?? 0;
+        
+        // Priority 4: Always pursue VP/RP - calculate VP deficit vs opponent
+        const opponentVP = context.enemySides?.reduce((max, side) => 
+          Math.max(max, side.state?.victoryPoints ?? 0), 0) ?? 0;
+        const vpDeficit = Math.max(0, opponentVP - sideVP);
+        const rpDeficit = Math.max(0, (context.enemySides?.reduce((max, side) => 
+          Math.max(max, side.state?.resourcePoints ?? 0), 0) ?? 0) - sideRP);
+        
+        // If behind on VP/RP, reduce Wait preference to encourage action
+        if (vpDeficit > 0 || rpDeficit > 0) {
+          const pursuitPenalty = (vpDeficit + rpDeficit) * 2; // -2 per VP/RP behind
+          waitTacticalBonus = Math.max(-5, waitTacticalBonus - pursuitPenalty);
+        }
+        
+        let zeroVpDesperation = 0;
+        if (missionId === 'QAI_11' && sideVP === 0 && sideRP === 0 && currentTurn >= 4) {
+          // Turn 4-5: -8 Wait score (must start acting)
+          // Turn 6-7: -12 Wait score (desperate)
+          // Turn 8+: -20 Wait score (ALL IN - attack or lose!)
+          if (currentTurn >= 8) zeroVpDesperation = 20;
+          else if (currentTurn >= 6) zeroVpDesperation = 12;
+          else zeroVpDesperation = 8;
+        }
 
         const hasAttackOption = attackActions.length > 0;
         const bestAttackScore = attackActions[0]?.score ?? 0;
@@ -499,7 +562,8 @@ export class UtilityScorer {
           waitDelayAvoidance +
           waitMissionBias +
           waitTacticalBonus -
-          eliminationWaitPenalty;
+          eliminationWaitPenalty -
+          zeroVpDesperation;
         const immediateScore = hasAttackOption ? bestAttackScore : Math.max(0.5, bestMoveScore * 0.85);
         const waitRollout = rolloutWaitReactBranches(context, {
           immediateScore,
@@ -646,6 +710,10 @@ export class UtilityScorer {
       const leanOpportunity = isRanged ? this.evaluateLeanOpportunity(pos, context) : 0;
       const exposureRisk = this.evaluateExposureRisk(pos, context);
 
+      // Priority 2: Outnumber-aware positioning
+      // Score positions that create local outnumbering advantage
+      const outnumberScore = this.evaluateOutnumberAdvantage(pos, context);
+
       // R3: Doctrine-aware scoring weights
       const coverWeight = this.weights.coverValue * (isRanged ? 1.3 : 1.0);
       const leanWeight = isRanged ? 1.5 : 0; // Only ranged models benefit from lean
@@ -658,7 +726,8 @@ export class UtilityScorer {
         visibility * 0.5 +
         cohesion * this.weights.cohesionValue +
         (leanOpportunity * leanWeight) -
-        (exposureRisk * exposurePenalty);
+        (exposureRisk * exposurePenalty) +
+        (outnumberScore * 2.0); // Strong weight for outnumber advantage
 
       positions.push({
         position: pos,
@@ -1597,6 +1666,311 @@ export class UtilityScorer {
     }
     session.nearestEnemyDistanceCache.set(cacheKey, nearest);
     return nearest;
+  }
+
+  // ============================================================================
+  // BONUS ACTION EVALUATION (Priority 1)
+  // ============================================================================
+
+  /**
+   * Evaluate bonus action opportunities after a successful hit
+   * Push-back, Pull-back, Rotate, Reversal for:
+   * - Reducing outnumbering against self
+   * - Increasing outnumbering against enemy
+   * - Causing Delay tokens (push into walls/impassable)
+   */
+  private evaluateBonusActions(
+    context: AIContext,
+    target: Character,
+    hitCascades: number,
+    attackerPos?: Position
+  ): { score: number; reason: string; bonusType?: string } {
+    const battlefield = context.battlefield;
+    const attacker = context.character;
+    const attackerPosition = attackerPos ?? battlefield.getCharacterPosition(attacker);
+    const targetPosition = battlefield.getCharacterPosition(target);
+
+    if (!attackerPosition || !targetPosition) {
+      return { score: 0, reason: 'No position data' };
+    }
+
+    // Count cascades available for bonus actions
+    const availableCascades = hitCascades;
+    if (availableCascades < 1) {
+      return { score: 0, reason: 'No cascades available' };
+    }
+
+    let bestScore = 0;
+    let bestReason = '';
+    let bestBonusType = '';
+
+    // 1. PUSH-BACK: Check if pushing target creates advantage
+    const pushBackScore = this.evaluatePushBack(context, attacker, target, attackerPosition, targetPosition, availableCascades);
+    if (pushBackScore.score > bestScore) {
+      bestScore = pushBackScore.score;
+      bestReason = pushBackScore.reason;
+      bestBonusType = 'push-back';
+    }
+
+    // 2. PULL-BACK: Check if pulling target creates advantage
+    const pullBackScore = this.evaluatePullBack(context, attacker, target, attackerPosition, targetPosition, availableCascades);
+    if (pullBackScore.score > bestScore) {
+      bestScore = pullBackScore.score;
+      bestReason = pullBackScore.reason;
+      bestBonusType = 'pull-back';
+    }
+
+    // 3. REVERSAL: Check if swapping positions creates advantage
+    const reversalScore = this.evaluateReversal(context, attacker, target, attackerPosition, targetPosition, availableCascades);
+    if (reversalScore.score > bestScore) {
+      bestScore = reversalScore.score;
+      bestReason = reversalScore.reason;
+      bestBonusType = 'reversal';
+    }
+
+    return {
+      score: bestScore,
+      reason: bestReason,
+      bonusType: bestBonusType || undefined,
+    };
+  }
+
+  private evaluatePushBack(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    cascades: number
+  ): { score: number; reason: string } {
+    const battlefield = context.battlefield;
+    const pushDistance = Math.floor(cascades / 2); // 1" per 2 cascades
+    if (pushDistance < 1) {
+      return { score: 0, reason: 'Not enough cascades' };
+    }
+
+    // Calculate push direction (away from attacker)
+    const dx = targetPos.x - attackerPos.x;
+    const dy = targetPos.y - attackerPos.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const pushDir = { x: dx / dist, y: dy / dist };
+
+    // Check where target would be pushed
+    const newPos = {
+      x: targetPos.x + pushDir.x * pushDistance,
+      y: targetPos.y + pushDir.y * pushDistance,
+    };
+
+    let score = 0;
+    const reasons: string[] = [];
+
+    // 1. Check for Delay token (push into wall/impassable/precipice)
+    const terrainAtNewPos = battlefield.getTerrainAt(newPos);
+    if (terrainAtNewPos?.movement === 'Impassable' || terrainAtNewPos?.movement === 'Blocking') {
+      score += 8; // High value for causing Delay
+      reasons.push('Delay token (wall)');
+    }
+
+    // 2. Check if push reduces outnumbering against attacker
+    const friendsBefore = this.countFriendlyInMeleeRange(context, attackerPos, 1.5);
+    const enemiesBefore = this.countEnemyInMeleeRange(context, attackerPos, 1.5);
+    const outnumberedBefore = enemiesBefore > friendsBefore;
+
+    // After push, target is no longer in melee range
+    const enemiesAfter = enemiesBefore - 1;
+    const outnumberedAfter = enemiesAfter > friendsBefore;
+
+    if (outnumberedBefore && !outnumberedAfter) {
+      score += 6; // Good value for escaping outnumber
+      reasons.push('Escape outnumber');
+    }
+
+    // 3. Check if push creates outnumbering against target
+    const friendsNearNewPos = this.countFriendlyInMeleeRange(context, newPos, 1.5);
+    const enemiesNearNewPos = this.countEnemyInMeleeRange(context, newPos, 1.5);
+    const createsOutnumber = friendsNearNewPos > enemiesNearNewPos && enemiesNearNewPos > 0;
+
+    if (createsOutnumber) {
+      score += 5; // Good value for creating local advantage
+      reasons.push('Create outnumber');
+    }
+
+    // 4. Check if push breaks engagement with other enemies
+    const engagedBefore = battlefield.isEngaged?.(attacker) ?? false;
+    // After push, target is no longer engaged with attacker
+    if (engagedBefore && enemiesBefore === 1) {
+      score += 3; // Moderate value for breaking engagement
+      reasons.push('Break engagement');
+    }
+
+    return {
+      score,
+      reason: reasons.join(', ') || 'Push-back',
+    };
+  }
+
+  private evaluatePullBack(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    cascades: number
+  ): { score: number; reason: string } {
+    const pullDistance = Math.floor(cascades / 2);
+    if (pullDistance < 1) {
+      return { score: 0, reason: 'Not enough cascades' };
+    }
+
+    // Pull toward attacker
+    const dx = attackerPos.x - targetPos.x;
+    const dy = attackerPos.y - targetPos.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const pullDir = { x: dx / dist, y: dy / dist };
+
+    const newPos = {
+      x: targetPos.x + pullDir.x * pullDistance,
+      y: targetPos.y + pullDir.y * pullDistance,
+    };
+
+    let score = 0;
+    const reasons: string[] = [];
+
+    // Pull-back is valuable when it:
+    // 1. Pulls enemy into our outnumbering zone
+    const friendsNearNewPos = this.countFriendlyInMeleeRange(context, newPos, 1.5);
+    const enemiesNearNewPos = this.countEnemyInMeleeRange(context, newPos, 1.5);
+    const createsOutnumber = friendsNearNewPos > enemiesNearNewPos && enemiesNearNewPos > 0;
+
+    if (createsOutnumber) {
+      score += 6;
+      reasons.push('Pull into outnumber');
+    }
+
+    // 2. Pulls enemy away from their support
+    const friendsNearOldPos = this.countFriendlyInMeleeRange(context, targetPos, 1.5);
+    if (friendsNearOldPos > friendsNearNewPos) {
+      score += 3;
+      reasons.push('Isolate from support');
+    }
+
+    return {
+      score,
+      reason: reasons.join(', ') || 'Pull-back',
+    };
+  }
+
+  private evaluateReversal(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    cascades: number
+  ): { score: number; reason: string } {
+    // Reversal costs 2 cascades
+    if (cascades < 2) {
+      return { score: 0, reason: 'Need 2+ cascades' };
+    }
+
+    let score = 0;
+    const reasons: string[] = [];
+
+    // Reversal is valuable when it:
+    // 1. Moves attacker out of enemy outnumbering
+    const friendsAtOld = this.countFriendlyInMeleeRange(context, attackerPos, 1.5);
+    const enemiesAtOld = this.countEnemyInMeleeRange(context, attackerPos, 1.5);
+    const outnumberedAtOld = enemiesAtOld > friendsAtOld;
+
+    const friendsAtNew = this.countFriendlyInMeleeRange(context, targetPos, 1.5);
+    const enemiesAtNew = this.countEnemyInMeleeRange(context, targetPos, 1.5);
+    const outnumberedAtNew = enemiesAtNew > friendsAtNew;
+
+    if (outnumberedAtOld && !outnumberedAtNew) {
+      score += 7;
+      reasons.push('Escape outnumber');
+    }
+
+    // 2. Moves attacker into better position (cover, objective, etc.)
+    const coverAtOld = this.evaluateCover(attackerPos, context);
+    const coverAtNew = this.evaluateCover(targetPos, context);
+    if (coverAtNew > coverAtOld) {
+      score += 3;
+      reasons.push('Better cover');
+    }
+
+    return {
+      score,
+      reason: reasons.join(', ') || 'Reversal',
+    };
+  }
+
+  private countFriendlyInMeleeRange(context: AIContext, position: Position, range: number): number {
+    const battlefield = context.battlefield;
+    const mySideId = context.sideId;
+    let count = 0;
+
+    for (const side of context.allSides || []) {
+      if (side.id !== mySideId) continue;
+      for (const member of side.members) {
+        if (member.character.state.isEliminated || member.character.state.isKOd) continue;
+        const memberPos = battlefield.getCharacterPosition(member.character);
+        if (!memberPos) continue;
+        const dist = Math.hypot(position.x - memberPos.x, position.y - memberPos.y);
+        if (dist <= range) {
+          count++;
+        }
+      }
+    }
+
+    return count;
+  }
+
+  private countEnemyInMeleeRange(context: AIContext, position: Position, range: number): number {
+    const battlefield = context.battlefield;
+    const mySideId = context.sideId;
+    let count = 0;
+
+    for (const enemy of context.enemies) {
+      if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+      const enemyPos = battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      const dist = Math.hypot(position.x - enemyPos.x, position.y - enemyPos.y);
+      if (dist <= range) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  /**
+   * Priority 2: Evaluate outnumber advantage at a position
+   * Returns positive score if position creates local outnumbering
+   * Returns negative score if position puts model at disadvantage
+   */
+  private evaluateOutnumberAdvantage(position: Position, context: AIContext): number {
+    const friends = this.countFriendlyInMeleeRange(context, position, 1.5);
+    const enemies = this.countEnemyInMeleeRange(context, position, 1.5);
+
+    // Calculate local ratio
+    if (enemies === 0) {
+      return 0; // No enemies nearby, no advantage
+    }
+
+    const ratio = friends / Math.max(1, enemies);
+
+    if (ratio >= 2) {
+      return 3; // Strong 2:1+ advantage
+    } else if (ratio >= 1.5) {
+      return 2; // Good advantage
+    } else if (ratio >= 1) {
+      return 1; // Slight advantage or equal
+    } else if (ratio >= 0.5) {
+      return -1; // Slightly outnumbered
+    } else {
+      return -3; // Badly outnumbered (1:2+ disadvantage)
+    }
   }
 
   private evaluateObjectiveMarkerActions(

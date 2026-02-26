@@ -17,6 +17,7 @@ import { calculateHindrancePenalty } from '../subroutines/hindrances';
 import { resolveHitTest } from '../subroutines/hit-test';
 import { resolveDamage, DamageResolution } from '../subroutines/damage-test';
 import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from '../status/status-system';
+import { parseTrait } from '../traits/trait-parser';
 import {
   hasPerimeter,
   hasReachAdvantage,
@@ -207,21 +208,36 @@ export function makeCloseCombatAttack(
         ...context,
         isCharge: context.isCharge || hasCharge(attacker),
     };
-    const damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult, damageContext, p3Rolls, p4Rolls);
+    
+    // Calculate Cleave extra wounds BEFORE damage resolution
+    // Cleave X adds (X-1) extra wounds for level >= 2
+    let cleaveExtraWounds = 0;
+    if (weapon.traits?.length) {
+        for (const trait of weapon.traits) {
+            const parsed = parseTrait(trait);
+            if (parsed.name.toLowerCase() === 'cleave' && (parsed.level ?? 1) >= 2) {
+                cleaveExtraWounds = (parsed.level ?? 1) - 1;
+                break;
+            }
+        }
+    }
+    
+    const damageResolution = resolveDamage(attacker, defender, weapon, hitTestResult, damageContext, cleaveExtraWounds);
 
     // 4. Apply Cleave trait - convert KO to Elimination
-    if (damageResolution.defenderState.isKOd && !damageResolution.defenderState.isEliminated) {
-        const cleaveResult = checkCleaveTrigger(attacker, defender, true, weapon);
-        if (cleaveResult.targetEliminated) {
+    // Cleave triggers if the attack KO'd the target (including Cleave extra wounds)
+    if (damageResolution.defenderState.isKOd && !damageResolution.defenderState.isEliminated && cleaveExtraWounds >= 0) {
+        // Check if Cleave trait exists on weapon (any level)
+        const hasCleave = weapon.traits?.some(t => {
+            const parsed = parseTrait(t);
+            return parsed.name.toLowerCase() === 'cleave';
+        });
+        
+        if (hasCleave) {
             damageResolution.defenderState.isEliminated = true;
             damageResolution.defenderState.isKOd = false;
             defender.state.isEliminated = true;
             defender.state.isKOd = false;
-            // Apply extra wounds from Cleave level 2+
-            if (cleaveResult.extraWoundsApplied > 0) {
-                damageResolution.defenderState.wounds += cleaveResult.extraWoundsApplied;
-                defender.state.wounds += cleaveResult.extraWoundsApplied;
-            }
         }
     } else {
         // Update defender state normally

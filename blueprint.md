@@ -34,8 +34,14 @@ My update process for this document is to **Read, Modify, and Write**. I will al
 1.  **Single Source of Truth:** The project's local files are the absolute and only source of truth. All data, including but not limited to character archetypes, items, weapons, armor, and game rules, MUST be drawn directly from the JSON files in `src/data/` and the markdown files (e.g., `rules.md`).
     Rule precedence is explicit: `src/guides/docs/rules-overrides.md` > `src/guides/docs/rules*.md` > `docs/*.txt`.
 2.  **No Fabrication:** Under no circumstances should information be invented, fabricated, or inferred from external knowledge. If a piece of data does not exist explicitly in the project's files, it cannot be used.
-3.  **Filesystem First:** Before making any changes or additions to the codebase, the filesystem must be scanned to confirm the presence or absence of relevant files.
-4.  **Headless First Development:** All development must be focused on the core, headless simulation logic. UI-related files, dependencies (Astro, React, etc.), and configurations are to be ignored until explicitly commanded to work on them. The primary interface for the application is the command line.
+3.  **No External Game System Rules:** MEST Tactics QSR is its own unique game system. **Do not cite, import, or fabricate rules from other game systems** such as D&D, Warhammer, Pathfinder, GURPS, or any other tabletop RPG or wargame. Specifically:
+    - **Dice Mechanics:** MEST Tactics uses d6-only success counting (Base/Modifier/Wild dice). Do not substitute d10, d12, d20, or any other dice mechanics from other systems.
+    - **Attribute Names:** Use only the 9 MEST Tactics attributes (CCA, RCA, REF, INT, POW, STR, FOR, MOV, SIZ). Do not substitute attributes from other systems.
+    - **Combat Resolution:** MEST Tactics uses Opposed Tests with cascades. Do not substitute THAC0, AC, saving throws, or other mechanics from other systems.
+    - **Damage Resolution:** MEST Tactics uses Opposed Damage Tests vs FOR with Armor Rating reduction. Do not substitute hit points, wound tracks, or other damage systems from other systems.
+    - **If a rule is not found in the project files, state that it is not defined rather than importing from external systems.**
+4.  **Filesystem First:** Before making any changes or additions to the codebase, the filesystem must be scanned to confirm the presence or absence of relevant files.
+5.  **Headless First Development:** All development must be focused on the core, headless simulation logic. UI-related files, dependencies (Astro, React, etc.), and configurations are to be ignored until explicitly commanded to work on them. The primary interface for the application is the command line.
 
 ### Filesystem Integrity
 

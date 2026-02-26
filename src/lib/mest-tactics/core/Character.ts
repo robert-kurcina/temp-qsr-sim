@@ -94,7 +94,13 @@ export class Character {
       statusEffects: [],
       statusTokens: {},
       statusPendingTokens: {},
-      armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 },
+      armor: { 
+        total: profile.totalAR || 0, 
+        suit: 0, 
+        gear: 0, 
+        shield: 0, 
+        helm: 0 
+      },
       loadedWeapons: [],
       reloadProgress: 0,
       initiativePoints: 0,

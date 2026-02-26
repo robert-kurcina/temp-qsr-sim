@@ -1,0 +1,602 @@
+[
+  {
+    "turn": 1,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 1,
+      "attackerRolls": [
+        5,
+        3
+      ],
+      "defenderRolls": [
+        3,
+        2
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 3,
+      "defenderTotal": 2,
+      "cascades": 1
+    },
+    "damageTest": {
+      "pass": true,
+      "score": 3,
+      "rolls": [
+        6,
+        4,
+        1,
+        5
+      ],
+      "pool": "2b + 2m",
+      "total": 6,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 2
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 2,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 2,
+    "attacker": "Bravo Duelist",
+    "defender": "Alpha Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": false,
+      "score": -1,
+      "attackerRolls": [
+        4,
+        1
+      ],
+      "defenderRolls": [
+        3,
+        6
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 3,
+      "defenderTotal": 4,
+      "cascades": 0
+    },
+    "result": {
+      "hit": false,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 0
+    }
+  },
+  {
+    "turn": 3,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": false,
+      "score": -2,
+      "attackerRolls": [
+        2,
+        1
+      ],
+      "defenderRolls": [
+        5,
+        5
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 2,
+      "defenderTotal": 4,
+      "cascades": 0
+    },
+    "result": {
+      "hit": false,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 4,
+    "attacker": "Bravo Duelist",
+    "defender": "Alpha Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 0,
+      "attackerRolls": [
+        6,
+        3
+      ],
+      "defenderRolls": [
+        5,
+        4
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 4,
+      "defenderTotal": 4,
+      "cascades": 0
+    },
+    "damageTest": {
+      "pass": true,
+      "score": 0,
+      "rolls": [
+        5,
+        1,
+        3,
+        6
+      ],
+      "pool": "2b + 2m",
+      "total": 4,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 0
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 0
+    }
+  },
+  {
+    "turn": 5,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 0,
+      "attackerRolls": [
+        2,
+        4
+      ],
+      "defenderRolls": [
+        3,
+        4
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 3,
+      "defenderTotal": 3,
+      "cascades": 0
+    },
+    "damageTest": {
+      "pass": true,
+      "score": 0,
+      "rolls": [
+        4,
+        3,
+        1,
+        4
+      ],
+      "pool": "2b + 2m",
+      "total": 4,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 0
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 6,
+    "attacker": "Bravo Duelist",
+    "defender": "Alpha Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": false,
+      "score": -2,
+      "attackerRolls": [
+        2,
+        2
+      ],
+      "defenderRolls": [
+        3,
+        6
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 2,
+      "defenderTotal": 4,
+      "cascades": 0
+    },
+    "result": {
+      "hit": false,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 0
+    }
+  },
+  {
+    "turn": 7,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 2,
+      "attackerRolls": [
+        1,
+        6
+      ],
+      "defenderRolls": [
+        2,
+        2
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 4,
+      "defenderTotal": 2,
+      "cascades": 2
+    },
+    "damageTest": {
+      "pass": false,
+      "score": -1,
+      "rolls": [
+        5,
+        1,
+        2,
+        3
+      ],
+      "pool": "2b + 2m",
+      "total": 3,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 0
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 8,
+    "attacker": "Bravo Duelist",
+    "defender": "Alpha Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 2,
+      "attackerRolls": [
+        3,
+        6
+      ],
+      "defenderRolls": [
+        1,
+        1
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 4,
+      "defenderTotal": 2,
+      "cascades": 2
+    },
+    "damageTest": {
+      "pass": true,
+      "score": 3,
+      "rolls": [
+        1,
+        5,
+        5,
+        6
+      ],
+      "pool": "2b + 2m",
+      "total": 5,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 2
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 2,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 9,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": false,
+      "score": -2,
+      "attackerRolls": [
+        2,
+        5
+      ],
+      "defenderRolls": [
+        6,
+        4
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 3,
+      "defenderTotal": 5,
+      "cascades": 0
+    },
+    "result": {
+      "hit": false,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 10,
+    "attacker": "Bravo Duelist",
+    "defender": "Alpha Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": false,
+      "score": -1,
+      "attackerRolls": [
+        3,
+        2
+      ],
+      "defenderRolls": [
+        4,
+        1
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 2,
+      "defenderTotal": 3,
+      "cascades": 0
+    },
+    "result": {
+      "hit": false,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 11,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 2,
+      "attackerRolls": [
+        3,
+        6
+      ],
+      "defenderRolls": [
+        1,
+        3
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 4,
+      "defenderTotal": 2,
+      "cascades": 2
+    },
+    "damageTest": {
+      "pass": false,
+      "score": -1,
+      "rolls": [
+        1,
+        1,
+        3,
+        5
+      ],
+      "pool": "2b + 2m",
+      "total": 3,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 0
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 12,
+    "attacker": "Bravo Duelist",
+    "defender": "Alpha Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 1,
+      "attackerRolls": [
+        6,
+        3
+      ],
+      "defenderRolls": [
+        1,
+        5
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 4,
+      "defenderTotal": 3,
+      "cascades": 1
+    },
+    "damageTest": {
+      "pass": true,
+      "score": 1,
+      "rolls": [
+        3,
+        5,
+        6,
+        4
+      ],
+      "pool": "2b + 2m",
+      "total": 5,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 0
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 13,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 0,
+      "attackerRolls": [
+        4,
+        5
+      ],
+      "defenderRolls": [
+        4,
+        4
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 4,
+      "defenderTotal": 4,
+      "cascades": 0
+    },
+    "damageTest": {
+      "pass": true,
+      "score": 1,
+      "rolls": [
+        2,
+        1,
+        1,
+        5
+      ],
+      "pool": "2b + 2m",
+      "total": 3,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 0
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 14,
+    "attacker": "Bravo Duelist",
+    "defender": "Alpha Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 2,
+      "attackerRolls": [
+        5,
+        4
+      ],
+      "defenderRolls": [
+        3,
+        2
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 4,
+      "defenderTotal": 2,
+      "cascades": 2
+    },
+    "damageTest": {
+      "pass": false,
+      "score": -1,
+      "rolls": [
+        4,
+        3,
+        1,
+        4
+      ],
+      "pool": "2b + 2m",
+      "total": 4,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 0
+    },
+    "result": {
+      "hit": true,
+      "ko": false,
+      "eliminated": false,
+      "wounds": 0,
+      "totalWounds": 2
+    }
+  },
+  {
+    "turn": 15,
+    "attacker": "Alpha Duelist",
+    "defender": "Bravo Duelist",
+    "action": "Close Combat Attack",
+    "hitTest": {
+      "pass": true,
+      "score": 4,
+      "attackerRolls": [
+        6,
+        6
+      ],
+      "defenderRolls": [
+        3,
+        1
+      ],
+      "attackerPool": "2b",
+      "defenderPool": "2b",
+      "attackerTotal": 6,
+      "defenderTotal": 2,
+      "cascades": 4
+    },
+    "damageTest": {
+      "pass": true,
+      "score": 2,
+      "rolls": [
+        6,
+        6,
+        1,
+        5
+      ],
+      "pool": "2b + 2m",
+      "total": 7,
+      "impact": 1,
+      "armor": 2,
+      "wounds": 1
+    },
+    "result": {
+      "hit": true,
+      "ko": true,
+      "eliminated": false,
+      "wounds": 1,
+      "totalWounds": 3
+    }
+  }
+]
