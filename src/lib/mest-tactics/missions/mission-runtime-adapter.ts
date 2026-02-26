@@ -218,6 +218,13 @@ export class MissionRuntimeAdapter {
       const member = side.members.find(candidate => candidate.id === memberId);
       if (member) {
         member.position = position;
+        
+        // Track Aggression (midline crossing) for Elimination mission
+        if (this.manager instanceof EliminationMissionManager && this.battlefieldSize) {
+          const battlefieldCenter = { x: this.battlefieldSize / 2, y: this.battlefieldSize / 2 };
+          this.manager.trackMidlineCross(modelId, side.id, position, battlefieldCenter);
+        }
+        
         return;
       }
     }
@@ -880,6 +887,8 @@ export class MissionRuntimeAdapter {
 
     if (this.manager instanceof EliminationMissionManager && eliminatedSideId) {
       this.manager.processModelElimination(eliminatedMemberId, eliminatedSideId, eliminatingSideId, eliminatedBp);
+      // Track Scholar RP loss when Scholar character is eliminated
+      this.manager.processScholarElimination(eliminatedMemberId, eliminatedSideId);
     } else if (this.manager instanceof DefianceMissionManager) {
       this.manager.handleVIPElimination(eliminatedMemberId, eliminatingSideId);
     } else if (this.manager instanceof RecoveryMissionManager) {

@@ -319,7 +319,7 @@ export const gameData = {
         "Armor 8",
         "[Laden 3]",
         "Deflect 2",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]",
         "Bulletproof"
       ],
@@ -337,7 +337,7 @@ export const gameData = {
         "Armor 8",
         "[Laden 3]",
         "Deflect 2",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]"
       ],
       "classification": "Armor",
@@ -474,7 +474,7 @@ export const gameData = {
         "Armor 6",
         "[Laden 2]",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]",
         "Bulletproof"
       ],
@@ -492,7 +492,7 @@ export const gameData = {
         "Armor 6",
         "[Laden 2]",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]"
       ],
       "classification": "Armor",
@@ -626,7 +626,7 @@ export const gameData = {
       "traits": [
         "Armor 2",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "Bulletproof"
       ],
       "classification": "Armor",
@@ -642,7 +642,7 @@ export const gameData = {
       "traits": [
         "Armor 2",
         "Deflect",
-        "[Flexible]"
+        "[Flex]"
       ],
       "classification": "Armor",
       "type": "Suit"
@@ -767,7 +767,7 @@ export const gameData = {
         "Armor 4",
         "[Laden]",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "Bulletproof"
       ],
       "classification": "Armor",
@@ -784,7 +784,7 @@ export const gameData = {
         "Armor 4",
         "[Laden]",
         "Deflect",
-        "[Flexible]"
+        "[Flex]"
       ],
       "classification": "Armor",
       "type": "Suit"
