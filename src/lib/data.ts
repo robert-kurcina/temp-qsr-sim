@@ -3447,7 +3447,7 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 3]",
-        "Radio Jammer 2",
+        "Jammer 2 > Radio",
         "[2H]"
       ],
       "classification": "Misc",
@@ -3462,7 +3462,7 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        "Radio Jammer 4",
+        "Jammer 4 > Radio",
         "[2H]"
       ],
       "classification": "Misc",
@@ -5280,7 +5280,7 @@ export const gameData = {
       "impact": 0,
       "dmg": "-",
       "traits": [
-        "Beacon X > Trait",
+        "Beacon X > Target",
         "[Laden]"
       ],
       "classification": "Misc",

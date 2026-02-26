@@ -67,7 +67,7 @@ export const BeaconMission: MissionDefinition = {
   turnLimit: 8,
   endGameDieRoll: true,
   endGameDieStart: 5,
-  keys: ['Dominance', 'Sanctuary', 'POI'], // Uses POI/Zone control system
+  keys: ['Dominance', 'Sanctuary', 'POI', 'Encroachment'], // Zone control + first to cross midline
   sizes: {
     VERY_SMALL: {
       poiVP: 2,

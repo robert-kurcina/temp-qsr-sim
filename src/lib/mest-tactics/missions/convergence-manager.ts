@@ -2,6 +2,7 @@ import { MissionSide } from '../mission/MissionSide';
 import { PointOfInterest, POIType, ZoneControlState, POIManager, createPOI } from '../mission/poi-zone-control';
 import { Position } from '../battlefield/Position';
 import { SpatialModel } from '../battlefield/spatial-rules';
+import { EncroachmentState } from './mission-scoring';
 
 /**
  * Convergence Mission State
@@ -17,6 +18,8 @@ export interface ConvergenceMissionState {
   vpBySide: Map<string, number>;
   /** Zones controlled per side this turn */
   zonesControlledThisTurn: Map<string, number>;
+  /** Encroachment tracking (first to cross midline) */
+  encroachment: EncroachmentState;
   /** Has the mission ended? */
   ended: boolean;
   /** Winning side ID (if ended) */
@@ -45,6 +48,7 @@ export class ConvergenceMissionManager {
       firstControl: new Map(),
       vpBySide: new Map(),
       zonesControlledThisTurn: new Map(),
+      encroachment: {},
       ended: false,
     };
 
@@ -192,6 +196,27 @@ export class ConvergenceMissionManager {
     const side = this.sides.get(sideId);
     if (side) {
       side.state.victoryPoints = currentVP + amount;
+    }
+  }
+
+  /**
+   * Track a model crossing the midline for Encroachment scoring
+   * QSR: Encroachment key - +1 VP to first side to cross midline
+   */
+  trackEncroachment(modelId: string, sideId: string, position: { x: number; y: number }, battlefieldCenter: { x: number; y: number }): void {
+    // Don't track if already awarded
+    if (this.state.encroachment.firstCrossedSideId) return;
+
+    const side = this.sides.get(sideId);
+    if (!side) return;
+
+    // Determine if model is past midline (simple x-axis check for opposite deployment)
+    // Assuming Side A deploys at x=0, Side B at x=battlefieldSize
+    // Midline is at battlefieldSize/2
+    const hasCrossed = position.x > battlefieldCenter.x;
+
+    if (hasCrossed) {
+      this.state.encroachment.firstCrossedSideId = sideId;
     }
   }
 
@@ -487,6 +512,28 @@ export class ConvergenceMissionManager {
         leadMargin: isOpponentBottled ? 1 : 0,
       };
       sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    // Encroachment: +1 VP to first side to cross midline
+    const encroachmentSideId = this.state.encroachment.firstCrossedSideId;
+    if (encroachmentSideId) {
+      sideScores[encroachmentSideId].keyScores['encroachment'] = {
+        current: 0,
+        predicted: 1,
+        confidence: 1.0,
+        leadMargin: 1,
+      };
+      sideScores[encroachmentSideId].predictedVp += 1;
+    } else {
+      // Not yet awarded - either side could still get it
+      for (const side of sideStatuses) {
+        sideScores[side.sideId].keyScores['encroachment'] = {
+          current: 0,
+          predicted: 0,
+          confidence: 0.0,
+          leadMargin: 0,
+        };
+      }
     }
 
     return { sideScores };

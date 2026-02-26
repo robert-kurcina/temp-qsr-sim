@@ -52,7 +52,7 @@ export const EliminationMission: MissionDefinition = {
   turnLimit: 10,
   endGameDieRoll: true,
   endGameDieStart: 6,
-  keys: [], // Elimination uses basic scoring only
+  keys: ['Aggression'], // Midline crossing for VP/RP
   sizes: {
     VERY_SMALL: {},
     SMALL: {},

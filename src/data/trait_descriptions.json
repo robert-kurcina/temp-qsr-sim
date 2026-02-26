@@ -312,7 +312,13 @@
     "[Tethered]": {
         "description": "On its Initiative, it may not start new actions not already assigned to it. At the start of its Initiative, if it is in base-contact with an Attentive Ordered Friendly model; it may be assigned a new set of action and perform them against any target within Line-of-Sight (LOS) of both itself and its handler, or to continue a prior action against a target it had already encountered. It may not otherwise begin new actions on its own."
     },
+    "[Traversal]": {
+        "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP." 
+    },
     "[Traversal!]": {
+        "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP." 
+    },
+    "[Traversal+]": {
         "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP." 
     },
     "[Treacherous]": {
@@ -666,6 +672,9 @@
     },
     "Horrifying X": {
         "description": "Intrinsic. Psychology. See Fear X. Behaves like the Fear X trait. Disregard this trait entirely if the Opposing model has the Fear or Horrifying traits. Disregard this trait entirely unless the Opposing model is Distracted and also in Nervous, Hidden or Wait status. If there are at least 2, 5, or 10 models with the Horrifying trait within Visibility, apply a further penalty to the Opposing model of -1m, -2m, or -3m. A model with both the Horrifying and Fear traits adds their levels together unless Horrifying is disregarded." 
+    },
+    "Imbue X > Trait": {
+        "description": "If assigned to an Asset, provides Trait X to Character. If assigned via Upgrade then provides Trait X to Asset."
     },
     "Immortal X": {
         "description": "While level is 1 or greater; never considered Eliminated, merely KO'd. Unless Eliminated as a result of having at least X + 4 Fear tokens."

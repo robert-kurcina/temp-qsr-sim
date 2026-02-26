@@ -23,6 +23,10 @@ export interface AggressionState {
   firstCrossedSideId?: string;
 }
 
+export interface EncroachmentState {
+  firstCrossedSideId?: string;
+}
+
 export interface MissionScoreInput {
   sides: MissionSideStatus[];
   aggression?: AggressionState;
@@ -165,6 +169,19 @@ export function computeAggressionScores(
   if (aggression.firstCrossedSideId) {
     rpBySide[aggression.firstCrossedSideId] = (rpBySide[aggression.firstCrossedSideId] || 0) + 1;
   }
+
+  return { vpBySide, rpBySide };
+}
+
+export function computeEncroachmentScore(
+  encroachment?: EncroachmentState
+): { vpBySide: Record<string, number>; rpBySide: Record<string, number> } {
+  const vpBySide: Record<string, number> = {};
+  const rpBySide: Record<string, number> = {};
+  if (!encroachment?.firstCrossedSideId) return { vpBySide, rpBySide };
+
+  // Encroachment: +1 VP to first side to cross midline
+  vpBySide[encroachment.firstCrossedSideId] = 1;
 
   return { vpBySide, rpBySide };
 }
