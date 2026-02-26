@@ -87,6 +87,7 @@ When rule documents conflict, use this precedence order:
 | [Armors Reference](./rules-armors-reference) | Complete armors and equipment list |
 | [Armor Materials](./rules-armor-materials) | Material hardness chart and era adjustments |
 | [Technology & Genres](./rules-technology-genres) | Tech levels, periods, and genre settings |
+| [Item Tech Windows](./rules-item-tech-windows) | Item availability by tech level (early/latest) |
 | [Variant Archetypes](./rules-variant-archetypes) | All variant archetypes with traits and BP costs |
 | [Random Selection](./rules-random-selection) | Dice methods for random selection and utility |
 

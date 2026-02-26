@@ -4,6 +4,7 @@ import { Archetype } from '../core/Archetype';
 import { Item } from '../core/Item';
 import { Profile } from '../core/Profile';
 import { processTraits, formatTrait } from '../traits/trait-parser';
+import { isItemAvailableAtTechLevel, filterItemsByTechLevel } from './tech-level-filter';
 
 const itemDataMapping: {
     [key: string]: keyof typeof gameData | null
@@ -92,8 +93,33 @@ export function createProfiles(
     primaryArchetypeName: string,
     primaryArchetypeData: Archetype,
     secondaryArchetypeNames: string[] = [],
-    itemNames: string[] = []
+    itemNames: string[] = [],
+    techLevelConfig?: { early?: number; latest?: number }
 ): Profile[] {
+
+    // Filter items by tech level if config provided
+    let filteredItemNames = itemNames;
+    if (techLevelConfig) {
+        const maxTechLevel = techLevelConfig.latest ?? 20;
+        const minTechLevel = techLevelConfig.early ?? 1;
+        
+        filteredItemNames = filterItemsByTechLevel(itemNames, {
+            maxTechLevel,
+            minTechLevel,
+            allowAnyTech: true,
+        });
+        
+        // Warn about filtered items
+        const invalidItems = itemNames.filter(name => 
+            !isItemAvailableAtTechLevel(name, maxTechLevel)
+        );
+        if (invalidItems.length > 0) {
+            console.warn(
+                `Tech Level ${minTechLevel}-${maxTechLevel}: ` +
+                `Filtered out ${invalidItems.length} items not available: ${invalidItems.join(', ')}`
+            );
+        }
+    }
 
     const archetype: { [key: string]: Archetype } = { [primaryArchetypeName]: primaryArchetypeData };
     let totalBp = primaryArchetypeData.bp;
@@ -123,7 +149,7 @@ export function createProfiles(
     let equipmentCount = 0;
     let totalLaden = 0;
 
-    itemNames.forEach(itemName => {
+    filteredItemNames.forEach(itemName => {
         let itemFound = false;
         for (const key in itemDataMapping) {
             const dataKey = itemDataMapping[key] as keyof typeof gameData;

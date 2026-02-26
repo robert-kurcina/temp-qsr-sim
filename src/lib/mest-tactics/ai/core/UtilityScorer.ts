@@ -20,6 +20,15 @@ import { forecastWaitReact, rolloutWaitReactBranches } from '../tactical/GOAP';
 import { calculateStratagemModifiers, TacticalDoctrine } from '../stratagems/AIStratagems';
 import { buildScoringContext, calculateScoringModifiers, combineModifiers } from '../stratagems/PredictedScoringIntegration';
 import { applyCombinedModifiersToActions } from '../stratagems/StratagemIntegration';
+import {
+  // ROF/Suppression scoring
+  scoreROFPlacement,
+  scoreSuppressionZone,
+  scoreFirelaneFOF,
+  scorePositionSafety,
+  type ROFMarker,
+  type SuppressionMarker,
+} from './ROFScoring';
 
 /**
  * Weight configuration for utility scoring
@@ -714,10 +723,15 @@ export class UtilityScorer {
       // Score positions that create local outnumbering advantage
       const outnumberScore = this.evaluateOutnumberAdvantage(pos, context);
 
+      // R2.5: ROF/Suppression safety scoring
+      const positionSafety = this.evaluatePositionSafety(context.character, pos, context);
+      const suppressionZoneControl = this.evaluateSuppressionZoneControl(pos, context);
+
       // R3: Doctrine-aware scoring weights
       const coverWeight = this.weights.coverValue * (isRanged ? 1.3 : 1.0);
       const leanWeight = isRanged ? 1.5 : 0; // Only ranged models benefit from lean
       const exposurePenalty = isRanged ? 1.8 : 1.2; // Ranged models more exposed = bad
+      const safetyWeight = isRanged ? 2.0 : 1.5; // Ranged models should avoid suppression more
 
       const score =
         cover * coverWeight +
@@ -727,7 +741,9 @@ export class UtilityScorer {
         cohesion * this.weights.cohesionValue +
         (leanOpportunity * leanWeight) -
         (exposureRisk * exposurePenalty) +
-        (outnumberScore * 2.0); // Strong weight for outnumber advantage
+        (outnumberScore * 2.0) + // Strong weight for outnumber advantage
+        (positionSafety * safetyWeight) + // R2.5: Safety from ROF/suppression
+        (suppressionZoneControl * 1.5); // R2.5: Area denial value
 
       positions.push({
         position: pos,
@@ -740,6 +756,8 @@ export class UtilityScorer {
           threatRelief,
           leanOpportunity,
           exposureRisk,
+          positionSafety,
+          suppressionZoneControl,
         },
       });
     }
@@ -756,6 +774,9 @@ export class UtilityScorer {
     const characterPos = context.battlefield.getCharacterPosition(context.character);
     if (!characterPos) return targets;
 
+    // Get ROF level from character's weapon
+    const rofLevel = this.getCharacterROFLevel(context.character);
+
     for (const enemy of context.enemies) {
       if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
 
@@ -769,18 +790,24 @@ export class UtilityScorer {
         ? (this.hasLOS(context.character, enemy, context.battlefield) ? 1.0 : 0.0)
         : 1.0;
       const missionPriority = this.evaluateMissionPriority(enemy, context);
+      
+      // R2.5: ROF Target Scoring - prioritize targets that are good for ROF attacks
+      const rofTargetScore = rofLevel > 0 
+        ? this.evaluateROFTargetValue(context.character, enemy, context, rofLevel)
+        : 0;
 
       const score =
         health * this.weights.targetHealth +
         threat * this.weights.targetThreat +
         distance * this.weights.distanceToTarget +
         visibility * 2.0 +
-        missionPriority * this.weights.victoryConditionValue;
+        missionPriority * this.weights.victoryConditionValue +
+        rofTargetScore * 1.5; // ROF targets get 1.5x weight
 
       targets.push({
         target: enemy,
         score,
-        factors: { health, threat, distance, visibility, missionPriority },
+        factors: { health, threat, distance, visibility, missionPriority, rofTargetScore },
       });
     }
 
@@ -1152,6 +1179,119 @@ export class UtilityScorer {
     );
     // Prefer closer targets
     return Math.max(0, 1 - dist / 24);
+  }
+
+  // ============================================================================
+  // R2.5: ROF/Suppression/Firelane Scoring Integration
+  // ============================================================================
+
+  /**
+   * Get ROF level from character's equipped weapon
+   */
+  private getCharacterROFLevel(character: Character): number {
+    const equipment = character.profile?.equipment || character.profile?.items || [];
+    for (const item of equipment) {
+      for (const trait of item.traits || []) {
+        const match = trait.match(/ROF\s*(\d+)/i);
+        if (match) {
+          return parseInt(match[1], 10);
+        }
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * Evaluate target value for ROF attacks
+   * Higher score for targets that are:
+   * - Near other enemies (multi-target potential)
+   * - In open ground (no cover)
+   * - Within optimal ROF range
+   */
+  private evaluateROFTargetValue(
+    attacker: Character,
+    primaryTarget: Character,
+    context: AIContext,
+    rofLevel: number
+  ): number {
+    const attackerPos = context.battlefield.getCharacterPosition(attacker);
+    const primaryTargetPos = context.battlefield.getCharacterPosition(primaryTarget);
+    if (!attackerPos || !primaryTargetPos) return 0;
+
+    // Score ROF placement for this target
+    const allCharacters = [attacker, primaryTarget, ...context.allies, ...context.enemies];
+    const rofScore = scoreROFPlacement(
+      attacker,
+      context.battlefield,
+      primaryTarget,
+      rofLevel,
+      allCharacters
+    );
+
+    let score = 0;
+
+    // Bonus for multiple targets in ROF range
+    score += rofScore.targetsInRange * 2;
+
+    // Bonus for good ROF dice bonus
+    score += rofScore.rofDiceBonus * 0.5;
+
+    // Penalty for Friendly fire risk
+    if (!rofScore.avoidsFriendlyFire) {
+      score -= 5; // Strong penalty for Friendly fire risk
+    }
+
+    return Math.max(0, score);
+  }
+
+  /**
+   * Evaluate position safety from ROF/Suppression
+   * Lower score for positions in suppression zones or ROF kill zones
+   */
+  private evaluatePositionSafety(
+    character: Character,
+    position: Position,
+    context: AIContext
+  ): number {
+    // Get suppression markers from battlefield state
+    // TODO: Integrate with battlefield suppression marker tracking
+    const suppressionMarkers: SuppressionMarker[] = [];
+    const rofMarkers: ROFMarker[] = [];
+
+    const safety = scorePositionSafety(
+      character,
+      context.battlefield,
+      position,
+      suppressionMarkers,
+      rofMarkers
+    );
+
+    // Return safety score (higher = safer)
+    return safety.score / 10; // Normalize to 0-1 range
+  }
+
+  /**
+   * Evaluate suppression zone control for area denial
+   * Higher score for zones that trap enemies
+   */
+  private evaluateSuppressionZoneControl(
+    position: Position,
+    context: AIContext
+  ): number {
+    // Get suppression markers from battlefield state
+    // TODO: Integrate with battlefield suppression marker tracking
+    const suppressionMarkers: SuppressionMarker[] = [];
+    const allCharacters = [context.character, ...context.allies, ...context.enemies];
+
+    const zoneScore = scoreSuppressionZone(
+      context.battlefield,
+      suppressionMarkers,
+      position,
+      allCharacters
+    );
+
+    // Score based on enemies trapped minus friendlies at risk
+    return zoneScore.enemiesInZone * 2 - zoneScore.friendliesInZone * 3;
   }
 
   private evaluateMissionPriority(target: Character, context: AIContext): number {

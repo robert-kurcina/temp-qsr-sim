@@ -1,11 +1,20 @@
 /**
  * End-Game Trigger Dice Mechanics
- * 
- * QSR Rules: At the end of each turn starting from the End-Game Trigger turn,
+ *
+ * QSR Rules (Line 744-750): At the end of each turn starting from the End-Game Trigger turn,
  * roll a d6. On a result of 1-3, the game ends immediately.
- * 
- * The End-Game Trigger turn is typically turn 10 for standard games.
+ *
+ * End-Game Trigger turn is determined by Game Size:
+ * - VERY_SMALL (2-4 models, 125-250 BP): Turn 3
+ * - SMALL (4-8 models, 250-500 BP): Turn 4
+ * - MEDIUM (6-12 models, 500-750 BP): Turn 6
+ * - LARGE (8-16 models, 750-1000 BP): Turn 8
+ * - VERY_LARGE (16+ models, 1000+ BP): Turn 10
+ *
+ * Source: MEST.Tactics.QSR.txt Line 744-750
  */
+
+import { GameSize } from '../mission/assembly-builder';
 
 export interface EndGameTriggerState {
   endDice: number; // Number of end-game dice to roll
@@ -22,9 +31,33 @@ export interface EndGameTriggerResult {
 }
 
 /**
- * Default end-game trigger turn for standard games
+ * Get end-game trigger turn based on game size
+ * 
+ * Per QSR Line 744-750:
+ * "Use the Game Size per the total BP and adjust one row toward the total Models used
+ * to determine after which Turn the End-game Triggers are to be placed."
  */
-export const DEFAULT_END_GAME_TRIGGER_TURN = 10;
+export function getEndGameTriggerTurn(gameSize: GameSize): number {
+  switch (gameSize) {
+    case GameSize.VERY_SMALL:
+      return 3;  // 2-4 models, 125-250 BP
+    case GameSize.SMALL:
+      return 4;  // 4-8 models, 250-500 BP
+    case GameSize.MEDIUM:
+      return 6;  // 6-12 models, 500-750 BP
+    case GameSize.LARGE:
+      return 8;  // 8-16 models, 750-1000 BP
+    case GameSize.VERY_LARGE:
+      return 10; // 16+ models, 1000+ BP
+    default:
+      return 4;  // Default to SMALL
+  }
+}
+
+/**
+ * Default end-game trigger turn for standard games (SMALL)
+ */
+export const DEFAULT_END_GAME_TRIGGER_TURN = 4;
 
 /**
  * Create initial end-game trigger state

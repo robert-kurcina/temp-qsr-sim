@@ -8,6 +8,8 @@ priority: 9
 
 This module defines the technology periods and tech levels used to determine item availability in different game settings.
 
+**See also:** [[rules-item-tech-windows|Item Tech Windows]] for detailed item availability by tech level.
+
 ---
 
 ## Technology Periods & Levels
@@ -246,6 +248,7 @@ Build Assemblies using only available items within BP budget.
 
 - [[rules-assemblies-and-setup|Rules: Assemblies & Setup]] — Building assemblies
 - [[rules-items|Rules: Items]] — Item rules and restrictions
+- [[rules-item-tech-windows|Rules: Item Tech Windows]] — Item availability by tech level
 - [[rules-weapons-reference|Rules: Weapons Reference]] — Weapon statistics
 - [[rules-armors-reference|Rules: Armors Reference]] — Armor statistics
 

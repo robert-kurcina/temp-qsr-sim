@@ -361,18 +361,32 @@ This plan supersedes ad-hoc backlog ordering and is now the execution order for 
    - **Location:** `src/lib/mest-tactics/status/passive-options.test.ts`
    - **Exit Criteria:** ✅ MET — All options tested with availability conditions
 
-4. **Advanced Traits Unit Tests** (P6-LOW) — 0/80+ complete
-   - **Status:** Not started
-   - **Scope:** 80+ Advanced traits from `trait_descriptions.json` (psychology, magic, technology, etc.)
-   - **Location:** `src/lib/mest-tactics/traits/advanced-traits.test.ts` (needs creation)
-   - **Exit Criteria:** All Advanced traits documented with tests; may be partial implementation acceptable
-   - **Note:** This is the **lowest priority** in Phase H, but MUST be complete before UI/Web application work begins
+4. **Advanced Traits Unit Tests** (P6-LOW) — **TIERED PRIORITY**
+   
+   **Phase H.4a - Documented Traits (P6-MEDIUM):** 45 traits documented
+   - **Status:** Unit tests in progress
+   - **Scope:** ROF, Suppression, Fire, Firelane, Gas/Fume/Puffs, Effects (Hindrances), Go Points, Champions/LoA, Lighting, Webbing, Terrain, Buildings
+   - **Location:** `src/lib/mest-tactics/traits/advanced-traits.test.ts`
+   - **Exit Criteria:** All 45 documented traits have unit tests; may be partial implementation acceptable
+   
+   **Phase H.4b - Partial Traits (P6-LOW):** 20 traits with stubs
+   - **Status:** Implementation stubs created with TODO comments
+   - **Scope:** [Arc X], [Backblast X], [Carriage X], [Configure X], [Discard variants], [Discord X], [Drone X], [Entropy variants], [Exit], [Fettered], [Flex], [Fodder], [Fragile X], [Grenade X], [Hard-point X], [Hurried X], [Immobile], [Impaired], [Inept variants], [Jam X]
+   - **Location:** `src/lib/mest-tactics/traits/advanced-traits.ts` (stubs)
+   - **Exit Criteria:** Implementation stubs with TODO comments noting required context
+   
+   **Phase H.4c - DEFERRED Traits (P6-LOWEST):** 25 traits needing user context
+   - **Status:** DEFERRED until user provides context
+   - **Scope:** Magic/Arcanics (17), Psychology/Behavior (19), Technology/Equipment (8), Movement/Positioning (13), Combat/Attack (10), Status/Condition (10), Special (12)
+   - **Location:** `docs/advanced-traits-cross-reference.md` (tracked)
+   - **Exit Criteria:** User provides context for DEFERRED categories, then implement and test
+   - **Priority:** **Lowest priority** - after AI System completion, before UI/Web application work begins
 
-5. **Complex Set Integration Tests** (P6-MEDIUM) — 0/4 complete
-   - **Status:** Tests pending
+5. **Complex Set Integration Tests** (P6-MEDIUM) — ✅ **COMPLETE** (4/4)
+   - **Status:** 26 tests passing
    - **Scope:** Test most complex Weapons, Equipment, Items, and Archetypes by trait count
-   - **Location:** `src/lib/mest-tactics/traits/complex-sets.test.ts` (needs creation)
-   - **Exit Criteria:** 4 test sets covering trait interactions in crucible combat scenarios
+   - **Location:** `src/lib/mest-tactics/traits/complex-sets.test.ts`
+   - **Exit Criteria:** ✅ MET — 4 test sets covering trait interactions in crucible combat scenarios
 
 **Test Documentation Tracking:**
 - `docs/qsr-trait-tests.md` — Tracks all 100+ traits (✅ 32 QSR complete, 80+ Advanced pending)
@@ -381,15 +395,20 @@ This plan supersedes ad-hoc backlog ordering and is now the execution order for 
 
 **Phase H Priority Relative to Other Work:**
 ```
-P0-P5 (Current Phases) → Phase H (Test Implementation) → UI/Web Application (Phase 3+)
-                              ↑
-                    Advanced Traits (lowest in Phase H, but before UI)
+P0-P5 (Current Phases) → AI System Completion → Phase H (Test Implementation) → UI/Web Application (Phase 3+)
+                                                    ↓
+                                    H.4a: Documented Traits (P6-MEDIUM)
+                                    H.4b: Partial Traits (P6-LOW)  
+                                    H.4c: DEFERRED Traits (P6-LOWEST) ← After AI, Before UI
 ```
 
 **Rationale:**
 - QSR traits are core combat mechanics — must be tested before Advanced traits
 - Bonus Actions and Passive Options are frequently used in combat — medium priority
-- Advanced traits (psychology, magic, technology) are not in QSR — lowest priority
+- Advanced traits (psychology, magic, technology) are not in QSR — lower priority
+- **Documented traits** have complete rules — implement tests first
+- **Partial traits** need implementation stubs — create with TODO comments
+- **DEFERRED traits** need user context — lowest priority, after AI System completion, before UI work
 - **All trait tests must be complete before UI work** to ensure stable runtime for UI testing
 
 ### 10.2.1 Execution Status Snapshot (2026-02-26)
@@ -414,7 +433,9 @@ Implemented and validated in runtime/tests:
 - **H1 (P6-HIGH):** QSR Item Traits Tests — ✅ **COMPLETE** (100 tests passing)
 - **H2 (P6-MEDIUM):** Bonus Actions Tests — ✅ **COMPLETE** (28 tests passing)
 - **H3 (P6-MEDIUM):** Passive Player Options Tests — ✅ COMPLETE (17 tests passing)
-- **H4 (P6-LOW):** Advanced Traits Tests — 0/80+ complete (lowest priority, but required before UI)
+- **H4a (P6-MEDIUM):** Documented Advanced Traits Tests — IN PROGRESS (45 traits)
+- **H4b (P6-LOW):** Partial Traits Stubs — TODO comments needed (20 traits)
+- **H4c (P6-LOWEST):** DEFERRED Traits — Waiting for user context (25 traits)
 - **H5 (P6-MEDIUM):** Complex Set Integration Tests — ✅ **COMPLETE** (26 tests passing)
 
 Deferred or held by approval:
@@ -431,17 +452,53 @@ Deferred or held by approval:
   - **H4 (P6-LOW):** Advanced Traits Unit Tests — 0/80+ complete (lowest priority, but MUST complete before UI/Web work)
 
 **Active Development:**
-- **H2 (P6-MEDIUM):** Bonus Actions Tests — ✅ **COMPLETE** (2026-02-26)
-  - 28 tests in `src/lib/mest-tactics/actions/bonus-actions.test.ts`
-  - All 8 Bonus Actions now have complete test coverage with clause variations
-- **H5 (P6-MEDIUM):** Complex Set Integration Tests — ✅ **COMPLETE** (2026-02-26)
-  - 26 tests in `src/lib/mest-tactics/traits/complex-sets.test.ts`
-  - 4 test sets covering trait interactions in crucible combat scenarios
+- **H4a (P6-MEDIUM):** Documented Advanced Traits Tests — ✅ **COMPLETE** (2026-02-26)
+  - 100 tests for 45 documented traits in `advanced-traits.test.ts`
+  - Categories: ROF, Suppression, Fire, Firelane, Gas/Fume/Puffs, Effects, Go Points, Champions/LoA, Lighting, Webbing, Terrain, Buildings
+- **H4b (P6-LOW):** Partial Traits Implementation Stubs — ✅ **COMPLETE** (2026-02-26)
+  - 20 implementation stubs with TODO comments in `advanced-traits-stubs.ts`
+  - Categories: [Arc X], [Backblast X], [Carriage X], [Configure X], [Discard variants], [Discord X], [Drone X], [Entropy variants], [Exit], [Fettered], [Flex], [Fodder], [Fragile X], [Grenade X], [Hard-point X], [Hurried X], [Immobile], [Impaired], [Inept variants], [Jam X]
+- **ROF/Suppression/Firelane Spatial Geometry** — ✅ **COMPLETE** (2026-02-26)
+  - 36 tests in `rof-suppression-spatial.test.ts`
+  - Full spatial geometry for ROF marker placement, Suppression area effects, Core Damage/Defense
+  - UI Rendering API for 2D visualization (markers, FOF cones, suppression zones)
+- **AI ROF Scoring Module** — ✅ **COMPLETE** (2026-02-26)
+  - 15 tests in `ROFScoring.test.ts`
+  - Scoring functions for ROF placement, suppression zones, Firelane FOF, position safety
+- **AI UtilityScorer Integration** — ✅ **COMPLETE** (2026-02-26)
+  - ROF target prioritization in `evaluateTargets()` (R2.5)
+  - Position safety evaluation from suppression/ROF in `evaluatePositions()`
+  - Suppression zone control scoring for area denial
+  - 10 integration tests in `UtilityScorer.ROF.test.ts`
+- **Technology Level Filtering** — ✅ **COMPLETE** (2026-02-26)
+  - 36 tests in `tech-level-filter.test.ts`
+  - Human-readable age to tech_level mapping (Stone, Bronze, Iron, Medieval, etc.)
+  - Item availability filtering by tech_window (early/latest)
+  - Integration with `buildProfile()` for automatic item filtering
+  - Profile factory accepts tech_level pair (early, latest) for filtering
+  - Default: Medieval (Tech 5), QSR default: Tech 1-3 (extended: 1-5)
+  - Documentation: `rules-item-tech-windows.md` with cross-links
+- **QSR Instrumentation System** — ✅ **COMPLETE** (2026-02-26)
+  - 30 tests in `QSRInstrumentation.test.ts`
+  - 6 instrumentation grades (0=None, 1=Summary, 2=By Action, 3=With Tests, 4=With Dice, 5=Full Detail)
+  - Action logging with test results, dice rolls, trait sources, situational modifiers
+  - Battle log export to JSON
+  - Console output for debugging
+  - Documentation: `qsr-instrumentation.md`
+
+**Phase 1 Status:** ✅ **COMPLETE** - AI System now has full ROF/Suppression/Firelane awareness
+
+**Next Priority:** Phase H Remaining Tasks
+- **H4c (P6-LOWEST):** DEFERRED traits awaiting user context — after AI System completion, before UI work
+  - Magic/Arcanics (17), Psychology/Behavior (19), Technology/Equipment (8), Movement/Positioning (13), Combat/Attack (10), Status/Condition (10), Special (12)
+  - See `docs/advanced-traits-cross-reference.md` for full list
 
 **Next Priority:** Phase H (QSR Unit Test Implementation)
-- **H4 (P6-LOW):** Advanced Traits Unit Tests — 80+ tests pending (required before UI)
-  - Location: `src/lib/mest-tactics/traits/advanced-traits.test.ts` (needs creation)
-  - Scope: 80+ Advanced traits from `trait_descriptions.json` (psychology, magic, technology)
+- **H4a:** Complete unit tests for 45 documented advanced traits
+- **H4b:** Complete implementation stubs for 20 partial traits with TODO comments
+- **H4c (LOWEST):** DEFERRED traits awaiting user context — after AI System completion, before UI work
+  - Magic/Arcanics (17), Psychology/Behavior (19), Technology/Equipment (8), Movement/Positioning (13), Combat/Attack (10), Status/Condition (10), Special (12)
+  - See `docs/advanced-traits-cross-reference.md` for full list
 
 Remaining high-priority technical debt after current remediation:
 - Repository-wide TypeScript drift outside active mission/AI execution paths.
@@ -2103,7 +2160,7 @@ The `GameController` class had two methods for running games:
 1. **Kept `runSkirmish()`** unchanged - works for basic games
 2. **Fixed `runMission()`** to use existing mission-flow functions:
    - `initMissionFlow()` ✅
-   - `recordBottleResults()` ✅
+   - `recordBottleResults()` ��
    - `advanceEndGameState()` ✅
    - `computeMissionOutcome()` ✅
 
@@ -2404,9 +2461,8 @@ npm test
 - ✅ **Initiative tie-breaker corrected** — Now uses dice pips, then re-roll d6 (per QSR Line 689)
 - ✅ **Fear auto-elimination** — Characters with 4+ Fear tokens are now automatically Eliminated
 - ✅ **Initiative Points (IP) system** — Full implementation with Maintain (1 IP), Force (2 IP), Refresh (1 IP) actions
-- ✅ **End-game Trigger Dice mechanics** — Automatic d6 roll at end of each turn from turn 10, game ends on 1-3
+- ✅ **End-game Trigger Dice mechanics** — Game size-based trigger turns (VERY_SMALL=3, SMALL=4, MEDIUM=6, LARGE=8, VERY_LARGE=10), d6 roll on 1-3 ends game
 - ✅ **Game size consistency** — All files now use VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE (no "skirmish" or "epic")
-- ✅ **Turn limit standardization** — All game sizes use 10 turns for end-game threshold
 - ✅ **Full Agility rules** — Bypass, Climb, Jump Up/Down/Across, Running Jump, Leaning (agility.ts)
 - ✅ **Hand requirements [1H]/[2H] enforcement** — Full validation system with penalty tracking (hand-requirements.ts)
 - ✅ **Missing situational modifiers** — Assist, Elevation, Obscured, Leaning, Solo, Help, Confined all implemented
