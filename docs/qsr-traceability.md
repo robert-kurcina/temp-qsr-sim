@@ -2,9 +2,14 @@
 
 This matrix maps the source instructions in `docs/*.txt` to the modular rules docs in `src/guides/docs/` and to the current runtime code in `src/lib/mest-tactics/`. It explicitly calls out gaps and mismatches.
 
-**Last Updated:** February 25, 2026  
+**Last Updated:** February 26, 2026  
 **Documentation Coverage:** ~100% of QSR.txt  
-**Test Coverage:** 1,272 tests across 94 test files (100% pass)
+**Test Coverage:** 1,324 tests across 95 test files (100% pass)
+
+**Related Test Documentation:**
+- [[qsr-trait-tests|QSR Trait Tests]] — Unit test coverage for all 100+ traits (16 QSR traits complete)
+- [[qsr-bonus-action-tests|QSR Bonus Action Tests]] — Unit test coverage for all 8 Bonus Actions
+- [[qsr-passive-player-options-tests|QSR Passive Player Options Tests]] — Unit test coverage for all 7 Passive Options (17 tests complete)
 
 Legend:
 - **Implemented**: Core behavior present in runtime code.
@@ -82,7 +87,7 @@ Legend:
 | Indirect Arc/Height Fidelity | `src/guides/docs/rules-indirect.md` | Midpoint/arc terrain-height precision remains deferred pending terrain elevation clarification. | **Deferred to Phase 3** - Requires 3D terrain implementation. Current 2D implementation is functional for QSR validation. |
 | Movement/Terrain 3D | `src/guides/docs/rules-movement.md`, `src/guides/docs/rules-terrain.md` | Terrain heights and 3D volume not fully modeled in runtime. | **Deferred** - 2D footprint sufficient for QSR; 3D LOS/height checks are Phase 4. |
 
-## Completed Documentation Work (2026-02-25)
+## Completed Documentation Work (2026-02-26)
 
 | Item | Location | Previous Status | Resolution |
 |---|---|---|---|
@@ -90,7 +95,7 @@ Legend:
 | Core Damage | `src/guides/docs/rules-general-terms.md` | Not marked as Advanced | **Complete** - Now marked "Advanced Rule (Not in QSR)" with Suppression reference. |
 | Falling Rules | `src/lib/mest-tactics/actions/agility.ts` | Partial (missing Falling Test) | **Complete** - resolveFallingTest() and resolveFallingCollision() implemented; 17 tests added. |
 | Friendly Fire | `src/guides/docs/rules-friendly-fire-los.md` | In-Progress | **Complete** - Full resolution sequence, priority order, REF Test, Safe Models exception. |
-| Bonus Actions | `src/guides/docs/rules-bonus-actions.md` | Not documented | **Complete** - All 8 Bonus Actions with Physicality rules; all 7 Passive Player Options. |
+| Bonus Actions | `src/guides/docs/rules-bonus-actions.md` | Not documented | **Complete** - All 8 Bonus Actions with Physicality rules; all 7 Passive Player Options. Updated with Additional Clauses (◆➔✷) and base cascade costs. |
 | Actions Quick Reference | `src/guides/docs/rules-actions.md` | No consolidated table | **Complete** - Complete Actions List, Initiative Abilities, Bonus Actions, Passive Player Options tables. |
 | Technology & Genres | `src/guides/docs/rules-technology-genres.md` | Not documented | **Complete** - 20 Tech Levels, item availability by era, genre settings. |
 | Armor Materials | `src/guides/docs/rules-armor-materials.md` | Not documented | **Complete** - Material hardness chart, era classifications, crafting rules. |
@@ -99,6 +104,10 @@ Legend:
 | Random Selection | `src/guides/docs/rules-random-selection.md` | Not documented | **Complete** - Y/N, D6, D66, D666 methods; random model selection. |
 | TODO Comments | Various runtime files | Untracked | **Complete** - 8 TODOs updated with rules references (compulsory-actions.ts, morale.ts, GameManager.ts, GOAP.ts, TacticalPatterns.ts). |
 | Code Comments | `close-combat.ts`, `ranged-combat.ts` | No rules links | **Complete** - File-level headers with rules module references added. |
+| **Test Documentation** | `docs/qsr-*.md` | Not documented | **Complete** (2026-02-26) - 4 test tracking documents created: |
+| | `docs/qsr-trait-tests.md` | — | 100+ traits tracked; 16 QSR combat traits have unit tests (39 tests passing) |
+| | `docs/qsr-bonus-action-tests.md` | — | 8 Bonus Actions tracked with Additional Clauses; tests pending |
+| | `docs/qsr-passive-player-options-tests.md` | — | 7 Passive Options tracked; 17 unit tests passing |
 
 ## Resolved Mismatches (R1-R5)
 
@@ -110,4 +119,4 @@ Legend:
 | Wait Tactical Valuation | `src/lib/mest-tactics/ai/core/UtilityScorer.ts` | Wait undervalued without tactical conditions | **R2 COMPLETE** - Added 6 tactical condition bonuses (low-REF enemies, multi-trigger, etc.) |
 | Cover-Seeking Movement | `src/lib/mest-tactics/ai/core/UtilityScorer.ts` | Movement didn't prioritize cover/lean | **R3 COMPLETE** - Added lean opportunity detection and exposure risk assessment |
 | Behavior Validation | N/A | No automated detection of behavior cloning | **R4 COMPLETE** - Cross-mission validation harness with fail-fast on suspicious convergence |
-| Documentation Completeness | `src/guides/docs/*.md` | ~95% QSR coverage, missing reference tables | **R5 COMPLETE** (2026-02-25) - 7 new rules modules, 41 total files, ~100% QSR coverage; 1,272 tests (100% pass). |
+| Documentation Completeness | `src/guides/docs/*.md` | ~95% QSR coverage, missing reference tables | **R5 COMPLETE** (2026-02-26) - 7 new rules modules, 41 total files, ~100% QSR coverage; 1,324 tests (100% pass); 4 test tracking documents. |

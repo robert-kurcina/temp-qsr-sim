@@ -986,7 +986,7 @@ export function getThrowableOptimalRange(character: Character): number {
   if (!hasThrowable(character)) {
     return 0;
   }
-  return character.profile?.finalAttributes?.STR ?? 0;
+  return character.finalAttributes?.str ?? character.attributes?.str ?? 0;
 }
 
 export function throwableReceivesAccuracyBonus(character: Character): boolean {
@@ -2514,5 +2514,309 @@ export function checkUnarmedWeaponPickup(
   return {
     canPickup: true,
     acquiresDiscard: failedCloseCombatAttack,
+  };
+}
+
+// ============================================================================
+// [1H] - ONE-HANDED WEAPON
+// ============================================================================
+
+/**
+ * [1H] — Asset
+ * QSR: One-handed Weapons used with a Concentrate action always require two hands instead of just one.
+ *      An Item may be used with one less hand, but this causes a penalty of -1 Base die for any Fiddle Tests,
+ *      and for the very next Test performed when interrupted by a React.
+ */
+export function hasOneHandedTrait(item?: Item): boolean {
+  if (!item?.traits) return false;
+  return item.traits.some(t => t.includes('[1H]'));
+}
+
+export interface OneHandedPenaltyResult {
+  /** -1 Base die penalty for Fiddle Tests or React-interrupted Tests */
+  penalty: number;
+  /** Whether the penalty applies */
+  applies: boolean;
+}
+
+export function checkOneHandedPenalty(
+  item: Item | undefined,
+  handsCommitted: number,
+  handsRequired: number,
+  isFiddleTest: boolean = false,
+  isReactInterruptedTest: boolean = false
+): OneHandedPenaltyResult {
+  if (!hasOneHandedTrait(item)) {
+    return { penalty: 0, applies: false };
+  }
+
+  // Penalty applies if using with one less hand than required
+  const usingWithLessHand = handsCommitted < handsRequired;
+
+  if (!usingWithLessHand) {
+    return { penalty: 0, applies: false };
+  }
+
+  // -1 Base die for Fiddle Tests or React-interrupted Tests
+  if (isFiddleTest || isReactInterruptedTest) {
+    return { penalty: 1, applies: true };
+  }
+
+  return { penalty: 0, applies: false };
+}
+
+export function getOneHandedConcentrateRequirement(item: Item): number {
+  // [1H] weapons used with Concentrate action require two hands instead of one
+  if (hasOneHandedTrait(item)) {
+    return 2;
+  }
+  return 1;
+}
+
+// ============================================================================
+// [2H] - TWO-HANDED WEAPON
+// ============================================================================
+
+/**
+ * [2H] — Asset
+ * QSR: Two-handed weapons used with two hands are disallowed to use Overreach.
+ *      An Item may be used with one less hand, but this causes a penalty of -1 Base die for any Fiddle Tests,
+ *      and for the very next Test performed when interrupted by a React.
+ */
+export function hasTwoHandedTrait(item?: Item): boolean {
+  if (!item?.traits) return false;
+  return item.traits.some(t => t.includes('[2H]'));
+}
+
+export function canUseOverreachWithTwoHandedWeapon(item: Item, usingTwoHands: boolean): boolean {
+  // [2H] weapons used with two hands cannot use Overreach
+  if (hasTwoHandedTrait(item) && usingTwoHands) {
+    return false;
+  }
+  return true;
+}
+
+export interface TwoHandedPenaltyResult {
+  /** -1 Base die penalty for Fiddle Tests or React-interrupted Tests */
+  penalty: number;
+  /** Whether the penalty applies */
+  applies: boolean;
+}
+
+export function checkTwoHandedPenalty(
+  item: Item | undefined,
+  handsCommitted: number,
+  handsRequired: number,
+  isFiddleTest: boolean = false,
+  isReactInterruptedTest: boolean = false
+): TwoHandedPenaltyResult {
+  if (!hasTwoHandedTrait(item)) {
+    return { penalty: 0, applies: false };
+  }
+
+  // Penalty applies if using with one less hand than required
+  const usingWithLessHand = handsCommitted < handsRequired;
+
+  if (!usingWithLessHand) {
+    return { penalty: 0, applies: false };
+  }
+
+  // -1 Base die for Fiddle Tests or React-interrupted Tests
+  if (isFiddleTest || isReactInterruptedTest) {
+    return { penalty: 1, applies: true };
+  }
+
+  return { penalty: 0, applies: false };
+}
+
+export function getTwoHandedRequirement(): number {
+  return 2;
+}
+
+// ============================================================================
+// [LADEN X] - BURDEN MECHANICS
+// ============================================================================
+
+/**
+ * [Laden X] — Asset
+ * QSR: Compare total 1 + Laden X from everything equipped to the character's Physicality.
+ *      Physicality is the higher of STR or SIZ.
+ *      Each above Physicality is a burden. For each burden:
+ *      - Reduce MOV by 1 and recalculate Agility accordingly.
+ *      - Reduce REF by 1 and CCA by 1 unless Attentive Ordered.
+ *      - Reduce by 1 any Trait with the Movement keyword.
+ */
+export function getLadenLevel(item?: Item): number {
+  if (!item?.traits) return 0;
+  for (const trait of item.traits) {
+    if (trait.includes('[Laden')) {
+      const match = trait.match(/\[Laden\s*(\d+)?\]/);
+      if (match) {
+        return match[1] ? parseInt(match[1], 10) : 1;
+      }
+    }
+  }
+  return 0;
+}
+
+export interface LadenCalculationResult {
+  /** Total Laden burden from all equipped items */
+  totalLaden: number;
+  /** Character's Physicality (higher of STR or SIZ) */
+  physicality: number;
+  /** Number of burden points (totalLaden - physicality, min 0) */
+  burdenPoints: number;
+  /** MOV reduction (-1 per burden) */
+  movReduction: number;
+  /** REF reduction (-1 per burden, unless Attentive Ordered) */
+  refReduction: number;
+  /** CCA reduction (-1 per burden, unless Attentive Ordered) */
+  ccaReduction: number;
+  /** Movement trait reduction (-1 per burden) */
+  movementTraitReduction: number;
+}
+
+export function calculateLadenBurden(
+  character: Character,
+  isAttentiveOrdered: boolean = false
+): LadenCalculationResult {
+  const equipment = character.profile?.equipment || character.profile?.items || [];
+
+  // Calculate total Laden from all equipped items
+  let totalLaden = 0;
+  for (const item of equipment) {
+    const ladenLevel = getLadenLevel(item);
+    if (ladenLevel > 0) {
+      // Each item contributes 1 + Laden X
+      totalLaden += 1 + ladenLevel;
+    }
+  }
+
+  // Physicality is the higher of STR or SIZ
+  const str = character.finalAttributes?.str ?? character.attributes?.str ?? 0;
+  const siz = character.finalAttributes?.siz ?? character.attributes?.siz ?? 0;
+  const physicality = Math.max(str, siz);
+
+  // Burden points are totalLaden above Physicality
+  const burdenPoints = Math.max(0, totalLaden - physicality);
+
+  // For each burden:
+  // - Reduce MOV by 1
+  // - Reduce REF by 1 and CCA by 1 unless Attentive Ordered
+  // - Reduce by 1 any Trait with the Movement keyword
+  return {
+    totalLaden,
+    physicality,
+    burdenPoints,
+    movReduction: burdenPoints,
+    refReduction: isAttentiveOrdered ? 0 : burdenPoints,
+    ccaReduction: isAttentiveOrdered ? 0 : burdenPoints,
+    movementTraitReduction: burdenPoints,
+  };
+}
+
+export function getLadenMovReduction(character: Character): number {
+  return calculateLadenBurden(character).movReduction;
+}
+
+export function getLadenRefReduction(character: Character, isAttentiveOrdered: boolean = false): number {
+  return calculateLadenBurden(character, isAttentiveOrdered).refReduction;
+}
+
+export function getLadenCcaReduction(character: Character, isAttentiveOrdered: boolean = false): number {
+  return calculateLadenBurden(character, isAttentiveOrdered).ccaReduction;
+}
+
+export function isLadenBurdened(character: Character): boolean {
+  return calculateLadenBurden(character).burdenPoints > 0;
+}
+
+// ============================================================================
+// BASH - ASSET TRAIT (ITEM VERSION)
+// ============================================================================
+
+/**
+ * Bash — Asset (Item version)
+ * QSR: May use this as an Improvised Melee weapon.
+ *      Receive +1 cascade for Bonus Actions after passing the Attacker Close Combat Test
+ *      if used Charging and is in base-contact with the target.
+ */
+export function hasBashOnItem(item?: Item): boolean {
+  if (!item?.traits) return false;
+  return item.traits.some(t => t.toLowerCase().includes('bash'));
+}
+
+export interface BashCascadeResult {
+  /** +1 cascade for Bonus Actions */
+  bonusCascades: number;
+  /** Whether Bash bonus applies */
+  applies: boolean;
+}
+
+export function checkBashCascadeBonusForItem(
+  item: Item | undefined,
+  passedCloseCombatTest: boolean,
+  hasChargeBonus: boolean,
+  inBaseContactWithTarget: boolean
+): BashCascadeResult {
+  if (!hasBashOnItem(item)) {
+    return { bonusCascades: 0, applies: false };
+  }
+
+  // Requires: passed Close Combat Test, Charge bonus, in base-contact
+  if (!passedCloseCombatTest || !hasChargeBonus || !inBaseContactWithTarget) {
+    return { bonusCascades: 0, applies: false };
+  }
+
+  return {
+    bonusCascades: 1,
+    applies: true,
+  };
+}
+
+export function canUseAsImprovisedMelee(item?: Item): boolean {
+  return hasBashOnItem(item);
+}
+
+// ============================================================================
+// ACROBATIC X - GENETIC TRAIT (HELPER FUNCTIONS)
+// ============================================================================
+
+/**
+ * Acrobatic X — Genetic. Skill. Movement.
+ * QSR: Receive +X Wild dice Defender Close Combat Tests.
+ */
+export function hasAcrobatic(character: Character): boolean {
+  return getAcrobaticLevel(character) > 0;
+}
+
+export function getAcrobaticWildDiceBonus(character: Character): number {
+  /**
+   * Acrobatic X provides +X Wild dice for Defender Close Combat Tests
+   */
+  return getAcrobaticLevel(character);
+}
+
+export interface AcrobaticBonusResult {
+  /** +X Wild dice bonus */
+  wildDiceBonus: number;
+  /** Whether Acrobatic applies */
+  applies: boolean;
+}
+
+export function checkAcrobaticBonus(
+  character: Character,
+  isDefender: boolean,
+  isCloseCombat: boolean
+): AcrobaticBonusResult {
+  const acrobaticLevel = getAcrobaticLevel(character);
+
+  if (acrobaticLevel <= 0 || !isDefender || !isCloseCombat) {
+    return { wildDiceBonus: 0, applies: false };
+  }
+
+  return {
+    wildDiceBonus: acrobaticLevel,
+    applies: true,
   };
 }

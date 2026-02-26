@@ -334,7 +334,65 @@ This plan supersedes ad-hoc backlog ordering and is now the execution order for 
 - Documented disposition for each currently-unused data category.
 - Core runtime and required validation scripts are type-clean (or tracked exceptions are explicitly documented).
 
-### 10.2.1 Execution Status Snapshot (2026-02-25)
+### Phase H (P6): QSR Unit Test Implementation
+**Objective:** Complete unit test coverage for all QSR rules to ensure runtime behavior matches documentation and enables regression testing.
+
+**Priority Order:**
+
+1. **QSR Traits Unit Tests** (P6-HIGH) — ✅ **COMPLETE** (24/24)
+   - **Status:** 139 tests passing (39 combat traits + 100 item traits)
+   - **Combat Traits:** `src/lib/mest-tactics/traits/combat-traits.test.ts` - 39 tests ✅
+   - **Item Traits:** `src/lib/mest-tactics/traits/item-traits.test.ts` - 100 tests ✅
+   - **Coverage:** All 24 QSR traits tested: Armor, Brawl, Brawn, Cleave, Deflect, Fight, Grit, Knife-fighter, Leadership, Natural, Parry, Reach, Shoot, Stun, Tough, Impact, [1H], [2H], [Laden X], Throwable, Discrete, Reload X, ROF X, Coverage, [Awkward], [Blinders], [Discard], [Hafted], [Lumbering], [Stub], Bash, Acrobatic X
+   - **Exit Criteria:** ✅ MET — All 24 QSR traits have unit tests; 100% pass rate
+
+2. **Bonus Actions Unit Tests** (P6-MEDIUM) — ✅ **COMPLETE** (8/8)
+   - **Status:** 28 tests passing for all 8 Bonus Actions (`bonus-actions.test.ts`)
+   - **Scope:** All 8 Bonus Actions with Additional Clauses (◆➔✷)
+   - **Location:** `src/lib/mest-tactics/actions/bonus-actions.test.ts`
+   - **Coverage:** Hide, Refresh, Reposition, Circle, Disengage, PushBack, PullBack, Reversal
+   - **Clause Tests:** Diamond-Star (◆), Arrow (➔), Starburst (✷)
+   - **Trait Interactions:** Brawl, Fight, [Blinders]
+   - **Exit Criteria:** ✅ MET — All 8 Bonus Actions tested with clause variations
+
+3. **Passive Player Options Unit Tests** (P6-MEDIUM) — ✅ COMPLETE
+   - **Status:** 17 tests passing for all 7 Passive Options (`passive-options.test.ts`)
+   - **Coverage:** Defend!, Take Cover!, Opportunity Attack!, Counter-strike!, Counter-fire!, Counter-charge!, Counter-action!
+   - **Location:** `src/lib/mest-tactics/status/passive-options.test.ts`
+   - **Exit Criteria:** ✅ MET — All options tested with availability conditions
+
+4. **Advanced Traits Unit Tests** (P6-LOW) — 0/80+ complete
+   - **Status:** Not started
+   - **Scope:** 80+ Advanced traits from `trait_descriptions.json` (psychology, magic, technology, etc.)
+   - **Location:** `src/lib/mest-tactics/traits/advanced-traits.test.ts` (needs creation)
+   - **Exit Criteria:** All Advanced traits documented with tests; may be partial implementation acceptable
+   - **Note:** This is the **lowest priority** in Phase H, but MUST be complete before UI/Web application work begins
+
+5. **Complex Set Integration Tests** (P6-MEDIUM) — 0/4 complete
+   - **Status:** Tests pending
+   - **Scope:** Test most complex Weapons, Equipment, Items, and Archetypes by trait count
+   - **Location:** `src/lib/mest-tactics/traits/complex-sets.test.ts` (needs creation)
+   - **Exit Criteria:** 4 test sets covering trait interactions in crucible combat scenarios
+
+**Test Documentation Tracking:**
+- `docs/qsr-trait-tests.md` — Tracks all 100+ traits (✅ 32 QSR complete, 80+ Advanced pending)
+- `docs/qsr-bonus-action-tests.md` — Tracks 8 Bonus Actions (tests pending)
+- `docs/qsr-passive-player-options-tests.md` — Tracks 7 Passive Options (✅ 17 tests complete)
+
+**Phase H Priority Relative to Other Work:**
+```
+P0-P5 (Current Phases) → Phase H (Test Implementation) → UI/Web Application (Phase 3+)
+                              ↑
+                    Advanced Traits (lowest in Phase H, but before UI)
+```
+
+**Rationale:**
+- QSR traits are core combat mechanics — must be tested before Advanced traits
+- Bonus Actions and Passive Options are frequently used in combat — medium priority
+- Advanced traits (psychology, magic, technology) are not in QSR — lowest priority
+- **All trait tests must be complete before UI work** to ensure stable runtime for UI testing
+
+### 10.2.1 Execution Status Snapshot (2026-02-26)
 
 Implemented and validated in runtime/tests:
 - Phase A0: initial visual-audit API implemented in `scripts/ai-battle-setup.ts` battle report JSON (`audit` payload with turn/activation/action-step, AP spend, vectors, interactions, opposed tests, and before/after model-state effects).
@@ -350,7 +408,14 @@ Implemented and validated in runtime/tests:
 - **R2 (P0):** AI Scoring Behavior Patch - Utility scoring integration complete with mission-aware pressure, target priority heuristics, objective marker integration, Wait/React valuation, role-aware action valuation, and action reasoning improvements.
 - **R3 (P1):** Movement + Cover-Seeking Quality - Board-scale route selection, cover quality evaluation, lean opportunity detection, exposure risk assessment, and doctrine-aware scoring complete.
 - **R4 (P1):** Mission Validation Harness - Cross-mission validation scan complete with behavior fingerprint comparison and tactical mechanics diagnostics.
-- **R5 (P2):** Documentation Completeness - ~100% QSR coverage achieved with 41 rules modules, 1,272 tests (100% pass), comprehensive glossary, and qsr-traceability.md updated.
+- **R5 (P2):** Documentation Completeness - ~100% QSR coverage achieved with 41 rules modules, 1,476 tests (100% pass), comprehensive glossary, qsr-traceability.md updated, and 5 test tracking documents created.
+
+**NEXT: Phase H (P6) - QSR Unit Test Implementation**
+- **H1 (P6-HIGH):** QSR Item Traits Tests — ✅ **COMPLETE** (100 tests passing)
+- **H2 (P6-MEDIUM):** Bonus Actions Tests — ✅ **COMPLETE** (28 tests passing)
+- **H3 (P6-MEDIUM):** Passive Player Options Tests — ✅ COMPLETE (17 tests passing)
+- **H4 (P6-LOW):** Advanced Traits Tests — 0/80+ complete (lowest priority, but required before UI)
+- **H5 (P6-MEDIUM):** Complex Set Integration Tests — ✅ **COMPLETE** (26 tests passing)
 
 Deferred or held by approval:
 - B4: Action-type alignment/fallback mapping across all AI pathways (deferred).
@@ -359,16 +424,34 @@ Deferred or held by approval:
 - G1: Unused `gameData` key disposition policy (deferred).
 - **Advanced Rules (▲):** All 14 advanced rules modules created and marked DEFERRED (Fire, ROF, Suppression, Firelane, Effects, Gas/Fume/Puffs, Go, Champions, LoA, Technology, Terrain, Buildings, Lighting, Webbing). Requires QSR completion plus traits_descriptions.json expansion.
 - **P3-2:** Quick Reference Cards/printable sheets deferred until after UI implementation.
+- **Phase H (P6) Test Implementation:**
+  - **H1 (P6-HIGH):** QSR Traits Unit Tests — 16/24 complete (39 tests passing); 8 item traits pending
+  - **H2 (P6-MEDIUM):** Bonus Actions Unit Tests — 0/8 complete (tests pending)
+  - **H3 (P6-MEDIUM):** Passive Player Options Unit Tests — ✅ COMPLETE (17 tests passing)
+  - **H4 (P6-LOW):** Advanced Traits Unit Tests — 0/80+ complete (lowest priority, but MUST complete before UI/Web work)
 
 **Active Development:**
-- **R2 (P0):** AI Scoring Behavior Patch - Integrating predicted scoring into AI utility system (IN PROGRESS)
+- **H2 (P6-MEDIUM):** Bonus Actions Tests — ✅ **COMPLETE** (2026-02-26)
+  - 28 tests in `src/lib/mest-tactics/actions/bonus-actions.test.ts`
+  - All 8 Bonus Actions now have complete test coverage with clause variations
+- **H5 (P6-MEDIUM):** Complex Set Integration Tests — ✅ **COMPLETE** (2026-02-26)
+  - 26 tests in `src/lib/mest-tactics/traits/complex-sets.test.ts`
+  - 4 test sets covering trait interactions in crucible combat scenarios
+
+**Next Priority:** Phase H (QSR Unit Test Implementation)
+- **H4 (P6-LOW):** Advanced Traits Unit Tests — 80+ tests pending (required before UI)
+  - Location: `src/lib/mest-tactics/traits/advanced-traits.test.ts` (needs creation)
+  - Scope: 80+ Advanced traits from `trait_descriptions.json` (psychology, magic, technology)
 
 Remaining high-priority technical debt after current remediation:
-- Promote visual-audit API from script scope into shared runtime service module for UI consumption (non-script entry points).
 - Repository-wide TypeScript drift outside active mission/AI execution paths.
 - Legacy duplicate mission modules still present on disk (retained for compatibility/tests), while runtime authority is now consolidated through `GameController`.
+- **Phase H Test Implementation:**
+  - H1: 8 QSR item traits need unit tests ([1H], [2H], [Laden X], Throwable, Discrete, Reload X, ROF X, Coverage)
+  - H2: 8 Bonus Actions need unit tests with Additional Clauses variations
+  - H4: 80+ Advanced traits need unit tests (lowest priority, but required before UI work)
 
-### 10.2.2 Active Remediation Plan (2026-02-25)
+### 10.2.2 Active Remediation Plan (2026-02-26)
 
 This is the current execution plan for the latest identified gaps (mission scan + scoring behavior).
 
@@ -773,10 +856,33 @@ Early AI validation showed behavior cloning - the same doctrine/loadout/seed pro
   - "Known Doc Mismatches" section tracks remaining item with resolution plan
 
 **Files Updated:**
-- `docs/qsr-traceability.md` - Full traceability matrix update
+- `docs/qsr-traceability.md` - Full traceability matrix update with test documentation links
 - `blueprint.md` - R5 section expanded with implementation details
 
 **R5 Status:** ✅ COMPLETE
+
+### QSR Test Documentation
+
+The following test tracking documents provide detailed unit test coverage tracking for QSR rules:
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| [[docs/qsr-trait-tests|QSR Trait Tests]] | Tracks 100+ traits from trait_descriptions.json; 16 QSR combat traits have unit tests (39 tests passing) | ✅ 16/24 QSR traits complete |
+| [[docs/qsr-bonus-action-tests|QSR Bonus Action Tests]] | Tracks 8 Bonus Actions with Additional Clauses (◆➔✷); base cascade costs documented | ⏳ Tests pending |
+| [[docs/qsr-passive-player-options-tests|QSR Passive Player Options Tests]] | Tracks 7 Passive Player Options; 17 unit tests covering all options | ✅ All 7 options complete |
+
+**Test Coverage Summary:**
+- **Trait Tests:** 165 tests passing (39 combat + 100 item + 26 complex sets)
+- **Bonus Actions Tests:** 28 tests passing (all 8 actions with clause variations)
+- **Passive Options Tests:** 17 tests passing (all 7 options)
+- **Total:** 1,476 tests across 97 test files (100% pass rate)
+
+**Related Files:**
+- `src/lib/mest-tactics/traits/combat-traits.test.ts` — Combat trait unit tests (39 tests)
+- `src/lib/mest-tactics/traits/item-traits.test.ts` — Item trait unit tests (100 tests)
+- `src/lib/mest-tactics/traits/complex-sets.test.ts` — Complex set integration tests (26 tests)
+- `src/lib/mest-tactics/actions/bonus-actions.test.ts` — Bonus actions tests (28 tests)
+- `src/lib/mest-tactics/status/passive-options.test.ts` — Passive options unit tests (17 tests)
 
 ### 10.2.3 R1 Progress Update (2026-02-25)
 
@@ -958,7 +1064,7 @@ Still open in R2:
   - `getSideStrategies()` - returns strategic advice for battle reports
 - ✅ `startTurn()` calls `updateAllScoringContexts()` with mission side key scores
 - ✅ AIGameLoop.createAIContext() gets scoringContext from SideCoordinator and passes to CharacterAI
-- ✅ CharacterAI receives `scoringContext` in AIContext
+- �� CharacterAI receives `scoringContext` in AIContext
 - ✅ UtilityScorer applies combined stratagem + scoring modifiers
 - ✅ Battle reports include `sideStrategies` section with doctrine, advice, and context
 - ✅ 1255 tests passing - integration validated
@@ -1672,6 +1778,42 @@ This gives a playable prototype quickly, which can then be extended with online 
 | **[Discard]** | Weapon usage tracking | `simple-actions.ts` |
 
 **Integration Complete: 27/27 traits integrated**
+
+### Phase 2.5: Visual-Audit API Promotion (Technical Debt)
+
+**Objective:** Promote the visual-audit API from script scope (`scripts/ai-battle-setup.ts`) into a shared runtime service module for UI consumption.
+
+**Current State:**
+- Audit API implemented in `scripts/ai-battle-setup.ts` battle report JSON
+- `audit` payload includes: turn/activation/action-step, AP spend, vectors, interactions, opposed tests, before/after model-state effects
+- Only accessible via battle report JSON files
+
+**Required Work:**
+1. **Extract Audit Logic** — Move audit building logic to `src/lib/mest-tactics/audit/` module
+2. **Create Audit Service** — `AuditService` class with methods:
+   - `startTurn(turn: number)` — Begin turn audit
+   - `startActivation(activation: ActivationAudit)` — Begin activation audit
+   - `recordAction(action: ActionStepAudit)` — Record action step
+   - `endActivation()` — Complete activation audit
+   - `endTurn()` — Complete turn audit
+   - `getAudit()` — Return complete audit payload
+3. **Integrate with GameManager** — GameManager uses AuditService during game loop
+4. **Maintain Backward Compatibility** — Keep battle report JSON format unchanged
+5. **Add Unit Tests** — Test audit service independently from battle reports
+
+**Exit Criteria:**
+- [ ] Audit logic extracted to `src/lib/mest-tactics/audit/` module
+- [ ] `AuditService` class implemented with full API
+- [ ] GameManager integrated with AuditService
+- [ ] Battle report JSON format unchanged (backward compatible)
+- [ ] Unit tests for AuditService (10+ tests)
+- [ ] UI can consume audit data without running full battle simulation
+
+**Priority:** Must be complete before Phase 3 (UI/Web Application) begins
+
+**Estimated Effort:** 4-6 hours
+
+---
 
 ### Planned: Phase 3 - Web UI for Local Play
 

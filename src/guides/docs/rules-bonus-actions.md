@@ -12,32 +12,79 @@ This module details the special actions available after successful combat tests 
 
 ## Bonus Actions
 
-**Bonus Actions** are special maneuvers that can be performed after a **successful Hit Test or Damage Test** in Close Combat. They allow tactical repositioning and additional effects.
+**Bonus Actions** are a key feature of MEST Tactics and enable players to create a more dynamic response to any situation involving two or more combatants.
+
+### Bonus Assignment
+
+During the current Initiative, an **Active character** is given a **single Bonus Action** to be used directly after:
+- A **successful Disengage Test**, OR
+- A **successful Combat Test** (before applying any Damage) against any of its targets
+
+**IF** the character has **not yet performed one** during this Action.
+
+**Key Rules:**
+- The model **spends cascades** to pay for the Bonus Action. This **doesn't affect** the cascades received for Damage.
+- If **Distracted**, receive **one less cascade** for Bonus Actions.
+- If the Bonus Action used for a **Close Combat Hit Test** causes the Active character to **no longer have the target within Melee Range**, **do not perform the Damage Test**.
+- The Active character performs **any Bonus Action before removing** their KO'd or Eliminated target.
 
 ### Available Bonus Actions
 
-| Bonus Action | Cascade Cost | Effect |
-|--------------|--------------|--------|
-| **Circle** | 1 cascade | Adjust separation by up to base-diameter of larger model |
-| **Disengage** | 1 cascade | Become Free from engagement |
-| **Hide** | 1 cascade | Become Hidden (if conditions met) |
-| **Push-back** | 1 cascade | Reposition target 1" directly away |
-| **Pull-back** | 1 cascade | Reposition self 1" directly away after attack |
-| **Reversal** | 2 cascades | Switch positions with target |
-| **Reposition** | 1 cascade | Reposition up to base-diameter |
-| **Refresh** | 1 cascade | Remove 1 Delay token |
+| Bonus Action | Base Cascade Cost | Effect | Clause |
+|--------------|-------------------|--------|--------|
+| **Circle** | 1 cascade | Adjust separation by up to base-diameter of larger model | ◆✷ |
+| **Disengage** | 1 cascade | Become Free from engagement | — |
+| **Hide** | 1 cascade | Become Hidden (if conditions met) | — |
+| **Push-back** | 1 cascade | Reposition target 1" directly away | ◆➔ |
+| **Pull-back** | 1 cascade | Reposition self 1" directly away after attack | ➔ |
+| **Reversal** | 1 cascade | Switch positions with target | ◆✷ |
+| **Reposition** | 1 cascade | Reposition up to base-diameter | — |
+| **Refresh** | 1 cascade | Remove 1 Delay token | — |
 
-### Physicality Rules for Bonus Actions
+**Note:** Base cost is **1 cascade** for all Bonus Actions. **Additional Clauses** may add to this cost.
 
-Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters to perform against larger targets.
+### Additional Clauses
+
+Some Bonus Actions have additional clauses identified by special symbols:
+
+#### ◆ Diamond-Star Clause (Circle, Push-back, Pull-back, Reversal)
+
+Bonus Actions marked with a **"diamond-star" (◆)** are **harder to perform unless in base-contact** with the target.
+
+**Rules:**
+- Require **an additional cascade** unless in **base-contact** with the target
+- If there are **not enough cascades** to spend than what are available, then these Bonus Actions **may not be used**
+
+**Affected Actions:** Circle, Push-back, Pull-back, Reversal
+
+---
+
+#### ➔ Arrow Clause (Push-back, Pull-back)
+
+Bonus Actions marked with an **"arrow" (➔)** are **harder for smaller SIZ or STR characters** to perform against larger SIZ or STR characters.
 
 **Physicality** = Higher of **STR** or **SIZ**
 
-| Situation | Rule |
-|-----------|------|
-| **Attacker Physicality < Target's** | Requires **+1 cascade per point of difference** |
-| **Attacker Physicality > Target's SIZ** | Spend target's **SIZ cascades** to move target an **additional base-diameter** each |
-| **Not enough cascades** | Bonus Action **may not be used** |
+**Rules:**
+- If **Attacker's Physicality < Target's Physicality**: requires **+1 cascade per point of difference**
+- If **Attacker's Physicality > Target's SIZ** and this is a **Pull-back**: spend **target's SIZ cascades** to move target an **additional base-diameter each**
+- If there are **not enough cascades** to spend than what are available, then these Bonus Actions **may not be used**
+
+**Affected Actions:** Push-back, Pull-back
+
+---
+
+#### ✷ Starburst Clause (Circle, Reversal)
+
+Bonus Actions marked with a **"starburst" (✷)** allow adjustment of separation.
+
+**Rules:**
+- Spend **1 cascade** to adjust separation by up to the **base-diameter of the larger model**
+- If the Active model was **Engaged and becomes Free**, this requires **2 cascades**
+
+**Affected Actions:** Circle, Reversal
+
+---
 
 ### Cascade Spending Priority
 
@@ -52,22 +99,34 @@ Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters
 
 ## Bonus Action Details
 
-### Circle (1 Cascade) ➔
+### Circle (1 Cascade) ◆✷
 
 **Effect:** Adjust separation between you and the target by up to the **base-diameter of the larger model**.
+
+**Base Cost:** 1 cascade
+
+**Diamond-Star Clause (◆):** Requires **+1 cascade** unless in **base-contact** with the target.
+
+**Starburst Clause (✷):** Spend **+1 cascade** to adjust separation by up to the base-diameter. If the Active model was **Engaged and becomes Free**, this requires **+2 cascades** instead.
+
+**Total Cost Examples:**
+- In base-contact, not Engaged→Free: **1 cascade**
+- Not in base-contact: **2 cascades** (1 base + 1 Diamond-Star)
+- Engaged→Free: **3 cascades** (1 base + 2 Starburst)
+- Not in base-contact AND Engaged→Free: **4 cascades** (1 base + 1 Diamond-Star + 2 Starburst)
 
 **Use Cases:**
 - Move to target's flank
 - Create space for weapon swing
 - Position for ally assistance
 
-**Physicality Rule:** If your Physicality < target's SIZ, requires **+1 cascade per point of difference**.
-
 ---
 
 ### Disengage (1 Cascade)
 
 **Effect:** Immediately become **Free** from engagement with the target.
+
+**Base Cost:** 1 cascade
 
 **Use Cases:**
 - Escape to perform Range Combat
@@ -82,6 +141,8 @@ Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters
 
 **Effect:** Become **Hidden** if conditions are met.
 
+**Base Cost:** 1 cascade
+
 **Requirements:**
 - Must be **behind Cover** OR **out of LOS** from all Revealed Opposing models
 - Must not be in base-contact with Attentive Ordered Opposing models
@@ -93,16 +154,29 @@ Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters
 
 ---
 
-### Push-back (1 Cascade) ➔
+### Push-back (1 Cascade) ◆➔
 
 **Effect:** Reposition the **target 1" directly away** from you.
 
+**Base Cost:** 1 cascade
+
+**Diamond-Star Clause (◆):** Requires **+1 cascade** unless in **base-contact** with the target.
+
+**Arrow Clause (➔):**
+- If **Attacker's Physicality < Target's Physicality**: requires **+1 cascade per point of difference**
+- If **Attacker's Physicality > Target's SIZ**: spend **target's SIZ cascades** per **additional base-diameter**
+
 **Additional Distance:**
 - For every **2 additional cascades** spent: push target an **additional 1"**
-- If Attacker Physicality > target's SIZ: spend **target's SIZ cascades** per **additional base-diameter**
 
 **Collision:**
 - If target is pushed into a **wall, obstacle, or another character**: target receives **1 Delay token**
+
+**Total Cost Examples:**
+- In base-contact, equal Physicality: **1 cascade**
+- Not in base-contact: **2 cascades** (1 base + 1 Diamond-Star)
+- Physicality difference of 2: **3 cascades** (1 base + 2 Arrow)
+- Not in base-contact AND Physicality difference of 1: **3 cascades** (1 base + 1 Diamond-Star + 1 Arrow)
 
 **Use Cases:**
 - Create space for safety
@@ -111,14 +185,24 @@ Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters
 
 ---
 
-### Pull-back (1 Cascade)
+### Pull-back (1 Cascade) ➔
 
 **Effect:** After the attack is **fully resolved**, reposition **your character 1" directly away** from the target.
+
+**Base Cost:** 1 cascade
+
+**Arrow Clause (➔):**
+- If **Attacker's Physicality < Target's Physicality**: requires **+1 cascade per point of difference**
+- If **Attacker's Physicality > Target's SIZ**: spend **target's SIZ cascades** to move target an **additional base-diameter each**
 
 **Difference from Push-back:**
 - **You** move instead of the target
 - Occurs **after** Damage Test (not before)
 - Does not cause collision effects
+
+**Total Cost Examples:**
+- Equal Physicality: **1 cascade**
+- Physicality difference of 2: **3 cascades** (1 base + 2 Arrow)
 
 **Use Cases:**
 - Retreat after killing enemy
@@ -127,11 +211,21 @@ Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters
 
 ---
 
-### Reversal (2 Cascades) ➔
+### Reversal (1 Cascade) ◆✷
 
 **Effect:** **Switch positions** with the target, maintaining the **same distance of separation**.
 
-**Physicality Rule:** If your Physicality < target's SIZ, requires **+1 cascade per point of difference** (total 3+ cascades).
+**Base Cost:** 1 cascade
+
+**Diamond-Star Clause (◆):** Requires **+1 cascade** unless in **base-contact** with the target.
+
+**Starburst Clause (✷):** If the Active model was **Engaged and becomes Free**, this requires **+2 cascades** instead of +1.
+
+**Total Cost Examples:**
+- In base-contact, not Engaged→Free: **1 cascade**
+- Not in base-contact: **2 cascades** (1 base + 1 Diamond-Star)
+- Engaged→Free: **3 cascades** (1 base + 2 Starburst)
+- Not in base-contact AND Engaged→Free: **4 cascades** (1 base + 1 Diamond-Star + 2 Starburst)
 
 **Use Cases:**
 - Move enemy into hazardous terrain
@@ -143,6 +237,8 @@ Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters
 ### Reposition (1 Cascade)
 
 **Effect:** Reposition **up to one base-diameter** in any direction.
+
+**Base Cost:** 1 cascade
 
 **Difference from Circle:**
 - **Circle** adjusts separation (distance between models)
@@ -158,6 +254,8 @@ Bonus Actions marked with an **"arrow" (➔)** are harder for smaller characters
 ### Refresh (1 Cascade)
 
 **Effect:** Remove **1 Delay token** from your character.
+
+**Base Cost:** 1 cascade
 
 **Use Cases:**
 - Recover after intense combat

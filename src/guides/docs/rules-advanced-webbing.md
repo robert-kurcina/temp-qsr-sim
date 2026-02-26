@@ -1,74 +1,91 @@
 ---
-title: "Advanced Rules: Webbing"
-description: Web markers and entanglement effects.
-status: "DEFERRED - Requires QSR implementation first"
+title: Advanced Rules - Webbing & Strands
+description: Complete rules for Webbing, Strand markers, and Webcaster/Webcrawler traits.
+priority: 6
 ---
 
-# Advanced Rules: Webbing (▲)
+# Advanced Rules - Webbing & Strands
 
-**Status:** ⏳ **DEFERRED** - Requires core QSR implementation plus Web trait support.
+**Rule Level:** Advanced ()
 
----
-
-## Overview
-
-Webbing rules cover web markers, entanglement effects, and area denial using web-based weapons.
+Giant spiders and mystic chains are relatively common features in fantasy genres. These **Webbing rules** work in conjunction with the **Webcaster** and **Webcrawler** traits.
 
 ---
 
-## Web Markers
+## Strand Markers
+
+Strands are created by characters with the **Webcaster X** trait. Strands are represented by **Strand markers**.
+
+### Dimensions
+
+- A Strand marker is about **X × 2 MU long by 0.1 MU wide**
+- These are best represented by **strands of cotton fiber** twisted into the proper lengths
+- A **2 MU width** is recommended
+
+### Alternative Representations
+
+A less messy alternative:
+- **White pipe-cleaners**, or
+- **Strings of white yarn** cut to size
 
 ### Placement
 
-Web markers are placed using:
-- **Web grenades**
-- **Web emitters**
-- **Natural web abilities**
+Strand markers can **swivel, warp, twist**; whichever is ideal to affect as many Opposing models as necessary when first placed after an Attack action.
 
-### Coverage
-
-| Marker Size | Diameter | Effect |
-|-------------|----------|--------|
-| **Small** | 1 MU | -1m Movement |
-| **Medium** | 2 MU | -2m Movement |
-| **Large** | 3 MU | Immobilized |
+- Place Strand markers from the perspective of the **Attacking model** towards the **first and nearest** of the Opposing models or terrain elements
+- **Warp or bend** the markers as desired but maintain contact with that first model and any which may follow
 
 ---
 
-## Web Effects
+## Morass
 
-### Movement Penalty
+Strand markers are **Difficult terrain**.
 
-Models **in or crossing Web** suffer:
-- **Movement reduction**
-- **Possible immobilization**
-- **Difficulty standing**
+### Movement Effects
 
-### Clearing Webs
-
-- **Fire** burns webs
-- **Cutting** tools clear paths
-- **Time** disperses webs
+- Models which start in **base-contact with a Strand marker** are considered as crossing **Rough terrain** for the **first AP spent for Movement**
+- Each Strand marker in **base-contact with a target** causes:
+  - **Penalty of -1 MOV**
+  - **Penalty of -1 Wild die Defender Combat Tests**
 
 ---
 
-## Implementation Requirements
+## Removing Strands
 
-### Traits Needed
-- **Web X** — Web generation
-- **[Entangle]** — Entanglement effect
+### Fiddle Action
 
-### Markers Required
-- **Web markers** (various sizes)
+Models may remove Strand markers from **base-contact**, or assigned to themselves or to any model in **base-contact** by performing a **Fiddle action** using an **Unopposed Physicality** (higher of **STR** or **SIZ**) **Test**.
+
+- Upon passing **remove one Strand** from base-contact and move it **out of base-contact up to cascades × 1" away**
+- For every **3 cascades**, do this for an **additional Strand marker**
+
+### End of Turn
+
+At the **end of the Turn**:
+- Roll **1 Modifier dice** for each **group of Strands within 1-inch of each other**
+- For each **success**, **remove 1 Strand marker** from the group
+
+### Fire Interaction
+
+Strand markers in **base-contact with Fire markers**, or has the **Fire trait**, are **immediately removed**.
 
 ---
 
-## Related Rules
+## Related Traits
 
-- [[rules-movement|Rules: Movement]]
-- [[rules-terrain|Rules: Terrain]]
+| Trait | Description |
+|-------|-------------|
+| **Webcaster X** | Creates Strand markers |
+| **Webcrawler** | Can move through Webbing without penalty |
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Webbing.txt`  
-**Status:** ⏳ **DEFERRED**
+## Related Files
+
+- [[rules-advanced-effects|Advanced Rules - Expanded Effects]] - Entangled status
+- [[rules-advanced-fire|Advanced Rules - Fire]] - Fire removes Strands
+- [[rules-actions|Rules: Actions]] - Fiddle actions
+
+---
+
+**Source:** `docs/MEST.Tactics.Advanced-Webbing.txt`
