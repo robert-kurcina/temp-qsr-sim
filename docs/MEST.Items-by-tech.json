@@ -618,7 +618,7 @@
     "tech_age_latest": "20-Symbolic"
   },
   {
-    "item": "Balllista, Light",
+    "item": "Ballista, Light",
     "tech_period": "p01_Ancient",
     "tech_age": "03-Iron",
     "tech_age_latest": "20-Symbolic"
@@ -655,8 +655,8 @@
   },
   {
     "item": "Beam Carbine, Advanced",
-    "tech_period": "p05_Near_Future",
-    "tech_age": "15-Fusion",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -667,8 +667,8 @@
   },
   {
     "item": "Beam Gun, Advanced",
-    "tech_period": "p05_Near_Future",
-    "tech_age": "15-Fusion",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -680,7 +680,7 @@
   {
     "item": "Beam Pistol, Advanced",
     "tech_period": "p06_Far_Future",
-    "tech_age": "16-Quantum",
+    "tech_age": "17-Energy",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -691,8 +691,8 @@
   },
   {
     "item": "Beam Rifle, Advanced",
-    "tech_period": "p05_Near_Future",
-    "tech_age": "15-Fusion",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2096,7 +2096,7 @@
   {
     "item": "Goggles, Night-vision, Adv.",
     "tech_period": "p04_Modern",
-    "tech_age": "12-Atomic",
+    "tech_age": "13-Information",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2144,7 +2144,7 @@
   {
     "item": "Grenade, Concussion, Adv.",
     "tech_period": "p04_Modern",
-    "tech_age": "11-Modern",
+    "tech_age": "12-Atomic",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2168,7 +2168,7 @@
   {
     "item": "Grenade, Flash-bang, Adv.",
     "tech_period": "p04_Modern",
-    "tech_age": "11-Modern",
+    "tech_age": "12-Atomic",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2180,7 +2180,7 @@
   {
     "item": "Grenade, Fragmentation, Adv.",
     "tech_period": "p04_Modern",
-    "tech_age": "11-Modern",
+    "tech_age": "12-Atomic",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2192,7 +2192,7 @@
   {
     "item": "Grenade, HE, Adv.",
     "tech_period": "p04_Modern",
-    "tech_age": "11-Modern",
+    "tech_age": "12-Atomic",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2204,7 +2204,7 @@
   {
     "item": "Grenade, Pulse, Adv.",
     "tech_period": "p05_Near_Future",
-    "tech_age": "14-Robotics",
+    "tech_age": "15-Fusion",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2216,7 +2216,7 @@
   {
     "item": "Grenade, Shrapnel, Adv.",
     "tech_period": "p04_Modern",
-    "tech_age": "11-Modern",
+    "tech_age": "12-Atomic",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2228,7 +2228,7 @@
   {
     "item": "Grenade, Sonic, Adv.",
     "tech_period": "p04_Modern",
-    "tech_age": "11-Modern",
+    "tech_age": "12-Atomic",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -2510,7 +2510,7 @@
   {
     "item": "Jet-pack, Suit, Advanced",
     "tech_period": "p05_Near_Future",
-    "tech_age": "14-Robotics",
+    "tech_age": "15-Fusion",
     "tech_age_latest": "20-Symbolic"
   },
   {
@@ -3824,7 +3824,7 @@
   {
     "item": "Silencer, Advanced",
     "tech_period": "p04_Modern",
-    "tech_age": "11-Modern",
+    "tech_age": "12-Atomic",
     "tech_age_latest": "20-Symbolic"
   },
   {

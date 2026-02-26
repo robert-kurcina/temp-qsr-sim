@@ -102,19 +102,19 @@ Axe,p01_Ancient,01-Stone,20-Symbolic
 Axe-Sword of Tan-doc,p05_Near_Future,15-Fusion,15-Fusion
 "Ballista, Heavy",p02_Archaic,05-Medieval,20-Symbolic
 "Ballista, Medium",p01_Ancient,03-Iron,20-Symbolic
-"Balllista, Light",p01_Ancient,03-Iron,20-Symbolic
+"Ballista, Light",p01_Ancient,03-Iron,20-Symbolic
 Bayonet,p02_Archaic,07-Colonial,20-Symbolic
 Beam Cannon,p05_Near_Future,15-Fusion,20-Symbolic
 "Beam Cannon, Heavy",p06_Far_Future,17-Energy,20-Symbolic
 "Beam Cannon, Light",p06_Far_Future,17-Energy,20-Symbolic
 Beam Carbine,p05_Near_Future,15-Fusion,20-Symbolic
-"Beam Carbine, Advanced",p05_Near_Future,15-Fusion,20-Symbolic
+"Beam Carbine, Advanced",p06_Far_Future,16-Quantum,20-Symbolic
 Beam Gun,p05_Near_Future,15-Fusion,20-Symbolic
-"Beam Gun, Advanced",p05_Near_Future,15-Fusion,20-Symbolic
+"Beam Gun, Advanced",p06_Far_Future,16-Quantum,20-Symbolic
 Beam Pistol,p06_Far_Future,16-Quantum,20-Symbolic
-"Beam Pistol, Advanced",p06_Far_Future,16-Quantum,20-Symbolic
+"Beam Pistol, Advanced",p06_Far_Future,17-Energy,20-Symbolic
 Beam Rifle,p05_Near_Future,15-Fusion,20-Symbolic
-"Beam Rifle, Advanced",p05_Near_Future,15-Fusion,20-Symbolic
+"Beam Rifle, Advanced",p06_Far_Future,16-Quantum,20-Symbolic
 "Beam Rifle, Advanced Heavy",p05_Near_Future,15-Fusion,20-Symbolic
 "Beam Rifle, Early",p05_Near_Future,15-Fusion,20-Symbolic
 "Beam Rifle, Early Heavy",p05_Near_Future,15-Fusion,20-Symbolic
@@ -348,7 +348,7 @@ Gas-mask,p04_Modern,11-Modern,20-Symbolic
 "Gauntlet, Controller",p05_Near_Future,15-Fusion,20-Symbolic
 Goggles,p03_Expansionist,08-Sail,20-Symbolic
 "Goggles, Night-vision",p04_Modern,12-Atomic,20-Symbolic
-"Goggles, Night-vision, Adv.",p04_Modern,12-Atomic,20-Symbolic
+"Goggles, Night-vision, Adv.",p04_Modern,13-Information,20-Symbolic
 "Goggles, Optiplex",p05_Near_Future,14-Robotics,20-Symbolic
 "Goggles, Pin-point",p03_Expansionist,08-Sail,20-Symbolic
 "Goggles, Sensor",p05_Near_Future,14-Robotics,20-Symbolic
@@ -356,21 +356,21 @@ Goggles,p03_Expansionist,08-Sail,20-Symbolic
 "Grenade, Anti-psi",p07_Fantastic,19-Psionic,20-Symbolic
 "Grenade, Archaic",p04_Modern,11-Modern,20-Symbolic
 "Grenade, Concussion",p04_Modern,11-Modern,20-Symbolic
-"Grenade, Concussion, Adv.",p04_Modern,11-Modern,20-Symbolic
+"Grenade, Concussion, Adv.",p04_Modern,12-Atomic,20-Symbolic
 "Grenade, Dancer",p04_Modern,11-Modern,20-Symbolic
 "Grenade, Flash",p04_Modern,11-Modern,20-Symbolic
 "Grenade, Flash-bang",p04_Modern,11-Modern,20-Symbolic
-"Grenade, Flash-bang, Adv.",p04_Modern,11-Modern,20-Symbolic
+"Grenade, Flash-bang, Adv.",p04_Modern,12-Atomic,20-Symbolic
 "Grenade, Fragmentation",p04_Modern,11-Modern,20-Symbolic
-"Grenade, Fragmentation, Adv.",p04_Modern,11-Modern,20-Symbolic
+"Grenade, Fragmentation, Adv.",p04_Modern,12-Atomic,20-Symbolic
 "Grenade, HE",p04_Modern,11-Modern,20-Symbolic
-"Grenade, HE, Adv.",p04_Modern,11-Modern,20-Symbolic
+"Grenade, HE, Adv.",p04_Modern,12-Atomic,20-Symbolic
 "Grenade, Pulse",p05_Near_Future,14-Robotics,20-Symbolic
-"Grenade, Pulse, Adv.",p05_Near_Future,14-Robotics,20-Symbolic
+"Grenade, Pulse, Adv.",p05_Near_Future,15-Fusion,20-Symbolic
 "Grenade, Shrapnel",p04_Modern,11-Modern,20-Symbolic
-"Grenade, Shrapnel, Adv.",p04_Modern,11-Modern,20-Symbolic
+"Grenade, Shrapnel, Adv.",p04_Modern,12-Atomic,20-Symbolic
 "Grenade, Sonic",p04_Modern,11-Modern,20-Symbolic
-"Grenade, Sonic, Adv.",p04_Modern,11-Modern,20-Symbolic
+"Grenade, Sonic, Adv.",p04_Modern,12-Atomic,20-Symbolic
 "Grenade, Web",p04_Modern,11-Modern,20-Symbolic
 "Grenade, Web Stunner",p04_Modern,11-Modern,20-Symbolic
 "Groundingsuit, Advanced",p04_Modern,11-Modern,20-Symbolic
@@ -417,7 +417,7 @@ Improvised Thrown,p01_Ancient,01-Stone,20-Symbolic
 "Jet-pack, Gear",p05_Near_Future,14-Robotics,20-Symbolic
 "Jet-pack, Jump",p05_Near_Future,14-Robotics,20-Symbolic
 "Jet-pack, Suit",p05_Near_Future,14-Robotics,20-Symbolic
-"Jet-pack, Suit, Advanced",p05_Near_Future,14-Robotics,20-Symbolic
+"Jet-pack, Suit, Advanced",p05_Near_Future,15-Fusion,20-Symbolic
 "Kit, Glider Caped",p04_Modern,11-Modern,20-Symbolic
 "Kit, Glider Winged",p04_Modern,11-Modern,20-Symbolic
 "Kit, Medical, CFAK",p04_Modern,11-Modern,20-Symbolic
@@ -636,7 +636,7 @@ Sickstick,p05_Near_Future,15-Fusion,20-Symbolic
 Sigil of Athletics,p07_Fantastic,20-Symbolic,20-Symbolic
 Sigil of Hunting,p07_Fantastic,20-Symbolic,20-Symbolic
 Silencer,p04_Modern,11-Modern,20-Symbolic
-"Silencer, Advanced",p04_Modern,11-Modern,20-Symbolic
+"Silencer, Advanced",p04_Modern,12-Atomic,20-Symbolic
 Sling,p01_Ancient,01-Stone,11-Modern
 "Sling, Staff",p01_Ancient,01-Stone,11-Modern
 Slingshot,p01_Ancient,01-Stone,11-Modern

@@ -721,7 +721,7 @@
     }
   },
   {
-    "item": "Balllista, Light",
+    "item": "Ballista, Light",
     "tech_window": {
       "early": 3,
       "latest": 20
@@ -765,7 +765,7 @@
   {
     "item": "Beam Carbine, Advanced",
     "tech_window": {
-      "early": 15,
+      "early": 16,
       "latest": 20
     }
   },
@@ -779,7 +779,7 @@
   {
     "item": "Beam Gun, Advanced",
     "tech_window": {
-      "early": 15,
+      "early": 16,
       "latest": 20
     }
   },
@@ -793,7 +793,7 @@
   {
     "item": "Beam Pistol, Advanced",
     "tech_window": {
-      "early": 16,
+      "early": 17,
       "latest": 20
     }
   },
@@ -807,7 +807,7 @@
   {
     "item": "Beam Rifle, Advanced",
     "tech_window": {
-      "early": 15,
+      "early": 16,
       "latest": 20
     }
   },
@@ -2445,7 +2445,7 @@
   {
     "item": "Goggles, Night-vision, Adv.",
     "tech_window": {
-      "early": 12,
+      "early": 13,
       "latest": 20
     }
   },
@@ -2501,7 +2501,7 @@
   {
     "item": "Grenade, Concussion, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2529,7 +2529,7 @@
   {
     "item": "Grenade, Flash-bang, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2543,7 +2543,7 @@
   {
     "item": "Grenade, Fragmentation, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2557,7 +2557,7 @@
   {
     "item": "Grenade, HE, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2571,7 +2571,7 @@
   {
     "item": "Grenade, Pulse, Adv.",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
@@ -2585,7 +2585,7 @@
   {
     "item": "Grenade, Shrapnel, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2599,7 +2599,7 @@
   {
     "item": "Grenade, Sonic, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2928,7 +2928,7 @@
   {
     "item": "Jet-pack, Suit, Advanced",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
@@ -4461,7 +4461,7 @@
   {
     "item": "Silencer, Advanced",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },

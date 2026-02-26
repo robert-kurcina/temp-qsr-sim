@@ -473,6 +473,12 @@ export class UtilityScorer {
         // Add multipliers when specific tactical conditions favor Wait
         const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions);
 
+        // R2.1: Elimination Mission Wait Penalty
+        // Reduce Wait baseline for Elimination mission to encourage combat
+        const missionId = context.config.missionId;
+        const currentTurn = context.currentTurn ?? 1;
+        const eliminationWaitPenalty = missionId === 'QAI_11' ? 1.5 : 0;
+
         const hasAttackOption = attackActions.length > 0;
         const bestAttackScore = attackActions[0]?.score ?? 0;
         const bestMoveScore = actions
@@ -492,7 +498,8 @@ export class UtilityScorer {
           waitRefBonus +
           waitDelayAvoidance +
           waitMissionBias +
-          waitTacticalBonus;
+          waitTacticalBonus -
+          eliminationWaitPenalty;
         const immediateScore = hasAttackOption ? bestAttackScore : Math.max(0.5, bestMoveScore * 0.85);
         const waitRollout = rolloutWaitReactBranches(context, {
           immediateScore,
@@ -1852,13 +1859,31 @@ export class UtilityScorer {
     }
 
     // Condition 6: Scoring context - losing and need react opportunities
-    if (!context.scoringContext?.amILeading && 
+    if (!context.scoringContext?.amILeading &&
         context.scoringContext?.losingKeys?.includes('elimination')) {
       tacticalBonus += 0.4; // Behind on eliminations, need reactive opportunities
     }
 
+    // R2.1: ZERO VP PENALTY - Discourage excessive Wait in Elimination mission
+    // As turns progress with 0 VP, reduce Wait bonus to encourage action
+    const missionId = context.config.missionId;
+    const currentTurn = context.currentTurn ?? 1;
+    const sideVP = context.side?.state.victoryPoints ?? 0;
+    const sideRP = context.side?.state.resourcePoints ?? 0;
+
+    if (missionId === 'QAI_11' && (sideVP === 0 && sideRP === 0) && currentTurn >= 3) {
+      // Turn 3+: -0.5 per turn with zero VP
+      // Turn 5+: -1.0 per turn with zero VP (desperation mode)
+      const zeroVpPenalty = currentTurn >= 5 ? 1.0 : 0.5;
+      const turnsAtZero = currentTurn - 2; // Starts counting at turn 3
+      tacticalBonus -= zeroVpPenalty * turnsAtZero;
+    }
+
     // Cap total tactical bonus to prevent runaway scores
-    return Math.min(tacticalBonus, 3.0);
+    // But allow negative values for zero VP penalty
+    const maxBonus = 3.0;
+    const minBonus = -2.0; // Allow penalty to go negative
+    return Math.max(minBonus, Math.min(tacticalBonus, maxBonus));
   }
 
   private getDoctrinePlanning(context: AIContext): 'aggression' | 'keys_to_victory' | 'balanced' {

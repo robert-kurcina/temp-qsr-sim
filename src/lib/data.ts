@@ -7306,7 +7306,7 @@ export const gameData = {
       }
     },
     {
-      "item": "Balllista, Light",
+      "item": "Ballista, Light",
       "tech_window": {
         "early": 3,
         "latest": 20
@@ -17700,7 +17700,7 @@ export const gameData = {
         "Armored Gear, Vaumbrace",
         "Axe, Pick",
         "Ballista, Medium",
-        "Balllista, Light",
+        "Ballista, Light",
         "Collar, Spiked",
         "Crossbow, Heavy",
         "Crossbow, Light",
@@ -17911,19 +17911,13 @@ export const gameData = {
         "Gas-mask, Respirator",
         "Grenade, Archaic",
         "Grenade, Concussion",
-        "Grenade, Concussion, Adv.",
         "Grenade, Dancer",
         "Grenade, Flash",
         "Grenade, Flash-bang",
-        "Grenade, Flash-bang, Adv.",
         "Grenade, Fragmentation",
-        "Grenade, Fragmentation, Adv.",
         "Grenade, HE",
-        "Grenade, HE, Adv.",
         "Grenade, Shrapnel",
-        "Grenade, Shrapnel, Adv.",
         "Grenade, Sonic",
-        "Grenade, Sonic, Adv.",
         "Grenade, Web",
         "Grenade, Web Stunner",
         "Groundingsuit, Advanced",
@@ -17997,7 +17991,6 @@ export const gameData = {
         "Shotgun, Slug",
         "Shotgun, Slug, Heavy",
         "Silencer",
-        "Silencer, Advanced",
         "Sniper Scope, Basic",
         "Sniper Scope, Laser",
         "Sniper Scope, Starlight",
@@ -18037,7 +18030,12 @@ export const gameData = {
         "Gatling Gun, Early",
         "Gatling Gun, Early-v2",
         "Goggles, Night-vision",
-        "Goggles, Night-vision, Adv.",
+        "Grenade, Concussion, Adv.",
+        "Grenade, Flash-bang, Adv.",
+        "Grenade, Fragmentation, Adv.",
+        "Grenade, HE, Adv.",
+        "Grenade, Shrapnel, Adv.",
+        "Grenade, Sonic, Adv.",
         "Hand Cannon",
         "Hardsuit, Archaic",
         "Hardsuit, Enhanced, Archaic",
@@ -18064,6 +18062,7 @@ export const gameData = {
         "Shield, Large, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Shield, Small, Bulletproof",
+        "Silencer, Advanced",
         "Spotlight, S1-Small",
         "Spotlight, S2-Large",
         "Waldo, Claws, Long",
@@ -18085,6 +18084,7 @@ export const gameData = {
         "Comm-link, Early",
         "Comm-link, Jammer, Modern",
         "Flashlight, Advanced",
+        "Goggles, Night-vision, Adv.",
         "Mounted Rail-gun",
         "Rail-gun, Heavy",
         "Rail-gun, Light",
@@ -18132,11 +18132,9 @@ export const gameData = {
         "Goggles, Optiplex",
         "Goggles, Sensor",
         "Grenade, Pulse",
-        "Grenade, Pulse, Adv.",
         "Jet-pack, Gear",
         "Jet-pack, Jump",
         "Jet-pack, Suit",
-        "Jet-pack, Suit, Advanced",
         "Module, Control",
         "Module, Manipulator",
         "Module, System",
@@ -18171,11 +18169,8 @@ export const gameData = {
         "Axe-Sword of Tan-doc",
         "Beam Cannon",
         "Beam Carbine",
-        "Beam Carbine, Advanced",
         "Beam Gun",
-        "Beam Gun, Advanced",
         "Beam Rifle",
-        "Beam Rifle, Advanced",
         "Beam Rifle, Advanced Heavy",
         "Beam Rifle, Early",
         "Beam Rifle, Early Heavy",
@@ -18200,7 +18195,9 @@ export const gameData = {
         "Force Armor, Medium",
         "Fusion Pistol",
         "Gauntlet, Controller",
+        "Grenade, Pulse, Adv.",
         "Hardsuit, War",
+        "Jet-pack, Suit, Advanced",
         "Mage Armor, Heavy",
         "Mage Armor, Light",
         "Mage Armor, Medium",
@@ -18245,8 +18242,10 @@ export const gameData = {
       "tech_level": 16,
       "tech_age": "Quantum",
       "items": [
+        "Beam Carbine, Advanced",
+        "Beam Gun, Advanced",
         "Beam Pistol",
-        "Beam Pistol, Advanced",
+        "Beam Rifle, Advanced",
         "Powered Armor-Combat",
         "Vibrodagger",
         "Vibrosword",
@@ -18261,6 +18260,7 @@ export const gameData = {
         "Arc Weapon",
         "Beam Cannon, Heavy",
         "Beam Cannon, Light",
+        "Beam Pistol, Advanced",
         "Blast, 12Minor - Basic",
         "Blast, 12Minor - Burst",
         "Blast, 12Minor - Rapid",
@@ -19275,7 +19275,13 @@ export const gameData = {
     "[Tethered]": {
       "description": "On its Initiative, it may not start new actions not already assigned to it. At the start of its Initiative, if it is in base-contact with an Attentive Ordered Friendly model; it may be assigned a new set of action and perform them against any target within Line-of-Sight (LOS) of both itself and its handler, or to continue a prior action against a target it had already encountered. It may not otherwise begin new actions on its own."
     },
+    "[Traversal]": {
+      "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP."
+    },
     "[Traversal!]": {
+      "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP."
+    },
+    "[Traversal+]": {
       "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP."
     },
     "[Treacherous]": {
@@ -19628,6 +19634,9 @@ export const gameData = {
     },
     "Horrifying X": {
       "description": "Intrinsic. Psychology. See Fear X. Behaves like the Fear X trait. Disregard this trait entirely if the Opposing model has the Fear or Horrifying traits. Disregard this trait entirely unless the Opposing model is Distracted and also in Nervous, Hidden or Wait status. If there are at least 2, 5, or 10 models with the Horrifying trait within Visibility, apply a further penalty to the Opposing model of -1m, -2m, or -3m. A model with both the Horrifying and Fear traits adds their levels together unless Horrifying is disregarded."
+    },
+    "Imbue X > Trait": {
+      "description": "If assigned to an Asset, provides Trait X to Character. If assigned via Upgrade then provides Trait X to Asset."
     },
     "Immortal X": {
       "description": "While level is 1 or greater; never considered Eliminated, merely KO'd. Unless Eliminated as a result of having at least X + 4 Fear tokens."
