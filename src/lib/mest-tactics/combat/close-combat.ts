@@ -211,7 +211,7 @@ export function makeCloseCombatAttack(
 
     // 4. Apply Cleave trait - convert KO to Elimination
     if (damageResolution.defenderState.isKOd && !damageResolution.defenderState.isEliminated) {
-        const cleaveResult = checkCleaveTrigger(attacker, defender, true);
+        const cleaveResult = checkCleaveTrigger(attacker, defender, true, weapon);
         if (cleaveResult.targetEliminated) {
             damageResolution.defenderState.isEliminated = true;
             damageResolution.defenderState.isKOd = false;

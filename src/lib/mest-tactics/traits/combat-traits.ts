@@ -28,9 +28,21 @@ export interface CleaveResult {
 export function checkCleaveTrigger(
   attacker: Character,
   defender: Character,
-  defenderKOd: boolean
+  defenderKOd: boolean,
+  weapon?: { traits?: string[] }
 ): CleaveResult {
-  const cleaveLevel = getCharacterTraitLevel(attacker, 'Cleave');
+  // Cleave is a weapon trait, not a character trait
+  // Check the weapon's traits for Cleave X
+  let cleaveLevel = 0;
+  if (weapon?.traits) {
+    for (const trait of weapon.traits) {
+      const parsed = parseTrait(trait);
+      if (parsed.name.toLowerCase() === 'cleave') {
+        cleaveLevel = parsed.level ?? 1;
+        break;
+      }
+    }
+  }
 
   if (cleaveLevel <= 0 || !defenderKOd) {
     return {
