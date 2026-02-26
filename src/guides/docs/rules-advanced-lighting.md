@@ -35,22 +35,18 @@ When deciding for custom scenarios on what lighting is available, be sure to use
 
 ### Lighting Table
 
-| OR | Time of Day | Atmosphere | Point-light | Light  |
+| OR | Time of Day | Atmosphere | Point-light | Light |
 |----|-------------|------------|-------------|---------|
-| 0" | Night | Pitch-black | - | - |
-| 1" | - | - | Candle  | 1 |
-| 2" | - | - | Flash-light  | 2 |
-| 4" | Night | Super Moon | - | - |
-| 6" | - | - | Lantern  | 6 |
-| 8" | Twilight  | Overcast | Lamppost | 8 |
-| 10" | Night | New Moon | - | - |
-| 12" | Night | Half Moon | Headlights | 10 |
-| - | Night | Full Moon | Floodlights | 12 |
-| - | - | - | Torch  | 4 |
-| 14" | Twilight  | Clear | - | - |
-| 16" | Day | Overcast | - | - |
-| - | Day | Hazy | - | - |
-| - | Day | Clear | - | - |
+| 0 | Night | Pitch-black | - | - |
+| 1 | Night | New Moon | Candle | 1 |
+| 2 | Night | Half Moon | Flash-light | 2 |
+| 4 | Night | Full Moon | Torch | 4 |
+| 6 | Night | Super Moon | Lantern | 6 |
+| 8 | Twilight | Overcast | Lamppost | 8 |
+| 10 | Twilight | Clear | Headlights | 10 |
+| 12 | Day | Overcast | Floodlights | 12 |
+| 14 | Day | Hazy | - | - |
+| 16 | Day | Clear | - | - |
 
 **Notes:**
 -  **Twilight** occurs at **Sunset** and at **Sunrise**, can be written as either if a Mission or Scenario is being specific

@@ -8,6 +8,7 @@
  * - Weapon: Sword, Broad
  * - Armor: Shield, Small + Armor, Light + Armored Gear
  * - Game Size: VERY_SMALL
+ * - Mission: QAI_11 (Elimination)
  * - Terrain Density: 50%
  * - Lighting: Day, Clear (Visibility OR 16 MU)
  * 
@@ -20,6 +21,7 @@
  *   --gameSize <size>        VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE (default: VERY_SMALL)
  *   --density <ratio>        Terrain density 0-100 (default: 50)
  *   --lighting <preset>      Lighting preset (default: "Day, Clear")
+ *   --mission <id>           Mission ID (default: QAI_11)
  *   --turns <max>            Maximum turns (default: auto based on gameSize)
  *   --instrumentation <0-5>  Detail level (default: 3)
  *   --help                   Show help
@@ -45,6 +47,7 @@ interface BattleConfig {
   terrainDensity: number;
   lighting: LightingPreset;
   instrumentationGrade: InstrumentationGrade;
+  missionId: string;
   sideAName: string;
   sideBName: string;
   sideADoctrine: TacticalDoctrine;
@@ -80,6 +83,7 @@ const DEFAULT_CONFIG: BattleConfig = {
   terrainDensity: 0.50,
   lighting: LIGHTING_PRESETS['Day, Clear'],
   instrumentationGrade: InstrumentationGrade.BY_ACTION_WITH_TESTS,
+  missionId: 'QAI_11',
   sideAName: 'Side A',
   sideBName: 'Side B',
   sideADoctrine: TacticalDoctrine.Balanced,
@@ -112,6 +116,10 @@ function parseArgs(): Partial<BattleConfig> {
         break;
       case '--lighting':
         config.lighting = LIGHTING_PRESETS[value];
+        i++;
+        break;
+      case '--mission':
+        config.missionId = value;
         i++;
         break;
       case '--turns':
@@ -151,6 +159,11 @@ Options:
                                     "Night, Full Moon", "Night, Half Moon", "Pitch-black"
                            Default: "Day, Clear" (Visibility OR 16 MU)
 
+  --mission <id>           Mission ID
+                           Options: QAI_11, QAI_12, QAI_13, QAI_14, QAI_15,
+                                    QAI_16, QAI_17, QAI_18, QAI_19, QAI_20
+                           Default: QAI_11 (Elimination)
+
   --turns <max>            Maximum turns before auto-end
                            Default: 10
 
@@ -162,7 +175,7 @@ Options:
   --help                   Show this help message
 
 Examples:
-  # Default VERY_SMALL battle
+  # Default VERY_SMALL battle (QAI_11 Elimination)
   npx tsx scripts/battle-generator.ts
 
   # SMALL battle with 30% terrain
@@ -170,6 +183,9 @@ Examples:
 
   # MEDIUM battle with night lighting
   npx tsx scripts/battle-generator.ts --gameSize MEDIUM --lighting "Night, Full Moon"
+
+  # QAI_12 Convergence mission
+  npx tsx scripts/battle-generator.ts --mission QAI_12
 
   # Full detail instrumentation
   npx tsx scripts/battle-generator.ts --instrumentation 5
@@ -246,6 +262,7 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
 
   console.log('⚔️  AI vs AI BATTLE GENERATOR');
   console.log('═══════════════════════════════════════');
+  console.log(`Mission: ${config.missionId} (Elimination)`);
   console.log(`Game Size: ${config.gameSize}`);
   console.log(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
   console.log(`Terrain Density: ${Math.round(config.terrainDensity * 100)}%`);
@@ -504,6 +521,7 @@ function printBattleSummary(config: BattleConfig, battleLog: any) {
   console.log('📊 BATTLE SUMMARY');
   console.log('═══════════════════════════════════════');
   console.log(`Battle ID: ${battleLog.battleId}`);
+  console.log(`Mission: ${config.missionId}`);
   console.log(`Game Size: ${config.gameSize}`);
   console.log(`Lighting: ${config.lighting.name} (OR ${config.lighting.visibilityOR} MU)`);
   console.log(`Turns: ${battleLog.totalTurns}`);

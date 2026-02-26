@@ -17,22 +17,20 @@ When deciding for custom scenarios on what lighting is
 available, be sure to use the table below to properly set
 the mood. This Lighting then sets the Visibility OR.
 
-OR Time of Day Atmosphere Point-light Light 
-0" Night Pitch-black - -
-1" Candle  1
-2" Flash-light  2
-4" 6" Night Super Moon Lantern  6
-8" Twilight  Overcast Lamppost 8
-10" 12" Night New Moon Night Half Moon Night Full Moon Headlights 10
-Floodlights 12
-Torch  4
-Twilight  Clear Day Overcast 14" Day Hazy - -
-16" Day Clear - -
- Twilight occurs at Sunset and at Sunrise, can be written as either if a
-Mission or Scenario is being specific.
- This is the Light X level of the Point-light source where X is also the
-default Light OR when within 1 MU of the source. It is the Visibility
-OR when applied as Atmospheric Lighting.
+OR	Time of Day	Atmosphere	Point-light	Light
+0	Night	Pitch-black	-	-
+1	Night	New Moon	Candle	1
+2	Night	Half Moon	Flash-light	2
+4	Night	Full Moon	Torch	4
+6	Night	Super Moon	Lantern	6
+8	Twilight	Overcast	Lamppost	8
+10	Twilight	Clear	Headlights	10
+12	Day	Overcast	Floodlights	12
+14	Day	Hazy	-	-
+16	Day	Clear	-	-
+
+ Twilight occurs at Sunset and at Sunrise, can be written as either if a Mission or Scenario is being specific.
+ This is the Light X level of the Point-light source where X is also the default Light OR when within 1 MU of the source. It is the Visibility OR when applied as Atmospheric Lighting.
  These are Light X (Flicker), such as Light 4 (Flicker) for Torch.
 
 Internal Lighting

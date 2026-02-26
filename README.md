@@ -121,6 +121,87 @@ npm run build
 | `npm run generate:portraits` | Generate portrait index |
 | `npm run validate:mission` | Validate mission JSON |
 | `npm run cli` | Run CLI interface |
+| `npx tsx scripts/battle-generator.ts` | Run AI vs AI battle simulation |
+
+## Battle Generator
+
+The battle generator runs automated AI vs AI battles with configurable parameters. Perfect for testing, validation, and observing AI behavior.
+
+### Quick Start
+
+```bash
+# Run default VERY_SMALL battle (QAI_11 Elimination)
+npx tsx scripts/battle-generator.ts
+```
+
+### Command Line Options
+
+```bash
+# Show help
+npx tsx scripts/battle-generator.ts --help
+
+# SMALL battle with 30% terrain density
+npx tsx scripts/battle-generator.ts --gameSize SMALL --density 30
+
+# MEDIUM battle with night lighting
+npx tsx scripts/battle-generator.ts --gameSize MEDIUM --lighting "Night, Full Moon"
+
+# Specific mission (QAI_12 Convergence)
+npx tsx scripts/battle-generator.ts --mission QAI_12
+
+# Full detail instrumentation (Grade 5)
+npx tsx scripts/battle-generator.ts --instrumentation 5
+
+# Combined example
+npx tsx scripts/battle-generator.ts \
+  --gameSize LARGE \
+  --density 40 \
+  --lighting "Twilight, Clear" \
+  --mission QAI_14 \
+  --instrumentation 4
+```
+
+### Configuration Options
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `--gameSize` | VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE | VERY_SMALL | Battle scale |
+| `--density` | 0-100 | 50 | Terrain density % |
+| `--lighting` | "Day, Clear", "Night, Full Moon", etc. | "Day, Clear" | Lighting preset |
+| `--mission` | QAI_11 through QAI_20 | QAI_11 | Mission ID |
+| `--turns` | 1-20 | 10 | Max turns |
+| `--instrumentation` | 0-5 | 3 | Detail level |
+
+### Lighting Presets
+
+| Preset | Visibility OR | Description |
+|--------|---------------|-------------|
+| "Day, Clear" | 16 MU | Full daylight |
+| "Day, Hazy" | 14 MU | Hazy/foggy day |
+| "Twilight, Clear" | 8 MU | Dawn/dusk |
+| "Night, Full Moon" | 4 MU | Moonlit night |
+| "Night, Half Moon" | 2 MU | Partial moon |
+| "Night, New Moon" | 1 MU | Dark night |
+| "Pitch-black" | 0 MU | Complete darkness |
+
+### Instrumentation Grades
+
+| Grade | Name | Output |
+|-------|------|--------|
+| 0 | None | No logging |
+| 1 | Summary | Turn outcomes only |
+| 2 | By Action | Actions with AP |
+| 3 | With Tests | + Test results (pass/fail, cascades) |
+| 4 | With Dice | + Individual dice rolls |
+| 5 | Full Detail | + Traits, modifiers, AI reasoning |
+
+### Default Profile
+
+- **Archetype:** Average
+- **Weapon:** Sword, Broad
+- **Armor:** Shield, Small + Armor, Light + Armored Gear
+- **Game Size:** VERY_SMALL (3 models per side, 24"×24" battlefield)
+- **End-Game Trigger:** Turn 3 (per QSR Line 744)
 
 ## Documentation
 
