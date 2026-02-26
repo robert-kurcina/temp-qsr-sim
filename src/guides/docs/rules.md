@@ -23,6 +23,7 @@ When rule documents conflict, use this precedence order:
 | [Introduction](./rules-introduction) | Overview of the game and its core concepts |
 | [General Terms](./rules-general-terms) | Glossary of common game terminology |
 | [Characters & Attributes](./rules-characters-and-attributes) | Character creation, attributes, and functions |
+| [Archetypes and Profiles](./rules-archetypes-and-profiles) | Character archetypes and equipment profiles |
 | [Tests & Checks](./rules-tests-and-checks) | Core dice-rolling and resolution mechanics |
 | [Traits](./rules-traits) | Explanation of character and item traits |
 | [Traits List](./rules-traits-list) | Complete list of all traits and effects |
@@ -96,10 +97,11 @@ When rule documents conflict, use this precedence order:
 
 ### Character Creation
 1. [Characters & Attributes](./rules-characters-and-attributes)
-2. [Traits](./rules-traits)
-3. [Traits List](./rules-traits-list)
-4. [Items](./rules-items)
-5. [Portraits](./rules-portraits)
+2. [Archetypes and Profiles](./rules-archetypes-and-profiles)
+3. [Traits](./rules-traits)
+4. [Traits List](./rules-traits-list)
+5. [Items](./rules-items)
+6. [Portraits](./rules-portraits)
 
 ### Playing the Game
 1. [Initiative](./rules-initiative)
