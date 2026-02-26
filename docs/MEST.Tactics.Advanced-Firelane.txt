@@ -1,0 +1,67 @@
+Fire-lane ()
+Very powerful Modern Age “Support” weapons, such as
+Machine Guns, normally receive the Fire-lane trait.
+Prepare Fire-lane
+ Prepare Action — Either spend 1 AP as a Fiddle action
+and become Braced, or 2 AP and be Emplaced.
+ Mark with Braced or Emplaced status marker, by
+identifying and placing it in the “front-half” of the model.
+This creates and limits its “Field-of-Fire” [ FOF ] and which
+models can be targeted.
+ Costs zero AP to maintain Braced or Emplaced.
+ Gunner — If a weapon has the [Emplaced] trait, it
+requires a Gunner.
+ A Friendly Free Ordered model in base-contact with an
+[Emplaced] weapon to use it for Attacks is its “Gunner”.
+ In many sculpts, the weapon and the Gunner are
+modelled and placed upon the same base-diameter.
+ Loader — A Loader is an optional role, and is usually one
+of the models associated with [Crewed] weapons. An
+Attentive Friendly Free Ordered model in base-contact
+with the Gunner and also the weapon can be a “Loader”.
+Constraints
+ When a Fire-lane weapon is Braced, the model
+associated with it (or the Gunner) is penalized -1
+Modifier die Defender Combat Tests.
+ When a Fire-lane weapon is Emplaced, the model
+associated with it (or the Gunner) is penalized -1 Wild
+die Defender Combat Tests.
+Removal
+Action:
+Remove any Braced or Emplaced status at the end of an
+ whenever the player controlling the Fire-lane weapon
+(or its Gunner) decides.
+ when the Gunner becomes Engaged, repositions or
+moves, is KO’d or Eliminated.
+ when the weapon is no longer Emplaced, is Out-of-Play,
+or otherwise unavailable.
+
+General Benefits
+While Braced or Emplaced, the Fire-lane weapon allows
+interrupts, and creates a new Passive Player Option known
+as "Suppressive Fire!".
+Whenever any target enters or moves within LOS and
+within its Field-of-Fire [ FOF ]:
+ Stability — Effectively increase STR by 1 if Braced, or by
+2 if Emplaced, when affected by [Recoil] or [Jitter].
+ Suppressive Fire! — If Attentive, receive a number of
+Suppression markers equal to the weapon's ROF X trait.
+ Place at least one Suppression marker within range to the
+target, and LOS of the Gunner or weapon.
+ Place the remaining Suppression markers among other
+Opposing models in LOS if they are within Cohesion to the
+LOF through the first target.
+ When finished, roll a Modifier die for each Suppression
+marker placed. If any miss, acquire a Delay token.
+Remove any Wait token instead if present.
+Emplaced Benefits
+There are additional benefits while Emplaced.
+ Steady — Receive +1 Suppression effect.
+ Effective — When acquiring a Delay token after finishing
+the Suppress step above, instead roll 2 Modifier dice.
+Acquire a Delay token only when all are misses.
+ Team-work — A Free Attentive Ordered Loader may
+acquire a Delay token at any time to remove any one
+Out-of-Ammo! or Jammed! status markers, or to receive
+the Delay token from the Gunner.
+

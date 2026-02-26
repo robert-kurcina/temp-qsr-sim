@@ -667,6 +667,8 @@ export class GameManager {
     options: Parameters<GameManager['executeRangedAttack']>[3] = {}
   ) {
     // TODO: Implement group ranged attack
+    // Rules Reference: rules-combat.md - Concentrated Attacks
+    // This would allow multiple models to coordinate ranged attacks on a single target
     throw new Error('Group ranged attack not implemented');
   }
 
@@ -677,6 +679,8 @@ export class GameManager {
     options: Parameters<GameManager['executeCloseCombatAttack']>[3] = {}
   ) {
     // TODO: Implement group close combat attack
+    // Rules Reference: rules-situational-modifiers.md - Assist (+1 Impact per extra model)
+    // rules-multiple.md - Multiple Weapons and coordinated attacks
     throw new Error('Group close combat attack not implemented');
   }
 

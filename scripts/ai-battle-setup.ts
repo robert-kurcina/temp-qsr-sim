@@ -3744,7 +3744,7 @@ class AIBattleRunner {
           rpBySide: { ...this.missionRpBySide },
           immediateWinnerSideId: this.missionImmediateWinnerSideId ?? undefined,
           // Predicted scoring for AI planning (R1.5)
-          predictedScoring: this.buildPredictedScoring(sides),
+          predictedScoring: this.buildPredictedScoring(this.missionSides),
         },
         // Side-level AI strategies (R1.5: God Mode Coordination)
         sideStrategies: this.buildSideStrategies(),

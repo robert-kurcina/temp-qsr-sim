@@ -1401,6 +1401,8 @@ function validateHideAction(
 
   // Check for cover (simplified - should check actual terrain)
   const hasCover = true; // TODO: Check actual terrain
+  // Rules Reference: rules-terrain.md - Cover types (Hard/Soft/Blocking)
+  // rules-situational-modifiers.md - Direct Cover (-1b), Intervening Cover (-1m)
   if (!hasCover) {
     errors.push('No Cover available for Hide');
   }

@@ -246,6 +246,15 @@ function revealHiddenTarget(
 }
 
 export function findRepositionForReveal(options: RevealRepositionOptions): PositionResult | null {
+  /**
+   * Evaluate concealment utility
+   *
+   * **Rules Reference:** [[rules-actions|Rules: Actions]] - Hide action
+   * **Rules Reference:** [[rules-visibility|Rules: Visibility]] - Hidden status and detection
+   *
+   * Note: This is a basic implementation. For production AI, consider implementing
+   * min-max AI scoring with threat maps, cover value, and objective pressure.
+   */
   // TODO: Review/replace with min-max AI scoring (threat maps, cover value, objective pressure).
   const { battlefield, character, revealer, opponents } = options;
   const position = battlefield.getCharacterPosition(character);

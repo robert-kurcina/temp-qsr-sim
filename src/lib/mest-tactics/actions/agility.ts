@@ -1,6 +1,6 @@
 /**
  * Agility Rules - QSR Advanced Movement
- * 
+ *
  * Agility rating is MOV × ½" (keep fractions up to 0.5")
  * Used for navigating difficult terrain and unusual positions
  */
@@ -11,6 +11,7 @@ import { Battlefield } from '../battlefield/Battlefield';
 import { TerrainElement } from '../battlefield/terrain/TerrainElement';
 import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
+import { d6, getDieSuccesses, DiceType } from '../subroutines/dice-roller';
 
 export interface AgilityState {
   agilitySpent: number;
@@ -166,6 +167,7 @@ export function jumpUp(
  * QSR Agility: Jump Down
  * Jump down up to Agility
  * Acquire Wound if within last 0.5 MU of Agility or more
+ * If > Agility, perform Falling Test (DR = SIZ + (MU beyond Agility ÷ 4))
  */
 export function jumpDown(
   character: Character,
@@ -175,14 +177,18 @@ export function jumpDown(
   const jumpDown = options.terrainHeight ?? agility;
 
   if (jumpDown > agility) {
+    // Falling Test required - see resolveFallingTest below
+    const fallingResult = resolveFallingTest(character, jumpDown, agility);
     return {
-      success: false,
-      agilitySpent: 0,
-      reason: `Cannot jump down ${jumpDown} MU (max: ${agility} MU)`,
+      success: true,
+      agilitySpent: agility,
+      woundAdded: fallingResult.woundAdded,
+      delayAdded: fallingResult.delayTokens > 0,
+      reason: `Fall ${jumpDown} MU: WOUND${fallingResult.delayTokens > 0 ? ` + ${fallingResult.delayTokens} Delay (Falling Test failed by ${fallingResult.delayTokens})` : ''}`,
     };
   }
 
-  // Check for falling damage
+  // Check for falling damage (within last 0.5 MU of Agility)
   const woundAdded = jumpDown >= agility - 0.5;
 
   return {
@@ -191,6 +197,114 @@ export function jumpDown(
     woundAdded,
     reason: `Jump down ${jumpDown} MU${woundAdded ? ' - WOUND from fall!' : ''}`,
   };
+}
+
+/**
+ * QSR: Falling Test
+ *
+ * When falling further than Agility, perform an Unopposed FOR Test.
+ * DR = SIZ + (MU beyond Agility ÷ 4), round to nearest whole number.
+ * On fail: acquire misses as Delay tokens (Stun damage).
+ * Wound added if fall >= Agility - 0.5 MU.
+ *
+ * @param character - The falling character
+ * @param fallDistance - Total distance fallen in MU
+ * @param agility - Character's Agility rating
+ * @returns Object with delayTokens and woundAdded
+ */
+export function resolveFallingTest(
+  character: Character,
+  fallDistance: number,
+  agility: number
+): { delayTokens: number; woundAdded: boolean } {
+  const siz = character.finalAttributes?.siz ?? character.attributes?.siz ?? 3;
+  const forAttribute = character.finalAttributes?.for ?? character.attributes?.for ?? 0;
+
+  // DR = SIZ + (MU beyond Agility ÷ 4), round to nearest whole number
+  const beyondAgility = Math.max(0, fallDistance - agility);
+  const dr = siz + Math.round(beyondAgility / 4);
+
+  // Unopposed FOR Test: Character rolls 2 Base dice + FOR, System rolls 2 Base dice + 2
+  // For Unopposed tests, System score = 2 (base) + 2 (fixed) = 4
+  const systemScore = 4;
+
+  // Character rolls 2 Base dice + FOR attribute using dice-roller
+  const roll1 = d6();
+  const roll2 = d6();
+
+  // Count successes: 4-5 = 1 success, 6 = 2 successes (using getDieSuccesses)
+  let successes = 0;
+  successes += getDieSuccesses(DiceType.Base, roll1).successes;
+  successes += getDieSuccesses(DiceType.Base, roll2).successes;
+
+  const characterScore = forAttribute + successes;
+
+  // Calculate misses (how much test failed by)
+  const misses = Math.max(0, systemScore - characterScore);
+
+  // Wound if fall >= Agility - 0.5
+  const woundAdded = fallDistance >= agility - 0.5;
+
+  return {
+    delayTokens: misses,
+    woundAdded,
+  };
+}
+
+/**
+ * QSR: Falling Collision
+ *
+ * When falling into other models:
+ * - Falling model may ignore one miss on Falling Test
+ * - Target models must perform Falling Test using same DR
+ *
+ * @param fallingCharacter - The character that is falling
+ * @param targetCharacters - Characters at the landing location
+ * @param fallDistance - Total distance fallen in MU
+ * @param agility - Falling character's Agility rating
+ * @returns Array of collision results for each target
+ */
+export function resolveFallingCollision(
+  fallingCharacter: Character,
+  targetCharacters: Character[],
+  fallDistance: number,
+  agility: number
+): Array<{
+  targetId: string;
+  delayTokens: number;
+  woundAdded: boolean;
+  fallingCharacterIgnoresOneMiss: boolean;
+}> {
+  const results: Array<{
+    targetId: string;
+    delayTokens: number;
+    woundAdded: boolean;
+    fallingCharacterIgnoresOneMiss: boolean;
+  }> = [];
+
+  // Falling character may ignore one miss
+  const fallingResult = resolveFallingTest(fallingCharacter, fallDistance, agility);
+  const adjustedDelay = Math.max(0, fallingResult.delayTokens - 1);
+
+  results.push({
+    targetId: fallingCharacter.id,
+    delayTokens: adjustedDelay,
+    woundAdded: fallingResult.woundAdded,
+    fallingCharacterIgnoresOneMiss: true,
+  });
+
+  // Each target model must perform Falling Test using same DR
+  for (const target of targetCharacters) {
+    const targetResult = resolveFallingTest(target, fallDistance, agility);
+    results.push({
+      targetId: target.id,
+      delayTokens: targetResult.delayTokens,
+      woundAdded: targetResult.woundAdded,
+      fallingCharacterIgnoresOneMiss: false,
+    });
+  }
+
+  return results;
 }
 
 /**

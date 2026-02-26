@@ -1,4 +1,16 @@
 
+/**
+ * Range Combat Rules Implementation
+ *
+ * **Rules References:**
+ * - [[rules-combat|Rules: Combat]] - Range Combat overview
+ * - [[rule-direct-range-combat|Rules: Direct Range Combat (QSR)]] - Detailed QSR rules
+ * - [[rules-indirect|Rules: Indirect Combat]] - Indirect attacks and Scatter
+ * - [[rules-situational-modifiers|Rules: Situational Modifiers]] - Range modifiers (ORM, Cover, etc.)
+ * - [[rules-friendly-fire-los|Rules: Friendly Fire & LOF]] - Miss resolution
+ * - [[rules-traits-list|Rules: Traits List]] - Range traits (Shoot, Evasive, etc.)
+ */
+
 import { Character } from '../core/Character';
 import { TestDice, DiceType, TestResult } from '../subroutines/dice-roller';
 import { Item } from '../core/Item';

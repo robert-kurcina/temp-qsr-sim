@@ -269,6 +269,8 @@ export const Conditions = {
     name: 'In Cover',
     check: (ctx: AIContext) => {
       // TODO: Check actual cover status
+      // Rules Reference: rules-terrain.md - Cover classification
+      // rules-situational-modifiers.md - Cover modifiers
       return ctx.character.state.isInCover ?? false;
     },
   },
@@ -287,6 +289,9 @@ export const Conditions = {
     name: 'Objective Nearby',
     check: (ctx: AIContext) => {
       // TODO: Check for mission objectives
+      // Rules Reference: rules-missions-qai.md - Mission-specific objectives
+      // rules-mission-keys.md - Keys to Victory
+      // rules-objective-markers.md - OM types and actions
       return false;
     },
   },

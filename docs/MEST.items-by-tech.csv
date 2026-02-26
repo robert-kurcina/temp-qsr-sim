@@ -44,7 +44,7 @@ Arc Weapon,p06_Far_Future,17-Energy,20-Symbolic
 "Arcanum, Scroll, Minor",p07_Fantastic,19-Symbolic,20-Symbolic
 "Arcanum, Tome, Greater",p07_Fantastic,19-Symbolic,20-Symbolic
 "Arcanum, Tome, Lesser",p07_Fantastic,19-Symbolic,20-Symbolic
-"Armor, Combat Suit",p01_Ancient,01-Stone,11-Modern
+"Armor, Combat Suit",p05_Near_Future,15-Fusion,15-Fusion
 "Armor, Field",p01_Ancient,01-Stone,11-Modern
 "Armor, Field Advanced",p05_Near_Future,15-Fusion,15-Fusion
 "Armor, Field Bulletproof Flex",p05_Near_Future,14-Robotics,14-Robotics
@@ -99,7 +99,7 @@ Axe,p01_Ancient,01-Stone,20-Symbolic
 "Axe, Long",p01_Ancient,02-Bronze,20-Symbolic
 "Axe, Pick",p01_Ancient,03-Iron,20-Symbolic
 "Axe, Tactical",p04_Modern,11-Modern,20-Symbolic
-Axe-Sword of Tan-doc,p02_Archaic,05-Medieval,15-Fusion
+Axe-Sword of Tan-doc,p05_Near_Future,15-Fusion,15-Fusion
 "Ballista, Heavy",p02_Archaic,05-Medieval,20-Symbolic
 "Ballista, Medium",p01_Ancient,03-Iron,20-Symbolic
 "Balllista, Light",p01_Ancient,03-Iron,20-Symbolic
@@ -244,7 +244,7 @@ Comm-link,p04_Modern,13-Information,20-Symbolic
 "Crossbow, Single-hand Pistol, Hvy, Masterwork",p01_Ancient,03-Iron,11-Modern
 "Crossbow, Single-hand Pistol, Masterwork",p01_Ancient,03-Iron,11-Modern
 "Dagger, Obsidian",p01_Ancient,01-Stone,15-Fusion
-"Dagger, Stiletto",p01_Ancient,01-Stone,15-Fusion
+"Dagger, Stiletto",p02_Archaic,06-Renaissance,15-Fusion
 Daggers,p01_Ancient,01-Stone,15-Fusion
 "Daggers, Spectral",p07_Fantastic,20-Symbolic,20-Symbolic
 Damper 2 > Type,p05_Near_Future,14-Robotics,20-Symbolic
@@ -254,16 +254,16 @@ Damper > Type,p05_Near_Future,14-Robotics,20-Symbolic
 Deceptor Pistol,p05_Near_Future,15-Fusion,15-Fusion
 Deceptor Rifle,p05_Near_Future,15-Fusion,15-Fusion
 Detonator,p03_Expansionist,09-Industrial,20-Symbolic
-"Device, Synchron, Archaic",p03_Expansionist,08-Sail,20-Symbolic
+"Device, Synchron, Archaic",p03_Expansionist,10-Machine,20-Symbolic
 "Device, Synchron, Early",p03_Expansionist,10-Machine,20-Symbolic
 "Device, Synchron-1.1",p04_Modern,11-Modern,20-Symbolic
 "Device, Synchron-2.1",p04_Modern,11-Modern,20-Symbolic
 "Device, Synchron-3.2",p04_Modern,11-Modern,20-Symbolic
 Discus,p01_Ancient,02-Bronze,20-Symbolic
 Displacer Device,p06_Far_Future,18-Gravity,20-Symbolic
-"Dynamic Armor, Heavy",p04_Modern,11-Modern,20-Symbolic
-"Dynamic Armor, Light",p04_Modern,11-Modern,20-Symbolic
-"Dynamic Armor, Medium",p04_Modern,11-Modern,20-Symbolic
+"Dynamic Armor, Heavy",p05_Near_Future,15-Fusion,20-Symbolic
+"Dynamic Armor, Light",p05_Near_Future,15-Fusion,20-Symbolic
+"Dynamic Armor, Medium",p05_Near_Future,15-Fusion,20-Symbolic
 Electrocounter Orbs,p03_Expansionist,10-Machine,20-Symbolic
 Electrostaff,p05_Near_Future,15-Fusion,20-Symbolic
 "Electrostaff, Neon",p05_Near_Future,15-Fusion,20-Symbolic
@@ -285,11 +285,11 @@ Electrostaff,p05_Near_Future,15-Fusion,20-Symbolic
 "Explosives, Satchel",p04_Modern,11-Modern,20-Symbolic
 "Explosives, Satchel, Pulse",p05_Near_Future,14-Robotics,20-Symbolic
 "Explosives, Stick, Dynamite",p04_Modern,11-Modern,20-Symbolic
-"Exxo-skeleton, Heavy",p05_Near_Future,14-Robotics,20-Symbolic
-"Exxo-skeleton, Lifter Frame",p05_Near_Future,14-Robotics,20-Symbolic
-"Exxo-skeleton, Light",p05_Near_Future,14-Robotics,20-Symbolic
+"Exxo-skeleton, Heavy",p05_Near_Future,15-Fusion,20-Symbolic
+"Exxo-skeleton, Lifter Frame",p05_Near_Future,15-Fusion,20-Symbolic
+"Exxo-skeleton, Light",p05_Near_Future,15-Fusion,20-Symbolic
 Exxo-skin,p05_Near_Future,14-Robotics,20-Symbolic
-"Exxo-skin, Carapace",p05_Near_Future,14-Robotics,20-Symbolic
+"Exxo-skin, Carapace",p05_Near_Future,15-Fusion,20-Symbolic
 "Exxo-skin, Scaled",p05_Near_Future,14-Robotics,20-Symbolic
 "Exxo-skin, Segmented",p05_Near_Future,14-Robotics,20-Symbolic
 Favored Passage,p00_ANY,p00_ANY,p00_ANY
@@ -304,9 +304,9 @@ Flail,p01_Ancient,01-Stone,20-Symbolic
 "Flame-thrower, Mini",p04_Modern,11-Modern,20-Symbolic
 Flashlight,p04_Modern,12-Atomic,20-Symbolic
 "Flashlight, Advanced",p04_Modern,13-Information,20-Symbolic
-"Force Armor, Heavy",p04_Modern,11-Modern,20-Symbolic
-"Force Armor, Light",p04_Modern,11-Modern,20-Symbolic
-"Force Armor, Medium",p04_Modern,11-Modern,20-Symbolic
+"Force Armor, Heavy",p05_Near_Future,15-Fusion,20-Symbolic
+"Force Armor, Light",p05_Near_Future,15-Fusion,20-Symbolic
+"Force Armor, Medium",p05_Near_Future,15-Fusion,20-Symbolic
 Fusion Pistol,p05_Near_Future,15-Fusion,15-Fusion
 "Gas Cannister, Blacksmoke",p04_Modern,11-Modern,20-Symbolic
 "Gas Cannister, Caustic",p04_Modern,11-Modern,20-Symbolic
@@ -383,13 +383,13 @@ Goggles,p03_Expansionist,08-Sail,20-Symbolic
 "Hammer, War, Ban-1",p01_Ancient,01-Stone,20-Symbolic
 "Hammer, War, Ban-2",p01_Ancient,01-Stone,20-Symbolic
 Hand Cannon,p04_Modern,12-Atomic,14-Robotics
-"Hardsuit, Archaic",p04_Modern,11-Modern,20-Symbolic
-"Hardsuit, Enhanced, Archaic",p04_Modern,11-Modern,20-Symbolic
-"Hardsuit, Platform, Archaic",p04_Modern,11-Modern,20-Symbolic
-"Hardsuit, Scout",p04_Modern,11-Modern,20-Symbolic
-"Hardsuit, Standard",p04_Modern,11-Modern,20-Symbolic
-"Hardsuit, War",p04_Modern,11-Modern,20-Symbolic
-"Hardsuit, Windup",p04_Modern,11-Modern,20-Symbolic
+"Hardsuit, Archaic",p04_Modern,12-Atomic,20-Symbolic
+"Hardsuit, Enhanced, Archaic",p04_Modern,12-Atomic,20-Symbolic
+"Hardsuit, Platform, Archaic",p04_Modern,12-Atomic,20-Symbolic
+"Hardsuit, Scout",p04_Modern,12-Atomic,20-Symbolic
+"Hardsuit, Standard",p04_Modern,12-Atomic,20-Symbolic
+"Hardsuit, War",p05_Near_Future,15-Fusion,20-Symbolic
+"Hardsuit, Windup",p04_Modern,12-Atomic,20-Symbolic
 Heirloom Weapon,p00_ANY,p00_ANY,p00_ANY
 "Helmet, Common",p01_Ancient,01-Stone,11-Modern
 "Helmet, Common, Bulletproof",p04_Modern,12-Atomic,13-Information
@@ -398,7 +398,7 @@ Heirloom Weapon,p00_ANY,p00_ANY,p00_ANY
 "Helmet, Full-Elaborate",p01_Ancient,01-Stone,11-Modern
 "Helmet, Reinforced",p01_Ancient,01-Stone,11-Modern
 "Helmet, Reinforced Bulletproof",p04_Modern,12-Atomic,13-Information
-"Helmet, Riot",p01_Ancient,01-Stone,11-Modern
+"Helmet, Riot",p04_Modern,11-Modern,11-Modern
 "Helmet, Riot Bulletproof",p04_Modern,12-Atomic,13-Information
 "Hook, Crook",p01_Ancient,01-Stone,20-Symbolic
 "Hook, Meat",p01_Ancient,01-Stone,20-Symbolic
@@ -428,8 +428,8 @@ Improvised Thrown,p01_Ancient,01-Stone,20-Symbolic
 "Knife, Medium",p01_Ancient,01-Stone,20-Symbolic
 "Knife, Small",p01_Ancient,01-Stone,20-Symbolic
 "Knife, Tactical",p04_Modern,11-Modern,20-Symbolic
-Knuckledusters,p01_Ancient,01-Stone,20-Symbolic
-"Knuckledusters, Spiked",p01_Ancient,01-Stone,20-Symbolic
+Knuckledusters,p03_Expansionist,09-Industrial,20-Symbolic
+"Knuckledusters, Spiked",p03_Expansionist,09-Industrial,20-Symbolic
 Lamp or Candle,p01_Ancient,01-Stone,20-Symbolic
 Lamp or Candle. Large,p01_Ancient,01-Stone,20-Symbolic
 "Lantern, Basic",p01_Ancient,01-Stone,20-Symbolic
@@ -450,9 +450,9 @@ Leash,p01_Ancient,01-Stone,20-Symbolic
 "Machine Gun, Medium",p04_Modern,12-Atomic,14-Robotics
 "Machine Gun, Medium (Mounted)",p04_Modern,11-Modern,14-Robotics
 "Machine Gun, Mitrailleuse",p04_Modern,12-Atomic,20-Symbolic
-"Mage Armor, Heavy",p04_Modern,11-Modern,20-Symbolic
-"Mage Armor, Light",p04_Modern,11-Modern,20-Symbolic
-"Mage Armor, Medium",p04_Modern,11-Modern,20-Symbolic
+"Mage Armor, Heavy",p05_Near_Future,15-Fusion,20-Symbolic
+"Mage Armor, Light",p05_Near_Future,15-Fusion,20-Symbolic
+"Mage Armor, Medium",p05_Near_Future,15-Fusion,20-Symbolic
 Mask of Command,p07_Fantastic,19-Psionic,20-Symbolic
 "Medicinals, Alcohol",p01_Ancient,01-Stone,20-Symbolic
 "Medicinals, Alcohol, Copious",p01_Ancient,01-Stone,20-Symbolic
@@ -515,8 +515,8 @@ Needler Pistol,p05_Near_Future,14-Robotics,14-Robotics
 "Package, Recon",p00_ANY,p00_ANY,p00_ANY
 "Package, Timer",p00_ANY,p00_ANY,p00_ANY
 "Package, Warrior",p00_ANY,p00_ANY,p00_ANY
-Phlogiston Suit,p01_Ancient,01-Stone,20-Symbolic
-"Phlogiston Suit, Fireproof",p01_Ancient,01-Stone,20-Symbolic
+Phlogiston Suit,p04_Modern,11-Modern,20-Symbolic
+"Phlogiston Suit, Fireproof",p04_Modern,12-Atomic,20-Symbolic
 "Phlogiston Suit, Improved",p04_Modern,11-Modern,20-Symbolic
 "Phlogiston Suit, Improved BP",p04_Modern,11-Modern,20-Symbolic
 "Pipe Cannon, 1-pdr",p04_Modern,12-Atomic,12-Atomic
@@ -548,8 +548,8 @@ Poisoned Weapon,p01_Ancient,01-Stone,20-Symbolic
 "Power-gem, Medium",p07_Fantastic,20-Symbolic,20-Symbolic
 Powered Armor-Battle,p06_Far_Future,17-Energy,20-Symbolic
 Powered Armor-Combat,p06_Far_Future,16-Quantum,20-Symbolic
-Powered Armor-Early,p05_Near_Future,14-Robotics,20-Symbolic
-Powered Armor-Exxo,p05_Near_Future,14-Robotics,20-Symbolic
+Powered Armor-Early,p05_Near_Future,15-Fusion,20-Symbolic
+Powered Armor-Exxo,p05_Near_Future,15-Fusion,20-Symbolic
 Powered Armor-ExxoHvy,p05_Near_Future,15-Fusion,20-Symbolic
 Powered Armor-Standard,p05_Near_Future,15-Fusion,20-Symbolic
 Powered Armor-Stealth,p06_Far_Future,17-Energy,20-Symbolic
@@ -560,11 +560,11 @@ Powered Shielding-Heavy,p05_Near_Future,15-Fusion,15-Fusion
 Powered Staff,p05_Near_Future,15-Fusion,20-Symbolic
 Prayer-Book,p02_Archaic,05-Medieval,20-Symbolic
 Prayer-Relic,p02_Archaic,05-Medieval,20-Symbolic
-"Proximity Suit, Fireproof",p01_Ancient,01-Stone,20-Symbolic
+"Proximity Suit, Fireproof",p04_Modern,12-Atomic,20-Symbolic
 "Proximity Suit, Fireproof BP",p04_Modern,11-Modern,20-Symbolic
-"Psi Armor, Heavy",p04_Modern,11-Modern,20-Symbolic
-"Psi Armor, Light",p04_Modern,11-Modern,20-Symbolic
-"Psi Armor, Medium",p04_Modern,11-Modern,20-Symbolic
+"Psi Armor, Heavy",p05_Near_Future,15-Fusion,20-Symbolic
+"Psi Armor, Light",p05_Near_Future,15-Fusion,20-Symbolic
+"Psi Armor, Medium",p05_Near_Future,15-Fusion,20-Symbolic
 Pummel-1,p01_Ancient,01-Stone,20-Symbolic
 Pummel-2,p01_Ancient,01-Stone,20-Symbolic
 Pummel-3,p01_Ancient,01-Stone,20-Symbolic
@@ -670,7 +670,7 @@ Staff,p01_Ancient,01-Stone,20-Symbolic
 "Staff, Greater Mage",p01_Ancient,01-Stone,20-Symbolic
 "Staff, Lesser Mage",p01_Ancient,01-Stone,20-Symbolic
 "Staff, Sling",p01_Ancient,01-Stone,11-Modern
-Stealth Suit,p01_Ancient,01-Stone,20-Symbolic
+Stealth Suit,p05_Near_Future,15-Fusion,20-Symbolic
 "Stunner, Pistol",p05_Near_Future,15-Fusion,15-Fusion
 "Stunner, Rifle",p05_Near_Future,15-Fusion,15-Fusion
 "Stunner, Riot",p05_Near_Future,15-Fusion,20-Symbolic
@@ -702,7 +702,7 @@ Throwing Sticks,p01_Ancient,01-Stone,20-Symbolic
 "Torch, Basic, Large",p01_Ancient,01-Stone,20-Symbolic
 "Torch, Flaming",p01_Ancient,01-Stone,20-Symbolic
 "Torch, Flaming, Large",p01_Ancient,01-Stone,20-Symbolic
-"Torch, Flashlight",p01_Ancient,01-Stone,20-Symbolic
+"Torch, Flashlight",p03_Expansionist,10-Machine,20-Symbolic
 "Torch, Staff",p01_Ancient,01-Stone,20-Symbolic
 Trident,p01_Ancient,01-Stone,20-Symbolic
 "Trident, Long",p01_Ancient,01-Stone,20-Symbolic
@@ -717,16 +717,16 @@ Upgrade:Reinforced,p00_ANY,p00_ANY,p00_ANY
 Upgrade:Well-honed,p00_ANY,p00_ANY,p00_ANY
 Vibrodagger,p06_Far_Future,16-Quantum,20-Symbolic
 Vibrosword,p06_Far_Future,16-Quantum,20-Symbolic
-"Waldo, Claws, Long",p01_Ancient,01-Stone,14-Robotics
-"Waldo, Claws, Short",p01_Ancient,01-Stone,14-Robotics
-"Waldo, Hand",p01_Ancient,01-Stone,20-Symbolic
-"Waldo, Saw, Large",p01_Ancient,01-Stone,20-Symbolic
-"Waldo, Saw, Small",p01_Ancient,01-Stone,20-Symbolic
+"Waldo, Claws, Long",p04_Modern,12-Atomic,14-Robotics
+"Waldo, Claws, Short",p04_Modern,12-Atomic,14-Robotics
+"Waldo, Hand",p04_Modern,12-Atomic,20-Symbolic
+"Waldo, Saw, Large",p04_Modern,12-Atomic,20-Symbolic
+"Waldo, Saw, Small",p04_Modern,12-Atomic,20-Symbolic
 "Wheeled, Armored-pedaler",p04_Modern,11-Modern,20-Symbolic
 "Wheeled, Gun Carriage, Large",p04_Modern,11-Modern,14-Robotics
 "Wheeled, Gun Carriage, Tricycle",p04_Modern,11-Modern,14-Robotics
 "Wheeled, Steam-chair",p04_Modern,11-Modern,20-Symbolic
-"Wheeled, Tankette",p04_Modern,11-Modern,20-Symbolic
+"Wheeled, Tankette",p05_Near_Future,15-Fusion,20-Symbolic
 "Whip, Bull",p01_Ancient,01-Stone,20-Symbolic
 "Whip, Metal Chain",p01_Ancient,03-Iron,20-Symbolic
 "Whip, Mollysword",p02_Archaic,05-Medieval,15-Fusion

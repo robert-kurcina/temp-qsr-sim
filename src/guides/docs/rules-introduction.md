@@ -35,3 +35,27 @@ Scan through the rules. Try them out. Make mistakes. Do it again. Afterwards, tr
 - **Basic Rules** — No marker. These are the core rules everyone should learn first.
 - **Intermediate Rules (△)** — More advanced rules that add depth and complexity. Learn these after mastering the basics.
 - **Advanced Rules (▲)** — Optional rules for experienced players seeking maximum detail and realism.
+
+## QSR Scope Notes
+
+**Included in QSR:**
+- Bronze Age to Renaissance Age combat (~2250 CE to ~1300 CE)
+- Melee weapons (swords, axes, spears, clubs, etc.)
+- Bows and crossbows
+- Thrown weapons
+- Basic armor (Light, Medium, Heavy)
+- Shields and helmets
+- Basic equipment (medicinals, tools)
+
+**NOT Included in QSR (Advanced Rules):**
+- **Firearms** (pistols, rifles, machine guns, etc.)
+- **Grenades** (fragmentation, smoke, gas, etc.)
+- **Spells** and magical attacks
+- **Suppression** rules
+- **Core Damage** calculations
+- **Snapshot** rules
+- **Energy weapons** (plasma, beam, etc.)
+- **Powered armor** and advanced suits
+- **Vehicles** and mounted combat
+
+**Note:** Items marked with **(△)** are Intermediate rules that extend QSR mechanics. Items marked with **(▲)** are Advanced rules that add significant complexity and are optional for QSR games.

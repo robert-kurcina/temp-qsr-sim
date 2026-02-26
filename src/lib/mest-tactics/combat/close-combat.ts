@@ -1,3 +1,14 @@
+/**
+ * Close Combat Rules Implementation
+ *
+ * **Rules References:**
+ * - [[rules-combat|Rules: Combat]] - Close Combat overview
+ * - [[rule-close-combat|Rules: Close Combat (QSR)]] - Detailed QSR rules
+ * - [[rules-situational-modifiers|Rules: Situational Modifiers]] - Combat modifiers
+ * - [[rules-bonus-actions|Rules: Bonus Actions]] - Post-hit maneuvers
+ * - [[rules-traits-list|Rules: Traits List]] - Combat traits (Charge, Cleave, Parry, etc.)
+ */
+
 import { Character } from '../core/Character';
 import { TestDice, DiceType, TestResult } from '../subroutines/dice-roller';
 import { Item } from '../core/Item';

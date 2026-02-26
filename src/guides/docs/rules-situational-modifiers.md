@@ -32,17 +32,107 @@ For these QSR Rules, the entries on the Situational Test Modifiers table have be
 
 ## Close Combat & Disengage
 
-| Modifier | Description                                                                                                                                                                                          |
-| :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| +1       | **Assist.** +1 Impact Attacker Damage Test per extra Attentive Friendly Ordered model with same target in Melee Range.                                                                                   |
-| +1m      | **Charge.** Attacker Hit Test if moved into base-contact with target, over Clear terrain from a Free position at least base-diameter.                                                                     |
-| +1m      | **High Ground.** Disengage and Hit Tests to higher model if base is above half of the Opposing model’s base-height, and base-height is above the Opposing model’s volume.                                |
-| +1m      | **Size.** Disengage and Close Combat Hit Tests if in base-contact, and Opposing model is larger by 1, 2, 5, or 10 SIZ. Each is +1m.                                                                     |
-| +1b      | **Defend.** Defender Hit Test if target chooses “Defend”.                                                                                                                                            |
-| +1w      | **Outnumber.** Disengage and Hit Tests for 1, 2, 5, or 10 more other Attentive Ordered Friendly models with the same target in Melee Range than the Opposing model. Each is +1w.                           |
-| -1m      | **Cornered.** Disengage and Hit Tests if Engaged to the Opposing model on one side of this model and in base-contact on the other side with a wall, precipice, or degraded terrain.                        |
-| -1m      | **Flanked.** Disengage and Hit Tests if Engaged to two Opposing models directly on either side of this model.                                                                                           |
-| -1       | **Overreach.** Penalized -1 REF and -1 Attacker Close Combat Tests.                                                                                                                                  |
+| Modifier | Description |
+| :------- | :---------- |
+| +1 | **Assist.** +1 Impact Attacker Damage Test per extra Attentive Friendly Ordered model with same target in Melee Range. |
+| +1m | **Charge bonus.** Attacker Hit Test if moved into base-contact with target, over Clear terrain from a Free position at least base-diameter away. See "Charge Bonus Qualification" below for detailed rules. |
+| +1m | **High Ground.** Disengage and Hit Tests to higher model if base is above half of the Opposing model's base-height, and base-height is above the Opposing model's volume. |
+| +1m | **Size.** Disengage and Close Combat Hit Tests if in base-contact, and Opposing model is larger by 1, 2, 5, or 10 SIZ. Each is +1m. |
+| +1b | **Defend.** Defender Hit Test if target chooses "Defend". |
+| +1w | **Outnumber.** Disengage and Hit Tests for 1, 2, 5, or 10 more other Attentive Ordered Friendly models with the same target in Melee Range than the Opposing model. Each is +1w. |
+| -1m | **Cornered.** Disengage and Hit Tests if Engaged to the Opposing model on one side of this model and in base-contact on the other side with a wall, precipice, or degraded terrain. |
+| -1m | **Flanked.** Disengage and Hit Tests if Engaged to two Opposing models directly on either side of this model. |
+| -1 | **Overreach.** Penalized -1 REF and -1 Attacker Close Combat Tests. |
+
+---
+
+## Charge Bonus Qualification
+
+The **Charge bonus** is a **Situational Test Modifier** (+1m to Attacker Hit Test) earned through movement and positioning. This is **separate from** the **Charge trait** which may be assigned to weapons.
+
+### Charge Bonus Requirements
+
+All of the following conditions must be met:
+
+| Requirement | Details |
+|-------------|---------|
+| **Movement Cost** | Move action must cost **at least 1 AP** |
+| **Starting Position** | Must start **Free** (not Engaged) |
+| **Starting Distance** | At least **base-diameter away** from target before becoming Engaged |
+| **Movement Path** | Move **directly into target** and make **base-contact** |
+| **Direction Changes** | **No direction changes** during Charge action |
+| **Terrain** | Movement must be over **Clear terrain** (or terrain made Clear by traits/Agility) |
+| **Target Visibility** | Target must **not be Hidden** and be **within LOS** at start of Action |
+| **Target Range** | Target at no more than **Visibility × 3 ORM** |
+
+### Charge Bonus vs. Charge Trait
+
+| Feature | Charge Bonus | Charge Trait |
+|---------|--------------|--------------|
+| **Type** | Situational Test Modifier | Weapon/Item Trait (Attack Effect) |
+| **Effect** | +1m to **Attacker Hit Test** | +1 Wild die to **Attacker Damage Test** + +1 Impact |
+| **Source** | Earned through movement | Assigned to weapon/item |
+| **Requirement** | Qualify through movement | Must be **Attentive** AND qualify for Charge bonus |
+| **Stacking** | Cannot stack with itself | Stacks with Charge bonus (both apply if qualified) |
+
+### Charge Bonus Examples
+
+**Example 1: Successful Charge**
+```
+Character: Average (MOV 2), armed with Spear (Charge trait)
+Starting: Free, 3" from enemy (more than base-diameter)
+Action: Spend 1 AP Move, move 4" directly into base-contact
+Result: 
+  - Charge bonus: +1m to Hit Test ✓
+  - Charge trait: +1 Wild die Damage Test + +1 Impact ✓
+```
+
+**Example 2: Failed Charge (Direction Change)**
+```
+Character: Average (MOV 2), armed with Sword
+Starting: Free, 4" from enemy
+Action: Move 2" forward, turn 90°, move 2" to flank
+Result: 
+  - Charge bonus: NO (direction change during action) ✗
+  - Normal Hit Test applies
+```
+
+**Example 3: Failed Charge (Terrain)**
+```
+Character: Average (MOV 2), armed with Axe
+Starting: Free, 3" from enemy, Rough terrain between
+Action: Move into base-contact over Rough terrain
+Result: 
+  - Charge bonus: NO (not Clear terrain) ✗
+  - Normal Hit Test applies
+```
+
+**Example 4: Charge Trait Without Charge Bonus**
+```
+Character: Average (MOV 2), armed with Spear (Charge trait)
+Starting: Already Engaged with enemy
+Action: Close Combat Attack (no movement)
+Result: 
+  - Charge bonus: NO (did not move) ✗
+  - Charge trait: NO (requires Charge bonus) ✗
+  - Normal Hit and Damage Tests apply
+```
+
+### Traits That Affect Charge
+
+| Trait | Effect on Charge |
+|-------|------------------|
+| **Charge** (weapon trait) | +1 Wild die Damage Test + +1 Impact when Charge bonus applies |
+| **Bash** | +1 cascade for Bonus Actions if Charging and in base-contact |
+| **Surefooted X** | Can treat Rough/Difficult terrain as Clear, enabling Charge |
+| **Sprint X** | Increased movement allows Charge from further away |
+| **Leap X** | Can use Agility to bypass terrain, enabling Charge |
+
+### Related Rules
+
+- [[rules-traits-list|Rules: Traits List]] — Charge trait, Bash trait
+- [[rules-movement|Rules: Movement]] — Movement actions, terrain
+- [[rules-combat|Rules: Combat]] — Close Combat resolution
 
 ## Range Combat & Detect
 

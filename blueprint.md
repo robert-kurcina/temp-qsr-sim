@@ -341,12 +341,18 @@ Implemented and validated in runtime/tests:
 - Phase G: G2 and G3 are partially completed for active mission/game-controller/game-manager paths; global repo-wide type drift remains open.
 - **R1 (P0):** Mission Scoring Correctness for Elimination (QAI_11) - VP awarded at game end based on BP, Bottled and Outnumbered keys implemented.
 - **R1.5 (P0):** Predicted VP/RP Scoring System - All 10 missions have `calculatePredictedScoring()`, battle reports include predicted scoring, AI stratagem integration complete with 12 tests.
+- **R2 (P0):** AI Scoring Behavior Patch - Utility scoring integration complete with mission-aware pressure, target priority heuristics, objective marker integration, Wait/React valuation, role-aware action valuation, and action reasoning improvements.
+- **R3 (P1):** Movement + Cover-Seeking Quality - Board-scale route selection, cover quality evaluation, lean opportunity detection, exposure risk assessment, and doctrine-aware scoring complete.
+- **R4 (P1):** Mission Validation Harness - Cross-mission validation scan complete with behavior fingerprint comparison and tactical mechanics diagnostics.
+- **R5 (P2):** Documentation Completeness - ~100% QSR coverage achieved with 41 rules modules, 1,272 tests (100% pass), comprehensive glossary, and qsr-traceability.md updated.
 
 Deferred or held by approval:
 - B4: Action-type alignment/fallback mapping across all AI pathways (deferred).
 - D3: Indirect midpoint/arc terrain-height fidelity (deferred pending terrain-height clarification).
 - F1: Original non-interactive profile step was rejected and superseded by interactive CLI + validation mode in `scripts/ai-battle-setup.ts`.
 - G1: Unused `gameData` key disposition policy (deferred).
+- **Advanced Rules (▲):** All 14 advanced rules modules created and marked DEFERRED (Fire, ROF, Suppression, Firelane, Effects, Gas/Fume/Puffs, Go, Champions, LoA, Technology, Terrain, Buildings, Lighting, Webbing). Requires QSR completion plus traits_descriptions.json expansion.
+- **P3-2:** Quick Reference Cards/printable sheets deferred until after UI implementation.
 
 **Active Development:**
 - **R2 (P0):** AI Scoring Behavior Patch - Integrating predicted scoring into AI utility system (IN PROGRESS)

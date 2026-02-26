@@ -1,0 +1,24 @@
+Material Hardness
+Use this for adjusting the values of the two other charts.
+The FOR values shown here are 2 higher than normal to
+represent the best that the material could provide.
+
+For example; Depleted Uranium is +1 Armor Rating and
++1 Hardness Rating when compared to Dense Steel.
+
+Hardness Rating "HR" is Hardened X
+Armor Rating "AR" is Armor X
+Fortitude "FOR" is FOR X
+
+AR	HR	FOR	Material	Year
+7	4	17	Layered Fullerene Fibers.	3000
+6	3	16	Graphene Polymers.	2250
+5	3	15	Palladium Glass.	2100
+4	2	14	Diamond SHell.	2050
+3	2	13	Super Polymers.	2025
+2	1	12	Tungsten Alloys. Bulky Polymers.	2000
+1	1	11	Depleted Uranium. Advanced Ceramics.	1950
+0	0	10	Dense Steel. Dense Ceramics.	1900
+-1	0	9	Soft Steel. Titanium. Ceramics.	1300
+-2	0	8	Iron. Bronze. Early Steel.	-2250
+-3	0	7	Stone Walls. Bone. Dry Hide. Rubber.	-5000

@@ -1,0 +1,128 @@
+
+Level of Absurdity
+As greater discoveries into the inner working of the
+universe become revealed through the understanding of
+the GUTOE or “Grand Unified Theory of Everything”,
+civilization progresses technologically. Very rapidly. It
+consumes more matter, more energy, and expands ever
+more rapidly across all of known reality. What is
+considered reality itself, beginning with “The Solidness”,
+starts expanding to include higher and more dimensions.
+What was once considered “absurd” becomes possible.
+What was once merely “possible” becomes wide-spread.
+Every genre and setting have a “Level-of-Absurdity” [ LoA ]
+rating which determines which traits could be possible for
+assignment to characters within it.
+Each LoA defaults to 1× the Kardeshev Type given for a
+Technological Age.
+LoA Description
+0 Limited to what the real-world is known to have.
+1 Kardeshev Type I. Quantum Age or later; 2100 CE.
+2 Kardeshev Type II. Energy Age or later; 2250 CE.
+3 Kardeshev Type III. Gravity Age or later; 3000 CE.
+4 Kardeshev Type IV. Psionic Age or later; 3350 CE.
+5 Kardeshev Type V. Symbolic Age or later; 5000 CE.
+Permeations of Absurdity
+Every setting within MEST Tactics has a basic LoA which
+permeates the setting. This is usually the result of innate
+progresses in technology becoming prevalent. Sometimes
+it is the result of “leakages” between closely parallel
+universes or “Frame Parallels”.
+ Innate — Genres with pulp, fantastic, or super-science
+elements will usually have an LoA matching the element
+requiring the highest Kardeshev Type.
+ Leakage — Genres before Kardeshev Type I that have
+anachronistic elements, because of leakages, will have a
+higher LoA.
+
+The Metacycle
+Time within MEST Tactics is a very complex set of
+branching events partitioned into dynamically collapsing
+and expanding Frame Parallels, and weaves across the
+surface of a near-crystalline imperfect and convolving
+toroidal Möebius Strip.
+Yeah.
+This is the “Metacycle”. As a result, the time after the
+Symbolic Age c. 5000 CE transitions into the time before
+the Stone Age c. 5000 BCE. It wasn’t always like this, but
+the current convolution makes it as it is now.
+Determining Leakage
+When a futuristic element is introduced into a setting,
+adjust the LoA by 1-2-3-4 if it is too early by 1-2-5-10 Ages.
+For example; Allowing the Medieval Age Longbow weapon
+within the Dark Ages is LoA 1.
+For example; Allowing Mechanized Warfare (“tanks”) from
+the Modern Age into the Industrial Age is LoA 2.
+Alternatively, leakages from higher Kardeshev types
+(which have higher LoA) can always appear in Ages with a
+lower type. Merely use the higher LoA.
+For example; Magic and Arcanics Kardeshev Type IV, and
+therefore LoA 4. Having Magic appear in the Stone Age, or
+the Medieval Age, or the Quantum Age is all the same. These
+become LoA 4.
+Synonyms
+A synonym is when an Item which isn’t normally available
+is renamed. Usually it is a later Technological Age or if it is
+a different Item class (Weapon, Armor, Equipment), or of a
+different Item type (e.g.; Helmet, Shield, Gear, Suit).
+Increase by +1 LoA for each. Set LoA to 5 or less.
+For example; assigning the capabilities of a Shotgun (Modern
+Age ranged weapon) to a Dagger (Stone Age melee weapon is
+LoA 3 + 2 LoA or 5, which is the maximum.
+Thinning the Codon Barrier
+The Codon Barrier is thinner when the setting has a higher
+Level-of-Absurdity. This creates a few effects for games set
+within MEST Tactics.
+ Backdrop —The first is that it allows crazier technologies to
+be introduced into a setting. This is mostly a narrative
+concern to make for a cool story. It also allows Missions to be
+completed with unusual archetypes, weapons, armor, and
+equipment.
+ Champions — Champions warp reality about them because
+they are attempting to escape across the Codon Barrier.
+When an area has a high amount of Absurdity, this makes it
+easier for them to escape.
+ Distortion — “Reality Distortion Field”. Champions alter
+reality around them. As they progress through Campaigns,
+they’ll acquire the Reputation trait which allows, possibly,
+higher LoA for their Assembly at any Mission when they are
+deployed.
+
+Mechanism
+As a result of the Codon Barrier, not every Frame Parallel
+allows magic or super-science to exist even though a
+Champion has embodied a host character.
+ A character has a basic LoA matching the traits it has
+been assigned which has the highest LoA.
+ Most traits will have a default LoA of zero. This includes
+such things which are reasonably possible for a human
+being (“Human”) to have such as the Fight or Sneaky.
+ LoA of 1 usually are assigned to Animals and Humanoids.
+ Some traits will have a higher LoA to represent the fact
+that Humans as we know them wouldn’t necessarily have
+them except as elements of a pulp, cinematic, punk, or
+fantasy genres. Those are in increasing LoA order.
+This ensures that the trait Intense is LoA 1, while the trait
+Precise is LoA 2. And it follows that the Sorcerer trait is
+LoA 3.
+ When a host is about to be altered by the Champion
+pattern, determine if the additional levels of a trait
+could possibly exist for the genre’s LoA.
+ Reduce the effective LoA by 1 if the trait would be applied
+to an Animal or to a non-Human.
+ Reduce the effect LoA by the Reputation level of the
+Champion.
+ If it could not exist, reduce the trait levels to be added.
+Higher Skill Levels
+Characters may acquire Skills at higher than level 3. This is
+possible but inefficient.
+ A trait may be acquired at level 4, 5, or 6. This will cost
+10×, 20×, and 50× of the Time Unit and the specified
+amount of XP.
+ Acquiring a trait at level 4 or more will affect a
+character’s Level-of-Absurdity [ LoA ].
+ At level 4, the character’s effective LoA is increased by 1
+and at level 6 the LoA is increased by 2.
+ If the effective LoA is higher than allowed by the genre,
+disallow increasing the Skill to that level.
+
