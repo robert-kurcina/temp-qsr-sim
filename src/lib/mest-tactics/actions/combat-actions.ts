@@ -19,7 +19,6 @@ import { LOSOperations } from '../battlefield/los/LOSOperations';
 import { hasItemTrait, hasItemTraitOnWeapon } from '../traits/item-traits';
 import {
   getFightBonusActions,
-  getBrawlLevel,
   checkBonusActionEligibility,
   hasReload,
   getReloadActionsRequired,
@@ -1146,35 +1145,14 @@ export function executeCloseCombatAttack(
   recordWeaponUse(attacker, weaponIndex);
   const forcedMiss = mergedContext.forceMiss && !mergedContext.forceHit;
   const hit = (hitTestResult.score > 0 || mergedContext.forceHit) && !forcedMiss;
-  if (!hit) {
-    if (options.defend && defender.state.isAttentive) {
-      deps.applyPassiveOptionCost(defender);
-    }
-    return { hit: false, hitTestResult, context: mergedContext };
-  }
-
-  if (weapon.traits?.length) {
-    const cascades = hitTestResult.cascades ?? 0;
-    for (const trait of weapon.traits) {
-      const parsed = parseStatusTrait(trait);
-      if (!parsed) continue;
-      applyStatusTraitOnHit(defender, parsed.traitName, {
-        cascades,
-        rating: parsed.rating,
-        impact: weapon.impact ?? 0,
-      });
-    }
-  }
-
   let bonusActionOptions: ReturnType<typeof buildBonusActionOptions> | undefined;
   let bonusActionOutcome: BonusActionOutcome | undefined;
   const allowBonusActions = options.allowBonusActions ?? true;
-  
+
   // Fight trait: additional bonus actions when Fight level is higher than opponent
   const fightBonusActions = getFightBonusActions(attacker, defender, attacker.state.isAttentive);
-  
+
   // Brawl trait: allows bonus actions even on failed hit (with Delay token)
-  const brawlLevel = getBrawlLevel(attacker);
   const brawlEligibility = checkBonusActionEligibility(
     attacker,
     defender,
@@ -1182,11 +1160,12 @@ export function executeCloseCombatAttack(
     true, // isEngaged
     !hit // failedHitTest
   );
-  
+
+  const attackerModel = deps.buildSpatialModel(attacker);
+  const defenderModel = deps.buildSpatialModel(defender);
+  const engaged = attackerModel && defenderModel ? SpatialRules.isEngaged(attackerModel, defenderModel) : false;
+
   if (allowBonusActions) {
-    const attackerModel = deps.buildSpatialModel(attacker);
-    const defenderModel = deps.buildSpatialModel(defender);
-    const engaged = attackerModel && defenderModel ? SpatialRules.isEngaged(attackerModel, defenderModel) : false;
     bonusActionOptions = buildBonusActionOptions({
       battlefield: deps.battlefield,
       attacker,
@@ -1197,10 +1176,9 @@ export function executeCloseCombatAttack(
       engaged,
       additionalBonusActions: fightBonusActions,
     });
-    
-    // Allow bonus action even on failed hit if Brawl trait qualifies
+
+    // Allow bonus action even on failed hit if Brawl trait qualifies.
     const canPerformBonusAction = hit || brawlEligibility.canPerform;
-    
     if (options.bonusAction && canPerformBonusAction) {
       bonusActionOutcome = applyBonusAction(
         {
@@ -1217,12 +1195,32 @@ export function executeCloseCombatAttack(
       if (bonusActionOutcome.refreshApplied) {
         deps.applyRefresh(attacker);
       }
-      
-      // Brawl: acquire Delay token if performing bonus action on failed hit
-      if (brawlEligibility.requiresDelayToken && !hit) {
+
+      // Brawl: acquire Delay token if performing a bonus action on failed hit.
+      if (brawlEligibility.requiresDelayToken && !hit && bonusActionOutcome.executed) {
         attacker.state.delayTokens += 1;
         attacker.refreshStatusFlags();
       }
+    }
+  }
+
+  if (!hit) {
+    if (options.defend && defender.state.isAttentive && !bonusActionOutcome?.executed) {
+      deps.applyPassiveOptionCost(defender);
+    }
+    return { hit: false, hitTestResult, context: mergedContext, bonusActionOptions, bonusActionOutcome };
+  }
+
+  if (weapon.traits?.length) {
+    const cascades = hitTestResult.cascades ?? 0;
+    for (const trait of weapon.traits) {
+      const parsed = parseStatusTrait(trait);
+      if (!parsed) continue;
+      applyStatusTraitOnHit(defender, parsed.traitName, {
+        cascades,
+        rating: parsed.rating,
+        impact: weapon.impact ?? 0,
+      });
     }
   }
 

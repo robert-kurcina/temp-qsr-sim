@@ -1,6 +1,6 @@
 /**
  * Utility Scoring System
- * 
+ *
  * Evaluates actions, positions, and targets using weighted factors.
  * Allows fine-tuning AI behavior without code changes.
  */
@@ -16,6 +16,10 @@ import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 import { PathfindingEngine } from '../../battlefield/pathfinding/PathfindingEngine';
 import { evaluateRangeWithVisibility, parseWeaponOptimalRangeMu } from '../../utils/visibility';
+import { forecastWaitReact, rolloutWaitReactBranches } from '../tactical/GOAP';
+import { calculateStratagemModifiers, TacticalDoctrine } from '../stratagems/AIStratagems';
+import { buildScoringContext, calculateScoringModifiers, combineModifiers } from '../stratagems/PredictedScoringIntegration';
+import { applyCombinedModifiersToActions } from '../stratagems/StratagemIntegration';
 
 /**
  * Weight configuration for utility scoring
@@ -81,6 +85,9 @@ export interface ScoredAction {
   action: ActionType;
   target?: Character;
   position?: Position;
+  objectiveAction?: 'acquire_marker' | 'share_marker' | 'transfer_marker' | 'destroy_marker';
+  markerId?: string;
+  markerTargetModelId?: string;
   score: number;
   factors: Record<string, number>;
 }
@@ -97,6 +104,9 @@ export interface ScoredPosition {
     visibility: number;
     cohesion: number;
     threatRelief: number;
+    // R3: Cover-seeking quality factors
+    leanOpportunity: number;
+    exposureRisk: number;
   };
 }
 
@@ -115,11 +125,40 @@ export interface ScoredTarget {
   };
 }
 
+interface MissionBias {
+  movePressure: number;
+  waitPressure: number;
+  objectiveActionPressure: number;
+  attackPressure: number;
+  centerTargetBias: number;
+  vipTargetBias: number;
+}
+
+interface EvaluationSession {
+  positionExposureCache: Map<string, number>;
+  coverCache: Map<string, number>;
+  visibilityCache: Map<string, number>;
+  objectiveAdvanceCache: Map<string, number>;
+  nearestEnemyDistanceCache: Map<string, number>;
+  losPairCache: Map<string, boolean>;
+  pathEngine: PathfindingEngine;
+  strategicPathQueries: number;
+  strategicPathQueryBudget: number;
+  strategicEnemyLimit: number;
+  strategicObjectiveLimit: number;
+  strategicRefineTopK: number;
+  strategicCoarseResolution: number;
+  strategicDefaultResolution: number;
+  localSampleCount: number;
+  pathBudgetExceeded: boolean;
+}
+
 /**
  * Utility Scorer class
  */
 export class UtilityScorer {
   weights: UtilityWeights;
+  private activeEvaluationSession: EvaluationSession | null = null;
 
   constructor(weights: Partial<UtilityWeights> = {}) {
     this.weights = { ...DEFAULT_WEIGHTS, ...weights };
@@ -132,17 +171,104 @@ export class UtilityScorer {
     this.weights = { ...this.weights, ...weights };
   }
 
+  private createEvaluationSession(context: AIContext): EvaluationSession {
+    const boardArea = context.battlefield.width * context.battlefield.height;
+    const attackableEnemyCount = context.enemies.filter(enemy =>
+      isAttackableEnemy(context.character, enemy, context.config)
+    ).length;
+
+    let strategicPathQueryBudget = 24;
+    let strategicEnemyLimit = 12;
+    let strategicObjectiveLimit = 3;
+    let strategicRefineTopK = 4;
+    let strategicCoarseResolution = 1.0;
+    let strategicDefaultResolution = 0.5;
+    let localSampleCount = 16;
+
+    if (boardArea >= 3000) {
+      strategicPathQueryBudget = 10;
+      strategicEnemyLimit = 4;
+      strategicObjectiveLimit = 2;
+      strategicRefineTopK = 2;
+      localSampleCount = 10;
+    } else if (boardArea >= 1600) {
+      strategicPathQueryBudget = 14;
+      strategicEnemyLimit = 6;
+      strategicObjectiveLimit = 3;
+      strategicRefineTopK = 3;
+      localSampleCount = 12;
+    } else if (boardArea >= 900) {
+      strategicPathQueryBudget = 18;
+      strategicEnemyLimit = 8;
+      strategicObjectiveLimit = 3;
+      strategicRefineTopK = 3;
+      localSampleCount = 14;
+    }
+
+    strategicEnemyLimit = Math.max(2, Math.min(strategicEnemyLimit, Math.max(2, attackableEnemyCount)));
+
+    return {
+      positionExposureCache: new Map(),
+      coverCache: new Map(),
+      visibilityCache: new Map(),
+      objectiveAdvanceCache: new Map(),
+      nearestEnemyDistanceCache: new Map(),
+      losPairCache: new Map(),
+      pathEngine: new PathfindingEngine(context.battlefield),
+      strategicPathQueries: 0,
+      strategicPathQueryBudget,
+      strategicEnemyLimit,
+      strategicObjectiveLimit,
+      strategicRefineTopK,
+      strategicCoarseResolution,
+      strategicDefaultResolution,
+      localSampleCount,
+      pathBudgetExceeded: false,
+    };
+  }
+
+  private getEvaluationSession(context: AIContext): EvaluationSession {
+    return this.activeEvaluationSession ?? this.createEvaluationSession(context);
+  }
+
+  private positionKey(position: Position): string {
+    return `${position.x.toFixed(2)},${position.y.toFixed(2)}`;
+  }
+
+  private losPositionKey(a: Position, b: Position): string {
+    const keyA = this.positionKey(a);
+    const keyB = this.positionKey(b);
+    return keyA <= keyB ? `${keyA}|${keyB}` : `${keyB}|${keyA}`;
+  }
+
+  private tryConsumeStrategicPathBudget(session: EvaluationSession): boolean {
+    if (session.strategicPathQueries >= session.strategicPathQueryBudget) {
+      session.pathBudgetExceeded = true;
+      return false;
+    }
+    session.strategicPathQueries += 1;
+    return true;
+  }
+
   /**
    * Score all possible actions and return the best
    */
   evaluateActions(context: AIContext): ScoredAction[] {
-    const actions: ScoredAction[] = [];
-    const attackActions: ScoredAction[] = [];
-    const loadout = this.getLoadoutProfile(context.character);
+    const previousSession = this.activeEvaluationSession;
+    const session = this.createEvaluationSession(context);
+    this.activeEvaluationSession = session;
 
-    // Evaluate attack actions first so move pressure can adapt when no legal attacks exist.
-    const attackTargets = this.evaluateTargets(context);
-    for (const target of attackTargets) {
+    try {
+      const actions: ScoredAction[] = [];
+      const attackActions: ScoredAction[] = [];
+      const loadout = this.getLoadoutProfile(context.character);
+      const doctrinePlanning = this.getDoctrinePlanning(context);
+      const doctrineEngagement = this.getDoctrineEngagement(context, loadout);
+      const missionBias = this.getMissionBias(context);
+
+      // Evaluate attack actions first so move pressure can adapt when no legal attacks exist.
+      const attackTargets = this.evaluateTargets(context);
+      for (const target of attackTargets) {
       // Check if in melee range
       const inMelee = this.isInMeleeRange(context.character, target.target, context.battlefield);
       if (inMelee) {
@@ -153,6 +279,17 @@ export class UtilityScorer {
         } else if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
           score *= 1.2;
         }
+        if (doctrineEngagement === 'melee') {
+          score *= 1.15;
+        } else if (doctrineEngagement === 'ranged') {
+          score *= 0.82;
+        }
+        if (doctrinePlanning === 'keys_to_victory') {
+          score *= Math.max(0.72, 1 - missionBias.objectiveActionPressure * 0.22);
+        } else if (doctrinePlanning === 'aggression') {
+          score *= 1.08;
+        }
+        score *= missionBias.attackPressure;
         
         // Multiple Weapons bonus consideration for melee
         if (qualifiesForMultipleWeapons(context.character, true)) {
@@ -192,6 +329,17 @@ export class UtilityScorer {
         } else if (!loadout.hasRangedWeapons && loadout.hasMeleeWeapons) {
           score *= 0.75;
         }
+        if (doctrineEngagement === 'ranged') {
+          score *= 1.12;
+        } else if (doctrineEngagement === 'melee') {
+          score *= 0.86;
+        }
+        if (doctrinePlanning === 'keys_to_victory') {
+          score *= Math.max(0.72, 1 - missionBias.objectiveActionPressure * 0.2);
+        } else if (doctrinePlanning === 'aggression') {
+          score *= 1.06;
+        }
+        score *= missionBias.attackPressure;
 
         attackActions.push({
           action: 'ranged_combat',
@@ -206,96 +354,243 @@ export class UtilityScorer {
           },
         });
       }
-    }
+      }
 
-    // Evaluate movement actions
-    const movePositions = this.evaluatePositions(context);
-    const characterPos = context.battlefield.getCharacterPosition(context.character);
-    const nearestEnemyDistance = characterPos
-      ? this.distanceToClosestAttackableEnemy(characterPos, context)
-      : Number.POSITIVE_INFINITY;
-    const moveMultiplier = attackActions.length > 0
-      ? (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons ? 0.92 : 0.8)
-      : (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons ? 1.85 : 1.4);
-    const advanceBonus = nearestEnemyDistance > 10
-      ? (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons ? 1.25 : 0.7)
-      : 0;
-    for (const pos of movePositions.slice(0, 3)) {
-      actions.push({
-        action: 'move',
-        position: pos.position,
-        score: pos.score * moveMultiplier + advanceBonus,
-        factors: {
-          ...pos.factors,
-          moveMultiplier,
-          advanceBonus,
-        },
-      });
-    }
-    actions.push(...attackActions);
+      // Evaluate movement actions
+      const movePositions = this.evaluatePositions(context);
+      const characterPos = context.battlefield.getCharacterPosition(context.character);
+      const nearestEnemyDistance = characterPos
+        ? this.distanceToClosestAttackableEnemy(characterPos, context)
+        : Number.POSITIVE_INFINITY;
+      const currentExposure = characterPos ? this.countEnemySightLinesToPosition(characterPos, context) : 0;
+      let moveMultiplier = attackActions.length > 0
+        ? (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons ? 0.95 : 0.9)
+        : (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons ? 1.95 : 1.5);
+      if (doctrineEngagement === 'melee') {
+        moveMultiplier += 0.2;
+      } else if (doctrineEngagement === 'ranged') {
+        moveMultiplier += currentExposure > 0 ? 0.15 : -0.08;
+      }
+      if (doctrinePlanning === 'keys_to_victory') {
+        moveMultiplier += missionBias.objectiveActionPressure * 0.4;
+      } else if (doctrinePlanning === 'aggression') {
+        moveMultiplier += 0.08;
+      }
 
-    // Evaluate disengage if engaged
-    if (context.battlefield.isEngaged?.(context.character)) {
-      const shouldDisengage = this.shouldDisengage(context);
-      if (shouldDisengage) {
-        const enemies = this.getEngagedEnemies(context.character, context.battlefield);
-        for (const enemy of enemies) {
+      const advanceBonus = (nearestEnemyDistance > 10
+        ? (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons ? 1.45 : 0.9)
+        : 0) + missionBias.movePressure;
+      const objectiveAdvanceWeight =
+        missionBias.objectiveActionPressure *
+        (doctrinePlanning === 'keys_to_victory' ? 4.2 : doctrinePlanning === 'balanced' ? 2.6 : 1.4);
+      for (const pos of movePositions.slice(0, 3)) {
+        const objectiveAdvance = this.evaluateObjectiveAdvance(pos.position, context);
+        const moveWaitForecast = loadout.hasRangedWeapons
+          ? forecastWaitReact(context, pos.position)
+          : null;
+        const exposureReduction = moveWaitForecast
+          ? Math.max(0, currentExposure - moveWaitForecast.exposureCount)
+          : 0;
+        const goapFutureWaitValue = moveWaitForecast
+          ? (moveWaitForecast.expectedReactValue * 0.55) +
+            (moveWaitForecast.hiddenRevealTargets * 0.8) +
+            (moveWaitForecast.refGatePassCount * 0.22) +
+            (exposureReduction * 0.2)
+          : 0;
+        const goapFutureWaitWeight = context.apRemaining >= 2 ? 0.45 : 0.25;
+        actions.push({
+          action: 'move',
+          position: pos.position,
+          score:
+            pos.score * moveMultiplier +
+            advanceBonus +
+            (missionBias.objectiveActionPressure * pos.factors.visibility * 0.35) +
+            (objectiveAdvance * objectiveAdvanceWeight) +
+            (goapFutureWaitValue * goapFutureWaitWeight),
+          factors: {
+            ...pos.factors,
+            moveMultiplier,
+            advanceBonus,
+            objectiveAdvance,
+            objectiveAdvanceWeight,
+            goapFutureWaitValue,
+            goapFutureWaitWeight,
+            goapExposureReduction: exposureReduction,
+            strategicPathBudgetExceeded: session.pathBudgetExceeded ? 1 : 0,
+            objectivePressure: missionBias.objectiveActionPressure,
+          },
+        });
+      }
+      actions.push(...attackActions);
+
+      // Evaluate objective-marker interactions (OM system) when marker state is available.
+      const objectiveActions = this.evaluateObjectiveMarkerActions(context, missionBias, doctrinePlanning);
+      actions.push(...objectiveActions);
+
+      // Evaluate disengage if engaged
+      if (context.battlefield.isEngaged?.(context.character)) {
+        const shouldDisengage = this.shouldDisengage(context);
+        if (shouldDisengage) {
+          const enemies = this.getEngagedEnemies(context.character, context.battlefield);
+          for (const enemy of enemies) {
+            actions.push({
+              action: 'disengage',
+              target: enemy,
+              score: 3.0 + context.config.aggression,
+              factors: { survival: 3.0 },
+            });
+          }
+        }
+      }
+
+      // Evaluate support actions
+      const supportActions = this.evaluateSupportActions(context);
+      actions.push(...supportActions);
+
+      const canConsiderWait =
+        context.apRemaining >= 2 &&
+        !context.character.state.isWaiting &&
+        context.character.state.isAttentive &&
+        context.character.state.isOrdered &&
+        !context.character.state.isKOd &&
+        !context.character.state.isEliminated &&
+        !context.battlefield.isEngaged?.(context.character) &&
+        loadout.hasRangedWeapons;
+      if (canConsiderWait) {
+        const waitForecast = forecastWaitReact(context);
+        const exposure = waitForecast.exposureCount;
+        const potentialReactTargets = waitForecast.potentialReactTargets;
+        const refBreakpointCount = waitForecast.refGatePassCount;
+        const waitRefBonus =
+          (refBreakpointCount * 0.78) +
+          (Math.max(0, potentialReactTargets - refBreakpointCount) * 0.2);
+        const existingDelay = Math.max(0, context.character.state.delayTokens ?? 0);
+        const waitDelayAvoidance = waitForecast.potentialReactTargets > 0
+          ? Math.min(1.8, 0.3 + (waitForecast.expectedTriggerCount * 0.5) + (existingDelay * 0.25))
+          : 0;
+
+        // R2: Tactical Condition Weighting for Wait Uptake
+        // Add multipliers when specific tactical conditions favor Wait
+        const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions);
+
+        const hasAttackOption = attackActions.length > 0;
+        const bestAttackScore = attackActions[0]?.score ?? 0;
+        const bestMoveScore = actions
+          .filter(candidate => candidate.action === 'move')
+          .reduce((best, candidate) => Math.max(best, candidate.score), 0);
+        const waitMissionBias = missionBias.waitPressure + (
+          doctrinePlanning === 'keys_to_victory'
+            ? missionBias.objectiveActionPressure * 0.35
+            : 0
+        );
+        const waitBaseline =
+          2.15 +
+          (hasAttackOption ? 0 : 0.9) +
+          (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons ? 0.55 : 0.2) +
+          (context.config.caution * 1.9) +
+          (exposure * 0.22) +
+          waitRefBonus +
+          waitDelayAvoidance +
+          waitMissionBias +
+          waitTacticalBonus;
+        const immediateScore = hasAttackOption ? bestAttackScore : Math.max(0.5, bestMoveScore * 0.85);
+        const waitRollout = rolloutWaitReactBranches(context, {
+          immediateScore,
+          waitBaseline,
+          moveCandidates: movePositions.slice(0, 3).map(candidate => candidate.position),
+          maxMoveCandidates: 3,
+        });
+        const immediateBranchScore =
+          waitRollout.branches.find(branch => branch.id === 'immediate_action')?.score ??
+          immediateScore;
+        const moveThenWaitBranchScore =
+          waitRollout.branches.find(branch => branch.id === 'move_then_wait')?.score ??
+          bestMoveScore;
+        const waitBranch =
+          waitRollout.branches.find(branch => branch.id === 'wait_now');
+        const waitBranchScore = waitBranch?.score ?? waitBaseline;
+        const waitBranchForecast = waitBranch?.forecast ?? waitForecast;
+        const hiddenRevealTargets = waitBranchForecast.hiddenRevealTargets;
+        const waitTriggerForecast = waitBranchForecast.expectedTriggerCount;
+        const waitExpectedReactValue = waitBranchForecast.expectedReactValue;
+        const waitGoapBranchScore = Math.max(0, waitBranchScore - waitBaseline);
+        const preferredBranch = waitRollout.preferred.id;
+        const preferredBranchScore = waitRollout.preferred.score;
+        const threshold = (
+          hiddenRevealTargets > 0 ||
+          waitRefBonus + waitDelayAvoidance + waitGoapBranchScore >= 1.15
+        ) ? 0.62 : 0.76;
+        const beatsImmediate = !hasAttackOption || waitBranchScore >= immediateBranchScore * threshold;
+        const branchTolerance = preferredBranch === 'wait_now' ? 1 : 0.95;
+        const closeToBestBranch = waitBranchScore >= preferredBranchScore * branchTolerance;
+        if (beatsImmediate && closeToBestBranch) {
           actions.push({
-            action: 'disengage',
-            target: enemy,
-            score: 3.0 + context.config.aggression,
-            factors: { survival: 3.0 },
+            action: 'wait',
+            score: waitBranchScore,
+            factors: {
+              passiveReadiness: 1,
+              caution: context.config.caution,
+              exposure,
+              hiddenRevealTargets,
+              potentialReactTargets,
+              refBreakpointCount,
+              waitRefBonus,
+              waitDelayAvoidance,
+              waitExpectedTriggerCount: waitTriggerForecast,
+              waitExpectedReactValue,
+              waitBaselineScore: waitBaseline,
+              waitGoapBranchScore,
+              immediateBranchScore,
+              moveThenWaitBranchScore,
+              waitBranchScore,
+              rolloutPreferredScore: preferredBranchScore,
+              preferredBranchWaitNow: preferredBranch === 'wait_now' ? 1 : 0,
+              preferredBranchMoveThenWait: preferredBranch === 'move_then_wait' ? 1 : 0,
+              preferredBranchImmediateAction: preferredBranch === 'immediate_action' ? 1 : 0,
+              objectivePressure: missionBias.objectiveActionPressure,
+              waitMissionBias,
+            },
           });
         }
       }
-    }
 
-    // Evaluate support actions
-    const supportActions = this.evaluateSupportActions(context);
-    actions.push(...supportActions);
+      // Sort by score
+      actions.sort((a, b) => b.score - a.score);
 
-    // Prefer Wait when no immediate attacks are available and ranged/passive play is possible.
-    if (
-      attackActions.length === 0 &&
-      !context.character.state.isWaiting &&
-      context.character.state.isAttentive &&
-      context.character.state.isOrdered &&
-      !context.character.state.isKOd &&
-      !context.character.state.isEliminated &&
-      !context.battlefield.isEngaged?.(context.character) &&
-      loadout.hasRangedWeapons
-    ) {
-      actions.push({
-        action: 'wait',
-        score: 2.6 + (context.config.caution * 1.2),
-        factors: { passiveReadiness: 1, caution: context.config.caution },
-      });
-    }
-    if (
-      attackActions.length > 0 &&
-      !context.character.state.isWaiting &&
-      context.character.state.isAttentive &&
-      context.character.state.isOrdered &&
-      !context.battlefield.isEngaged?.(context.character) &&
-      loadout.hasRangedWeapons
-    ) {
-      const currentPos = context.battlefield.getCharacterPosition(context.character);
-      const exposure = currentPos ? this.countEnemySightLinesToPosition(currentPos, context) : 0;
-      const waitScore = 1.8 + (context.config.caution * 1.6) + (exposure * 0.25);
-      const bestAttackScore = attackActions[0]?.score ?? 0;
-      if (waitScore >= bestAttackScore * 0.72) {
-        actions.push({
-          action: 'wait',
-          score: waitScore,
-          factors: { passiveReadiness: 1, caution: context.config.caution, exposure },
+      // Apply stratagem + predicted scoring modifiers
+      const doctrine = context.config.tacticalDoctrine ?? TacticalDoctrine.Operative;
+      const stratagemModifiers = calculateStratagemModifiers(doctrine);
+      
+      let finalActions = actions;
+      
+      // Apply scoring modifiers if scoring context is available
+      if (context.scoringContext) {
+        const scoringContext = buildScoringContext(
+          context.scoringContext.myKeyScores,
+          context.scoringContext.opponentKeyScores
+        );
+        const scoringModifiers = calculateScoringModifiers(scoringContext);
+        finalActions = applyCombinedModifiersToActions(actions, stratagemModifiers, scoringModifiers);
+      } else {
+        // Apply stratagem modifiers only (legacy behavior)
+        finalActions = applyCombinedModifiersToActions(actions, stratagemModifiers, {
+          aggressionMultiplier: 1.0,
+          defenseMultiplier: 1.0,
+          objectiveMultiplier: 1.0,
+          riskMultiplier: 1.0,
+          waitBonus: 0,
+          playForTime: false,
+          desperateMode: false,
         });
       }
+
+      // Re-sort after applying modifiers
+      finalActions.sort((a, b) => b.score - a.score);
+
+      return finalActions;
+    } finally {
+      this.activeEvaluationSession = previousSession;
     }
-
-    // Sort by score
-    actions.sort((a, b) => b.score - a.score);
-
-    return actions;
   }
 
   /**
@@ -303,6 +598,7 @@ export class UtilityScorer {
    */
   evaluatePositions(context: AIContext): ScoredPosition[] {
     const positions: ScoredPosition[] = [];
+    const session = this.getEvaluationSession(context);
     const characterPos = context.battlefield.getCharacterPosition(context.character);
     if (!characterPos) return positions;
     const movementAllowance = Math.max(
@@ -317,9 +613,14 @@ export class UtilityScorer {
       1,
       (context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2) + 2
     );
-    const localSamples = this.samplePositions(characterPos, sampleRadius, 16);
+    const localSamples = this.samplePositions(characterPos, sampleRadius, session.localSampleCount);
     const strategicSamples = this.sampleStrategicPositions(context, characterPos);
     const samples = this.dedupePositions([...localSamples, ...strategicSamples], context.battlefield);
+
+    // R3: Get loadout for doctrine-aware scoring
+    const loadout = this.getLoadoutProfile(context.character);
+    const isRanged = loadout.hasRangedWeapons && !loadout.hasMeleeWeapons;
+    const isMelee = loadout.hasMeleeWeapons && !loadout.hasRangedWeapons;
 
     for (const pos of samples) {
       if (pos.x === characterPos.x && pos.y === characterPos.y) continue;
@@ -334,17 +635,36 @@ export class UtilityScorer {
       const cohesion = this.evaluateCohesion(pos, context);
       const threatRelief = this.evaluateThreatRelief(pos, context);
 
+      // R3: Add lean opportunity and exposure risk evaluation
+      const leanOpportunity = isRanged ? this.evaluateLeanOpportunity(pos, context) : 0;
+      const exposureRisk = this.evaluateExposureRisk(pos, context);
+
+      // R3: Doctrine-aware scoring weights
+      const coverWeight = this.weights.coverValue * (isRanged ? 1.3 : 1.0);
+      const leanWeight = isRanged ? 1.5 : 0; // Only ranged models benefit from lean
+      const exposurePenalty = isRanged ? 1.8 : 1.2; // Ranged models more exposed = bad
+
       const score =
-        cover * this.weights.coverValue +
+        cover * coverWeight +
         distanceScore * this.weights.distanceToTarget +
         threatRelief * (1.5 + this.weights.riskAvoidance) +
         visibility * 0.5 +
-        cohesion * this.weights.cohesionValue;
+        cohesion * this.weights.cohesionValue +
+        (leanOpportunity * leanWeight) -
+        (exposureRisk * exposurePenalty);
 
       positions.push({
         position: pos,
         score,
-        factors: { cover, distance: distanceScore, visibility, cohesion, threatRelief },
+        factors: {
+          cover,
+          distance: distanceScore,
+          visibility,
+          cohesion,
+          threatRelief,
+          leanOpportunity,
+          exposureRisk,
+        },
       });
     }
 
@@ -434,6 +754,13 @@ export class UtilityScorer {
   // ============================================================================
 
   private evaluateCover(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = this.positionKey(position);
+    const cached = session.coverCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
     const loadout = this.getLoadoutProfile(context.character);
     const coverPriority = loadout.hasRangedWeapons && !loadout.hasMeleeWeapons
       ? 1.2
@@ -448,13 +775,148 @@ export class UtilityScorer {
       if (!enemyPos) continue;
 
       // Simplified cover check - LOS from enemy to candidate position.
-      const hasLOS = context.battlefield.hasLineOfSight(enemyPos, position);
+      const hasLOS = this.hasLineOfSightBetweenPositions(enemyPos, position, context);
       if (!hasLOS) {
         bestCover = Math.max(bestCover, 1.0); // Full cover if no LOS
       }
     }
 
-    return Math.min(1.5, bestCover * coverPriority);
+    const result = Math.min(1.5, bestCover * coverPriority);
+    session.coverCache.set(cacheKey, result);
+    return result;
+  }
+
+  /**
+   * R3: Evaluate lean opportunity at position
+   * Returns score for positions with partial cover that allow shooting
+   */
+  private evaluateLeanOpportunity(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = `lean:${this.positionKey(position)}`;
+    const cached = session.coverCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const loadout = this.getLoadoutProfile(context.character);
+    // Only ranged models benefit from lean
+    if (!loadout.hasRangedWeapons) {
+      session.coverCache.set(cacheKey, 0);
+      return 0;
+    }
+
+    // Check for lean opportunities: position has LOS to enemies but is near cover
+    let leanScore = 0;
+    const characterPos = context.battlefield.getCharacterPosition(context.character);
+    if (!characterPos) {
+      session.coverCache.set(cacheKey, 0);
+      return 0;
+    }
+
+    // Count enemies visible from this position
+    let visibleEnemies = 0;
+    for (const enemy of context.enemies) {
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      if (this.hasLineOfSightBetweenPositions(position, enemyPos, context)) {
+        visibleEnemies++;
+      }
+    }
+
+    // Check if position is near cover (within 1 MU of cover edge)
+    const nearCover = this.isNearCoverEdge(position, context);
+
+    // Lean opportunity: can see enemies AND is near cover
+    if (visibleEnemies > 0 && nearCover) {
+      leanScore = 0.5 + (visibleEnemies * 0.15); // Base 0.5 + 0.15 per visible enemy
+    }
+
+    const result = Math.min(1.0, leanScore);
+    session.coverCache.set(cacheKey, result);
+    return result;
+  }
+
+  /**
+   * R3: Check if position is near cover edge (within 1 MU)
+   */
+  private isNearCoverEdge(position: Position, context: AIContext): boolean {
+    // Sample points around position to check for cover transitions
+    const sampleRadius = 1.0;
+    const sampleCount = 8;
+    let hasCoverNearby = false;
+    let hasExposedNearby = false;
+
+    for (let i = 0; i < sampleCount; i++) {
+      const angle = (i / sampleCount) * Math.PI * 2;
+      const samplePos = {
+        x: position.x + Math.cos(angle) * sampleRadius,
+        y: position.y + Math.sin(angle) * sampleRadius,
+      };
+
+      // Check if sample is in cover (no LOS from any enemy)
+      let isInCover = true;
+      for (const enemy of context.enemies) {
+        if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+        const enemyPos = context.battlefield.getCharacterPosition(enemy);
+        if (!enemyPos) continue;
+        if (!this.hasLineOfSightBetweenPositions(enemyPos, samplePos, context)) {
+          isInCover = false;
+          break;
+        }
+      }
+
+      if (isInCover) {
+        hasCoverNearby = true;
+      } else {
+        hasExposedNearby = true;
+      }
+
+      // If we have both, position is near cover edge
+      if (hasCoverNearby && hasExposedNearby) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * R3: Evaluate exposure risk at position
+   * Returns score based on how many enemies can see this position
+   */
+  private evaluateExposureRisk(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = `exposure:${this.positionKey(position)}`;
+    const cached = session.coverCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const enemyCount = context.enemies.filter(e =>
+      isAttackableEnemy(context.character, e, context.config)
+    ).length;
+
+    if (enemyCount === 0) {
+      session.coverCache.set(cacheKey, 0);
+      return 0;
+    }
+
+    // Count sight lines from enemies to this position
+    let sightLines = 0;
+    for (const enemy of context.enemies) {
+      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      if (this.hasLineOfSightBetweenPositions(enemyPos, position, context)) {
+        sightLines++;
+      }
+    }
+
+    // Exposure risk: ratio of visible enemies
+    const result = sightLines / enemyCount;
+    session.coverCache.set(cacheKey, result);
+    return result;
   }
 
   private evaluateThreatRelief(position: Position, context: AIContext): number {
@@ -470,15 +932,23 @@ export class UtilityScorer {
   }
 
   private countEnemySightLinesToPosition(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = this.positionKey(position);
+    const cached = session.positionExposureCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
     let count = 0;
     for (const enemy of context.enemies) {
       if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
       const enemyPos = context.battlefield.getCharacterPosition(enemy);
       if (!enemyPos) continue;
-      if (context.battlefield.hasLineOfSight(enemyPos, position)) {
+      if (this.hasLineOfSightBetweenPositions(enemyPos, position, context)) {
         count += 1;
       }
     }
+    session.positionExposureCache.set(cacheKey, count);
     return count;
   }
 
@@ -515,8 +985,17 @@ export class UtilityScorer {
   }
 
   private evaluateVisibility(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = this.positionKey(position);
+    const cached = session.visibilityCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
     if (!context.config.perCharacterFovLos) {
-      return context.enemies.length > 0 ? 1.0 : 0.0;
+      const result = context.enemies.length > 0 ? 1.0 : 0.0;
+      session.visibilityCache.set(cacheKey, result);
+      return result;
     }
 
     const myModel = {
@@ -540,7 +1019,9 @@ export class UtilityScorer {
         visibleEnemies++;
       }
     }
-    return visibleEnemies / Math.max(1, context.enemies.length);
+    const result = visibleEnemies / Math.max(1, context.enemies.length);
+    session.visibilityCache.set(cacheKey, result);
+    return result;
   }
 
   private evaluateCohesion(position: Position, context: AIContext): number {
@@ -598,11 +1079,36 @@ export class UtilityScorer {
   }
 
   private evaluateMissionPriority(target: Character, context: AIContext): number {
-    // TODO: Mission-specific priority evaluation
-    // For Elimination: all targets equal priority
-    // For Recovery: VIP has highest priority
-    // For Assault: mechanism has highest priority
-    return 1.0;
+    const bias = this.getMissionBias(context);
+    let priority = 1.0;
+
+    const targetPos = context.battlefield.getCharacterPosition(target);
+    if (targetPos && bias.centerTargetBias > 0) {
+      const center = {
+        x: context.battlefield.width / 2,
+        y: context.battlefield.height / 2,
+      };
+      const maxCenterDistance = Math.hypot(context.battlefield.width / 2, context.battlefield.height / 2);
+      const distanceToCenter = Math.hypot(targetPos.x - center.x, targetPos.y - center.y);
+      const centerAffinity = 1 - Math.min(1, distanceToCenter / Math.max(1, maxCenterDistance));
+      priority += centerAffinity * bias.centerTargetBias;
+    }
+
+    if (bias.vipTargetBias > 0) {
+      const enemyBps = context.enemies.map(enemy => enemy.profile.totalBp ?? 0);
+      const maxEnemyBp = enemyBps.length > 0 ? Math.max(...enemyBps) : (target.profile.totalBp ?? 0);
+      const targetBp = target.profile.totalBp ?? 0;
+      if (maxEnemyBp > 0) {
+        const normalized = targetBp / maxEnemyBp;
+        priority += normalized * bias.vipTargetBias;
+      }
+    }
+
+    if ((context.config.missionRole ?? 'neutral') === 'defender') {
+      priority += 0.1 * bias.centerTargetBias;
+    }
+
+    return Math.max(0.25, Math.min(3, priority));
   }
 
   private shouldDisengage(context: AIContext): boolean {
@@ -704,7 +1210,31 @@ export class UtilityScorer {
       siz: to.finalAttributes.siz ?? 3,
     };
 
+    const session = this.activeEvaluationSession;
+    if (session) {
+      const key = this.losPositionKey(fromPos, toPos);
+      const cached = session.losPairCache.get(key);
+      if (cached !== undefined) {
+        return cached;
+      }
+      const result = SpatialRules.hasLineOfSight(battlefield, fromModel, toModel);
+      session.losPairCache.set(key, result);
+      return result;
+    }
+
     return SpatialRules.hasLineOfSight(battlefield, fromModel, toModel);
+  }
+
+  private hasLineOfSightBetweenPositions(from: Position, to: Position, context: AIContext): boolean {
+    const session = this.getEvaluationSession(context);
+    const key = this.losPositionKey(from, to);
+    const cached = session.losPairCache.get(key);
+    if (cached !== undefined) {
+      return cached;
+    }
+    const result = context.battlefield.hasLineOfSight(from, to);
+    session.losPairCache.set(key, result);
+    return result;
   }
 
   private getDistance(from: Character, to: Character, battlefield: Battlefield): number {
@@ -842,39 +1372,183 @@ export class UtilityScorer {
   }
 
   private sampleStrategicPositions(context: AIContext, characterPos: Position): Position[] {
+    const session = this.getEvaluationSession(context);
     const mov = context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2;
     const movementAllowance = Math.max(1, mov + 2);
     const footprintDiameter = getBaseDiameterFromSiz(context.character.finalAttributes.siz ?? 3);
-    const engine = new PathfindingEngine(context.battlefield);
-    const strategic: Position[] = [];
+    const engine = session.pathEngine;
+    type StrategicTarget = {
+      source: 'enemy' | 'objective';
+      index: number;
+      position: Position;
+      distance: number;
+      sourcePriority: number;
+    };
+    type StrategicProbe = {
+      source: 'enemy' | 'objective';
+      index: number;
+      targetPosition: Position;
+      endpoint: Position;
+      score: number;
+      needsFineResolution: boolean;
+      distanceToTarget: number;
+    };
 
-    const candidateEnemies = context.enemies.filter(enemy => {
-      if (!isAttackableEnemy(context.character, enemy, context.config)) return false;
-      if (!context.config.perCharacterFovLos) return true;
-      return this.hasLOS(context.character, enemy, context.battlefield);
-    });
+    const candidates: StrategicTarget[] = [];
+
+    const candidateEnemies = context.enemies
+      .map(enemy => {
+        if (!isAttackableEnemy(context.character, enemy, context.config)) return null;
+        if (context.config.perCharacterFovLos && !this.hasLOS(context.character, enemy, context.battlefield)) {
+          return null;
+        }
+        const enemyPos = context.battlefield.getCharacterPosition(enemy);
+        if (!enemyPos) return null;
+        return {
+          position: enemyPos,
+          distance: Math.hypot(characterPos.x - enemyPos.x, characterPos.y - enemyPos.y),
+        };
+      })
+      .filter((entry): entry is { position: Position; distance: number } => Boolean(entry))
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, session.strategicEnemyLimit);
 
     for (const enemy of candidateEnemies) {
-      const enemyPos = context.battlefield.getCharacterPosition(enemy);
-      if (!enemyPos) continue;
-      const limited = engine.findPathWithMaxMu(
+      candidates.push({
+        source: 'enemy',
+        index: candidates.length,
+        position: enemy.position,
+        distance: enemy.distance,
+        sourcePriority: 1.0,
+      });
+    }
+
+    const objectiveMarkers = this.getInteractableObjectiveMarkers(context)
+      .filter(marker => marker.position)
+      .sort((a, b) => {
+        const posA = a.position as Position;
+        const posB = b.position as Position;
+        const distA = Math.hypot(characterPos.x - posA.x, characterPos.y - posA.y);
+        const distB = Math.hypot(characterPos.x - posB.x, characterPos.y - posB.y);
+        return distA - distB;
+      })
+      .slice(0, session.strategicObjectiveLimit);
+
+    for (const marker of objectiveMarkers) {
+      const markerPos = marker.position as Position;
+      const markerDistance = Math.hypot(characterPos.x - markerPos.x, characterPos.y - markerPos.y);
+      candidates.push({
+        source: 'objective',
+        index: candidates.length,
+        position: markerPos,
+        distance: markerDistance,
+        sourcePriority: 1.12,
+      });
+    }
+
+    if (candidates.length === 0) {
+      return [];
+    }
+
+    const reserveForRefinement = Math.min(session.strategicRefineTopK, session.strategicPathQueryBudget);
+    const maxCoarseProbes = Math.max(1, session.strategicPathQueryBudget - reserveForRefinement);
+    const coarseProbes: StrategicProbe[] = [];
+
+    for (let i = 0; i < candidates.length && i < maxCoarseProbes; i++) {
+      const candidate = candidates[i];
+      if (!this.tryConsumeStrategicPathBudget(session)) break;
+      const coarse = engine.findPathWithMaxMu(
         characterPos,
-        enemyPos,
+        candidate.position,
+        {
+          footprintDiameter,
+          movementMetric: 'length',
+          useNavMesh: true,
+          useHierarchical: true,
+          optimizeWithLOS: false,
+          useTheta: false,
+          turnPenalty: 0,
+          portalNarrowPenalty: 0.08,
+          portalNarrowThresholdFactor: 1.25,
+          gridResolution: session.strategicCoarseResolution,
+        },
+        movementAllowance
+      );
+      const coarseEnd = coarse.points[coarse.points.length - 1];
+      if (!coarseEnd) continue;
+
+      const distanceToTarget = Math.hypot(coarseEnd.x - candidate.position.x, coarseEnd.y - candidate.position.y);
+      const progress = Math.max(0, candidate.distance - distanceToTarget) / Math.max(1, candidate.distance);
+      const coarseTravelBase = Math.max(0.25, Math.min(candidate.distance, movementAllowance));
+      const detourRatio = coarse.totalLength / coarseTravelBase;
+      const needsFineResolution =
+        detourRatio >= 1.35 ||
+        (!coarse.reachedEnd && distanceToTarget > 1.25) ||
+        (footprintDiameter <= 1.0 && detourRatio >= 1.18);
+      const score =
+        (progress * 1.8) +
+        (candidate.sourcePriority * 0.6) +
+        (coarse.reachedEnd ? 0.35 : 0) -
+        (Math.max(0, detourRatio - 1.15) * 0.2);
+
+      coarseProbes.push({
+        source: candidate.source,
+        index: candidate.index,
+        targetPosition: candidate.position,
+        endpoint: this.snapToBoardCell(coarseEnd, context.battlefield),
+        score,
+        needsFineResolution,
+        distanceToTarget,
+      });
+    }
+
+    if (coarseProbes.length === 0) {
+      return [];
+    }
+
+    // Adaptive granularity:
+    // - use coarse probes for broad ranking,
+    // - refine only top-K trajectories with 0.5 MU default,
+    // - escalate to 0.25 MU when coarse probe indicates chokepoint/clearance contention.
+    const topForRefinement = coarseProbes
+      .slice()
+      .sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        if (a.distanceToTarget !== b.distanceToTarget) return a.distanceToTarget - b.distanceToTarget;
+        return a.index - b.index;
+      })
+      .slice(0, session.strategicRefineTopK);
+    const refinedByIndex = new Map<number, Position>();
+
+    for (const probe of topForRefinement) {
+      if (!this.tryConsumeStrategicPathBudget(session)) break;
+      const refined = engine.findPathWithMaxMu(
+        characterPos,
+        probe.targetPosition,
         {
           footprintDiameter,
           movementMetric: 'length',
           useNavMesh: true,
           useHierarchical: true,
           optimizeWithLOS: true,
+          useTheta: true,
+          turnPenalty: 0.1,
+          portalNarrowPenalty: 0.18,
+          portalNarrowThresholdFactor: 1.35,
+          gridResolution: probe.needsFineResolution ? 0.25 : session.strategicDefaultResolution,
         },
         movementAllowance
       );
-      const end = limited.points[limited.points.length - 1];
-      if (!end) continue;
-      strategic.push(this.snapToBoardCell(end, context.battlefield));
+      const refinedEnd = refined.points[refined.points.length - 1];
+      if (!refinedEnd) continue;
+      refinedByIndex.set(probe.index, this.snapToBoardCell(refinedEnd, context.battlefield));
     }
 
-    return strategic;
+    const refinedFirst = coarseProbes
+      .slice()
+      .sort((a, b) => a.index - b.index)
+      .map(probe => refinedByIndex.get(probe.index) ?? probe.endpoint);
+    return refinedFirst;
   }
 
   private snapToBoardCell(position: Position, battlefield: Battlefield): Position {
@@ -897,6 +1571,13 @@ export class UtilityScorer {
   }
 
   private distanceToClosestAttackableEnemy(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = this.positionKey(position);
+    const cached = session.nearestEnemyDistanceCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
     let nearest = Number.POSITIVE_INFINITY;
     for (const enemy of context.enemies) {
       if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
@@ -907,6 +1588,343 @@ export class UtilityScorer {
         nearest = distance;
       }
     }
+    session.nearestEnemyDistanceCache.set(cacheKey, nearest);
     return nearest;
+  }
+
+  private evaluateObjectiveMarkerActions(
+    context: AIContext,
+    missionBias: MissionBias,
+    doctrinePlanning: 'aggression' | 'keys_to_victory' | 'balanced'
+  ): ScoredAction[] {
+    const markers = this.getInteractableObjectiveMarkers(context);
+    if (markers.length === 0) {
+      return [];
+    }
+    const actorPos = context.battlefield.getCharacterPosition(context.character);
+    if (!actorPos) {
+      return [];
+    }
+
+    const actions: ScoredAction[] = [];
+    const sideId = context.sideId;
+    const objectivePriorityBoost = doctrinePlanning === 'keys_to_victory'
+      ? 0.9
+      : doctrinePlanning === 'aggression'
+        ? -0.35
+        : 0;
+
+    for (const marker of markers) {
+      const isSwitchOrLock = marker.omTypes.includes('Switch') || marker.omTypes.includes('Lock');
+      const isIdea = marker.omTypes.includes('Idea');
+      const isPhysical = marker.omTypes.some(type => type === 'Tiny' || type === 'Small' || type === 'Large' || type === 'Bulky');
+      const markerPosition = marker.position;
+      const distanceToMarker = markerPosition
+        ? Math.hypot(actorPos.x - markerPosition.x, actorPos.y - markerPosition.y)
+        : Number.POSITIVE_INFINITY;
+      const isAdjacent = distanceToMarker <= 1.25;
+      const isCarriedByActor = marker.carriedBy === context.character.id;
+      const markerIsAvailable = marker.state === 'Available' || marker.state === 'Dropped';
+
+      if (isAdjacent && (markerIsAvailable || isSwitchOrLock)) {
+        let score =
+          2.2 +
+          (missionBias.objectiveActionPressure * 2.1) +
+          objectivePriorityBoost;
+        if (marker.missionSource === 'assault') {
+          score += 2.4;
+        } else if (marker.missionSource === 'breach') {
+          score += 1.2;
+        }
+        if (isSwitchOrLock) score += 0.6;
+        if (isIdea) score += 0.4;
+        if (isPhysical) score += 0.3;
+        if (sideId && marker.scoringSideId && marker.scoringSideId !== sideId) {
+          score += 0.7;
+        }
+
+        actions.push({
+          action: 'fiddle',
+          objectiveAction: 'acquire_marker',
+          markerId: marker.id,
+          score,
+          factors: {
+            objectivePressure: missionBias.objectiveActionPressure,
+            adjacent: 1,
+            switchOrLock: isSwitchOrLock ? 1 : 0,
+            idea: isIdea ? 1 : 0,
+            physical: isPhysical ? 1 : 0,
+          },
+        });
+      }
+
+      if (isCarriedByActor && sideId) {
+        const nearbyAllies = context.allies
+          .filter(ally => !ally.state.isEliminated && !ally.state.isKOd)
+          .map(ally => {
+            const allyPos = context.battlefield.getCharacterPosition(ally);
+            return allyPos
+              ? { ally, distance: Math.hypot(actorPos.x - allyPos.x, actorPos.y - allyPos.y) }
+              : null;
+          })
+          .filter((entry): entry is { ally: Character; distance: number } => Boolean(entry))
+          .sort((a, b) => a.distance - b.distance);
+
+        if (isIdea) {
+          const shareTarget = nearbyAllies.find(entry => entry.distance <= 2);
+          if (shareTarget) {
+            const shareScore =
+              1.8 +
+              (missionBias.objectiveActionPressure * 1.7) +
+              objectivePriorityBoost +
+              (2 - Math.min(2, shareTarget.distance)) * 0.25;
+            actions.push({
+              action: 'fiddle',
+              objectiveAction: 'share_marker',
+              markerId: marker.id,
+              markerTargetModelId: shareTarget.ally.id,
+              score: shareScore,
+              factors: {
+                objectivePressure: missionBias.objectiveActionPressure,
+                allyDistance: shareTarget.distance,
+                idea: 1,
+              },
+            });
+          }
+        }
+
+        if (isPhysical && (context.character.state.wounds > 0 || context.character.state.delayTokens > 0)) {
+          const transferTarget = nearbyAllies.find(entry => entry.distance <= 1.25);
+          if (transferTarget) {
+            const transferScore =
+              1.55 +
+              (missionBias.objectiveActionPressure * 1.45) +
+              objectivePriorityBoost +
+              (context.character.state.wounds > 0 ? 0.4 : 0);
+            actions.push({
+              action: 'fiddle',
+              objectiveAction: 'transfer_marker',
+              markerId: marker.id,
+              markerTargetModelId: transferTarget.ally.id,
+              score: transferScore,
+              factors: {
+                objectivePressure: missionBias.objectiveActionPressure,
+                allyDistance: transferTarget.distance,
+                woundedCarrier: context.character.state.wounds > 0 ? 1 : 0,
+              },
+            });
+          }
+        }
+      }
+
+      if (
+        isAdjacent &&
+        marker.state !== 'Destroyed' &&
+        marker.state !== 'Scored' &&
+        sideId &&
+        marker.scoringSideId &&
+        marker.scoringSideId !== sideId &&
+        !isSwitchOrLock
+      ) {
+        const destroyScore =
+          1.35 +
+          (missionBias.objectiveActionPressure * 1.2) +
+          (doctrinePlanning === 'aggression' ? 0.2 : 0);
+        actions.push({
+          action: 'fiddle',
+          objectiveAction: 'destroy_marker',
+          markerId: marker.id,
+          score: destroyScore,
+          factors: {
+            objectivePressure: missionBias.objectiveActionPressure,
+            enemyControlled: 1,
+          },
+        });
+      }
+    }
+
+    return actions;
+  }
+
+  private getInteractableObjectiveMarkers(context: AIContext): NonNullable<AIContext['objectiveMarkers']> {
+    const markers = context.objectiveMarkers ?? [];
+    return markers.filter(marker =>
+      marker.interactable !== false &&
+      marker.state !== 'Destroyed' &&
+      marker.state !== 'Scored'
+    );
+  }
+
+  private evaluateObjectiveAdvance(position: Position, context: AIContext): number {
+    const session = this.getEvaluationSession(context);
+    const cacheKey = this.positionKey(position);
+    const cached = session.objectiveAdvanceCache.get(cacheKey);
+    if (cached !== undefined) {
+      return cached;
+    }
+
+    const actorPos = context.battlefield.getCharacterPosition(context.character);
+    if (!actorPos) {
+      return 0;
+    }
+    const markers = this.getInteractableObjectiveMarkers(context)
+      .filter(marker => marker.position);
+    if (markers.length === 0) {
+      return 0;
+    }
+
+    let bestAdvance = 0;
+    for (const marker of markers) {
+      const markerPos = marker.position as Position;
+      const currentDistance = Math.hypot(actorPos.x - markerPos.x, actorPos.y - markerPos.y);
+      if (currentDistance <= 1.25) {
+        continue;
+      }
+      const nextDistance = Math.hypot(position.x - markerPos.x, position.y - markerPos.y);
+      if (nextDistance >= currentDistance) {
+        continue;
+      }
+      const normalizedGain = (currentDistance - nextDistance) / Math.max(1, currentDistance);
+      const adjacencyBonus = nextDistance <= 1.25 ? 0.45 : 0;
+      bestAdvance = Math.max(bestAdvance, normalizedGain + adjacencyBonus);
+    }
+    session.objectiveAdvanceCache.set(cacheKey, bestAdvance);
+    return bestAdvance;
+  }
+
+  /**
+   * R2: Evaluate tactical conditions that favor Wait action
+   * Returns bonus score to add to waitBaseline
+   */
+  private evaluateWaitTacticalConditions(
+    context: AIContext,
+    waitForecast: any,
+    attackActions: ScoredAction[]
+  ): number {
+    let tacticalBonus = 0;
+
+    // Condition 1: Enemy in LOS with low REF (high react success probability)
+    // REF breakpoint is at 4+, so REF <= 2 means high success chance
+    const lowRefEnemies = context.enemies.filter(enemy => {
+      if (enemy.state.isEliminated || enemy.state.isKOd) return false;
+      const enemyRef = enemy.finalAttributes.ref ?? enemy.attributes.ref ?? 2;
+      return enemyRef <= 2;
+    }).length;
+    if (lowRefEnemies > 0) {
+      tacticalBonus += lowRefEnemies * 0.6; // +0.6 per low-REF enemy
+    }
+
+    // Condition 2: Multiple enemies approaching (multi-trigger potential)
+    // If expected trigger count is 2+, add bonus
+    const expectedTriggers = waitForecast.expectedTriggerCount ?? 0;
+    if (expectedTriggers >= 2) {
+      tacticalBonus += (expectedTriggers - 1) * 0.4; // +0.4 for each trigger beyond first
+    }
+
+    // Condition 3: Holding chokepoint/zone (defensive value)
+    // Check if character is near mission objective markers or zones
+    const markers = this.getInteractableObjectiveMarkers(context);
+    const characterPos = context.battlefield.getCharacterPosition(context.character);
+    if (characterPos) {
+      const nearMarker = markers.some(marker => {
+        if (!marker.position) return false;
+        const dist = Math.hypot(
+          characterPos.x - marker.position.x,
+          characterPos.y - marker.position.y
+        );
+        return dist <= 4; // Within 4 MU of marker
+      });
+      if (nearMarker) {
+        tacticalBonus += 0.8; // Defensive position bonus
+      }
+    }
+
+    // Condition 4: Low AP remaining (Wait preserves future options)
+    // If character has 0-1 AP, Wait is more valuable
+    const apRemaining = context.apRemaining ?? 2;
+    if (apRemaining <= 1) {
+      tacticalBonus += (1 - apRemaining) * 0.5; // +0.5 at 0 AP, +0 at 2 AP
+    }
+
+    // Condition 5: Scoring context - leading and playing for time
+    if (context.scoringContext?.amILeading && context.scoringContext.vpMargin >= 2) {
+      tacticalBonus += 0.5; // Leading by 2+ VP, play defensively
+    }
+
+    // Condition 6: Scoring context - losing and need react opportunities
+    if (!context.scoringContext?.amILeading && 
+        context.scoringContext?.losingKeys?.includes('elimination')) {
+      tacticalBonus += 0.4; // Behind on eliminations, need reactive opportunities
+    }
+
+    // Cap total tactical bonus to prevent runaway scores
+    return Math.min(tacticalBonus, 3.0);
+  }
+
+  private getDoctrinePlanning(context: AIContext): 'aggression' | 'keys_to_victory' | 'balanced' {
+    return context.config.doctrinePlanning ?? 'balanced';
+  }
+
+  private getDoctrineEngagement(
+    context: AIContext,
+    loadout: { hasMeleeWeapons: boolean; hasRangedWeapons: boolean }
+  ): 'melee' | 'ranged' | 'balanced' {
+    if (context.config.doctrineEngagement) {
+      return context.config.doctrineEngagement;
+    }
+    if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) return 'melee';
+    if (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons) return 'ranged';
+    return 'balanced';
+  }
+
+  private getMissionBias(context: AIContext): MissionBias {
+    const missionId = context.config.missionId ?? 'QAI_11';
+    const planning = this.getDoctrinePlanning(context);
+
+    const base: MissionBias = (() => {
+      switch (missionId) {
+        case 'QAI_12':
+          return { movePressure: 0.55, waitPressure: 0.15, objectiveActionPressure: 0.6, attackPressure: 0.95, centerTargetBias: 0.45, vipTargetBias: 0 };
+        case 'QAI_13':
+          return { movePressure: 0.75, waitPressure: 0.2, objectiveActionPressure: 0.8, attackPressure: 0.9, centerTargetBias: 0.3, vipTargetBias: 0 };
+        case 'QAI_14':
+          return { movePressure: 0.45, waitPressure: 0.5, objectiveActionPressure: 0.65, attackPressure: 0.95, centerTargetBias: 0.55, vipTargetBias: 0 };
+        case 'QAI_15':
+          return { movePressure: 0.7, waitPressure: 0.45, objectiveActionPressure: 0.85, attackPressure: 0.88, centerTargetBias: 0.2, vipTargetBias: 0.6 };
+        case 'QAI_16':
+          return { movePressure: 0.8, waitPressure: 0.35, objectiveActionPressure: 0.9, attackPressure: 0.86, centerTargetBias: 0.2, vipTargetBias: 0.7 };
+        case 'QAI_17':
+          return { movePressure: 0.6, waitPressure: 0.2, objectiveActionPressure: 0.75, attackPressure: 0.94, centerTargetBias: 0.5, vipTargetBias: 0 };
+        case 'QAI_18':
+          return { movePressure: 0.68, waitPressure: 0.48, objectiveActionPressure: 0.82, attackPressure: 0.9, centerTargetBias: 0.3, vipTargetBias: 0.55 };
+        case 'QAI_19':
+          return { movePressure: 0.58, waitPressure: 0.55, objectiveActionPressure: 0.72, attackPressure: 0.92, centerTargetBias: 0.45, vipTargetBias: 0.55 };
+        case 'QAI_20':
+          return { movePressure: 0.78, waitPressure: 0.25, objectiveActionPressure: 0.85, attackPressure: 0.9, centerTargetBias: 0.42, vipTargetBias: 0 };
+        case 'QAI_11':
+        default:
+          return { movePressure: 0.15, waitPressure: 0.1, objectiveActionPressure: 0.1, attackPressure: 1.08, centerTargetBias: 0, vipTargetBias: 0 };
+      }
+    })();
+
+    if (planning === 'keys_to_victory') {
+      return {
+        ...base,
+        movePressure: base.movePressure + 0.2,
+        waitPressure: base.waitPressure + 0.15,
+        objectiveActionPressure: base.objectiveActionPressure + 0.25,
+        attackPressure: base.attackPressure * 0.94,
+      };
+    }
+    if (planning === 'aggression') {
+      return {
+        ...base,
+        movePressure: base.movePressure + 0.08,
+        waitPressure: Math.max(0, base.waitPressure - 0.18),
+        objectiveActionPressure: Math.max(0, base.objectiveActionPressure - 0.2),
+        attackPressure: base.attackPressure * 1.08,
+      };
+    }
+    return base;
   }
 }

@@ -489,6 +489,27 @@ export class AIGameLoop {
       godMode: true,
     };
 
+    // R1.5: Get scoring context from Side Coordinator
+    const sideId = this.findCharacterSide(character);
+    let scoringContext: any = undefined;
+    if (sideId) {
+      const coordinatorManager = this.manager.getSideCoordinatorManager();
+      if (coordinatorManager) {
+        const coordinator = coordinatorManager.getCoordinator(sideId);
+        const context = coordinator.getScoringContext();
+        if (context) {
+          scoringContext = {
+            myKeyScores: context.myScores,
+            opponentKeyScores: context.opponentScores,
+            amILeading: context.amILeading,
+            vpMargin: context.vpMargin,
+            winningKeys: context.winningKeys,
+            losingKeys: context.losingKeys,
+          };
+        }
+      }
+    }
+
     return {
       character,
       allies: this.getAllyCharacters(character),
@@ -497,6 +518,7 @@ export class AIGameLoop {
       currentTurn: this.manager.currentTurn,
       currentRound: this.manager.currentRound,
       apRemaining: this.manager.getApRemaining(character),
+      sideId,
       knowledge: {
         knownEnemies: new Map(),
         knownTerrain: new Map(),
@@ -506,6 +528,7 @@ export class AIGameLoop {
         lastUpdated: this.manager.currentTurn,
       },
       config: aiConfig,
+      scoringContext,
     };
   }
 

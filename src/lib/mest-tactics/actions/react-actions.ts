@@ -66,6 +66,12 @@ export function executeStandardReact(
   if (!SpatialRules.hasLineOfSight(deps.battlefield, reactorModel, targetModel)) {
     return { executed: false, reason: 'Requires LOS.' };
   }
+  const baseVisibility = options.visibilityOrMu ?? 16;
+  const effectiveVisibility = reactor.state.isWaiting ? baseVisibility * 2 : baseVisibility;
+  const edgeDistance = SpatialRules.distanceEdgeToEdge(reactorModel, targetModel);
+  if (edgeDistance > effectiveVisibility) {
+    return { executed: false, reason: 'Target outside React visibility.' };
+  }
 
   deps.reactingNow.add(reactor.id);
   deps.applyInterruptCost(reactor);
@@ -113,6 +119,7 @@ export interface ReactEvent {
   opponents: Character[];
   trigger: ReactTriggerType;
   movedDistance?: number;
+  visibilityOrMu?: number;
   reactingToReact?: boolean;
   isGroupAction?: boolean;
 }
@@ -141,6 +148,7 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
   const options: ReactOption[] = [];
   const activePos = event.battlefield.getCharacterPosition(event.active);
   if (!activePos) return options;
+  const baseVisibility = event.visibilityOrMu ?? 16;
   const activeRef = event.active.finalAttributes.ref ?? event.active.attributes.ref ?? 0;
   const activeMov = event.active.finalAttributes.mov ?? event.active.attributes.mov ?? 0;
   const activeBase = getBaseDiameterFromSiz(event.active.finalAttributes.siz ?? event.active.attributes.siz ?? 3);
@@ -184,6 +192,20 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
         requiredRef: 0,
         effectiveRef: 0,
         reason: 'Requires LOS.',
+      });
+      continue;
+    }
+    const effectiveVisibility = opponent.state.isWaiting ? baseVisibility * 2 : baseVisibility;
+    const edgeDistance = SpatialRules.distanceEdgeToEdge(opponentModel, activeModel);
+    if (edgeDistance > effectiveVisibility) {
+      options.push({
+        actor: opponent,
+        target: event.active,
+        type: event.trigger === 'Move' ? 'StandardReact' : 'ReactAction',
+        available: false,
+        requiredRef: 0,
+        effectiveRef: 0,
+        reason: 'Target outside React visibility.',
       });
       continue;
     }

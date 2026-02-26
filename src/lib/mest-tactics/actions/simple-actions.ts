@@ -8,6 +8,7 @@ import { validateFiddleAction, hasUsingOneLessHandPenalty, clearUsingOneLessHand
 export interface SimpleActionDeps {
   spendAp: (character: Character, cost: number) => boolean;
   setWaiting: (character: Character) => void;
+  isOutnumberedForWait?: (character: Character) => boolean;
   setCharacterStatus: (characterId: string, status: CharacterStatus) => void;
   markRallyUsed: (characterId: string) => void;
   markReviveUsed: (characterId: string) => void;
@@ -156,6 +157,9 @@ export function executeWaitAction(
   actor: Character,
   options: { spendAp?: boolean; maintain?: boolean } = {}
 ) {
+  if (!options.maintain && deps.isOutnumberedForWait?.(actor)) {
+    return { success: false, reason: 'Cannot Wait while outnumbered.' };
+  }
   const cost = options.maintain ? 1 : 2;
   if (options.spendAp ?? true) {
     if (!deps.spendAp(actor, cost)) {

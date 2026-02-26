@@ -1,11 +1,12 @@
 /**
  * AI Stratagem Integration with Utility Scorer
- * 
+ *
  * Applies stratagem modifiers to AI action scoring.
  */
 
 import { ScoredAction, ScoredTarget, ScoredPosition } from '../core/AIController';
 import { StratagemModifiers, TacticalDoctrine, AggressionLevel } from './AIStratagems';
+import { ScoringModifiers, combineModifiers } from './PredictedScoringIntegration';
 
 // ============================================================================
 // Action Scoring Modifiers
@@ -70,6 +71,21 @@ export function applyStratagemModifiersToActions(
       score: modifiedScore,
     };
   });
+}
+
+/**
+ * Apply combined stratagem + scoring modifiers to action scores
+ */
+export function applyCombinedModifiersToActions(
+  actions: ScoredAction[],
+  stratagemModifiers: StratagemModifiers,
+  scoringModifiers: ScoringModifiers
+): ScoredAction[] {
+  // Combine modifiers
+  const combined = combineModifiers(stratagemModifiers, scoringModifiers);
+  
+  // Apply combined modifiers
+  return applyStratagemModifiersToActions(actions, combined);
 }
 
 // ============================================================================

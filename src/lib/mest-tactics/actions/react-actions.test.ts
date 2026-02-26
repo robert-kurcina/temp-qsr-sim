@@ -85,6 +85,36 @@ describe('react-actions', () => {
     expect(sorted[0].actor.id).toBe(r1.id);
   });
 
+  it('should use doubled wait visibility for Standard react range gating', () => {
+    const battlefield = new Battlefield(20, 20);
+    const active = new Character(makeProfile('Active', 2, 4));
+    const reactor = new Character(makeProfile('Reactor', 4, 4));
+    reactor.state.isWaiting = true;
+    reactor.profile.items = [{
+      name: 'Test Rifle',
+      classification: 'Range',
+      class: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      or: 8,
+      accuracy: '-',
+      impact: 0,
+      dmg: '2',
+      traits: [],
+    } as any];
+
+    const manager = new GameManager([active, reactor], battlefield);
+    battlefield.placeCharacter(active, { x: 10, y: 2 });
+    battlefield.placeCharacter(reactor, { x: 2, y: 2 });
+
+    const weapon = reactor.profile.items[0] as any;
+    const blockedByVisibility = manager.executeStandardReact(reactor, active, weapon, { visibilityOrMu: 2 });
+    expect(blockedByVisibility.executed).toBe(false);
+
+    const allowedByWaitVisibility = manager.executeStandardReact(reactor, active, weapon, { visibilityOrMu: 4 });
+    expect(allowedByWaitVisibility.executed).toBe(true);
+  });
+
   it('should enforce declared weapon on Standard react attacks', () => {
     setRoller(() => Array(20).fill(6));
     const battlefield = new Battlefield(12, 12);

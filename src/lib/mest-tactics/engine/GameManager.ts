@@ -73,6 +73,7 @@ import {
   DEFAULT_END_GAME_TRIGGER_TURN,
 } from './end-game-trigger';
 import { MissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
+import { SideCoordinatorManager } from '../ai/core/SideAICoordinator';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -136,6 +137,7 @@ export class GameManager {
   private reactingNow: Set<string> = new Set();
   private endGameTriggerState: EndGameTriggerState;
   private missionRuntimeAdapter: MissionRuntimeAdapter | null = null;
+  private sideCoordinatorManager: SideCoordinatorManager | null = null;
 
   constructor(characters: Character[], battlefield: Battlefield | null = null, endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN) {
     this.characters = characters;
@@ -377,6 +379,55 @@ export class GameManager {
     return this.missionRuntimeAdapter?.getObjectiveMarkers() ?? [];
   }
 
+  // ============================================================================
+  // Side AI Coordinator Management (R1.5: God Mode AI Coordination)
+  // ============================================================================
+
+  /**
+   * Initialize Side AI Coordinator Manager
+   * Called when mission sides are set up
+   */
+  public initializeSideCoordinators(sides: MissionSide[], tacticalDoctrines?: Map<string, import('../ai/stratagems/AIStratagems').TacticalDoctrine>): void {
+    this.sideCoordinatorManager = new SideCoordinatorManager();
+    for (const side of sides) {
+      const doctrine = tacticalDoctrines?.get(side.id) ?? 'operative';
+      this.sideCoordinatorManager.getCoordinator(side.id, doctrine);
+    }
+  }
+
+  /**
+   * Get Side Coordinator Manager
+   */
+  public getSideCoordinatorManager(): SideCoordinatorManager | null {
+    return this.sideCoordinatorManager;
+  }
+
+  /**
+   * Update scoring context for all Sides at start of turn
+   * Called from startTurn() after mission state is updated
+   */
+  public updateAllScoringContexts(sideKeyScores: Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>): void {
+    if (!this.sideCoordinatorManager) return;
+    this.sideCoordinatorManager.updateAllScoringContexts(sideKeyScores, this.currentTurn);
+  }
+
+  /**
+   * Get strategic advice for all Sides (for battle reports)
+   */
+  public getSideStrategies(): Record<string, { doctrine: string; advice: string[]; context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null }> {
+    const strategies: Record<string, { doctrine: string; advice: string[]; context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null }> = {};
+    if (!this.sideCoordinatorManager) return strategies;
+
+    for (const coordinator of this.sideCoordinatorManager.getAllCoordinators()) {
+      strategies[coordinator.getSideId()] = {
+        doctrine: coordinator.getTacticalDoctrine(),
+        advice: coordinator.getStrategicAdvice(),
+        context: coordinator.getScoringContext(),
+      };
+    }
+    return strategies;
+  }
+
   public getCharacterPosition(character: Character): Position | undefined {
     if (!this.battlefield) return undefined;
     return this.battlefield.getCharacterPosition(character);
@@ -385,7 +436,7 @@ export class GameManager {
   /**
    * Start a new Turn
    * QSR: Start of Turn sequence
-   * 
+   *
    * @param roller - Random number generator
    * @param sides - Optional array of sides for IP awarding
    */
@@ -404,6 +455,15 @@ export class GameManager {
     this.reviveUsed.clear();
     this.reactedThisTurn.clear();
     this.phase = TurnPhase.Activation;
+
+    // R1.5: Update scoring context for all Sides at start of turn
+    if (sides && this.sideCoordinatorManager) {
+      const sideKeyScores = new Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>();
+      for (const side of sides) {
+        sideKeyScores.set(side.id, side.state.keyScores);
+      }
+      this.updateAllScoringContexts(sideKeyScores);
+    }
   }
 
   public startRound(): void {
@@ -744,7 +804,18 @@ export class GameManager {
       return { success: false, reason: `Insufficient AP (${apCost} required)` };
     }
 
-    const result = this.missionRuntimeAdapter.acquireObjectiveMarker(markerId, actor.id, sideId, options);
+    const actorPosition = this.getCharacterPosition(actor);
+    const modelPositions: Array<{ id: string; position: Position }> = [];
+    for (const candidate of this.characters) {
+      const candidatePosition = this.getCharacterPosition(candidate);
+      if (!candidatePosition) continue;
+      modelPositions.push({ id: candidate.id, position: candidatePosition });
+    }
+    const result = this.missionRuntimeAdapter.acquireObjectiveMarker(markerId, actor.id, sideId, {
+      ...options,
+      actorPosition,
+      modelPositions,
+    });
     if (!result.success) return result;
     if (spendAp && result.apCost > 0) {
       this.spendAp(actor, result.apCost);
@@ -826,8 +897,34 @@ export class GameManager {
     return result;
   }
 
-  public executeWait(actor: Character, options: { spendAp?: boolean; maintain?: boolean } = {}) {
-    return executeWaitAction(this.simpleActionDeps(), actor, options);
+  public executeWait(
+    actor: Character,
+    options: {
+      spendAp?: boolean;
+      maintain?: boolean;
+      opponents?: Character[];
+      visibilityOrMu?: number;
+      allowRevealReposition?: boolean;
+    } = {}
+  ) {
+    const wait = executeWaitAction(this.simpleActionDeps(), actor, options);
+    if (!wait.success || !this.battlefield || !options.opponents || options.opponents.length === 0) {
+      return wait;
+    }
+
+    const reveal = resolveWaitReveal(this.battlefield, actor, options.opponents, {
+      allowReposition: options.allowRevealReposition ?? false,
+      visibilityOrMu: options.visibilityOrMu,
+    });
+
+    return {
+      ...wait,
+      revealedCount: reveal.revealed.length,
+      revealedOpponents: reveal.revealed.map(opponent => ({
+        id: opponent.id,
+        name: opponent.profile.name,
+      })),
+    };
   }
 
   public buildConcentrateContext(target: 'hit' | 'damage' | 'any' = 'hit'): TestContext {
@@ -980,6 +1077,52 @@ export class GameManager {
     return runBuildSpatialModel(this.battlefield, (target: Character) => this.getCharacterPosition(target), character);
   }
 
+  private getOtherActiveCharacters(character: Character): Character[] {
+    return this.characters.filter(
+      candidate => candidate.id !== character.id && !candidate.state.isEliminated && !candidate.state.isKOd
+    );
+  }
+
+  private isFreeFromEngagement(character: Character): boolean {
+    if (!this.battlefield) return true;
+    const actor = this.buildSpatialModel(character);
+    if (!actor) return true;
+    const blockers = this.battlefield.getModelBlockers([character.id]);
+    return !blockers.some(blocker => SpatialRules.isEngaged(actor, blocker));
+  }
+
+  private isOutnumberedForWait(character: Character): boolean {
+    if (!this.battlefield) return false;
+    const actor = this.buildSpatialModel(character);
+    if (!actor) return false;
+    const blockers = this.battlefield.getModelBlockers([character.id]);
+    const engagedCount = blockers.filter(blocker => SpatialRules.isEngaged(actor, blocker)).length;
+    return engagedCount > 1;
+  }
+
+  private hasCoverAgainstOpposition(character: Character, opponents: Character[]): boolean {
+    if (!this.battlefield) return false;
+    const actor = this.buildSpatialModel(character);
+    if (!actor) return false;
+    for (const opponent of opponents) {
+      const other = this.buildSpatialModel(opponent);
+      if (!other) continue;
+      const cover = SpatialRules.getCoverResult(this.battlefield, other, actor);
+      if (cover.hasLOS && (cover.hasDirectCover || cover.hasInterveningCover)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private hasLosAgainst(character: Character, other: Character): boolean {
+    if (!this.battlefield) return false;
+    const actor = this.buildSpatialModel(character);
+    const target = this.buildSpatialModel(other);
+    if (!actor || !target) return false;
+    return SpatialRules.hasLineOfSight(this.battlefield, actor, target);
+  }
+
   private applyInterruptCost(character: Character): { removedWait: boolean; delayAdded: boolean } {
     return runInterruptCost(this.interruptDeps(), character);
   }
@@ -1070,6 +1213,13 @@ export class GameManager {
       clearFiddleUsed: (characterId: string) => { this.freeFiddleUsed.delete(characterId); },
       getApRemaining: (characterId: string) => this.apRemaining.get(characterId) ?? 0,
       setApRemaining: (characterId: string, value: number) => { this.apRemaining.set(characterId, value); },
+      getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+      isBehindCover: (character: Character) => this.hasCoverAgainstOpposition(character, this.getOtherActiveCharacters(character)),
+      isInLos: (character: Character, opposingCharacter: Character) => this.hasLosAgainst(character, opposingCharacter),
+      getOpposingCharacters: () => this.characters.filter(
+        candidate => candidate.id !== this.activeCharacterId && !candidate.state.isEliminated && !candidate.state.isKOd
+      ),
+      isFreeFromEngagement: (character: Character) => this.isFreeFromEngagement(character),
     };
   }
 
@@ -1077,6 +1227,7 @@ export class GameManager {
     return {
       spendAp: (character: Character, cost: number) => this.spendAp(character, cost),
       setWaiting: (character: Character) => this.setWaiting(character),
+      isOutnumberedForWait: (character: Character) => this.isOutnumberedForWait(character),
       setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
       markRallyUsed: (characterId: string) => { this.rallyUsed.add(characterId); },
       markReviveUsed: (characterId: string) => { this.reviveUsed.add(characterId); },

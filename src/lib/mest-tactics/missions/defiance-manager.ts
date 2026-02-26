@@ -510,7 +510,7 @@ export class DefianceMissionManager {
         const vip = vipMemberId ? this.vipManager.getVIP(vipMemberId) : undefined;
         const vipAlive = vip !== undefined && vip.state !== VIPState.Eliminated;
         const survivalTurns = vipMemberId ? (this.state.vipSurvivalTurns.get(vipMemberId) ?? 0) : 0;
-        
+
         return {
           sideId,
           vp,
@@ -519,6 +519,131 @@ export class DefianceMissionManager {
         };
       })
       .sort((a, b) => b.vp - a.vp);
+  }
+
+  /**
+   * Calculate predicted scoring with key breakdown for AI planning
+   * Keys: Last Stand, Breakthrough, Sally Forth, Bottled
+   */
+  calculatePredictedScoring(): {
+    sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }>;
+  } {
+    const sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }> = {};
+
+    // Initialize side scores
+    for (const sideId of this.state.sideIds) {
+      sideScores[sideId] = {
+        predictedVp: 0,
+        predictedRp: 0,
+        keyScores: {},
+      };
+    }
+
+    // Build side status for scoring functions
+    const sideStatuses = Array.from(this.sides.values()).map(side => {
+      let koCount = 0;
+      let eliminatedCount = 0;
+      let orderedCount = 0;
+      let koBp = 0;
+      let eliminatedBp = 0;
+
+      for (const member of side.members) {
+        const bp = member.profile?.totalBp ?? 0;
+        if (member.status === 'Eliminated' as any) {
+          eliminatedCount++;
+          eliminatedBp += bp;
+        } else if (member.status === 'KO' as any) {
+          koCount++;
+          koBp += bp;
+        } else if (member.status === 'Ready' as any || member.status === 'Distracted' as any) {
+          orderedCount++;
+        }
+      }
+
+      return {
+        sideId: side.id,
+        startingCount: side.members.length,
+        inPlayCount: side.members.length - koCount - eliminatedCount,
+        orderedCount,
+        koCount,
+        eliminatedCount,
+        koBp,
+        eliminatedBp,
+        totalBp: side.totalBP,
+        bottledOut: orderedCount === 0,
+      };
+    });
+
+    // Last Stand: +1 VP if 50%+ models remain in Sanctum at end of turn
+    // Defender wins by accumulating VP threshold
+    for (const side of sideStatuses) {
+      const remainingPercent = side.inPlayCount / side.startingCount;
+      const lastStandVP = remainingPercent >= 0.5 ? 1 : 0;
+      
+      sideScores[side.sideId].keyScores['last_stand'] = {
+        current: lastStandVP,
+        predicted: lastStandVP,
+        confidence: remainingPercent >= 0.5 ? 0.8 : 0.2,
+        leadMargin: lastStandVP,
+      };
+      sideScores[side.sideId].predictedVp += lastStandVP;
+    }
+
+    // Breakthrough: Horde wins when breakthrough markers reach threshold
+    // Alpha: +1 base die, Beta: Wait removed, Gamma: Immediate victory
+    const breakthroughLevel = this.state.breakthroughLevel ?? 0;
+    if (breakthroughLevel >= 3) { // Gamma achieved
+      // Find horde side (attacker)
+      for (const side of sideStatuses) {
+        sideScores[side.sideId].keyScores['breakthrough'] = {
+          current: 1,
+          predicted: 1,
+          confidence: 1.0,
+          leadMargin: 1,
+        };
+        sideScores[side.sideId].predictedVp += 1;
+      }
+    }
+
+    // Sally Forth: +1 VP per horde eliminated by sallying defender
+    // Track sally kills (simplified - use VP as proxy)
+    const sortedVP = Array.from(this.state.vpBySide.entries()).sort((a, b) => b[1] - a[1]);
+    for (const [sideId, vp] of this.state.vpBySide.entries()) {
+      // Estimate sally VP from total VP
+      const sallyVP = Math.floor(vp / 2); // Rough estimate
+      
+      sideScores[sideId].keyScores['sally_forth'] = {
+        current: sallyVP,
+        predicted: sallyVP,
+        confidence: sallyVP > 0 ? 0.7 : 0.3,
+        leadMargin: sallyVP,
+      };
+    }
+
+    // Bottled: +1 VP if opponent bottles out
+    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const side of sideStatuses) {
+      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
+      const predicted = isOpponentBottled ? 1 : 0;
+
+      sideScores[side.sideId].keyScores['bottled'] = {
+        current: 0,
+        predicted,
+        confidence: isOpponentBottled ? 1.0 : 0.0,
+        leadMargin: isOpponentBottled ? 1 : 0,
+      };
+      sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    return { sideScores };
   }
 }
 

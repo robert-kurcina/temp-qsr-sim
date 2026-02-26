@@ -16,6 +16,7 @@ export interface ActivationDeps {
   isBehindCover: (character: Character) => boolean;
   isInLos: (character: Character, opposingCharacter: Character) => boolean;
   getOpposingCharacters: () => Character[];
+  isFreeFromEngagement: (character: Character) => boolean;
 }
 
 export function beginActivation(deps: ActivationDeps, character: Character): number {
@@ -27,14 +28,29 @@ export function beginActivation(deps: ActivationDeps, character: Character): num
   deps.clearTransfixUsed(character.id);
   deps.clearFiddleUsed(character.id);
   deps.applyOngoingStatusEffects(character);
-  if (character.state.isWaiting) {
-    character.state.isWaiting = false;
-  }
+  const waitingAtStart = character.state.isWaiting;
 
   const delayTokens = character.state.delayTokens;
-  const apAvailable = Math.max(0, deps.apPerActivation - delayTokens);
+  let apAvailable = Math.max(0, deps.apPerActivation - delayTokens);
   const remainingDelay = Math.max(0, delayTokens - deps.apPerActivation);
   character.state.delayTokens = remainingDelay;
+
+  if (waitingAtStart) {
+    // Revised Wait override:
+    // - Delay upkeep is paid first (1 AP per Delay token).
+    // - Wait upkeep is then resolved:
+    //   - if Free => maintain at 0 AP,
+    //   - if not Free => may pay 1 AP to maintain, otherwise remove Wait.
+    const isFree = deps.isFreeFromEngagement(character);
+    if (!isFree) {
+      if (apAvailable >= 1) {
+        apAvailable -= 1;
+      } else {
+        character.state.isWaiting = false;
+      }
+    }
+  }
+
   character.refreshStatusFlags();
   deps.setApRemaining(character.id, apAvailable);
   return apAvailable;

@@ -7,13 +7,23 @@ description: Complete index of all MEST Tactics rule modules.
 
 This document provides links to all rule modules for the MEST Tactics game system.
 
+## Rule Precedence
+
+When rule documents conflict, use this precedence order:
+
+1. [Overrides](./rules-overrides)
+2. `rules*.md` modules in this folder
+3. Legacy source instructions in `docs/*.txt`
+
 ## Core Rules
 
 | Rule Module | Description |
 |-------------|-------------|
+| [Overrides](./rules-overrides) | Active rule overrides that supersede legacy `docs/*.txt` text |
 | [Introduction](./rules-introduction) | Overview of the game and its core concepts |
 | [General Terms](./rules-general-terms) | Glossary of common game terminology |
 | [Characters & Attributes](./rules-characters-and-attributes) | Character creation, attributes, and functions |
+| [Archetypes and Profiles](./rules-archetypes-and-profiles) | Character archetypes and equipment profiles |
 | [Tests & Checks](./rules-tests-and-checks) | Core dice-rolling and resolution mechanics |
 | [Traits](./rules-traits) | Explanation of character and item traits |
 | [Traits List](./rules-traits-list) | Complete list of all traits and effects |
@@ -82,14 +92,16 @@ This document provides links to all rule modules for the MEST Tactics game syste
 1. [Introduction](./rules-introduction)
 2. [Materials](./rules-materials)
 3. [General Terms](./rules-general-terms)
-4. [Assemblies & Setup](./rules-assemblies-and-setup)
+4. [Overrides](./rules-overrides)
+5. [Assemblies & Setup](./rules-assemblies-and-setup)
 
 ### Character Creation
 1. [Characters & Attributes](./rules-characters-and-attributes)
-2. [Traits](./rules-traits)
-3. [Traits List](./rules-traits-list)
-4. [Items](./rules-items)
-5. [Portraits](./rules-portraits)
+2. [Archetypes and Profiles](./rules-archetypes-and-profiles)
+3. [Traits](./rules-traits)
+4. [Traits List](./rules-traits-list)
+5. [Items](./rules-items)
+6. [Portraits](./rules-portraits)
 
 ### Playing the Game
 1. [Initiative](./rules-initiative)

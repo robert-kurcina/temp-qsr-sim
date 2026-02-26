@@ -3,6 +3,7 @@ import { Battlefield } from '../battlefield/Battlefield';
 import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules';
 import { LOSOperations } from '../battlefield/los/LOSOperations';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
+import { TerrainType } from '../battlefield/terrain/Terrain';
 import { attemptHide, evaluateHide, HideCheckResult } from '../status/concealment';
 import { getCharacterTraitLevel } from '../status/status-system';
 
@@ -55,6 +56,7 @@ export interface BonusActionOutcome {
   reason?: string;
   spentCascades?: number;
   moved?: boolean;
+  delayTokenApplied?: boolean;
   attackerPosition?: { x: number; y: number };
   targetPosition?: { x: number; y: number };
   hideResult?: HideCheckResult;
@@ -230,6 +232,7 @@ function applyReposition(context: BonusActionContext, cost: number, selection: B
   if (!position) {
     return { executed: false, reason: 'Missing reposition target.', spentCascades: 0 };
   }
+  const destination = toGridPosition(position);
   const mov = context.attacker.finalAttributes.mov ?? context.attacker.attributes.mov ?? 0;
   const extra = Math.max(0, selection.extraCascades ?? 0);
   const maxDistance = mov + Math.floor(extra / 3);
@@ -237,16 +240,16 @@ function applyReposition(context: BonusActionContext, cost: number, selection: B
   if (!current) {
     return { executed: false, reason: 'Missing current position.', spentCascades: 0 };
   }
-  const distance = LOSOperations.distance(current, position);
+  const distance = LOSOperations.distance(current, destination);
   if (distance > maxDistance + 1e-6) {
     return { executed: false, reason: 'Reposition exceeds move limit.', spentCascades: 0 };
   }
-  const moved = context.battlefield.moveCharacter(context.attacker, position);
+  const moved = context.battlefield.moveCharacter(context.attacker, destination);
   return {
     executed: moved,
     spentCascades: moved ? cost : 0,
     moved,
-    attackerPosition: moved ? position : undefined,
+    attackerPosition: moved ? destination : undefined,
     reason: moved ? undefined : 'Reposition failed.',
   };
 }
@@ -263,12 +266,13 @@ function applyCircle(context: BonusActionContext, cost: number, selection: Bonus
     x: targetPos.x + dx * Math.cos(angle) - dy * Math.sin(angle),
     y: targetPos.y + dx * Math.sin(angle) + dy * Math.cos(angle),
   };
-  const moved = context.battlefield.moveCharacter(context.attacker, selection.attackerPosition ?? rotated);
+  const destination = toGridPosition(selection.attackerPosition ?? rotated);
+  const moved = context.battlefield.moveCharacter(context.attacker, destination);
   return {
     executed: moved,
     spentCascades: moved ? cost : 0,
     moved,
-    attackerPosition: moved ? (selection.attackerPosition ?? rotated) : undefined,
+    attackerPosition: moved ? destination : undefined,
     reason: moved ? undefined : 'Circle failed.',
   };
 }
@@ -294,12 +298,13 @@ function applyDisengage(context: BonusActionContext, cost: number, selection: Bo
     x: attackerPos.x + direction.x * maxDistance,
     y: attackerPos.y + direction.y * maxDistance,
   };
-  const moved = context.battlefield.moveCharacter(context.attacker, destination);
+  const destinationGrid = toGridPosition(destination);
+  const moved = context.battlefield.moveCharacter(context.attacker, destinationGrid);
   return {
     executed: moved,
     spentCascades: moved ? cost : 0,
     moved,
-    attackerPosition: moved ? destination : undefined,
+    attackerPosition: moved ? destinationGrid : undefined,
     reason: moved ? undefined : 'Disengage failed.',
   };
 }
@@ -317,21 +322,63 @@ function applyPushBack(context: BonusActionContext, cost: number, selection: Bon
     y: targetPos.y - attackerPos.y,
   });
   if (!direction) return { executed: false, reason: 'Invalid push direction.', spentCascades: 0 };
-  const targetDestination = selection.targetPosition ?? {
+  const targetDestinationRaw = selection.targetPosition ?? {
     x: targetPos.x + direction.x * pushDistance,
     y: targetPos.y + direction.y * pushDistance,
   };
-  const movedTarget = context.battlefield.moveCharacter(context.target, targetDestination);
-  if (!movedTarget) return { executed: false, reason: 'Push-back failed.', spentCascades: 0 };
-  const attackerDestination = selection.attackerPosition ?? targetPos;
-  const movedAttacker = context.battlefield.moveCharacter(context.attacker, attackerDestination);
+  const targetDestination = toGridPosition(targetDestinationRaw);
+  const insideBoard = isInsideBoard(context.battlefield, targetDestination);
+  const targetTerrain = insideBoard ? context.battlefield.getTerrainAt(targetDestination).type : TerrainType.Impassable;
+  const blockedTerrain = targetTerrain === TerrainType.Impassable || targetTerrain === TerrainType.Obstacle;
+  const degradedTerrain = targetTerrain === TerrainType.Rough || targetTerrain === TerrainType.Difficult;
+  const destinationOccupant = insideBoard ? context.battlefield.getCharacterAt(targetDestination) : null;
+  if (destinationOccupant && destinationOccupant.id !== context.target.id) {
+    return { executed: false, reason: 'Push-back blocked by another model.', spentCascades: 0 };
+  }
+
+  let movedTarget = false;
+  let delayTokenApplied = false;
+  let reason: string | undefined;
+
+  if (!insideBoard || blockedTerrain) {
+    // QSR: if pushed into wall/obstacle/impassable bounds, target takes Delay.
+    context.target.state.delayTokens += 1;
+    context.target.refreshStatusFlags();
+    delayTokenApplied = true;
+    reason = 'Push-back blocked by terrain/boundary; target gained Delay token.';
+  } else {
+    movedTarget = context.battlefield.moveCharacter(context.target, targetDestination);
+    if (!movedTarget) {
+      return { executed: false, reason: 'Push-back failed.', spentCascades: 0 };
+    }
+    if (degradedTerrain) {
+      context.target.state.delayTokens += 1;
+      context.target.refreshStatusFlags();
+      delayTokenApplied = true;
+      reason = 'Push-back into degraded terrain; target gained Delay token.';
+    }
+  }
+
+  let movedAttacker = false;
+  const attackerDestination = selection.attackerPosition ?? (movedTarget ? targetPos : undefined);
+  if (attackerDestination) {
+    const attackerDestinationGrid = toGridPosition(attackerDestination);
+    if (
+      isInsideBoard(context.battlefield, attackerDestinationGrid) &&
+      (!context.battlefield.getCharacterAt(attackerDestinationGrid) || context.battlefield.getCharacterAt(attackerDestinationGrid)?.id === context.attacker.id)
+    ) {
+      movedAttacker = context.battlefield.moveCharacter(context.attacker, attackerDestinationGrid);
+    }
+  }
+
   return {
-    executed: movedAttacker,
-    spentCascades: movedAttacker ? cost : 0,
-    moved: movedAttacker,
-    attackerPosition: movedAttacker ? attackerDestination : undefined,
-    targetPosition: targetDestination,
-    reason: movedAttacker ? undefined : 'Push-back follow-up failed.',
+    executed: movedTarget || delayTokenApplied,
+    spentCascades: movedTarget || delayTokenApplied ? cost : 0,
+    moved: movedTarget || movedAttacker,
+    delayTokenApplied,
+    attackerPosition: movedAttacker ? toGridPosition(attackerDestination!) : undefined,
+    targetPosition: movedTarget ? targetDestination : undefined,
+    reason,
   };
 }
 
@@ -352,12 +399,13 @@ function applyPullBack(context: BonusActionContext, cost: number, selection: Bon
     x: attackerPos.x + direction.x * moveDistance,
     y: attackerPos.y + direction.y * moveDistance,
   };
-  const movedAttacker = context.battlefield.moveCharacter(context.attacker, destination);
+  const destinationGrid = toGridPosition(destination);
+  const movedAttacker = context.battlefield.moveCharacter(context.attacker, destinationGrid);
   return {
     executed: movedAttacker,
     spentCascades: movedAttacker ? cost : 0,
     moved: movedAttacker,
-    attackerPosition: movedAttacker ? destination : undefined,
+    attackerPosition: movedAttacker ? destinationGrid : undefined,
     reason: movedAttacker ? undefined : 'Pull-back failed.',
   };
 }
@@ -367,14 +415,16 @@ function applyReversal(context: BonusActionContext, cost: number, selection: Bon
   const attackerPos = context.battlefield.getCharacterPosition(context.attacker);
   const targetPos = context.battlefield.getCharacterPosition(context.target);
   if (!attackerPos || !targetPos) return { executed: false, reason: 'Missing positions.', spentCascades: 0 };
-  const movedTarget = context.battlefield.moveCharacter(context.target, selection.targetPosition ?? attackerPos);
-  const movedAttacker = context.battlefield.moveCharacter(context.attacker, selection.attackerPosition ?? targetPos);
+  const targetDestination = toGridPosition(selection.targetPosition ?? attackerPos);
+  const attackerDestination = toGridPosition(selection.attackerPosition ?? targetPos);
+  const movedTarget = context.battlefield.moveCharacter(context.target, targetDestination);
+  const movedAttacker = context.battlefield.moveCharacter(context.attacker, attackerDestination);
   return {
     executed: movedAttacker && movedTarget,
     spentCascades: movedAttacker && movedTarget ? cost : 0,
     moved: movedAttacker && movedTarget,
-    attackerPosition: movedAttacker ? (selection.attackerPosition ?? targetPos) : undefined,
-    targetPosition: movedTarget ? (selection.targetPosition ?? attackerPos) : undefined,
+    attackerPosition: movedAttacker ? attackerDestination : undefined,
+    targetPosition: movedTarget ? targetDestination : undefined,
     reason: movedAttacker && movedTarget ? undefined : 'Reversal failed.',
   };
 }
@@ -388,6 +438,22 @@ function arrowCostDelta(attacker: Character, target: Character | null): number {
   const attackerPhys = Math.max(attacker.finalAttributes.str ?? attacker.attributes.str ?? 0, attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 0);
   const targetPhys = Math.max(target.finalAttributes.str ?? target.attributes.str ?? 0, target.finalAttributes.siz ?? target.attributes.siz ?? 0);
   return Math.max(0, targetPhys - attackerPhys);
+}
+
+function toGridPosition(position: { x: number; y: number }): { x: number; y: number } {
+  return {
+    x: Math.round(position.x),
+    y: Math.round(position.y),
+  };
+}
+
+function isInsideBoard(battlefield: Battlefield, position: { x: number; y: number }): boolean {
+  return (
+    position.x >= 0 &&
+    position.x < battlefield.width &&
+    position.y >= 0 &&
+    position.y < battlefield.height
+  );
 }
 
 function normalize(vec: { x: number; y: number }): { x: number; y: number } | null {

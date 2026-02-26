@@ -4,7 +4,7 @@
  * Tests for the hierarchical AI system foundation.
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   BehaviorTree,
   SelectorNode,
@@ -25,6 +25,7 @@ import {
 import { Character } from '../../core/Character';
 import { Profile } from '../../core/Profile';
 import { Battlefield } from '../../battlefield/Battlefield';
+import { PathfindingEngine } from '../../battlefield/pathfinding/PathfindingEngine';
 
 function makeTestProfile(name: string): Profile {
   return {
@@ -51,6 +52,17 @@ function makeTestCharacter(name: string): Character {
   const character = new Character(makeTestProfile(name));
   character.finalAttributes = character.attributes;
   return character;
+}
+
+function makeRangedOnlyItem(name: string) {
+  return {
+    name,
+    class: 'Range',
+    classification: 'Range',
+    type: 'Rifle',
+    bp: 0,
+    traits: [],
+  };
 }
 
 function makeTestContext(): { character: Character; allies: Character[]; enemies: Character[]; battlefield: Battlefield } {
@@ -243,6 +255,219 @@ describe('UtilityScorer', () => {
     expect(aggressiveScorer.weights.aggression).toBe(1.0);
     expect(cautiousScorer.weights.aggression).toBe(0.0);
   });
+
+  it('should increase movement pressure for objective missions', () => {
+    const scorer = new UtilityScorer();
+    const context = makeTestContext();
+    const baseContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+    };
+
+    const eliminationActions = scorer.evaluateActions({
+      ...baseContext,
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        missionId: 'QAI_11',
+        doctrinePlanning: 'aggression',
+      },
+    });
+    const objectiveActions = scorer.evaluateActions({
+      ...baseContext,
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        missionId: 'QAI_20',
+        doctrinePlanning: 'keys_to_victory',
+      },
+    });
+
+    const eliminationMove = eliminationActions.find(action => action.action === 'move')?.score ?? 0;
+    const objectiveMove = objectiveActions.find(action => action.action === 'move')?.score ?? 0;
+    expect(objectiveMove).toBeGreaterThan(eliminationMove);
+  });
+
+  it('should generate objective marker fiddle actions when markers are adjacent', () => {
+    const scorer = new UtilityScorer();
+    const context = makeTestContext();
+    const actions = scorer.evaluateActions({
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      sideId: 'Alpha',
+      objectiveMarkers: [
+        {
+          id: 'om-1',
+          name: 'Intel OM',
+          state: 'Available',
+          position: { x: 12, y: 12 },
+          omTypes: ['Idea'],
+        },
+      ],
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        missionId: 'QAI_15',
+        doctrinePlanning: 'keys_to_victory',
+      },
+    });
+
+    const objectiveAction = actions.find(action => action.action === 'fiddle' && action.objectiveAction === 'acquire_marker');
+    expect(objectiveAction).toBeDefined();
+    expect(objectiveAction?.markerId).toBe('om-1');
+  });
+
+  it('should ignore non-interactable projected objective markers', () => {
+    const scorer = new UtilityScorer();
+    const context = makeTestContext();
+    const actions = scorer.evaluateActions({
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      sideId: 'Alpha',
+      objectiveMarkers: [
+        {
+          id: 'mission:QAI_12:zone-1',
+          name: 'Convergence Zone 1',
+          state: 'Available',
+          position: { x: 12, y: 12 },
+          omTypes: ['Switch'],
+          interactable: false,
+        },
+      ],
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        missionId: 'QAI_12',
+        doctrinePlanning: 'keys_to_victory',
+      },
+    });
+
+    expect(actions.some(action => action.action === 'fiddle')).toBe(false);
+  });
+
+  it('should include wait REF and delay-avoidance factors when wait has reactive value', () => {
+    const scorer = new UtilityScorer();
+    const character = makeTestCharacter('watcher');
+    const enemy = makeTestCharacter('enemy');
+    const battlefield = new Battlefield(24, 24);
+
+    character.profile.items = [makeRangedOnlyItem('training-rifle')];
+    character.finalAttributes.ref = 2;
+    character.attributes.ref = 2;
+    character.state.delayTokens = 1;
+
+    enemy.finalAttributes.ref = 3;
+    enemy.attributes.ref = 3;
+    enemy.finalAttributes.mov = 3;
+    enemy.attributes.mov = 3;
+
+    battlefield.placeCharacter(character, { x: 12, y: 12 });
+    battlefield.placeCharacter(enemy, { x: 16, y: 12 });
+
+    const actions = scorer.evaluateActions({
+      character,
+      allies: [],
+      enemies: [enemy],
+      battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: DEFAULT_AI_CONFIG,
+    });
+
+    const waitAction = actions.find(action => action.action === 'wait');
+    expect(waitAction).toBeDefined();
+    expect((waitAction?.factors['waitRefBonus'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['waitDelayAvoidance'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['waitExpectedTriggerCount'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['waitExpectedReactValue'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['waitBaselineScore'] as number) ?? 0).toBeGreaterThan(0);
+    expect((waitAction?.factors['rolloutPreferredScore'] as number) ?? 0).toBeGreaterThan(0);
+  });
+
+  it('should cap strategic path probes on very large battlefields', () => {
+    const scorer = new UtilityScorer();
+    const battlefield = new Battlefield(60, 60);
+    const character = makeTestCharacter('anchor');
+    battlefield.placeCharacter(character, { x: 5, y: 5 });
+
+    const enemies: Character[] = [];
+    for (let i = 0; i < 20; i++) {
+      const enemy = makeTestCharacter(`enemy-${i}`);
+      enemies.push(enemy);
+      battlefield.placeCharacter(enemy, { x: 30 + (i % 6), y: 30 + Math.floor(i / 6) });
+    }
+
+    const spy = vi.spyOn(PathfindingEngine.prototype, 'findPathWithMaxMu');
+    try {
+      scorer.evaluateActions({
+        character,
+        allies: [],
+        enemies,
+        battlefield,
+        currentTurn: 1,
+        currentRound: 1,
+        apRemaining: 2,
+        knowledge: {
+          knownEnemies: new Map(),
+          knownTerrain: new Map(),
+          lastKnownPositions: new Map(),
+          threatZones: [],
+          safeZones: [],
+          lastUpdated: 1,
+        },
+        config: DEFAULT_AI_CONFIG,
+      });
+    } finally {
+      spy.mockRestore();
+    }
+
+    // Very-large budgets should prevent path probe explosion.
+    expect(spy.mock.calls.length).toBeLessThanOrEqual(10);
+  });
 });
 
 describe('KnowledgeBase', () => {
@@ -314,6 +539,37 @@ describe('CharacterAI', () => {
     
     expect(result.decision).toBeDefined();
     expect(result.decision.type).toBeDefined();
+  });
+
+  it('should include score factors in utility-based decision reason', async () => {
+    const ai = new CharacterAI({ enableGOAP: false, enablePatterns: false });
+    const context = makeTestContext();
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        missionId: 'QAI_20',
+        doctrinePlanning: 'keys_to_victory' as const,
+      },
+    };
+
+    const result = await ai.decideAction(aiContext);
+    expect(result.decision.reason).toContain('score:');
+    expect(result.decision.reason).toContain('=');
   });
 
   it('should evaluate react opportunities', () => {

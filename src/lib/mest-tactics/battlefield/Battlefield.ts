@@ -68,6 +68,9 @@ function pointInPolygon(point: Position, polygon: Position[]): boolean {
   return inside;
 }
 
+const LOS_KEY_SCALE = 100;
+const MAX_LOS_CACHE_ENTRIES = 25000;
+
 export class Battlefield {
   public grid: Grid;
   public terrain: TerrainFeature[] = [];
@@ -76,13 +79,25 @@ export class Battlefield {
   private constrainedNavMesh: ConstrainedNavMesh | null = null;
   private characterPositions: Map<string, Position> = new Map();
   private characterRegistry: Map<string, Character> = new Map();
+  private terrainVersion = 0;
+  private losCache = new Map<string, boolean>();
+  private losCacheHits = 0;
+  private losCacheMisses = 0;
 
   constructor(public width: number, public height: number) {
     this.grid = new Grid(width, height);
   }
 
+  private invalidateTerrainDerivedState(): void {
+    this.terrainVersion += 1;
+    this.navigationMesh = null;
+    this.constrainedNavMesh = null;
+    this.losCache.clear();
+  }
+
   addTerrain(feature: TerrainFeature, deferNavMesh = false): void {
     this.terrain.push(feature);
+    this.invalidateTerrainDerivedState();
     if (!deferNavMesh) {
       this.finalizeTerrain();
     }
@@ -92,6 +107,7 @@ export class Battlefield {
     const index = this.terrain.lastIndexOf(feature);
     if (index >= 0) {
       this.terrain.splice(index, 1);
+      this.invalidateTerrainDerivedState();
       if (!deferNavMesh) {
         this.finalizeTerrain();
       }
@@ -160,7 +176,37 @@ export class Battlefield {
     return blockers;
   }
 
+  private losCacheKey(start: Position, end: Position): string {
+    const sx = Math.round(start.x * LOS_KEY_SCALE);
+    const sy = Math.round(start.y * LOS_KEY_SCALE);
+    const ex = Math.round(end.x * LOS_KEY_SCALE);
+    const ey = Math.round(end.y * LOS_KEY_SCALE);
+    const a = `${sx},${sy}`;
+    const b = `${ex},${ey}`;
+    return a <= b
+      ? `${this.terrainVersion}:${a}|${b}`
+      : `${this.terrainVersion}:${b}|${a}`;
+  }
+
+  private setLosCache(key: string, value: boolean): void {
+    this.losCache.set(key, value);
+    if (this.losCache.size > MAX_LOS_CACHE_ENTRIES) {
+      const oldest = this.losCache.keys().next().value;
+      if (oldest !== undefined) {
+        this.losCache.delete(oldest);
+      }
+    }
+  }
+
   public hasLineOfSight(start: Position, end: Position): boolean {
+    const cacheKey = this.losCacheKey(start, end);
+    const cached = this.losCache.get(cacheKey);
+    if (cached !== undefined) {
+      this.losCacheHits += 1;
+      return cached;
+    }
+    this.losCacheMisses += 1;
+
     for (const feature of this.terrain) {
       const los = feature.meta?.los ?? 'Clear';
       if (feature.type === TerrainType.Obstacle || los === 'Blocking') {
@@ -168,11 +214,13 @@ export class Battlefield {
           const p1 = feature.vertices[j];
           const p2 = feature.vertices[i];
           if (segmentsIntersect(start, end, p1, p2)) {
+            this.setLosCache(cacheKey, false);
             return false;
           }
         }
       }
     }
+    this.setLosCache(cacheKey, true);
     return true;
   }
 
@@ -191,8 +239,23 @@ export class Battlefield {
   }
 
   public finalizeTerrain(): void {
+    this.losCache.clear();
     this.generateNavigationMesh();
     this.constrainedNavMesh = ConstrainedNavMesh.build(this);
+  }
+
+  getTerrainVersion(): number {
+    return this.terrainVersion;
+  }
+
+  getLosCacheStats(): BattlefieldLosCacheStats {
+    return {
+      terrainVersion: this.terrainVersion,
+      size: this.losCache.size,
+      maxSize: MAX_LOS_CACHE_ENTRIES,
+      hits: this.losCacheHits,
+      misses: this.losCacheMisses,
+    };
   }
 
   getNavMesh(): Delaunay<Position> | null {
@@ -235,4 +298,12 @@ export interface BattlefieldOpennessStats {
   longLosPairs: number;
   longLosPairRatio: number;
   meanChunkLongLosRatio: number;
+}
+
+export interface BattlefieldLosCacheStats {
+  terrainVersion: number;
+  size: number;
+  maxSize: number;
+  hits: number;
+  misses: number;
 }

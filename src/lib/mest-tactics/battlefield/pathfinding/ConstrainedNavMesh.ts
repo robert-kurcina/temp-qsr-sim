@@ -19,6 +19,11 @@ export interface NavMeshData {
   triangleEdgeClearance: number[][];
 }
 
+export interface TrianglePathOptions {
+  portalNarrowPenalty?: number;
+  portalNarrowThresholdFactor?: number;
+}
+
 const EPSILON = 1e-6;
 
 export class ConstrainedNavMesh {
@@ -58,10 +63,18 @@ export class ConstrainedNavMesh {
     return null;
   }
 
-  findTrianglePath(start: Position, end: Position, diameter: number): number[] {
+  findTrianglePath(
+    start: Position,
+    end: Position,
+    diameter: number,
+    options: TrianglePathOptions = {}
+  ): number[] {
     const startTri = this.findContainingTriangle(start);
     const endTri = this.findContainingTriangle(end);
     if (startTri === null || endTri === null) return [];
+
+    const portalNarrowPenalty = Math.max(0, options.portalNarrowPenalty ?? 0);
+    const portalNarrowThresholdFactor = Math.max(1, options.portalNarrowThresholdFactor ?? 1.35);
 
     const open: { tri: number; f: number; g: number }[] = [];
     const cameFrom = new Map<number, number>();
@@ -91,7 +104,17 @@ export class ConstrainedNavMesh {
           continue;
         }
 
-        const tentativeG = current.g + this.heuristic(current.tri, neighbor);
+        const transitionDistance = this.heuristic(current.tri, neighbor);
+        const preferredPortalWidth = diameter > 0
+          ? diameter * portalNarrowThresholdFactor
+          : portalNarrowThresholdFactor;
+        const squeezeRatio = preferredPortalWidth > EPSILON
+          ? Math.max(0, (preferredPortalWidth - portalClearance) / preferredPortalWidth)
+          : 0;
+        const transitionPenalty = portalNarrowPenalty > 0
+          ? transitionDistance * portalNarrowPenalty * squeezeRatio
+          : 0;
+        const tentativeG = current.g + transitionDistance + transitionPenalty;
         const existingG = gScore.get(neighbor);
         if (existingG !== undefined && tentativeG >= existingG) {
           continue;

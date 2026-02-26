@@ -29,6 +29,7 @@ export interface DetectOptions {
 export interface RevealExposureOptions {
   allowReposition?: boolean;
   revealReposition?: (options: RevealRepositionOptions) => PositionResult | null;
+  visibilityOrMu?: number;
 }
 
 export interface PositionResult {
@@ -205,11 +206,15 @@ export function resolveWaitReveal(
   if (!waitingCharacter.state.isWaiting) return { revealed };
   const waitingSpatial = buildSpatialModel(battlefield, waitingCharacter);
   if (!waitingSpatial) return { revealed };
+  const baseVisibility = options.visibilityOrMu ?? 16;
+  const effectiveVisibility = baseVisibility * 2;
 
   for (const opponent of opponents) {
     if (!opponent.state.isHidden) continue;
     const opponentSpatial = buildSpatialModel(battlefield, opponent);
     if (!opponentSpatial) continue;
+    const edgeDistance = SpatialRules.distanceEdgeToEdge(waitingSpatial, opponentSpatial);
+    if (edgeDistance > effectiveVisibility) continue;
     const cover = SpatialRules.getCoverResult(battlefield, waitingSpatial, opponentSpatial);
     if (!cover.hasLOS) continue;
     const inCover = cover.hasDirectCover || cover.hasInterveningCover;

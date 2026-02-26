@@ -1,0 +1,4394 @@
+[
+  {
+    "item": "A/Grav, Belt",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "18-Gravity",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "A/Grav, Ring",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "18-Gravity",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Acid Spitter",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Agenda Document",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo Belt, Bandolier",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo Belt, Bandolier, Archaic",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo Box",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "09-Industrial",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, AP",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, AP-II",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, AT",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, AT-II",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, HE",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, HEAP",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, HEAP-II",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, HEAT",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, HEAT-II",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, HP",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ammo, Tracer Round",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Amulet of Eyes",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Amulet of Fears",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Anti-gravity Harness",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "18-Gravity",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Anti-tank Weapon, Bazooka, M1",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, Bazooka, M20",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, Faustpatrone",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, LAW",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, MAW",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Anti-tank Weapon, PIAT",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, Panzerfaust",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, Panzerschreck",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, RPG-7",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Anti-tank Weapon, Rocket",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arc Weapon",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Accessory, Amulet",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Accessory, Monstrum",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Accessory, Ring",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Accessory, Stone",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Accessory, Trinket",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Attachment, Large",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Attachment, Small",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Codex, Common",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Codex, Legendary",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Scroll, Major",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Scroll, Minor",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Tome, Greater",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Arcanum, Tome, Lesser",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Armor, Combat Suit",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armor, Field",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armor, Field Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armor, Field Bulletproof Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Field Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Field Mail",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "06-Renaissance"
+  },
+  {
+    "item": "Armor, Field Nanoweave",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Field Nanoweave BP",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Field, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Armor, Field, Bulletproof Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armor, Heavy",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armor, Heavy Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armor, Heavy Bulletproof Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Heavy Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Heavy Mail",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "06-Renaissance"
+  },
+  {
+    "item": "Armor, Heavy Nanoweave",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Heavy Nanoweave BP",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Heavy, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Armor, Heavy, Bulletproof Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armor, Light",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armor, Light Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armor, Light Bulletproof Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Light Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Light Mail",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "06-Renaissance"
+  },
+  {
+    "item": "Armor, Light Nanoweave",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Light Nanoweave BP",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Light, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Armor, Light, Bulletproof Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armor, Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armor, Medium Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armor, Medium Bulletproof Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Medium Flex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Medium Mail",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "06-Renaissance"
+  },
+  {
+    "item": "Armor, Medium Nanoweave",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Medium Nanoweave BP",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Armor, Medium, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Armor, Medium, Bulletproof Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Armored Gear",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armored Gear, Bracer",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armored Gear, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Armored Gear, Padding",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Armored Gear, Padding Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Armored Gear, Vaumbrace",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Arquebus, Heavy",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "09-Industrial"
+  },
+  {
+    "item": "Arquebus, Light",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "09-Industrial"
+  },
+  {
+    "item": "Arquebus, Medium",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "09-Industrial"
+  },
+  {
+    "item": "Auto-cannon, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Auto-cannon, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Auto-cannon, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Automedic",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Axe",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Axe, Battle",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Axe, Long",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Axe, Pick",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Axe, Tactical",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Axe-Sword of Tan-doc",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Ballista, Heavy",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ballista, Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Balllista, Light",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bayonet",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Cannon",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Cannon, Heavy",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Cannon, Light",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Carbine",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Carbine, Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Gun",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Gun, Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Pistol",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Pistol, Advanced",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Rifle, Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Rifle, Advanced Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Rifle, Early",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Rifle, Early Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Beam Rifle, Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Belt of Strength",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Psionic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bite-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bite-2",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bite-3",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Black Jacks or Sap",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 12Minor - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 12Minor - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 12Minor - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 12Minor - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 13Major - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 13Major - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 13Major - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 13Major - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 22Minor - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 22Minor - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 22Minor - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 22Minor - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 23Major - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 23Major - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 23Major - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 23Major - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 2Minor - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 2Minor - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 2Minor - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 2Minor - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 3Major - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 3Major - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 3Major - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 3Major - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Greater - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Greater - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Greater - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Greater - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Wondrous - Basic",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Wondrous - Burst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Wondrous - Rapid",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast, 4Wondrous - RapidBurst",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blast-suit, Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Blast-suit, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Blast-suit, Reinforced",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Blaster Glove",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Blaster Pistol",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "17-Energy"
+  },
+  {
+    "item": "Blaster Pistol, Magnum",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "17-Energy"
+  },
+  {
+    "item": "Blaster Rifle",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "17-Energy"
+  },
+  {
+    "item": "Blaster Rifle, Magnum",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "17-Energy"
+  },
+  {
+    "item": "Blow-dart Gun",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Bola",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bolter Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Bolter Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Bolter Rifle, Adv",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Boomerang, War",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bottle-Phial, Acid-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bottle-Phial, Burn-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bottle-Phial, Caustic-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bottle-Phial, Confuse-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bottle-Phial, Fire-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bottle-Phial, Poison-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Bow, Light",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, Light Quickened",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, Long",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, Medium Heavy",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, Medium Quickened",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, Recurve",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, Recurve Heavy",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bow, War",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Bracers of Stealth",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Cannon, A 12.7mm",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Cannon, B 25mm (2-pdr)",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Cannon, C 42mm (6-pdr)",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Cannon, D 75mm (17-pdr)",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Carbine Light, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Carbine Light, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Carbine, Heavy, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Carbine, Heavy, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Carbine, Medium, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Carbine, Medium, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Chainsaw, Claw, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Chainsaw, Claw, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Chainsaw, Claw, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Chainsaw, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Chainsaw, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Chainsaw, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Chakram Rings",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Chakram Rings, Serrated",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Claw-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Claw-2",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Claw-3",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Claws-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Claws-2",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Claws-3",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Club",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Club, Baton",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Club, Circus Mallet",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Club, Crowbar",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Club, Heavy",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Club, Mace",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Club, Mace, Spiked",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Club, Shovel",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Coil-gun, Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Coil-gun, Light",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Coil-gun, Medium",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Collar, Spiked",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-helmet",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-helmet, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Boosted",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Box",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Box, Archaic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Box, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Box, Early (Embedded)",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Box-Hand-held",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Jammer, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Comm-link, Jammer, Modern",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Crossbow, Heavy",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Light",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Repeating",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Repeating Heavy",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Single-hand Pistol",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Single-hand Pistol, Hvy",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Single-hand Pistol, Hvy, Masterwork",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Crossbow, Single-hand Pistol, Masterwork",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Dagger, Obsidian",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Dagger, Stiletto",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Daggers",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Daggers, Spectral",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Damper 2 > Type",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Damper 3 > Type",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Damper 4 > Type",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Damper > Type",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Deceptor Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Deceptor Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Detonator",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "09-Industrial",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Device, Synchron, Archaic",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Device, Synchron, Early",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Device, Synchron-1.1",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Device, Synchron-2.1",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Device, Synchron-3.2",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Discus",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Displacer Device",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "18-Gravity",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Dynamic Armor, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Dynamic Armor, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Dynamic Armor, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Electrocounter Orbs",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Electrostaff",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Electrostaff, Neon",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Electroweapon, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Electroweapon, Pulse, Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Electroweapon, Pulse, Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Explosives, Agenda Bomb, Large",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Agenda Bomb, Small",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Agenda Bomb,Medium",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Bomb, Large",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Bomb, Small",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Bundle, Dynamite",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Fire-bomb",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Kettle-bomb",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Mine, IED",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Mine, Tank",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Petard",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Powderkeg",
+    "tech_period": "p02_Archaic",
+    "tech_age": "06-Renaissance",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Satchel",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Satchel, Pulse",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Explosives, Stick, Dynamite",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Exxo-skeleton, Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Exxo-skeleton, Lifter Frame",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Exxo-skeleton, Light",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Exxo-skin",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Exxo-skin, Carapace",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Exxo-skin, Scaled",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Exxo-skin, Segmented",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Favored Passage",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Field Harness",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flail",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flail, Farming",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flail, Morningstar",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flail, Tri-section",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flame-thrower, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flame-thrower, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flame-thrower, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flame-thrower, Mini",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flashlight",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Flashlight, Advanced",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Force Armor, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Force Armor, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Force Armor, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Fusion Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Gas Cannister, Blacksmoke",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Caustic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Knockout",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Knockout-2",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Mustard",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Nerve",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Nerve-2",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Poison",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Poison 2",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Riot",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Riot-3",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Smoke",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Smoke-2",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Cannister, Steam",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Acid",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Blacksmoke",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Caustic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Knockout",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Mustard",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Nerve",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Poison",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Poison 2",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Riot",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Smoke",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade, Steam",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas Grenade: Steam",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas-mask",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas-mask, Hooded",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gas-mask, Respirator",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Gatling Gun, 20mm",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gatling Gun, Archaic",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gatling Gun, Archaic-v2",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gatling Gun, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gatling Gun, Early-v2",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gatling Gun, Mini",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gatling Gun, Mini (Mounted)",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gauntlet, Clawed",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Gauntlet, Controller",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Goggles",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Goggles, Night-vision",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Goggles, Night-vision, Adv.",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Goggles, Optiplex",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Goggles, Pin-point",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Goggles, Sensor",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Anti-magic",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Psionic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Anti-psi",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Psionic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Archaic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Concussion",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Concussion, Adv.",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Dancer",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Flash",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Flash-bang",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Flash-bang, Adv.",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Fragmentation",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Fragmentation, Adv.",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, HE",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, HE, Adv.",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Pulse",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Pulse, Adv.",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Shrapnel",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Shrapnel, Adv.",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Sonic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Sonic, Adv.",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Web",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Grenade, Web Stunner",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Groundingsuit, Advanced",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Groundingsuit, Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hammer, Forge",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hammer, Long",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hammer, Maul",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hammer, Sledge",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hammer, War",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hammer, War, Ban-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hammer, War, Ban-2",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hand Cannon",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Hardsuit, Archaic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hardsuit, Enhanced, Archaic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hardsuit, Platform, Archaic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hardsuit, Scout",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hardsuit, Standard",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hardsuit, War",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hardsuit, Windup",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Heirloom Weapon",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Helmet, Common",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Helmet, Common, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Helmet, Full",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Helmet, Full, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Helmet, Full-Elaborate",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Helmet, Reinforced",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Helmet, Reinforced Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Helmet, Riot",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Helmet, Riot Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Hook, Crook",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hook, Meat",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hook, Scythe",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hook, Sickle, Fist",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hook, Sickle, Hand",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hook, Spearcrook",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Hook, Swordcrook",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Immune-Blast-1",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Immune-Blast-2",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Improvised Melee",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Improvised Melee, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Improvised Parry",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Improvised Thrown",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Improvised Thrown, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Jet-pack, Gear",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Jet-pack, Jump",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Jet-pack, Suit",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Jet-pack, Suit, Advanced",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Kit, Glider Caped",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Kit, Glider Winged",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Kit, Medical, CFAK",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Kit, Medical, CFAK-v2",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Kit, Medical, Field",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Kit, Medical, Tactical",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Knife, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Knife, Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Knife, Small",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Knife, Tactical",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Knuckledusters",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Knuckledusters, Spiked",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lamp or Candle",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lamp or Candle. Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lantern, Basic",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lantern, Basic, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lantern, Electric",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lantern, Electric, Small",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lantern, Fueled",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Lantern, Fueled, Small",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Launcher, Grenade Early",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Launcher, Grenade Modern",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Launcher, Grenade, Multi-rapid",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Launcher, Grenade, Rapid",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Leash",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Machine Gun, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Machine Gun, Heavy (Mounted)",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Machine Gun, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Machine Gun, Light (Mounted)",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Machine Gun, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Machine Gun, Medium (Mounted)",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Machine Gun, Mitrailleuse",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mage Armor, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mage Armor, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mage Armor, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mask of Command",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Psionic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Alcohol",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Alcohol, Copious",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Euphorics",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Euphorics, Copious",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Hallucenogenics",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Hallucenogenics, Copious",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Healing Potion",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Healing Potion, Pure",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Painkillers",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Painkillers, Copious",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Psychoactives",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Stimulants",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Medicinals, Stimulants, Copious",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mine, Acid, Small",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mine, Anti-personnel",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mine, Anti-personnel, Micromag",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mine, Heat, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mine, Heat, Small",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mirror",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Module, Control",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Module, Manipulator",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Module, System",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Module, Trigger",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mortar, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Mortar, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Mortar, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Mortar, Mini-mortar",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Mortar, Mini-mortar (Mounted)",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Mounted Bolter Weapon",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mounted Flame-thrower",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Mounted Mortar, Mini-mortar",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Mounted Rail-gun",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Musket, Blunderbuss",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "09-Industrial"
+  },
+  {
+    "item": "Musket, Heavy Smoothbore",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "09-Industrial"
+  },
+  {
+    "item": "Musket, Light, Smoothbore",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "09-Industrial"
+  },
+  {
+    "item": "Musket, Medium, Smoothbore",
+    "tech_period": "p02_Archaic",
+    "tech_age": "07-Colonial",
+    "tech_age_latest": "09-Industrial"
+  },
+  {
+    "item": "Nanotech:Rage",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Nanotech:Rampage",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Nanotech:Resist",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Nanotech:Run",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Necklace of Comfort",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "19-Psionic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Needle Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Needle Rifle, Adv",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Needler Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Needler Pistol, Adv",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Net, Deathnet",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Net, Retarius",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Net-gun, Large",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Net-gun, Small",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Notebook, Leadership",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Notebook, Scholarship",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Notebook, Tactics",
+    "tech_period": "p01_Ancient",
+    "tech_age": "02-Bronze",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "PDW, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "PDW, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "PDW, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Package, Assassin",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Package, Berserker",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Package, Predict",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Package, Recon",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Package, Timer",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Package, Warrior",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Phlogiston Suit",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Phlogiston Suit, Fireproof",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Phlogiston Suit, Improved",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Phlogiston Suit, Improved BP",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Pipe Cannon, 1-pdr",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "12-Atomic"
+  },
+  {
+    "item": "Pipe Cannon, 2-pdr",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "12-Atomic"
+  },
+  {
+    "item": "Pistol, Coach",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Dueling",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Heavy, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Heavy, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Light, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Light, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Medium, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Medium, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Pistol, Pepperbox",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Plasma Cannon",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Plasma Cannon, Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Plasma Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Plasma Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Plasmablade",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Plasmashield, Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Plasmashield, Light",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Plasmashield, Medium",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Poisoned Weapon",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Poisoned Weapon, Deadly",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Polearm, Glaive",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Polearm, Halberd",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Polearm, Pike",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Polearm, Scythe",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Power-gem, Light",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Power-gem, Medium",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Armor-Battle",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Armor-Combat",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Armor-Early",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Armor-Exxo",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Armor-ExxoHvy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Armor-Standard",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Armor-Stealth",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "17-Energy",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Gauntlets",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Gloves",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Powered Shielding",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Powered Shielding-Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Powered Staff",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Prayer-Book",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Prayer-Relic",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Proximity Suit, Fireproof",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Proximity Suit, Fireproof BP",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Psi Armor, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Psi Armor, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Psi Armor, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Pummel-1",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Pummel-2",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Pummel-3",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rail-gun, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rail-gun, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rail-gun, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Reinforced, Polearm",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Reinforced, Standard",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Revolver, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Revolver, Heavy, Archaic",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Revolver, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Revolver, Light, Archaic",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Revolver, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Revolver, Medium, Archaic",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Heavy, Archaic",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Heavy, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Heavy, Bolt/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Heavy, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Heavy, Single/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Light, Archaic",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Light, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Light, Bolt/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Light, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Light, Single/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Medium, Archaic",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Medium, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Medium, Bolt/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Medium, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Rifle, Medium, Single/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Ring of Flight",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ring of Leaping",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Ring of Running",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rod, Emerald Flame",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rod, Eternal Flame",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rod, Last Rites",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rod, Stinging Blight",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rod, Suffering Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Rope",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Seal of Arrows",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Seal of Daggers",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sensor Array",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Shield, Heavy-Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Heavy-Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Heavy-Small",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Improvised-Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Improvised-Small",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Large, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Shield, Light",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Medium, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Shield, Medium-Spiked",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Riot",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Riot, Large",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Small",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Small, Bulletproof",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "13-Information"
+  },
+  {
+    "item": "Shield, Small, Spiked",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shield, Small-Buckle",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Shotgun, Auto",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Auto, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Fletch",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Pump-action",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Pump-action, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Sawed-off",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Semi/A",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Slug",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Shotgun, Slug, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Sickstick",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sigil of Athletics",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sigil of Hunting",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Silencer",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Silencer, Advanced",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sling",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Sling, Staff",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Slingshot",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Sniper Scope, Advanced",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sniper Scope, Advanced, Starlight",
+    "tech_period": "p04_Modern",
+    "tech_age": "13-Information",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sniper Scope, Basic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sniper Scope, Laser",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sniper Scope, Starlight",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Sonic Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Sonic Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Sonic Rifle, Heavy",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "14-Robotics",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Spear, Long",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spear, Medium",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spear, Short",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spear, Throwing",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spear, of Stealth",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spectral Claws-1",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spectral Claws-1, Limited",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spectral Claws-2",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spectral Claws-2, Limited",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spectral Claws-3",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spectral Claws-3, Limited",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spell - Pyrotechnics",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spotlight, S1-Small",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spotlight, S2-Large",
+    "tech_period": "p04_Modern",
+    "tech_age": "12-Atomic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Springsuit",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Springsuit, Combat",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "10-Machine",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Spy-glass",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Staff",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Staff, Club",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Staff, Greater Mage",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Staff, Lesser Mage",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Staff, Sling",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "11-Modern"
+  },
+  {
+    "item": "Stealth Suit",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Stunner, Pistol",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Stunner, Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Stunner, Riot",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Submachine-gun, Archaic",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Submachine-gun, Heavy",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Submachine-gun, Light",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Submachine-gun, Medium",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Sword, Broad",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Cutlass",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "08-Sail",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Great",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Long",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Rapier",
+    "tech_period": "p02_Archaic",
+    "tech_age": "06-Renaissance",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Saber",
+    "tech_period": "p03_Expansionist",
+    "tech_age": "09-Industrial",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Scimitar",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Scimitar, Grand",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Sword, Short",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Targeting System",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Taser, Personal",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Taser, Prod",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Taser, Rifle",
+    "tech_period": "p05_Near_Future",
+    "tech_age": "15-Fusion",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Teleporter Beacons",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Teleporter Pack",
+    "tech_period": "p07_Fantastic",
+    "tech_age": "20-Symbolic",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Throwing Axes",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Throwing Dart",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Throwing Knives",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Throwing Stars",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Throwing Sticks",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Torch, Basic",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Torch, Basic, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Torch, Flaming",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Torch, Flaming, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Torch, Flashlight",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Torch, Staff",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Trident",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Trident, Long",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Trident, Pitchfork",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Unarmed",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Upgrade:Balanced",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Upgrade:Masterworks",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Upgrade:Poisoned",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Upgrade:Poisoned, Deadly",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Upgrade:Reinforced",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Upgrade:Reinforced, Polearm",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Upgrade:Well-honed",
+    "tech_period": "p00_ANY",
+    "tech_age": "p00_ANY",
+    "tech_age_latest": "p00_ANY"
+  },
+  {
+    "item": "Vibrodagger",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Vibrosword",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Waldo, Claws, Long",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Waldo, Claws, Short",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Waldo, Hand",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Waldo, Saw, Large",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Waldo, Saw, Small",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Wheeled, Armored-pedaler",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Wheeled, Gun Carriage, Large",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Wheeled, Gun Carriage, Tricycle",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "14-Robotics"
+  },
+  {
+    "item": "Wheeled, Steam-chair",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Wheeled, Tankette",
+    "tech_period": "p04_Modern",
+    "tech_age": "11-Modern",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Whip, Bull",
+    "tech_period": "p01_Ancient",
+    "tech_age": "01-Stone",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Whip, Metal Chain",
+    "tech_period": "p01_Ancient",
+    "tech_age": "03-Iron",
+    "tech_age_latest": "20-Symbolic"
+  },
+  {
+    "item": "Whip, Mollysword",
+    "tech_period": "p02_Archaic",
+    "tech_age": "05-Medieval",
+    "tech_age_latest": "15-Fusion"
+  },
+  {
+    "item": "Whip, Monowire",
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
+    "tech_age_latest": "20-Symbolic"
+  }
+]

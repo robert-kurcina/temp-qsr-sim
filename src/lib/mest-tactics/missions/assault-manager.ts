@@ -85,7 +85,8 @@ export class AssaultMissionManager {
 
   constructor(sides: MissionSide[], markerPositions?: Position[], markerCount?: number) {
     this.sides = new Map();
-    this.markerCount = markerCount ?? markerPositions?.length ?? 4;
+    const providedCount = markerPositions && markerPositions.length > 0 ? markerPositions.length : undefined;
+    this.markerCount = markerCount ?? providedCount ?? 4;
     this.state = {
       sideIds: sides.map(s => s.id),
       markers: new Map(),
@@ -110,7 +111,7 @@ export class AssaultMissionManager {
   /**
    * Set up assault markers
    */
-  private setupAssaultMarkers(positions: Position[]): void {
+  private setupAssaultMarkers(positions?: Position[]): void {
     const defaultPositions: Position[] = [
       { x: 6, y: 6 },
       { x: 18, y: 6 },
@@ -120,7 +121,10 @@ export class AssaultMissionManager {
       { x: 12, y: 3 },
     ];
 
-    const markerPositions = positions.length > 0 ? positions : defaultPositions.slice(0, this.markerCount);
+    const suppliedPositions = positions ?? [];
+    const markerPositions = suppliedPositions.length > 0
+      ? suppliedPositions
+      : defaultPositions.slice(0, this.markerCount);
 
     for (let i = 0; i < markerPositions.length; i++) {
       const isResource = i % 3 === 0; // Every 3rd marker is a resource
@@ -515,6 +519,188 @@ export class AssaultMissionManager {
       }))
       .sort((a, b) => b.vp - a.vp);
   }
+
+  /**
+   * Calculate predicted scoring with key breakdown for AI planning
+   * Keys: Sabotage (assault), POI (control), Elimination, Bottled
+   */
+  calculatePredictedScoring(): {
+    sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }>;
+  } {
+    const sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }> = {};
+
+    // Initialize side scores
+    for (const sideId of this.state.sideIds) {
+      sideScores[sideId] = {
+        predictedVp: 0,
+        predictedRp: 0,
+        keyScores: {},
+      };
+    }
+
+    // Build side status for scoring functions
+    const sideStatuses = Array.from(this.sides.values()).map(side => {
+      let koCount = 0;
+      let eliminatedCount = 0;
+      let orderedCount = 0;
+      let koBp = 0;
+      let eliminatedBp = 0;
+
+      for (const member of side.members) {
+        const bp = member.profile?.totalBp ?? 0;
+        if (member.status === 'Eliminated' as any) {
+          eliminatedCount++;
+          eliminatedBp += bp;
+        } else if (member.status === 'KO' as any) {
+          koCount++;
+          koBp += bp;
+        } else if (member.status === 'Ready' as any || member.status === 'Distracted' as any) {
+          orderedCount++;
+        }
+      }
+
+      return {
+        sideId: side.id,
+        startingCount: side.members.length,
+        inPlayCount: side.members.length - koCount - eliminatedCount,
+        orderedCount,
+        koCount,
+        eliminatedCount,
+        koBp,
+        eliminatedBp,
+        totalBp: side.totalBP,
+        bottledOut: orderedCount === 0,
+      };
+    });
+
+    // Sabotage: +2 VP per assaulted marker (already awarded, so current = predicted)
+    // Count remaining unassaulted markers for potential VP
+    const allMarkers = this.getAllMarkers();
+    const assaultedMarkers = allMarkers.filter(m => m.assaulted);
+    const unassaultedMarkers = allMarkers.filter(m => !m.assaulted);
+
+    // Count assaults per side
+    const assaultsBySide: Record<string, number> = {};
+    for (const sideId of this.state.sideIds) {
+      assaultsBySide[sideId] = this.state.assaultCountBySide.get(sideId) ?? 0;
+    }
+
+    // Predict sabotage VP (2 VP per assault, already awarded)
+    const sortedAssaults = Object.entries(assaultsBySide).sort((a, b) => b[1] - a[1]);
+    for (const [sideId, assaultCount] of Object.entries(assaultsBySide)) {
+      const current = this.state.vpBySide.get(sideId) ?? 0;
+      // Predict additional VP from remaining markers (assume equal distribution)
+      const potentialAdditional = unassaultedMarkers.length > 0
+        ? Math.floor(unassaultedMarkers.length / Object.keys(assaultsBySide).length)
+        : 0;
+      const predicted = current + (potentialAdditional * 2);
+
+      const opponentBest = sideId === sortedAssaults[0]?.[0]
+        ? (sortedAssaults[1]?.[1] ?? 0) * 2
+        : (sortedAssaults[0]?.[1] ?? 0) * 2;
+      const confidence = assaultCount > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / (assaultCount * 2))))
+        : (assaultCount > (sortedAssaults[1]?.[1] ?? 0) ? 1 : 0.5);
+
+      sideScores[sideId].keyScores['sabotage'] = {
+        current,
+        predicted,
+        confidence,
+        leadMargin: (assaultCount - (sortedAssaults[1]?.[1] ?? 0)) * 2,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // POI: +1 VP for controlling majority of remaining SPs at game end
+    // Count "controlled" markers (assaulted by each side)
+    const controlBySide: Record<string, number> = {};
+    for (const sideId of this.state.sideIds) {
+      controlBySide[sideId] = assaultedMarkers.filter(m => m.assaultedBy === sideId).length;
+    }
+
+    const sortedControl = Object.entries(controlBySide).sort((a, b) => b[1] - a[1]);
+    const bestControl = sortedControl[0]?.[1] ?? 0;
+    const secondControl = sortedControl[1]?.[1] ?? 0;
+    const totalRemaining = unassaultedMarkers.length;
+
+    for (const [sideId, controlled] of Object.entries(controlBySide)) {
+      // Predict final control (current + share of remaining)
+      const predictedControl = controlled + Math.floor(totalRemaining / Object.keys(controlBySide).length);
+      const hasMajority = predictedControl > (Object.values(controlBySide).reduce((a, b) => a + b, 0) / 2);
+      const predicted = hasMajority ? 1 : 0;
+      const leadMargin = controlled - secondControl;
+      const opponentBest = sideId === sortedControl[0]?.[0] ? secondControl : bestControl;
+      const confidence = controlled > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / controlled)))
+        : (hasMajority ? 1 : 0);
+
+      sideScores[sideId].keyScores['poi'] = {
+        current: hasMajority ? 1 : 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Elimination: +1 VP for most BP eliminated
+    const eliminationBpBySide: Record<string, number> = {};
+    for (const side of sideStatuses) {
+      let totalEnemyBpEliminated = 0;
+      for (const opponent of sideStatuses) {
+        if (opponent.sideId === side.sideId) continue;
+        totalEnemyBpEliminated += opponent.koBp + opponent.eliminatedBp;
+      }
+      eliminationBpBySide[side.sideId] = totalEnemyBpEliminated;
+    }
+
+    const sortedElimination = Object.entries(eliminationBpBySide).sort((a, b) => b[1] - a[1]);
+    const bestElimination = sortedElimination[0];
+    const secondElimination = sortedElimination[1];
+
+    for (const [sideId, bp] of Object.entries(eliminationBpBySide)) {
+      const isBest = bestElimination && sideId === bestElimination[0];
+      const predicted = isBest && (!secondElimination || bestElimination[1] > secondElimination[1]) ? 1 : 0;
+      const leadMargin = isBest && secondElimination ? bestElimination[1] - secondElimination[1] : 0;
+      const opponentBest = isBest && secondElimination ? secondElimination[1] : (bestElimination?.[1] ?? 0);
+      const confidence = bp > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / bp)))
+        : (isBest ? 1 : 0);
+
+      sideScores[sideId].keyScores['elimination'] = {
+        current: 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Bottled: +1 VP if opponent bottles out
+    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const side of sideStatuses) {
+      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
+      const predicted = isOpponentBottled ? 1 : 0;
+
+      sideScores[side.sideId].keyScores['bottled'] = {
+        current: 0,
+        predicted,
+        confidence: isOpponentBottled ? 1.0 : 0.0,
+        leadMargin: isOpponentBottled ? 1 : 0,
+      };
+      sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    return { sideScores };
+  }
 }
 
 /**
@@ -525,5 +711,5 @@ export function createAssaultMission(
   markerPositions?: Position[],
   markerCount?: number
 ): AssaultMissionManager {
-  return new AssaultMissionManager(sides, markerPositions ?? [], markerCount);
+  return new AssaultMissionManager(sides, markerPositions, markerCount);
 }

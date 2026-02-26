@@ -640,6 +640,167 @@ export class EscortMissionManager {
       }))
       .sort((a, b) => b.vp - a.vp);
   }
+
+  /**
+   * Calculate predicted scoring with key breakdown for AI planning
+   * Keys: Courier (VIP extraction), Sanctuary, VIP Elimination, Bottled
+   */
+  calculatePredictedScoring(): {
+    sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }>;
+  } {
+    const sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }> = {};
+
+    // Initialize side scores
+    for (const sideId of this.state.sideIds) {
+      sideScores[sideId] = {
+        predictedVp: 0,
+        predictedRp: 0,
+        keyScores: {},
+      };
+    }
+
+    // Build side status for scoring functions
+    const sideStatuses = Array.from(this.sides.values()).map(side => {
+      let koCount = 0;
+      let eliminatedCount = 0;
+      let orderedCount = 0;
+      let koBp = 0;
+      let eliminatedBp = 0;
+
+      for (const member of side.members) {
+        const bp = member.profile?.totalBp ?? 0;
+        if (member.status === 'Eliminated' as any) {
+          eliminatedCount++;
+          eliminatedBp += bp;
+        } else if (member.status === 'KO' as any) {
+          koCount++;
+          koBp += bp;
+        } else if (member.status === 'Ready' as any || member.status === 'Distracted' as any) {
+          orderedCount++;
+        }
+      }
+
+      return {
+        sideId: side.id,
+        startingCount: side.members.length,
+        inPlayCount: side.members.length - koCount - eliminatedCount,
+        orderedCount,
+        koCount,
+        eliminatedCount,
+        koBp,
+        eliminatedBp,
+        totalBp: side.totalBP,
+        bottledOut: orderedCount === 0,
+      };
+    });
+
+    // Courier: VP for VIP reaching extraction zone (already awarded)
+    const sortedVP = Array.from(this.state.vpBySide.entries()).sort((a, b) => b[1] - a[1]);
+    for (const [sideId, vp] of this.state.vpBySide.entries()) {
+      const opponentBest = sideId === sortedVP[0]?.[0] ? (sortedVP[1]?.[1] ?? 0) : (sortedVP[0]?.[1] ?? 0);
+      const confidence = vp > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / vp)))
+        : (vp > opponentBest ? 1 : 0.5);
+
+      sideScores[sideId].keyScores['courier'] = {
+        current: vp,
+        predicted: vp,
+        confidence,
+        leadMargin: vp - opponentBest,
+      };
+      sideScores[sideId].predictedVp += vp;
+    }
+
+    // Sanctuary: +1 VP per turn maintaining 25% BP in sanctuary
+    for (const side of sideStatuses) {
+      const sanctuaryVP = side.inPlayCount >= Math.ceil(side.startingCount * 0.25) ? 1 : 0;
+      
+      sideScores[side.sideId].keyScores['sanctuary'] = {
+        current: 0,
+        predicted: sanctuaryVP,
+        confidence: sanctuaryVP > 0 ? 0.7 : 0.0,
+        leadMargin: sanctuaryVP,
+      };
+      sideScores[side.sideId].predictedVp += sanctuaryVP;
+    }
+
+    // VIP Elimination: +2 VP to Defender if Attacker's VIP is eliminated
+    // Check VIP status for each side
+    for (const [sideId, vipMemberId] of this.state.vipBySide.entries()) {
+      const member = this.sides.get(sideId)?.members.find(m => m.id === vipMemberId);
+      if (member && member.status === 'Eliminated' as any) {
+        // VIP eliminated - enemy gets 2 VP
+        const enemySideId = this.state.sideIds.find(id => id !== sideId);
+        if (enemySideId) {
+          sideScores[enemySideId].keyScores['vip_elimination'] = {
+            current: 2,
+            predicted: 2,
+            confidence: 1.0,
+            leadMargin: 2,
+          };
+          sideScores[enemySideId].predictedVp += 2;
+        }
+      }
+    }
+
+    // Elimination: +1 VP for most BP eliminated
+    const eliminationBpBySide: Record<string, number> = {};
+    for (const side of sideStatuses) {
+      let totalEnemyBpEliminated = 0;
+      for (const opponent of sideStatuses) {
+        if (opponent.sideId === side.sideId) continue;
+        totalEnemyBpEliminated += opponent.koBp + opponent.eliminatedBp;
+      }
+      eliminationBpBySide[side.sideId] = totalEnemyBpEliminated;
+    }
+
+    const sortedElimination = Object.entries(eliminationBpBySide).sort((a, b) => b[1] - a[1]);
+    const bestElimination = sortedElimination[0];
+    const secondElimination = sortedElimination[1];
+
+    for (const [sideId, bp] of Object.entries(eliminationBpBySide)) {
+      const isBest = bestElimination && sideId === bestElimination[0];
+      const predicted = isBest && (!secondElimination || bestElimination[1] > secondElimination[1]) ? 1 : 0;
+      const leadMargin = isBest && secondElimination ? bestElimination[1] - secondElimination[1] : 0;
+      const opponentBest = isBest && secondElimination ? secondElimination[1] : (bestElimination?.[1] ?? 0);
+      const confidence = bp > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / bp)))
+        : (isBest ? 1 : 0);
+
+      sideScores[sideId].keyScores['elimination'] = {
+        current: 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Bottled: +1 VP if opponent bottles out
+    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const side of sideStatuses) {
+      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
+      const predicted = isOpponentBottled ? 1 : 0;
+
+      sideScores[side.sideId].keyScores['bottled'] = {
+        current: 0,
+        predicted,
+        confidence: isOpponentBottled ? 1.0 : 0.0,
+        leadMargin: isOpponentBottled ? 1 : 0,
+      };
+      sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    return { sideScores };
+  }
 }
 
 /**

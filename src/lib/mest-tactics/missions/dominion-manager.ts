@@ -346,6 +346,152 @@ export class DominionMissionManager {
       }))
       .sort((a, b) => b.vp - a.vp);
   }
+
+  /**
+   * Calculate predicted scoring with key breakdown for AI planning
+   * Keys: Dominance (zones), Elimination, Bottled
+   */
+  calculatePredictedScoring(): {
+    sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }>;
+  } {
+    const sideScores: Record<string, {
+      predictedVp: number;
+      predictedRp: number;
+      keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>;
+    }> = {};
+
+    // Initialize side scores
+    for (const sideId of this.state.sideIds) {
+      sideScores[sideId] = {
+        predictedVp: 0,
+        predictedRp: 0,
+        keyScores: {},
+      };
+    }
+
+    // Build side status for scoring functions
+    const sideStatuses = Array.from(this.sides.values()).map(side => {
+      let koCount = 0;
+      let eliminatedCount = 0;
+      let orderedCount = 0;
+      let koBp = 0;
+      let eliminatedBp = 0;
+
+      for (const member of side.members) {
+        const bp = member.profile?.totalBp ?? 0;
+        if (member.status === 'Eliminated' as any) {
+          eliminatedCount++;
+          eliminatedBp += bp;
+        } else if (member.status === 'KO' as any) {
+          koCount++;
+          koBp += bp;
+        } else if (member.status === 'Ready' as any || member.status === 'Distracted' as any) {
+          orderedCount++;
+        }
+      }
+
+      return {
+        sideId: side.id,
+        startingCount: side.members.length,
+        inPlayCount: side.members.length - koCount - eliminatedCount,
+        orderedCount,
+        koCount,
+        eliminatedCount,
+        koBp,
+        eliminatedBp,
+        totalBp: side.totalBP,
+        bottledOut: orderedCount === 0,
+      };
+    });
+
+    // Dominance: +1 VP per zone controlled
+    const zoneControllers = this.getZoneControllers();
+    const zonesBySide: Record<string, number> = {};
+    for (const sideId of this.state.sideIds) {
+      zonesBySide[sideId] = 0;
+    }
+    for (const [zoneId, controller] of zoneControllers.entries()) {
+      if (controller && controller !== 'null') {
+        zonesBySide[controller] = (zonesBySide[controller] ?? 0) + 1;
+      }
+    }
+
+    // Calculate dominance VP (1 VP per zone)
+    const sortedZones = Object.entries(zonesBySide).sort((a, b) => b[1] - a[1]);
+    const bestZoneCount = sortedZones[0]?.[1] ?? 0;
+    const secondZoneCount = sortedZones[1]?.[1] ?? 0;
+
+    for (const [sideId, zoneCount] of Object.entries(zonesBySide)) {
+      const predicted = zoneCount;
+      const leadMargin = zoneCount - secondZoneCount;
+      const opponentBest = sideId === sortedZones[0]?.[0] ? secondZoneCount : bestZoneCount;
+      const confidence = zoneCount > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / zoneCount)))
+        : (zoneCount > opponentBest ? 1 : 0);
+
+      sideScores[sideId].keyScores['dominance'] = {
+        current: this.state.vpBySide.get(sideId) ?? 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Elimination: +1 VP for most BP eliminated
+    const eliminationBpBySide: Record<string, number> = {};
+    for (const side of sideStatuses) {
+      let totalEnemyBpEliminated = 0;
+      for (const opponent of sideStatuses) {
+        if (opponent.sideId === side.sideId) continue;
+        totalEnemyBpEliminated += opponent.koBp + opponent.eliminatedBp;
+      }
+      eliminationBpBySide[side.sideId] = totalEnemyBpEliminated;
+    }
+
+    const sortedElimination = Object.entries(eliminationBpBySide).sort((a, b) => b[1] - a[1]);
+    const bestElimination = sortedElimination[0];
+    const secondElimination = sortedElimination[1];
+
+    for (const [sideId, bp] of Object.entries(eliminationBpBySide)) {
+      const isBest = bestElimination && sideId === bestElimination[0];
+      const predicted = isBest && (!secondElimination || bestElimination[1] > secondElimination[1]) ? 1 : 0;
+      const leadMargin = isBest && secondElimination ? bestElimination[1] - secondElimination[1] : 0;
+      const opponentBest = isBest && secondElimination ? secondElimination[1] : (bestElimination?.[1] ?? 0);
+      const confidence = bp > 0 && opponentBest > 0
+        ? Math.max(0, Math.min(1, 1 - (opponentBest / bp)))
+        : (isBest ? 1 : 0);
+
+      sideScores[sideId].keyScores['elimination'] = {
+        current: 0,
+        predicted,
+        confidence,
+        leadMargin,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+
+    // Bottled: +1 VP if opponent bottles out
+    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const side of sideStatuses) {
+      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
+      const predicted = isOpponentBottled ? 1 : 0;
+
+      sideScores[side.sideId].keyScores['bottled'] = {
+        current: 0,
+        predicted,
+        confidence: isOpponentBottled ? 1.0 : 0.0,
+        leadMargin: isOpponentBottled ? 1 : 0,
+      };
+      sideScores[side.sideId].predictedVp += predicted;
+    }
+
+    return { sideScores };
+  }
 }
 
 /**
