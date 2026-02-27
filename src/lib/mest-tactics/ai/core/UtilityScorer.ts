@@ -527,20 +527,42 @@ export class UtilityScorer {
         // This directly reduces waitBaseline to force action in Elimination missions
         const sideVP = context.side?.state.victoryPoints ?? 0;
         const sideRP = context.side?.state.resourcePoints ?? 0;
-        
+
         // Priority 4: Always pursue VP/RP - calculate VP deficit vs opponent
-        const opponentVP = context.enemySides?.reduce((max, side) => 
+        const opponentVP = context.enemySides?.reduce((max, side) =>
           Math.max(max, side.state?.victoryPoints ?? 0), 0) ?? 0;
+        const opponentRP = context.enemySides?.reduce((max, side) =>
+          Math.max(max, side.state?.resourcePoints ?? 0), 0) ?? 0;
         const vpDeficit = Math.max(0, opponentVP - sideVP);
-        const rpDeficit = Math.max(0, (context.enemySides?.reduce((max, side) => 
-          Math.max(max, side.state?.resourcePoints ?? 0), 0) ?? 0) - sideRP);
-        
-        // If behind on VP/RP, reduce Wait preference to encourage action
-        if (vpDeficit > 0 || rpDeficit > 0) {
-          const pursuitPenalty = (vpDeficit + rpDeficit) * 2; // -2 per VP/RP behind
-          waitTacticalBonus = Math.max(-5, waitTacticalBonus - pursuitPenalty);
+        const rpDeficit = Math.max(0, opponentRP - sideRP);
+
+        // VP ASPIRATION: AI should always want more VP than opponent
+        // If behind on VP, apply strong penalty to Wait to encourage action
+        if (vpDeficit > 0) {
+          // Base penalty: -3 per VP behind
+          const vpPursuitPenalty = vpDeficit * 3;
+          waitTacticalBonus = Math.max(-10, waitTacticalBonus - vpPursuitPenalty);
         }
         
+        // If tied on VP but opponent has more RP, still encourage action
+        if (vpDeficit === 0 && rpDeficit > 0) {
+          const rpPursuitPenalty = rpDeficit * 1.5;
+          waitTacticalBonus = Math.max(-5, waitTacticalBonus - rpPursuitPenalty);
+        }
+
+        // If ahead on VP, allow more defensive play but still encourage securing lead
+        if (sideVP > opponentVP) {
+          const vpLead = sideVP - opponentVP;
+          // Small lead (1-2 VP): slight bonus to Wait (play safer)
+          if (vpLead <= 2) {
+            waitTacticalBonus += vpLead * 0.5;
+          }
+          // Comfortable lead (3+ VP): bigger bonus to Wait (run down clock)
+          else {
+            waitTacticalBonus += 1 + (vpLead - 2) * 0.3;
+          }
+        }
+
         let zeroVpDesperation = 0;
         if (missionId === 'QAI_11' && sideVP === 0 && sideRP === 0 && currentTurn >= 4) {
           // Turn 4-5: -8 Wait score (must start acting)

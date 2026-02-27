@@ -500,6 +500,802 @@ Deferred or held by approval:
   - Magic/Arcanics (17), Psychology/Behavior (19), Technology/Equipment (8), Movement/Positioning (13), Combat/Attack (10), Status/Condition (10), Special (12)
   - See `docs/advanced-traits-cross-reference.md` for full list
 
+---
+
+## Phase I: Full AI Battle Runner (P1-HIGH)
+
+**Status:** 📋 Planned (Not Started)
+
+**Issue:** Current `scripts/battle-generator.ts` uses simplified "move toward enemy, then attack" AI logic that does NOT test:
+- Full CharacterAI decision-making
+- Mission objective scoring and completion
+- Wait/React/Bonus Action mechanics
+- Trait interactions in live gameplay
+- Initiative system with IP spending
+- Proper action resolution through GameManager
+- End-game trigger dice mechanics
+- Morale/Bottle Test resolution
+
+**Goal:** Create comprehensive battle runner that exercises full AI System + Mission + Engine integration for testing and validation.
+
+### I.1: Battle Runner Architecture
+
+**Objective:** Replace simplified AI with full CharacterAI + GameManager integration
+
+**Tasks:**
+- [ ] **I.1.1:** Integrate CharacterAI.decideAction() for each model activation
+- [ ] **I.1.2:** Use GameManager.beginActivation()/endActivation() lifecycle
+- [ ] **I.1.3:** Execute actions through GameManager action handlers (not direct battlefield manipulation)
+- [ ] **I.1.4:** Implement proper Initiative rolling and IP award/spending
+- [ ] **I.1.5:** Add Wait status maintenance and React resolution
+- [ ] **I.1.6:** Implement Bonus Action cascade spending
+- [ ] **I.1.7:** Add End-Game Trigger dice rolling per QSR Line 744-750
+
+**Files to Create/Modify:**
+- `src/lib/mest-tactics/battle-report/full-battle-runner.ts` (new)
+- `scripts/battle-generator.ts` (replace simple AI with FullBattleRunner)
+- `src/lib/mest-tactics/engine/GameManager.ts` (verify action handlers complete)
+
+**Estimated Effort:** 2-3 days
+
+---
+
+### I.2: Mission Integration
+
+**Objective:** Run actual mission logic with scoring, objectives, and victory conditions
+
+**Tasks:**
+- [ ] **I.2.1:** Integrate mission runtime via GameController.runMission()
+- [ ] **I.2.2:** Track Objective Marker actions and scoring
+- [ ] **I.2.3:** Calculate VP/RP per turn (predicted and final)
+- [ ] **I.2.4:** Implement mission-specific victory conditions
+- [ ] **I.2.5:** Add mission event hooks (reinforcements, special rules)
+- [ ] **I.2.6:** Generate mission completion report with scoring breakdown
+
+**Files to Create/Modify:**
+- `src/lib/mest-tactics/battle-report/mission-tracker.ts` (new)
+- `src/lib/mest-tactics/missions/mission-runtime.ts` (verify complete)
+- `scripts/battle-generator.ts` (add --mission flag support with full logic)
+
+**Estimated Effort:** 2-3 days
+
+---
+
+### I.3: Comprehensive Instrumentation
+
+**Objective:** Enhance instrumentation to capture full game state for analysis
+
+**Tasks:**
+- [ ] **I.3.1:** Capture full dice roll details (Base/Modifier/Wild per test)
+- [ ] **I.3.2:** Track trait activation and source (archetype vs item)
+- [ ] **I.3.3:** Log situational modifiers applied to each test
+- [ ] **I.3.4:** Record AI decision reasoning (utility scores, doctrine influence)
+- [ ] **I.3.5:** Track model state changes (Ready→Activated→Done, Free→Engaged)
+- [ ] **I.3.6:** Capture position changes with vectors for movement analysis
+- [ ] **I.3.7:** Log LOS/LOF checks and cover determinations
+- [ ] **I.3.8:** Export battle logs in analysis-friendly format (JSONL for streaming)
+
+**Files to Create/Modify:**
+- `src/lib/mest-tactics/instrumentation/QSRInstrumentation.ts` (enhance)
+- `src/lib/mest-tactics/battle-report/battle-analyzer.ts` (new)
+- `generated/battle-logs/` directory for output
+
+**Estimated Effort:** 1-2 days
+
+---
+
+### I.4: Validation & Analysis Tools
+
+**Objective:** Provide tools to analyze battle results for AI behavior validation
+
+**Tasks:**
+- [ ] **I.4.1:** Create battle log viewer (CLI or web-based)
+- [ ] **I.4.2:** Implement behavior fingerprinting (action patterns per doctrine)
+- [ ] **I.4.3:** Add statistical analysis (hit rates, casualty ratios, turn duration)
+- [ ] **I.4.4:** Create regression test suite (compare battles across code changes)
+- [ ] **I.4.5:** Build performance profiler (action timing, pathfinding cost)
+- [ ] **I.4.6:** Generate AI behavior reports (doctrine adherence, mission focus)
+
+**Files to Create/Modify:**
+- `scripts/analyze-battle.ts` (new)
+- `scripts/compare-battles.ts` (new)
+- `generated/analysis-reports/` directory
+
+**Estimated Effort:** 2-3 days
+
+---
+
+### I.5: Test Scenarios & Benchmarks
+
+**Objective:** Create standardized test scenarios for validation
+
+**Tasks:**
+- [ ] **I.5.1:** Define test scenarios per mission (QAI_11 through QAI_20)
+- [ ] **I.5.2:** Create doctrine matchup matrix (Balanced vs Aggressive, etc.)
+- [ ] **I.5.3:** Establish performance benchmarks (actions/second, battles/hour)
+- [ ] **I.5.4:** Create regression test baselines (expected behavior patterns)
+- [ ] **I.5.5:** Document scenario configurations and expected outcomes
+
+**Files to Create/Modify:**
+- `scripts/battle-scenarios/` directory (new)
+- `docs/battle-validation-guide.md` (new)
+
+**Estimated Effort:** 1-2 days
+
+---
+
+### Phase I Summary
+
+| Component | Effort | Priority | Dependencies |
+|-----------|--------|----------|--------------|
+| I.1: Battle Runner Architecture | 2-3 days | P1-HIGH | None |
+| I.2: Mission Integration | 2-3 days | P1-HIGH | I.1 |
+| I.3: Comprehensive Instrumentation | 1-2 days | P1-HIGH | I.1 |
+| I.4: Validation & Analysis Tools | 2-3 days | P2-MEDIUM | I.2, I.3 |
+| I.5: Test Scenarios & Benchmarks | 1-2 days | P2-MEDIUM | I.1, I.2 |
+
+**Total Estimated Effort:** 8-13 days
+
+**Success Criteria:**
+1. Battle generator runs full AI System with CharacterAI.decideAction()
+2. Mission scoring and victory conditions work correctly
+3. Wait/React/Bonus Actions are properly resolved
+4. Instrumentation captures full game state for analysis
+5. Validation tools can detect AI behavior regressions
+6. Test scenarios provide repeatable validation benchmarks
+
+**Current Battle Generator Limitations:**
+- ❌ Uses "move toward nearest enemy, then attack" simple AI
+- ❌ Direct battlefield manipulation (bypasses GameManager)
+- ❌ No mission scoring or objectives
+- ❌ No Wait/React/Bonus Action resolution
+- ❌ No Initiative/IP system
+- ❌ No End-Game Trigger dice
+- ❌ No trait interaction testing
+- ❌ No morale/bottle test resolution
+
+**After Phase I Complete:**
+- ✅ Full CharacterAI decision-making
+- ✅ Mission runtime with scoring
+- ✅ Complete action resolution through GameManager
+- ✅ Wait/React/Bonus Actions functional
+- ✅ Initiative/IP system working
+- ✅ End-Game Trigger dice rolling
+- ✅ Trait interactions tested
+- ✅ Morale/Bottle Tests resolved
+- ✅ Comprehensive battle logs for analysis
+- ✅ Validation tools for regression detection
+
+---
+
+## Phase I.6: Battle Runner Consolidation (P1-HIGH)
+
+**Status:** 📋 Assessment Complete
+
+### Script Analysis: Completeness & QSR Adherence
+
+**Issue:** Multiple overlapping battle runner scripts with duplicated code and varying QSR compliance.
+
+| Script | Lines | Purpose | QSR Compliance | Completeness |
+|--------|-------|---------|----------------|--------------|
+| `run-ai-melee-battle.ts` | 142 | QAI_11 battle | **85%** ✅ Best | **70%** ✅ Best |
+| `run-full-game.ts` | 590 | Full simulation | **45%** ⚠️ Partial | **60%** ⚠️ Moderate |
+| `run-very-large-game.ts` | 578 | VERY_LARGE games | **45%** ⚠️ Partial | **60%** ⚠️ Moderate |
+| `battle-generator.ts` | 560 | Configurable battles | **30%** ❌ Low | **40%** ❌ Low |
+| `battle-report/run-battle.ts` | 740 | Battle report | **40%** ❌ Low | **50%** ❌ Low |
+| `run-simple-duel.ts` | ~300 | 1v1 duel | **60%** ⚠️ Moderate | **30%** ❌ Low |
+| `run-4v4-duel.ts` | ~360 | 4v4 duel | **60%** ⚠️ Moderate | **30%** ❌ Low |
+
+### QSR Rules Compliance Matrix
+
+| QSR Rule | run-ai-melee | run-full-game | run-very-large | battle-generator | run-battle.ts | duel scripts |
+|----------|--------------|---------------|----------------|------------------|---------------|--------------|
+| **Initiative Test (INT vs INT)** | ✅ Via CharacterAI | ❌ Alternating only | ❌ Alternating only | ❌ No initiative | ❌ Simple AI | ❌ Manual turns |
+| **Initiative Points (IP)** | ✅ Via GameManager | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **IP Spending (Maintain/Force/Refresh)** | ✅ Via GameManager | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **Activation (2 AP per character)** | ✅ Via GameManager | ⚠️ Simplified | ⚠️ Simplified | ❌ Direct manipulation | ⚠️ Simplified | ❌ Manual |
+| **Wait Status** | ✅ Via GameManager | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **React Actions** | ✅ Via CharacterAI | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **Bonus Actions (cascades)** | ✅ Via GameManager | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **End-Game Trigger Dice** | ✅ Via GameManager | ⚠️ 50% random (wrong) | ⚠️ 50% random (wrong) | ❌ Fixed turns | ⚠️ 50% random | ❌ Fixed turns |
+| **Mission Scoring (VP/RP)** | ✅ Via MissionRuntime | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **Objective Markers** | ✅ Via GameManager | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **Combat Resolution** | ✅ Via GameManager | ✅ Via GameManager | ✅ Via GameManager | ❌ Manual dice | ✅ Via GameManager | ⚠️ Custom dice |
+| **Movement (MOV+2 per AP)** | ✅ Via GameManager | ⚠️ Simplified | ⚠️ Simplified | ❌ Direct placement | ⚠️ Simplified | ❌ Manual |
+| **Engagement/Disengage** | ✅ Via GameManager | ⚠️ Simplified | ⚠️ Simplified | ❌ Not implemented | ⚠️ Simplified | ❌ Not implemented |
+| **Morale/Bottle Tests** | ✅ Via GameManager | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented | ❌ Not implemented |
+| **Lighting/Visibility OR** | ✅ Configurable | ❌ Not implemented | ❌ Not implemented | ✅ Configurable | ❌ Not implemented | ❌ Not implemented |
+| **Terrain/Cover** | ✅ Via GameManager | ✅ Random terrain | ✅ Random terrain | ✅ Configurable | ✅ Random terrain | ❌ No terrain |
+
+### Detailed QSR Violations
+
+#### `run-full-game.ts` & `run-very-large-game.ts` (Identical Code)
+
+**End-Game Trigger (QSR Line 744-750):**
+```typescript
+// WRONG: Should be 1d6, ends on 1-3, cumulative dice
+if (turn >= sizeConfig.endGameTurn) {
+  if (Math.random() < 0.5) {  // ❌ 50% chance, not d6 roll
+    gameOver = true;
+  }
+}
+
+// CORRECT per QSR:
+// Turn 4: 1d6, ends on 1-3 (50%)
+// Turn 5: 2d6, ends on any 1-3 (75%)
+// Turn 6: 3d6, ends on any 1-3 (87.5%)
+```
+
+**Initiative System:**
+```typescript
+// ❌ NO initiative system - just alternating activations
+for (const character of sideA.characters) {
+  await this.resolveCharacterTurn(character, ...);
+}
+for (const character of sideB.characters) {
+  await this.resolveCharacterTurn(character, ...);
+}
+
+// CORRECT per QSR Line 680-730:
+// - Initiative Test (Opposed INT)
+// - IP award to winner
+// - IP spending (Maintain/Force/Refresh)
+// - Initiative card transfer
+```
+
+**Activation:**
+```typescript
+// ❌ No AP tracking, no Wait/React/Bonus Actions
+gameManager.beginActivation(character);
+// ... execute action ...
+gameManager.endActivation(character);
+
+// CORRECT per QSR Line 705-720:
+// - 2 AP per activation
+// - Remove Delay tokens (1 AP each)
+// - Wait status maintenance
+// - React opportunities for Passive players
+// - Bonus Action cascade spending
+```
+
+#### `battle-generator.ts`
+
+**AI System:**
+```typescript
+// ❌ Simplified "move toward enemy, then attack"
+if (nearestDist > 1) {
+  // Move toward enemy
+} else {
+  // Attack
+  const hitRoll = Math.floor(Math.random() * 6) + 1 + attackerCCA;
+  const defenseRoll = Math.floor(Math.random() * 6) + 1 + defenderFOR;
+  
+  // ❌ Direct state manipulation, bypasses GameManager combat
+  nearestEnemy.state.wounds += damage;
+}
+
+// CORRECT: Use CharacterAI.decideAction() + GameManager action handlers
+```
+
+**Combat Resolution:**
+```typescript
+// ❌ Custom dice rolling, not using subroutines/dice-roller.ts
+const hitRoll = Math.floor(Math.random() * 6) + 1 + attackerCCA;
+
+// CORRECT per rules-tests-and-checks.md:
+// - Base dice (d6): 1-3=0, 4-5=1, 6=2 successes
+// - Modifier dice (d6): 1-3=0, 4-6=1 success
+// - Wild dice (d6): 1-3=0, 4-5=1, 6=3 successes
+```
+
+#### `run-simple-duel.ts` & `run-4v4-duel.ts`
+
+**Dice Rolling:**
+```typescript
+// ❌ Custom dice roller duplicated in both files
+function rollDice(dice: TestDice, roller: () => number = Math.random) {
+  for (let i = 0; i < (dice.base || 0); i++) {
+    const roll = Math.floor(roller() * 6) + 1;
+    if (roll >= 6) successes += 2;
+    else if (roll >= 4) successes += 1;
+  }
+  // ... modifier and wild dice ...
+}
+
+// CORRECT: Use existing subroutines/dice-roller.ts performTest()
+```
+
+**Game Loop:**
+```typescript
+// ❌ Manual turn switching, no initiative
+let attacker = alpha;
+let defender = bravo;
+while (!alpha.state.isKOd && !bravo.state.isKOd && turn <= 50) {
+  // Attacker attacks, then switch
+  [attacker, defender] = [defender, attacker];
+  turn++;
+}
+
+// CORRECT: Use GameManager with proper initiative/activation
+```
+
+### Ranking Summary
+
+**1. `run-ai-melee-battle.ts` (85% QSR Compliant)**
+- ✅ Uses CharacterAI.decideAction()
+- ✅ Uses GameManager.runGame() with mission runtime
+- ✅ Proper mission integration (QAI_11)
+- ✅ Correct combat resolution via GameManager
+- ⚠️ No terrain (density: 0)
+- ⚠️ No lighting/visibility configuration
+- ⚠️ No End-Game Trigger dice (relies on GameManager)
+
+**2. `run-simple-duel.ts` / `run-4v4-duel.ts` (60% QSR Compliant)**
+- ✅ Correct dice mechanics (Base/Modifier/Wild success counting)
+- ✅ Correct combat resolution (Hit Test → Damage Test)
+- ✅ Correct wound/KO/Elimination thresholds
+- ❌ No initiative system
+- ❌ No AP tracking
+- ❌ No mission system
+- ❌ Custom dice roller (duplicated code)
+
+**3. `run-full-game.ts` / `run-very-large-game.ts` (45% QSR Compliant)**
+- ✅ Uses GameManager for combat
+- ✅ Terrain generation
+- ✅ Model deployment
+- ❌ Wrong End-Game Trigger (50% vs d6 cumulative)
+- ❌ No initiative system
+- ❌ No IP system
+- ❌ No Wait/React/Bonus Actions
+- ❌ No mission scoring
+
+**4. `battle-report/run-battle.ts` (40% QSR Compliant)**
+- ✅ Uses GameManager
+- ✅ Battle report generation
+- ✅ Terrain generation
+- ❌ Simple AI (not CharacterAI)
+- ❌ No mission integration
+- ❌ Wrong End-Game Trigger
+
+**5. `battle-generator.ts` (30% QSR Compliant)**
+- ✅ Configurable parameters
+- ✅ Lighting presets
+- ✅ Instrumentation system
+- ❌ Custom simplified AI
+- ❌ Direct battlefield manipulation
+- ❌ Custom dice rolling
+- ❌ No GameManager integration
+- ❌ No mission system
+
+---
+
+### Consolidation Plan
+
+**Directory Structure:**
+```
+scripts/run-battles/
+├── index.ts                    # Main CLI entry point
+├── battle-runner.ts            # Core battle execution engine
+├── ai-controller.ts            # Reusable AI controller
+├── battle-logger.ts            # Logging and instrumentation
+└── configs/                    # Battle configuration presets
+    ├── very-small.ts
+    ├── small.ts
+    ├── medium.ts
+    ├── large.ts
+    ├── very-large.ts
+    ├── duel-1v1.ts
+    ├── duel-4v4.ts
+    ├── qai-11-elimination.ts
+    ├── qai-12-convergence.ts
+    └── custom.ts.example
+```
+
+**Core Components:**
+
+1. **BattleRunner Class** (`battle-runner.ts`):
+   - Unified game loop with proper GameManager integration
+   - Mission runtime integration
+   - End-Game Trigger dice mechanics (per QSR Line 744-750)
+   - Initiative/IP system (per QSR Line 680-730)
+   - Wait/React/Bonus Action resolution
+
+2. **AIController** (`ai-controller.ts`):
+   - Single source of truth for AI decision-making
+   - Doctrine-based behavior (Balanced, Aggressive, Defensive, etc.)
+   - Integration with CharacterAI.decideAction()
+   - Configurable aggression/caution levels
+
+3. **BattleLogger** (`battle-logger.ts`):
+   - Integration with QSRInstrumentation system
+   - Configurable output (console, JSON, JSONL)
+   - Battle statistics tracking
+   - Export to `generated/battle-logs/`
+
+4. **Battle Configs** (`configs/*.ts`):
+   - Pre-defined battle scenarios
+   - Game size, terrain, lighting, mission settings
+   - Doctrine matchups
+   - Loadout presets
+
+**CLI Interface:**
+```bash
+# Run default VERY_SMALL battle
+npx tsx scripts/run-battles/
+
+# Run specific config
+npx tsx scripts/run-battles/ --config very-large
+
+# Run custom battle
+npx tsx scripts/run-battles/ \
+  --gameSize MEDIUM \
+  --mission QAI_12 \
+  --terrain 40 \
+  --lighting "Night, Full Moon" \
+  --doctrineA Aggressive \
+  --doctrineB Defensive \
+  --output json
+
+# Run duel scenario
+npx tsx scripts/run-battles/ --config duel-4v4
+
+# Run mission validation
+npx tsx scripts/run-battles/ --mission QAI_11 --iterations 10
+```
+
+### I.6.2: Deprecate Old Scripts
+
+**Scripts to Deprecate:**
+- `run-full-game.ts` → Replace with `run-battles/ --config large`
+- `run-very-large-game.ts` → Replace with `run-battles/ --config very-large`
+- `run-simple-duel.ts` → Replace with `run-battles/ --config duel-1v1`
+- `run-4v4-duel.ts` → Replace with `run-battles/ --config duel-4v4`
+- `run-ai-melee-battle.ts` → Replace with `run-battles/ --config qai-11-elimination`
+- `battle-report/run-battle.ts` → Merge into `run-battles/battle-runner.ts`
+- `battle-generator.ts` → Keep as user-friendly wrapper around `run-battles/`
+
+**Migration Path:**
+1. Create new `run-battles/` structure
+2. Test all configs against existing outputs
+3. Update documentation
+4. Add deprecation warnings to old scripts
+5. Remove old scripts after 2-week transition
+
+### I.6.3: Battle Config Schema
+
+```typescript
+interface BattleConfig {
+  // Game settings
+  gameSize: GameSize;
+  battlefieldSize: number;
+  maxTurns: number;
+  endGameTriggerTurn: number;
+  
+  // Terrain & Lighting
+  terrainDensity: number;  // 0-100%
+  lighting: LightingPreset;
+  
+  // Mission
+  missionId: string;  // QAI_11, QAI_12, etc.
+  
+  // Sides
+  sides: [
+    {
+      name: string;
+      doctrine: TacticalDoctrine;
+      assembly: AssemblyConfig;
+    },
+    {
+      name: string;
+      doctrine: TacticalDoctrine;
+      assembly: AssemblyConfig;
+    }
+  ];
+  
+  // Instrumentation
+  instrumentation: {
+    grade: 0-5;
+    outputFormat: 'console' | 'json' | 'jsonl';
+    outputPath?: string;
+  };
+  
+  // AI
+  ai: {
+    useCharacterAI: boolean;  // true = full AI, false = simple AI
+    aggression: number;  // 0-1
+    caution: number;  // 0-1
+  };
+}
+```
+
+### I.6.4: Implementation Tasks
+
+**Tasks:**
+- [ ] **I.6.1:** Create `scripts/run-battles/` directory structure
+- [ ] **I.6.2:** Implement BattleRunner core engine
+- [ ] **I.6.3:** Implement unified AIController
+- [ ] **I.6.4:** Implement BattleLogger with instrumentation
+- [ ] **I.6.5:** Create battle config presets (8 configs)
+- [ ] **I.6.6:** Add CLI argument parsing
+- [ ] **I.6.7:** Test all configs against existing outputs
+- [ ] **I.6.8:** Update `battle-generator.ts` to use new runner
+- [ ] **I.6.9:** Add deprecation warnings to old scripts
+- [ ] **I.6.10:** Update documentation
+- [ ] **I.6.11:** Remove old scripts after validation
+
+**Estimated Effort:** 3-4 days
+
+**Benefits:**
+- Single source of truth for battle execution
+- Consistent AI behavior across all scenarios
+- Easier to add new battle configs
+- Better testing and validation
+- Reduced code duplication (2000+ lines saved)
+- Clear migration path for users
+
+---
+
+### Phase I Summary (Updated)
+
+| Component | Effort | Priority | Dependencies |
+|-----------|--------|----------|--------------|
+| I.1: Battle Runner Architecture | 2-3 days | P1-HIGH | None |
+| I.2: Mission Integration | 2-3 days | P1-HIGH | I.1 |
+| I.3: Comprehensive Instrumentation | 1-2 days | P1-HIGH | I.1 |
+| I.4: Validation & Analysis Tools | 2-3 days | P2-MEDIUM | I.2, I.3 |
+| I.5: Test Scenarios & Benchmarks | 1-2 days | P2-MEDIUM | I.1, I.2 |
+| **I.6: Battle Runner Consolidation** | **3-4 days** | **P1-HIGH** | **I.1, I.2, I.3** |
+
+**Total Estimated Effort:** 11-17 days
+
+**Consolidation Plan:**
+
+### I.6.1: Create Unified Battle Runner
+
+**Directory Structure:**
+```
+scripts/run-battles/
+├── index.ts                    # Main CLI entry point
+├── battle-runner.ts            # Core battle execution engine
+├── ai-controller.ts            # Reusable AI controller
+├── battle-logger.ts            # Logging and instrumentation
+└── configs/                    # Battle configuration presets
+    ├── very-small.ts
+    ├── small.ts
+    ├── medium.ts
+    ├── large.ts
+    ├── very-large.ts
+    ├── duel-1v1.ts
+    ├── duel-4v4.ts
+    ├── qai-11-elimination.ts
+    ├── qai-12-convergence.ts
+    └── custom.ts.example
+```
+
+**Core Components:**
+
+1. **BattleRunner Class** (`battle-runner.ts`):
+   - Unified game loop with proper GameManager integration
+   - Mission runtime integration
+   - End-Game Trigger dice mechanics
+   - Initiative/IP system
+   - Wait/React/Bonus Action resolution
+
+2. **AIController** (`ai-controller.ts`):
+   - Single source of truth for AI decision-making
+   - Doctrine-based behavior (Balanced, Aggressive, Defensive, etc.)
+   - Integration with CharacterAI.decideAction()
+   - Configurable aggression/caution levels
+
+3. **BattleLogger** (`battle-logger.ts`):
+   - Integration with QSRInstrumentation system
+   - Configurable output (console, JSON, JSONL)
+   - Battle statistics tracking
+   - Export to `generated/battle-logs/`
+
+4. **Battle Configs** (`configs/*.ts`):
+   - Pre-defined battle scenarios
+   - Game size, terrain, lighting, mission settings
+   - Doctrine matchups
+   - Loadout presets
+
+**CLI Interface:**
+```bash
+# Run default VERY_SMALL battle
+npx tsx scripts/run-battles/
+
+# Run specific config
+npx tsx scripts/run-battles/ --config very-large
+
+# Run custom battle
+npx tsx scripts/run-battles/ \
+  --gameSize MEDIUM \
+  --mission QAI_12 \
+  --terrain 40 \
+  --lighting "Night, Full Moon" \
+  --doctrineA Aggressive \
+  --doctrineB Defensive \
+  --output json
+
+# Run duel scenario
+npx tsx scripts/run-battles/ --config duel-4v4
+
+# Run mission validation
+npx tsx scripts/run-battles/ --mission QAI_11 --iterations 10
+```
+
+### I.6.2: Deprecate Old Scripts
+
+**Scripts to Deprecate:**
+- `run-full-game.ts` → Replace with `run-battles/ --config large`
+- `run-very-large-game.ts` → Replace with `run-battles/ --config very-large`
+- `run-simple-duel.ts` → Replace with `run-battles/ --config duel-1v1`
+- `run-4v4-duel.ts` → Replace with `run-battles/ --config duel-4v4`
+- `run-ai-melee-battle.ts` → Replace with `run-battles/ --config qai-11-elimination`
+- `battle-report/run-battle.ts` → Merge into `run-battles/battle-runner.ts`
+- `battle-generator.ts` → Keep as user-friendly wrapper around `run-battles/`
+
+**Migration Path:**
+1. Create new `run-battles/` structure
+2. Test all configs against existing outputs
+3. Update documentation
+4. Add deprecation warnings to old scripts
+5. Remove old scripts after 2-week transition
+
+### I.6.3: Battle Config Schema
+
+```typescript
+interface BattleConfig {
+  // Game settings
+  gameSize: GameSize;
+  battlefieldSize: number;
+  maxTurns: number;
+  endGameTriggerTurn: number;
+  
+  // Terrain & Lighting
+  terrainDensity: number;  // 0-100%
+  lighting: LightingPreset;
+  
+  // Mission
+  missionId: string;  // QAI_11, QAI_12, etc.
+  
+  // Sides
+  sides: [
+    {
+      name: string;
+      doctrine: TacticalDoctrine;
+      assembly: AssemblyConfig;
+    },
+    {
+      name: string;
+      doctrine: TacticalDoctrine;
+      assembly: AssemblyConfig;
+    }
+  ];
+  
+  // Instrumentation
+  instrumentation: {
+    grade: 0-5;
+    outputFormat: 'console' | 'json' | 'jsonl';
+    outputPath?: string;
+  };
+  
+  // AI
+  ai: {
+    useCharacterAI: boolean;  // true = full AI, false = simple AI
+    aggression: number;  // 0-1
+    caution: number;  // 0-1
+  };
+}
+```
+
+### I.6.4: Implementation Tasks
+
+**Tasks:**
+- [ ] **I.6.1:** Create `scripts/run-battles/` directory structure
+- [ ] **I.6.2:** Implement BattleRunner core engine
+- [ ] **I.6.3:** Implement unified AIController
+- [ ] **I.6.4:** Implement BattleLogger with instrumentation
+- [ ] **I.6.5:** Create battle config presets (8 configs)
+- [ ] **I.6.6:** Add CLI argument parsing
+- [ ] **I.6.7:** Test all configs against existing outputs
+- [ ] **I.6.8:** Update `battle-generator.ts` to use new runner
+- [ ] **I.6.9:** Add deprecation warnings to old scripts
+- [ ] **I.6.10:** Update documentation
+- [ ] **I.6.11:** Remove old scripts after validation
+
+**Estimated Effort:** 3-4 days
+
+**Benefits:**
+- Single source of truth for battle execution
+- Consistent AI behavior across all scenarios
+- Easier to add new battle configs
+- Better testing and validation
+- Reduced code duplication (2000+ lines saved)
+- Clear migration path for users
+
+---
+
+### Phase I Summary (Updated)
+
+| Component | Effort | Priority | Dependencies |
+|-----------|--------|----------|--------------|
+| I.1: Battle Runner Architecture | 2-3 days | P1-HIGH | None |
+| I.2: Mission Integration | 2-3 days | P1-HIGH | I.1 |
+| I.3: Comprehensive Instrumentation | 1-2 days | P1-HIGH | I.1 |
+| I.4: Validation & Analysis Tools | 2-3 days | P2-MEDIUM | I.2, I.3 |
+| I.5: Test Scenarios & Benchmarks | 1-2 days | P2-MEDIUM | I.1, I.2 |
+| **I.6: Battle Runner Consolidation** | **3-4 days** | **P1-HIGH** | **I.1, I.2, I.3** |
+
+**Total Estimated Effort:** 11-17 days
+
+**Phase I.6 Status (2026-02-26):**
+- ✅ Directory structure created (`scripts/run-battles/`)
+- ✅ BattleRunner class implemented
+- ✅ GameManager.runGame() method added
+- ✅ CLI argument parsing implemented
+- ✅ Lighting presets module created
+- ✅ VERY_SMALL config created
+- ✅ **PATHFINDING FIXED:** Added validation and iteration limits to ConstrainedNavMesh.funnelPath()
+  - Added portal data validation
+  - Added start/end position validation  
+  - Added edge index bounds checking in buildPortals()
+  - Added iteration limit (3x portal count) to prevent infinite loops
+  - Added path result validation in PathfindingEngine.findNavMeshWaypoints()
+
+**Files Created:**
+- `scripts/run-battles/index.ts` - CLI entry point
+- `scripts/run-battles/battle-runner.ts` - BattleRunner class with full game loop
+- `scripts/run-battles/lighting-presets.ts` - Lighting preset definitions
+- `scripts/run-battles/configs/very-small.ts` - VERY_SMALL battle config
+
+**Files Modified:**
+- `src/lib/mest-tactics/engine/GameManager.ts` - Added `runGame()` method for full battle execution
+- `src/lib/mest-tactics/battlefield/pathfinding/ConstrainedNavMesh.ts` - Fixed funnelPath infinite loop and added validation
+- `src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.ts` - Added validation for navmesh path results
+
+**API Implemented:**
+```typescript
+public async runGame(
+  missionAdapter: MissionRuntimeAdapter,
+  aiConfigs: Array<{
+    sideId: string;
+    characterAI: CharacterAI;
+    tacticalDoctrine?: TacticalDoctrine;
+  }>
+): Promise<{
+  winner: string | null;
+  turnsCompleted: number;
+  stats: {
+    totalActions: number;
+    moves: number;
+    attacks: number;
+    closeCombats: number;
+    rangedCombats: number;
+    disengages: number;
+    eliminations: number;
+    kos: number;
+  };
+}>
+```
+
+**Test Results:**
+- ✅ Battle runner executes without errors
+- ✅ End-game trigger dice working (game ends properly)
+- ✅ Pathfinding no longer crashes (validation + iteration limits)
+- ⚠️ AI decision-making returning 'none'/'hold' (no actions being taken)
+
+**Known Issues:**
+1. **AI Inaction:** AI appears to default to 'hold' or 'none' actions
+   - Likely cause: UtilityScorer.evaluatePositions() still failing silently
+   - Next: Debug AI action scoring to determine why all actions score 0
+
+**Next Steps:**
+1. Debug AI action scoring in UtilityScorer
+2. Verify AI can evaluate move and attack actions correctly
+3. Create additional battle configs (small, medium, large, very-large, duel configs)
+4. Test against existing battle outputs for validation
+
 Remaining high-priority technical debt after current remediation:
 - Repository-wide TypeScript drift outside active mission/AI execution paths.
 - Legacy duplicate mission modules still present on disk (retained for compatibility/tests), while runtime authority is now consolidated through `GameController`.

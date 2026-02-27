@@ -857,14 +857,23 @@ export class MissionRuntimeAdapter {
   }
 
   public recordAttack(attackerSideId: string | undefined, woundsAdded: number): MissionRuntimeUpdate {
-    if (!attackerSideId || woundsAdded <= 0 || this.firstBloodSideId) {
+    if (!attackerSideId || woundsAdded <= 0) {
       return { delta: createEmptyDelta() };
     }
 
-    this.firstBloodSideId = attackerSideId;
+    // Track first blood (for mission-flow key VP calculation)
+    if (!this.firstBloodSideId) {
+      this.firstBloodSideId = attackerSideId;
+      
+      // Also notify EliminationMissionManager if applicable
+      if (this.manager instanceof EliminationMissionManager) {
+        this.manager.recordFirstBlood(attackerSideId);
+      }
+    }
+
     return {
       delta: createEmptyDelta(),
-      firstBloodSideId: attackerSideId,
+      firstBloodSideId: this.firstBloodSideId,
     };
   }
 

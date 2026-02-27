@@ -1343,4 +1343,258 @@ export class GameManager {
       sides
     );
   }
+
+  // ============================================================================
+  // Game Loop - Full Battle Execution
+  // ============================================================================
+
+  /**
+   * Run a complete game from start to finish with AI controllers
+   * 
+   * @param missionAdapter - Mission runtime adapter for scoring and objectives
+   * @param aiConfigs - AI controller configurations for each side
+   * @returns Battle result with winner, statistics, and turn count
+   */
+  public async runGame(
+    missionAdapter: MissionRuntimeAdapter,
+    aiConfigs: Array<{
+      sideId: string;
+      characterAI: import('../ai/core/CharacterAI').CharacterAI;
+      tacticalDoctrine?: import('../ai/stratagems/AIStratagems').TacticalDoctrine;
+    }>
+  ): Promise<{
+    winner: string | null;
+    turnsCompleted: number;
+    stats: {
+      totalActions: number;
+      moves: number;
+      attacks: number;
+      closeCombats: number;
+      rangedCombats: number;
+      disengages: number;
+      eliminations: number;
+      kos: number;
+    };
+  }> {
+    const { CharacterAI } = await import('../ai/core/CharacterAI');
+    const { TacticalDoctrine } = await import('../ai/stratagems/AIStratagems');
+    const { DEFAULT_CHARACTER_AI_CONFIG } = await import('../ai/core/CharacterAI');
+
+    if (!this.battlefield) {
+      throw new Error('Battlefield not set');
+    }
+
+    // Set mission runtime adapter
+    this.setMissionRuntimeAdapter(missionAdapter);
+
+    // Initialize statistics tracking
+    const stats = {
+      totalActions: 0,
+      moves: 0,
+      attacks: 0,
+      closeCombats: 0,
+      rangedCombats: 0,
+      disengages: 0,
+      eliminations: 0,
+      kos: 0,
+    };
+
+    // Create AI controller map by side
+    const aiBySide = new Map<string, typeof aiConfigs[0]>();
+    for (const config of aiConfigs) {
+      aiBySide.set(config.sideId, config);
+    }
+
+    // Get sides from mission adapter
+    const sides = missionAdapter.sides;
+
+    // Build ally/enemy maps for each side
+    const alliesBySide = new Map<string, Character[]>();
+    const enemiesBySide = new Map<string, Character[]>();
+    for (const side of sides) {
+      const sideChars = side.members.map(m => m.character);
+      const enemyChars = sides
+        .filter(s => s.id !== side.id)
+        .flatMap(s => s.members.map(m => m.character));
+      alliesBySide.set(side.id, sideChars);
+      enemiesBySide.set(side.id, enemyChars);
+    }
+
+    // Main game loop
+    while (!this.isGameEnded() && this.currentTurn <= 10) {
+      // Start turn (roll initiative, etc.)
+      this.startTurn(Math.random, sides);
+
+      // Process activations until turn is over
+      while (!this.isTurnOver()) {
+        // Get next character to activate
+        const character = this.getNextToActivate();
+        if (!character) break;
+
+        // Find AI controller for this character's side
+        const characterSide = sides.find(s => s.members.some(m => m.character.id === character.id));
+        if (!characterSide) continue;
+
+        const aiConfig = aiBySide.get(characterSide.id);
+        if (!aiConfig) continue;
+
+        // Begin activation
+        this.beginActivation(character);
+        const apRemaining = this.getApRemaining(character);
+
+        // Build AI context
+        const allies = alliesBySide.get(characterSide.id) || [];
+        const enemies = enemiesBySide.get(characterSide.id) || [];
+
+        const aiContext: import('../ai/core/AIController').AIContext = {
+          character,
+          allies,
+          enemies,
+          battlefield: this.battlefield,
+          currentTurn: this.currentTurn,
+          currentRound: this.currentRound,
+          apRemaining,
+          sideId: characterSide.id,
+          objectiveMarkers: [],
+          knowledge: aiConfig.characterAI.updateKnowledge({
+            character,
+            allies,
+            enemies,
+            battlefield: this.battlefield,
+            currentTurn: this.currentTurn,
+            currentRound: this.currentRound,
+            apRemaining,
+            sideId: characterSide.id,
+            objectiveMarkers: [],
+            knowledge: {} as any,
+            config: DEFAULT_CHARACTER_AI_CONFIG,
+          }),
+          config: DEFAULT_CHARACTER_AI_CONFIG,
+        };
+
+        // Get AI decision
+        const decision = aiConfig.characterAI.decideAction(aiContext);
+
+        // Execute action
+        if (decision && decision.decision && decision.decision.type !== 'none' && decision.decision.type !== 'hold') {
+          stats.totalActions++;
+          
+          try {
+            switch (decision.decision.type) {
+              case 'move':
+              case 'charge':
+                if (decision.decision.position) {
+                  this.moveCharacter(character, decision.decision.position);
+                  stats.moves++;
+                }
+                break;
+
+              case 'close_combat':
+                if (decision.decision.target && decision.decision.weapon) {
+                  const result = this.executeCloseCombatAttack(
+                    character,
+                    decision.decision.target,
+                    decision.decision.weapon,
+                    { isCharge: decision.decision.isCharge }
+                  );
+                  stats.closeCombats++;
+                  stats.attacks++;
+                  if (result.damageResolution?.defenderKOd) stats.kos++;
+                  if (result.damageResolution?.defenderEliminated) stats.eliminations++;
+                }
+                break;
+
+              case 'ranged_combat':
+                if (decision.decision.target && decision.decision.weapon) {
+                  const result = this.executeRangedAttack(
+                    character,
+                    decision.decision.target,
+                    decision.decision.weapon,
+                    {}
+                  );
+                  stats.rangedCombats++;
+                  stats.attacks++;
+                  if (result.damageResolution?.defenderKOd) stats.kos++;
+                  if (result.damageResolution?.defenderEliminated) stats.eliminations++;
+                }
+                break;
+
+              case 'disengage':
+                if (decision.decision.target) {
+                  this.executeDisengageAction(character, decision.decision.target);
+                  stats.disengages++;
+                }
+                break;
+
+              case 'wait':
+                this.executeWaitAction(character);
+                stats.waits++;
+                break;
+                
+              case 'rally':
+              case 'revive':
+              case 'fiddle':
+              case 'reload':
+                // These actions are handled but not tracked in basic stats
+                break;
+            }
+          } catch (error) {
+            console.error(`Error executing action for ${character.name}:`, error);
+          }
+        }
+
+        // End activation
+        this.endActivation(character);
+      }
+
+      // End turn (check end-game trigger)
+      this.endTurn();
+      this.advancePhase({ roller: Math.random });
+    }
+
+    // Determine winner
+    let winner: string | null = null;
+    const sideRemaining = sides.map(side => ({
+      sideId: side.id,
+      remaining: side.members.filter(m => 
+        !m.character.state.isEliminated && !m.character.state.isKOd
+      ).length,
+    }));
+
+    const maxRemaining = Math.max(...sideRemaining.map(s => s.remaining));
+    const winners = sideRemaining.filter(s => s.remaining === maxRemaining);
+
+    if (winners.length === 1) {
+      winner = winners[0].sideId;
+    }
+
+    return {
+      winner,
+      turnsCompleted: this.currentTurn,
+      stats,
+    };
+  }
+
+  // Helper methods for action execution
+  private executeWaitAction(character: Character): void {
+    executeWaitAction({
+      setCharacterStatus: (id: string, status: CharacterStatus) => this.setCharacterStatus(id, status),
+      getCharacterStatus: (id: string) => this.getCharacterStatus(id),
+    }, character);
+  }
+
+  public executeDisengageAction(
+    disengager: Character,
+    opponent: Character
+  ): void {
+    executeDisengageAction(
+      {
+        battlefield: this.battlefield!,
+        getCharacterStatus: (id: string) => this.getCharacterStatus(id),
+        setCharacterStatus: (id: string, status: CharacterStatus) => this.setCharacterStatus(id, status),
+      },
+      disengager,
+      opponent
+    );
+  }
 }

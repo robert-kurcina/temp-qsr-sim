@@ -270,7 +270,7 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   console.log(`End-Game Trigger: Turn ${config.endGameTriggerTurn}`);
   console.log(`Archetype: ${config.archetypeName}`);
   console.log(`Weapon: ${config.weaponName}`);
-  console.log(`Armor: ${config.armorNames.join(', ')}`);
+  console.log(`Armor: ${config.armorNames.join('. ')}`);
   console.log(`Instrumentation: Grade ${config.instrumentationGrade}`);
   console.log('═══════════════════════════════════════\n');
 
@@ -357,7 +357,7 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
 
   console.log('✓ Models deployed\n');
 
-  // Create game manager
+  // Create game manager with all characters from the deployed sides
   const allCharacters = [
     ...sideA.members.map((m: any) => m.character),
     ...sideB.members.map((m: any) => m.character),
@@ -371,6 +371,8 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   console.log('═══════════════════════════════════════\n');
 
   let turnCount = 0;
+  let firstBloodAwarded = false;
+  let firstBloodSide: string | null = null;
 
   for (let turn = 1; turn <= config.maxTurns; turn++) {
     turnCount = turn;
@@ -383,34 +385,46 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
       }
 
       const charPos = battlefield.getCharacterPosition(character);
-      if (!charPos) continue;
+      if (!charPos) {
+        continue;
+      }
 
-      // Find nearest enemy
+      // Determine which side this character belongs to
+      const isSideA = sideA.members.some((m: any) => m.character.id === character.id);
+      const characterSide = isSideA ? sideA : sideB;
+      
+      // Determine opposing side
+      const opposingSide = isSideA ? sideB : sideA;
+
+      // Find nearest enemy (from opposing side only)
       let nearestEnemy: any = null;
       let nearestDist = Infinity;
-      
-      for (const enemy of allCharacters) {
-        if (enemy.id === character.id || enemy.state.isEliminated || enemy.state.isKOd) continue;
-        const enemyPos = battlefield.getCharacterPosition(enemy);
+
+      for (const enemy of opposingSide.members) {
+        const enemyChar = enemy.character;
+        if (enemyChar.state.isEliminated || enemyChar.state.isKOd) continue;
+        const enemyPos = battlefield.getCharacterPosition(enemyChar);
         if (!enemyPos) continue;
-        
+
         const dist = Math.sqrt(
           Math.pow(charPos.x - enemyPos.x, 2) +
           Math.pow(charPos.y - enemyPos.y, 2)
         );
-        
+
         if (dist < nearestDist) {
           nearestDist = dist;
-          nearestEnemy = enemy;
+          nearestEnemy = enemyChar;
         }
       }
 
-      if (!nearestEnemy) continue;
+      if (!nearestEnemy) {
+        continue;
+      }
 
       // Simple AI: move toward enemy, then attack
       const mov = character.finalAttributes?.mov ?? character.attributes?.mov ?? 2;
       const movePerAP = mov + 2;
-      
+
       if (nearestDist > 1) {
         // Move toward enemy
         const enemyPos = battlefield.getCharacterPosition(nearestEnemy)!;
@@ -418,10 +432,10 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
         const dy = (enemyPos.y - charPos.y) / nearestDist;
         const newX = Math.round(charPos.x + dx * Math.min(movePerAP * 2, nearestDist - 1));
         const newY = Math.round(charPos.y + dy * Math.min(movePerAP * 2, nearestDist - 1));
-        
+
         try {
           battlefield.moveCharacter(character, { x: newX, y: newY });
-          
+
           logger.logAction({
             turn: turnCount,
             initiative: 1,
@@ -434,7 +448,7 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
             outcome: `Moved to (${newX}, ${newY})`,
             timestamp: new Date().toISOString(),
           });
-          
+
           console.log(`  ${character.name}: Move to (${newX}, ${newY})`);
         } catch (e) {
           // Ignore movement errors
@@ -445,14 +459,21 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
           // Simple damage resolution
           const attackerCCA = character.finalAttributes?.cca ?? character.attributes?.cca ?? 2;
           const defenderFOR = nearestEnemy.finalAttributes?.for ?? nearestEnemy.attributes?.for ?? 2;
-          
+
           const hitRoll = Math.floor(Math.random() * 6) + 1 + attackerCCA;
           const defenseRoll = Math.floor(Math.random() * 6) + 1 + defenderFOR;
           
           if (hitRoll > defenseRoll) {
             const damage = Math.floor(Math.random() * 3) + 1;
             nearestEnemy.state.wounds += damage;
-            
+
+            // Track First Blood (first side to inflict wounds)
+            if (!firstBloodAwarded) {
+              firstBloodAwarded = true;
+              firstBloodSide = characterSide.id;
+              console.log(`  🩸 FIRST BLOOD! ${characterSide.name} scores 1 VP!`);
+            }
+
             logger.logAction({
               turn: turnCount,
               initiative: 1,
@@ -467,9 +488,9 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
               outcome: `Hit for ${damage} wounds`,
               timestamp: new Date().toISOString(),
             });
-            
+
             console.log(`  ${character.name}: Attack ${nearestEnemy.name} - Hit for ${damage} wounds`);
-            
+
             if (nearestEnemy.state.wounds >= 3) {
               nearestEnemy.state.isKOd = true;
               console.log(`    → ${nearestEnemy.name} is KO'd!`);
@@ -507,17 +528,17 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   // End instrumentation logging
   const battleLog = logger.endBattle(turnCount);
 
-  // Print summary
-  printBattleSummary(config, battleLog);
+  // Print summary with Keys to Victory
+  printBattleSummary(config, battleLog, { firstBloodSide, firstBloodAwarded });
 
-  return { config, battleLog };
+  return { config, battleLog, keys: { firstBloodSide, firstBloodAwarded } };
 }
 
 // ============================================================================
 // Summary Printer
 // ============================================================================
 
-function printBattleSummary(config: BattleConfig, battleLog: any) {
+function printBattleSummary(config: BattleConfig, battleLog: any, keys: { firstBloodSide: string | null; firstBloodAwarded: boolean }) {
   console.log('📊 BATTLE SUMMARY');
   console.log('═══════════════════════════════════════');
   console.log(`Battle ID: ${battleLog.battleId}`);
@@ -525,6 +546,16 @@ function printBattleSummary(config: BattleConfig, battleLog: any) {
   console.log(`Game Size: ${config.gameSize}`);
   console.log(`Lighting: ${config.lighting.name} (OR ${config.lighting.visibilityOR} MU)`);
   console.log(`Turns: ${battleLog.totalTurns}`);
+  console.log('');
+
+  // Keys to Victory
+  console.log('🔑 KEYS TO VICTORY');
+  console.log('───────────────────────────────────────');
+  if (keys.firstBloodAwarded) {
+    console.log(`  🩸 First Blood: ${keys.firstBloodSide} (+1 VP)`);
+  } else {
+    console.log(`  🩸 First Blood: Not awarded`);
+  }
   console.log('');
 
   // Instrumentation Summary

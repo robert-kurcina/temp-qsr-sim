@@ -136,11 +136,29 @@ export class ConstrainedNavMesh {
       const next = trianglePath[i + 1];
       const edgeIndex = this.findSharedEdgeIndex(tri, next);
       if (edgeIndex < 0) continue;
-      const edge = this.data.edges[this.data.triangleEdges[tri][edgeIndex]];
+      
+      const edgeIdx = this.data.triangleEdges[tri][edgeIndex];
+      if (edgeIdx === undefined || edgeIdx < 0 || edgeIdx >= this.data.edges.length) continue;
+      
+      const edge = this.data.edges[edgeIdx];
+      if (!edge) continue;
+      
       const a = this.data.points[edge.a];
       const b = this.data.points[edge.b];
+      
+      // Validate points
+      if (!a || !b ||
+          !Number.isFinite(a.x) || !Number.isFinite(a.y) ||
+          !Number.isFinite(b.x) || !Number.isFinite(b.y)) continue;
+      
       const centerA = this.triangleCentroid(tri);
       const centerB = this.triangleCentroid(next);
+      
+      // Validate centroids
+      if (!centerA || !centerB ||
+          !Number.isFinite(centerA.x) || !Number.isFinite(centerA.y) ||
+          !Number.isFinite(centerB.x) || !Number.isFinite(centerB.y)) continue;
+      
       const dir = { x: centerB.x - centerA.x, y: centerB.y - centerA.y };
       const edgeVec = { x: b.x - a.x, y: b.y - a.y };
       const cross = ConstrainedNavMesh.cross(dir, edgeVec);
@@ -155,6 +173,23 @@ export class ConstrainedNavMesh {
 
   funnelPath(start: Position, end: Position, portals: { left: Position; right: Position }[]): Position[] {
     if (portals.length === 0) return [start, end];
+    
+    // Validate portal data to prevent invalid array operations
+    for (const portal of portals) {
+      if (!portal.left || !portal.right || 
+          !Number.isFinite(portal.left.x) || !Number.isFinite(portal.left.y) ||
+          !Number.isFinite(portal.right.x) || !Number.isFinite(portal.right.y)) {
+        return [start, end];
+      }
+    }
+    
+    // Validate start and end positions
+    if (!start || !end ||
+        !Number.isFinite(start.x) || !Number.isFinite(start.y) ||
+        !Number.isFinite(end.x) || !Number.isFinite(end.y)) {
+      return [start, end];
+    }
+    
     const path: Position[] = [];
     let apex = start;
     let left = portals[0].left;
@@ -165,7 +200,12 @@ export class ConstrainedNavMesh {
 
     path.push(apex);
 
-    for (let i = 1; i < portals.length; i++) {
+    // Add iteration limit to prevent infinite loops
+    const maxIterations = portals.length * 3;
+    let iterations = 0;
+
+    for (let i = 1; i < portals.length && iterations < maxIterations; i++) {
+      iterations++;
       const nextLeft = portals[i].left;
       const nextRight = portals[i].right;
 
@@ -202,6 +242,12 @@ export class ConstrainedNavMesh {
           continue;
         }
       }
+    }
+
+    // If we hit the iteration limit, just return what we have
+    if (iterations >= maxIterations) {
+      path.push(end);
+      return path;
     }
 
     path.push(end);

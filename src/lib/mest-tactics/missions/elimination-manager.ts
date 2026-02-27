@@ -24,6 +24,8 @@ export interface EliminationMissionState {
   vpBySide: Map<string, number>;
   /** Aggression tracking (models crossing mid-line) */
   aggression: AggressionState;
+  /** First Blood tracking (first side to inflict wounds) */
+  firstBloodSideId?: string;
   /** Scholar RP tracking (RP from Scholar X trait) */
   scholarRpBySide: Record<string, number>;
   /** Has the mission ended? */
@@ -54,6 +56,7 @@ export class EliminationMissionManager {
       eliminatedBpBySide: new Map(),
       vpBySide: new Map(),
       aggression: { crossedBySide: {}, firstCrossedSideId: undefined },
+      firstBloodSideId: undefined,
       scholarRpBySide: {},
       ended: false,
     };
@@ -106,6 +109,15 @@ export class EliminationMissionManager {
       }
     }
     return 0;
+  }
+
+  /**
+   * Track First Blood (first side to inflict wounds)
+   * Awards 1 VP to first side to wound an enemy model
+   */
+  public recordFirstBlood(sideId: string): void {
+    if (this.state.firstBloodSideId) return; // Already awarded
+    this.state.firstBloodSideId = sideId;
   }
 
   /**
@@ -489,6 +501,11 @@ export class EliminationMissionManager {
       rpBySide[sideId] = (rpBySide[sideId] ?? 0) + rp;
     }
 
+    // First Blood: +1 VP to first side to inflict wounds
+    if (this.state.firstBloodSideId) {
+      vpBySide[this.state.firstBloodSideId] = (vpBySide[this.state.firstBloodSideId] ?? 0) + 1;
+    }
+
     // Scholar RP: Add RP from surviving Scholar X characters
     // QSR: Scholar X awards X RP if character survives the mission
     for (const [sideId, scholarRp] of Object.entries(this.state.scholarRpBySide)) {
@@ -653,6 +670,31 @@ export class EliminationMissionManager {
         confidence: rp > 0 ? 1.0 : 0.0,
         leadMargin: rp,
       };
+    }
+
+    // Calculate First Blood key scores
+    // First Blood is already awarded or not - it's deterministic
+    if (this.state.firstBloodSideId) {
+      sideScores[this.state.firstBloodSideId].keyScores['first_blood'] = {
+        current: 1, // Already awarded
+        predicted: 1,
+        confidence: 1.0,
+        leadMargin: 1,
+      };
+      sideScores[this.state.firstBloodSideId].predictedVp += 1;
+    } else {
+      // First Blood not yet awarded - all sides have equal chance
+      // For prediction purposes, assume it will be awarded (most likely scenario)
+      // In a real game, the side with more aggressive play will get it
+      // For simplicity, we'll mark it as 0 predicted but available
+      for (const sideId of Object.keys(sideScores)) {
+        sideScores[sideId].keyScores['first_blood'] = {
+          current: 0,
+          predicted: 0, // Will be awarded when first wound is inflicted
+          confidence: 0.0,
+          leadMargin: 0,
+        };
+      }
     }
 
     // Calculate Scholar RP key scores
