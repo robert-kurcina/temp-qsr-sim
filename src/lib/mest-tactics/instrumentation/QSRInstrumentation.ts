@@ -304,6 +304,239 @@ export interface BattleLogSummary {
 }
 
 // ============================================================================
+// BATTLE INSTRUMENTATION STRUCTURE (Grade 2+)
+// ============================================================================
+
+/**
+ * Start of Game Report
+ */
+export interface StartOfGameReport {
+  /** Mission Configuration */
+  mission: {
+    id: string;
+    name: string;
+    gameSize: string;
+    sides: number;
+    terrainDensity: number;
+    lighting: {
+      name: string;
+      visibilityOR: number;
+    };
+    battlefieldSize: number;
+    endGameTriggerTurn: number;
+  };
+  
+  /** Battlefield Visualization */
+  battlefield: {
+    svgPath: string;
+    svgUrl?: string;
+    terrainElements: {
+      id: string;
+      type: string;
+      vertices: { x: number; y: number }[];
+    }[];
+    modelStartingPositions: {
+      sideId: string;
+      models: {
+        modelId: string;
+        characterName: string;
+        position: { x: number; y: number };
+      }[];
+    }[];
+  };
+  
+  /** Side Declarations */
+  sides: {
+    sideId: string;
+    sideName: string;
+    tacticalDoctrine: string;
+    assemblies: {
+      assemblyName: string;
+      totalBP: number;
+      characters: {
+        modelId: string;
+        characterName: string;
+        profile: {
+          name: string;
+          archetype: string;
+          totalBP: number;
+          attributes: {
+            cca: number; rca: number; ref: number;
+            int: number; pow: number; str: number;
+            for: number; mov: number; siz: number;
+          };
+          traits: string[];
+          items: {
+            name: string;
+            classification: string;
+            traits: string[];
+            bp: number;
+          }[];
+        };
+        deploymentPosition: { x: number; y: number };
+      }[];
+    }[];
+    initiativePoints: number;
+    hasInitiativeCard: boolean;
+  }[];
+  
+  /** AI Configuration */
+  aiConfig: {
+    strategicLayerEnabled: boolean;
+    tacticalLayerEnabled: boolean;
+    characterAIEnabled: boolean;
+    maxActionsPerTurn: number;
+    instrumentationGrade: number;
+  };
+  
+  /** Random Seed */
+  seed?: number;
+}
+
+/**
+ * Initiative Test Report (Start of Turn)
+ */
+export interface InitiativeTestReport {
+  turn: number;
+  modelsInLOS: {
+    sideId: string;
+    models: {
+      modelId: string;
+      visibleEnemies: string[];
+    }[];
+  }[];
+  leadershipBonus?: { modelId: string; bonus: number };
+  tacticsBonus?: { modelId: string; bonus: number };
+  rolls: {
+    sideId: string;
+    dice: number[];
+    successes: number;
+    pips: number;
+  }[];
+  winner: string | null;
+  tieBroken: boolean;
+  initiativeCardUsed: boolean;
+  ipAwarded: {
+    sideId: string;
+    amount: number;
+    reason: 'highest_initiative' | 'carry_over' | 'tie_break';
+  }[];
+  initiativeCard: {
+    holder: string | null;
+    transferred: boolean;
+  };
+  ipAvailable: Record<string, number>;
+}
+
+/**
+ * Turn Action Report (During Turn)
+ */
+export interface TurnActionReport {
+  turn: number;
+  activations: {
+    sideId: string;
+    modelId: string;
+    apStart: number;
+    actions: {
+      actionType: string;
+      apSpent: number;
+      apRemaining: number;
+      result: 'success' | 'failure';
+      details?: any;
+      tests?: {
+        testType: string;
+        dicePool: { base: number; modifier: number; wild: number };
+        rolls: number[];
+        successes: number;
+        result: 'pass' | 'fail';
+        initiativeCardUsed: boolean;
+      }[];
+      ipSpent?: {
+        sideId: string;
+        amount: number;
+        purpose: 'maintain_initiative' | 'force_initiative' | 'refresh';
+        characterId?: string;
+      };
+    }[];
+    apEnd: number;
+  }[];
+  initiativeCard: {
+    holder: string | null;
+    usedThisTurn: boolean;
+    transferred: boolean;
+  };
+}
+
+/**
+ * Turn End Report
+ */
+export interface TurnEndReport {
+  turn: number;
+  ipDiscarded: {
+    sideId: string;
+    amount: number;
+  }[];
+  bottleTests?: {
+    sideId: string;
+    modelsRequired: string[];
+    results: {
+      modelId: string;
+      roll: number;
+      target: number;
+      result: 'pass' | 'fail';
+    }[];
+    sideBottled: boolean;
+  }[];
+  endGameTrigger: {
+    diceAdded: boolean;
+    totalDice: number;
+    rolled: boolean;
+    rolls?: number[];
+    gameEnded: boolean;
+  };
+  standings: {
+    sideId: string;
+    victoryPoints: number;
+    resourcePoints: number;
+  }[];
+}
+
+/**
+ * Game End Report
+ */
+export interface GameEndReport {
+  endReason: 'elimination' | 'bottled' | 'end_game_trigger' | 'turn_limit';
+  finalStandings: {
+    sideId: string;
+    victoryPoints: number;
+    resourcePoints: number;
+    modelsRemaining: number;
+    rank: number;
+  }[];
+  winner: {
+    sideId: string | null;
+    tie: boolean;
+    tieBreakMethod: 'none' | 'rp' | 'initiative_card';
+    reason: string;
+  };
+  keysAchieved: {
+    sideId: string;
+    keys: {
+      keyName: string;
+      achieved: boolean;
+      details?: any;
+    }[];
+  }[];
+  statistics: {
+    totalTurns: number;
+    totalActions: number;
+    totalTests: number;
+    totalIPSpent: Record<string, number>;
+    casualties: Record<string, number>;
+  };
+}
+
+// ============================================================================
 // INSTRUMENTATION LOGGER
 // ============================================================================
 
@@ -394,6 +627,75 @@ export class InstrumentationLogger {
         turn,
       });
     }
+  }
+
+  /**
+   * Log Start of Game report (grade 2+)
+   */
+  logStartOfGame(report: StartOfGameReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store in battleLog for later retrieval
+    (this.battleLog as any).startOfGame = report;
+  }
+
+  /**
+   * Log Initiative Test report (grade 2+)
+   */
+  logInitiativeTest(report: InitiativeTestReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Update initiative tracking with full report
+    const turnTracking = this.battleLog.initiativeTracking?.find(t => t.turn === report.turn);
+    if (turnTracking) {
+      turnTracking.ipBySide = report.ipAvailable;
+    }
+    // Store detailed report for later retrieval
+    if (!(this.battleLog as any).initiativeTests) {
+      (this.battleLog as any).initiativeTests = [];
+    }
+    (this.battleLog as any).initiativeTests.push(report);
+  }
+
+  /**
+   * Log Turn Action report (grade 2+)
+   */
+  logTurnActions(report: TurnActionReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store detailed report for later retrieval
+    if (!(this.battleLog as any).turnActions) {
+      (this.battleLog as any).turnActions = [];
+    }
+    (this.battleLog as any).turnActions.push(report);
+  }
+
+  /**
+   * Log Turn End report (grade 2+)
+   */
+  logTurnEnd(report: TurnEndReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store detailed report for later retrieval
+    if (!(this.battleLog as any).turnEnds) {
+      (this.battleLog as any).turnEnds = [];
+    }
+    (this.battleLog as any).turnEnds.push(report);
+  }
+
+  /**
+   * Log Game End report (grade 2+)
+   */
+  logGameEnd(report: GameEndReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store in battleLog for later retrieval
+    (this.battleLog as any).gameEnd = report;
   }
 
   /**

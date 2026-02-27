@@ -689,6 +689,249 @@ export class UtilityScorer {
       // Re-sort after applying modifiers
       finalActions.sort((a, b) => b.score - a.score);
 
+      // Evaluate Pushing action (QSR p.789-791)
+      // Pushing allows character to gain +1 AP once per Initiative, but adds a Delay token
+      // Evaluate BEFORE finalizing action list so Pushing can enable other actions
+      const canPush =
+        !context.character.state.hasPushedThisInitiative &&
+        (context.character.state.delayTokens ?? 0) === 0;
+      
+      if (canPush) {
+        // Pushing is valuable when character can use extra AP effectively:
+        // 1. Has multiple valuable actions (move + attack, attack + attack, etc.)
+        // 2. Could use Concentrate for important attack
+        // 3. Needs extra movement to reach objective/enemy
+        // 4. Could use extra AP to Hide (become Hidden near enemy)
+        // 5. Side has IP available (can Refresh to remove Delay token)
+        // 6. Is in good position (not vulnerable after gaining Delay)
+        
+        const actionCount = finalActions.filter(a =>
+          ['move', 'close_combat', 'ranged_combat'].includes(a.action) && a.score > 0.3
+        ).length;
+        
+        const topActionScore = finalActions[0]?.score ?? 0;
+        const secondActionScore = finalActions[1]?.score ?? 0;
+        
+        // Check if character could benefit from Concentrate
+        const hasImportantTarget = finalActions.some(a =>
+          (a.action === 'close_combat' || a.action === 'ranged_combat') &&
+          a.score > 0.7 &&
+          a.target &&
+          (a.target.profile?.archetype === 'Elite' || 
+           a.target.profile?.archetype === 'Veteran' ||
+           a.factors?.isOutnumbered)
+        );
+        
+        // Check if extra movement would be valuable
+        const needsMovement = finalActions.some(a =>
+          a.action === 'move' && a.score > 0.5
+        );
+        
+        // Check if character could benefit from Hiding
+        // Hiding is valuable when:
+        // - Character is in/near cover or terrain that blocks LOS
+        // - Enemy models are nearby (within LOS/FOV range)
+        // - Character would benefit from being Hidden (ranged model, low defense, etc.)
+        const couldHide = !context.character.state.isHidden &&
+          (context.character.profile?.items?.some(i => 
+            (i.classification || i.class || '').toLowerCase().includes('range') ||
+            (i.classification || i.class || '').toLowerCase().includes('bow')
+          ) ?? false);
+        
+        let enemiesNearby = 0;
+        let isInCover = false;
+        
+        if (characterPos) {
+          enemiesNearby = context.enemies.filter(e => {
+            const enemyPos = context.battlefield.getCharacterPosition(e);
+            if (!enemyPos) return false;
+            const dist = Math.hypot(
+              characterPos.x - enemyPos.x,
+              characterPos.y - enemyPos.y
+            );
+            return dist <= 16; // Within typical visibility range
+          }).length;
+          
+          isInCover = this.evaluateCover(characterPos, context) > 0;
+        }
+        
+        const couldBenefitFromHiding = couldHide && enemiesNearby > 0 && isInCover;
+        
+        // Check if Side has IP available (can Refresh to remove Delay token)
+        // Having IP reduces the risk/cost of Pushing
+        const sideHasIP = (context.side?.state.initiativePoints ?? 0) >= 1;
+        const ipAggressionBonus = sideHasIP ? 0.3 : 0; // Bonus for having IP available
+
+        // Check Tactical Doctrine - Aggressive doctrines encourage Pushing
+        const doctrine = context.config.tacticalDoctrine ?? TacticalDoctrine.Operative;
+        const stratagemModifiers = calculateStratagemModifiers(doctrine);
+        const doctrinePushBonus = stratagemModifiers.pushAdvantage ? 0.3 : 0;
+
+        // Check if character is in good position (not vulnerable)
+        const isInGoodPosition = !context.battlefield.isEngaged?.(context.character) ||
+          this.countEnemyInMeleeRange(context, characterPos, 1.5) <= 
+          this.countFriendlyInMeleeRange(context, characterPos, 1.5);
+        
+        // Calculate Pushing score
+        let pushScore = 0;
+        
+        // Base score from enabling multiple actions
+        if (actionCount >= 2) {
+          pushScore += (topActionScore + secondActionScore) * 0.6;
+        } else if (actionCount === 1) {
+          pushScore += topActionScore * 0.4;
+        }
+        
+        // Bonus for Concentrate on important target
+        if (hasImportantTarget) {
+          pushScore += 0.5;
+        }
+        
+        // Bonus for extra movement
+        if (needsMovement) {
+          pushScore += 0.3;
+        }
+        
+        // Bonus for Hiding (significant tactical benefit)
+        if (couldBenefitFromHiding) {
+          // Hiding is very valuable - enemies can't target you easily
+          pushScore += 0.6;
+          
+          // Extra bonus if multiple enemies nearby
+          if (enemiesNearby >= 2) {
+            pushScore += 0.2;
+          }
+        }
+        
+        // Bonus if Side has IP (can Refresh to remove Delay token)
+        // This encourages aggressive Pushing when resources are available
+        if (sideHasIP) {
+          pushScore += ipAggressionBonus;
+        }
+
+        // Bonus if Tactical Doctrine encourages pushing (Aggressive doctrines)
+        if (doctrinePushBonus > 0) {
+          pushScore += doctrinePushBonus;
+        }
+
+        // Penalty if vulnerable (gaining Delay token is risky)
+        if (!isInGoodPosition) {
+          pushScore *= 0.5;
+        }
+        
+        // Penalty for Delay token cost (reduced if Side has IP)
+        const delayTokenCost = sideHasIP ? -0.1 : -0.2; // Less penalty if can Refresh
+        pushScore += delayTokenCost;
+        
+        // Only recommend Pushing if net benefit is positive
+        if (pushScore > 0.2) {
+          finalActions.push({
+            action: 'pushing',
+            score: pushScore,
+            factors: {
+              actionCount,
+              hasImportantTarget: hasImportantTarget ? 1 : 0,
+              needsMovement: needsMovement ? 1 : 0,
+              couldBenefitFromHiding: couldBenefitFromHiding ? 1 : 0,
+              sideHasIP: sideHasIP ? 1 : 0,
+              enemiesNearby,
+              isInCover: isInCover ? 1 : 0,
+              isInGoodPosition: isInGoodPosition ? 1 : 0,
+              concentrateBenefit: hasImportantTarget ? 0.5 : 0,
+              hideBenefit: couldBenefitFromHiding ? 0.6 : 0,
+              ipAggressionBonus: ipAggressionBonus,
+              doctrinePushBonus: doctrinePushBonus,
+              delayTokenCost,
+            },
+          });
+        }
+      }
+
+      // Evaluate Refresh action (QSR p.784)
+      // Spend 1 IP from Side to remove 1 Delay token from character
+      // Only valuable if character has Delay tokens and IP is available
+      const hasDelayTokens = (context.character.state.delayTokens ?? 0) > 0;
+      const sideHasIP = (context.side?.state.initiativePoints ?? 0) >= 1;
+
+      if (hasDelayTokens && sideHasIP) {
+        // Refresh is valuable when:
+        // 1. Character has multiple Delay tokens (can act again sooner)
+        // 2. Character is in a valuable position (engaged with enemy, near objective)
+        // 3. Side has excess IP (more than 2)
+        // 4. Character could benefit from acting sooner (ranged model, etc.)
+        // 5. Tactical Doctrine encourages IP spending (Aggressive) or hoarding (Commander)
+
+        const delayTokenCount = context.character.state.delayTokens ?? 0;
+        const isEngaged = context.battlefield.isEngaged?.(context.character) ?? false;
+        const hasExcessIP = (context.side?.state.initiativePoints ?? 0) > 2;
+
+        // Check if character would benefit from acting sooner
+        const isRanged = context.character.profile?.items?.some(i =>
+          (i.classification || i.class || '').toLowerCase().includes('range') ||
+          (i.classification || i.class || '').toLowerCase().includes('bow')
+        ) ?? false;
+        const couldBenefitFromActingSooner = isRanged || isEngaged;
+
+        // Check Tactical Doctrine - affects IP spending behavior
+        const doctrine = context.config.tacticalDoctrine ?? TacticalDoctrine.Operative;
+        const stratagemModifiers = calculateStratagemModifiers(doctrine);
+        
+        // Aggressive doctrines spend IP more freely
+        // Defensive/Commander doctrines hoard IP for Force Initiative
+        let doctrineIPModifier = 0;
+        if (stratagemModifiers.pushAdvantage) {
+          doctrineIPModifier = 0.2; // Aggressive: spend IP freely
+        } else if (doctrine === TacticalDoctrine.Commander || 
+                   doctrine === TacticalDoctrine.Defender) {
+          doctrineIPModifier = -0.3; // Commander/Defender: hoard IP
+        }
+
+        let refreshScore = 0;
+
+        // Base score from removing Delay tokens (more tokens = more valuable)
+        refreshScore += delayTokenCount * 0.5;
+
+        // Bonus if engaged (can attack sooner)
+        if (isEngaged) {
+          refreshScore += 0.5;
+        }
+
+        // Bonus if ranged model (can shoot sooner)
+        if (isRanged && !isEngaged) {
+          refreshScore += 0.4;
+        }
+
+        // Bonus if side has excess IP
+        if (hasExcessIP) {
+          refreshScore += 0.3;
+        }
+
+        // Bonus if character could benefit from acting sooner
+        if (couldBenefitFromActingSooner) {
+          refreshScore += 0.2;
+        }
+
+        // Apply doctrine modifier
+        refreshScore += doctrineIPModifier;
+
+        // Lower threshold - Refresh is often valuable when IP is available
+        if (refreshScore > 0.2) {
+          finalActions.push({
+            action: 'refresh',
+            score: refreshScore,
+            factors: {
+              delayTokenCount,
+              isEngaged: isEngaged ? 1 : 0,
+              isRanged: isRanged ? 1 : 0,
+              hasExcessIP: hasExcessIP ? 1 : 0,
+              couldBenefitFromActingSooner: couldBenefitFromActingSooner ? 1 : 0,
+              doctrineIPModifier,
+              ipCost: -0.1, // Small penalty for spending IP
+            },
+          });
+        }
+      }
+
       // Fallback: If no valid actions, add a hold action
       if (finalActions.length === 0) {
         finalActions.push({

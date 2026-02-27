@@ -13,6 +13,7 @@ import { GameManager } from '../engine/GameManager';
 import { ActionDecision, ActionType } from '../core/AIController';
 import { validateAction, ActionValidation } from '../tactical/GOAP';
 import { attemptHide, attemptDetect } from '../../status/concealment';
+import { performPushing } from '../../actions/pushing-and-maneuvers';
 import { InstrumentationLogger, LoggedActionType, LoggedAction } from '../../instrumentation/QSRInstrumentation';
 
 /**
@@ -291,6 +292,12 @@ export class AIActionExecutor {
       case 'wait':
         return this.executeWait(character, context);
 
+      case 'pushing':
+        return this.executePushing(character, context);
+
+      case 'refresh':
+        return this.executeRefresh(character, context);
+
       case 'hide':
         return this.executeHide(character, context);
 
@@ -320,6 +327,62 @@ export class AIActionExecutor {
       { type: 'hold', reason: 'Hold position', priority: 0, requiresAP: false },
       character,
       'Character holds position'
+    );
+  }
+
+  /**
+   * Execute Pushing action (QSR p.789-791)
+   * Character gains +1 AP but acquires a Delay token
+   * Does NOT cost AP to perform
+   */
+  private executePushing(
+    character: Character,
+    context: AIExecutionContext
+  ): ExecutionResult {
+    const result = performPushing(
+      this.manager.activationDeps(),
+      character
+    );
+
+    if (result.success) {
+      return this.createSuccess(
+        { type: 'pushing', reason: 'Pushing for extra AP', priority: 2, requiresAP: false },
+        character,
+        `Pushing: gained ${result.apGained} AP, acquired Delay token`
+      );
+    }
+
+    return this.createFailure(
+      { type: 'pushing', reason: 'Pushing failed', priority: 2, requiresAP: false },
+      character,
+      result.reason ?? 'Pushing failed'
+    );
+  }
+
+  /**
+   * Execute Refresh action (QSR p.784)
+   * Spend 1 IP from Side to remove 1 Delay token from character
+   * Does NOT cost AP to perform
+   */
+  private executeRefresh(
+    character: Character,
+    context: AIExecutionContext
+  ): ExecutionResult {
+    // Spend 1 IP and remove 1 Delay token
+    const result = this.manager.refreshForCharacter(character);
+
+    if (result) {
+      return this.createSuccess(
+        { type: 'refresh', reason: 'Refresh: remove Delay token', priority: 2, requiresAP: false },
+        character,
+        'Refresh: removed 1 Delay token, spent 1 IP'
+      );
+    }
+
+    return this.createFailure(
+      { type: 'refresh', reason: 'Refresh failed', priority: 2, requiresAP: false },
+      character,
+      'Insufficient IP or no Delay tokens to remove'
     );
   }
 
@@ -910,6 +973,8 @@ export class AIActionExecutor {
       'hold': LoggedActionType.OTHER,
       'detect': LoggedActionType.OTHER,
       'none': LoggedActionType.OTHER,
+      'pushing': LoggedActionType.OTHER, // Pushing is a special action
+      'refresh': LoggedActionType.OTHER, // Refresh is IP spending
     };
     return typeMap[type] || LoggedActionType.OTHER;
   }

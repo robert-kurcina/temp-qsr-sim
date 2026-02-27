@@ -22,7 +22,8 @@ import { MissionLoader } from '../../src/lib/mest-tactics/missions/mission-loade
 import { MissionEngine } from '../../src/lib/mest-tactics/missions/mission-engine';
 import { MissionRuntimeAdapter } from '../../src/lib/mest-tactics/missions/mission-runtime-adapter';
 import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-game-trigger';
-import { InstrumentationLogger, InstrumentationGrade } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
+import { InstrumentationLogger, InstrumentationGrade, StartOfGameReport, InitiativeTestReport, TurnActionReport, TurnEndReport, GameEndReport } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
+import { SvgRenderer } from '../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
 import { AIGameLoop, DEFAULT_AI_GAME_LOOP_CONFIG } from '../../src/lib/mest-tactics/ai/executor/AIGameLoop';
 
 // Re-export for convenience
@@ -154,10 +155,9 @@ export interface BattleStats {
  * Keys to Victory
  */
 export interface KeysToVictory {
-  /** First Blood side ID */
-  firstBloodSide: string | null;
-  /** First Blood awarded */
-  firstBloodAwarded: boolean;
+  /** Aggression: First to cross midline */
+  aggressionAwarded: boolean;
+  aggressionSide: string | null;
 }
 
 // ============================================================================
@@ -282,6 +282,9 @@ export class BattleRunner {
 
     // Log roster information (grade 1+)
     this.logRoster(sides);
+    
+    // Log Start of Game report (grade 2+)
+    await this.logStartOfGame(sides, battlefield, terrain);
 
     // Create game manager
     const allCharacters = sides.flatMap(side =>
@@ -473,10 +476,10 @@ export class BattleRunner {
       maxActionsPerTurn: 3,
     }, this.logger);
 
-    // Track First Blood
+    // Track Aggression (first to cross midline)
     const keys: KeysToVictory = {
-      firstBloodSide: null,
-      firstBloodAwarded: false,
+      aggressionAwarded: false,
+      aggressionSide: null,
     };
 
     // Battle statistics
@@ -513,29 +516,86 @@ export class BattleRunner {
     // Run AI Game Loop
     for (let turn = 1; turn <= maxTurns; turn++) {
       turnCount = turn;
-      console.log(`\n━━━ TURN ${turn} ━━━\n`);
+      
+      // ═══════════════════════════════════════
+      // START OF TURN
+      // ═══════════════════════════════════════
+      console.log('');
+      console.log('═══════════════════════════════════════');
+      console.log(`📋 START OF TURN ${turn}`);
+      console.log('═══════════════════════════════════════');
+      
+      // Show Initiative Points at start of turn (grade 2+)
+      if (this.config.instrumentationGrade >= 2) {
+        const ipSummary = sides.map(s => `${s.name}: ${s.state.initiativePoints ?? 0} IP`).join(', ');
+        console.log(`📊 Initiative Points: ${ipSummary}`);
+        
+        // Log initiative test report
+        const initiativeReport: InitiativeTestReport = {
+          turn,
+          modelsInLOS: sides.map(s => ({
+            sideId: s.id,
+            models: s.members.map((m: any) => ({
+              modelId: m.character.id,
+              visibleEnemies: [], // Would need LOS calculation
+            })),
+          })),
+          rolls: [], // Would need actual dice rolls from rollInitiative
+          winner: null,
+          tieBroken: false,
+          initiativeCardUsed: false,
+          ipAwarded: [],
+          initiativeCard: { holder: null, transferred: false },
+          ipAvailable: sides.reduce((acc: any, s: any) => {
+            acc[s.id] = s.state.initiativePoints ?? 0;
+            return acc;
+          }, {}),
+        };
+        this.logger.logInitiativeTest(initiativeReport);
+      }
+      console.log('');
+      
+      // ═══════════════════════════════════════
+      // DURING TURN
+      // ═══════════════════════════════════════
+      console.log('═══════════════════════════════════════');
+      console.log(`⚔️ DURING TURN ${turn}`);
+      console.log('═══════════════════════════════════════');
+      console.log('');
 
       // Run one turn of AI Game Loop
       const turnResult = aiGameLoop.runTurn(turn);
 
-      // Track First Blood (check if any side scored first hit this turn)
-      if (!keys.firstBloodAwarded && turnResult.totalActions > 0) {
-        // First Blood awarded to first side that performed an attack action
-        // For simplicity, award to first side
-        keys.firstBloodAwarded = true;
-        keys.firstBloodSide = sides[0]?.id || null;
-        if (keys.firstBloodSide) {
-          vpBySide[keys.firstBloodSide] = (vpBySide[keys.firstBloodSide] || 0) + 1;
-          console.log(`  🩸 FIRST BLOOD! ${sides[0]?.name} scores 1 VP!`);
+      // Track Aggression (first to cross midline)
+      // Midline is at battlefield.width / 2
+      if (!keys.aggressionAwarded) {
+        const midline = battlefield.width / 2;
+        for (const side of sides) {
+          for (const member of side.members) {
+            const pos = battlefield.getCharacterPosition(member.character);
+            if (pos && pos.y > midline) {
+              keys.aggressionAwarded = true;
+              keys.aggressionSide = side.id;
+              vpBySide[side.id] = (vpBySide[side.id] || 0) + 1;
+              console.log(`  ⚔️ AGGRESSION! ${side.name} crossed midline, scores 1 VP!`);
+              break;
+            }
+          }
+          if (keys.aggressionAwarded) break;
         }
       }
 
-      // Note: KO and elimination stats tracked by AI Game Loop internally
-      // For now, we'll update from battlefield state at end of game
-
       console.log('');
+      
+      // ═══════════════════════════════════════
+      // END OF TURN
+      // ═══════════════════════════════════════
+      console.log('═══════════════════════════════════════');
+      console.log(`📋 END OF TURN ${turn}`);
+      console.log('═══════════════════════════════════════');
 
       // End-game Trigger dice rolling (per QSR Line 744-750)
+      let turnEndReport: TurnEndReport | null = null;
       if (turnCount >= endGameTriggerTurn) {
         endDice++;
 
@@ -548,11 +608,59 @@ export class BattleRunner {
         console.log(`🎲 END-GAME TRIGGER (Turn ${turnCount}, ${endDice} dice): [${endRolls.join(', ')}]`);
 
         const miss = endRolls.some(roll => roll <= 3);
+        
+        turnEndReport = {
+          turn: turnCount,
+          ipDiscarded: [], // IP discarded at end of turn
+          bottleTests: [], // Would need bottle test results
+          endGameTrigger: {
+            diceAdded: true,
+            totalDice: endDice,
+            rolled: true,
+            rolls: endRolls,
+            gameEnded: miss,
+          },
+          standings: sides.map((s: any) => ({
+            sideId: s.id,
+            victoryPoints: vpBySide[s.id] || 0,
+            resourcePoints: 0,
+          })),
+        };
+        
+        if (this.config.instrumentationGrade >= 2 && turnEndReport) {
+          this.logger.logTurnEnd(turnEndReport);
+        }
+
         if (miss) {
           gameEnded = true;
           endGameReason = `End-game Trigger dice rolled miss (1-3) on Turn ${turnCount}`;
           console.log(`🏁 GAME ENDED: ${endGameReason}`);
           break;
+        }
+      } else {
+        // Log turn end even without end-game trigger
+        turnEndReport = {
+          turn: turnCount,
+          ipDiscarded: sides.map((s: any) => ({
+            sideId: s.id,
+            amount: s.state.initiativePoints ?? 0,
+          })),
+          bottleTests: [],
+          endGameTrigger: {
+            diceAdded: false,
+            totalDice: 0,
+            rolled: false,
+            gameEnded: false,
+          },
+          standings: sides.map((s: any) => ({
+            sideId: s.id,
+            victoryPoints: vpBySide[s.id] || 0,
+            resourcePoints: 0,
+          })),
+        };
+        
+        if (this.config.instrumentationGrade >= 2) {
+          this.logger.logTurnEnd(turnEndReport);
         }
       }
 
@@ -571,7 +679,18 @@ export class BattleRunner {
         console.log(`🏁 GAME ENDED: ${endGameReason}`);
         break;
       }
+      
+      console.log('');
     }
+
+    // ═══════════════════════════════════════
+    // END OF GAME
+    // ═══════════════════════════════════════
+    console.log('');
+    console.log('═══════════════════════════════════════');
+    console.log('📋 END OF GAME');
+    console.log('═══════════════════════════════════════');
+    console.log('');
 
     // Determine winner using proper mission scoring with RP tie-break
     let winnerSide: string | null = null;
@@ -665,10 +784,10 @@ export class BattleRunner {
     // Keys to Victory
     console.log('🔑 KEYS TO VICTORY');
     console.log('───────────────────────────────────────');
-    if (result.keys.firstBloodAwarded) {
-      console.log(`  🩸 First Blood: ${result.keys.firstBloodSide} ✅ (+1 VP)`);
+    if (result.keys.aggressionAwarded) {
+      console.log(`  ⚔️ Aggression: ${result.keys.aggressionSide} ✅ (+1 VP)`);
     } else {
-      console.log(`  🩸 First Blood: Not awarded`);
+      console.log(`  ⚔️ Aggression: Not awarded`);
     }
     console.log('');
 
@@ -709,6 +828,81 @@ export class BattleRunner {
       const jsonLog = JSON.stringify(battleLog, null, 2);
       console.log(`Log size: ${jsonLog.length} bytes`);
       console.log(`\nTo save: echo '${jsonLog}' > battle-log.json`);
+      
+      // Log Game End report (grade 2+)
+      if (this.config.instrumentationGrade >= 2) {
+        const gameEndReport: GameEndReport = {
+          endReason: result.endGameReason.includes('elimination') ? 'elimination' :
+                     result.endGameReason.includes('End-game Trigger') ? 'end_game_trigger' :
+                     result.endGameReason.includes('Bottle') ? 'bottled' : 'turn_limit',
+          finalStandings: Object.entries(result.vpBySide).map(([sideId, vp], index) => ({
+            sideId,
+            victoryPoints: vp,
+            resourcePoints: 0,
+            modelsRemaining: result.stats.eliminatedBySide[sideId] ? 0 : 3,
+            rank: index + 1,
+          })),
+          winner: {
+            sideId: result.winnerSide,
+            tie: !result.winnerSide,
+            tieBreakMethod: result.winnerReason === 'rp' ? 'rp' : 'none',
+            reason: result.winnerReason === 'vp' ? 'Most Victory Points' :
+                    result.winnerReason === 'rp' ? 'Resource Points tie-break' : 'Tie',
+          },
+          keysAchieved: sides.map((s: any) => ({
+            sideId: s.id,
+            keys: [
+              {
+                keyName: 'Aggression',
+                achieved: result.keys.aggressionSide === s.id,
+                details: result.keys.aggressionSide === s.id ? 'First to cross midline' : undefined,
+              },
+              {
+                keyName: 'Elimination',
+                achieved: (result.stats.eliminatedBySide[s.id] || 0) > 0,
+                details: `${result.stats.eliminatedBySide[s.id] || 0} models eliminated`,
+              },
+            ],
+          })),
+          statistics: {
+            totalTurns: result.turnsPlayed,
+            totalActions: battleLog.summary.totalActions,
+            totalTests: battleLog.summary.totalTests,
+            totalIPSpent: {}, // Would need to track IP spending
+            casualties: result.stats.eliminatedBySide,
+          },
+        };
+        
+        this.logger.logGameEnd(gameEndReport);
+        
+        // Print Game End summary
+        console.log('');
+        console.log('═══════════════════════════════════════');
+        console.log('🏆 FINAL STANDINGS');
+        console.log('═══════════════════════════════════════');
+        for (const standing of gameEndReport.finalStandings) {
+          console.log(`  ${standing.rank}. ${standing.sideId}: ${standing.victoryPoints} VP, ${standing.resourcePoints} RP`);
+        }
+        console.log('');
+        console.log('🏅 WINNER');
+        console.log('═══════════════════════════════════════');
+        if (gameEndReport.winner.sideId) {
+          console.log(`  ${gameEndReport.winner.sideId} wins by ${gameEndReport.winner.reason}`);
+        } else {
+          console.log(`  Tie game - ${gameEndReport.winner.tieBreakMethod === 'none' ? 'No tie-breaker' : gameEndReport.winner.tieBreakMethod}`);
+        }
+        console.log('');
+        console.log('🔑 KEYS TO VICTORY');
+        console.log('═══════════════════════════════════════');
+        for (const sideKeys of gameEndReport.keysAchieved) {
+          console.log(`  ${sideKeys.sideId}:`);
+          for (const key of sideKeys.keys) {
+            const status = key.achieved ? '✅' : '❌';
+            console.log(`    ${status} ${key.keyName}${key.details ? `: ${key.details}` : ''}`);
+          }
+        }
+        console.log('');
+      }
     }
   }
 
@@ -742,6 +936,182 @@ export class BattleRunner {
     });
 
     this.logger.logRoster(roster);
+  }
+
+  /**
+   * Save SVG to file
+   */
+  private async saveSVG(svgContent: string, filePath: string): Promise<void> {
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      
+      const dir = path.dirname(filePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      
+      fs.writeFileSync(filePath, svgContent);
+      console.log(`✓ Battlefield SVG saved: ${filePath}`);
+    } catch (error) {
+      console.error('Failed to save battlefield SVG:', error);
+    }
+  }
+
+  /**
+   * Log Start of Game report for instrumentation (grade 2+)
+   */
+  private async logStartOfGame(sides: any[], battlefield: any, terrain: any[]): Promise<void> {
+    if (this.config.instrumentationGrade < 2) return;
+
+    // Generate terrain markers for report
+    const terrainMarkers = terrain.map((t: any) => ({
+      id: t.id,
+      type: t.type,
+      vertices: t.vertices,
+    }));
+
+    // Generate model markers for SVG
+    const modelMarkers = sides.flatMap((side: any) =>
+      side.members.map((member: any) => {
+        const pos = battlefield.getCharacterPosition(member.character);
+        return {
+          id: member.character.id,
+          position: pos || { x: 0, y: 0 },
+          baseDiameter: 1.0,
+          color: side.id.toLowerCase().includes('a') ? '#4CAF50' : '#F44336',
+          label: member.character.name || member.character.profile.name,
+        };
+      })
+    );
+    
+    // Generate SVG using SvgRenderer
+    const svgContent = SvgRenderer.render(battlefield, {
+      width: battlefield.width,
+      height: battlefield.height,
+      gridResolution: 0.5,
+      title: `${this.config.missionId} - Turn 1`,
+      models: modelMarkers,
+      layers: [
+        { id: 'deployment', label: 'Deployment Zones', enabled: false },
+        { id: 'grid', label: '0.5 MU Grid', enabled: true },
+        { id: 'delaunay', label: 'Delaunay Mesh', enabled: false },
+        { id: 'area', label: 'Area Terrain', enabled: true },
+        { id: 'building', label: 'Buildings', enabled: true },
+        { id: 'wall', label: 'Walls', enabled: true },
+        { id: 'tree', label: 'Trees', enabled: true },
+        { id: 'rocks', label: 'Rocks', enabled: true },
+        { id: 'shrub', label: 'Shrubs', enabled: true },
+        { id: 'terrain', label: 'Other Terrain', enabled: true },
+        { id: 'models', label: 'Models', enabled: true },
+      ],
+    });
+    
+    const svgPath = `generated/battlefield-${this.config.seed || Date.now()}.svg`;
+    await this.saveSVG(svgContent, svgPath);
+
+    const report: any = {
+      mission: {
+        id: this.config.missionId,
+        name: 'Elimination',
+        gameSize: this.config.gameSize,
+        sides: this.config.sides.length,
+        terrainDensity: Math.round(this.config.terrainDensity * 100),
+        lighting: {
+          name: this.config.lighting.name,
+          visibilityOR: this.config.lighting.visibilityOR,
+        },
+        battlefieldSize: battlefield.width,
+        endGameTriggerTurn: getEndGameTriggerTurn(this.config.gameSize),
+      },
+      battlefield: {
+        svgPath: svgPath,
+        svgUrl: `http://localhost:3000/${svgPath}`,
+        terrainElements: terrainMarkers,
+        modelStartingPositions: sides.map((side: any) => ({
+          sideId: side.id,
+          models: side.members.map((member: any) => {
+            const pos = battlefield.getCharacterPosition(member.character);
+            return {
+              modelId: member.character.id,
+              characterName: member.character.name || member.character.profile.name,
+              position: pos || { x: 0, y: 0 },
+            };
+          }),
+        })),
+      },
+      sides: sides.map((side: any) => {
+        const firstMember = side.members[0];
+        return {
+          sideId: side.id,
+          sideName: side.name,
+          tacticalDoctrine: 'Balanced',
+          assemblies: [{
+            assemblyName: firstMember?.assembly?.name || 'Unknown',
+            totalBP: side.totalBP,
+            characters: side.members.map((member: any) => {
+              const archetypeObj = member.character.profile.archetype;
+              const archetypeName = typeof archetypeObj === 'string' 
+                ? archetypeObj 
+                : (archetypeObj && typeof archetypeObj === 'object' && Object.keys(archetypeObj)[0]) || 'Average';
+              
+              return {
+                modelId: member.character.id,
+                characterName: member.character.name || member.character.profile.name,
+                profile: {
+                  name: member.character.profile.name,
+                  archetype: archetypeName,
+                  totalBP: member.profile?.totalBP || 30,
+                  attributes: member.character.attributes,
+                  traits: member.character.profile.traits || [],
+                  items: (member.character.profile.items || []).map((item: any) => ({
+                    name: item.name,
+                    classification: item.classification || item.class || '',
+                    traits: item.traits || [],
+                    bp: item.bp || 0,
+                  })),
+                },
+                deploymentPosition: battlefield.getCharacterPosition(member.character) || { x: 0, y: 0 },
+              };
+            }),
+          }],
+          initiativePoints: side.state?.initiativePoints || 0,
+          hasInitiativeCard: false,
+        };
+      }),
+      aiConfig: {
+        strategicLayerEnabled: true,
+        tacticalLayerEnabled: true,
+        characterAIEnabled: true,
+        maxActionsPerTurn: 3,
+        instrumentationGrade: this.config.instrumentationGrade,
+      },
+      seed: this.config.seed,
+    };
+
+    this.logger.logStartOfGame(report);
+    
+    // Print Start of Game summary to console
+    console.log('');
+    console.log('═══════════════════════════════════════');
+    console.log('📋 START OF GAME');
+    console.log('═══════════════════════════════════════');
+    console.log(`📊 Battlefield SVG: ${svgPath}`);
+    console.log(`🔗 View: ${report.battlefield.svgUrl}`);
+    console.log('');
+    console.log('━━━ SIDE DECLARATIONS ━━━');
+    for (const side of report.sides) {
+      console.log(`\n${side.sideName} (${side.tacticalDoctrine}) - ${side.initiativePoints} IP`);
+      for (const assembly of side.assemblies) {
+        console.log(`  ${assembly.assemblyName} (${assembly.totalBP} BP)`);
+        for (const char of assembly.characters) {
+          console.log(`    ├─ ${char.characterName}: ${char.profile.archetype} (${char.profile.totalBP} BP)`);
+        }
+      }
+    }
+    console.log('');
+    console.log('═══════════════════════════════════════');
+    console.log('');
   }
 }
 

@@ -349,6 +349,23 @@ export class GameManager {
     return false;
   }
 
+  /**
+   * Refresh: Spend 1 IP to remove Delay token (finds side automatically)
+   * QSR: Spending Initiative Points - Refresh costs 1 IP
+   */
+  public refreshForCharacter(character: Character): boolean {
+    // Find the side this character belongs to
+    const side = this.missionSides?.find(s => 
+      s.members.some(m => m.character.id === character.id)
+    );
+    
+    if (!side) {
+      return false;
+    }
+    
+    return this.refresh(character, side);
+  }
+
   public getNextToActivate(): Character | undefined {
     return this.activationOrder.find(char => this.getCharacterStatus(char.id) === CharacterStatus.Ready);
   }

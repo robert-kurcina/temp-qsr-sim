@@ -8,75 +8,193 @@ This project is a collaborative effort between multiple AI engines (Qwen3-Max, G
 
 **Project Status:** ✅ Phase 1 & 2 Complete | 🔄 Phase 3 In Progress
 
-## Quick Start
+**Architecture Goal:** The codebase is being structured to eventually separate into three distinct layers:
+1. **AI System** — Generalizable AI framework for any tabletop wargame
+2. **Artifact Framework** — Battlefield visualization and spatial reasoning (game-agnostic)
+3. **MEST Tactics** — Game-specific rules, items, and mechanics
 
-```bash
-# Install dependencies
-npm install
+---
 
-# Run tests
-npm test
+## AI System Features 🤖
 
-# Generate SVG battlefields
-npm run generate:svg
+*Generalizable AI framework for tabletop wargames*
 
-# Build the project
-npm run build
-```
+### Core AI Architecture
+- **AIExecutor** — Action planning and execution pipeline
+- **GOAP (Goal-Oriented Action Planning)** — Strategic decision-making
+- **Behavior Trees** — Tactical behavior composition
+- **HFSMs (Hierarchical Finite State Machines)** — State management for AI agents
+- **Utility Scoring System** — Context-aware action evaluation with doctrine modifiers
 
-## Features
+### AI Decision-Making
+- **Tactical Doctrine System** — 27 unique doctrines (Juggernaut, Sniper, Commander, etc.)
+- **Stratagem Modifiers** — Doctrine-driven action preferences (melee/range, aggression, risk tolerance)
+- **Predicted Scoring Integration** — Real-time VP/RP awareness for strategic planning
+- **IP-Aware Decision Making** — Initiative Point spending evaluation (Refresh, Force Initiative)
+- **Pushing Evaluation** — AP management with doctrine-based aggression
 
-### Implemented ✅
+### Pathfinding & Navigation
+- **Hybrid Pathfinding** — Mesh-based for open terrain, Grid-based for complex terrain
+- **Adaptive Granularity Routing** — Performance-optimized path queries
+- **Terrain-Aware Movement** — Rough, Difficult, Impassable terrain cost calculation
+- **Engagement-Aware Pathing** — Avoids enemy engagement zones when appropriate
 
-1. **Headless Simulation Engine**
-   - Full dice rolling mechanics (Base, Modifier, Wild dice)
-   - Combat resolution (Close Combat, Ranged, Indirect)
-   - Action system (Move, Attack, Disengage, React, etc.)
-   - Status effects (Morale, Concealment, Fear, KO, etc.)
+### Testing & Validation
+- **CLI-Based AI vs AI Testing** — Automated battle simulation with configurable parameters
+- **Battle Configurations** — 9 preset configurations (very-small through ai-stress-test)
+- **Instrumentation System** — 6-grade detail levels for battle analysis (None → Full Detail)
+- **Reproducible Battles** — Seeded random number generation for debugging
 
-2. **Spatial Awareness**
-   - 2D battlefield with measurement utilities
-   - Line of Sight (LOS) and Line of Fire (LOF) validation
-   - Engagement and melee range checks
-   - Cover classification (direct/intervening, hard/soft/blocking)
-   - Pathfinding and terrain navigation
+---
 
-3. **AI Movement & Cover-Seeking (R3)** ✅
-   - Board-scale route selection with strategic positioning
-   - Cover quality evaluation (LOS-based)
-   - Lean opportunity detection for ranged models
-   - Exposure risk assessment
-   - Doctrine-aware scoring (ranged vs melee preferences)
-   - Size-agnostic behavior across all game sizes
+## Artifact Framework 🗺️
 
-4. **Mission System**
-   - 10 complete missions (Elimination, Convergence, Dominion, Assault, Recovery, Escort, Triumvirate, Stealth, Defiance, Breach)
-   - Data-driven mission engine
-   - Objective Markers, VIP, POI/Zone Control
-   - Reinforcements and Mission Event Hooks
+*Game-agnostic battlefield visualization and spatial reasoning*
 
-5. **Combat Traits**
-   - 43 trait implementations (Cleave, Parry, Reach, Conceal, etc.)
-   - 27 traits fully integrated into game systems
+### Battlefield Visualization
+- **SVG Map Generator** — Primitive battlefield generation with terrain and model markers
+- **Interactive Layer System** — Toggle terrain types, grid, models, LOS/LOF overlays
+- **Professional Rendering** — Delaunay mesh, area terrain, buildings, walls, trees, rocks
+- **Battle Report Integration** — SVG generation at battle start with model deployment
 
-6. **Assembly System**
-   - Profile builder from archetypes + items
-   - Assembly creation with BP budget
-   - Side assignment with position tracking
+### Spatial Awareness
+- **Line of Sight (LOS)** — Model-to-model visibility with terrain blocking
+- **Line of Fire (LOF)** — Weapon arc validation with width-aware metadata
+- **Field of Fire (FOF)** — Area coverage analysis for ranged weapons
+- **Field of View (FOV)** — Character visibility cones with ORM limits
 
-### Planned 📋
+### Spatial Operations
+- **Engagement Detection** — Base contact and melee range validation
+- **Cover Classification** — Direct, intervening, hard, soft, blocking cover types
+- **Movement Validation** — Path clearance and terrain cost calculation
+- **Position Scoring** — Cover quality, exposure risk, lean opportunity evaluation
 
-**Phase 3: Web UI for Local Play**
-- 2D SVG battlefield renderer
-- Model selection and action panel
-- Deployment phase with drag-and-drop
-- Full local play with hotseat mode
+### 2D Navigation
+- **NavMesh Generation** — Walkable area identification from terrain
+- **Constraint Handling** — Model base diameter, terrain impassability
+- **Multi-Model Pathfinding** — Collision avoidance for squad movement
 
-**Phase 4: Online Multiplayer**
-- User authentication and profiles
-- Real-time WebSocket gameplay
-- Leaderboards and statistics
-- Cloud deployment
+---
+
+## MEST Tactics Features ⚔️
+
+*Game-specific rules, items, and mechanics*
+
+### Technology & Genre System
+**Technological Periods & Ages:**
+
+| Period | Tech Level | Age | Era | Status | Advanced Features |
+|--------|------------|-----|-----|--------|-------------------|
+| **Ancient** | 1 | Stone | Prehistory to ~3000 BCE | ✅ Complete | — |
+| **Ancient** | 2 | Bronze | ~3000-1200 BCE | ✅ Complete | — |
+| **Ancient** | 3 | Iron | ~1200 BCE-500 CE | ✅ Complete | — |
+| **Archaic** | 5 | Medieval | ~500-1400 CE | ✅ Complete | — |
+| **Archaic** | 6 | Renaissance | ~1400-1600 CE | ✅ Complete | — |
+| **Archaic** | 7 | Colonial | ~1600-1750 CE | ✅ Complete | — |
+| **Expansionist** | 8 | Sail | ~1750-1850 CE | ⏳ Partial | Suppression Fire |
+| **Expansionist** | 9 | Industrial | ~1850-1900 CE | ⏳ Partial | Suppression Fire, Firelanes |
+| **Expansionist** | 10 | Machine | ~1900-1920 CE | ⏳ Partial | Suppression Fire, Firelanes |
+| **Modern** | 11 | Modern | ~1920-1950 CE | ⏳ Partial | Suppression Fire, Firelanes, Gas, Explosions |
+| **Modern** | 12 | Atomic | ~1950-1970 CE | ⏳ Partial | Suppression Fire, Firelanes, Gas, Explosions |
+| **Modern** | 13 | Information | ~1970-2000 CE | ⏳ Partial | Suppression Fire, Firelanes, Gas, Explosions |
+| **Near** | 14 | Robotics | ~2000-2025 CE | ❌ Pending | Suppression Fire, Firelanes, Gas, Explosions, Fumes |
+| **Near** | 15 | Fusion | ~2025-2050 CE | ❌ Pending | Suppression Fire, Firelanes, Gas, Explosions, Fumes |
+| **Far** | 16 | Quantum | ~2050-2100 CE | ❌ Pending | Suppression Fire, Firelanes, Gas, Explosions, Fumes |
+| **Far** | 17 | Energy | ~2100-2200 CE | ❌ Pending | Suppression Fire, Firelanes, Gas, Explosions, Fumes |
+| **Far** | 18 | Gravity | ~2200-2500 CE | ❌ Pending | Suppression Fire, Firelanes, Gas, Explosions, Fumes |
+| **Fantastic** | 19 | Symbolic (Low Magic) | ~2500 CE+ | ❌ Pending | Magic systems |
+| **Fantastic** | 20 | Symbolic (High Magic) | ~2500 CE+ | ❌ Pending | Magic systems |
+
+**Legend:**
+- ✅ Complete — All rules implemented and tested
+- ⏳ Partial — Basic items available, Advanced rules pending
+- ❌ Pending — Requires MEST.Tactics.Advanced*.txt implementation
+
+**Advanced Features Requiring Implementation:**
+- **Suppression Fire** — Automatic weapon area denial (Tech 10+)
+- **Firelanes** — Pre-sighted firing zones (Tech 10+)
+- **Explosions** — Blast radius and shrapnel rules (Tech 11+)
+- **Gas** — Gas clouds, drift, and effects (Tech 11+)
+- **Fumes** — Lingering chemical effects (Tech 14+)
+
+**Item Filtration by Age:**
+- Automatic filtering of available weapons, armor, and equipment by technological period
+- Profile generators respect technological constraints
+- Assembly builders enforce era-appropriate loadouts
+
+### Tactical Doctrine System
+**27 Unique Doctrines** across three dimensions:
+- **Engagement Style:** Melee, Ranged, Balanced
+- **Planning Priority:** Aggression, Keys to Victory, Balanced
+- **Aggression Level:** Aggressive, Balanced, Defensive
+
+**Notable Doctrines:**
+- **Juggernaut** — Melee aggression with charge bonuses
+- **Sniper** — Ranged precision with Concentrate preference
+- **Commander** — IP management for Force Initiative
+- **Soldier** — Balanced elimination focus
+- **Defender** — IP hoarding for defensive maneuvers
+
+### Character & Assembly System
+**Profile Generators:**
+- Archetype-based character creation (Untrained, Militia, Average, Veteran, Elite)
+- Item loadout generation with BP budget constraints
+- Technological age filtering for equipment
+
+**Assembly Builders:**
+- Multi-character squad creation
+- Side assignment with deployment zones
+- Portrait system with callsign generation
+
+**Variant Archetypes:**
+- Specialized variants (Archer, Brawny, Scholarly, Cultist, etc.)
+- Trait-based customization
+- BP cost balancing
+
+### Combat System
+**Dice Mechanics:**
+- d6-only success counting (Base, Modifier, Wild dice)
+- Opposed Test resolution with cascades
+- Carry-over dice for extended contests
+
+**Combat Traits:**
+- 43 trait implementations (Cleave, Parry, Reach, Conceal, etc.)
+- 27 traits fully integrated into game systems
+- Trait stacking and level management
+
+**Status Effects:**
+- Morale system (Fear, Bottle Tests, Rally)
+- Concealment (Hidden, Detect actions)
+- Delay tokens (Pushing penalty)
+- KO and Elimination tracking
+
+### Mission System
+**10 Complete Missions:**
+- QAI_11: Elimination — Default mission, last side standing
+- QAI_12: Convergence — Zone control with 2-4 sides
+- QAI_13: Dominion — Territory control
+- QAI_14: Assault — Attack/defend scenario
+- QAI_15: Recovery — Objective retrieval
+- QAI_16: Escort — VIP protection
+- QAI_17: Triumvirate — 3-4 side free-for-all
+- QAI_18: Stealth — Covert operations
+- QAI_19: Defiance — Hold position against waves
+- QAI_20: Breach — Breakthrough scenario
+
+**Mission Features:**
+- Objective Markers (Physical, Intellectual, Moral)
+- VIP and POI systems
+- Zone control and contestation
+- Reinforcement waves
+- Mission-specific victory conditions
+
+### Keys to Victory
+- **Aggression** — First to cross midline (1 VP)
+- **Elimination** — Each enemy model eliminated (1 VP each)
+- **Bottled Out** — Enemy side fails Bottle Test (1 VP)
+- **Outnumbered** — More models remaining at game end (1 VP)
+
+---
 
 ## Project Structure
 

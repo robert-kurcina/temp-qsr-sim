@@ -47,6 +47,18 @@ My update process for this document is to **Read, Modify, and Write**. I will al
 
 1.  **Always Audit Before Creating:** Before creating any new file, especially for a core module like `Character`, `Item`, or `DiceRoller`, I will **always** first list the files in the target directory to check for existing conflicts.
 2.  **Refactor = Move, Verify, THEN Delete:** When refactoring by moving files, I will now follow a strict "move, verify, delete" sequence. I will not consider the refactor complete until the old file is explicitly deleted and the system is tested again.
+3.  **No Redundant Code:** Before creating any new function, class, module, or file:
+    - **Search existing codebase** for similar functionality using grep or glob patterns
+    - **Check for existing implementations** that could be extended or reused
+    - **Verify the feature doesn't already exist** under a different name or location
+    - **Document the gap** if existing code is insufficient (why it can't be reused)
+    - **Prefer extending existing code** over creating duplicates
+    - **Example:** Before creating `battlefield-svg.ts`, search for `*svg*.ts` to find `SvgRenderer.ts`
+4.  **Cross-Session Continuity:** At the start of each new session or thread:
+    - **Review recent file changes** to understand what was just implemented
+    - **Check for recently created files** that might be relevant to the new task
+    - **Reference previous session's work** to avoid duplicating effort
+    - **Maintain a mental model** of the codebase architecture across sessions
 
 ## 4. Development Environment & Toolchain
 
@@ -1459,35 +1471,579 @@ const result = await aiGameLoop.run(maxTurns);
 - ✅ **COMPLETE** - Phase B: AI Runtime Execution Integrity (verified existing implementation)
 - ✅ **COMPLETE** - Phase A: Mission Outcome Correctness (VP → RP → tie resolution with 11 unit tests)
 - ✅ **COMPLETE** - Initiative Points Tracking (grade 2+ instrumentation with ipBySide and ipSpending)
-- ✅ **COMPLETE** - Pushing Action Implementation (character-level AP gain, no IP cost)
-- ✅ **COMPLETE** - Documentation Updates (rules-initiative.md updated with IP spending and Pushing)
+- ✅ **COMPLETE** - Pushing Action Implementation
+  - AI decision logic in UtilityScorer.evaluateActions()
+  - 'pushing' action type added to AIController.ts
+  - executePushing() implemented in AIActionExecutor.ts
+  - Documentation in rules-initiative.md
+- ✅ **COMPLETE** - Documentation Updates
+  - rules-initiative.md: Added "Spending Initiative Points" section with IP abilities table
+  - rules-initiative.md: Added "Pushing (Character Action)" section with QSR rules reference
+  - rules-initiative.md: Updated summary table to include Pushing
+  - rules-actions.md: Already contains Pushing rules (QSR p.789-791)
 
-**Remaining Implementation Tasks:**
+**Implementation Status:**
 
-#### IP Spending Implementation (P1-HIGH)
-- [ ] **Maintain Initiative** - Spend 1 IP to activate another model from same Side
-  - Add AI decision logic for Maintain Initiative
-  - Integrate with AIGameLoop activation flow
-  - Log IP spending in instrumentation (grade 2+)
-- [ ] **Force Initiative** - Spend 1 IP to pass Initiative to another Side
-  - Already implemented in GameManager.forceInitiative()
-  - Add AI decision logic for when to use
-  - Log IP spending in instrumentation (grade 2+)
-- [ ] **Refresh** - Spend 1 IP to remove Delay token
-  - Already implemented in GameManager.refresh()
-  - Add AI decision logic for when to use
-  - Log IP spending in instrumentation (grade 2+)
+#### Pushing (QSR p.789-791) ✅ COMPLETE
+**Rules:** Once per Initiative, Active characters with no Delay tokens may use Pushing to gain +1 AP and acquire a Delay token.
 
-#### Pushing Implementation (P1-HIGH)
-- [ ] **AI Pushing Logic** - Add AI decision for when to use Pushing
-  - Check if character has no Delay tokens
-  - Check if character hasn't pushed this Initiative
-  - Evaluate if extra AP is valuable (e.g., for second attack)
-  - Log Pushing action in instrumentation (separate from IP spending)
-- [ ] **Pushing Integration** - Integrate with AIGameLoop
-  - Call performPushing() before action execution
-  - Handle the extra AP gained
-  - Ensure Delay token is added
+**Implementation:**
+- ✅ AI evaluates when to push (has valuable follow-up actions, good position)
+- ✅ Pushing action type added to ActionType enum
+- ✅ executePushing() calls performPushing() from pushing-and-maneuvers.ts
+- ✅ Does NOT cost IP (character-level action)
+- ✅ Does NOT cost AP (gains 1 AP instead)
+- ✅ Adds Delay token and marks character as having pushed
+
+**Files Modified:**
+- `src/lib/mest-tactics/ai/core/UtilityScorer.ts` - evaluateActions() pushing evaluation
+- `src/lib/mest-tactics/ai/core/AIController.ts` - Added 'pushing' to ActionType
+- `src/lib/mest-tactics/ai/executor/AIActionExecutor.ts` - executePushing() implementation
+- `src/guides/docs/rules-initiative.md` - Documentation
+
+#### IP Spending (QSR p.784) ⏳ PARTIAL
+**Rules:** Sides can spend Initiative Points on tactical abilities:
+- **Maintain Initiative** (1 IP) - Activate another model from same Side
+- **Force Initiative** (1 IP) - Pass Initiative to another Side
+- **Refresh** (1 IP) - Remove 1 Delay token from Friendly model
+
+**Implementation Status:**
+- ✅ GameManager.forceInitiative() - Implemented
+- ✅ GameManager.refresh() - Implemented
+- ✅ GameManager.refreshForCharacter() - Added (auto-finds side)
+- ✅ GameManager.maintainInitiative() - Implemented (via spendInitiativePoints)
+- ✅ Instrumentation logging (logIpSpending)
+- ✅ AI Refresh decision logic in UtilityScorer.evaluateActions()
+- ✅ AI Refresh execution in AIActionExecutor.executeRefresh()
+- ⏳ AI Maintain Initiative decision logic - NOT YET IMPLEMENTED
+- ⏳ AI Force Initiative decision logic - NOT YET IMPLEMENTED
+
+**Files Modified:**
+- `src/lib/mest-tactics/engine/GameManager.ts` - Added refreshForCharacter()
+- `src/lib/mest-tactics/ai/core/UtilityScorer.ts` - Added Refresh evaluation
+- `src/lib/mest-tactics/ai/core/AIController.ts` - Added 'refresh' to ActionType
+- `src/lib/mest-tactics/ai/executor/AIActionExecutor.ts` - Added executeRefresh()
+
+**Remaining Work:**
+- [ ] AI Maintain Initiative decision logic in UtilityScorer
+- [ ] AI Force Initiative decision logic in UtilityScorer
+- [ ] Integration with AIGameLoop for Maintain/Force (Side-level decisions)
+- [ ] Unit tests for IP spending AI decisions
+
+---
+
+## Tactical Doctrine Integration Gaps (P1-HIGH)
+
+**Analysis Date:** 2026-02-27
+
+### Gap 1: Doctrine → Pushing Evaluation
+**Status:** ✅ **COMPLETE** (2026-02-27)
+
+**What's Implemented:**
+- ✅ Tactical Doctrine affects action scoring via `calculateStratagemModifiers()`
+- ✅ Pushing evaluation checks if side has IP available (+0.3 bonus)
+- ✅ Pushing evaluation now checks Tactical Doctrine (`pushAdvantage` flag)
+- ✅ Aggressive doctrines (Juggernaut, Bombard, Assault, Soldier) get +0.3 Pushing bonus
+
+**Files Modified:**
+- `src/lib/mest-tactics/ai/core/UtilityScorer.ts` - Added `doctrinePushBonus` to Pushing evaluation
+
+---
+
+### Gap 2: Doctrine → IP Spending
+**Status:** ✅ **COMPLETE** (2026-02-27)
+
+**What's Implemented:**
+- ✅ Refresh evaluates: Delay tokens, IP available, engaged/ranged, excess IP
+- ✅ Refresh now checks Tactical Doctrine for IP spending behavior
+- ✅ Aggressive doctrines (pushAdvantage=true) spend IP more freely (+0.2)
+- ✅ Commander/Defender doctrines hoard IP for Force Initiative (-0.3)
+
+**Files Modified:**
+- `src/lib/mest-tactics/ai/core/UtilityScorer.ts` - Added `doctrineIPModifier` to Refresh evaluation
+
+---
+
+### Gap 3: Situational Awareness for Initiative Tests
+**Status:** ❌ NOT IMPLEMENTED (Deferred - requires leader designation system)
+
+**What's Implemented:**
+- ✅ `rollInitiative()` checks Tactics bonus (+X Base dice)
+- ✅ `getTacticsInitiativeBonus(character)` is called
+
+**What's Missing:**
+- ❌ `getTacticsSituationalAwarenessExemption()` is imported but never used
+- ❌ Situational Awareness check for designated leaders
+- ❌ Penalty for failing Situational Awareness (lose initiative position)
+
+**Fix Required:**
+```typescript
+// GameManager.ts line ~195 - Add SA check
+const saExempt = getTacticsSituationalAwarenessExemption(character);
+if (!saExempt && isDesignatedLeader(character)) {
+  const saResult = checkSituationalAwareness(character, allies, enemies);
+  if (!saResult.passed) {
+    initiativeRoll -= 1; // Penalty for failing SA
+  }
+}
+```
+
+---
+
+## Designated Leader Identification System (P2-MEDIUM)
+
+**Objective:** Implement temporary designated leader identification for tests that require it (Situational Awareness, Morale, Rally, etc.).
+
+### Key Principles
+
+1. **Temporary Assignment** — Designated leader is the best fit **at the time of the test**, not a permanent role
+2. **Trait Priority** — Characters with Leader-keyworded traits checked first:
+   - **Leadership X** — Primary leader trait (highest priority)
+   - **Tactics X** — Secondary leader trait (high priority)
+3. **Fallback Criteria** — If no Leader traits present:
+   - Highest INT attribute (tactical awareness)
+   - Highest POW attribute (willpower/command presence)
+   - Highest total BP (veteran/experienced model)
+4. **Per-Test Evaluation** — Leader re-evaluated before each test that requires it
+
+### Implementation Specification
+
+**Function Signature:**
+```typescript
+/**
+ * Identify designated leader for a side at time of test
+ * 
+ * @param side - The side to identify leader for
+ * @param testType - Type of test requiring leader ('situational_awareness' | 'morale' | 'rally')
+ * @returns Character designated as leader, or null if no valid candidate
+ */
+export function identifyDesignatedLeader(
+  side: MissionSide,
+  testType: string
+): Character | null;
+```
+
+**Selection Priority:**
+1. Leadership trait (Leader keyword) — highest level, then highest INT
+2. Tactics trait (Leader keyword) — highest level, then highest INT
+3. Highest INT attribute (tactical awareness)
+4. Highest POW attribute (willpower/command presence)
+5. Highest total BP (veteran/experienced model)
+
+### Integration Points
+
+**1. Situational Awareness Check (Initiative Tests):**
+- Leader must pass SA check or suffer -1 initiative penalty
+- Characters with Tactics X trait exempt from SA penalty
+
+**2. Morale Tests (Bottle Tests):**
+- Leader provides bonus to side's morale test
+- Leadership level determines bonus magnitude
+
+**3. Rally Actions:**
+- Leader rallying provides enhanced bonus
+- Leadership/POW determines rally effectiveness
+
+### Files to Create/Modify
+
+**Create:**
+- `src/lib/mest-tactics/core/leader-identification.ts` — `identifyDesignatedLeader()` function
+- `src/lib/mest-tactics/core/leader-identification.test.ts` — Unit tests
+
+**Modify:**
+- `src/lib/mest-tactics/engine/GameManager.ts` — Integrate SA check into `rollInitiative()`
+- `src/lib/mest-tactics/status/morale.ts` — Integrate leader bonus into Bottle Tests
+- `src/lib/mest-tactics/actions/rally.ts` — Integrate leader bonus into Rally actions
+
+### Priority & Effort
+
+| Component | Priority | Effort | Dependencies |
+|-----------|----------|--------|--------------|
+| `identifyDesignatedLeader()` function | P2-MEDIUM | 2 hours | None |
+| Unit tests | P2-MEDIUM | 2 hours | Function implementation |
+| Situational Awareness integration | P2-MEDIUM | 2 hours | Leader identification |
+| Morale integration | P3-LOW | 1 hour | Leader identification |
+| Rally integration | P3-LOW | 1 hour | Leader identification |
+
+**Total Effort:** ~8 hours
+
+### Acceptance Criteria
+
+- [ ] `identifyDesignatedLeader()` correctly prioritizes Leadership > Tactics > INT > POW > BP
+- [ ] Leader re-evaluated for each test (temporary assignment)
+- [ ] KO'd and Eliminated models excluded from consideration
+- [ ] Situational Awareness check integrated into `rollInitiative()`
+- [ ] Unit tests cover all priority levels and edge cases
+- [ ] Documentation updated with leader identification rules
+
+---
+
+## Battle Instrumentation Structure (P0-HIGH)
+
+**Objective:** Provide comprehensive turn-by-turn battle reporting with clear phase separation and IP tracking.
+
+### Start of Game Section
+
+Before the first Turn, the battle report must include:
+
+```typescript
+interface StartOfGameReport {
+  // Mission Configuration
+  mission: {
+    id: string;           // e.g., 'QAI_11'
+    name: string;         // e.g., 'Elimination'
+    gameSize: string;     // e.g., 'VERY_SMALL'
+    sides: number;
+    terrainDensity: number;  // percentage 0-100
+    lighting: {
+      name: string;       // e.g., 'Day, Clear'
+      visibilityOR: number; // e.g., 16 MU
+    };
+    battlefieldSize: number; // e.g., 24 MU
+    endGameTriggerTurn: number; // e.g., 3
+  };
+  
+  // Battlefield Visualization
+  battlefield: {
+    svgPath: string;      // Path to generated SVG file
+    svgUrl?: string;      // URL to access SVG (if hosted)
+    terrainElements: [{
+      id: string;
+      type: string;       // 'Tree', 'Rock', 'Ruin', 'Bush', etc.
+      vertices: { x: number; y: number }[];
+    }];
+    modelStartingPositions: {
+      sideId: string;
+      models: [{
+        modelId: string;
+        characterName: string;
+        position: { x: number; y: number };
+      }];
+    }[];
+  };
+  
+  // Side Declarations
+  sides: [{
+    sideId: string;
+    sideName: string;
+    tacticalDoctrine: string;  // e.g., 'Balanced', 'Aggressive'
+    
+    // Assemblies within the Side
+    assemblies: [{
+      assemblyName: string;
+      totalBP: number;
+      
+      // Characters within the Assembly
+      characters: [{
+        modelId: string;
+        characterName: string;
+        profile: {
+          name: string;           // e.g., 'average-sword-broad-loadout'
+          archetype: string;      // e.g., 'Average'
+          totalBP: number;
+          attributes: {
+            cca: number; rca: number; ref: number;
+            int: number; pow: number; str: number;
+            for: number; mov: number; siz: number;
+          };
+          traits: string[];
+          items: [{
+            name: string;
+            classification: string;
+            traits: string[];
+            bp: number;
+          }];
+        };
+        deploymentPosition: { x: number; y: number };
+      }];
+    }];
+    
+    // Initiative tracking
+    initiativePoints: number;  // Starting IP (usually 0)
+    hasInitiativeCard: boolean;
+  }];
+  
+  // AI Configuration
+  aiConfig: {
+    strategicLayerEnabled: boolean;
+    tacticalLayerEnabled: boolean;
+    characterAIEnabled: boolean;
+    maxActionsPerTurn: number;
+    instrumentationGrade: number;
+  };
+  
+  // Random Seed (for reproducibility)
+  seed?: number;
+}
+```
+
+**Example Output:**
+```
+═══════════════════════════════════════
+Mission: QAI_11
+Game Size: VERY_SMALL
+Sides: 2
+Terrain Density: 50%
+Lighting: Day, Clear (Visibility OR 16 MU)
+═══════════════════════════════════════
+
+✓ Battlefield created (24×24 MU) with 2 terrain elements
+📊 Battlefield SVG: generated/battlefield-12345.svg
+🔗 View: http://localhost:3000/battlefield-12345.svg
+
+━━━ SIDE A ━━━
+Assembly A (300 BP)
+  ├─ Side A-1: Average with Sword, Broad (30 BP)
+  ├─ Side A-2: Average with Sword, Broad (30 BP)
+  └─ Side A-3: Average with Sword, Broad (30 BP)
+
+━━━ SIDE B ━━━
+Assembly B (300 BP)
+  ├─ Side B-1: Average with Sword, Broad (30 BP)
+  ├─ Side B-2: Average with Sword, Broad (30 BP)
+  └─ Side B-3: Average with Sword, Broad (30 BP)
+```
+
+**Implementation Requirements:**
+
+1. **SVG Generation**
+   - Generate battlefield SVG at start of battle
+   - Include terrain features (trees, rocks, ruins, etc.)
+   - Mark model starting positions with colored tokens
+   - Include grid overlay (optional)
+   - Save to `generated/` directory
+   - Provide URL/path for access
+
+2. **Profile Details**
+   - Include full attribute stats for each character
+   - List all items with traits and BP cost
+   - Show total BP per Assembly and Side
+
+3. **Deployment Visualization**
+   - Show exact deployment coordinates
+   - Link model IDs to positions on SVG
+   - Verify deployment zone compliance
+
+---
+
+### Start of Turn Section
+
+At the start of each Turn, the battle report must include:
+
+```typescript
+interface TurnStartReport {
+  turn: number;
+  initiativeTest: {
+    // Situational awareness
+    modelsInLOS: {
+      sideA: { modelId: string; visibleEnemies: string[] }[];
+      sideB: { modelId: string; visibleEnemies: string[] }[];
+    };
+    
+    // Trait modifiers
+    leadershipBonus?: { modelId: string; bonus: number };
+    tacticsBonus?: { modelId: string; bonus: number };
+    
+    // Results
+    rolls: { sideId: string; dice: number[]; successes: number; pips: number }[];
+    winner: string | null;
+    tieBroken: boolean;
+    initiativeCardUsed: boolean;
+  };
+  
+  // IP Awarding
+  ipAwarded: {
+    sideId: string;
+    amount: number;
+    reason: 'highest_initiative' | 'carry_over' | 'tie_break';
+  }[];
+  
+  // Initiative Card status
+  initiativeCard: {
+    holder: string | null;
+    transferred: boolean;
+  };
+  
+  // IP available per side
+  ipAvailable: Record<string, number>;
+}
+```
+
+### During Turn Section
+
+For each activation and action during the Turn:
+
+```typescript
+interface TurnActionReport {
+  turn: number;
+  activations: [{
+    sideId: string;
+    modelId: string;
+    apStart: number;
+    actions: [{
+      actionType: string;
+      apSpent: number;
+      apRemaining: number;
+      result: 'success' | 'failure';
+      details?: any;
+      
+      // Tests performed
+      tests?: [{
+        testType: string;
+        dicePool: { base: number; modifier: number; wild: number };
+        rolls: number[];
+        successes: number;
+        result: 'pass' | 'fail';
+        initiativeCardUsed: boolean;
+      }];
+      
+      // IP spending
+      ipSpent?: {
+        sideId: string;
+        amount: number;
+        purpose: 'maintain_initiative' | 'force_initiative' | 'refresh';
+        characterId?: string;
+      };
+    }];
+    apEnd: number;
+  }];
+  
+  // Initiative Card status at end of Turn
+  initiativeCard: {
+    holder: string | null;
+    usedThisTurn: boolean;
+    transferred: boolean;
+  };
+}
+```
+
+### End of Turn Section
+
+At the end of each Turn:
+
+```typescript
+interface TurnEndReport {
+  turn: number;
+  
+  // IP cleanup
+  ipDiscarded: {
+    sideId: string;
+    amount: number;
+  }[];
+  
+  // Bottle Tests
+  bottleTests?: [{
+    sideId: string;
+    modelsRequired: string[];
+    results: {
+      modelId: string;
+      roll: number;
+      target: number;
+      result: 'pass' | 'fail';
+    }[];
+    sideBottled: boolean;
+  }];
+  
+  // End-game Trigger
+  endGameTrigger: {
+    diceAdded: boolean;
+    totalDice: number;
+    rolled: boolean;
+    rolls?: number[];
+    gameEnded: boolean;
+  };
+  
+  // VP/RP standings
+  standings: {
+    sideId: string;
+    victoryPoints: number;
+    resourcePoints: number;
+  }[];
+}
+```
+
+### End of Game Section
+
+When the game ends:
+
+```typescript
+interface GameEndReport {
+  endReason: 'elimination' | 'bottled' | 'end_game_trigger' | 'turn_limit';
+  
+  // Final standings
+  finalStandings: {
+    sideId: string;
+    victoryPoints: number;
+    resourcePoints: number;
+    modelsRemaining: number;
+    rank: number;
+  }[];
+  
+  // Winner determination
+  winner: {
+    sideId: string | null;
+    tie: boolean;
+    tieBreakMethod: 'none' | 'rp' | 'initiative_card';
+    reason: string;
+  };
+  
+  // Keys to Victory achieved
+  keysAchieved: {
+    sideId: string;
+    keys: {
+      keyName: string;
+      achieved: boolean;
+      details?: any;
+    }[];
+  }[];
+  
+  // Battle statistics
+  statistics: {
+    totalTurns: number;
+    totalActions: number;
+    totalTests: number;
+    totalIPSpent: Record<string, number>;
+    casualties: Record<string, number>;
+  };
+}
+```
+
+### Implementation Requirements
+
+1. **Deterministic Ordering**
+   - All events must be ordered by turn → activation → action → test
+   - Stable IDs for all models and actions
+   - No reliance on real-time timestamps for ordering
+
+2. **IP Tracking**
+   - Track IP at start of each Turn
+   - Log every IP spending event with purpose and character
+   - Confirm IP discarded at End of Turn
+
+3. **Test Recording**
+   - Record all dice rolls (Base, Modifier, Wild)
+   - Record successes and carry-over dice
+   - Record Initiative Card usage
+
+4. **State Snapshots**
+   - Capture model state before/after each action
+   - Track AP spent per action
+   - Track Delay tokens, Hidden status, etc.
+
+**Exit Criteria:**
+- [ ] Battle reports include all four sections (Start, During, End, Game End)
+- [ ] IP is tracked and logged at every stage
+- [ ] All Tests are recorded with full dice details
+- [ ] Initiative Card usage is tracked
+- [ ] JSON output is deterministic and reproducible
+
+**Files to Modify:**
+- `src/lib/mest-tactics/instrumentation/QSRInstrumentation.ts` - Add new report structures
+- `scripts/run-battles/battle-runner.ts` - Output structured reports
+- `src/lib/mest-tactics/engine/GameManager.ts` - Capture test details
+- `src/lib/mest-tactics/ai/executor/AIGameLoop.ts` - Log phase transitions
+
+---
 
 **Goal:** Single unified battle runner that validates AI system and game mechanics before UI development begins.
 
