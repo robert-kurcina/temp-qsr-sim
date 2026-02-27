@@ -305,7 +305,7 @@ export class BattleRunner {
     const battleLog = this.logger.endBattle(result.turnsPlayed);
 
     // Print summary
-    this.printBattleSummary(result, battleLog);
+    this.printBattleSummary(result, battleLog, sides);
 
     return {
       ...result,
@@ -436,23 +436,33 @@ export class BattleRunner {
   }
 
   /**
-   * Deploy models to battlefield
+   * Deploy models to battlefield within deployment zones
    */
   private async deployModels(sides: any[], battlefield: Battlefield): Promise<void> {
     console.log('Deploying models...');
-    
+
+    const battlefieldSize = this.getBattlefieldSize();
+    const zoneHeight = Math.floor(battlefieldSize / 8); // Deployment zone is 1/8 of battlefield
     const modelsPerRow = 3;
-    const spacing = Math.floor(this.getBattlefieldSize() / (modelsPerRow + 1));
+    const spacing = Math.floor(battlefieldSize / (modelsPerRow + 1));
 
     sides.forEach((side, sideIndex) => {
       side.members.forEach((member: any, i: number) => {
         const row = Math.floor(i / modelsPerRow);
         const col = i % modelsPerRow;
         const x = spacing + col * spacing;
-        const y = sideIndex === 0 
-          ? spacing + row * spacing 
-          : this.getBattlefieldSize() - spacing - row * spacing;
-        battlefield.placeCharacter(member.character, { x, y });
+        
+        // Deploy within deployment zone (zoneHeight from edge)
+        // Side 0 (Side A) deploys at bottom, Side 1 (Side B) deploys at top
+        const y = sideIndex === 0
+          ? (battlefieldSize - zoneHeight) + (row + 1) * (zoneHeight / (modelsPerRow + 1))  // Bottom zone
+          : (row + 1) * (zoneHeight / (modelsPerRow + 1));  // Top zone
+        
+        // Round to integer coordinates for grid placement
+        const gridX = Math.round(x);
+        const gridY = Math.round(y);
+        
+        battlefield.placeCharacter(member.character, { x: gridX, y: gridY });
       });
     });
 
@@ -771,7 +781,8 @@ export class BattleRunner {
    */
   private printBattleSummary(
     result: Omit<BattleResult, 'battleId' | 'config' | 'log'>,
-    battleLog: any
+    battleLog: any,
+    sides: any[]
   ): void {
     console.log('═══════════════════════════════════════');
     console.log('🏁 BATTLE COMPLETE\n');
@@ -1000,7 +1011,14 @@ export class BattleRunner {
         };
       })
     );
-    
+
+    // Build deployment zones
+    const zoneHeight = Math.floor(battlefield.height / 8);
+    const deploymentZones = [
+      { x: 0, y: battlefield.height - zoneHeight, width: battlefield.width, height: zoneHeight, color: '#ff0000', opacity: 0.2 },
+      { x: 0, y: 0, width: battlefield.width, height: zoneHeight, color: '#0000ff', opacity: 0.2 },
+    ];
+
     // Generate SVG using SvgRenderer
     const svgContent = SvgRenderer.render(battlefield, {
       width: battlefield.width,
@@ -1008,8 +1026,9 @@ export class BattleRunner {
       gridResolution: 0.5,
       title: `${this.config.missionId} - Turn 1`,
       models: modelMarkers,
+      deploymentZones,
       layers: [
-        { id: 'deployment', label: 'Deployment Zones', enabled: false },
+        { id: 'deployment', label: 'Deployment Zones', enabled: true },
         { id: 'grid', label: '0.5 MU Grid', enabled: true },
         { id: 'delaunay', label: 'Delaunay Mesh', enabled: false },
         { id: 'area', label: 'Area Terrain', enabled: true },
