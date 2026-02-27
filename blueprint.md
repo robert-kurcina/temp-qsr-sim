@@ -1458,6 +1458,36 @@ const result = await aiGameLoop.run(maxTurns);
 - ✅ **COMPLETE** - Step 4: Deprecation & Migration
 - ✅ **COMPLETE** - Phase B: AI Runtime Execution Integrity (verified existing implementation)
 - ✅ **COMPLETE** - Phase A: Mission Outcome Correctness (VP → RP → tie resolution with 11 unit tests)
+- ✅ **COMPLETE** - Initiative Points Tracking (grade 2+ instrumentation with ipBySide and ipSpending)
+- ✅ **COMPLETE** - Pushing Action Implementation (character-level AP gain, no IP cost)
+- ✅ **COMPLETE** - Documentation Updates (rules-initiative.md updated with IP spending and Pushing)
+
+**Remaining Implementation Tasks:**
+
+#### IP Spending Implementation (P1-HIGH)
+- [ ] **Maintain Initiative** - Spend 1 IP to activate another model from same Side
+  - Add AI decision logic for Maintain Initiative
+  - Integrate with AIGameLoop activation flow
+  - Log IP spending in instrumentation (grade 2+)
+- [ ] **Force Initiative** - Spend 1 IP to pass Initiative to another Side
+  - Already implemented in GameManager.forceInitiative()
+  - Add AI decision logic for when to use
+  - Log IP spending in instrumentation (grade 2+)
+- [ ] **Refresh** - Spend 1 IP to remove Delay token
+  - Already implemented in GameManager.refresh()
+  - Add AI decision logic for when to use
+  - Log IP spending in instrumentation (grade 2+)
+
+#### Pushing Implementation (P1-HIGH)
+- [ ] **AI Pushing Logic** - Add AI decision for when to use Pushing
+  - Check if character has no Delay tokens
+  - Check if character hasn't pushed this Initiative
+  - Evaluate if extra AP is valuable (e.g., for second attack)
+  - Log Pushing action in instrumentation (separate from IP spending)
+- [ ] **Pushing Integration** - Integrate with AIGameLoop
+  - Call performPushing() before action execution
+  - Handle the extra AP gained
+  - Ensure Delay token is added
 
 **Goal:** Single unified battle runner that validates AI system and game mechanics before UI development begins.
 

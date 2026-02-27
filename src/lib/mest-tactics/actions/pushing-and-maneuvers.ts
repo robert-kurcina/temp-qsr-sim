@@ -13,12 +13,13 @@ export interface PushingResult {
 
 /**
  * Pushing Action
- * 
- * Once per Initiative, at the option of the player; Active characters having no Delay tokens 
- * may use "Pushing" to push themselves to their limit and acquire 1 AP. 
+ *
+ * Once per Initiative, at the option of the player; Active characters having no Delay tokens
+ * may use "Pushing" to push themselves to their limit and acquire 1 AP.
  * They will also immediately acquire a Delay token.
- * 
+ *
  * QSR Rules p.789-791
+ * NOTE: Pushing does NOT cost Initiative Points - it's a character-level action
  */
 export function performPushing(
   deps: ActivationDeps,
@@ -54,6 +55,8 @@ export function performPushing(
 
   // Mark as having pushed this Initiative
   character.state.hasPushedThisInitiative = true;
+
+  // NOTE: No IP logging - Pushing does not cost IP
 
   return {
     success: true,

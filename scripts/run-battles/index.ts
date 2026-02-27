@@ -234,6 +234,7 @@ async function main() {
         winnerSide: result.winnerSide,
         stats: result.stats,
         keys: result.keys,
+        log: result.log, // Include full battle log with initiative tracking (grade 2+)
       }, null, 2);
       console.log(jsonOutput);
       if (outputFormat === 'json') {

@@ -1224,8 +1224,23 @@ function validateMoveAction(
     return;
   }
 
-  // Note: AI position selection uses pathfinding which already validates the path
-  // We trust the pathfinding and only check for impassable terrain at destination
+  // Check if destination is within movement range
+  // Note: AI position selection uses pathfinding which may find paths around obstacles
+  // For direct moves, check straight-line distance
+  const dx = position.x - startPos.x;
+  const dy = position.y - startPos.y;
+  const straightLineDistance = Math.hypot(dx, dy);
+  const mov = context.character.finalAttributes.mov ?? 2;
+  const effectiveMov = mov + 2; // Base movement allowance
+  
+  // Allow some tolerance for pathfinding (AI may select positions reachable via path)
+  // But reject obviously impossible moves
+  if (straightLineDistance > effectiveMov * 2) {
+    errors.push(`Destination too far: ${straightLineDistance.toFixed(1)} MU exceeds reasonable movement range`);
+    return;
+  }
+
+  // Check for impassable terrain at destination
   const terrain = context.battlefield.getTerrainAt(position);
   if (terrain === 'Impassable') {
     errors.push('Destination is impassable terrain');

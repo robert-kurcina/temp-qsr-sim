@@ -200,6 +200,29 @@ export interface LoggedAction {
 // ============================================================================
 
 /**
+ * Initiative Points tracking per turn (grade 2+)
+ */
+export interface TurnInitiativeTracking {
+  /** Turn number */
+  turn: number;
+  /** Initiative Points per side at start of turn */
+  ipBySide: Record<string, number>;
+  /** IP spending log */
+  ipSpending: {
+    /** Side ID */
+    sideId: string;
+    /** Character ID who spent IP */
+    characterId: string;
+    /** IP spent (usually 1) */
+    ipSpent: number;
+    /** Reason for spending */
+    reason: 'push' | 'react' | 'bonus_action';
+    /** Turn when spent */
+    turn: number;
+  }[];
+}
+
+/**
  * Complete battle log
  */
 export interface BattleLog {
@@ -219,6 +242,8 @@ export interface BattleLog {
   summary: BattleLogSummary;
   /** Roster info (grade 1+) */
   roster?: RosterInfo[];
+  /** Initiative tracking per turn (grade 2+) */
+  initiativeTracking?: TurnInitiativeTracking[];
 }
 
 /**
@@ -332,6 +357,42 @@ export class InstrumentationLogger {
     }
     if (this.config.grade >= InstrumentationGrade.SUMMARY) {
       this.battleLog.roster = roster;
+    }
+  }
+
+  /**
+   * Log initiative points at start of turn (grade 2+)
+   */
+  logInitiativePoints(turn: number, ipBySide: Record<string, number>): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    if (!this.battleLog.initiativeTracking) {
+      this.battleLog.initiativeTracking = [];
+    }
+    this.battleLog.initiativeTracking.push({
+      turn,
+      ipBySide,
+      ipSpending: [],
+    });
+  }
+
+  /**
+   * Log IP spending (grade 2+)
+   */
+  logIpSpending(sideId: string, characterId: string, reason: 'push' | 'react' | 'bonus_action', turn: number): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    const turnTracking = this.battleLog.initiativeTracking?.find(t => t.turn === turn);
+    if (turnTracking) {
+      turnTracking.ipSpending.push({
+        sideId,
+        characterId,
+        ipSpent: 1,
+        reason,
+        turn,
+      });
     }
   }
 

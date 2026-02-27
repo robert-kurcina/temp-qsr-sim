@@ -18,7 +18,7 @@ import { createSideAssemblyAIs, AssemblyAI } from '../strategic/AssemblyAI';
 import { CharacterAI, createSideAI as createCharacterAIs } from '../core/CharacterAI';
 import { ActionDecision } from '../core/AIController';
 import { isAttackableEnemy } from '../core/ai-utils';
-import { InstrumentationLogger } from '../../instrumentation/QSRInstrumentation';
+import { InstrumentationLogger, InstrumentationGrade } from '../../instrumentation/QSRInstrumentation';
 
 /**
  * AI Game Loop configuration
@@ -95,7 +95,7 @@ export interface AIGameLoopResult {
 
 /**
  * AI Game Loop Controller
- * 
+ *
  * Orchestrates the full AI decision and execution pipeline.
  */
 export class AIGameLoop {
@@ -104,6 +104,7 @@ export class AIGameLoop {
   private battlefield: Battlefield;
   private executor: AIActionExecutor;
   private logger: InstrumentationLogger | null = null;
+  private sides: MissionSide[] = [];
 
   // AI layers
   private sideAIs: Map<string, SideAI> = new Map();
@@ -122,6 +123,7 @@ export class AIGameLoop {
   ) {
     this.manager = manager;
     this.battlefield = battlefield;
+    this.sides = sides;
     this.config = { ...DEFAULT_AI_GAME_LOOP_CONFIG, ...config };
     this.logger = logger || null;
 
@@ -245,7 +247,16 @@ export class AIGameLoop {
 
     // Initialize turn - set up activation order via initiative
     if (turn === 1 || this.manager.phase !== TurnPhase.Activation) {
-      this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn });
+      this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn, sides: this.sides });
+    }
+
+    // Log initiative points at start of turn AFTER initiative is rolled (grade 2+)
+    if (this.logger && this.logger['config'].grade >= InstrumentationGrade.BY_ACTION) {
+      const ipBySide: Record<string, number> = {};
+      for (const side of this.sides) {
+        ipBySide[side.id] = side.state.initiativePoints ?? 0;
+      }
+      this.logger.logInitiativePoints(turn, ipBySide);
     }
 
     while (!this.manager.isTurnOver()) {

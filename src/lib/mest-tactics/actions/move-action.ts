@@ -21,6 +21,8 @@ export interface MoveActionDeps {
       weaponIndex?: number;
     }
   ) => unknown;
+  /** Optional pathfinding engine for calculating actual movement cost */
+  findPathCost?: (start: Position, end: Position) => number | null;
 }
 
 export function executeMoveAction(
@@ -60,16 +62,33 @@ export function executeMoveAction(
   const effectiveMov = baseMov + 2 + sprintBonus + agilityBonus;
 
   // Check for impassable terrain at destination
-  // Note: AI uses pathfinding which already validated the path distance
-  // We only check terrain type here, not distance
   if (currentTerrain === 'Impassable') {
     return { moved: false, reason: 'Destination is impassable terrain' };
   }
-  
-  // For AI-selected positions, pathfinding has already validated the path
-  // We trust the pathfinding and don't do distance validation here
-  // The pathfinding engine accounts for obstacles and terrain costs
-  
+
+  // Calculate movement cost using pathfinding if available, otherwise use straight-line distance
+  let movementCost: number;
+  if (deps.findPathCost) {
+    const pathCost = deps.findPathCost(start, destination);
+    if (pathCost !== null) {
+      movementCost = pathCost;
+    } else {
+      // Pathfinding failed (blocked), can't move
+      return { moved: false, reason: 'Path blocked by terrain or obstacles' };
+    }
+  } else {
+    // Fallback to straight-line distance (for AI moves that were pathfinding-validated)
+    const dx = destination.x - start.x;
+    const dy = destination.y - start.y;
+    movementCost = Math.hypot(dx, dy);
+  }
+
+  // Allow move if within effective movement allowance
+  // Add small epsilon for floating point comparison
+  if (movementCost > effectiveMov + 1e-6) {
+    return { moved: false, reason: `Destination out of range: ${movementCost.toFixed(1)} MU exceeds max movement (${effectiveMov} MU)` };
+  }
+
   const moved = deps.moveCharacter(mover, destination);
   if (!moved) {
     return { moved: false };

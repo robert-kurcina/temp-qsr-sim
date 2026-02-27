@@ -564,13 +564,18 @@ export class GameManager {
     return this.endGameTriggerState.endReason;
   }
 
-  public advancePhase(options: { roller?: () => number; roundsPerTurn?: number } = {}): TurnPhase {
+  public setSides(sides: MissionSide[]): void {
+    this.missionSides = sides;
+  }
+
+  public advancePhase(options: { roller?: () => number; roundsPerTurn?: number; sides?: MissionSide[] } = {}): TurnPhase {
     const roundsPerTurn = Math.max(1, options.roundsPerTurn ?? this.roundsPerTurn);
     const roller = options.roller ?? Math.random;
+    const sides = options.sides ?? this.missionSides;
 
     switch (this.phase) {
       case TurnPhase.Setup:
-        this.startTurn(roller);
+        this.startTurn(roller, sides);
         return this.phase;
       case TurnPhase.Activation:
         if (!this.isTurnOver()) {
@@ -595,7 +600,7 @@ export class GameManager {
         this.nextTurn();
         return this.phase;
       default:
-        this.startTurn(roller);
+        this.startTurn(roller, sides);
         return this.phase;
     }
   }
@@ -747,6 +752,39 @@ export class GameManager {
         },
         executeCloseCombatAttack: (attacker: Character, defender: Character, weapon: Item, actionOptions) =>
           this.executeCloseCombatAttack(attacker, defender, weapon, actionOptions as any),
+        findPathCost: (start: Position, end: Position) => {
+          // Simple terrain cost calculation for straight-line movement
+          // Check terrain along the path and apply cost multipliers
+          const dx = end.x - start.x;
+          const dy = end.y - start.y;
+          const distance = Math.hypot(dx, dy);
+          
+          if (distance === 0) return 0;
+          
+          // Sample terrain along the path
+          const samples = Math.ceil(distance * 2); // Sample every 0.5 MU
+          let totalCost = 0;
+          
+          for (let i = 0; i <= samples; i++) {
+            const t = i / samples;
+            const samplePos = { x: start.x + dx * t, y: start.y + dy * t };
+            const terrainFeature = this.battlefield!.getTerrainAt(samplePos);
+            
+            let costMultiplier = 1;
+            if (terrainFeature.type === BattlefieldTerrainType.Rough) {
+              costMultiplier = 2;
+            } else if (terrainFeature.type === BattlefieldTerrainType.Difficult) {
+              costMultiplier = 3;
+            } else if (terrainFeature.type === BattlefieldTerrainType.Obstacle) {
+              return null; // Blocked
+            }
+            
+            const segmentCost = (distance / samples) * costMultiplier;
+            totalCost += segmentCost;
+          }
+          
+          return totalCost;
+        },
       },
       mover,
       destination,
