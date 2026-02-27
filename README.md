@@ -155,6 +155,9 @@ npm run cli -- --mission QAI_17
 # Custom lighting and terrain
 npm run cli -- --lighting "Night, Full Moon" --terrain 30
 
+# Instrumentation levels (0=None, 1=Summary, 2=By Action, 3=With Tests, 4=With Dice, 5=Full Detail)
+npm run cli -- --instrumentation 2
+
 # JSON output for analysis
 npm run cli -- --output json
 
@@ -164,6 +167,28 @@ npm run cli -- --seed 424242
 # Show all options
 npm run cli -- --help
 ```
+
+### Example: VERY_SMALL Battle
+
+Quick 3v3 melee battle for testing:
+
+```bash
+# Default VERY_SMALL battle (fastest)
+npm run cli
+
+# VERY_SMALL with custom settings
+npm run cli -- --config very-small --mission QAI_11 --terrain 50 --lighting "Day, Clear" --instrumentation 2
+
+# VERY_SMALL with JSON output for analysis
+npm run cli -- --config very-small --output json --seed 12345
+```
+
+**Expected Output:**
+- **Battlefield:** 24"×24"
+- **Models:** 3 per side (6 total)
+- **Archetype:** Average with Sword, Broad + Armor, Light + Shield, Small
+- **Duration:** ~30-60 seconds
+- **End-Game Trigger:** Starts Turn 3
 
 ### Configuration Presets
 

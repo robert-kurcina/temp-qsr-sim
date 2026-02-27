@@ -18,6 +18,7 @@ import { createSideAssemblyAIs, AssemblyAI } from '../strategic/AssemblyAI';
 import { CharacterAI, createSideAI as createCharacterAIs } from '../core/CharacterAI';
 import { ActionDecision } from '../core/AIController';
 import { isAttackableEnemy } from '../core/ai-utils';
+import { InstrumentationLogger } from '../../instrumentation/QSRInstrumentation';
 
 /**
  * AI Game Loop configuration
@@ -102,7 +103,8 @@ export class AIGameLoop {
   private manager: GameManager;
   private battlefield: Battlefield;
   private executor: AIActionExecutor;
-  
+  private logger: InstrumentationLogger | null = null;
+
   // AI layers
   private sideAIs: Map<string, SideAI> = new Map();
   private assemblyAIs: Map<string, AssemblyAI> = new Map();
@@ -115,18 +117,20 @@ export class AIGameLoop {
     manager: GameManager,
     battlefield: Battlefield,
     sides: MissionSide[],
-    config: Partial<AIGameLoopConfig> = {}
+    config: Partial<AIGameLoopConfig> = {},
+    logger?: InstrumentationLogger
   ) {
     this.manager = manager;
     this.battlefield = battlefield;
     this.config = { ...DEFAULT_AI_GAME_LOOP_CONFIG, ...config };
-    
+    this.logger = logger || null;
+
     // Create executor
     this.executor = createAIExecutor(manager, {
       validateActions: this.config.enableValidation,
       enableReplanning: this.config.enableReplanning,
       verboseLogging: this.config.verboseLogging,
-    });
+    }, this.logger);
 
     // Initialize AI layers
     this.initializeAILayers(sides);
@@ -269,6 +273,8 @@ export class AIGameLoop {
       this.manager.endActivation(character);
     }
 
+    // Advance phase at end of turn to properly transition to TurnEnd and check end-game trigger
+    this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn });
     return result;
   }
 
@@ -291,37 +297,52 @@ export class AIGameLoop {
       replannedActions: 0,
     };
 
-    // Get AI decision hierarchy
-    const decision = this.getAIDecision(character);
-    if (!decision) {
-      return result;
-    }
+    // Loop until AP exhausted or no valid actions
+    const maxActions = this.config.maxActionsPerTurn || 3;
+    let actionsThisTurn = 0;
 
-    // Create execution context
-    const context = this.createExecutionContext(character);
+    while (actionsThisTurn < maxActions) {
+      const apRemaining = this.manager.getApRemaining(character);
+      if (apRemaining <= 0) {
+        break; // No AP left
+      }
 
-    // Execute action
-    const execResult = this.executor.executeAction(decision, character, context);
-    
-    result.totalActions++;
-    if (execResult.success) {
-      result.successfulActions++;
-    } else {
-      result.failedActions++;
-      if (execResult.replanningRecommended) {
-        result.replannedActions++;
-        
-        // Try to get alternative action
-        const altDecision = this.getAlternativeDecision(character, decision);
-        if (altDecision) {
-          const altResult = this.executor.executeAction(altDecision, character, context);
-          result.totalActions++;
-          if (altResult.success) {
-            result.successfulActions++;
-          } else {
-            result.failedActions++;
+      // Get AI decision hierarchy
+      const decision = this.getAIDecision(character);
+      if (!decision || decision.type === 'hold') {
+        break; // No valid actions available
+      }
+
+      // Create execution context (refresh AP remaining)
+      const context = this.createExecutionContext(character);
+
+      // Execute action
+      const execResult = this.executor.executeAction(decision, character, context);
+
+      result.totalActions++;
+      actionsThisTurn++;
+      if (execResult.success) {
+        result.successfulActions++;
+      } else {
+        result.failedActions++;
+        if (execResult.replanningRecommended) {
+          result.replannedActions++;
+
+          // Try to get alternative action
+          const altDecision = this.getAlternativeDecision(character, decision);
+          if (altDecision) {
+            const altResult = this.executor.executeAction(altDecision, character, context);
+            result.totalActions++;
+            actionsThisTurn++;
+            if (altResult.success) {
+              result.successfulActions++;
+            } else {
+              result.failedActions++;
+            }
           }
         }
+        // If action failed and no replan, break out of loop
+        break;
       }
     }
 
@@ -372,10 +393,14 @@ export class AIGameLoop {
     if (sideAI && this.config.enableStrategic) {
       const assessment = sideAI.assessSituation();
       const priorities = sideAI.getActionPriorities(assessment);
-      
+
       const priority = priorities.get(character.id);
       if (priority) {
-        return priority;
+        // Validate strategic decision before returning
+        if (this.isValidDecision(priority, character)) {
+          return priority;
+        }
+        // Invalid strategic decision, fall through to CharacterAI
       }
     }
 
@@ -384,9 +409,9 @@ export class AIGameLoop {
     if (assemblyId) {
       const assemblyAI = this.assemblyAIs.get(assemblyId);
       if (assemblyAI && this.config.enableTactical) {
-        const assembly = character.profile ? { 
-          id: assemblyId, 
-          name: assemblyId, 
+        const assembly = character.profile ? {
+          id: assemblyId,
+          name: assemblyId,
           totalBP: 0, 
           totalCharacters: 0 
         } : null;
@@ -462,6 +487,26 @@ export class AIGameLoop {
       priority: 0,
       requiresAP: false,
     };
+  }
+
+  /**
+   * Validate that a decision has required fields
+   */
+  private isValidDecision(decision: ActionDecision, character: Character): boolean {
+    // Move requires position
+    if (decision.type === 'move' && !decision.position) {
+      return false;
+    }
+    // Ranged combat requires ranged weapon
+    if (decision.type === 'ranged_combat') {
+      const hasRangedWeapon = character.profile?.items?.some(
+        item => item.classification === 'Ranged' || item.class === 'Ranged'
+      );
+      if (!hasRangedWeapon) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**

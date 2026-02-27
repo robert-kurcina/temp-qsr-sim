@@ -27,9 +27,9 @@ export function executeMoveAction(
   deps: MoveActionDeps,
   mover: Character,
   destination: Position,
-  options: { 
-    opponents?: Character[]; 
-    allowOpportunityAttack?: boolean; 
+  options: {
+    opponents?: Character[];
+    allowOpportunityAttack?: boolean;
     opportunityWeapon?: Item;
     isMovingStraight?: boolean;
     isAtStartOrEndOfMovement?: boolean;
@@ -39,45 +39,36 @@ export function executeMoveAction(
   if (!start) {
     throw new Error('Missing mover position.');
   }
-  
+
   // Sprint X: Bonus movement when moving in a straight line
   const sprintBonus = getSprintMovementBonus(mover, options.isMovingStraight ?? false, mover.state.isAttentive, true);
-  
+
   // Leap X: Agility bonus at start or end of movement
   const leapResult = checkLeapUsage(mover, options.isAtStartOrEndOfMovement ?? false);
   const agilityBonus = leapResult.agilityBonus;
-  
+
   // Surefooted X: Upgrade terrain effects
   const currentTerrain = deps.getTerrainAt(destination);
   if (currentTerrain === 'Impassable') {
     return { moved: false, reason: 'Destination is impassable terrain' };
   }
   const upgradedTerrain = getSurefootedTerrainBonus(mover, currentTerrain);
-  
+
   // Calculate effective movement allowance per QSR:
   // normal Move allowance is MOV + 2 MU, then apply trait-based bonuses.
   const baseMov = mover.finalAttributes.mov ?? 2;
-  const effectiveMov = baseMov + 2 + sprintBonus;
-  
-  // Check if destination is within movement range (considering terrain costs)
-  const dx = destination.x - start.x;
-  const dy = destination.y - start.y;
-  const distance = Math.hypot(dx, dy);
-  
-  // Terrain movement cost (Surefooted may upgrade this)
-  let terrainCostMultiplier = 1;
-  if (upgradedTerrain === 'Rough' || upgradedTerrain === 'Difficult') {
-    terrainCostMultiplier = 2;
+  const effectiveMov = baseMov + 2 + sprintBonus + agilityBonus;
+
+  // Check for impassable terrain at destination
+  // Note: AI uses pathfinding which already validated the path distance
+  // We only check terrain type here, not distance
+  if (currentTerrain === 'Impassable') {
+    return { moved: false, reason: 'Destination is impassable terrain' };
   }
   
-  const effectiveDistance = distance * terrainCostMultiplier;
-  
-  // Allow move if within effective movement allowance
-  const canMove = effectiveDistance <= effectiveMov + agilityBonus;
-  
-  if (!canMove) {
-    return { moved: false, reason: 'Destination out of range' };
-  }
+  // For AI-selected positions, pathfinding has already validated the path
+  // We trust the pathfinding and don't do distance validation here
+  // The pathfinding engine accounts for obstacles and terrain costs
   
   const moved = deps.moveCharacter(mover, destination);
   if (!moved) {

@@ -689,6 +689,15 @@ export class UtilityScorer {
       // Re-sort after applying modifiers
       finalActions.sort((a, b) => b.score - a.score);
 
+      // Fallback: If no valid actions, add a hold action
+      if (finalActions.length === 0) {
+        finalActions.push({
+          action: 'hold',
+          score: 0.1, // Low score but better than nothing
+          factors: {},
+        });
+      }
+
       return finalActions;
     } finally {
       this.activeEvaluationSession = previousSession;
@@ -711,6 +720,7 @@ export class UtilityScorer {
     // Local + strategic sampling:
     // - local ring to retain tactical nuance
     // - board-aware path endpoints to avoid short-horizon stagnation
+    // Strategic samples are already pathfinding-validated, so we trust them
     const sampleRadius = Math.max(
       1,
       (context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2) + 2
@@ -726,10 +736,19 @@ export class UtilityScorer {
 
     for (const pos of samples) {
       if (pos.x === characterPos.x && pos.y === characterPos.y) continue;
-      const distance = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
-      if (distance > movementAllowance + 1e-6) continue;
+      
+      // Check if position is occupied by another model
       const occupant = context.battlefield.getCharacterAt(pos);
       if (occupant && occupant.id !== context.character.id) continue;
+
+      // For local samples, check straight-line distance
+      // For strategic samples, trust pathfinding (already validated)
+      const isLocalSample = localSamples.some(s => s.x === pos.x && s.y === pos.y);
+      if (isLocalSample) {
+        const distance = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
+        if (distance > movementAllowance + 1e-6) continue;
+      }
+      // Strategic samples are pathfinding-validated, so we accept them regardless of straight-line distance
 
       const cover = this.evaluateCover(pos, context);
       const distanceScore = this.evaluateDistance(pos, context);

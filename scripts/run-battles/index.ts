@@ -142,7 +142,8 @@ async function parseArgs(): Promise<ParseResult> {
         i++;
         break;
       case '--terrain':
-        overrides.terrainDensity = parseInt(value, 10);
+        // Convert percentage (0-100) to decimal (0.0-1.0)
+        overrides.terrainDensity = parseInt(value, 10) / 100;
         i++;
         break;
       case '--lighting':

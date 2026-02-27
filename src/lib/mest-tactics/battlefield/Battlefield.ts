@@ -6,6 +6,7 @@ import { TerrainFeature, TerrainType } from './terrain/Terrain';
 import { TerrainElement } from './TerrainElement';
 import { ConstrainedNavMesh } from './pathfinding/ConstrainedNavMesh';
 import { getBaseDiameterFromSiz } from './spatial/size-utils';
+import { SpatialRules } from './spatial/spatial-rules';
 
 function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
     function orientation(p: Position, q: Position, r: Position): number {
@@ -174,6 +175,45 @@ export class Battlefield {
       });
     }
     return blockers;
+  }
+
+  /**
+   * Check if a character is engaged (in base contact) with any opposing model
+   */
+  isEngaged(character: Character): boolean {
+    const pos = this.characterPositions.get(character.id);
+    if (!pos) return false;
+    
+    const siz = character.finalAttributes?.siz ?? character.attributes?.siz ?? 3;
+    const baseDiameter = getBaseDiameterFromSiz(siz);
+    const model = {
+      id: character.id,
+      position: pos,
+      baseDiameter,
+      siz,
+    };
+    
+    // Check against all other characters
+    for (const [otherId, otherChar] of this.characterRegistry.entries()) {
+      if (otherId === character.id) continue;
+      const otherPos = this.characterPositions.get(otherId);
+      if (!otherPos) continue;
+      
+      const otherSiz = otherChar.finalAttributes?.siz ?? otherChar.attributes?.siz ?? 3;
+      const otherBaseDiameter = getBaseDiameterFromSiz(otherSiz);
+      const otherModel = {
+        id: otherId,
+        position: otherPos,
+        baseDiameter: otherBaseDiameter,
+        siz: otherSiz,
+      };
+      
+      if (SpatialRules.isEngaged(model, otherModel)) {
+        return true;
+      }
+    }
+    
+    return false;
   }
 
   private losCacheKey(start: Position, end: Position): string {

@@ -279,9 +279,12 @@ export class BattleRunner {
 
     // Build sides and assemblies
     const sides = await this.buildSides(battlefield);
-    
+
+    // Log roster information (grade 1+)
+    this.logRoster(sides);
+
     // Create game manager
-    const allCharacters = sides.flatMap(side => 
+    const allCharacters = sides.flatMap(side =>
       side.members.map((m: any) => m.character)
     );
     const endGameTriggerTurn = getEndGameTriggerTurn(this.config.gameSize);
@@ -468,7 +471,7 @@ export class BattleRunner {
       ...DEFAULT_AI_GAME_LOOP_CONFIG,
       verboseLogging: true,
       maxActionsPerTurn: 3,
-    });
+    }, this.logger);
 
     // Track First Blood
     const keys: KeysToVictory = {
@@ -707,6 +710,38 @@ export class BattleRunner {
       console.log(`Log size: ${jsonLog.length} bytes`);
       console.log(`\nTo save: echo '${jsonLog}' > battle-log.json`);
     }
+  }
+
+  /**
+   * Log roster information for instrumentation (grade 1+)
+   */
+  private logRoster(sides: any[]): void {
+    if (this.config.instrumentationGrade < 1) return;
+
+    const roster = sides.map(side => {
+      const characters = side.members.map((member: any) => ({
+        id: member.character.id,
+        name: member.character.name || member.character.profile.name,
+        profile: member.character.profile.name,
+        archetype: member.character.profile.archetype,
+        items: (member.character.profile.items || []).map((item: any) => item.name),
+      }));
+
+      const firstMember = side.members[0];
+      const archetypeName = typeof firstMember?.character?.profile?.archetype === 'string'
+        ? firstMember.character.profile.archetype
+        : firstMember?.character?.profile?.archetypeName || 'Unknown';
+
+      return {
+        sideId: side.id,
+        sideName: side.name,
+        assemblyName: firstMember?.assembly?.name || 'Unknown',
+        archetypeName,
+        characters,
+      };
+    });
+
+    this.logger.logRoster(roster);
   }
 }
 

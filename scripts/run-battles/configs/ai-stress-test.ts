@@ -14,7 +14,7 @@ import type { BattleRunnerConfig } from '../battle-runner';
 
 export const AI_STRESS_TEST_CONFIG: BattleRunnerConfig = {
   gameSize: GameSize.MEDIUM,
-  terrainDensity: 50,
+  terrainDensity: 0.50, // 50% as decimal (0.0-1.0)
   lighting: LIGHTING_PRESETS['Day, Clear'],
   missionId: 'QAI_12',
   sides: [

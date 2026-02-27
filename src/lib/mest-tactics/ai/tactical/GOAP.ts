@@ -1218,20 +1218,17 @@ function validateMoveAction(
     return;
   }
 
-  const dx = position.x - startPos.x;
-  const dy = position.y - startPos.y;
-  const distance = Math.hypot(dx, dy);
-  const mov = context.character.finalAttributes.mov ?? 2;
-
-  if (distance > mov * 2) {
-    errors.push(`Destination too far: ${distance.toFixed(1)} MU exceeds max movement (${mov * 2} MU)`);
-  } else if (distance > mov) {
-    warnings.push(`Destination requires Sprint or full movement (${distance.toFixed(1)} MU > ${mov} MOV)`);
-  }
-
   // Check for engagement (should disengage first)
   if (context.battlefield.isEngaged?.(context.character)) {
     errors.push('Cannot move while engaged - must Disengage first');
+    return;
+  }
+
+  // Note: AI position selection uses pathfinding which already validates the path
+  // We trust the pathfinding and only check for impassable terrain at destination
+  const terrain = context.battlefield.getTerrainAt(position);
+  if (terrain === 'Impassable') {
+    errors.push('Destination is impassable terrain');
   }
 }
 

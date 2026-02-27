@@ -163,6 +163,8 @@ export interface LoggedAction {
   actorId: string;
   /** Actor character name */
   actorName: string;
+  /** Actor profile name (grade 1+) */
+  actorProfile?: string;
   /** Action type */
   actionType: LoggedActionType;
   /** Action description */
@@ -175,6 +177,8 @@ export interface LoggedAction {
   targetId?: string;
   /** Target character name (if applicable) */
   targetName?: string;
+  /** Target profile name (grade 1+) */
+  targetProfile?: string;
   /** Test results (grade 3+) */
   testResults?: LoggedTestResult[];
   /** Dice rolls (grade 4+) */
@@ -213,6 +217,35 @@ export interface BattleLog {
   actions: LoggedAction[];
   /** Summary statistics */
   summary: BattleLogSummary;
+  /** Roster info (grade 1+) */
+  roster?: RosterInfo[];
+}
+
+/**
+ * Character roster info for instrumentation (grade 1+)
+ */
+export interface RosterInfo {
+  /** Side ID */
+  sideId: string;
+  /** Side name */
+  sideName: string;
+  /** Assembly name */
+  assemblyName: string;
+  /** Archetype name */
+  archetypeName: string;
+  /** Characters in assembly */
+  characters: {
+    /** Character ID */
+    id: string;
+    /** Character name */
+    name: string;
+    /** Profile name */
+    profile: string;
+    /** Archetype */
+    archetype: string;
+    /** Items equipped */
+    items: string[];
+  }[];
 }
 
 /**
@@ -288,6 +321,18 @@ export class InstrumentationLogger {
       },
     };
     this.actionBuffer = [];
+  }
+
+  /**
+   * Log roster information (grade 1+)
+   */
+  logRoster(roster: RosterInfo[]): void {
+    if (!this.battleLog || this.config.grade === InstrumentationGrade.NONE) {
+      return;
+    }
+    if (this.config.grade >= InstrumentationGrade.SUMMARY) {
+      this.battleLog.roster = roster;
+    }
   }
 
   /**
