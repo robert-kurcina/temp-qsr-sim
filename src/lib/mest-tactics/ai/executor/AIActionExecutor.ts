@@ -372,6 +372,15 @@ export class AIActionExecutor {
     const result = this.manager.refreshForCharacter(character);
 
     if (result) {
+      // Log IP spending (grade 2+)
+      if (this.logger && this.logger['config'].grade >= 2) {
+        // Find character's side for logging
+        const side = this.findCharacterSideForLogging(character);
+        if (side) {
+          this.logger.logIpSpending(side, character.id, 'refresh', context.currentTurn);
+        }
+      }
+      
       return this.createSuccess(
         { type: 'refresh', reason: 'Refresh: remove Delay token', priority: 2, requiresAP: false },
         character,
@@ -384,6 +393,22 @@ export class AIActionExecutor {
       character,
       'Insufficient IP or no Delay tokens to remove'
     );
+  }
+
+  /**
+   * Find character's side for logging purposes
+   */
+  private findCharacterSideForLogging(character: Character): string | null {
+    // Try to find side from manager's missionSides
+    const missionSides = (this.manager as any).missionSides;
+    if (!missionSides) return null;
+    
+    for (const side of missionSides) {
+      if (side.members?.some((m: any) => m.character.id === character.id)) {
+        return side.id;
+      }
+    }
+    return null;
   }
 
   /**

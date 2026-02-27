@@ -530,7 +530,8 @@ export class BattleRunner {
         const ipSummary = sides.map(s => `${s.name}: ${s.state.initiativePoints ?? 0} IP`).join(', ');
         console.log(`📊 Initiative Points: ${ipSummary}`);
         
-        // Log initiative test report
+        // Log initiative test report with actual dice rolls from GameManager
+        const initiativeResults = gameManager.lastInitiativeTestResults;
         const initiativeReport: InitiativeTestReport = {
           turn,
           modelsInLOS: sides.map(s => ({
@@ -540,11 +541,11 @@ export class BattleRunner {
               visibleEnemies: [], // Would need LOS calculation
             })),
           })),
-          rolls: [], // Would need actual dice rolls from rollInitiative
-          winner: null,
+          rolls: initiativeResults?.rolls || [],
+          winner: initiativeResults?.winner || null,
           tieBroken: false,
           initiativeCardUsed: false,
-          ipAwarded: [],
+          ipAwarded: initiativeResults?.ipAwarded || [],
           initiativeCard: { holder: null, transferred: false },
           ipAvailable: sides.reduce((acc: any, s: any) => {
             acc[s.id] = s.state.initiativePoints ?? 0;
@@ -605,14 +606,25 @@ export class BattleRunner {
           endRolls.push(roll);
         }
 
-        console.log(`🎲 END-GAME TRIGGER (Turn ${turnCount}, ${endDice} dice): [${endRolls.join(', ')}]`);
-
         const miss = endRolls.some(roll => roll <= 3);
-        
+
+        // Log End-game Trigger dice (grade 2+)
+        if (this.config.instrumentationGrade >= 2) {
+          console.log(`🎲 END-GAME TRIGGER (Turn ${turnCount}, ${endDice} dice): [${endRolls.join(', ')}]`);
+          if (miss) {
+            console.log(`🏁 GAME ENDED: End-game Trigger dice rolled miss (1-3) on Turn ${turnCount}`);
+          }
+        }
+
         turnEndReport = {
           turn: turnCount,
           ipDiscarded: [], // IP discarded at end of turn
-          bottleTests: [], // Would need bottle test results
+          bottleTests: gameManager.lastBottleTestResults ? Object.entries(gameManager.lastBottleTestResults).map(([sideId, result]) => ({
+            sideId,
+            modelsRequired: [],
+            results: [],
+            sideBottled: result.sideBottled,
+          })) : [],
           endGameTrigger: {
             diceAdded: true,
             totalDice: endDice,
@@ -626,7 +638,7 @@ export class BattleRunner {
             resourcePoints: 0,
           })),
         };
-        
+
         if (this.config.instrumentationGrade >= 2 && turnEndReport) {
           this.logger.logTurnEnd(turnEndReport);
         }
@@ -634,7 +646,6 @@ export class BattleRunner {
         if (miss) {
           gameEnded = true;
           endGameReason = `End-game Trigger dice rolled miss (1-3) on Turn ${turnCount}`;
-          console.log(`🏁 GAME ENDED: ${endGameReason}`);
           break;
         }
       } else {
@@ -645,7 +656,12 @@ export class BattleRunner {
             sideId: s.id,
             amount: s.state.initiativePoints ?? 0,
           })),
-          bottleTests: [],
+          bottleTests: gameManager.lastBottleTestResults ? Object.entries(gameManager.lastBottleTestResults).map(([sideId, result]) => ({
+            sideId,
+            modelsRequired: [],
+            results: [],
+            sideBottled: result.sideBottled,
+          })) : [],
           endGameTrigger: {
             diceAdded: false,
             totalDice: 0,
@@ -658,7 +674,7 @@ export class BattleRunner {
             resourcePoints: 0,
           })),
         };
-        
+
         if (this.config.instrumentationGrade >= 2) {
           this.logger.logTurnEnd(turnEndReport);
         }

@@ -121,6 +121,11 @@ export class GameManager {
   public roundsPerTurn: number = 1;
   public phase: TurnPhase = TurnPhase.Setup;
   public lastInitiativeWinnerSideId: string | null = null;
+  public lastInitiativeTestResults: {
+    rolls: { sideId: string; dice: number[]; successes: number; pips: number }[];
+    winner: string | null;
+    ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[];
+  } | null = null;
   public allowKOdAttacks: boolean = false;
   public kodControllerTraitsByCharacterId?: Record<string, string[]>;
   public kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
@@ -168,14 +173,20 @@ export class GameManager {
   /**
    * Roll Initiative for all characters and award Initiative Points to Sides
    * QSR: Start of Turn - Initiative Tests and Initiative Points
-   * 
+   *
    * @param roller - Random number generator (default: Math.random)
    * @param sides - Optional array of sides to award IP to (if not provided, IP not awarded)
+   * @returns Initiative test results for logging
    */
-  public rollInitiative(roller: () => number = Math.random, sides?: MissionSide[]): void {
+  public rollInitiative(roller: () => number = Math.random, sides?: MissionSide[]): {
+    rolls: { sideId: string; dice: number[]; successes: number; pips: number }[];
+    winner: string | null;
+    ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[];
+  } {
     const initiativeResults: Array<{
       character: Character;
       initiative: number;
+      dice: number[];
       dicePips: number;
       side?: MissionSide;
     }> = [];
@@ -197,9 +208,11 @@ export class GameManager {
       // Roll 2 Base dice + Tactics bonus dice
       let initiativeRoll = 0;
       let dicePips = 0;
+      const dice: number[] = [];
       const totalDice = 2 + tacticsBonus;
       for (let i = 0; i < totalDice; i++) {
         const roll = Math.floor(roller() * 6) + 1;
+        dice.push(roll);
         dicePips += roll; // Track total pips for tie-breaker
         // Base dice: 4-5 = 1 success, 6 = 2 successes
         if (roll >= 6) {
@@ -216,6 +229,7 @@ export class GameManager {
       initiativeResults.push({
         character,
         initiative: character.initiative,
+        dice,
         dicePips,
         side,
       });
@@ -245,12 +259,14 @@ export class GameManager {
       .map(result => result.character);
 
     // Award Initiative Points to Sides (QSR: Start of Turn)
+    const ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[] = [];
+    
     if (sides && initiativeResults.length > 0) {
       // Find winner (highest initiative)
       const winner = initiativeResults[0];
       this.lastInitiativeWinnerSideId = winner.side?.id ?? null;
       const lowestScore = initiativeResults[initiativeResults.length - 1].initiative;
-      
+
       // Group results by side
       const sideResults = new Map<MissionSide, Array<typeof winner>>();
       for (const result of initiativeResults) {
@@ -264,12 +280,17 @@ export class GameManager {
       // Award IP to each side
       for (const [side, results] of sideResults.entries()) {
         const sideInitiative = Math.max(...results.map(r => r.initiative));
-        
+
         if (sideInitiative === winner.initiative && side === winner.side) {
           // Winner: IP = difference between winner and lowest score
-          const ipAwarded = winner.initiative - lowestScore;
-          if (ipAwarded > 0) {
-            awardInitiativePoints(side, ipAwarded);
+          const ipAmount = winner.initiative - lowestScore;
+          if (ipAmount > 0) {
+            awardInitiativePoints(side, ipAmount);
+            ipAwarded.push({
+              sideId: side.id,
+              amount: ipAmount,
+              reason: 'highest_initiative',
+            });
           }
         } else {
           // All other sides: 1 IP per carry-over Base die (rolled 6)
@@ -284,10 +305,32 @@ export class GameManager {
           }
           if (carryOverCount > 0) {
             awardInitiativePoints(side, carryOverCount);
+            ipAwarded.push({
+              sideId: side.id,
+              amount: carryOverCount,
+              reason: 'carry_over',
+            });
           }
         }
       }
     }
+
+    // Build rolls data for logging
+    const rolls = sides?.map(side => {
+      const sideMembers = initiativeResults.filter(r => r.side === side);
+      return {
+        sideId: side.id,
+        dice: sideMembers.flatMap(r => r.dice),
+        successes: sideMembers.reduce((sum, r) => sum + r.initiative - (r.character.attributes.int || 0), 0),
+        pips: sideMembers.reduce((sum, r) => sum + r.dicePips, 0),
+      };
+    }) || [];
+
+    return {
+      rolls,
+      winner: this.lastInitiativeWinnerSideId,
+      ipAwarded,
+    };
   }
 
   /**
@@ -465,7 +508,7 @@ export class GameManager {
     // (Not implemented - would need BP tracking per side)
 
     // Roll Initiative and award IP to Sides
-    this.rollInitiative(roller, sides);
+    this.lastInitiativeTestResults = this.rollInitiative(roller, sides);
 
     this.refreshUsed.clear();
     this.rallyUsed.clear();
@@ -812,7 +855,7 @@ export class GameManager {
   public executeRally(
     actor: Character,
     target: Character,
-    options: { context?: TestContext; rolls?: number[] } = {}
+    options: { context?: TestContext; rolls?: number[]; side?: MissionSide } = {}
   ) {
     return executeRallyAction(this.simpleActionDeps(), actor, target, options);
   }
@@ -1389,15 +1432,25 @@ export class GameManager {
       orderedCandidate: Character | null;
       opposingCount: number;
       rolls?: number[];
-    }>
+      side?: MissionSide;
+    }>,
+    battlefield: Battlefield | null = null
   ): Record<string, BottleTestResult> {
-    return runBottleTests(
+    const results = runBottleTests(
       {
         setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
       },
-      sides
+      sides,
+      battlefield
     );
+
+    // Store bottle test results for logging
+    this.lastBottleTestResults = results;
+
+    return results;
   }
+  
+  public lastBottleTestResults: Record<string, BottleTestResult> | null = null;
 
   // ============================================================================
   // Game Loop - Full Battle Execution

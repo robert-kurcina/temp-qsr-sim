@@ -4,6 +4,8 @@ import { resolveTest } from '../subroutines/dice-roller';
 import { CharacterStatus } from '../core/types';
 import { hasReload, getReloadActionsRequired, isWeaponLoaded, setWeaponLoaded } from '../traits/combat-traits';
 import { validateFiddleAction, hasUsingOneLessHandPenalty, clearUsingOneLessHand } from './hand-requirements';
+import { getLeaderRallyBonus } from '../core/leader-identification';
+import { MissionSide } from '../mission/MissionSide';
 
 export interface SimpleActionDeps {
   spendAp: (character: Character, cost: number) => boolean;
@@ -22,24 +24,42 @@ export function executeRallyAction(
   deps: SimpleActionDeps,
   actor: Character,
   target: Character,
-  options: { context?: TestContext; rolls?: number[] } = {}
+  options: { 
+    context?: TestContext; 
+    rolls?: number[];
+    side?: MissionSide;
+  } = {}
 ) {
   if (deps.hasRallyUsed(target.id)) {
     return { success: false, reason: 'Target already rallied this turn.' };
   }
+  
+  // Get leader rally bonus if side provided
+  let rallyBonus = 0;
+  if (options.side) {
+    rallyBonus = getLeaderRallyBonus(actor, options.side);
+  }
+  
   const result = resolveTest(
-    { character: target, attribute: 'pow', bonusDice: options.context?.isFocusing ? { wild: 1 } : undefined },
+    { 
+      character: target, 
+      attribute: 'pow', 
+      bonusDice: {
+        ...(options.context?.isFocusing ? { wild: 1 } : {}),
+        ...(rallyBonus > 0 ? { modifier: rallyBonus } : {}),
+      }
+    },
     { isSystemPlayer: true },
     options.rolls ?? null
   );
   if (!result.pass) {
-    return { success: false, result };
+    return { success: false, result, leaderBonusApplied: rallyBonus };
   }
   const cascades = result.cascades ?? 0;
   target.state.fearTokens = Math.max(0, target.state.fearTokens - cascades);
   target.refreshStatusFlags();
   deps.markRallyUsed(target.id);
-  return { success: true, result, fearRemoved: cascades };
+  return { success: true, result, fearRemoved: cascades, leaderBonusApplied: rallyBonus };
 }
 
 export function executeReviveAction(
