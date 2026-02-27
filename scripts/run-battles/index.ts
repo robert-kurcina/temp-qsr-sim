@@ -1,16 +1,18 @@
 #!/usr/bin/env node
 /**
  * Battle Runner CLI
- * 
+ *
  * Unified battle runner for MEST Tactics AI vs AI battles.
- * 
+ *
  * Usage:
  *   npx tsx scripts/run-battles/                    # Run default VERY_SMALL battle
  *   npx tsx scripts/run-battles/ --config small     # Run specific config
+ *   npx tsx scripts/run-battles/ --config-file path/to/config.json  # Custom JSON config
  *   npx tsx scripts/run-battles/ --help             # Show help
  */
 
-import { runBattle, type BattleConfig } from './battle-runner';
+import { readFileSync } from 'node:fs';
+import { runBattle, type BattleRunnerConfig as BattleConfig } from './battle-runner';
 import { VERY_SMALL_CONFIG } from './configs/very-small';
 import { LIGHTING_PRESETS } from './lighting-presets';
 import { GameSize } from '../../src/lib/mest-tactics/mission/assembly-builder';
@@ -23,7 +25,14 @@ import { InstrumentationGrade } from '../../src/lib/mest-tactics/instrumentation
 
 const CONFIGS: Record<string, () => Promise<BattleConfig>> = {
   'very-small': async () => (await import('./configs/very-small')).VERY_SMALL_CONFIG,
-  // Additional configs will be added as they're created
+  'small': async () => (await import('./configs/small')).SMALL_CONFIG,
+  'medium': async () => (await import('./configs/medium')).MEDIUM_CONFIG,
+  'large': async () => (await import('./configs/large')).LARGE_CONFIG,
+  'very-large': async () => (await import('./configs/very-large')).VERY_LARGE_CONFIG,
+  'convergence-3side': async () => (await import('./configs/convergence-3side')).CONVERGENCE_3SIDE_CONFIG,
+  'trinity': async () => (await import('./configs/trinity')).TRINITY_CONFIG,
+  'trinity-4side': async () => (await import('./configs/trinity-4side')).TRINITY_4SIDE_CONFIG,
+  'ai-stress-test': async () => (await import('./configs/ai-stress-test')).AI_STRESS_TEST_CONFIG,
 };
 
 // ============================================================================
@@ -40,8 +49,11 @@ Usage:
 Options:
   --config <name>          Battle configuration preset
                            Options: very-small, small, medium, large, very-large,
-                                    duel-1v1, duel-4v4, qai-11-elimination
+                                    convergence-3side, trinity, trinity-4side, ai-stress-test
                            Default: very-small
+
+  --config-file <path>     Custom JSON configuration file path
+                           Overrides --config option
 
   --gameSize <size>        Game size (overrides config)
                            Options: VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE
@@ -60,6 +72,12 @@ Options:
                            0=None, 1=Summary, 2=By Action, 3=With Tests,
                            4=With Dice, 5=Full Detail
 
+  --output <format>        Output format
+                           Options: console, json, both
+                           Default: console
+
+  --seed <number>          Random seed for reproducible battles
+
   --help                   Show this help message
 
 Examples:
@@ -75,15 +93,32 @@ Examples:
   # QAI_12 Convergence mission
   npx tsx scripts/run-battles/ --mission QAI_12
 
-  # Full detail instrumentation
-  npx tsx scripts/run-battles/ --instrumentation 5
+  # Full detail instrumentation with JSON output
+  npx tsx scripts/run-battles/ --instrumentation 5 --output json
+
+  # Custom JSON configuration file
+  npx tsx scripts/run-battles/ --config-file my-battle.json
+
+  # Reproducible battle with seed
+  npx tsx scripts/run-battles/ --seed 424242
 `);
 }
 
-async function parseArgs(): Promise<{ configName: string; overrides: Partial<BattleConfig> }> {
+type OutputFormat = 'console' | 'json' | 'both';
+
+interface ParseResult {
+  configName: string;
+  configFile?: string;
+  overrides: Partial<BattleConfig>;
+  outputFormat: OutputFormat;
+}
+
+async function parseArgs(): Promise<ParseResult> {
   const args = process.argv.slice(2);
   let configName = 'very-small';
+  let configFile: string | undefined;
   const overrides: Partial<BattleConfig> = {};
+  let outputFormat: OutputFormat = 'console';
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
@@ -92,6 +127,10 @@ async function parseArgs(): Promise<{ configName: string; overrides: Partial<Bat
     switch (arg) {
       case '--config':
         configName = value;
+        i++;
+        break;
+      case '--config-file':
+        configFile = value;
         i++;
         break;
       case '--gameSize':
@@ -111,11 +150,20 @@ async function parseArgs(): Promise<{ configName: string; overrides: Partial<Bat
         i++;
         break;
       case '--instrumentation':
-        overrides.instrumentation = {
-          grade: parseInt(value, 10) as InstrumentationGrade,
-          outputFormat: 'console',
-          verbose: true,
-        };
+        overrides.instrumentationGrade = parseInt(value, 10) as InstrumentationGrade;
+        i++;
+        break;
+      case '--output':
+        if (value === 'console' || value === 'json' || value === 'both') {
+          outputFormat = value;
+        } else {
+          console.error(`Invalid output format: ${value}. Use: console, json, both`);
+          process.exit(1);
+        }
+        i++;
+        break;
+      case '--seed':
+        overrides.seed = parseInt(value, 10);
         i++;
         break;
       case '--help':
@@ -125,48 +173,94 @@ async function parseArgs(): Promise<{ configName: string; overrides: Partial<Bat
     }
   }
 
-  return { configName, overrides };
+  return { configName, configFile, overrides, outputFormat };
 }
 
 // ============================================================================
 // Main Entry Point
 // ============================================================================
 
+function loadJsonConfig(filePath: string): BattleConfig {
+  try {
+    const content = readFileSync(filePath, 'utf-8');
+    const config = JSON.parse(content) as BattleConfig;
+    return config;
+  } catch (error) {
+    console.error(`Failed to load config file: ${filePath}`);
+    console.error(error);
+    process.exit(1);
+  }
+}
+
 async function main() {
   try {
-    const { configName, overrides } = await parseArgs();
+    const { configName, configFile, overrides, outputFormat } = await parseArgs();
 
     // Load config
-    const configLoader = CONFIGS[configName];
-    if (!configLoader) {
-      console.error(`Unknown configuration: ${configName}`);
-      console.error(`Available configs: ${Object.keys(CONFIGS).join(', ')}`);
-      process.exit(1);
+    let config: BattleConfig;
+    if (configFile) {
+      config = loadJsonConfig(configFile);
+    } else {
+      const configLoader = CONFIGS[configName];
+      if (!configLoader) {
+        console.error(`Unknown configuration: ${configName}`);
+        console.error(`Available configs: ${Object.keys(CONFIGS).join(', ')}`);
+        process.exit(1);
+      }
+      config = await configLoader();
     }
-
-    let config = await configLoader();
 
     // Apply overrides
     config = {
       ...config,
       ...overrides,
-      instrumentation: {
-        ...config.instrumentation,
-        ...(overrides.instrumentation || {}),
-      },
     };
 
     // Run battle
-    const result = await runBattle(config);
+    const runner = new (await import('./battle-runner')).BattleRunner(config);
+    const result = await runner.run();
 
-    // Print final result
-    console.log('═══════════════════════════════════════');
-    console.log('🏆 FINAL RESULT');
-    console.log('═══════════════════════════════════════');
-    console.log(`Winner: ${result.winner}`);
-    console.log(`Turns: ${result.turnsCompleted}`);
-    console.log(`End Reason: ${result.endReason}`);
-    console.log('');
+    // Output results based on format
+    if (outputFormat === 'json' || outputFormat === 'both') {
+      console.log('\n--- JSON OUTPUT ---');
+      const jsonOutput = JSON.stringify({
+        battleId: result.battleId,
+        config: result.config,
+        turnsPlayed: result.turnsPlayed,
+        gameEnded: result.gameEnded,
+        endGameReason: result.endGameReason,
+        vpBySide: result.vpBySide,
+        winnerSide: result.winnerSide,
+        stats: result.stats,
+        keys: result.keys,
+      }, null, 2);
+      console.log(jsonOutput);
+      if (outputFormat === 'json') {
+        return;
+      }
+    }
+
+    if (outputFormat === 'console' || outputFormat === 'both') {
+      // Print final result
+      console.log('═══════════════════════════════════════');
+      console.log('🏆 FINAL RESULT');
+      console.log('═══════════════════════════════════════');
+      
+      if (result.winnerSide) {
+        const reasonText = result.winnerReason ? ` (${result.winnerReason === 'vp' ? 'Victory Points' : result.winnerReason === 'rp' ? 'Resource Points tie-break' : result.winnerReason})` : '';
+        console.log(`🏅 Winner: ${result.winnerSide}${reasonText}`);
+      } else if (result.tieSideIds && result.tieSideIds.length > 0) {
+        console.log(`🤝 Result: Tie`);
+        console.log(`   Tied sides: ${result.tieSideIds.join(', ')}`);
+        console.log(`   Tie-break: ${result.winnerReason === 'rp' ? 'RP tie-break failed (still tied)' : 'No tie-break applied'}`);
+      } else {
+        console.log(`🤝 Result: Tie`);
+      }
+      
+      console.log(`Turns: ${result.turnsPlayed}`);
+      console.log(`End Reason: ${result.endGameReason}`);
+      console.log('');
+    }
 
   } catch (error) {
     console.error('Battle failed:', error);

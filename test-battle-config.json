@@ -1,0 +1,45 @@
+{
+  "gameSize": "VERY_SMALL",
+  "terrainDensity": 50,
+  "lighting": {
+    "name": "Day, Clear",
+    "visibilityOR": 16,
+    "description": "Full daylight, clear skies"
+  },
+  "missionId": "QAI_11",
+  "sides": [
+    {
+      "id": "side-a",
+      "name": "Side A",
+      "assemblies": [
+        {
+          "name": "Assembly A",
+          "archetypeName": "Average",
+          "count": 3,
+          "itemNames": ["Sword, Broad", "Armored Gear", "Armor, Light", "Shield, Small"]
+        }
+      ],
+      "ai": {
+        "count": 1,
+        "doctrine": "Balanced"
+      }
+    },
+    {
+      "id": "side-b",
+      "name": "Side B",
+      "assemblies": [
+        {
+          "name": "Assembly B",
+          "archetypeName": "Average",
+          "count": 3,
+          "itemNames": ["Sword, Broad", "Armored Gear", "Armor, Light", "Shield, Small"]
+        }
+      ],
+      "ai": {
+        "count": 1,
+        "doctrine": "Balanced"
+      }
+    }
+  ],
+  "instrumentationGrade": 2
+}

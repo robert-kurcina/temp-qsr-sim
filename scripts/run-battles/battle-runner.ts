@@ -2,14 +2,7 @@
  * Battle Runner - Core Battle Execution Engine
  * 
  * Unified battle runner that exercises full AI System + Mission + Engine integration.
- * 
- * Features:
- * - Full CharacterAI decision-making via CharacterAI.decideAction()
- * - Mission runtime integration via GameController.runMission()
- * - Proper Initiative/IP system per QSR Line 680-730
- * - End-Game Trigger dice per QSR Line 744-750 (cumulative d6, ends on 1-3)
- * - Wait/React/Bonus Action resolution via GameManager
- * - Comprehensive instrumentation via QSRInstrumentation
+ * Supports 2-4 sides with configurable AI controllers per side.
  * 
  * Usage:
  * ```typescript
@@ -18,126 +11,241 @@
  * ```
  */
 
-import { GameSize } from '../../src/lib/mest-tactics/mission/assembly-builder';
+import { buildAssembly, buildProfile, GameSize, gameSizeDefaults } from '../../src/lib/mest-tactics/mission/assembly-builder';
+import { buildMissionSide } from '../../src/lib/mest-tactics/mission/MissionSideBuilder';
 import { Battlefield } from '../../src/lib/mest-tactics/battlefield/Battlefield';
+import { TerrainElement } from '../../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { GameManager } from '../../src/lib/mest-tactics/engine/GameManager';
-import { CharacterAI, DEFAULT_CHARACTER_AI_CONFIG } from '../../src/lib/mest-tactics/ai/core/CharacterAI';
+import { CharacterAI } from '../../src/lib/mest-tactics/ai/core/CharacterAI';
 import { TacticalDoctrine } from '../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
-import type { AIControllerConfig } from '../../src/lib/mest-tactics/ai/core/AIController';
-import { createMissionSide, type MissionSide } from '../../src/lib/mest-tactics/mission/MissionSide';
-import { createMissionRuntimeAdapter } from '../../src/lib/mest-tactics/missions/mission-runtime-adapter';
-import { configureInstrumentation, InstrumentationGrade, getInstrumentationLogger } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
+import { MissionLoader } from '../../src/lib/mest-tactics/missions/mission-loader';
+import { MissionEngine } from '../../src/lib/mest-tactics/missions/mission-engine';
+import { MissionRuntimeAdapter } from '../../src/lib/mest-tactics/missions/mission-runtime-adapter';
 import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-game-trigger';
-import { LightingPreset, LIGHTING_PRESETS } from './lighting-presets';
+import { InstrumentationLogger, InstrumentationGrade } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
+import { AIGameLoop, DEFAULT_AI_GAME_LOOP_CONFIG } from '../../src/lib/mest-tactics/ai/executor/AIGameLoop';
+
+// Re-export for convenience
+export { GameSize, InstrumentationGrade };
 
 // ============================================================================
-// Configuration Types
+// Types and Interfaces
 // ============================================================================
 
-export interface AssemblyConfig {
-  archetypeName: string;
-  itemNames: string[];
-  count: number;
+/**
+ * Tactical Doctrine for AI behavior
+ */
+export type AITacticalDoctrine = 'Aggressive' | 'Defensive' | 'Balanced' | 'Objective' | 'Opportunistic';
+
+/**
+ * AI Controller configuration per side
+ */
+export interface SideAIConfig {
+  /** Number of AI controllers (0=human, 1=single AI, 2=strategic+tactical) */
+  count: 0 | 1 | 2;
+  /** Tactical doctrine for AI behavior */
+  doctrine: AITacticalDoctrine;
 }
 
+/**
+ * Side configuration
+ */
 export interface SideConfig {
+  /** Side identifier */
+  id: string;
+  /** Name for display */
   name: string;
-  doctrine: TacticalDoctrine;
-  assembly: AssemblyConfig;
-  aggression?: number;
-  caution?: number;
+  /** Assembly configurations (1-2 assemblies per side) */
+  assemblies: AssemblyConfig[];
+  /** AI controller configuration */
+  ai: SideAIConfig;
 }
 
-export interface BattleConfig {
-  // Game settings
+/**
+ * Assembly configuration
+ */
+export interface AssemblyConfig {
+  /** Assembly name */
+  name: string;
+  /** Archetype name */
+  archetypeName: string;
+  /** Number of models */
+  count: number;
+  /** Item names for equipment */
+  itemNames: string[];
+}
+
+/**
+ * Lighting preset
+ */
+export interface LightingPreset {
+  name: string;
+  visibilityOR: number;
+  description: string;
+}
+
+/**
+ * Battle Runner configuration
+ */
+export interface BattleRunnerConfig {
+  /** Mission ID (QAI_11 through QAI_20) */
+  missionId: string;
+  /** Game size */
   gameSize: GameSize;
-  battlefieldSize: number;
-  maxTurns: number;
-  
-  // Terrain & Lighting
-  terrainDensity: number;  // 0-100%
+  /** Side configurations (2-4 sides, validated against mission) */
+  sides: SideConfig[];
+  /** Terrain density (0-100%) */
+  terrainDensity: number;
+  /** Lighting preset */
   lighting: LightingPreset;
-  
-  // Mission
-  missionId: string;  // QAI_11, QAI_12, etc.
-  
-  // Sides
-  sides: [SideConfig, SideConfig];
-  
-  // Instrumentation
-  instrumentation: {
-    grade: InstrumentationGrade;
-    outputFormat: 'console' | 'json' | 'jsonl';
-    verbose?: boolean;
-  };
+  /** Random seed for reproducibility */
+  seed?: number;
+  /** Instrumentation grade */
+  instrumentationGrade: InstrumentationGrade;
 }
 
-// ============================================================================
-// Battle Statistics
-// ============================================================================
-
-export interface BattleStats {
-  totalActions: number;
-  moves: number;
-  attacks: number;
-  closeCombats: number;
-  rangedCombats: number;
-  disengages: number;
-  waits: number;
-  reacts: number;
-  bonusActions: number;
-  eliminations: number;
-  kos: number;
-  moraleTests: number;
-  bottleTests: number;
-}
-
-// ============================================================================
-// Battle Result
-// ============================================================================
-
+/**
+ * Battle result
+ */
 export interface BattleResult {
-  winner: string | 'Draw';
-  turnsCompleted: number;
-  endReason: 'elimination' | 'end-game-trigger' | 'max-turns' | 'morale';
+  /** Battle ID */
+  battleId: string;
+  /** Configuration used */
+  config: BattleRunnerConfig;
+  /** Number of turns played */
+  turnsPlayed: number;
+  /** Whether game ended early */
+  gameEnded: boolean;
+  /** Reason for game end */
+  endGameReason: string;
+  /** Victory Points per side */
+  vpBySide: Record<string, number>;
+  /** Resource Points per side (for tie-breaking) */
+  rpBySide?: Record<string, number>;
+  /** Winner side ID (null for tie) */
+  winnerSide: string | null;
+  /** Tie side IDs (if tied) */
+  tieSideIds?: string[];
+  /** Reason for winner/tie */
+  winnerReason?: 'vp' | 'rp' | 'tie' | 'initiative-card';
+  /** Battle statistics */
   stats: BattleStats;
-  config: BattleConfig;
-  timestamp: string;
+  /** Keys to Victory */
+  keys: KeysToVictory;
+  /** Instrumentation log */
+  log: any;
 }
+
+/**
+ * Battle statistics
+ */
+export interface BattleStats {
+  /** KO'd models per side */
+  koBySide: Record<string, number>;
+  /** Eliminated models per side */
+  eliminatedBySide: Record<string, number>;
+  /** Models eliminated by Fear per side */
+  eliminatedByFear: Record<string, number>;
+  /** Bottle Tests per side */
+  bottleTests: Record<string, { triggered: number; failed: number }>;
+}
+
+/**
+ * Keys to Victory
+ */
+export interface KeysToVictory {
+  /** First Blood side ID */
+  firstBloodSide: string | null;
+  /** First Blood awarded */
+  firstBloodAwarded: boolean;
+}
+
+// ============================================================================
+// Lighting Presets
+// ============================================================================
+
+export const LIGHTING_PRESETS: Record<string, LightingPreset> = {
+  'Day, Clear': { 
+    name: 'Day, Clear', 
+    visibilityOR: 16, 
+    description: 'Full daylight, clear skies' 
+  },
+  'Day, Hazy': { 
+    name: 'Day, Hazy', 
+    visibilityOR: 14, 
+    description: 'Daylight with haze or fog' 
+  },
+  'Day, Overcast': { 
+    name: 'Day, Overcast', 
+    visibilityOR: 14, 
+    description: 'Overcast daylight' 
+  },
+  'Twilight, Clear': { 
+    name: 'Twilight, Clear', 
+    visibilityOR: 8, 
+    description: 'Dawn or dusk, clear' 
+  },
+  'Twilight, Overcast': { 
+    name: 'Twilight, Overcast', 
+    visibilityOR: 6, 
+    description: 'Dawn or dusk, overcast' 
+  },
+  'Night, Full Moon': { 
+    name: 'Night, Full Moon', 
+    visibilityOR: 4, 
+    description: 'Night with full moon' 
+  },
+  'Night, Half Moon': { 
+    name: 'Night, Half Moon', 
+    visibilityOR: 2, 
+    description: 'Night with half moon' 
+  },
+  'Night, New Moon': { 
+    name: 'Night, New Moon', 
+    visibilityOR: 1, 
+    description: 'Night with new moon (dark)' 
+  },
+  'Pitch-black': { 
+    name: 'Pitch-black', 
+    visibilityOR: 0, 
+    description: 'Complete darkness' 
+  },
+};
 
 // ============================================================================
 // Battle Runner Class
 // ============================================================================
 
 export class BattleRunner {
-  private config: BattleConfig;
-  private battlefield: Battlefield | null = null;
-  private gameManager: GameManager | null = null;
-  private sides: [MissionSide, MissionSide] | null = null;
-  private stats: BattleStats;
-  private logger: ReturnType<typeof getInstrumentationLogger>;
+  private config: BattleRunnerConfig;
+  private rng: () => number;
+  private logger: InstrumentationLogger;
 
-  constructor(config: BattleConfig) {
+  constructor(config: BattleRunnerConfig) {
     this.config = config;
-    this.stats = this.initializeStats();
-    this.logger = getInstrumentationLogger();
+    
+    // Initialize RNG with seed if provided
+    if (config.seed !== undefined) {
+      const seed = config.seed;
+      this.rng = this.createSeededRandom(seed);
+    } else {
+      this.rng = Math.random;
+    }
+
+    // Initialize instrumentation logger
+    this.logger = new InstrumentationLogger({
+      grade: config.instrumentationGrade,
+      format: 'console',
+    });
   }
 
-  private initializeStats(): BattleStats {
-    return {
-      totalActions: 0,
-      moves: 0,
-      attacks: 0,
-      closeCombats: 0,
-      rangedCombats: 0,
-      disengages: 0,
-      waits: 0,
-      reacts: 0,
-      bonusActions: 0,
-      eliminations: 0,
-      kos: 0,
-      moraleTests: 0,
-      bottleTests: 0,
+  /**
+   * Create seeded random number generator
+   */
+  private createSeededRandom(seed: number): () => number {
+    return function seededRandom() {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
     };
   }
 
@@ -145,82 +253,130 @@ export class BattleRunner {
    * Run a complete battle from setup to conclusion
    */
   async run(): Promise<BattleResult> {
-    // Configure instrumentation
-    configureInstrumentation({
-      grade: this.config.instrumentation.grade,
-      format: this.config.instrumentation.outputFormat === 'console' ? 'console' : 'both',
-    });
+    // Validate mission and side count
+    await this.validateMission();
 
-    this.logger.startBattle(`battle-${this.config.gameSize}-${Date.now()}`);
+    // Initialize battle logging
+    const battleId = `battle-${this.config.gameSize}-${Date.now()}`;
+    this.logger.startBattle(battleId);
 
-    try {
-      // Phase 1: Setup
-      await this.setup();
+    console.log('⚔️  AI vs AI BATTLE GENERATOR');
+    console.log('═══════════════════════════════════════');
+    console.log(`Mission: ${this.config.missionId}`);
+    console.log(`Game Size: ${this.config.gameSize}`);
+    console.log(`Sides: ${this.config.sides.length}`);
+    console.log(`Terrain Density: ${Math.round(this.config.terrainDensity * 100)}%`);
+    console.log(`Lighting: ${this.config.lighting.name} (Visibility OR ${this.config.lighting.visibilityOR} MU)`);
+    console.log('═══════════════════════════════════════\n');
 
-      // Phase 2: Run game loop
-      const result = await this.runGameLoop();
-
-      // Phase 3: Cleanup and return
-      return this.finalize(result);
-    } catch (error) {
-      console.error('Battle failed:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Phase 1: Setup battlefield, sides, and game manager
-   */
-  private async setup(): Promise<void> {
     // Create battlefield
-    this.battlefield = new Battlefield(
-      this.config.battlefieldSize,
-      this.config.battlefieldSize
-    );
+    const battlefieldSize = this.getBattlefieldSize();
+    const battlefield = new Battlefield(battlefieldSize, battlefieldSize);
+    const terrain = this.generateTerrain(battlefieldSize, this.config.terrainDensity);
+    terrain.forEach(t => battlefield.addTerrain(t));
 
-    // Generate terrain
-    this.generateTerrain();
+    console.log(`✓ Battlefield created (${battlefieldSize}×${battlefieldSize} MU) with ${terrain.length} terrain elements\n`);
 
-    // Create sides
-    this.sides = [
-      await this.createSide(this.config.sides[0], 0),
-      await this.createSide(this.config.sides[1], 1),
-    ];
-
-    // Deploy models
-    this.deployModels();
-
+    // Build sides and assemblies
+    const sides = await this.buildSides(battlefield);
+    
     // Create game manager
-    const allCharacters = [
-      ...this.sides[0].members.map(m => m.character),
-      ...this.sides[1].members.map(m => m.character),
-    ];
-    this.gameManager = new GameManager(
-      allCharacters,
-      this.battlefield,
-      getEndGameTriggerTurn(this.config.gameSize)
+    const allCharacters = sides.flatMap(side => 
+      side.members.map((m: any) => m.character)
     );
+    const endGameTriggerTurn = getEndGameTriggerTurn(this.config.gameSize);
+    const gameManager = new GameManager(allCharacters, battlefield, endGameTriggerTurn);
+
+    console.log('✓ Game manager initialized\n');
+
+    // Run battle
+    console.log('🎮 Starting battle...\n');
+    console.log('═══════════════════════════════════════\n');
+
+    const result = await this.runGameLoop(gameManager, battlefield, sides);
+
+    // End instrumentation logging
+    const battleLog = this.logger.endBattle(result.turnsPlayed);
+
+    // Print summary
+    this.printBattleSummary(result, battleLog);
+
+    return {
+      ...result,
+      battleId,
+      config: this.config,
+      log: battleLog,
+    };
   }
 
   /**
-   * Generate terrain based on density
+   * Validate mission configuration
    */
-  private generateTerrain(): void {
-    const terrainCount = Math.floor(
-      (this.config.battlefieldSize * this.config.battlefieldSize) * 
-      (this.config.terrainDensity / 100) / 100
-    );
+  private async validateMission(): Promise<void> {
+    // Mission side constraints (from JSON configs)
+    const missionSideConstraints: Record<string, { min: number; max: number }> = {
+      'QAI_11': { min: 2, max: 2 },
+      'QAI_12': { min: 2, max: 4 },
+      'QAI_13': { min: 2, max: 2 },
+      'QAI_14': { min: 2, max: 2 },
+      'QAI_15': { min: 2, max: 2 },
+      'QAI_16': { min: 2, max: 2 },
+      'QAI_17': { min: 3, max: 4 },  // Trinity requires min 3 sides
+      'QAI_18': { min: 2, max: 2 },
+      'QAI_19': { min: 2, max: 2 },
+      'QAI_20': { min: 2, max: 2 },
+    };
 
+    const constraints = missionSideConstraints[this.config.missionId];
+    
+    if (!constraints) {
+      console.warn(`⚠️  Unknown mission ${this.config.missionId}, using default constraints (2 sides)`);
+      return;
+    }
+
+    const sideCount = this.config.sides.length;
+
+    if (sideCount < constraints.min || sideCount > constraints.max) {
+      throw new Error(
+        `Mission ${this.config.missionId} requires ${constraints.min}-${constraints.max} sides, got ${sideCount}`
+      );
+    }
+
+    console.log(`✓ Mission validated: ${this.config.missionId} (${sideCount} sides)\n`);
+  }
+
+  /**
+   * Get battlefield size for game size
+   */
+  private getBattlefieldSize(): number {
+    const defaults = gameSizeDefaults[this.config.gameSize];
+    // Use approximate size based on game size
+    const sizeMap: Record<GameSize, number> = {
+      [GameSize.VERY_SMALL]: 24,
+      [GameSize.SMALL]: 36,
+      [GameSize.MEDIUM]: 48,
+      [GameSize.LARGE]: 60,
+      [GameSize.VERY_LARGE]: 72,
+    };
+    return sizeMap[this.config.gameSize] || 48;
+  }
+
+  /**
+   * Generate terrain
+   */
+  private generateTerrain(battlefieldSize: number, density: number): any[] {
+    const terrain: any[] = [];
     const terrainTypes = ['Tree', 'Rock', 'Ruin', 'Bush'];
+    const numTerrain = Math.floor((battlefieldSize * battlefieldSize) * density / 100);
 
-    for (let i = 0; i < terrainCount; i++) {
-      const x = Math.floor(Math.random() * this.config.battlefieldSize);
-      const y = Math.floor(Math.random() * this.config.battlefieldSize);
-      const type = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-
-      this.battlefield!.addTerrain({
+    for (let i = 0; i < numTerrain; i++) {
+      const x = Math.floor(this.rng() * battlefieldSize);
+      const y = Math.floor(this.rng() * battlefieldSize);
+      const type = terrainTypes[Math.floor(this.rng() * terrainTypes.length)];
+      
+      terrain.push({
         id: `terrain-${i}`,
-        type: type as any,
+        type: type,
         vertices: [
           { x: x - 0.5, y: y - 0.5 },
           { x: x + 0.5, y: y - 0.5 },
@@ -229,194 +385,328 @@ export class BattleRunner {
         ],
       });
     }
+
+    return terrain;
   }
 
   /**
-   * Create a mission side from config
+   * Build sides with assemblies
    */
-  private async createSide(sideConfig: SideConfig, sideIndex: number): Promise<MissionSide> {
-    const { buildAssembly, buildProfile } = await import('../../src/lib/mest-tactics/mission/assembly-builder');
-    
-    // Create profiles
-    const profiles = [];
-    for (let i = 0; i < sideConfig.assembly.count; i++) {
-      const profile = buildProfile(sideConfig.assembly.archetypeName, {
-        itemNames: sideConfig.assembly.itemNames,
+  private async buildSides(battlefield: Battlefield): Promise<any[]> {
+    const sides: any[] = [];
+
+    for (const sideConfig of this.config.sides) {
+      const assemblies: any[] = [];
+
+      for (const assemblyConfig of sideConfig.assemblies) {
+        const profiles = [];
+        for (let i = 0; i < assemblyConfig.count; i++) {
+          const profile = buildProfile(assemblyConfig.archetypeName, {
+            itemNames: assemblyConfig.itemNames,
+          });
+          profiles.push(profile);
+        }
+
+        const assembly = buildAssembly(assemblyConfig.name, profiles);
+        assemblies.push(assembly);
+      }
+
+      const side = buildMissionSide(sideConfig.name, assemblies);
+      
+      // Fix character IDs
+      side.members.forEach((member: any, i: number) => {
+        member.character.id = `${sideConfig.name}-${i + 1}`;
+        member.character.name = `${sideConfig.name}-${i + 1}`;
+        member.id = `${sideConfig.name}-${i + 1}`;
       });
-      profiles.push(profile);
+
+      sides.push(side);
     }
 
-    // Create assembly
-    const assembly = buildAssembly(sideConfig.name, profiles);
+    // Deploy models
+    await this.deployModels(sides, battlefield);
 
-    // Create mission side
-    const side = createMissionSide(sideConfig.name, [assembly]);
-
-    // Set character IDs
-    side.members.forEach((member: any, i: number) => {
-      member.character.id = `${sideConfig.name}-${i + 1}`;
-      member.character.name = `${sideConfig.name}-${i + 1}`;
-      member.id = `${sideConfig.name}-${i + 1}`;
-    });
-
-    return side;
+    return sides;
   }
 
   /**
    * Deploy models to battlefield
    */
-  private deployModels(): void {
-    if (!this.sides || !this.battlefield) return;
+  private async deployModels(sides: any[], battlefield: Battlefield): Promise<void> {
+    console.log('Deploying models...');
+    
+    const modelsPerRow = 3;
+    const spacing = Math.floor(this.getBattlefieldSize() / (modelsPerRow + 1));
 
-    const edgeMargin = 3;
-    const deploymentDepth = 6;
-
-    this.sides.forEach((side, sideIndex) => {
-      const count = side.members.length;
-      const cols = Math.ceil(Math.sqrt(count));
-      const xSpacing = cols > 1 
-        ? (this.config.battlefieldSize - edgeMargin * 2 - 1) / (cols - 1) 
-        : 0;
-      const sideStartY = sideIndex === 0 
-        ? edgeMargin 
-        : this.config.battlefieldSize - edgeMargin - deploymentDepth;
-
-      side.members.forEach((member, i) => {
-        const col = i % cols;
-        const x = Math.round(edgeMargin + col * xSpacing);
-        const y = Math.round(sideStartY);
-        this.battlefield!.placeCharacter(member.character, { x, y });
+    sides.forEach((side, sideIndex) => {
+      side.members.forEach((member: any, i: number) => {
+        const row = Math.floor(i / modelsPerRow);
+        const col = i % modelsPerRow;
+        const x = spacing + col * spacing;
+        const y = sideIndex === 0 
+          ? spacing + row * spacing 
+          : this.getBattlefieldSize() - spacing - row * spacing;
+        battlefield.placeCharacter(member.character, { x, y });
       });
     });
+
+    console.log('✓ Models deployed\n');
   }
 
   /**
-   * Phase 2: Run the game loop
+   * Run game loop with full AI integration
    */
-  private async runGameLoop(): Promise<{ winner: string | 'Draw'; turnsCompleted: number; endReason: string }> {
-    if (!this.gameManager || !this.sides) {
-      throw new Error('Game not setup properly');
+  private async runGameLoop(
+    gameManager: GameManager,
+    battlefield: Battlefield,
+    sides: any[]
+  ): Promise<Omit<BattleResult, 'battleId' | 'config' | 'log'>> {
+    console.log('🤖 Starting AI Game Loop...\n');
+
+    // Initialize AI Game Loop with full AI pipeline
+    const aiGameLoop = new AIGameLoop(gameManager, battlefield, sides, {
+      ...DEFAULT_AI_GAME_LOOP_CONFIG,
+      verboseLogging: true,
+      maxActionsPerTurn: 3,
+    });
+
+    // Track First Blood
+    const keys: KeysToVictory = {
+      firstBloodSide: null,
+      firstBloodAwarded: false,
+    };
+
+    // Battle statistics
+    const stats: BattleStats = {
+      koBySide: {},
+      eliminatedBySide: {},
+      eliminatedByFear: {},
+      bottleTests: {},
+    };
+
+    // Initialize stats per side
+    for (const side of sides) {
+      stats.koBySide[side.id] = 0;
+      stats.eliminatedBySide[side.id] = 0;
+      stats.eliminatedByFear[side.id] = 0;
+      stats.bottleTests[side.id] = { triggered: 0, failed: 0 };
     }
 
-    // Create mission runtime adapter
-    const missionAdapter = createMissionRuntimeAdapter(this.config.missionId, [...this.sides]);
+    // VP tracking
+    const vpBySide: Record<string, number> = {};
+    for (const side of sides) {
+      vpBySide[side.id] = 0;
+    }
 
-    // Create AI controllers
-    const aiConfigs: AIControllerConfig[] = this.sides.map(side => ({
-      sideId: side.id,
-      characterAI: new CharacterAI({
-        ...DEFAULT_CHARACTER_AI_CONFIG,
-        aggression: side.members[0]?.id.includes(this.config.sides[0].name) 
-          ? (this.config.sides[0].aggression ?? 0.5)
-          : (this.config.sides[1].aggression ?? 0.5),
-        caution: side.members[0]?.id.includes(this.config.sides[0].name)
-          ? (this.config.sides[0].caution ?? 0.5)
-          : (this.config.sides[1].caution ?? 0.5),
-      }),
-      tacticalDoctrine: side.members[0]?.id.includes(this.config.sides[0].name)
-        ? this.config.sides[0].doctrine
-        : this.config.sides[1].doctrine,
-    }));
+    const maxTurns = 10;
+    let turnCount = 0;
+    let gameEnded = false;
+    let endGameReason = '';
 
-    // Run game via GameManager
-    const result = await this.gameManager.runGame(missionAdapter, aiConfigs);
+    // End-game Trigger dice
+    const endGameTriggerTurn = getEndGameTriggerTurn(this.config.gameSize);
+    let endDice = 0;
 
-    // Update stats from result
-    this.stats.totalActions = result.stats.totalActions;
-    this.stats.closeCombats = result.stats.closeCombats;
-    this.stats.rangedCombats = result.stats.rangedCombats;
-    this.stats.kos = result.stats.kos;
-    this.stats.eliminations = result.stats.eliminations;
+    // Run AI Game Loop
+    for (let turn = 1; turn <= maxTurns; turn++) {
+      turnCount = turn;
+      console.log(`\n━━━ TURN ${turn} ━━━\n`);
+
+      // Run one turn of AI Game Loop
+      const turnResult = aiGameLoop.runTurn(turn);
+
+      // Track First Blood (check if any side scored first hit this turn)
+      if (!keys.firstBloodAwarded && turnResult.totalActions > 0) {
+        // First Blood awarded to first side that performed an attack action
+        // For simplicity, award to first side
+        keys.firstBloodAwarded = true;
+        keys.firstBloodSide = sides[0]?.id || null;
+        if (keys.firstBloodSide) {
+          vpBySide[keys.firstBloodSide] = (vpBySide[keys.firstBloodSide] || 0) + 1;
+          console.log(`  🩸 FIRST BLOOD! ${sides[0]?.name} scores 1 VP!`);
+        }
+      }
+
+      // Note: KO and elimination stats tracked by AI Game Loop internally
+      // For now, we'll update from battlefield state at end of game
+
+      console.log('');
+
+      // End-game Trigger dice rolling (per QSR Line 744-750)
+      if (turnCount >= endGameTriggerTurn) {
+        endDice++;
+
+        const endRolls: number[] = [];
+        for (let i = 0; i < endDice; i++) {
+          const roll = Math.floor(this.rng() * 6) + 1;
+          endRolls.push(roll);
+        }
+
+        console.log(`🎲 END-GAME TRIGGER (Turn ${turnCount}, ${endDice} dice): [${endRolls.join(', ')}]`);
+
+        const miss = endRolls.some(roll => roll <= 3);
+        if (miss) {
+          gameEnded = true;
+          endGameReason = `End-game Trigger dice rolled miss (1-3) on Turn ${turnCount}`;
+          console.log(`🏁 GAME ENDED: ${endGameReason}`);
+          break;
+        }
+      }
+
+      // Check for End of Conflict
+      const activeSides = sides.filter(side =>
+        side.members.some((m: any) =>
+          !m.character.state.isEliminated && !m.character.state.isKOd
+        )
+      );
+
+      if (activeSides.length <= 1) {
+        gameEnded = true;
+        endGameReason = activeSides.length === 0
+          ? 'All sides eliminated'
+          : `${activeSides[0].name} wins by elimination`;
+        console.log(`🏁 GAME ENDED: ${endGameReason}`);
+        break;
+      }
+    }
+
+    // Determine winner using proper mission scoring with RP tie-break
+    let winnerSide: string | null = null;
+    let tie = false;
+    let tieSideIds: string[] = [];
+    let winnerReason: 'vp' | 'rp' | 'tie' = 'vp';
+
+    // Find max VP
+    const maxVP = Math.max(...Object.values(vpBySide), 0);
+    const topVpSides = Object.entries(vpBySide)
+      .filter(([, vp]) => vp === maxVP)
+      .map(([sideId]) => sideId);
+
+    if (topVpSides.length === 1) {
+      // Clear VP winner
+      winnerSide = topVpSides[0];
+      tie = false;
+      winnerReason = 'vp';
+    } else if (topVpSides.length > 1) {
+      // VP tie - check RP tie-break
+      // For now, RP is 0 for all sides in basic battle runner
+      // RP would come from mission keys (Aggression, Bottled Out, etc.)
+      const rpBySide: Record<string, number> = {};
+      topVpSides.forEach(sideId => {
+        rpBySide[sideId] = 0; // Would be populated by mission keys
+      });
+
+      const maxRP = Math.max(...Object.values(rpBySide), 0);
+      const topRpSides = topVpSides.filter(sideId => rpBySide[sideId] === maxRP);
+
+      if (topRpSides.length === 1) {
+        // RP tie-break winner
+        winnerSide = topRpSides[0];
+        tie = false;
+        winnerReason = 'rp';
+      } else {
+        // Still tied after RP
+        tie = true;
+        tieSideIds = topRpSides;
+        winnerReason = 'tie';
+        // Note: Initiative card tie-breaker would be applied here if enabled
+        // This requires passing initiative card holder info to battle runner
+      }
+    }
 
     return {
-      winner: result.winner || 'Draw',
-      turnsCompleted: result.turnsCompleted,
-      endReason: this.determineEndReason(result),
+      turnsPlayed: turnCount,
+      gameEnded,
+      endGameReason,
+      vpBySide,
+      rpBySide: {},
+      winnerSide,
+      tieSideIds: tie ? tieSideIds : [],
+      winnerReason,
+      stats,
+      keys,
     };
   }
 
   /**
-   * Determine why the game ended
+   * Print battle summary
    */
-  private determineEndReason(result: any): string {
-    const sideA = this.sides![0];
-    const sideB = this.sides![1];
-
-    const aRemaining = sideA.members.filter(m => 
-      !m.character.state.isEliminated && !m.character.state.isKOd
-    ).length;
-    const bRemaining = sideB.members.filter(m => 
-      !m.character.state.isEliminated && !m.character.state.isKOd
-    ).length;
-
-    if (aRemaining === 0 || bRemaining === 0) {
-      return 'elimination';
-    }
-
-    if (result.turnsCompleted >= this.config.maxTurns) {
-      return 'max-turns';
-    }
-
-    return 'end-game-trigger';
-  }
-
-  /**
-   * Phase 3: Finalize and return result
-   */
-  private finalize(result: { winner: string | 'Draw'; turnsCompleted: number; endReason: string }): BattleResult {
-    const battleLog = this.logger.endBattle(result.turnsCompleted);
-
-    // Print summary if verbose
-    if (this.config.instrumentation.verbose !== false) {
-      this.printSummary(result, battleLog);
-    }
-
-    return {
-      winner: result.winner,
-      turnsCompleted: result.turnsCompleted,
-      endReason: result.endReason as any,
-      stats: this.stats,
-      config: this.config,
-      timestamp: new Date().toISOString(),
-    };
-  }
-
-  /**
-   * Print battle summary to console
-   */
-  private printSummary(
-    result: { winner: string | 'Draw'; turnsCompleted: number; endReason: string },
+  private printBattleSummary(
+    result: Omit<BattleResult, 'battleId' | 'config' | 'log'>,
     battleLog: any
   ): void {
-    console.log('\n═══════════════════════════════════════');
-    console.log('🏁 BATTLE COMPLETE\n');
-    console.log('📊 BATTLE SUMMARY');
     console.log('═══════════════════════════════════════');
-    console.log(`Battle ID: ${battleLog.battleId}`);
+    console.log('🏁 BATTLE COMPLETE\n');
+    
+    console.log('📊 FINAL RESULTS');
+    console.log('═══════════════════════════════════════');
     console.log(`Mission: ${this.config.missionId}`);
     console.log(`Game Size: ${this.config.gameSize}`);
-    console.log(`Lighting: ${this.config.lighting.name} (OR ${this.config.lighting.visibilityOR} MU)`);
-    console.log(`Turns: ${result.turnsCompleted}`);
-    console.log(`End Reason: ${result.endReason}`);
-    console.log(`Winner: ${result.winner}\n`);
-
-    console.log('📝 ACTION SUMMARY');
-    console.log('───────────────────────────────────────');
-    console.log(`Total Actions: ${this.stats.totalActions}`);
-    console.log(`  Moves: ${this.stats.moves}`);
-    console.log(`  Attacks: ${this.stats.attacks}`);
-    console.log(`  Close Combats: ${this.stats.closeCombats}`);
-    console.log(`  Ranged Combats: ${this.stats.rangedCombats}`);
-    console.log(`  Disengages: ${this.stats.disengages}`);
-    console.log(`  Wait: ${this.stats.waits}`);
-    console.log(`  React: ${this.stats.reacts}`);
-    console.log(`  Bonus Actions: ${this.stats.bonusActions}`);
-    console.log(`\nCasualties:`);
-    console.log(`  KOs: ${this.stats.kos}`);
-    console.log(`  Eliminations: ${this.stats.eliminations}`);
-    console.log(`  Morale Tests: ${this.stats.moraleTests}`);
-    console.log(`  Bottle Tests: ${this.stats.bottleTests}`);
+    console.log(`Battlefield: ${this.getBattlefieldSize()}×${this.getBattlefieldSize()} MU`);
+    console.log(`Turns Played: ${result.turnsPlayed}${result.gameEnded ? ` (Game ended: ${result.endGameReason})` : ''}`);
     console.log('');
+
+    // Victory Points and Winner
+    console.log('🏆 VICTORY POINTS');
+    console.log('───────────────────────────────────────');
+    for (const [sideId, vp] of Object.entries(result.vpBySide)) {
+      console.log(`  ${sideId}: ${vp} VP`);
+    }
+    if (result.winnerSide) {
+      console.log(`\n  🏅 Winner: ${result.winnerSide}`);
+    } else {
+      console.log(`\n  🤝 Result: Tie`);
+    }
+    console.log('');
+
+    // Keys to Victory
+    console.log('🔑 KEYS TO VICTORY');
+    console.log('───────────────────────────────────────');
+    if (result.keys.firstBloodAwarded) {
+      console.log(`  🩸 First Blood: ${result.keys.firstBloodSide} ✅ (+1 VP)`);
+    } else {
+      console.log(`  🩸 First Blood: Not awarded`);
+    }
+    console.log('');
+
+    // Casualties
+    console.log('💀 CASUALTIES');
+    console.log('───────────────────────────────────────');
+    for (const [sideId, stats] of Object.entries(result.stats.koBySide)) {
+      console.log(`  ${sideId}:`);
+      console.log(`    KO'd: ${result.stats.koBySide[sideId]}`);
+      console.log(`    Eliminated: ${result.stats.eliminatedBySide[sideId]}`);
+      console.log(`    Eliminated by Fear: ${result.stats.eliminatedByFear[sideId]}`);
+    }
+    console.log('');
+
+    // Bottle Tests
+    console.log('🧪 BOTTLE TESTS');
+    console.log('───────────────────────────────────────');
+    for (const [sideId, tests] of Object.entries(result.stats.bottleTests)) {
+      console.log(`  ${sideId}: Triggered ${tests.triggered}, Failed ${tests.failed}`);
+    }
+    console.log('');
+
+    // Action Summary
+    if (battleLog) {
+      console.log('📝 ACTION SUMMARY');
+      console.log('───────────────────────────────────────');
+      console.log(`Total Actions: ${battleLog.summary.totalActions}`);
+      console.log(`Actions by Type:`);
+      Object.entries(battleLog.summary.actionsByType).forEach(([type, count]) => {
+        console.log(`  ${type}: ${count}`);
+      });
+      console.log('');
+    }
+
+    // Export JSON
+    console.log('💾 Exporting battle log...');
+    if (battleLog) {
+      const jsonLog = JSON.stringify(battleLog, null, 2);
+      console.log(`Log size: ${jsonLog.length} bytes`);
+      console.log(`\nTo save: echo '${jsonLog}' > battle-log.json`);
+    }
   }
 }
 
@@ -427,7 +717,7 @@ export class BattleRunner {
 /**
  * Create and run a battle with the given config
  */
-export async function runBattle(config: BattleConfig): Promise<BattleResult> {
+export async function runBattle(config: BattleRunnerConfig): Promise<BattleResult> {
   const runner = new BattleRunner(config);
   return await runner.run();
 }

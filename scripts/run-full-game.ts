@@ -1,11 +1,28 @@
 /**
- * Full Game Runner Utility
+ * ⚠️  DEPRECATED - Full Game Runner Utility
+ * 
+ * This script is deprecated and will be removed in a future version.
+ * 
+ * ✅ USE THE NEW BATTLE RUNNER CLI INSTEAD:
+ *   npx tsx scripts/run-battles/ --config very-small
+ *   npx tsx scripts/run-battles/ --config small
+ *   npx tsx scripts/run-battles/ --gameSize MEDIUM
+ * 
+ * For more options:
+ *   npx tsx scripts/run-battles/ --help
  * 
  * Runs complete autonomous AI vs AI games from setup to conclusion.
  * Uses the actual GameManager for all combat resolution.
- * 
+ *
  * Run with: npx tsx scripts/run-full-game.ts [VERY_SMALL|SMALL|MEDIUM|LARGE|VERY_LARGE]
  */
+
+// Deprecation warning
+console.warn('⚠️  DEPRECATION WARNING: scripts/run-full-game.ts is deprecated.');
+console.warn('✅ Use the new battle runner CLI instead:');
+console.warn('   npx tsx scripts/run-battles/ --config very-small');
+console.warn('   npx tsx scripts/run-battles/ --help');
+console.warn('');
 
 import { buildAssembly, buildProfile, GameSize } from '../src/lib/mest-tactics/mission/assembly-builder';
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';

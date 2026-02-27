@@ -41,17 +41,25 @@ npm run build
    - Cover classification (direct/intervening, hard/soft/blocking)
    - Pathfinding and terrain navigation
 
-3. **Mission System**
+3. **AI Movement & Cover-Seeking (R3)** ✅
+   - Board-scale route selection with strategic positioning
+   - Cover quality evaluation (LOS-based)
+   - Lean opportunity detection for ranged models
+   - Exposure risk assessment
+   - Doctrine-aware scoring (ranged vs melee preferences)
+   - Size-agnostic behavior across all game sizes
+
+4. **Mission System**
    - 10 complete missions (Elimination, Convergence, Dominion, Assault, Recovery, Escort, Triumvirate, Stealth, Defiance, Breach)
    - Data-driven mission engine
    - Objective Markers, VIP, POI/Zone Control
    - Reinforcements and Mission Event Hooks
 
-4. **Combat Traits**
+5. **Combat Traits**
    - 43 trait implementations (Cleave, Parry, Reach, Conceal, etc.)
    - 27 traits fully integrated into game systems
 
-5. **Assembly System**
+6. **Assembly System**
    - Profile builder from archetypes + items
    - Assembly creation with BP budget
    - Side assignment with position tracking
@@ -120,34 +128,168 @@ npm run build
 | `npm run generate:svg` | Generate SVG battlefields |
 | `npm run generate:portraits` | Generate portrait index |
 | `npm run validate:mission` | Validate mission JSON |
-| `npm run cli` | Run CLI interface |
-| `npx tsx scripts/battle-generator.ts` | Run AI vs AI battle simulation |
+| `npm run cli` | **Run new battle runner CLI** |
+| `npm run cli:combat` | Run interactive combat demo (legacy) |
+| `npm run cli:side` | Run mission side demo (legacy) |
+| `npm run cli:skirmish` | Run skirmish demo (legacy) |
 
-## Battle Generator
+## Battle Runner CLI
 
-The battle generator runs automated AI vs AI battles with configurable parameters. Perfect for testing, validation, and observing AI behavior.
+The new unified battle runner CLI provides automated AI vs AI battles with preset configurations and extensive customization options.
 
 ### Quick Start
 
 ```bash
 # Run default VERY_SMALL battle (QAI_11 Elimination)
-npx tsx scripts/battle-generator.ts
+npm run cli
+
+# Run with preset configuration
+npm run cli -- --config small
+npm run cli -- --config medium
+npm run cli -- --config very-large
+
+# Custom mission
+npm run cli -- --mission QAI_12
+npm run cli -- --mission QAI_17
+
+# Custom lighting and terrain
+npm run cli -- --lighting "Night, Full Moon" --terrain 30
+
+# JSON output for analysis
+npm run cli -- --output json
+
+# Reproducible battle with seed
+npm run cli -- --seed 424242
+
+# Show all options
+npm run cli -- --help
 ```
 
-### Command Line Options
+### Configuration Presets
 
-```bash
-# Show help
-npx tsx scripts/battle-generator.ts --help
+| Config | Sides | Models | Mission | Battlefield |
+|--------|-------|--------|---------|-------------|
+| `very-small` | 2 | 3 each | QAI_11 | 24"×24" |
+| `small` | 2 | 4 each | QAI_11 | 36"×36" |
+| `medium` | 2 | 6 each | QAI_11 | 48"×48" |
+| `large` | 2 | 8 each | QAI_11 | 60"×60" |
+| `very-large` | 2 | 16 each | QAI_11 | 72"×72" |
+| `convergence-3side` | 3 | 4 each | QAI_12 | 36"×36" |
+| `trinity` | 3 | 6 each | QAI_17 | 48"×48" |
+| `trinity-4side` | 4 | 8 each | QAI_17 | 60"×60" |
+| `ai-stress-test` | 4 | 6 each | QAI_12 | 48"×48" |
 
-# SMALL battle with 30% terrain density
-npx tsx scripts/battle-generator.ts --gameSize SMALL --density 30
+### Custom JSON Configuration
 
-# MEDIUM battle with night lighting
-npx tsx scripts/battle-generator.ts --gameSize MEDIUM --lighting "Night, Full Moon"
+Create a JSON file with your battle configuration:
 
-# Specific mission (QAI_12 Convergence)
-npx tsx scripts/battle-generator.ts --mission QAI_12
+```json
+{
+  "gameSize": "VERY_SMALL",
+  "missionId": "QAI_11",
+  "terrainDensity": 50,
+  "lighting": {
+    "name": "Day, Clear",
+    "visibilityOR": 16
+  },
+  "sides": [
+    {
+      "id": "side-a",
+      "name": "Side A",
+      "assemblies": [{
+        "name": "Assembly A",
+        "archetypeName": "Average",
+        "count": 3,
+        "itemNames": ["Sword, Broad", "Armor, Light"]
+      }],
+      "ai": { "count": 1, "doctrine": "Balanced" }
+    },
+    {
+      "id": "side-b",
+      "name": "Side B",
+      "assemblies": [{
+        "name": "Assembly B",
+        "archetypeName": "Average",
+        "count": 3,
+        "itemNames": ["Sword, Broad", "Armor, Light"]
+      }],
+      "ai": { "count": 1, "doctrine": "Balanced" }
+    }
+  ],
+  "instrumentationGrade": 2
+}
+```
+
+Run with: `npm run cli -- --config-file my-battle.json`
+
+### Output Formats
+
+- `console` (default): Human-readable console output
+- `json`: Machine-readable JSON for analysis
+- `both`: Both console and JSON output
+
+### Winner Determination
+
+The battle runner uses a deterministic winner resolution system:
+
+1. **Victory Points (VP)** - Side with highest VP wins
+2. **Resource Points (RP)** - If VP is tied, side with highest RP wins
+3. **Tie** - If both VP and RP are tied, result is a tie
+4. **Initiative Card** (optional) - If enabled, initiative card holder wins ties
+
+**Example Output:**
+```
+🏆 FINAL RESULT
+═══════════════════════════════════════
+🏅 Winner: Side A (Victory Points)
+Turns: 5
+End Reason: End-game Trigger dice rolled miss (1-3) on Turn 5
+```
+
+**Tie Output:**
+```
+🏆 FINAL RESULT
+═══════════════════════════════════════
+🤝 Result: Tie
+   Tied sides: side-a, side-b
+   Tie-break: No tie-break applied
+Turns: 6
+End Reason: End-game Trigger dice rolled miss (1-3) on Turn 6
+```
+
+### JSON Output Example
+
+```json
+{
+  "battleId": "battle-VERY_SMALL-1740556789",
+  "turnsPlayed": 5,
+  "gameEnded": true,
+  "endGameReason": "End-game Trigger dice rolled miss (1-3) on Turn 5",
+  "vpBySide": {
+    "side-a": 3,
+    "side-b": 1
+  },
+  "winnerSide": "side-a",
+  "winnerReason": "vp",
+  "tieSideIds": [],
+  "stats": {
+    "koBySide": { "side-a": 0, "side-b": 2 },
+    "eliminatedBySide": { "side-a": 0, "side-b": 1 },
+    "bottleTests": {
+      "side-a": { "triggered": 0, "failed": 0 },
+      "side-b": { "triggered": 1, "failed": 0 }
+    }
+  }
+}
+```
+
+### Legacy Scripts (Deprecated)
+
+The following scripts are deprecated and will be removed in a future version:
+
+- `scripts/battle-generator.ts` → Use `npm run cli`
+- `scripts/run-full-game.ts` → Use `npm run cli -- --config [size]`
+- `scripts/run-ai-melee-battle.ts` → Use `npm run cli -- --mission QAI_11`
 
 # Full detail instrumentation (Grade 5)
 npx tsx scripts/battle-generator.ts --instrumentation 5

@@ -1,7 +1,24 @@
 /**
- * AI Battle: QAI_11 Elimination with custom melee-only profiles
+ * ⚠️  DEPRECATED - AI Battle: QAI_11 Elimination with custom melee-only profiles
+ * 
+ * This script is deprecated and will be removed in a future version.
+ * 
+ * ✅ USE THE NEW BATTLE RUNNER CLI INSTEAD:
+ *   npx tsx scripts/run-battles/ --config very-small
+ *   npx tsx scripts/run-battles/ --mission QAI_11
+ * 
+ * For more options:
+ *   npx tsx scripts/run-battles/ --help
+ * 
  * 4 Average characters per side with Sword, Broad + Armored Gear + Armor, Light + Shield, Small
  */
+
+// Deprecation warning
+console.warn('⚠️  DEPRECATION WARNING: scripts/run-ai-melee-battle.ts is deprecated.');
+console.warn('✅ Use the new battle runner CLI instead:');
+console.warn('   npx tsx scripts/run-battles/ --config very-small');
+console.warn('   npx tsx scripts/run-battles/ --help');
+console.warn('');
 
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';

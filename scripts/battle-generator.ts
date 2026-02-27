@@ -1,8 +1,18 @@
 /**
- * Battle Generator Script
+ * ⚠️  DEPRECATED - Battle Generator Script
+ * 
+ * This script is deprecated and will be removed in a future version.
+ * 
+ * ✅ USE THE NEW BATTLE RUNNER CLI INSTEAD:
+ *   npx tsx scripts/run-battles/ --config very-small
+ *   npx tsx scripts/run-battles/ --config small
+ *   npx tsx scripts/run-battles/ --gameSize MEDIUM --lighting "Night, Full Moon"
+ * 
+ * For more options:
+ *   npx tsx scripts/run-battles/ --help
  * 
  * Generates and runs AI vs AI battles with configurable parameters.
- * 
+ *
  * Default Configuration:
  * - Archetype: Average
  * - Weapon: Sword, Broad
@@ -11,21 +21,30 @@
  * - Mission: QAI_11 (Elimination)
  * - Terrain Density: 50%
  * - Lighting: Day, Clear (Visibility OR 16 MU)
- * 
+ *
  * Usage:
- *   npx tsx scripts/battle-generator.ts
- *   npx tsx scripts/battle-generator.ts --gameSize SMALL --density 30
- *   npx tsx scripts/battle-generator.ts --gameSize MEDIUM --lighting "Night, Full Moon"
- * 
+ *   npx tsx scripts/run-battles/ --config very-small
+ *   npx tsx scripts/run-battles/ --gameSize SMALL --terrain 30
+ *   npx tsx scripts/run-battles/ --lighting "Night, Full Moon"
+ *
  * Options:
- *   --gameSize <size>        VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE (default: VERY_SMALL)
- *   --density <ratio>        Terrain density 0-100 (default: 50)
- *   --lighting <preset>      Lighting preset (default: "Day, Clear")
- *   --mission <id>           Mission ID (default: QAI_11)
- *   --turns <max>            Maximum turns (default: auto based on gameSize)
- *   --instrumentation <0-5>  Detail level (default: 3)
+ *   --config <name>          Battle configuration preset
+ *   --gameSize <size>        VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE
+ *   --terrain <density>      Terrain density 0-100
+ *   --lighting <preset>      Lighting preset
+ *   --mission <id>           Mission ID
+ *   --instrumentation <0-5>  Detail level
+ *   --output <format>        console, json, both
+ *   --seed <number>          Random seed
  *   --help                   Show help
  */
+
+// Deprecation warning
+console.warn('⚠️  DEPRECATION WARNING: scripts/battle-generator.ts is deprecated.');
+console.warn('✅ Use the new battle runner CLI instead:');
+console.warn('   npx tsx scripts/run-battles/ --config very-small');
+console.warn('   npx tsx scripts/run-battles/ --help');
+console.warn('');
 
 import { buildAssembly, buildProfile, GameSize, gameSizeDefaults } from '../src/lib/mest-tactics/mission/assembly-builder';
 import { buildMissionSide } from '../src/lib/mest-tactics/mission/MissionSideBuilder';
@@ -373,6 +392,20 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   let turnCount = 0;
   let firstBloodAwarded = false;
   let firstBloodSide: string | null = null;
+  let gameEnded = false;
+  let endGameReason: string = '';
+  
+  // End-game Trigger dice (per QSR Line 744-750)
+  const endGameTriggerTurn = config.endGameTriggerTurn;
+  let endDice = 0;
+  
+  // Track battle statistics
+  const battleStats = {
+    koBySide: { [sideA.id]: 0, [sideB.id]: 0 },
+    eliminatedBySide: { [sideA.id]: 0, [sideB.id]: 0 },
+    eliminatedByFear: { [sideA.id]: 0, [sideB.id]: 0 },
+    bottleTests: { [sideA.id]: { triggered: 0, failed: 0 }, [sideB.id]: { triggered: 0, failed: 0 } },
+  };
 
   for (let turn = 1; turn <= config.maxTurns; turn++) {
     turnCount = turn;
@@ -494,6 +527,24 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
             if (nearestEnemy.state.wounds >= 3) {
               nearestEnemy.state.isKOd = true;
               console.log(`    → ${nearestEnemy.name} is KO'd!`);
+              
+              // Track KO by side
+              const isEnemySideA = sideA.members.some((m: any) => m.character.id === nearestEnemy.id);
+              const koSideId = isEnemySideA ? sideA.id : sideB.id;
+              battleStats.koBySide[koSideId]++;
+            }
+            
+            // Check for elimination (wounds >= SIZ + 3)
+            const siz = nearestEnemy.finalAttributes?.siz ?? nearestEnemy.attributes?.siz ?? 3;
+            if (nearestEnemy.state.wounds >= siz + 3) {
+              nearestEnemy.state.isEliminated = true;
+              nearestEnemy.state.isKOd = false;
+              console.log(`    → ${nearestEnemy.name} is Eliminated!`);
+              
+              // Track elimination by side
+              const isEnemySideA = sideA.members.some((m: any) => m.character.id === nearestEnemy.id);
+              const elimSideId = isEnemySideA ? sideA.id : sideB.id;
+              battleStats.eliminatedBySide[elimSideId]++;
             }
           } else {
             logger.logAction({
@@ -510,7 +561,7 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
               outcome: 'Missed',
               timestamp: new Date().toISOString(),
             });
-            
+
             console.log(`  ${character.name}: Attack ${nearestEnemy.name} - Missed`);
           }
         } catch (e) {
@@ -520,45 +571,162 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
     }
 
     console.log('');
+    
+    // End-game Trigger dice rolling (per QSR Line 744-750)
+    if (turnCount >= endGameTriggerTurn) {
+      // Add END die for this turn (1 die at trigger turn, +1 per turn after)
+      endDice++;
+      
+      // Roll END dice
+      const endRolls: number[] = [];
+      for (let i = 0; i < endDice; i++) {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        endRolls.push(roll);
+      }
+      
+      console.log(`🎲 END-GAME TRIGGER (Turn ${turnCount}, ${endDice} dice): [${endRolls.join(', ')}]`);
+      
+      // Check if any die rolled 1-3 (miss = game ends)
+      const miss = endRolls.some(roll => roll <= 3);
+      if (miss) {
+        gameEnded = true;
+        endGameReason = `End-game Trigger dice rolled miss (1-3) on Turn ${turnCount}`;
+        console.log(`🏁 GAME ENDED: ${endGameReason}`);
+        break; // Exit turn loop
+      }
+    }
+    
+    // Check for End of Conflict (all enemies eliminated/KO'd)
+    const sideAActive = allCharacters.filter(c => 
+      sideA.members.some((m: any) => m.character.id === c.id) &&
+      !c.state.isEliminated && !c.state.isKOd
+    ).length;
+    const sideBActive = allCharacters.filter(c => 
+      sideB.members.some((m: any) => m.character.id === c.id) &&
+      !c.state.isEliminated && !c.state.isKOd
+    ).length;
+    
+    if (sideAActive === 0 || sideBActive === 0) {
+      gameEnded = true;
+      endGameReason = sideAActive === 0 ? 'Side A eliminated' : 'Side B eliminated';
+      console.log(`🏁 GAME ENDED: ${endGameReason}`);
+      break; // Exit turn loop
+    }
   }
-
-  console.log('\n═══════════════════════════════════════');
-  console.log('🏁 BATTLE COMPLETE\n');
 
   // End instrumentation logging
   const battleLog = logger.endBattle(turnCount);
 
-  // Print summary with Keys to Victory
-  printBattleSummary(config, battleLog, { firstBloodSide, firstBloodAwarded });
+  // Calculate final VP (simplified - just First Blood for now)
+  const vpBySide: Record<string, number> = { [sideA.id]: 0, [sideB.id]: 0 };
+  if (firstBloodAwarded && firstBloodSide) {
+    vpBySide[firstBloodSide] = 1;
+  }
+  
+  // Determine winner
+  let winnerSide: string | null = null;
+  if (vpBySide[sideA.id] > vpBySide[sideB.id]) {
+    winnerSide = sideA.id;
+  } else if (vpBySide[sideB.id] > vpBySide[sideA.id]) {
+    winnerSide = sideB.id;
+  }
 
-  return { config, battleLog, keys: { firstBloodSide, firstBloodAwarded } };
+  // Print summary with Keys to Victory
+  printBattleSummary(config, battleLog, {
+    firstBloodSide,
+    firstBloodAwarded,
+    vpBySide,
+    winnerSide,
+    battleStats,
+    sideAId: sideA.id,
+    sideBId: sideB.id,
+    turnCount,
+    gameEnded,
+    endGameReason,
+  });
+
+  return { config, battleLog, keys: { firstBloodSide, firstBloodAwarded }, stats: battleStats, vpBySide, winnerSide };
 }
 
 // ============================================================================
 // Summary Printer
 // ============================================================================
 
-function printBattleSummary(config: BattleConfig, battleLog: any, keys: { firstBloodSide: string | null; firstBloodAwarded: boolean }) {
-  console.log('📊 BATTLE SUMMARY');
+function printBattleSummary(
+  config: BattleConfig, 
+  battleLog: any, 
+  summary: {
+    firstBloodSide: string | null;
+    firstBloodAwarded: boolean;
+    vpBySide: Record<string, number>;
+    winnerSide: string | null;
+    battleStats: {
+      koBySide: Record<string, number>;
+      eliminatedBySide: Record<string, number>;
+      eliminatedByFear: Record<string, number>;
+      bottleTests: Record<string, { triggered: number; failed: number }>;
+    };
+    sideAId: string;
+    sideBId: string;
+    turnCount: number;
+    gameEnded: boolean;
+    endGameReason: string;
+  }
+) {
   console.log('═══════════════════════════════════════');
-  console.log(`Battle ID: ${battleLog.battleId}`);
+  console.log('🏁 BATTLE COMPLETE\n');
+  
+  console.log('📊 FINAL RESULTS');
+  console.log('═══════════════════════════════════════');
   console.log(`Mission: ${config.missionId}`);
   console.log(`Game Size: ${config.gameSize}`);
-  console.log(`Lighting: ${config.lighting.name} (OR ${config.lighting.visibilityOR} MU)`);
-  console.log(`Turns: ${battleLog.totalTurns}`);
+  console.log(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
+  console.log(`Turns Played: ${summary.turnCount}${summary.gameEnded ? ` (Game ended: ${summary.endGameReason})` : ''}`);
+  console.log('');
+
+  // Victory Points and Winner
+  console.log('🏆 VICTORY POINTS');
+  console.log('───────────────────────────────────────');
+  console.log(`  Side A: ${summary.vpBySide[summary.sideAId]} VP`);
+  console.log(`  Side B: ${summary.vpBySide[summary.sideBId]} VP`);
+  if (summary.winnerSide) {
+    console.log(`\n  🏅 Winner: ${summary.winnerSide}`);
+  } else {
+    console.log(`\n  🤝 Result: Tie`);
+  }
   console.log('');
 
   // Keys to Victory
   console.log('🔑 KEYS TO VICTORY');
   console.log('───────────────────────────────────────');
-  if (keys.firstBloodAwarded) {
-    console.log(`  🩸 First Blood: ${keys.firstBloodSide} (+1 VP)`);
+  if (summary.firstBloodAwarded) {
+    console.log(`  🩸 First Blood: ${summary.firstBloodSide} ✅ (+1 VP)`);
   } else {
     console.log(`  🩸 First Blood: Not awarded`);
   }
   console.log('');
 
-  // Instrumentation Summary
+  // Casualties
+  console.log('💀 CASUALTIES');
+  console.log('───────────────────────────────────────');
+  console.log(`  Side A:`);
+  console.log(`    KO'd: ${summary.battleStats.koBySide[summary.sideAId]}`);
+  console.log(`    Eliminated: ${summary.battleStats.eliminatedBySide[summary.sideAId]}`);
+  console.log(`    Eliminated by Fear: ${summary.battleStats.eliminatedByFear[summary.sideAId]}`);
+  console.log(`  Side B:`);
+  console.log(`    KO'd: ${summary.battleStats.koBySide[summary.sideBId]}`);
+  console.log(`    Eliminated: ${summary.battleStats.eliminatedBySide[summary.sideBId]}`);
+  console.log(`    Eliminated by Fear: ${summary.battleStats.eliminatedByFear[summary.sideBId]}`);
+  console.log('');
+
+  // Bottle Tests
+  console.log('🧪 BOTTLE TESTS');
+  console.log('───────────────────────────────────────');
+  console.log(`  Side A: Triggered ${summary.battleStats.bottleTests[summary.sideAId].triggered}, Failed ${summary.battleStats.bottleTests[summary.sideAId].failed}`);
+  console.log(`  Side B: Triggered ${summary.battleStats.bottleTests[summary.sideBId].triggered}, Failed ${summary.battleStats.bottleTests[summary.sideBId].failed}`);
+  console.log('');
+
+  // Action Summary
   if (battleLog) {
     console.log('📝 ACTION SUMMARY');
     console.log('───────────────────────────────────────');
@@ -567,12 +735,6 @@ function printBattleSummary(config: BattleConfig, battleLog: any, keys: { firstB
     Object.entries(battleLog.summary.actionsByType).forEach(([type, count]) => {
       console.log(`  ${type}: ${count}`);
     });
-    console.log(`Tests: ${battleLog.summary.totalTests} (${battleLog.summary.testsPassed} passed, ${battleLog.summary.testsFailed} failed)`);
-    console.log(`Cascades: ${battleLog.summary.totalCascades}`);
-    console.log(`Dice Rolled: ${battleLog.summary.totalDiceRolled}`);
-    console.log(`Wait Actions: ${battleLog.summary.waitActions}`);
-    console.log(`React Actions: ${battleLog.summary.reactActions}`);
-    console.log(`Bonus Actions: ${battleLog.summary.bonusActions}`);
     console.log('');
   }
 

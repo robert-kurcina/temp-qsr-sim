@@ -1,9 +1,9 @@
 /**
- * VERY_SMALL Battle Configuration
+ * MEDIUM Battle Configuration
  *
- * QSR Standard: 2-4 models per side, 125-250 BP
- * End-Game Trigger: Turn 3
- * Battlefield: 24"×24"
+ * QSR Standard: 6-12 models per side
+ * End-Game Trigger: Turn 5
+ * Battlefield: 48"×48"
  */
 
 import { GameSize } from '../../../src/lib/mest-tactics/mission/assembly-builder';
@@ -11,8 +11,8 @@ import { InstrumentationGrade } from '../../../src/lib/mest-tactics/instrumentat
 import { LIGHTING_PRESETS } from '../lighting-presets';
 import type { BattleRunnerConfig } from '../battle-runner';
 
-export const VERY_SMALL_CONFIG: BattleRunnerConfig = {
-  gameSize: GameSize.VERY_SMALL,
+export const MEDIUM_CONFIG: BattleRunnerConfig = {
+  gameSize: GameSize.MEDIUM,
   terrainDensity: 50,
   lighting: LIGHTING_PRESETS['Day, Clear'],
   missionId: 'QAI_11',
@@ -23,8 +23,8 @@ export const VERY_SMALL_CONFIG: BattleRunnerConfig = {
       assemblies: [
         {
           name: 'Assembly A',
-          archetypeName: 'Average',
-          count: 3,
+          archetypeName: 'Veteran',
+          count: 6,
           itemNames: ['Sword, Broad', 'Armored Gear', 'Armor, Light', 'Shield, Small'],
         },
       ],
@@ -39,8 +39,8 @@ export const VERY_SMALL_CONFIG: BattleRunnerConfig = {
       assemblies: [
         {
           name: 'Assembly B',
-          archetypeName: 'Average',
-          count: 3,
+          archetypeName: 'Veteran',
+          count: 6,
           itemNames: ['Sword, Broad', 'Armored Gear', 'Armor, Light', 'Shield, Small'],
         },
       ],
@@ -53,4 +53,4 @@ export const VERY_SMALL_CONFIG: BattleRunnerConfig = {
   instrumentationGrade: InstrumentationGrade.BY_ACTION_WITH_TESTS,
 };
 
-export default VERY_SMALL_CONFIG;
+export default MEDIUM_CONFIG;
