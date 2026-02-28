@@ -25,7 +25,7 @@ The Visual Audit system captures every action, movement, and combat resolution d
 
 ```bash
 # Generate a VERY_SMALL battle with audit enabled
-npm run cli -- --config very-small --audit --viewer
+npm run battle -- --config very-small --audit --viewer
 
 # Open the generated viewer in your browser
 open generated/battle-reports/battle-report-*/battle-report.html
@@ -56,7 +56,7 @@ open generated/battle-reports/battle-report-*/battle-report.html
 
 ```bash
 # Step 1: Generate a battle with audit enabled
-npm run cli -- --config very-small --audit --viewer --seed 12345
+npm run battle -- --config very-small --audit --viewer --seed 12345
 
 # Step 2: Open the viewer (output shows path)
 # Generated: generated/battle-reports/battle-report-1740556789/
@@ -135,13 +135,13 @@ The `--audit` flag enables audit capture:
 
 ```bash
 # Enable audit capture (default: true when --viewer is used)
-npm run cli -- --audit
+npm run battle -- --audit
 
 # Disable audit for performance
-npm run cli -- --no-audit
+npm run battle -- --no-audit
 
 # Generate viewer only (requires existing audit.json)
-npm run cli -- --viewer --audit-file path/to/audit.json
+npm run battle -- --viewer --audit-file path/to/audit.json
 ```
 
 ### Output Files
@@ -550,7 +550,11 @@ if (footprintDiameter <= 0.5 MU) {
 | `npm run generate:svg` | Generate SVG battlefields |
 | `npm run generate:portraits` | Generate portrait index |
 | `npm run validate:mission` | Validate mission JSON |
-| `npm run cli` | **Run new battle runner CLI** |
+| `npm run battle` | **Run battle runner CLI** |
+| `npm run battle:audit` | Run battle with full audit and viewer |
+| `npm run battle:terrain` | Run terrain-only generation |
+| `npm run ai-battle` | Run AI battle setup |
+| `npm run ai-battle:audit` | Run AI battle with full audit and viewer |
 | `npm run cli:combat` | Run interactive combat demo (legacy) |
 | `npm run cli:side` | Run mission side demo (legacy) |
 | `npm run cli:skirmish` | Run skirmish demo (legacy) |
@@ -682,7 +686,7 @@ npm run serve:reports
 }
 ```
 
-Run with: `npm run cli -- --config-file my-battle.json`
+Run with: `npm run battle -- --config-file my-battle.json`
 
 ### Output Formats
 
@@ -704,13 +708,13 @@ Run with: `npm run cli -- --config-file my-battle.json`
 **Example:**
 ```bash
 # Generate battle with audit and viewer
-npm run cli -- --audit --viewer --seed 12345
+npm run battle -- --audit --viewer --seed 12345
 
 # Generate viewer from existing audit
-npm run cli -- --viewer --audit-file generated/battle-reports/audit-123.json
+npm run battle -- --viewer --audit-file generated/battle-reports/audit-123.json
 
 # Disable audit for faster simulation
-npm run cli -- --no-audit --config large
+npm run battle -- --no-audit --config large
 ```
 
 ### Winner Determination
@@ -772,7 +776,7 @@ End Reason: End-game Trigger dice rolled miss (1-3) on Turn 6
 
 The following scripts are deprecated and will be removed in a future version:
 
-- `scripts/battle-generator.ts` → Use `npm run cli`
+- `scripts/battle-generator.ts` → Use `npm run battle` or `npm run ai-battle`
 
 ### Configuration Options
 
