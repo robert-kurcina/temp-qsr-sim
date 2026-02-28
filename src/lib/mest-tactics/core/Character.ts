@@ -31,6 +31,7 @@ export class Character {
     isOrdered: boolean;
     isKOd: boolean;
     isEliminated: boolean;
+    eliminatedByFear: boolean; // QSR: Track if eliminated by Fear tokens (vs combat)
     isOverreach: boolean; // QSR: -1 REF penalty when Overreach declared
     statusEffects: string[];
     statusTokens: Record<string, number>;
@@ -91,6 +92,7 @@ export class Character {
       isOrdered: true,
       isKOd: false,
       isEliminated: false,
+      eliminatedByFear: false, // QSR: Track if eliminated by Fear tokens
       isOverreach: false, // QSR: -1 REF penalty when Overreach declared
       hasPushedThisInitiative: false,
       statusEffects: [],

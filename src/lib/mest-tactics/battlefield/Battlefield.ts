@@ -158,6 +158,117 @@ export class Battlefield {
     return this.characterRegistry.get(id) ?? null;
   }
 
+  /**
+   * QSR: Check if a model can occupy a position (fit within the area)
+   * @param position - The position to check
+   * @param baseDiameter - The model's base diameter in MU
+   * @returns True if the model can rest at this position
+   */
+  canOccupy(position: Position, baseDiameter: number): boolean {
+    const radius = baseDiameter / 2;
+    
+    // Check if position is within battlefield bounds (with radius buffer)
+    if (position.x - radius < 0 || position.x + radius > this.width ||
+        position.y - radius < 0 || position.y + radius > this.height) {
+      return false;
+    }
+    
+    // Check terrain doesn't block full footprint
+    // Use PathfindingEngine's isWalkable logic
+    for (const feature of this.terrain) {
+      if (!this.isMovementBlocking(feature)) continue;
+      const distance = this.distancePointToPolygon(position, feature.vertices);
+      if (distance <= radius) {
+        return false; // Terrain blocks the footprint
+      }
+    }
+    
+    // Check no other model occupies this space
+    for (const [id, modelPos] of this.characterPositions.entries()) {
+      const model = this.characterRegistry.get(id);
+      if (!model || model.state.isKOd || model.state.isEliminated) continue;
+      
+      const modelSiz = model.finalAttributes?.siz ?? model.attributes?.siz ?? 3;
+      const modelRadius = getBaseDiameterFromSiz(modelSiz) / 2;
+      const distance = Math.sqrt(
+        Math.pow(position.x - modelPos.x, 2) + 
+        Math.pow(position.y - modelPos.y, 2)
+      );
+      
+      // Models can't overlap (sum of radii)
+      if (distance < radius + modelRadius) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  private isMovementBlocking(feature: TerrainFeature): boolean {
+    if (feature.meta?.category === 'area' || feature.meta?.layer === 'area') {
+      return false;
+    }
+    if (feature.type === TerrainType.Obstacle || feature.type === TerrainType.Impassable) {
+      return true;
+    }
+    return feature.meta?.initialMovement === 'Impassable';
+  }
+  
+  private distancePointToPolygon(point: Position, polygon: Position[]): number {
+    if (polygon.length < 3) return Infinity;
+    
+    let minDistance = Infinity;
+    for (let i = 0; i < polygon.length; i++) {
+      const a = polygon[i];
+      const b = polygon[(i + 1) % polygon.length];
+      const distance = this.distancePointToSegment(point, a, b);
+      minDistance = Math.min(minDistance, distance);
+    }
+    
+    // Check if point is inside polygon
+    if (this.pointInPolygon(point, polygon)) {
+      return 0;
+    }
+    
+    return minDistance;
+  }
+  
+  private distancePointToSegment(point: Position, a: Position, b: Position): number {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const lengthSquared = dx * dx + dy * dy;
+    
+    if (lengthSquared === 0) {
+      return Math.sqrt((point.x - a.x) ** 2 + (point.y - a.y) ** 2);
+    }
+    
+    let t = ((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSquared;
+    t = Math.max(0, Math.min(1, t));
+    
+    const projX = a.x + t * dx;
+    const projY = a.y + t * dy;
+    
+    return Math.sqrt((point.x - projX) ** 2 + (point.y - projY) ** 2);
+  }
+  
+  private pointInPolygon(point: Position, polygon: Position[]): boolean {
+    if (polygon.length < 3) return false;
+    
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].x;
+      const yi = polygon[i].y;
+      const xj = polygon[j].x;
+      const yj = polygon[j].y;
+      const intersects = ((yi > point.y) !== (yj > point.y))
+        && (point.x < (xj - xi) * (point.y - yi) / ((yj - yi) || Number.EPSILON) + xi);
+      if (intersects) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+
   getModelBlockers(excludeIds: string[] = []): { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] {
     const excluded = new Set(excludeIds);
     const blockers: { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] = [];

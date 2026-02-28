@@ -810,6 +810,7 @@ export class GameManager {
           }
           return terrain as 'Clear' | 'Rough' | 'Difficult' | 'Impassable';
         },
+        canOccupy: (position: Position, baseDiameter: number) => this.battlefield!.canOccupy(position, baseDiameter),
         executeCloseCombatAttack: (attacker: Character, defender: Character, weapon: Item, actionOptions) =>
           this.executeCloseCombatAttack(attacker, defender, weapon, actionOptions as any),
         findPathCost: (start: Position, end: Position) => {

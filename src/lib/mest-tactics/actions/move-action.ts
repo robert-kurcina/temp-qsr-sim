@@ -10,6 +10,7 @@ export interface MoveActionDeps {
   getCharacterPosition: (character: Character) => Position | undefined;
   moveCharacter: (character: Character, position: Position) => boolean;
   getTerrainAt: (position: Position) => TerrainType;
+  canOccupy: (position: Position, baseDiameter: number) => boolean; // QSR: Footprint validation
   executeCloseCombatAttack: (
     attacker: Character,
     defender: Character,
@@ -64,6 +65,12 @@ export function executeMoveAction(
   // Check for impassable terrain at destination
   if (currentTerrain === 'Impassable') {
     return { moved: false, reason: 'Destination is impassable terrain' };
+  }
+
+  // QSR: Check if model can fit at destination (footprint validation)
+  const moverBase = getBaseDiameterFromSiz(mover.finalAttributes.siz ?? mover.attributes.siz ?? 3);
+  if (!deps.canOccupy(destination, moverBase)) {
+    return { moved: false, reason: `Destination too small for model (requires ${moverBase.toFixed(1)} MU clearance)` };
   }
 
   // Calculate movement cost using pathfinding if available, otherwise use straight-line distance

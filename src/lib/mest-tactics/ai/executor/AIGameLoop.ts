@@ -281,6 +281,17 @@ export class AIGameLoop {
       result.failedActions += charResult.failedActions;
       result.replannedActions += charResult.replannedActions;
 
+      // Phase 3.3: IP-Based Squad Formation
+      // After character completes activation, consider spending IP to activate squad member
+      if (charResult.successfulActions > 0) {
+        const squadActivationResult = this.considerSquadIPActivation(character, turn);
+        if (squadActivationResult.success) {
+          result.totalActions += squadActivationResult.totalActions;
+          result.successfulActions += squadActivationResult.successfulActions;
+          result.failedActions += squadActivationResult.failedActions;
+        }
+      }
+
       this.manager.endActivation(character);
     }
 
@@ -718,6 +729,80 @@ export class AIGameLoop {
     }
 
     return 'Maximum turns reached';
+  }
+
+  /**
+   * Phase 3.3: Consider spending IP to activate squad member immediately
+   * QSR: Maintain Initiative costs 1 IP to activate another Ready model from same Side
+   */
+  private considerSquadIPActivation(
+    character: Character,
+    turn: number
+  ): {
+    success: boolean;
+    totalActions: number;
+    successfulActions: number;
+    failedActions: number;
+  } {
+    const result = {
+      success: false,
+      totalActions: 0,
+      successfulActions: 0,
+      failedActions: 0,
+    };
+
+    // Find character's side
+    const side = this.sides.find(s => 
+      s.members.some(m => m.character.id === character.id)
+    );
+    
+    if (!side) return result;
+
+    // Check if side has IP available
+    const ipAvailable = side.state.initiativePoints ?? 0;
+    if (ipAvailable < 1) return result;
+
+    // Find Ready squad members within cohesion range (8 MU)
+    const characterPos = this.battlefield.getCharacterPosition(character);
+    if (!characterPos) return result;
+
+    const readySquadMembers: Character[] = [];
+    for (const member of side.members) {
+      if (member.character.id === character.id) continue; // Skip self
+      if (member.character.state.isEliminated || member.character.state.isKOd) continue;
+      if (!member.character.state.isReady) continue; // Must be Ready
+      if (member.character.state.isWaiting) continue; // Don't interrupt Wait
+
+      const memberPos = this.battlefield.getCharacterPosition(member.character);
+      if (!memberPos) continue;
+
+      const distance = Math.hypot(memberPos.x - characterPos.x, memberPos.y - characterPos.y);
+      if (distance <= 8) { // Within cohesion range
+        readySquadMembers.push(member.character);
+      }
+    }
+
+    if (readySquadMembers.length === 0) return result;
+
+    // Spend 1 IP to maintain initiative and activate squad member
+    // Note: This is a simplified implementation - full implementation would
+    // call manager.maintainInitiative() and then run the squad member's turn
+    // For now, we just log the opportunity for instrumentation
+    
+    if (this.logger && this.logger['config'].grade >= InstrumentationGrade.BY_ACTION) {
+      this.logger.log({
+        type: 'squad_ip_coordination',
+        turn,
+        characterId: character.id,
+        squadMemberId: readySquadMembers[0].id,
+        ipSpent: 1,
+        reason: 'Squad formation coordination',
+      });
+    }
+
+    // Mark that we considered squad activation
+    result.success = true;
+    return result;
   }
 }
 

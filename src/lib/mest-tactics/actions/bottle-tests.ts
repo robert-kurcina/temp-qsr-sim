@@ -34,6 +34,7 @@ export function resolveBottleTests(
     if (result.bottledOut) {
       for (const character of side.characters) {
         character.state.isEliminated = true;
+        character.state.eliminatedByFear = true; // QSR: Track elimination by Fear (Bottle Test)
         deps.setCharacterStatus(character.id, CharacterStatus.Done);
       }
     }

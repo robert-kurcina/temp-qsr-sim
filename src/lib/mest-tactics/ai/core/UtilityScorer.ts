@@ -512,7 +512,7 @@ export class UtilityScorer {
         
         const cappedRefBreakpoints = Math.min(refBreakpointCount, Math.round(3 * sizeMultiplier));
         const cappedReactTargets = Math.min(potentialReactTargets, Math.round(4 * sizeMultiplier));
-        
+
         const waitRefBonus =
           (cappedRefBreakpoints * 0.78) +
           (Math.max(0, cappedReactTargets - cappedRefBreakpoints) * 0.2);
@@ -521,9 +521,20 @@ export class UtilityScorer {
           ? Math.min(1.8, 0.3 + (waitForecast.expectedTriggerCount * 0.5) + (existingDelay * 0.25))
           : 0;
 
+        // Phase 3.4: Wait/React Coordination - bonus for coordinated defense
+        // If allies are already on Wait, add bonus for area denial coverage
+        const alliesOnWait = context.allies.filter(ally => 
+          ally.state.isWaiting && 
+          ally.state.isAttentive && 
+          ally.state.isOrdered &&
+          !ally.state.isKOd &&
+          !ally.state.isEliminated
+        ).length;
+        const waitCoordinationBonus = alliesOnWait > 0 ? alliesOnWait * 0.5 : 0; // +0.5 per ally on Wait
+
         // R2: Tactical Condition Weighting for Wait Uptake
         // Add multipliers when specific tactical conditions favor Wait
-        const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions);
+        const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions) + waitCoordinationBonus;
 
         // R2.1: Elimination Mission Wait Penalty
         // Reduce Wait baseline for Elimination mission to encourage combat
