@@ -3,7 +3,7 @@
 
 ## 1. Overview
 
-This project is a wargame simulator designed to run in Firebase Studio. The goal is to create a flexible and performant simulator that can be easily extended with new rules and scenarios.
+This project is a wargame simulator designed to run as a web application. The goal is to create a flexible and performant simulator that can be easily extended with new rules and scenarios.
 
 **Project Evolution:**
 - **Phase 1 (Complete):** Headless simulation engine with spatial awareness
@@ -5027,7 +5027,7 @@ Transform the headless simulator into a full-featured online gaming platform whe
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                      Data Layer (Firebase)                      │
+│                      Data Layer (Database)                      │
 │  ┌─���────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────────┐   │
 │  │Firestore │ │  Auth    │ │  Storage │ │  Realtime DB     │   │
 │  │  (DB)    │ │  (Users) │ │(Avatars) │ │  (Presence)      │   │
@@ -5157,7 +5157,7 @@ Transform the headless simulator into a full-featured online gaming platform whe
 
 | Feature | Description | Tokens | Priority |
 |---------|-------------|--------|----------|
-| **Firebase Setup** | Firestore, Auth, Storage, Functions | 2,500–4,000 | P0 |
+| **Database Setup** | Database, Auth, Storage, Serverless Functions | 2,500–4,000 | P0 |
 | **Cloud Deployment** | Vercel/Netlify for frontend | 1,500–2,500 | P0 |
 | **WebSocket Hosting** | Railway/Render for game servers | 2,000–3,000 | P0 |
 | **CDN Configuration** | Asset delivery, caching | 1,000–1,500 | P1 |
@@ -5218,9 +5218,9 @@ Transform the headless simulator into a full-featured online gaming platform whe
 | **Frontend** | Astro + React | Existing setup, SSR + interactivity |
 | **Backend** | Node.js + Express | Consistent with existing codebase |
 | **Real-Time** | Socket.io or ws | WebSocket abstraction, rooms |
-| **Database** | Firebase Firestore | Real-time sync, offline support |
-| **Auth** | Firebase Auth + OAuth | Built-in providers, MFA support |
-| **Storage** | Firebase Storage | Avatars, game replays |
+| **Database** | PostgreSQL/MongoDB | Flexible schema, scalable |
+| **Auth** | Auth0/Clerk + OAuth | Built-in providers, MFA support |
+| **Storage** | S3/Cloudflare R2 | Avatars, game replays |
 | **Hosting** | Vercel (FE) + Railway (BE) | Easy deployment, scaling |
 | **Email** | SendGrid or Resend | Transactional emails |
 | **Analytics** | PostHog or Mixpanel | User behavior tracking |
@@ -5454,7 +5454,7 @@ This gives a playable prototype quickly, which can then be extended with online 
 
 | Feature | Description | Tokens | Priority |
 |---------|-------------|--------|----------|
-| **Firebase Setup** | Firestore, Auth, Storage, Functions | 2,500–4,000 | P0 |
+| **Database Setup** | Database, Auth, Storage, Serverless Functions | 2,500–4,000 | P0 |
 | **Cloud Deployment** | Vercel/Netlify FE, Railway/Render BE | 1,500–2,500 | P0 |
 | **WebSocket Hosting** | Scaling, load balancing | 2,000–3,000 | P0 |
 | **Security** | Data encryption, rate limiting, audits | 2,000–3,000 | P0 |

@@ -6,16 +6,16 @@ You are an expert web architect and developer specializing in **Astro.js**. You 
 
 ## 2\. Project Context
 
-This project is a static-first web application built with **Astro.js**. It is designed to be developed within the Firebase Studio (formerly Project IDX) environment. The focus is on creating a fast, highly-performant, and scalable site that delivers minimal JavaScript by default, ensuring an exceptional user experience and top-tier Core Web Vitals.
+This project is a static-first web application built with **Astro.js**. It is designed to be developed as a standalone web application. The focus is on creating a fast, highly-performant, and scalable site that delivers minimal JavaScript by default, ensuring an exceptional user experience and top-tier Core Web Vitals.
 
 ## 3\. Development Environment
 
-This project is configured to run in a pre-built developer environment provided by Firebase Studio. The environment is defined in the `dev.nix` file and includes the following:
+This project is configured to run in a standard Node.js development environment. The environment is defined in the `dev.nix` file and includes the following:
 
-* **Runtime:** Node.js 20\.  
-* **Tools:** Git and VS Code.  
-* **VS Code Extensions:** The Astro extension is pre-installed for an enhanced development experience.  
-* **Workspace Setup:** On creation, the workspace automatically runs `npm install` to install dependencies and opens the `src/pages/index.astro` file.  
+* **Runtime:** Node.js 20\.
+* **Tools:** Git and VS Code.
+* **VS Code Extensions:** The Astro extension is pre-installed for an enhanced development experience.
+* **Workspace Setup:** On creation, the workspace automatically runs `npm install` to install dependencies and opens the `src/pages/index.astro` file.
 * **Previews:** The web preview is enabled and configured to run `npm run dev`.
 
 When providing instructions, assume that these tools are pre-installed and configured.
