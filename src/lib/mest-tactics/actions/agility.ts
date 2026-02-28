@@ -417,6 +417,7 @@ export function runningJump(
  * -1b for Detect and Range Combat Hit Tests for self and others
  * Leaning marker may be targeted
  * Removed after next Action against or by this model
+ * Requires [1H] free to maintain balance while leaning
  */
 export function leaning(
   character: Character,
@@ -426,6 +427,18 @@ export function leaning(
   const agility = calculateAgility(character);
   const baseDiameter = getBaseDiameterFromSiz(character.finalAttributes?.siz ?? 3);
   const maxLean = Math.min(agility, baseDiameter);
+
+  // QSR: Check hand requirements - [1H] free required for leaning
+  const handsAvailable = getAvailableHands(character);
+  const totalHands = getTotalHands(character);
+  
+  if (handsAvailable < 1) {
+    return {
+      success: false,
+      agilitySpent: 0,
+      reason: `Insufficient hands for lean: ${handsAvailable}/${totalHands} available, 1 required ([1H] to maintain balance)`,
+    };
+  }
 
   // Check if in base-contact with cover terrain
   const position_ = battlefield.getCharacterPosition(character);
@@ -446,8 +459,8 @@ export function leaning(
     return dist <= 0.5; // Within base-contact
   });
 
-  const hasCover = nearbyTerrain.some(t => 
-    t.terrainType === 'Wall' || 
+  const hasCover = nearbyTerrain.some(t =>
+    t.terrainType === 'Wall' ||
     t.terrainType === 'Obstacle' ||
     t.name.includes('Cover')
   );
@@ -463,7 +476,7 @@ export function leaning(
   return {
     success: true,
     agilitySpent: maxLean,
-    reason: `Leaning ${maxLean} MU from cover (-1b Detect/Range Hit Tests)`,
+    reason: `Leaning ${maxLean} MU from cover (-1b Detect/Range Hit Tests, ${handsAvailable}/${totalHands} hands available)`,
   };
 }
 

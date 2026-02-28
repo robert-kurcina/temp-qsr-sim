@@ -29,6 +29,10 @@ import {
   type ROFMarker,
   type SuppressionMarker,
 } from './ROFScoring';
+import { calculateAgility, resolveFallingTest } from '../../actions/agility';
+import { getLeapAgilityBonus } from '../../traits/combat-traits';
+import { TERRAIN_HEIGHTS } from '../../battlefield/terrain/TerrainElement';
+import { detectGapAlongLine, canJumpGap, getGapTacticalValue } from '../../battlefield/GapDetector';
 
 /**
  * Weight configuration for utility scoring
@@ -474,6 +478,10 @@ export class UtilityScorer {
       // Evaluate support actions
       const supportActions = this.evaluateSupportActions(context);
       actions.push(...supportActions);
+
+      // Phase 2.5: Evaluate weapon swap actions (stow/unstow items)
+      const weaponSwapActions = this.evaluateWeaponSwap(context);
+      actions.push(...weaponSwapActions);
 
       const canConsiderWait =
         context.apRemaining >= 2 &&
@@ -1011,6 +1019,13 @@ export class UtilityScorer {
       const positionSafety = this.evaluatePositionSafety(context.character, pos, context);
       const suppressionZoneControl = this.evaluateSuppressionZoneControl(pos, context);
 
+      // Phase 2.4: Gap crossing evaluation
+      const gapCrossingResult = this.evaluateGapCrossing(context, characterPos, pos);
+      const gapCrossingBonus = gapCrossingResult.canCross ? gapCrossingResult.score : 0;
+
+      // Phase 3.2: Flanking Maneuvers - score positions that provide flanking advantage
+      const flankingScore = this.evaluateFlankingPosition(pos, context);
+
       // R3: Doctrine-aware scoring weights
       const coverWeight = this.weights.coverValue * (isRanged ? 1.3 : 1.0);
       const leanWeight = isRanged ? 1.5 : 0; // Only ranged models benefit from lean
@@ -1027,7 +1042,9 @@ export class UtilityScorer {
         (exposureRisk * exposurePenalty) +
         (outnumberScore * 2.0) + // Strong weight for outnumber advantage
         (positionSafety * safetyWeight) + // R2.5: Safety from ROF/suppression
-        (suppressionZoneControl * 1.5); // R2.5: Area denial value
+        (suppressionZoneControl * 1.5) + // R2.5: Area denial value
+        gapCrossingBonus + // Phase 2.4: Gap crossing bonus
+        (flankingScore * 2.0); // Phase 3.2: Flanking maneuvers
 
       positions.push({
         position: pos,
@@ -1042,6 +1059,7 @@ export class UtilityScorer {
           exposureRisk,
           positionSafety,
           suppressionZoneControl,
+          gapCrossing: gapCrossingBonus,
         },
       });
     }
@@ -1061,6 +1079,32 @@ export class UtilityScorer {
     // Get ROF level from character's weapon
     const rofLevel = this.getCharacterROFLevel(context.character);
 
+    // Phase 3.1: Focus Fire Coordination - track which enemies allies are targeting
+    const allyTargetCounts = new Map<string, number>();
+    for (const ally of context.allies) {
+      if (ally.state.isAttentive && ally.state.isOrdered && !ally.state.isKOd && !ally.state.isEliminated) {
+        const allyPos = context.battlefield.getCharacterPosition(ally);
+        if (!allyPos) continue;
+        
+        // Find closest enemy to this ally
+        let closestEnemy: Character | null = null;
+        let closestDist = Infinity;
+        for (const enemy of context.enemies) {
+          const enemyPos = context.battlefield.getCharacterPosition(enemy);
+          if (!enemyPos) continue;
+          const dist = Math.hypot(enemyPos.x - allyPos.x, enemyPos.y - allyPos.y);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestEnemy = enemy;
+          }
+        }
+        if (closestEnemy) {
+          const count = allyTargetCounts.get(closestEnemy.id) || 0;
+          allyTargetCounts.set(closestEnemy.id, count + 1);
+        }
+      }
+    }
+
     for (const enemy of context.enemies) {
       if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
 
@@ -1074,11 +1118,30 @@ export class UtilityScorer {
         ? (this.hasLOS(context.character, enemy, context.battlefield) ? 1.0 : 0.0)
         : 1.0;
       const missionPriority = this.evaluateMissionPriority(enemy, context);
-      
+
       // R2.5: ROF Target Scoring - prioritize targets that are good for ROF attacks
-      const rofTargetScore = rofLevel > 0 
+      const rofTargetScore = rofLevel > 0
         ? this.evaluateROFTargetValue(context.character, enemy, context, rofLevel)
         : 0;
+
+      // Phase 2.3: Falling Tactics - Jump Down Attack scoring
+      const jumpDownResult = this.evaluateJumpDownAttack(
+        context,
+        context.character,
+        enemy,
+        characterPos,
+        enemyPos
+      );
+      const jumpDownBonus = jumpDownResult.canJump ? jumpDownResult.score * 0.5 : 0;
+
+      // Phase 3.1: Focus Fire Coordination - bonus for targeting same enemy as allies
+      const allyTargetCount = allyTargetCounts.get(enemy.id) || 0;
+      const focusFireBonus = allyTargetCount > 0 ? allyTargetCount * 1.5 : 0; // +1.5 per ally targeting
+
+      // Phase 3.1: Focus Fire Coordination - bonus for finishing weakened targets
+      const enemySiz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
+      const enemyWounds = enemy.state.wounds;
+      const finishOffBonus = enemyWounds >= enemySiz - 1 ? 5.0 : 0; // High priority to eliminate
 
       const score =
         health * this.weights.targetHealth +
@@ -1086,12 +1149,25 @@ export class UtilityScorer {
         distance * this.weights.distanceToTarget +
         visibility * 2.0 +
         missionPriority * this.weights.victoryConditionValue +
-        rofTargetScore * 1.5; // ROF targets get 1.5x weight
+        rofTargetScore * 1.5 + // ROF targets get 1.5x weight
+        jumpDownBonus + // Phase 2.3: Jump down attack
+        focusFireBonus + // Phase 3.1: Focus fire coordination
+        finishOffBonus; // Phase 3.1: Finish weakened targets
 
       targets.push({
         target: enemy,
         score,
-        factors: { health, threat, distance, visibility, missionPriority, rofTargetScore },
+        factors: { 
+          health, 
+          threat, 
+          distance, 
+          visibility, 
+          missionPriority, 
+          rofTargetScore,
+          jumpDown: jumpDownBonus,
+          focusFire: focusFireBonus,
+          finishOff: finishOffBonus,
+        },
       });
     }
 
@@ -1136,9 +1212,162 @@ export class UtilityScorer {
     return actions;
   }
 
+  /**
+   * Evaluate weapon swap actions (stow/unstow items)
+   * QSR Lines 270-271: Use Fiddle action to switch out stowed items
+   */
+  evaluateWeaponSwap(context: AIContext): ScoredAction[] {
+    const actions: ScoredAction[] = [];
+    const character = context.character;
+    const inHand = character.profile?.inHandItems ?? [];
+    const stowed = character.profile?.stowedItems ?? [];
+    
+    if (stowed.length === 0) return actions; // Nothing to swap to
+    
+    // Calculate average enemy distance
+    const avgDistance = this.getAverageEnemyDistance(context.enemies, context);
+    
+    // Check current weapon type
+    const currentWeapon = inHand.find(item => this.isWeapon(item));
+    const hasRanged = currentWeapon ? this.isRangedWeapon(currentWeapon) : false;
+    const hasMelee = currentWeapon ? this.isMeleeWeapon(currentWeapon) : false;
+    
+    // Swap to ranged if enemies far and currently melee
+    if (avgDistance > 12 && !hasRanged) {
+      const rangedWeapon = stowed.find(item => this.isRangedWeapon(item));
+      if (rangedWeapon) {
+        const handsRequired = this.getItemHandRequirement(rangedWeapon);
+        const handsAvailable = this.getAvailableHands(character);
+        
+        if (handsAvailable >= handsRequired) {
+          const score = 4.0 + (avgDistance / 24) * 2; // Higher score for longer distance
+          actions.push({
+            action: 'fiddle',
+            subAction: 'unstow',
+            itemName: rangedWeapon.name,
+            score,
+            factors: { distance: avgDistance, weaponType: 'ranged' },
+            reason: 'Draw ranged weapon for distance',
+          });
+        }
+      }
+    }
+    
+    // Swap to melee if enemies close and currently ranged
+    if (avgDistance < 4 && hasRanged && !hasMelee) {
+      const meleeWeapon = stowed.find(item => this.isMeleeWeapon(item));
+      if (meleeWeapon) {
+        const score = 5.0 + (4 - avgDistance); // Higher score for closer enemies
+        actions.push({
+          action: 'fiddle',
+          subAction: 'unstow',
+          itemName: meleeWeapon.name,
+          score,
+          factors: { distance: avgDistance, weaponType: 'melee' },
+          reason: 'Draw melee weapon for close combat',
+        });
+      }
+    }
+    
+    // Swap to shield if under fire and no shield
+    const hasShield = inHand.some(item => this.isShield(item));
+    if (!hasShield && context.enemies.length > 0) {
+      const shield = stowed.find(item => this.isShield(item));
+      if (shield) {
+        const handsRequired = this.getItemHandRequirement(shield);
+        const handsAvailable = this.getAvailableHands(character);
+        
+        if (handsAvailable >= handsRequired) {
+          const score = 3.5; // Defensive value
+          actions.push({
+            action: 'fiddle',
+            subAction: 'unstow',
+            itemName: shield.name,
+            score,
+            factors: { defensive: true },
+            reason: 'Draw shield for defense',
+          });
+        }
+      }
+    }
+    
+    return actions;
+  }
+
   // ============================================================================
   // Evaluation Helpers
   // ============================================================================
+
+  /**
+   * Check if item is a weapon
+   */
+  private isWeapon(item: Item): boolean {
+    const classifications = ['Melee', 'Firearm', 'Bow', 'Range', 'Thrown', 'Support', 'Ordnance'];
+    return item.classification ? classifications.includes(item.classification) : false;
+  }
+
+  /**
+   * Check if item is a ranged weapon
+   */
+  private isRangedWeapon(item: Item): boolean {
+    const classifications = ['Firearm', 'Bow', 'Range', 'Thrown', 'Support', 'Ordnance'];
+    return item.classification ? classifications.includes(item.classification) : false;
+  }
+
+  /**
+   * Check if item is a melee weapon
+   */
+  private isMeleeWeapon(item: Item): boolean {
+    return item.classification === 'Melee';
+  }
+
+  /**
+   * Check if item is a shield
+   */
+  private isShield(item: Item): boolean {
+    return item.classification === 'Shield' || item.class?.includes('Shield');
+  }
+
+  /**
+   * Get hand requirement for item
+   */
+  private getItemHandRequirement(item: Item): number {
+    if (item.traits?.includes('[2H]') || item.traits?.includes('2H')) return 2;
+    if (item.traits?.includes('[1H]') || item.traits?.includes('1H')) return 1;
+    return 0;
+  }
+
+  /**
+   * Get available hands for character
+   */
+  private getAvailableHands(character: Character): number {
+    const totalHands = character.profile?.totalHands ?? 2;
+    const inHand = character.profile?.inHandItems ?? [];
+    let committed = 0;
+    for (const item of inHand) {
+      committed += this.getItemHandRequirement(item);
+    }
+    return Math.max(0, totalHands - committed);
+  }
+
+  /**
+   * Get average distance to enemies
+   */
+  private getAverageEnemyDistance(enemies: Character[], context: AIContext): number {
+    const characterPos = context.battlefield.getCharacterPosition(context.character);
+    if (!characterPos || enemies.length === 0) return 999;
+    
+    let totalDistance = 0;
+    let count = 0;
+    for (const enemy of enemies) {
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (enemyPos) {
+        totalDistance += Math.hypot(enemyPos.x - characterPos.x, enemyPos.y - characterPos.y);
+        count++;
+      }
+    }
+    return count > 0 ? totalDistance / count : 999;
+  }
 
   private evaluateCover(position: Position, context: AIContext): number {
     const session = this.getEvaluationSession(context);
@@ -2284,6 +2513,298 @@ export class UtilityScorer {
     };
   }
 
+  /**
+   * Evaluate jump down attack opportunity
+   * QSR: Jump down onto enemy to cause Falling Collision
+   * - Falling character ignores one miss
+   * - Target must make Falling Test (potential Stun damage)
+   */
+  private evaluateJumpDownAttack(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position
+  ): { score: number; reason: string; canJump: boolean } {
+    const battlefield = context.battlefield;
+    
+    // Get terrain heights
+    const attackerTerrain = battlefield.getTerrainAt(attackerPos);
+    const targetTerrain = battlefield.getTerrainAt(targetPos);
+    
+    const attackerHeight = this.getTerrainHeight(attackerTerrain);
+    const targetHeight = this.getTerrainHeight(targetTerrain);
+    
+    // Calculate fall distance
+    const fallDistance = attackerHeight - targetHeight;
+    
+    // Can only jump down if attacker is higher
+    if (fallDistance <= 0) {
+      return { score: 0, reason: 'Not elevated', canJump: false };
+    }
+    
+    // Calculate max jump range
+    const maxJumpRange = this.calculateMaxJumpRange(attacker, false);
+    
+    // Check horizontal distance
+    const horizontalDistance = Math.hypot(
+      attackerPos.x - targetPos.x,
+      attackerPos.y - targetPos.y
+    );
+    
+    // For every 1 MU down, allow +0.5 MU across
+    const maxAcrossFromFall = fallDistance * 0.5;
+    const effectiveMaxJump = maxJumpRange + maxAcrossFromFall;
+    
+    // Check if jump is possible
+    if (horizontalDistance > effectiveMaxJump) {
+      return { score: 0, reason: 'Too far', canJump: false };
+    }
+    
+    // Calculate expected damage to target
+    const targetAgi = calculateAgility(target);
+    const fallingResult = resolveFallingTest(target, fallDistance, targetAgi);
+    const expectedStun = fallingResult.delayTokens;
+    const expectedWound = fallingResult.woundAdded;
+    
+    // Calculate risk to self (also takes Falling Test, but ignores one miss)
+    const attackerAgi = calculateAgility(attacker);
+    const attackerFallingResult = resolveFallingTest(attacker, fallDistance, attackerAgi);
+    const attackerRisk = Math.max(0, attackerFallingResult.delayTokens - 1); // Ignores one miss
+    
+    // Score calculation
+    let score = 0;
+    const reasons: string[] = [];
+    
+    // High value for eliminating weakened enemy
+    const targetSiz = target.finalAttributes?.siz ?? target.attributes?.siz ?? 3;
+    const targetWounds = target.state.wounds;
+    if (expectedWound && targetWounds >= targetSiz - 1) {
+      score += 15; // Very high value for potential elimination
+      reasons.push('Eliminate weakened');
+    } else if (expectedStun >= 2) {
+      score += 8; // High value for significant Stun
+      reasons.push(`${expectedStun} Stun`);
+    } else if (expectedStun >= 1) {
+      score += 4; // Moderate value for Stun
+      reasons.push(`${expectedStun} Stun`);
+    }
+    
+    // Subtract risk to self
+    if (attackerRisk >= 2) {
+      score -= 6; // High risk
+      reasons.push(`High risk (${attackerRisk} Stun)`);
+    } else if (attackerRisk >= 1) {
+      score -= 3; // Moderate risk
+      reasons.push(`Risk (${attackerRisk} Stun)`);
+    }
+    
+    // Bonus for height advantage (tactical positioning)
+    if (fallDistance >= 2) {
+      score += 2;
+      reasons.push('Height advantage');
+    }
+    
+    return {
+      score: Math.max(0, score),
+      reason: reasons.join(', ') || 'Jump down',
+      canJump: true,
+    };
+  }
+
+  /**
+   * Evaluate push off ledge opportunity
+   * QSR: Push enemy off ledge to cause falling damage
+   * - Target receives Delay token if resists falling
+   * - Target makes Falling Test (potential Stun/Wounds)
+   */
+  private evaluatePushOffLedge(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    pushDirection: { x: number; y: number }
+  ): { score: number; reason: string; canPush: boolean } {
+    const battlefield = context.battlefield;
+    
+    // Calculate push destination
+    const pushDistance = attacker.finalAttributes?.siz ?? 3; // Base push = SIZ
+    const destPos = {
+      x: targetPos.x + pushDirection.x * pushDistance,
+      y: targetPos.y + pushDirection.y * pushDistance,
+    };
+    
+    // Check if destination is off battlefield (Elimination!)
+    if (this.isOffBattlefield(destPos, battlefield)) {
+      return {
+        score: 20, // Very high value for elimination
+        reason: 'Push off battlefield (Elimination)',
+        canPush: true,
+      };
+    }
+    
+    // Get terrain heights
+    const targetTerrain = battlefield.getTerrainAt(targetPos);
+    const destTerrain = battlefield.getTerrainAt(destPos);
+    
+    const targetHeight = this.getTerrainHeight(targetTerrain);
+    const destHeight = this.getTerrainHeight(destTerrain);
+    
+    // Check if there's a height difference (ledge)
+    const fallDistance = targetHeight - destHeight;
+    
+    if (fallDistance < 1.0) {
+      return { score: 0, reason: 'No ledge', canPush: false };
+    }
+    
+    // Calculate expected falling damage
+    const targetAgi = calculateAgility(target);
+    const fallingResult = resolveFallingTest(target, fallDistance, targetAgi);
+    const expectedStun = fallingResult.delayTokens;
+    const expectedWound = fallingResult.woundAdded;
+    
+    // Score calculation
+    let score = 0;
+    const reasons: string[] = [];
+    
+    // Delay token for falling (QSR: resists being pushed across ledge)
+    score += 5;
+    reasons.push('Delay token');
+    
+    // High value for eliminating weakened enemy
+    const targetSiz = target.finalAttributes?.siz ?? target.attributes?.siz ?? 3;
+    const targetWounds = target.state.wounds;
+    if (expectedWound && targetWounds >= targetSiz - 1) {
+      score += 15; // Very high value for potential elimination
+      reasons.push('Eliminate weakened');
+    } else if (expectedStun >= 2) {
+      score += 8; // High value for significant Stun
+      reasons.push(`${expectedStun} Stun`);
+    } else if (expectedStun >= 1) {
+      score += 4; // Moderate value for Stun
+      reasons.push(`${expectedStun} Stun`);
+    }
+    
+    // Bonus for significant fall
+    if (fallDistance >= 3) {
+      score += 3;
+      reasons.push(`${fallDistance.toFixed(1)} MU fall`);
+    }
+    
+    return {
+      score: Math.max(0, score),
+      reason: reasons.join(', ') || 'Push off ledge',
+      canPush: true,
+    };
+  }
+
+  /**
+   * Calculate maximum jump range for a character
+   * QSR: Jump range = Agility + Leap X bonus + Running bonus (if applicable)
+   */
+  private calculateMaxJumpRange(character: Character, hasRunningStart: boolean = false): number {
+    const agility = calculateAgility(character);
+    const leapBonus = getLeapAgilityBonus(character);
+    
+    // Running start bonus: +1 MU per 4 MU run (simplified: +2 MU if has running start)
+    const runningBonus = hasRunningStart ? 2 : 0;
+    
+    return agility + leapBonus + runningBonus;
+  }
+
+  /**
+   * Get terrain height from TerrainElement per OVR-003
+   */
+  private getTerrainHeight(terrain: any): number {
+    if (!terrain || !terrain.name) return 0;
+    const heightData = TERRAIN_HEIGHTS[terrain.name.toLowerCase()];
+    return heightData?.height ?? 0;
+  }
+
+  /**
+   * Check if position is off the battlefield
+   */
+  private isOffBattlefield(position: Position, battlefield: Battlefield): boolean {
+    return position.x < 0 || position.x > battlefield.width ||
+           position.y < 0 || position.y > battlefield.height;
+  }
+
+  /**
+   * Evaluate gap crossing opportunity
+   * QSR: Jump across gaps using Agility + Leap + Running bonus
+   * - For every 1 MU down, +0.5 MU across
+   * - Wall-to-wall jumps provide tactical advantage
+   */
+  private evaluateGapCrossing(
+    context: AIContext,
+    fromPos: Position,
+    toPos: Position
+  ): { score: number; reason: string; canCross: boolean } {
+    const battlefield = context.battlefield;
+    const character = context.character;
+    
+    // Detect gap between positions
+    const gap = detectGapAlongLine(battlefield, fromPos, toPos);
+    
+    if (!gap || gap.width < 0.5) {
+      return { score: 0, reason: 'No gap', canCross: false };
+    }
+    
+    // Calculate jump capability
+    const agility = calculateAgility(character);
+    const leapBonus = getLeapAgilityBonus(character);
+    
+    // Downward jump bonus
+    const fallDistance = gap.startHeight - gap.endHeight;
+    const downwardBonus = fallDistance > 0 ? fallDistance * 0.5 : 0;
+    
+    const maxJumpRange = agility + leapBonus + downwardBonus;
+    
+    // Check if gap is crossable
+    const canCross = gap.width <= maxJumpRange;
+    
+    if (!canCross) {
+      return { score: 0, reason: `Gap too wide (${gap.width.toFixed(1)} MU)`, canCross: false };
+    }
+    
+    // Score calculation
+    let score = 0;
+    const reasons: string[] = [];
+    
+    // Base value for crossing gap (tactical mobility)
+    score += 3;
+    reasons.push('Cross gap');
+    
+    // Wall-to-wall jump is tactically valuable (chokepoint control)
+    if (gap.isWallToWall) {
+      score += 4;
+      reasons.push('Wall-to-wall');
+    }
+    
+    // Height advantage bonus
+    if (fallDistance >= 1) {
+      score += 2;
+      reasons.push(`${fallDistance.toFixed(1)} MU height`);
+    }
+    
+    // Gap tactical value
+    const tacticalValue = getGapTacticalValue(gap);
+    score += tacticalValue;
+    
+    // Risk assessment (falling if failed)
+    if (fallDistance >= 2) {
+      score -= 2; // Risk penalty
+      reasons.push('Risk');
+    }
+    
+    return {
+      score: Math.max(0, score),
+      reason: reasons.join(', ') || 'Gap crossing',
+      canCross: true,
+    };
+  }
+
   private evaluateReversal(
     context: AIContext,
     attacker: Character,
@@ -2395,6 +2916,78 @@ export class UtilityScorer {
     } else {
       return -3; // Badly outnumbered (1:2+ disadvantage)
     }
+  }
+
+  /**
+   * Phase 3.2: Evaluate flanking position
+   * Returns positive score if position provides flanking advantage
+   * Flanking = position is on opposite side of enemy from allies
+   */
+  private evaluateFlankingPosition(position: Position, context: AIContext): number {
+    let flankingScore = 0;
+
+    // Find enemies within range of this position
+    const enemiesInRange: Character[] = [];
+    for (const enemy of context.enemies) {
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      const dist = Math.hypot(enemyPos.x - position.x, enemyPos.y - position.y);
+      if (dist <= 6) { // Within 6 MU
+        enemiesInRange.push(enemy);
+      }
+    }
+
+    if (enemiesInRange.length === 0) {
+      return 0; // No enemies to flank
+    }
+
+    // For each enemy, check if this position provides flanking
+    for (const enemy of enemiesInRange) {
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+
+      // Find allies already engaging this enemy
+      const alliesEngaging: Position[] = [];
+      for (const ally of context.allies) {
+        if (ally.id === context.character.id) continue; // Skip self
+        if (ally.state.isKOd || ally.state.isEliminated) continue;
+        
+        const allyPos = context.battlefield.getCharacterPosition(ally);
+        if (!allyPos) continue;
+        
+        const allyDist = Math.hypot(allyPos.x - enemyPos.x, allyPos.y - enemyPos.y);
+        if (allyDist <= 1.5) { // Ally is in melee range
+          alliesEngaging.push(allyPos);
+        }
+      }
+
+      if (alliesEngaging.length > 0) {
+        // Check if this position is on opposite side from allies
+        for (const allyPos of alliesEngaging) {
+          // Calculate angle from enemy to ally and from enemy to this position
+          const allyAngle = Math.atan2(allyPos.y - enemyPos.y, allyPos.x - enemyPos.x);
+          const thisAngle = Math.atan2(position.y - enemyPos.y, position.x - enemyPos.x);
+          
+          // Normalize angles to 0-2π
+          const normalizeAngle = (angle: number) => angle < 0 ? angle + 2 * Math.PI : angle;
+          const normalizedAllyAngle = normalizeAngle(allyAngle);
+          const normalizedThisAngle = normalizeAngle(thisAngle);
+          
+          // Calculate angle difference
+          let angleDiff = Math.abs(normalizedThisAngle - normalizedAllyAngle);
+          if (angleDiff > Math.PI) {
+            angleDiff = 2 * Math.PI - angleDiff;
+          }
+          
+          // If angle difference is > 90 degrees (π/2), it's a flanking position
+          if (angleDiff > Math.PI / 2) {
+            flankingScore += 2; // Good flanking position
+          }
+        }
+      }
+    }
+
+    return Math.min(flankingScore, 6); // Cap at 6
   }
 
   private evaluateObjectiveMarkerActions(

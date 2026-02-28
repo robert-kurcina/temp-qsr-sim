@@ -86,6 +86,7 @@ export class AIActionExecutor {
   private manager: GameManager;
   private logger: InstrumentationLogger | null = null;
   private replanAttempts: Map<string, number> = new Map();
+  private lastDecision: ActionDecision | null = null;
 
   constructor(manager: GameManager, config: Partial<AIExecutorConfig> = {}, logger?: InstrumentationLogger) {
     this.manager = manager;
@@ -247,6 +248,9 @@ export class AIActionExecutor {
     character: Character,
     context: AIExecutionContext
   ): ExecutionResult {
+    // Store decision for sub-action execution (e.g., fiddle stow/unstow)
+    this.lastDecision = decision;
+    
     const { battlefield } = context;
 
     switch (decision.type) {
@@ -821,6 +825,45 @@ export class AIActionExecutor {
     }
 
     try {
+      // Check for weapon swap sub-action
+      const decision = this.lastDecision;
+      if (decision?.subAction === 'unstow' && decision.itemName) {
+        const result = this.manager.executeUnstowItem(character, {
+          itemName: decision.itemName,
+        });
+        if (!result.success) {
+          return this.createFailure(
+            { type: 'fiddle', reason: 'Unstow', priority: 2, requiresAP: true },
+            character,
+            result.reason || 'Unstow failed'
+          );
+        }
+        return this.createSuccess(
+          { type: 'fiddle', reason: `Unstow ${decision.itemName}`, priority: 2, requiresAP: true },
+          character,
+          `Drew ${decision.itemName}`
+        );
+      }
+      
+      if (decision?.subAction === 'stow' && decision.itemName) {
+        const result = this.manager.executeStowItem(character, {
+          itemName: decision.itemName,
+        });
+        if (!result.success) {
+          return this.createFailure(
+            { type: 'fiddle', reason: 'Stow', priority: 2, requiresAP: true },
+            character,
+            result.reason || 'Stow failed'
+          );
+        }
+        return this.createSuccess(
+          { type: 'fiddle', reason: `Stow ${decision.itemName}`, priority: 2, requiresAP: true },
+          character,
+          `Stowed ${decision.itemName}`
+        );
+      }
+
+      // Default fiddle action
       const result = this.manager.executeFiddle(character, {
         spendAp: true,
         attribute: 'int',

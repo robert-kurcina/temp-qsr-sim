@@ -33,7 +33,7 @@ import { DamageResolution } from '../subroutines/damage-test';
 import { BonusActionSelection } from '../actions/bonus-actions';
 import { ReactEvent, ReactOption } from '../actions/react-actions';
 import { GroupAction } from './group-actions';
-import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction } from '../actions/simple-actions';
+import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction, executeStowItem, executeUnstowItem, executeSwapItem } from '../actions/simple-actions';
 import { getActiveToggleOptions, getBonusActionOptions, getPassiveOptions, getReactOptions, getReactOptionsSorted } from '../actions/option-builders';
 import { executeMoveAction } from '../actions/move-action';
 import { createGroupAction } from '../actions/group-actions';
@@ -880,6 +880,38 @@ export class GameManager {
     } = {}
   ) {
     return executeFiddleAction(this.simpleActionDeps(), actor, options);
+  }
+
+  public executeStowItem(
+    actor: Character,
+    options: {
+      itemIndex?: number;
+      itemName?: string;
+    } = {}
+  ) {
+    return executeStowItem(this.simpleActionDeps(), actor, options);
+  }
+
+  public executeUnstowItem(
+    actor: Character,
+    options: {
+      itemIndex?: number;
+      itemName?: string;
+    } = {}
+  ) {
+    return executeUnstowItem(this.simpleActionDeps(), actor, options);
+  }
+
+  public executeSwapItem(
+    actor: Character,
+    options: {
+      stowItemIndex?: number;
+      stowItemName?: string;
+      drawItemIndex?: number;
+      drawItemName?: string;
+    } = {}
+  ) {
+    return executeSwapItem(this.simpleActionDeps(), actor, options);
   }
 
   public executeAcquireObjectiveMarker(

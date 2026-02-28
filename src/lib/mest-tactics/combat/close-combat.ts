@@ -93,9 +93,13 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
     
     // Charge bonus (hit test bonus, damage bonus handled in resolveDamage)
     if (context.isCharge) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
-    
-    // Overreach Penalty
-    if (context.isOverreach) attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+
+    // Overreach Penalty (QSR Line 470: -1 REF and -1 Attacker Close Combat Tests)
+    if (context.isOverreach) {
+        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
+        // Set Overreach status for -1 REF penalty this Initiative
+        attacker.state.isOverreach = true;
+    }
     
     if (context.outnumberAdvantage) attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + context.outnumberAdvantage;
     if (context.hasHighGround) attackerBonus[DiceType.Modifier] = (attackerBonus[DiceType.Modifier] || 0) + 1;
