@@ -8,7 +8,7 @@ status: "In-Progress"
 
 A character is represented in the 2D environment with an image and this is its model for use during gameplay.
 
-| Species | Ancestry | Sex | SIZ | File | 
+| Species | Ancestry | Lineage | Sex | SIZ | File |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | Humaniki | Alef | Akrunai-Auldaran | Male | 3 | portraits/alef-akrunai-auldfaran-male.jpg |
 | Humaniki | Alef | Akrunai-Borondan | Male | 3 | portraits/alef-akruniai-borondan-male.jpg |
@@ -21,6 +21,7 @@ A character is represented in the 2D environment with an image and this is its m
 | Jhastruj | Jhastra | Jhasu | Male | 2 | portraits/lizardfolk-common-male.jpg |
 | Gorblun | Golbrini | Globlin | Male | 2 | portraits/golbrini-common-male.jpg |
 | Klobalun | Korkbul | Kolboh | Male | 1 | portraits/kobolds-common-male.jpg |
+
 
 ## Portrait Sheet Layout
 

@@ -60,15 +60,19 @@ export function endActivation(deps: ActivationDeps, character: Character): void 
   deps.setActiveCharacterId(null);
   deps.setCharacterStatus(character.id, CharacterStatus.Done);
   
+  // QSR Line 470: Clear Overreach status at end of Initiative
+  // Overreach -1 REF penalty only applies during the Initiative it was declared
+  character.state.isOverreach = false;
+
   // Sneaky X: Auto-Hide at end of initiative if Attentive and behind Cover or not in LOS
   const sneakyLevel = getSneakyLevel(character);
   if (sneakyLevel > 0 && character.state.isAttentive && !character.state.isHidden) {
     const isBehindCover = deps.isBehindCover(character);
     const opposingCharacters = deps.getOpposingCharacters();
-    const isInLosToAny = opposingCharacters.some(opp => 
+    const isInLosToAny = opposingCharacters.some(opp =>
       opp.state.isAttentive && deps.isInLos(character, opp)
     );
-    
+
     const sneakyResult = checkSneakyAutoHide(character, true, isBehindCover, isInLosToAny);
     if (sneakyResult.canAutoHide) {
       character.state.isHidden = true;

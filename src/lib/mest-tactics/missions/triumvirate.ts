@@ -67,7 +67,7 @@ export const TriadMission: MissionDefinition = {
   turnLimit: 10,
   endGameDieRoll: true,
   endGameDieStart: 6,
-  keys: ['POI'], // Uses POI/Zone control system
+  keys: ['POI', 'Encroachment'], // Zone control + first to cross midline
   sizes: {
     VERY_SMALL: {
       poiVP: 3,

@@ -101,6 +101,8 @@ export type ActionType =
   | 'hide'           // Become hidden
   | 'detect'         // Detect hidden enemy
   | 'combined'       // Combined action (move + attack)
+  | 'pushing'        // Pushing for extra AP (QSR p.789-791)
+  | 'refresh'        // Refresh: Spend 1 IP to remove Delay token (QSR p.784)
   | 'react-move'     // React to Move action
   | 'react_counter_strike' // Counter-strike react (Passive Player Option)
   | 'react_counter_fire'   // Counter-fire react (Passive Player Option)

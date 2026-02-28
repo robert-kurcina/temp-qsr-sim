@@ -1,5 +1,11 @@
 import { Character } from '../core/Character';
 import { ActivationDeps, spendAp } from './activation';
+import { Battlefield } from '../battlefield/Battlefield';
+import { TerrainElement, TERRAIN_HEIGHTS } from '../battlefield/terrain/TerrainElement';
+import { resolveFallingTest } from './agility';
+import { CombatManeuverResult, CombatManeuverType } from './combat-actions';
+import { getLeapAgilityBonus } from '../traits/combat-traits';
+import { calculateAgility } from './agility';
 
 /**
  * Pushing Result
@@ -13,12 +19,13 @@ export interface PushingResult {
 
 /**
  * Pushing Action
- * 
- * Once per Initiative, at the option of the player; Active characters having no Delay tokens 
- * may use "Pushing" to push themselves to their limit and acquire 1 AP. 
+ *
+ * Once per Initiative, at the option of the player; Active characters having no Delay tokens
+ * may use "Pushing" to push themselves to their limit and acquire 1 AP.
  * They will also immediately acquire a Delay token.
- * 
+ *
  * QSR Rules p.789-791
+ * NOTE: Pushing does NOT cost Initiative Points - it's a character-level action
  */
 export function performPushing(
   deps: ActivationDeps,
@@ -55,6 +62,8 @@ export function performPushing(
   // Mark as having pushed this Initiative
   character.state.hasPushedThisInitiative = true;
 
+  // NOTE: No IP logging - Pushing does not cost IP
+
   return {
     success: true,
     apGained: 1,
@@ -81,12 +90,15 @@ export interface CombatManeuverResult {
   targetRepositioned?: { x: number; y: number };
   activeRepositioned?: { x: number; y: number };
   delayTokenApplied?: boolean;
+  delayReason?: string;
+  targetEliminated?: boolean;
+  eliminationReason?: string;
   reason?: string;
 }
 
 /**
  * Combat Maneuvers
- * 
+ *
  * Spend cascades from a successful Hit Test to perform tactical maneuvers.
  * QSR Rules p.1092-1094
  */
@@ -98,11 +110,12 @@ export function performCombatManeuver(
   activePosition: { x: number; y: number },
   targetPosition: { x: number; y: number },
   activeBaseDiameter: number,
-  targetBaseDiameter: number
+  targetBaseDiameter: number,
+  battlefield?: Battlefield
 ): CombatManeuverResult {
   // Check minimum cascade requirements
   const minCascades = maneuverType === CombatManeuverType.PushBack ? 1 : 2;
-  
+
   if (cascadesAvailable < minCascades) {
     return {
       success: false,
@@ -121,9 +134,10 @@ export function performCombatManeuver(
         activePosition,
         targetPosition,
         activeBaseDiameter,
-        targetBaseDiameter
+        targetBaseDiameter,
+        battlefield
       );
-    
+
     case CombatManeuverType.PullBack:
       return performPullBack(
         cascadesAvailable,
@@ -158,15 +172,18 @@ export function performCombatManeuver(
 
 /**
  * Push-back Maneuver
- * 
- * Reposition target away up to the Active model's base-diameter. 
- * Allow +1 MU per 3 more cascades spent. 
- * Afterwards, allow the Active model to reposition up to base-contact with the target. 
- * If the target is pushed into wall, obstacle, degraded terrain, or resists being 
- * pushed across a ledge or off the battlefield; it receives a Delay token. 
+ *
+ * QSR: Reposition target away up to the Active model's base-diameter.
+ * Allow +1 MU per 3 more cascades spent.
+ * Afterwards, allow the Active model to reposition up to base-contact with the target.
+ * If the target is pushed into wall, obstacle, degraded terrain, or resists being
+ * pushed across a ledge or off the battlefield; it receives a Delay token.
  * Disallow into another character.
- * 
+ * Push-back off battlefield = target effectively Eliminated.
+ *
  * Cost: 1 cascade base, +3 cascades per additional MU
+ * Diamond-Arrow (◆➆): Requires base-contact or +1 cascade
+ * Arrow (➆): Physicality difference affects cascade cost
  */
 function performPushBack(
   cascadesAvailable: number,
@@ -175,42 +192,175 @@ function performPushBack(
   activePosition: { x: number; y: number },
   targetPosition: { x: number; y: number },
   activeBaseDiameter: number,
-  targetBaseDiameter: number
+  targetBaseDiameter: number,
+  battlefield?: Battlefield
 ): CombatManeuverResult {
   // Calculate direction vector from active to target
   const dx = targetPosition.x - activePosition.x;
   const dy = targetPosition.y - activePosition.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
-  
+
   // Normalize direction
   const dirX = distance > 0 ? dx / distance : 1;
   const dirY = distance > 0 ? dy / distance : 0;
-  
+
   // Base push distance = active model's base diameter (in MU)
   const basePushDistance = activeBaseDiameter;
-  
+
   // Additional distance: +1 MU per 3 extra cascades
   const extraCascades = cascadesAvailable - 1;
   const additionalDistance = Math.floor(extraCascades / 3);
   const totalPushDistance = basePushDistance + additionalDistance;
-  
+
   // Calculate new target position
   const newTargetX = targetPosition.x + (dirX * totalPushDistance);
   const newTargetY = targetPosition.y + (dirY * totalPushDistance);
-  
+  const newTargetPosition = { x: newTargetX, y: newTargetY };
+
   // Calculate cascades spent
   const cascadesSpent = 1 + (additionalDistance > 0 ? Math.ceil(additionalDistance / 3) * 3 : 0);
+
+  // QSR: Check for Delay token - pushed into wall/obstacle/degraded terrain/ledge per QSR
+  let delayTokenApplied = false;
+  let delayReason = '';
+  let targetEliminated = false;
+  let eliminationReason = '';
   
-  // Note: Terrain collision and character collision checks would be done by the caller
-  // For now, we just calculate the repositioning
-  
+  if (battlefield) {
+    // Check if pushed off battlefield (Elimination)
+    if (isOffBattlefield(newTargetPosition, battlefield)) {
+      targetEliminated = true;
+      eliminationReason = 'Pushed off battlefield';
+    } else {
+      // Check terrain at new position
+      const terrainAtNewPos = battlefield.getTerrainAt(newTargetPosition);
+      const oldTerrain = battlefield.getTerrainAt(targetPosition);
+      
+      // QSR: Degraded terrain check (Clear > Rough > Difficult > Impassable)
+      // Delay if pushed into worse terrain
+      const terrainDegraded = isTerrainDegraded(oldTerrain, terrainAtNewPos);
+      if (terrainDegraded) {
+        delayTokenApplied = true;
+        delayReason = `Pushed into degraded terrain (${oldTerrain.type} → ${terrainAtNewPos.type})`;
+      }
+      
+      // Delay if pushed into wall/obstacle (Blocking/Impassable)
+      // Walls are impassable UNLESS character can climb them (based on SIZ, Agility, Leap X)
+      if (terrainAtNewPos.movement === 'Impassable' || terrainAtNewPos.los === 'Blocking') {
+        // Check if character can climb this terrain (dynamic based on SIZ, Agility, Leap X)
+        const canClimb = isClimbableBy(terrainAtNewPos, targetCharacter);
+
+        if (!canClimb) {
+          delayTokenApplied = true;
+          delayReason = delayReason || `Pushed into ${terrainAtNewPos.type} (impassable, ${getTerrainHeight(terrainAtNewPos).toFixed(1)} MU)`;
+        }
+      }
+      
+      // Delay if pushed off ledge (terrain height >= 1.0 MU per OVR-003)
+      // Check if there's a height difference between old and new position
+      const oldHeight = getTerrainHeight(oldTerrain);
+      const newHeight = getTerrainHeight(terrainAtNewPos);
+      
+      if (oldHeight >= 1.0 && newHeight < oldHeight) {
+        // Pushed off ledge - apply Delay token and potentially Falling Test
+        delayTokenApplied = true;
+        delayReason = delayReason || `Pushed off ledge (${oldHeight.toFixed(1)} MU fall)`;
+        
+        // Optional: Could trigger Falling Test here if fall > Agility
+        // For now, just apply Delay token as per QSR
+      }
+    }
+  }
+
+  // QSR: Push-back off battlefield = Elimination
+  if (targetEliminated) {
+    return {
+      success: true,
+      maneuverType: CombatManeuverType.PushBack,
+      cascadesSpent,
+      targetRepositioned: newTargetPosition,
+      targetEliminated: true,
+      eliminationReason,
+      delayTokenApplied: false, // No delay if eliminated
+    };
+  }
+
   return {
     success: true,
     maneuverType: CombatManeuverType.PushBack,
     cascadesSpent,
-    targetRepositioned: { x: newTargetX, y: newTargetY },
-    delayTokenApplied: false, // Would be set by caller if terrain collision occurs
+    targetRepositioned: newTargetPosition,
+    delayTokenApplied,
+    delayReason: delayTokenApplied ? delayReason : undefined,
   };
+}
+
+/**
+ * Check if position is off the battlefield
+ */
+function isOffBattlefield(position: { x: number; y: number }, battlefield: Battlefield): boolean {
+  return position.x < 0 || position.x > battlefield.width || 
+         position.y < 0 || position.y > battlefield.height;
+}
+
+/**
+ * Check if terrain is degraded (Clear > Rough > Difficult > Impassable)
+ * QSR: Pushing into worse terrain causes Delay token
+ */
+function isTerrainDegraded(oldTerrain: any, newTerrain: any): boolean {
+  const terrainOrder = {
+    'Clear': 0,
+    'Rough': 1,
+    'Difficult': 2,
+    'Impassable': 3,
+    'Obstacle': 3,
+  };
+  
+  const oldRank = terrainOrder[oldTerrain.type as keyof typeof terrainOrder] ?? 0;
+  const newRank = terrainOrder[newTerrain.type as keyof typeof terrainOrder] ?? 0;
+  
+  // Degraded if new terrain is worse (higher rank)
+  return newRank > oldRank;
+}
+
+/**
+ * Get terrain height from TerrainElement per OVR-003
+ */
+function getTerrainHeight(terrain: any): number {
+  if (!terrain || !terrain.name) return 0;
+  const heightData = TERRAIN_HEIGHTS[terrain.name.toLowerCase()];
+  return heightData?.height ?? 0;
+}
+
+/**
+ * Calculate maximum climbable height for a character
+ * QSR: Climb height based on SIZ (reach), Agility, and Leap X trait
+ * 
+ * Formula: (SIZ × 0.5) + Agility + Leap Bonus
+ * - SIZ × 0.5: Base reach height (taller models can reach higher)
+ * - Agility: MOV × 0.5 (agile models can scramble up)
+ * - Leap Bonus: Leap X trait adds directly to climbing ability
+ */
+function getMaxClimbableHeight(character: Character): number {
+  const siz = character.finalAttributes?.siz ?? character.attributes?.siz ?? 3;
+  const baseReach = siz * 0.5; // SIZ-based reach
+  const agility = calculateAgility(character); // MOV-based agility
+  const leapBonus = getLeapAgilityBonus(character); // Leap X trait bonus
+  
+  // Total climbable height = reach + agility + leap
+  return baseReach + agility + leapBonus;
+}
+
+/**
+ * Check if terrain is climbable by a character
+ * QSR: Walls are climbable if character can reach the top
+ */
+function isClimbableBy(terrain: any, character: Character): boolean {
+  const terrainHeight = getTerrainHeight(terrain);
+  const maxClimbable = getMaxClimbableHeight(character);
+  
+  // Terrain is climbable if character's max climb height >= terrain height
+  return maxClimbable >= terrainHeight;
 }
 
 /**

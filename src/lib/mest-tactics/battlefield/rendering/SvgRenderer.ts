@@ -62,6 +62,8 @@ export class SvgRenderer {
     .layer { display: inline; }
     .layer.hidden { display: none; }
     .grid-line { stroke: #999; stroke-width: 0.02; opacity: 0.2; }
+    .grid-line-2mu { stroke: #666; stroke-width: 0.04; opacity: 0.4; }
+    .grid-line-6mu { stroke: #333; stroke-width: 0.08; opacity: 0.6; }
     .delaunay-line { stroke: #4a6fa5; stroke-width: 0.03; opacity: 0.3; }
     #layer-area { opacity: 0.8; }
     #layer-building, #layer-wall, #layer-tree, #layer-rocks, #layer-shrub, #layer-terrain { opacity: 0.8; }
@@ -138,11 +140,25 @@ ${categoryStyles}
     const layer = layers.find(item => item.id === 'grid');
     const hidden = layer?.enabled === false ? 'hidden' : '';
     const lines: string[] = [`<g id="layer-grid" class="layer ${hidden}">`];
+    
+    // Render gridlines at different intervals with different thicknesses
     for (let x = 0; x <= width; x += gridResolution) {
-      lines.push(`<line x1="${x}" y1="0" x2="${x}" y2="${height}" class="grid-line"/>`);
+      let className = 'grid-line';
+      if (x % 6 === 0) {
+        className = 'grid-line-6mu'; // 6 MU intervals - thickest
+      } else if (x % 2 === 0) {
+        className = 'grid-line-2mu'; // 2 MU intervals - thicker
+      }
+      lines.push(`<line x1="${x}" y1="0" x2="${x}" y2="${height}" class="${className}"/>`);
     }
     for (let y = 0; y <= height; y += gridResolution) {
-      lines.push(`<line x1="0" y1="${y}" x2="${width}" y2="${y}" class="grid-line"/>`);
+      let className = 'grid-line';
+      if (y % 6 === 0) {
+        className = 'grid-line-6mu'; // 6 MU intervals - thickest
+      } else if (y % 2 === 0) {
+        className = 'grid-line-2mu'; // 2 MU intervals - thicker
+      }
+      lines.push(`<line x1="0" y1="${y}" x2="${width}" y2="${y}" class="${className}"/>`);
     }
     lines.push(`</g>`);
     return lines.join('\n');

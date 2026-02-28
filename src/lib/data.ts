@@ -319,7 +319,7 @@ export const gameData = {
         "Armor 8",
         "[Laden 3]",
         "Deflect 2",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]",
         "Bulletproof"
       ],
@@ -337,7 +337,7 @@ export const gameData = {
         "Armor 8",
         "[Laden 3]",
         "Deflect 2",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]"
       ],
       "classification": "Armor",
@@ -474,7 +474,7 @@ export const gameData = {
         "Armor 6",
         "[Laden 2]",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]",
         "Bulletproof"
       ],
@@ -492,7 +492,7 @@ export const gameData = {
         "Armor 6",
         "[Laden 2]",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "[Lumbering]"
       ],
       "classification": "Armor",
@@ -626,7 +626,7 @@ export const gameData = {
       "traits": [
         "Armor 2",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "Bulletproof"
       ],
       "classification": "Armor",
@@ -642,7 +642,7 @@ export const gameData = {
       "traits": [
         "Armor 2",
         "Deflect",
-        "[Flexible]"
+        "[Flex]"
       ],
       "classification": "Armor",
       "type": "Suit"
@@ -767,7 +767,7 @@ export const gameData = {
         "Armor 4",
         "[Laden]",
         "Deflect",
-        "[Flexible]",
+        "[Flex]",
         "Bulletproof"
       ],
       "classification": "Armor",
@@ -784,7 +784,7 @@ export const gameData = {
         "Armor 4",
         "[Laden]",
         "Deflect",
-        "[Flexible]"
+        "[Flex]"
       ],
       "classification": "Armor",
       "type": "Suit"
@@ -3447,7 +3447,7 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 3]",
-        "Radio Jammer 2",
+        "Jammer 2 > Radio",
         "[2H]"
       ],
       "classification": "Misc",
@@ -3462,7 +3462,7 @@ export const gameData = {
       "dmg": "-",
       "traits": [
         "[Laden 2]",
-        "Radio Jammer 4",
+        "Jammer 4 > Radio",
         "[2H]"
       ],
       "classification": "Misc",
@@ -5280,7 +5280,7 @@ export const gameData = {
       "impact": 0,
       "dmg": "-",
       "traits": [
-        "Beacon X > Trait",
+        "Beacon X > Target",
         "[Laden]"
       ],
       "classification": "Misc",
@@ -6583,6 +6583,5132 @@ export const gameData = {
       "item_class": "Thrown"
     }
   },
+  "item_tech_window": [
+    {
+      "item": "A/Grav, Belt",
+      "tech_window": {
+        "early": 18,
+        "latest": 20
+      }
+    },
+    {
+      "item": "A/Grav, Ring",
+      "tech_window": {
+        "early": 18,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Acid Spitter",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Agenda Document",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo Belt, Bandolier",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo Belt, Bandolier, Archaic",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo Box",
+      "tech_window": {
+        "early": 9,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, AP",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, AP-II",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, AT",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, AT-II",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, HE",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, HEAP",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, HEAP-II",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, HEAT",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, HEAT-II",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, HP",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ammo, Tracer Round",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Amulet of Eyes",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Amulet of Fears",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Anti-gravity Harness",
+      "tech_window": {
+        "early": 18,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, Bazooka, M1",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, Bazooka, M20",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, Faustpatrone",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, LAW",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, MAW",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, PIAT",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, Panzerfaust",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, Panzerschreck",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, RPG-7",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Anti-tank Weapon, Rocket",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arc Weapon",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Accessory, Amulet",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Accessory, Monstrum",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Accessory, Ring",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Accessory, Stone",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Accessory, Trinket",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Attachment, Large",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Attachment, Small",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Codex, Common",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Codex, Legendary",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Scroll, Major",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Scroll, Minor",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Tome, Greater",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Arcanum, Tome, Lesser",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Armor, Combat Suit",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armor, Field",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armor, Field Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armor, Field Bulletproof Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Field Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Field Mail",
+      "tech_window": {
+        "early": 3,
+        "latest": 6
+      }
+    },
+    {
+      "item": "Armor, Field Nanoweave",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Field Nanoweave BP",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Field, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Armor, Field, Bulletproof Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armor, Heavy",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armor, Heavy Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armor, Heavy Bulletproof Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Heavy Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Heavy Mail",
+      "tech_window": {
+        "early": 3,
+        "latest": 6
+      }
+    },
+    {
+      "item": "Armor, Heavy Nanoweave",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Heavy Nanoweave BP",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Heavy, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Armor, Heavy, Bulletproof Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armor, Light",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armor, Light Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armor, Light Bulletproof Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Light Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Light Mail",
+      "tech_window": {
+        "early": 3,
+        "latest": 6
+      }
+    },
+    {
+      "item": "Armor, Light Nanoweave",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Light Nanoweave BP",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Light, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Armor, Light, Bulletproof Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armor, Medium",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armor, Medium Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armor, Medium Bulletproof Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Medium Flex",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Medium Mail",
+      "tech_window": {
+        "early": 3,
+        "latest": 6
+      }
+    },
+    {
+      "item": "Armor, Medium Nanoweave",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Medium Nanoweave BP",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Armor, Medium, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Armor, Medium, Bulletproof Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Armored Gear",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armored Gear, Bracer",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armored Gear, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Armored Gear, Padding",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Armored Gear, Padding Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Armored Gear, Vaumbrace",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Arquebus, Heavy",
+      "tech_window": {
+        "early": 7,
+        "latest": 9
+      }
+    },
+    {
+      "item": "Arquebus, Light",
+      "tech_window": {
+        "early": 7,
+        "latest": 9
+      }
+    },
+    {
+      "item": "Arquebus, Medium",
+      "tech_window": {
+        "early": 7,
+        "latest": 9
+      }
+    },
+    {
+      "item": "Auto-cannon, Heavy",
+      "tech_window": {
+        "early": 13,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Auto-cannon, Light",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Auto-cannon, Medium",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Automedic",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Axe",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Axe, Battle",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Axe, Long",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Axe, Pick",
+      "tech_window": {
+        "early": 3,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Axe, Tactical",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Axe-Sword of Tan-doc",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Ballista, Heavy",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ballista, Medium",
+      "tech_window": {
+        "early": 3,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ballista, Light",
+      "tech_window": {
+        "early": 3,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bayonet",
+      "tech_window": {
+        "early": 7,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Cannon",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Cannon, Heavy",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Cannon, Light",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Carbine",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Carbine, Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Gun",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Gun, Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Pistol",
+      "tech_window": {
+        "early": 16,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Pistol, Advanced",
+      "tech_window": {
+        "early": 16,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Rifle",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Rifle, Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Rifle, Advanced Heavy",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Rifle, Early",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Rifle, Early Heavy",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Beam Rifle, Heavy",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Belt of Strength",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bite-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bite-2",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bite-3",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Black Jacks or Sap",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 12Minor - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 12Minor - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 12Minor - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 12Minor - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 13Major - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 13Major - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 13Major - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 13Major - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 22Minor - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 22Minor - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 22Minor - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 22Minor - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 23Major - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 23Major - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 23Major - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 23Major - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 2Minor - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 2Minor - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 2Minor - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 2Minor - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 3Major - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 3Major - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 3Major - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 3Major - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Greater - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Greater - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Greater - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Greater - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Wondrous - Basic",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Wondrous - Burst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Wondrous - Rapid",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast, 4Wondrous - RapidBurst",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blast-suit, Advanced",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Blast-suit, Early",
+      "tech_window": {
+        "early": 11,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Blast-suit, Reinforced",
+      "tech_window": {
+        "early": 11,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Blaster Glove",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Blaster Pistol",
+      "tech_window": {
+        "early": 17,
+        "latest": 17
+      }
+    },
+    {
+      "item": "Blaster Pistol, Magnum",
+      "tech_window": {
+        "early": 17,
+        "latest": 17
+      }
+    },
+    {
+      "item": "Blaster Rifle",
+      "tech_window": {
+        "early": 17,
+        "latest": 17
+      }
+    },
+    {
+      "item": "Blaster Rifle, Magnum",
+      "tech_window": {
+        "early": 17,
+        "latest": 17
+      }
+    },
+    {
+      "item": "Blow-dart Gun",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Bola",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bolter Pistol",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Bolter Rifle",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Bolter Rifle, Adv",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Boomerang, War",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bottle-Phial, Acid-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bottle-Phial, Burn-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bottle-Phial, Caustic-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bottle-Phial, Confuse-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bottle-Phial, Fire-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bottle-Phial, Poison-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Bow, Light",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, Light Quickened",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, Long",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, Medium",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, Medium Heavy",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, Medium Quickened",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, Recurve",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, Recurve Heavy",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bow, War",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Bracers of Stealth",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Cannon, A 12.7mm",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Cannon, B 25mm (2-pdr)",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Cannon, C 42mm (6-pdr)",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Cannon, D 75mm (17-pdr)",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Carbine Light, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Carbine Light, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Carbine, Heavy, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Carbine, Heavy, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Carbine, Medium, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Carbine, Medium, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Chainsaw, Claw, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Chainsaw, Claw, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Chainsaw, Claw, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Chainsaw, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Chainsaw, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Chainsaw, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Chakram Rings",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Chakram Rings, Serrated",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Claw-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Claw-2",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Claw-3",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Claws-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Claws-2",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Claws-3",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Club",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Club, Baton",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Club, Circus Mallet",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Club, Crowbar",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Club, Heavy",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Club, Mace",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Club, Mace, Spiked",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Club, Shovel",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Coil-gun, Heavy",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Coil-gun, Light",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Coil-gun, Medium",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Collar, Spiked",
+      "tech_window": {
+        "early": 3,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-helmet",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-helmet, Early",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Boosted",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Box",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Box, Archaic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Box, Early",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Box, Early (Embedded)",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Box-Hand-held",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Early",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Jammer, Early",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Comm-link, Jammer, Modern",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Crossbow, Heavy",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Light",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Medium",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Repeating",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Repeating Heavy",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Single-hand Pistol",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Single-hand Pistol, Hvy",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Single-hand Pistol, Hvy, Masterwork",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Crossbow, Single-hand Pistol, Masterwork",
+      "tech_window": {
+        "early": 3,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Dagger, Obsidian",
+      "tech_window": {
+        "early": 1,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Dagger, Stiletto",
+      "tech_window": {
+        "early": 1,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Daggers",
+      "tech_window": {
+        "early": 1,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Daggers, Spectral",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Damper 2 > Type",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Damper 3 > Type",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Damper 4 > Type",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Damper > Type",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Deceptor Pistol",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Deceptor Rifle",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Detonator",
+      "tech_window": {
+        "early": 9,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Device, Synchron, Archaic",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Device, Synchron, Early",
+      "tech_window": {
+        "early": 10,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Device, Synchron-1.1",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Device, Synchron-2.1",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Device, Synchron-3.2",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Discus",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Displacer Device",
+      "tech_window": {
+        "early": 18,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Dynamic Armor, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Dynamic Armor, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Dynamic Armor, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Electrocounter Orbs",
+      "tech_window": {
+        "early": 10,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Electrostaff",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Electrostaff, Neon",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Electroweapon, Early",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Electroweapon, Pulse, Pistol",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Electroweapon, Pulse, Rifle",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Explosives, Agenda Bomb, Large",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Agenda Bomb, Small",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Agenda Bomb,Medium",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Bomb, Large",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Bomb, Small",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Bundle, Dynamite",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Fire-bomb",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Kettle-bomb",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Mine, IED",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Mine, Tank",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Petard",
+      "tech_window": {
+        "early": 7,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Powderkeg",
+      "tech_window": {
+        "early": 6,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Satchel",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Satchel, Pulse",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Explosives, Stick, Dynamite",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Exxo-skeleton, Heavy",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Exxo-skeleton, Lifter Frame",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Exxo-skeleton, Light",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Exxo-skin",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Exxo-skin, Carapace",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Exxo-skin, Scaled",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Exxo-skin, Segmented",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Favored Passage",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Field Harness",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flail",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flail, Farming",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flail, Morningstar",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flail, Tri-section",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flame-thrower, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flame-thrower, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flame-thrower, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flame-thrower, Mini",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flashlight",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Flashlight, Advanced",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Force Armor, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Force Armor, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Force Armor, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Fusion Pistol",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Gas Cannister, Blacksmoke",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Caustic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Knockout",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Knockout-2",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Mustard",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Nerve",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Nerve-2",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Poison",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Poison 2",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Riot",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Riot-3",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Smoke",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Smoke-2",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Cannister, Steam",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Acid",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Blacksmoke",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Caustic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Knockout",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Mustard",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Nerve",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Poison",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Poison 2",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Riot",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Smoke",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade, Steam",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas Grenade: Steam",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas-mask",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas-mask, Hooded",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gas-mask, Respirator",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Gatling Gun, 20mm",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gatling Gun, Archaic",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gatling Gun, Archaic-v2",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gatling Gun, Early",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gatling Gun, Early-v2",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gatling Gun, Mini",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gatling Gun, Mini (Mounted)",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gauntlet, Clawed",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Gauntlet, Controller",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Goggles",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Goggles, Night-vision",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Goggles, Night-vision, Adv.",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Goggles, Optiplex",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Goggles, Pin-point",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Goggles, Sensor",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Anti-magic",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Anti-psi",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Archaic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Concussion",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Concussion, Adv.",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Dancer",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Flash",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Flash-bang",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Flash-bang, Adv.",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Fragmentation",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Fragmentation, Adv.",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, HE",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, HE, Adv.",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Pulse",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Pulse, Adv.",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Shrapnel",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Shrapnel, Adv.",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Sonic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Sonic, Adv.",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Web",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Grenade, Web Stunner",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Groundingsuit, Advanced",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Groundingsuit, Early",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hammer, Forge",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hammer, Long",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hammer, Maul",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hammer, Sledge",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hammer, War",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hammer, War, Ban-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hammer, War, Ban-2",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hand Cannon",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Hardsuit, Archaic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hardsuit, Enhanced, Archaic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hardsuit, Platform, Archaic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hardsuit, Scout",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hardsuit, Standard",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hardsuit, War",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hardsuit, Windup",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Heirloom Weapon",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Helmet, Common",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Helmet, Common, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Helmet, Full",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Helmet, Full, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Helmet, Full-Elaborate",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Helmet, Reinforced",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Helmet, Reinforced Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Helmet, Riot",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Helmet, Riot Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Hook, Crook",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hook, Meat",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hook, Scythe",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hook, Sickle, Fist",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hook, Sickle, Hand",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hook, Spearcrook",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Hook, Swordcrook",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Immune-Blast-1",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Immune-Blast-2",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Improvised Melee",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Improvised Melee, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Improvised Parry",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Improvised Thrown",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Improvised Thrown, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Jet-pack, Gear",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Jet-pack, Jump",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Jet-pack, Suit",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Jet-pack, Suit, Advanced",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Kit, Glider Caped",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Kit, Glider Winged",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Kit, Medical, CFAK",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Kit, Medical, CFAK-v2",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Kit, Medical, Field",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Kit, Medical, Tactical",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Knife, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Knife, Medium",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Knife, Small",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Knife, Tactical",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Knuckledusters",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Knuckledusters, Spiked",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lamp or Candle",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lamp or Candle. Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lantern, Basic",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lantern, Basic, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lantern, Electric",
+      "tech_window": {
+        "early": 10,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lantern, Electric, Small",
+      "tech_window": {
+        "early": 10,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lantern, Fueled",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Lantern, Fueled, Small",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Launcher, Grenade Early",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Launcher, Grenade Modern",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Launcher, Grenade, Multi-rapid",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Launcher, Grenade, Rapid",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Leash",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Machine Gun, Heavy",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Machine Gun, Heavy (Mounted)",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Machine Gun, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Machine Gun, Light (Mounted)",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Machine Gun, Medium",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Machine Gun, Medium (Mounted)",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Machine Gun, Mitrailleuse",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mage Armor, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mage Armor, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mage Armor, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mask of Command",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Alcohol",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Alcohol, Copious",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Euphorics",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Euphorics, Copious",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Hallucenogenics",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Hallucenogenics, Copious",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Healing Potion",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Healing Potion, Pure",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Painkillers",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Painkillers, Copious",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Psychoactives",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Stimulants",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Medicinals, Stimulants, Copious",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mine, Acid, Small",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mine, Anti-personnel",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mine, Anti-personnel, Micromag",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mine, Heat, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mine, Heat, Small",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mirror",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Module, Control",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Module, Manipulator",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Module, System",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Module, Trigger",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mortar, Heavy",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Mortar, Light",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Mortar, Medium",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Mortar, Mini-mortar",
+      "tech_window": {
+        "early": 12,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Mortar, Mini-mortar (Mounted)",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Mounted Bolter Weapon",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mounted Flame-thrower",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Mounted Mortar, Mini-mortar",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Mounted Rail-gun",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Musket, Blunderbuss",
+      "tech_window": {
+        "early": 8,
+        "latest": 9
+      }
+    },
+    {
+      "item": "Musket, Heavy Smoothbore",
+      "tech_window": {
+        "early": 7,
+        "latest": 9
+      }
+    },
+    {
+      "item": "Musket, Light, Smoothbore",
+      "tech_window": {
+        "early": 7,
+        "latest": 9
+      }
+    },
+    {
+      "item": "Musket, Medium, Smoothbore",
+      "tech_window": {
+        "early": 7,
+        "latest": 9
+      }
+    },
+    {
+      "item": "Nanotech:Rage",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Nanotech:Rampage",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Nanotech:Resist",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Nanotech:Run",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Necklace of Comfort",
+      "tech_window": {
+        "early": 19,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Needle Rifle",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Needle Rifle, Adv",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Needler Pistol",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Needler Pistol, Adv",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Net, Deathnet",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Net, Retarius",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Net-gun, Large",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Net-gun, Small",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Notebook, Leadership",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Notebook, Scholarship",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Notebook, Tactics",
+      "tech_window": {
+        "early": 2,
+        "latest": 20
+      }
+    },
+    {
+      "item": "PDW, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "PDW, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "PDW, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Package, Assassin",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Package, Berserker",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Package, Predict",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Package, Recon",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Package, Timer",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Package, Warrior",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Phlogiston Suit",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Phlogiston Suit, Fireproof",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Phlogiston Suit, Improved",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Phlogiston Suit, Improved BP",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Pipe Cannon, 1-pdr",
+      "tech_window": {
+        "early": 12,
+        "latest": 12
+      }
+    },
+    {
+      "item": "Pipe Cannon, 2-pdr",
+      "tech_window": {
+        "early": 12,
+        "latest": 12
+      }
+    },
+    {
+      "item": "Pistol, Coach",
+      "tech_window": {
+        "early": 5,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Dueling",
+      "tech_window": {
+        "early": 5,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Heavy, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Heavy, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Light, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Light, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Medium, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Medium, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Pistol, Pepperbox",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Plasma Cannon",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Plasma Cannon, Heavy",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Plasma Pistol",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Plasma Rifle",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Plasmablade",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Plasmashield, Heavy",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Plasmashield, Light",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Plasmashield, Medium",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Poisoned Weapon",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Poisoned Weapon, Deadly",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Polearm, Glaive",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Polearm, Halberd",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Polearm, Pike",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Polearm, Scythe",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Power-gem, Light",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Power-gem, Medium",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Armor-Battle",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Armor-Combat",
+      "tech_window": {
+        "early": 16,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Armor-Early",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Armor-Exxo",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Armor-ExxoHvy",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Armor-Standard",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Armor-Stealth",
+      "tech_window": {
+        "early": 17,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Gauntlets",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Gloves",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Powered Shielding",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Powered Shielding-Heavy",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Powered Staff",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Prayer-Book",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Prayer-Relic",
+      "tech_window": {
+        "early": 5,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Proximity Suit, Fireproof",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Proximity Suit, Fireproof BP",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Psi Armor, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Psi Armor, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Psi Armor, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Pummel-1",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Pummel-2",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Pummel-3",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rail-gun, Heavy",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rail-gun, Light",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rail-gun, Medium",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Reinforced, Polearm",
+      "tech_window": {
+        "early": 3,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Reinforced, Standard",
+      "tech_window": {
+        "early": 3,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Revolver, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Revolver, Heavy, Archaic",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Revolver, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Revolver, Light, Archaic",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Revolver, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Revolver, Medium, Archaic",
+      "tech_window": {
+        "early": 10,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Heavy, Archaic",
+      "tech_window": {
+        "early": 5,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Heavy, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Heavy, Bolt/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Heavy, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Heavy, Single/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Light, Archaic",
+      "tech_window": {
+        "early": 5,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Light, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Light, Bolt/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Light, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Light, Single/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Medium, Archaic",
+      "tech_window": {
+        "early": 5,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Medium, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Medium, Bolt/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Medium, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Rifle, Medium, Single/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Ring of Flight",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ring of Leaping",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Ring of Running",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rod, Emerald Flame",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rod, Eternal Flame",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rod, Last Rites",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rod, Stinging Blight",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rod, Suffering Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Rope",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Seal of Arrows",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Seal of Daggers",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sensor Array",
+      "tech_window": {
+        "early": 14,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Shield, Heavy-Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Heavy-Medium",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Heavy-Small",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Improvised-Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Improvised-Small",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Large, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Shield, Light",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Medium",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Medium, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Shield, Medium-Spiked",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Riot",
+      "tech_window": {
+        "early": 11,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Riot, Large",
+      "tech_window": {
+        "early": 11,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Small",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Small, Bulletproof",
+      "tech_window": {
+        "early": 12,
+        "latest": 13
+      }
+    },
+    {
+      "item": "Shield, Small, Spiked",
+      "tech_window": {
+        "early": 11,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shield, Small-Buckle",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Shotgun, Auto",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Auto, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Fletch",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Pump-action",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Pump-action, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Sawed-off",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Semi/A",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Slug",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Shotgun, Slug, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Sickstick",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sigil of Athletics",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sigil of Hunting",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Silencer",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Silencer, Advanced",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sling",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Sling, Staff",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Slingshot",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Sniper Scope, Advanced",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sniper Scope, Advanced, Starlight",
+      "tech_window": {
+        "early": 13,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sniper Scope, Basic",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sniper Scope, Laser",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sniper Scope, Starlight",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Sonic Pistol",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Sonic Rifle",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Sonic Rifle, Heavy",
+      "tech_window": {
+        "early": 14,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Spear, Long",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spear, Medium",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spear, Short",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spear, Throwing",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spear, of Stealth",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spectral Claws-1",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spectral Claws-1, Limited",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spectral Claws-2",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spectral Claws-2, Limited",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spectral Claws-3",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spectral Claws-3, Limited",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spell - Pyrotechnics",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spotlight, S1-Small",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spotlight, S2-Large",
+      "tech_window": {
+        "early": 12,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Springsuit",
+      "tech_window": {
+        "early": 10,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Springsuit, Combat",
+      "tech_window": {
+        "early": 10,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Spy-glass",
+      "tech_window": {
+        "early": 8,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Staff",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Staff, Club",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Staff, Greater Mage",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Staff, Lesser Mage",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Staff, Sling",
+      "tech_window": {
+        "early": 1,
+        "latest": 11
+      }
+    },
+    {
+      "item": "Stealth Suit",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Stunner, Pistol",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Stunner, Rifle",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Stunner, Riot",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Submachine-gun, Archaic",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Submachine-gun, Heavy",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Submachine-gun, Light",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Submachine-gun, Medium",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Sword, Broad",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Cutlass",
+      "tech_window": {
+        "early": 8,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Great",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Long",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Rapier",
+      "tech_window": {
+        "early": 6,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Saber",
+      "tech_window": {
+        "early": 9,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Scimitar",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Scimitar, Grand",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Sword, Short",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Targeting System",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Taser, Personal",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Taser, Prod",
+      "tech_window": {
+        "early": 15,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Taser, Rifle",
+      "tech_window": {
+        "early": 15,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Teleporter Beacons",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Teleporter Pack",
+      "tech_window": {
+        "early": 20,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Throwing Axes",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Throwing Dart",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Throwing Knives",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Throwing Stars",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Throwing Sticks",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Torch, Basic",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Torch, Basic, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Torch, Flaming",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Torch, Flaming, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Torch, Flashlight",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Torch, Staff",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Trident",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Trident, Long",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Trident, Pitchfork",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Unarmed",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Upgrade:Balanced",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Upgrade:Masterworks",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Upgrade:Poisoned",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Upgrade:Poisoned, Deadly",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Upgrade:Reinforced",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Upgrade:Reinforced, Polearm",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Upgrade:Well-honed",
+      "tech_window": {
+        "early": null,
+        "latest": null
+      }
+    },
+    {
+      "item": "Vibrodagger",
+      "tech_window": {
+        "early": 16,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Vibrosword",
+      "tech_window": {
+        "early": 16,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Waldo, Claws, Long",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Waldo, Claws, Short",
+      "tech_window": {
+        "early": 1,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Waldo, Hand",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Waldo, Saw, Large",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Waldo, Saw, Small",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Wheeled, Armored-pedaler",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Wheeled, Gun Carriage, Large",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Wheeled, Gun Carriage, Tricycle",
+      "tech_window": {
+        "early": 11,
+        "latest": 14
+      }
+    },
+    {
+      "item": "Wheeled, Steam-chair",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Wheeled, Tankette",
+      "tech_window": {
+        "early": 11,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Whip, Bull",
+      "tech_window": {
+        "early": 1,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Whip, Metal Chain",
+      "tech_window": {
+        "early": 3,
+        "latest": 20
+      }
+    },
+    {
+      "item": "Whip, Mollysword",
+      "tech_window": {
+        "early": 5,
+        "latest": 15
+      }
+    },
+    {
+      "item": "Whip, Monowire",
+      "tech_window": {
+        "early": 16,
+        "latest": 20
+      }
+    }
+  ],
   "keyword_descriptions": [
     {
       "name": "Fizzle",
@@ -12398,7 +17524,6 @@ export const gameData = {
       "tech_level": 1,
       "tech_age": "Stone",
       "items": [
-        "Armor, Combat Suit",
         "Armor, Field",
         "Armor, Heavy",
         "Armor, Light",
@@ -12440,7 +17565,6 @@ export const gameData = {
         "Club, Mace, Spiked",
         "Club, Shovel",
         "Dagger, Obsidian",
-        "Dagger, Stiletto",
         "Daggers",
         "Field Harness",
         "Flail",
@@ -12459,7 +17583,6 @@ export const gameData = {
         "Helmet, Full",
         "Helmet, Full-Elaborate",
         "Helmet, Reinforced",
-        "Helmet, Riot",
         "Hook, Crook",
         "Hook, Meat",
         "Hook, Scythe",
@@ -12474,8 +17597,6 @@ export const gameData = {
         "Knife, Large",
         "Knife, Medium",
         "Knife, Small",
-        "Knuckledusters",
-        "Knuckledusters, Spiked",
         "Lamp or Candle",
         "Lamp or Candle. Large",
         "Lantern, Basic",
@@ -12496,15 +17617,12 @@ export const gameData = {
         "Medicinals, Stimulants, Copious",
         "Net, Deathnet",
         "Net, Retarius",
-        "Phlogiston Suit",
-        "Phlogiston Suit, Fireproof",
         "Poisoned Weapon",
         "Poisoned Weapon, Deadly",
         "Polearm, Glaive",
         "Polearm, Halberd",
         "Polearm, Pike",
         "Polearm, Scythe",
-        "Proximity Suit, Fireproof",
         "Pummel-1",
         "Pummel-2",
         "Pummel-3",
@@ -12532,7 +17650,6 @@ export const gameData = {
         "Staff, Greater Mage",
         "Staff, Lesser Mage",
         "Staff, Sling",
-        "Stealth Suit",
         "Throwing Axes",
         "Throwing Dart",
         "Throwing Knives",
@@ -12542,17 +17659,11 @@ export const gameData = {
         "Torch, Basic, Large",
         "Torch, Flaming",
         "Torch, Flaming, Large",
-        "Torch, Flashlight",
         "Torch, Staff",
         "Trident",
         "Trident, Long",
         "Trident, Pitchfork",
         "Unarmed",
-        "Waldo, Claws, Long",
-        "Waldo, Claws, Short",
-        "Waldo, Hand",
-        "Waldo, Saw, Large",
-        "Waldo, Saw, Small",
         "Whip, Bull"
       ]
     },
@@ -12589,7 +17700,7 @@ export const gameData = {
         "Armored Gear, Vaumbrace",
         "Axe, Pick",
         "Ballista, Medium",
-        "Balllista, Light",
+        "Ballista, Light",
         "Collar, Spiked",
         "Crossbow, Heavy",
         "Crossbow, Light",
@@ -12610,7 +17721,6 @@ export const gameData = {
       "tech_level": 5,
       "tech_age": "Medieval",
       "items": [
-        "Axe-Sword of Tan-doc",
         "Ballista, Heavy",
         "Explosives, Agenda Bomb, Large",
         "Explosives, Agenda Bomb, Small",
@@ -12639,6 +17749,7 @@ export const gameData = {
       "tech_level": 6,
       "tech_age": "Renaissance",
       "items": [
+        "Dagger, Stiletto",
         "Explosives, Powderkeg",
         "Sword, Rapier"
       ]
@@ -12665,7 +17776,6 @@ export const gameData = {
       "items": [
         "Ammo Belt, Bandolier",
         "Ammo Belt, Bandolier, Archaic",
-        "Device, Synchron, Archaic",
         "Goggles",
         "Goggles, Pin-point",
         "Lantern, Fueled",
@@ -12682,6 +17792,8 @@ export const gameData = {
       "items": [
         "Ammo Box",
         "Detonator",
+        "Knuckledusters",
+        "Knuckledusters, Spiked",
         "Sword, Saber"
       ]
     },
@@ -12694,6 +17806,7 @@ export const gameData = {
         "Cannon, B 25mm (2-pdr)",
         "Cannon, C 42mm (6-pdr)",
         "Cannon, D 75mm (17-pdr)",
+        "Device, Synchron, Archaic",
         "Device, Synchron, Early",
         "Electrocounter Orbs",
         "Gatling Gun, Mini",
@@ -12705,7 +17818,8 @@ export const gameData = {
         "Revolver, Light, Archaic",
         "Revolver, Medium, Archaic",
         "Springsuit",
-        "Springsuit, Combat"
+        "Springsuit, Combat",
+        "Torch, Flashlight"
       ]
     },
     {
@@ -12754,9 +17868,6 @@ export const gameData = {
         "Device, Synchron-1.1",
         "Device, Synchron-2.1",
         "Device, Synchron-3.2",
-        "Dynamic Armor, Heavy",
-        "Dynamic Armor, Light",
-        "Dynamic Armor, Medium",
         "Electroweapon, Early",
         "Explosives, Bundle, Dynamite",
         "Explosives, Fire-bomb",
@@ -12769,9 +17880,6 @@ export const gameData = {
         "Flame-thrower, Light",
         "Flame-thrower, Medium",
         "Flame-thrower, Mini",
-        "Force Armor, Heavy",
-        "Force Armor, Light",
-        "Force Armor, Medium",
         "Gas Cannister, Blacksmoke",
         "Gas Cannister, Caustic",
         "Gas Cannister, Knockout",
@@ -12803,30 +17911,18 @@ export const gameData = {
         "Gas-mask, Respirator",
         "Grenade, Archaic",
         "Grenade, Concussion",
-        "Grenade, Concussion, Adv.",
         "Grenade, Dancer",
         "Grenade, Flash",
         "Grenade, Flash-bang",
-        "Grenade, Flash-bang, Adv.",
         "Grenade, Fragmentation",
-        "Grenade, Fragmentation, Adv.",
         "Grenade, HE",
-        "Grenade, HE, Adv.",
         "Grenade, Shrapnel",
-        "Grenade, Shrapnel, Adv.",
         "Grenade, Sonic",
-        "Grenade, Sonic, Adv.",
         "Grenade, Web",
         "Grenade, Web Stunner",
         "Groundingsuit, Advanced",
         "Groundingsuit, Early",
-        "Hardsuit, Archaic",
-        "Hardsuit, Enhanced, Archaic",
-        "Hardsuit, Platform, Archaic",
-        "Hardsuit, Scout",
-        "Hardsuit, Standard",
-        "Hardsuit, War",
-        "Hardsuit, Windup",
+        "Helmet, Riot",
         "Kit, Glider Caped",
         "Kit, Glider Winged",
         "Kit, Medical, CFAK",
@@ -12842,9 +17938,6 @@ export const gameData = {
         "Machine Gun, Light",
         "Machine Gun, Light (Mounted)",
         "Machine Gun, Medium (Mounted)",
-        "Mage Armor, Heavy",
-        "Mage Armor, Light",
-        "Mage Armor, Medium",
         "Mine, Acid, Small",
         "Mine, Anti-personnel",
         "Mine, Anti-personnel, Micromag",
@@ -12855,6 +17948,7 @@ export const gameData = {
         "PDW, Heavy",
         "PDW, Light",
         "PDW, Medium",
+        "Phlogiston Suit",
         "Phlogiston Suit, Improved",
         "Phlogiston Suit, Improved BP",
         "Pistol, Heavy, Auto",
@@ -12864,9 +17958,6 @@ export const gameData = {
         "Pistol, Medium, Auto",
         "Pistol, Medium, Semi/A",
         "Proximity Suit, Fireproof BP",
-        "Psi Armor, Heavy",
-        "Psi Armor, Light",
-        "Psi Armor, Medium",
         "Revolver, Heavy",
         "Revolver, Light",
         "Revolver, Medium",
@@ -12900,7 +17991,6 @@ export const gameData = {
         "Shotgun, Slug",
         "Shotgun, Slug, Heavy",
         "Silencer",
-        "Silencer, Advanced",
         "Sniper Scope, Basic",
         "Sniper Scope, Laser",
         "Sniper Scope, Starlight",
@@ -12912,8 +18002,7 @@ export const gameData = {
         "Wheeled, Armored-pedaler",
         "Wheeled, Gun Carriage, Large",
         "Wheeled, Gun Carriage, Tricycle",
-        "Wheeled, Steam-chair",
-        "Wheeled, Tankette"
+        "Wheeled, Steam-chair"
       ]
     },
     {
@@ -12941,8 +18030,19 @@ export const gameData = {
         "Gatling Gun, Early",
         "Gatling Gun, Early-v2",
         "Goggles, Night-vision",
-        "Goggles, Night-vision, Adv.",
+        "Grenade, Concussion, Adv.",
+        "Grenade, Flash-bang, Adv.",
+        "Grenade, Fragmentation, Adv.",
+        "Grenade, HE, Adv.",
+        "Grenade, Shrapnel, Adv.",
+        "Grenade, Sonic, Adv.",
         "Hand Cannon",
+        "Hardsuit, Archaic",
+        "Hardsuit, Enhanced, Archaic",
+        "Hardsuit, Platform, Archaic",
+        "Hardsuit, Scout",
+        "Hardsuit, Standard",
+        "Hardsuit, Windup",
         "Helmet, Common, Bulletproof",
         "Helmet, Full, Bulletproof",
         "Helmet, Reinforced Bulletproof",
@@ -12954,14 +18054,22 @@ export const gameData = {
         "Mortar, Light",
         "Mortar, Medium",
         "Mortar, Mini-mortar",
+        "Phlogiston Suit, Fireproof",
         "Pipe Cannon, 1-pdr",
         "Pipe Cannon, 2-pdr",
+        "Proximity Suit, Fireproof",
         "Rope",
         "Shield, Large, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Shield, Small, Bulletproof",
+        "Silencer, Advanced",
         "Spotlight, S1-Small",
-        "Spotlight, S2-Large"
+        "Spotlight, S2-Large",
+        "Waldo, Claws, Long",
+        "Waldo, Claws, Short",
+        "Waldo, Hand",
+        "Waldo, Saw, Large",
+        "Waldo, Saw, Small"
       ]
     },
     {
@@ -12976,6 +18084,7 @@ export const gameData = {
         "Comm-link, Early",
         "Comm-link, Jammer, Modern",
         "Flashlight, Advanced",
+        "Goggles, Night-vision, Adv.",
         "Mounted Rail-gun",
         "Rail-gun, Heavy",
         "Rail-gun, Light",
@@ -13017,21 +18126,15 @@ export const gameData = {
         "Electroweapon, Pulse, Pistol",
         "Electroweapon, Pulse, Rifle",
         "Explosives, Satchel, Pulse",
-        "Exxo-skeleton, Heavy",
-        "Exxo-skeleton, Lifter Frame",
-        "Exxo-skeleton, Light",
         "Exxo-skin",
-        "Exxo-skin, Carapace",
         "Exxo-skin, Scaled",
         "Exxo-skin, Segmented",
         "Goggles, Optiplex",
         "Goggles, Sensor",
         "Grenade, Pulse",
-        "Grenade, Pulse, Adv.",
         "Jet-pack, Gear",
         "Jet-pack, Jump",
         "Jet-pack, Suit",
-        "Jet-pack, Suit, Advanced",
         "Module, Control",
         "Module, Manipulator",
         "Module, System",
@@ -13043,8 +18146,6 @@ export const gameData = {
         "Nanotech:Run",
         "Needle Rifle",
         "Needler Pistol",
-        "Powered Armor-Early",
-        "Powered Armor-Exxo",
         "Sensor Array",
         "Sonic Pistol",
         "Sonic Rifle",
@@ -13056,6 +18157,7 @@ export const gameData = {
       "tech_level": 15,
       "tech_age": "Fusion",
       "items": [
+        "Armor, Combat Suit",
         "Armor, Field Advanced",
         "Armor, Field, Bulletproof Advanced",
         "Armor, Heavy Advanced",
@@ -13064,13 +18166,11 @@ export const gameData = {
         "Armor, Light, Bulletproof Advanced",
         "Armor, Medium Advanced",
         "Armor, Medium, Bulletproof Advanced",
+        "Axe-Sword of Tan-doc",
         "Beam Cannon",
         "Beam Carbine",
-        "Beam Carbine, Advanced",
         "Beam Gun",
-        "Beam Gun, Advanced",
         "Beam Rifle",
-        "Beam Rifle, Advanced",
         "Beam Rifle, Advanced Heavy",
         "Beam Rifle, Early",
         "Beam Rifle, Early Heavy",
@@ -13081,10 +18181,26 @@ export const gameData = {
         "Bolter Rifle, Adv",
         "Deceptor Pistol",
         "Deceptor Rifle",
+        "Dynamic Armor, Heavy",
+        "Dynamic Armor, Light",
+        "Dynamic Armor, Medium",
         "Electrostaff",
         "Electrostaff, Neon",
+        "Exxo-skeleton, Heavy",
+        "Exxo-skeleton, Lifter Frame",
+        "Exxo-skeleton, Light",
+        "Exxo-skin, Carapace",
+        "Force Armor, Heavy",
+        "Force Armor, Light",
+        "Force Armor, Medium",
         "Fusion Pistol",
         "Gauntlet, Controller",
+        "Grenade, Pulse, Adv.",
+        "Hardsuit, War",
+        "Jet-pack, Suit, Advanced",
+        "Mage Armor, Heavy",
+        "Mage Armor, Light",
+        "Mage Armor, Medium",
         "Mounted Bolter Weapon",
         "Needle Rifle, Adv",
         "Needler Pistol, Adv",
@@ -13098,6 +18214,8 @@ export const gameData = {
         "Plasmashield, Heavy",
         "Plasmashield, Light",
         "Plasmashield, Medium",
+        "Powered Armor-Early",
+        "Powered Armor-Exxo",
         "Powered Armor-ExxoHvy",
         "Powered Armor-Standard",
         "Powered Gauntlets",
@@ -13105,13 +18223,18 @@ export const gameData = {
         "Powered Shielding",
         "Powered Shielding-Heavy",
         "Powered Staff",
+        "Psi Armor, Heavy",
+        "Psi Armor, Light",
+        "Psi Armor, Medium",
         "Sickstick",
+        "Stealth Suit",
         "Stunner, Pistol",
         "Stunner, Rifle",
         "Stunner, Riot",
         "Taser, Personal",
         "Taser, Prod",
-        "Taser, Rifle"
+        "Taser, Rifle",
+        "Wheeled, Tankette"
       ]
     },
     {
@@ -13119,8 +18242,10 @@ export const gameData = {
       "tech_level": 16,
       "tech_age": "Quantum",
       "items": [
+        "Beam Carbine, Advanced",
+        "Beam Gun, Advanced",
         "Beam Pistol",
-        "Beam Pistol, Advanced",
+        "Beam Rifle, Advanced",
         "Powered Armor-Combat",
         "Vibrodagger",
         "Vibrosword",
@@ -13135,6 +18260,7 @@ export const gameData = {
         "Arc Weapon",
         "Beam Cannon, Heavy",
         "Beam Cannon, Light",
+        "Beam Pistol, Advanced",
         "Blast, 12Minor - Basic",
         "Blast, 12Minor - Burst",
         "Blast, 12Minor - Rapid",
@@ -14149,7 +19275,13 @@ export const gameData = {
     "[Tethered]": {
       "description": "On its Initiative, it may not start new actions not already assigned to it. At the start of its Initiative, if it is in base-contact with an Attentive Ordered Friendly model; it may be assigned a new set of action and perform them against any target within Line-of-Sight (LOS) of both itself and its handler, or to continue a prior action against a target it had already encountered. It may not otherwise begin new actions on its own."
     },
+    "[Traversal]": {
+      "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP."
+    },
     "[Traversal!]": {
+      "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP."
+    },
+    "[Traversal+]": {
       "description": "Intrinsic. Intrinsic. Restricted to targeting models within a limited front-arc. Uses a bracketed OR which is written as its normal OR but within square-brackets such as [8 MU] or [16 MU]. Clearly identify a 90-degree front-arc of this model or Item. Penalized -1 per MOV of that target above the ORM. If [Traversal!], then targets are limited to within 45-degree front-arc. If [Traversal+] then it is a 180-degree front-arc. For this Item or ability, regarding Point-blank; any targets closer than the bracketed [OR] are -1 Base dice Range Attack Hit Test, and -1 Wild die when at half [OR] and less. Allow the front-arc to be rotated any amount as a Fiddle action when Attentive. If this is an Item, must be also be Free and in base-contact, and requires 1 AP."
     },
     "[Treacherous]": {
@@ -14502,6 +19634,9 @@ export const gameData = {
     },
     "Horrifying X": {
       "description": "Intrinsic. Psychology. See Fear X. Behaves like the Fear X trait. Disregard this trait entirely if the Opposing model has the Fear or Horrifying traits. Disregard this trait entirely unless the Opposing model is Distracted and also in Nervous, Hidden or Wait status. If there are at least 2, 5, or 10 models with the Horrifying trait within Visibility, apply a further penalty to the Opposing model of -1m, -2m, or -3m. A model with both the Horrifying and Fear traits adds their levels together unless Horrifying is disregarded."
+    },
+    "Imbue X > Trait": {
+      "description": "If assigned to an Asset, provides Trait X to Character. If assigned via Upgrade then provides Trait X to Asset."
     },
     "Immortal X": {
       "description": "While level is 1 or greater; never considered Eliminated, merely KO'd. Unless Eliminated as a result of having at least X + 4 Fear tokens."

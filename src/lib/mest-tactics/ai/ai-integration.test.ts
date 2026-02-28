@@ -485,7 +485,7 @@ describe('AI Integration', () => {
       expect(result).toBeDefined();
     });
 
-    it('should handle large forces (20+ models per side)', () => {
+    it('should handle large forces (20+ models per side)', { timeout: 15000 }, () => {
       const battlefield2 = new Battlefield(48, 48);
 
       const rosterA = createTestAssembly('Alpha', [

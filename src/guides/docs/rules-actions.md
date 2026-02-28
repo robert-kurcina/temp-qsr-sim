@@ -119,5 +119,80 @@ See the section on Performing Movement Actions on how to use Agility.
     *   During Wait status, may remove it to perform a React. Even when in Done status.
     *   While in Wait status, double Visibility OR. All Hidden Opposing models in LOS but not in Cover are immediately Revealed.
     *   When in Wait status, and involuntarily acquire a Delay token, must remove both instead.
-    *   “Focus” — Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React.
-    *   “Waiting” — All characters in Wait status receive +1 REF when qualifying for a React.
+    *   "Focus" — Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React.
+    *   "Waiting" — All characters in Wait status receive +1 REF when qualifying for a React.
+
+---
+
+## Actions Quick Reference
+
+### Complete Actions List
+
+| Category | Action | AP Cost | Description |
+|----------|--------|---------|-------------|
+| **Simple** | Move | 1 AP | Move up to MOV + 2" |
+| **Simple** | Close Combat Attack | 1 AP | Attack in Melee Range |
+| **Simple** | Range Combat Attack | 1 AP | Attack at range |
+| **Simple** | Disengage | 1 AP | Escape engagement (REF vs CCA) |
+| **Special** | Concentrate | 1 AP | +1 Wild die to one Test |
+| **Special** | Rally | 1 AP | Remove Fear tokens (POW Test) |
+| **Special** | Fiddle | 0-1 AP | Interact with objects |
+| **Special** | Revive | 1 AP | Remove Delay/Wounds (FOR Test) |
+| **Special** | Combined | 2 AP | Move + 1 AP of actions |
+| **Complex** | Hide | 0-1 AP | Become Hidden |
+| **Complex** | Detect | 0-1 AP | Reveal Hidden targets (REF Test) |
+| **Complex** | Wait | 2 AP | Acquire Wait status for Reacts |
+| **Other** | Pushing | 0 AP | Gain +1 AP, acquire Delay token |
+| **Other** | React | 1 AP | Interrupt enemy action |
+| **Other** | Swap | 0-1 AP | Swap positions with ally |
+| **Other** | Overreach | 0 AP | +1 MU Melee Range, -1 REF/Hit |
+
+### Initiative Abilities
+
+Players with **Initiative Points** may spend them as follows:
+
+| Ability | IP Cost | Effect |
+|---------|---------|--------|
+| **Maintain Initiative** | 1 IP | Do not pass Initiative; activate another Ready model from your Side |
+| **Force Initiative** | 1 IP | Pass Initiative to any other Opposing Player |
+| **Refresh** | 1 IP | When a model receives its Done token, remove one Delay token from it |
+
+**Note:** Unspent IP are lost at the end of the Turn. IP are tracked per Side, not per character.
+
+### Bonus Actions (After Successful Hit/Damage Test)
+
+| Bonus Action | Cascade Cost | Effect |
+|--------------|--------------|--------|
+| **Circle** | 1 cascade | Adjust separation by base-diameter |
+| **Disengage** | 1 cascade | Become Free from engagement |
+| **Hide** | 1 cascade | Become Hidden (if conditions met) |
+| **Push-back** | 1 cascade | Push target 1" away |
+| **Pull-back** | 1 cascade | Reposition self 1" away after attack |
+| **Reversal** | 2 cascades | Switch positions with target |
+| **Reposition** | 1 cascade | Reposition up to base-diameter |
+| **Refresh** | 1 cascade | Remove 1 Delay token |
+
+See [[rules-bonus-actions|Rules: Bonus Actions]] for detailed rules.
+
+### Passive Player Options (Defensive Reactions)
+
+| Option | Type | Effect | Cost |
+|--------|------|--------|------|
+| **Defend!** | Optional Tactic | +1b Defender Hit Test | 1 Delay token |
+| **Take Cover!** | Optional Tactic | Move to nearest Cover | Context-dependent |
+| **Opportunity Attack!** | Optional Tactic | CC Attack vs. non-CC action | 1 AP |
+| **Counter-strike!** | Optional Response | CC Attack vs. missed attack | 1 AP |
+| **Counter-fire!** | Optional Response | Range Attack vs. attacker | 1 AP |
+| **Counter-charge!** | Optional Response | Attack vs. charging enemy | 1 AP |
+| **Counter-action!** | Optional Response | General response action | 1 AP |
+
+See [[rules-bonus-actions|Rules: Bonus Actions]] for detailed rules.
+
+---
+
+## Related Rules
+
+- [[rules-movement|Rules: Movement]] — Movement actions and Agility
+- [[rules-bonus-actions|Rules: Bonus Actions]] — Bonus Actions and Passive Player Options
+- [[rules-advanced|Rules: Advanced]] — Reacts and advanced tactics
+- [[rules-initiative|Rules: Initiative]] — Initiative Points and abilities

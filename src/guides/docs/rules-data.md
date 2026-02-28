@@ -61,7 +61,7 @@ The build script performs the following transformations:
 
 ### 2. Trait Trimming
 ```javascript
-// Input: traits: [" [Laden 2]", " Armor 4"]
+// Input: traits: [" [Laden 2]", "Armor 4"]
 // Output: traits: ["[Laden 2]", "Armor 4"]
 ```
 

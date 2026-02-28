@@ -2,10 +2,13 @@ import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming, Sp
 
 /**
  * QAI Mission 11: Elimination
- * 
+ *
  * The default mission. Eliminate all enemy models to win.
  * Score 1 VP for each enemy model eliminated.
  * Last side with models remaining wins.
+ * 
+ * Keys to Victory:
+ * - Aggression: First to cross midline
  */
 export const EliminationMission: MissionDefinition = {
   id: 'QAI_11',
@@ -48,11 +51,17 @@ export const EliminationMission: MissionDefinition = {
       description: 'A side that is completely eliminated scores 0 VP.',
       effect: 'Eliminated sides cannot score victory points',
     },
+    {
+      id: 'aggression',
+      name: 'Aggression',
+      description: 'The first side to move a model across the battlefield midline scores 1 VP.',
+      effect: 'Awarded immediately when first model crosses midline',
+    },
   ],
   turnLimit: 10,
   endGameDieRoll: true,
   endGameDieStart: 6,
-  keys: [], // Elimination uses basic scoring only
+  keys: ['Aggression', 'Elimination'],
   sizes: {
     VERY_SMALL: {},
     SMALL: {},

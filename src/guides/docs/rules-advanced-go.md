@@ -1,0 +1,266 @@
+---
+title: Advanced Rules - Group Actions & Go Points
+description: Complete rules for Group Actions, Go Points, and coordinated attacks in large Assemblies.
+priority: 6
+---
+
+# Advanced Rules - Group Actions & Go Points
+
+**Rule Level:** Advanced ()
+
+**Go Points** allow Members of a Group within an Assembly to coordinate their actions.
+
+> **Large Assemblies** of at least six members receive Go Points. Assemblies which outnumber their opposition are also awarded additional Go Points.
+>
+> **Go Points** are best spent before the Opposing Side has placed all of their models into Done status.
+>
+> At the **end of every Turn**, when all models have been marked as Done, all players **lose the remainder of their unspent Go Points**.
+
+---
+
+## Overview
+
+**Group Actions** are a limited set of Actions which can be performed by a group of **Ready Ordered Friendly models**.
+
+- These actions require **Go Points [GP]** which may be spent similar to Initiative Points
+- **Initiative Points may always be spent as Go Points [GP]**
+
+---
+
+## Acquiring Go Points
+
+Alter the Turn Sequence for the Basic Game rules by adding this "**Acquiring Go Points**" step after the **Readying** step and before the **Determine Initiative** step.
+
+### Multitudes
+
+Each player counts how many **Ordered In-Play models** they have.
+
+- A player receives **1 Go Point per every 3 models above the first 3 models** that they have
+
+### Outnumbering
+
+For every **Ordered In-Play model** which a Side **outnumbers the Side with the lowest count**:
+- Receive **1 Go Point**
+- If there are **more than 2 Sides**, subtract **1 GP from the amount received** for each additional Side
+
+---
+
+## Spending Go Points
+
+Go Points may be spent at any time during a player's own Initiative for **Go Abilities** as follows:
+
+| Ability | Cost | Effect |
+|---------|------|--------|
+| **Keep Initiative** | 1 GP | Do not pass Initiative to another player; instead activate another Ready model. May not use twice in a row |
+| **Start Group** | 1 GP | Start a Group Action by designating a Ready model as Group Leader. Followers must be added |
+| **Group Membership** | 1 GP | Allow a Ready Attentive Ordered Friendly model to join a Group Action as a Follower if it is within Cohesion of the Group Leader. Limit the number of Followers to no higher than the POW of the Group Leader, but at least one |
+| **Limited Refresh** | 1 GP | When a Group Member model receives its Done token, remove one of its Delay tokens |
+| **Prepared Shift** | 1 GP | Do not acquire a Delay token when using Shift during a Bonus Action |
+| **Continue Transfer** | 1 GP | If have the Initiative card, continue allowing it to be transferred to an Opposing player in order to re-roll any Test |
+
+---
+
+## Beneficial Traits
+
+There are several Ability traits which take advantage of the Group Actions concept to benefit players with many models:
+
+- **Leadership**
+- **Pack-mentality**
+- **Pathfinder**
+- **Unit**
+- **Officer**
+
+There are also a few uncommon or rare Disability traits that some characters could be assigned to make them less expensive to purchase, thereby allowing more to be available for a given Assembly:
+
+- **[Cautious]**
+- **[Coward]**
+- **[Mindless]**
+- **[Stubborn]**
+- **[Undisciplined]**
+
+---
+
+## Identify the Group Members
+
+A Group consists of **Group Members**; the **Group Leader** and the **Group Followers**.
+
+### Choose Leader
+
+**Pay 1 GP to start a Group Action.**
+
+- Identify a **Ready Attentive Ordered** model as the **Group Leader**
+- Place a **pawn at the Group Leader** as a reminder and remove it when the Group Action is completed
+
+### Choose Followers
+
+The player must now identify at least one Follower as a Member of the Group Action.
+
+- It will cost **1 GP for each model** to add as a Follower
+- Followers must be **Ready Attentive Ordered Friendly models within Cohesion**
+- If the Follower is in **Wait status**, optionally **remove the Wait token** to be a member for **zero GP**
+- Examine the **POW rating of the Group Leader**; no more than that many Followers are allowed in the Group, though at least one Follower is allowed
+
+### Late Addition
+
+Allow just **1 more Follower** beyond what is allowed. This may be at any time during a Group Move when it becomes within Cohesion of any Member. Assign it or another Group Member a **Delay token** at the end of the Group Action.
+
+### Tandem Addition
+
+If a Follower has the Group Leader within each other's **Melee Range** at the start of that Group Leader's Initiative, it may join for **zero GP**.
+
+### Issue Command
+
+As an option, allow the Group Leader to perform a **different action** than the Group Followers, or **no action at all**. It acquires a **Delay token** if Free. If the Group Leader has a **Wait token**, remove that instead.
+
+---
+
+## Group Actions
+
+Place a **Reminder pawn** at the Group Leader.
+
+### Coordinate
+
+The **Group Leader has the Initiative**. Decide the type of Group Action to be coordinated, and disallow the Combined Action.
+
+#### Concerted Attack
+
+This is a **single Abrupt attack against a single target**. See details for Concerted Attacks below.
+
+#### Free-for-all Attack
+
+This can be against a single or multiple targets, but is resolved one at a time.
+
+- Starting with the **Group Leader**, have each Member become the **Active model**, and have it perform an **Attack action**
+- No target may be further apart than **Cohesion of that pawn**, and all must be within **LOS of the Group Leader**
+
+#### Group Move
+
+This allows a Group Members to move quickly in sequence together as a group.
+
+- Starting with the **Group Leader**, have each Member become the **Active model**, and have it perform a **Move action**
+- Group Followers must finish **within Cohesion of the Group Leader**
+
+### Case-by-case
+
+All Members may spend **additional AP** as required, and may use **Pushing**. Manage any **Passive Player Options** and **Bonus Actions** for one Member at a time.
+
+### Continue
+
+Mark any Group Follower with a **Delay token** for every AP it spends. Perform another Group Action with the Group Leader if there is at least one Follower and there are remaining AP.
+
+### End of Group Action
+
+If the **Group Leader is not available**, or if there are **no Followers**, then the Group Action is ended.
+
+- If a Follower no longer has remaining AP, mark it with **Done token**, and remove **2 of its Delay tokens** if it has 2 or more
+- If the Group Leader is not Done, it may continue with **Individual Actions** if it has remaining AP
+
+---
+
+## Order of Process
+
+### Handling Optional Responses
+
+Any Opposing models which want to perform **Optional Responses** may do so **between Group Members**.
+
+### Handling Morale
+
+If any models need to perform a **Morale test** as a result of any action, do this **after the End of Group Action**.
+
+---
+
+## Concerted Attacks
+
+A **Concerted Attack** is a **single Combat Test performed against a single target** in range. Concerted attacks are regarded as **Abrupt actions** if interrupted by a React.
+
+### Select Weapon
+
+Choose a weapon the **Group Leader** has and identify a target that is in range of all Group Members.
+
+- All Followers must use the **same Weapon class**, such as **Melee** or **Firearm** or **Bow**, as the Group Leader
+- Spend AP for each Member to perform the attack
+- Perform the attacking using the **Group Leader**
+
+### Adjustments
+
+- **Situational Test Modifiers**, and any trait effects are limited to the **Group Leader and the target**
+- Any adjustment dice or ability traits associated with a Follower's attack for the Hit or Damage Tests are **ignored**
+- Any **Range Combat attack** must use the **worst OR** of any Group Member, and may not use **Thrown** or **Improvised** weapons
+- The target must be within an **OR Multiple of 3**
+- When performing the Hit Test or Damage Test, receive **+1 Modifier die for each Group Member** with the target in range or in Melee Range
+
+### Resolve Attack
+
+Perform the attack using the Group Leader against the common target.
+
+- For each Group Member, apply their attack traits such as placing Gas or ROF markers, requiring an attacker to discard or reload
+- Members **share any cascades** from a Combat Test which passes to perform Bonus Actions, ignoring the rule for the loss of one cascade for being Distracted
+- After resolving a **Range Attack**, place **+1, +2, or +3 Suppression markers** if there are **2, 5, or 10 Members**. These must be placed between targets, not overlap, have LOS to a one Follower each
+- After the attack is resolved, continue at the **Continue step** for Group Actions
+
+### Adjustments
+
+Allow **Pushing** for all Attentive Members as desired, and apply all applicable **Situational Test Modifiers** such as **Assist** and **Outnumber**.
+
+### Overwhelming Power
+
+Each Group Member may contribute additional bonuses for using **Concentrate** or **Focus**, as modified below:
+
+#### Concerted Concentrate
+
+The Group Leader may receive Wild dice from using Concentrate by spending **1 AP** as normal, but each Follower which does so provides instead just **+1 Modifier die**, but for **both the Hit and Damage Tests**.
+
+#### Concerted Focus
+
+Remove any **Wait token** from the Group Leader to receive Wild dice, but each Follower which does so provides just **+1 Modifier die**, but for **both the Hit and Damage Tests**.
+
+---
+
+## Reacts versus Groups
+
+Group Actions may be interrupted at any time during its execution by a **React action** with a Passive character per the React rules, including for React Tests.
+
+### React Resolution
+
+- The Passive player picks **one Group Member within LOS** of that Passive character and compares the **REF** of the targeted Member, against that Passive character
+- As an alternative, it could perform a **React Test**
+- If the React is qualified, or the React Test passes, **resolve the React**
+- If interrupting movement, the player with the Group may **reposition all Members** which haven't yet moved no further than the Group Leader, and up to into base-contact with it
+- After resolving the React, **continue with the Group Action**
+- Select a **new Group Leader** if none are In-Play, and recalculate any bonuses as needed
+
+### Solo
+
+A **single model** selected to perform React against a Group Action receives an effective **+1 REF**.
+
+---
+
+## Group Reacts
+
+A Reacting model may form a Group, as a **Reacting Group**, to conduct the React. It becomes the **Group Leader**.
+
+Apply the rules for **Choose Followers** with these additions:
+
+- All Followers must also have **REF equal to or higher** than the Reacting model
+- If a Follower has a **Wait token**, remove it. Otherwise, it acquires a **Delay token**
+- The targets of any attack by the Reacting Group must be from among those model that are in the **Active Group**
+- The targets of any **Range Combat attack** must be within **LOS**, and no Group Member may be within **LOF** to those targets
+
+---
+
+## Restrictions on Actions
+
+- Group Actions must be limited to **Simple Individual Actions**, and **React Actions** as a part of Group Reacts
+- Group Actions are **never allowed for Passive Player Options**
+
+---
+
+## Related Files
+
+- [[rules-actions|Rules: Actions]] - Individual Actions
+- [[rules-bonus-actions|Rules: Bonus Actions]] - Bonus Actions
+- [[rules-multiple|Rules: Multiple Models]] - Multiple model rules
+
+---
+
+**Source:** `docs/MEST.Tactics.Advanced-Go.txt`

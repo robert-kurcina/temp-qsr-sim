@@ -20,6 +20,8 @@ import type { Item } from '../src/lib/mest-tactics/core/Item';
 import { Battlefield, type BattlefieldLosCacheStats } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainType } from '../src/lib/mest-tactics/battlefield/terrain/Terrain';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
+import { placeTerrain, exportTerrainForReport } from '../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { TerrainFeature } from '../src/lib/mest-tactics/battlefield/terrain/Terrain';
 import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
 import { Position } from '../src/lib/mest-tactics/battlefield/Position';
 import { SpatialRules } from '../src/lib/mest-tactics/battlefield/spatial/spatial-rules';
@@ -86,6 +88,8 @@ interface GameConfig {
   perCharacterFovLos: boolean;
   verbose: boolean;
   seed?: number;
+  audit?: boolean;
+  viewer?: boolean;
 }
 
 interface SideConfig {
@@ -3294,9 +3298,10 @@ class AIBattleRunner {
 
   private createBattleAuditTrace(
     config: GameConfig,
-    seed: number | undefined
+    seed: number | undefined,
+    battlefield?: Battlefield
   ): BattleAuditTrace {
-    return {
+    const audit: BattleAuditTrace = {
       version: '1.0',
       session: {
         missionId: config.missionId,
@@ -3316,6 +3321,35 @@ class AIBattleRunner {
       },
       turns: this.auditTurns,
     };
+    
+    // Add terrain if battlefield provided
+    if (battlefield && battlefield.terrain && battlefield.terrain.length > 0) {
+      (audit as any).terrain = battlefield.terrain.map((t: any) => ({
+        id: t.id || t.name,
+        type: t.type || t.info?.category,
+        vertices: t.vertices,
+        meta: t.meta || { color: t.info?.color },
+      }));
+    }
+    
+    // Add Delaunay mesh for pathfinding visualization
+    if (battlefield && (battlefield as any).navMesh) {
+      const navMesh = (battlefield as any).navMesh;
+      if (navMesh && navMesh.points) {
+        const triangles = [];
+        for (let i = 0; i < navMesh.triangles.length; i += 3) {
+          const tri = [];
+          for (let j = 0; j < 3; j++) {
+            const idx = navMesh.triangles[i + j] * 2;
+            tri.push({ x: navMesh.points[idx], y: navMesh.points[idx + 1] });
+          }
+          triangles.push(tri);
+        }
+        (audit as any).delaunayMesh = triangles;
+      }
+    }
+    
+    return audit;
   }
 
   private describeArchetype(character: Character): string {
@@ -3744,7 +3778,7 @@ class AIBattleRunner {
           rpBySide: { ...this.missionRpBySide },
           immediateWinnerSideId: this.missionImmediateWinnerSideId ?? undefined,
           // Predicted scoring for AI planning (R1.5)
-          predictedScoring: this.buildPredictedScoring(sides),
+          predictedScoring: this.buildPredictedScoring(this.missionSides),
         },
         // Side-level AI strategies (R1.5: God Mode Coordination)
         sideStrategies: this.buildSideStrategies(),
@@ -3752,7 +3786,7 @@ class AIBattleRunner {
         nestedSections: this.buildNestedSections(config, sides, battlefield, startPositions),
         advancedRules: this.advancedRules,
         log: this.log,
-        audit: this.createBattleAuditTrace(config, seed),
+        audit: this.createBattleAuditTrace(config, seed, battlefield),
         performance: this.buildPerformanceSummary(battlefield),
         seed,
       };
@@ -3772,11 +3806,8 @@ class AIBattleRunner {
   private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number }> {
     const compositions = sideConfig.loadoutProfile === 'melee_only'
       ? [
-          // Melee-only profile: no ranged classifications and no throwable traits.
-          { archetypeName: 'Average', weight: 4, items: ['Sword, Broad', 'Shield, Medium'] },
-          { archetypeName: 'Militia', weight: 2, items: ['Sword, Broad', 'Shield, Medium'] },
-          { archetypeName: 'Veteran', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },
-          { archetypeName: 'Elite', weight: 1, items: ['Sword, Broad', 'Shield, Medium'] },
+          // Melee-only profile: Average with Sword, Broad + Armored Gear + Armor, Light + Shield, Small
+          { archetypeName: 'Average', weight: 4, items: ['Sword, Broad', 'Armored Gear', 'Armor, Light', 'Shield, Small'] },
         ]
       : [
           { archetypeName: 'Average', weight: 3, items: ['Sword, Broad', 'Shield, Medium'] },
@@ -3820,19 +3851,44 @@ class AIBattleRunner {
   private createBattlefield(size: number, densityRatio: number): Battlefield {
     const battlefield = new Battlefield(size, size);
 
-    const terrainTypes = ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'];
-    const terrainCount = Math.floor((size * size * densityRatio) / 10000);
+    // Use TerrainPlacementService for unified terrain placement
+    const result = placeTerrain({
+      mode: 'balanced',  // Moderate checks, reasonable quality for AI battles
+      density: densityRatio,
+      battlefieldSize: size,
+      terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
+    });
 
-    for (let i = 0; i < terrainCount; i++) {
-      const terrainName = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-      const x = Math.floor(2 + Math.random() * (size - 4));
-      const y = Math.floor(2 + Math.random() * (size - 4));
+    // Add placed terrain to battlefield
+    for (const terrainFeature of result.terrain) {
+      const centroid = this.getCentroid(terrainFeature.vertices);
+      // Map terrain type to valid TerrainElement name
+      const typeLower = (terrainFeature.id || terrainFeature.type || 'Tree').toLowerCase();
+      let terrainName = 'Tree';
+      
+      if (typeLower.includes('shrub') || typeLower.includes('bush')) {
+        terrainName = 'Shrub';
+      } else if (typeLower.includes('rock')) {
+        terrainName = Math.random() > 0.5 ? 'Small Rocks' : 'Medium Rocks';
+      } else if (typeLower.includes('tree')) {
+        terrainName = 'Tree';
+      }
+      
       const rotation = Math.floor(Math.random() * 360);
-
-      battlefield.addTerrainElement(new TerrainElement(terrainName, { x, y }, rotation));
+      battlefield.addTerrainElement(new TerrainElement(terrainName, centroid, rotation));
     }
 
     return battlefield;
+  }
+
+  private getCentroid(vertices: Position[]): Position {
+    if (!vertices || vertices.length === 0) return { x: 0, y: 0 };
+    let x = 0, y = 0;
+    for (const v of vertices) {
+      x += v.x;
+      y += v.y;
+    }
+    return { x: x / vertices.length, y: y / vertices.length };
   }
 
   private deployModels(assembly: { characters: Character[] }, battlefield: Battlefield, sideIndex: number, size: number) {
@@ -5597,7 +5653,10 @@ async function runQuickBattle(
   gameSize: GameSize = GameSize.VERY_LARGE,
   missionId: string = 'QAI_11',
   densityRatio: number = 50,
-  lighting: LightingCondition = 'Day, Clear'
+  lighting: LightingCondition = 'Day, Clear',
+  enableAudit: boolean = false,
+  enableViewer: boolean = false,
+  seed?: number
 ) {
   const visibilityOrMu = getVisibilityOrForLighting(lighting);
   const resolvedMissionId = parseMissionIdArg(missionId, 'QAI_11');
@@ -5635,6 +5694,9 @@ async function runQuickBattle(
     allowConcentrateRangeExtension: true,
     perCharacterFovLos: false,
     verbose: true,
+    seed,
+    audit: enableAudit,
+    viewer: enableViewer,
   };
 
   const runner = new AIBattleRunner();
@@ -5643,6 +5705,19 @@ async function runQuickBattle(
     const report = await runner.runBattle(config);
     const reportPath = writeSingleBattleReport(report);
     console.log(`📁 JSON Report: ${reportPath}`);
+    
+    // Generate visual audit if enabled
+    if (enableAudit || enableViewer) {
+      const auditPath = writeVisualAuditReport(report);
+      console.log(`🎬 Visual Audit: ${auditPath}`);
+      
+      if (enableViewer) {
+        const viewerPath = writeBattleReportViewer(report);
+        console.log(`📺 HTML Viewer: ${viewerPath}`);
+        console.log(`\n💡 Open in browser: open ${viewerPath}`);
+      }
+    }
+    
     console.log('✅ Battle completed successfully!\n');
   } catch (error) {
     console.error('\n❌ Battle failed with error:');
@@ -5909,6 +5984,133 @@ function writeSingleBattleReport(report: BattleReport): string {
   const outputPath = join(outputDir, `battle-report-${timestamp}.json`);
   writeFileSync(outputPath, JSON.stringify(report, null, 2), 'utf-8');
   return outputPath;
+}
+
+/**
+ * Write visual audit report (audit.json for HTML viewer)
+ */
+function writeVisualAuditReport(report: BattleReport): string {
+  const outputDir = join(process.cwd(), 'generated', 'battle-reports');
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const battleDir = join(outputDir, `battle-report-${timestamp}`);
+  mkdirSync(battleDir, { recursive: true });
+
+  // Extract audit from report if available
+  const auditData = report.audit || {
+    version: '1.0',
+    session: {
+      missionId: report.config.missionId,
+      missionName: report.config.missionName,
+      seed: report.seed,
+      lighting: report.config.lighting.name,
+      visibilityOrMu: report.config.visibilityOrMu,
+      maxOrm: report.config.maxOrm,
+      allowConcentrateRangeExtension: report.config.allowConcentrateRangeExtension,
+      perCharacterFovLos: report.config.perCharacterFovLos,
+    },
+    battlefield: {
+      widthMu: report.config.battlefieldSize,
+      heightMu: report.config.battlefieldSize,
+      movementSampleStepMu: 0.5,
+      lofWidthMu: 0.5,
+    },
+    turns: [],
+  };
+
+  // Add terrain from battlefield if available
+  if ((report as any).battlefield?.terrainFeatures) {
+    auditData.terrain = (report as any).battlefield.terrainFeatures.map((t: any) => ({
+      id: t.id,
+      type: t.type,
+      vertices: t.vertices,
+      meta: t.meta,
+    }));
+  } else if ((report as any).battlefield?.terrainElements) {
+    auditData.terrain = (report as any).battlefield.terrainElements;
+  }
+
+  const auditPath = join(battleDir, 'audit.json');
+  writeFileSync(auditPath, JSON.stringify(auditData, null, 2), 'utf-8');
+  return auditPath;
+}
+
+/**
+ * Write HTML battle report viewer
+ */
+function writeBattleReportViewer(report: BattleReport): string {
+  const outputDir = join(process.cwd(), 'generated', 'battle-reports');
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const battleDir = join(outputDir, `battle-report-${timestamp}`);
+  mkdirSync(battleDir, { recursive: true });
+  
+  // Prepare audit data
+  const auditData = report.audit || {
+    version: '1.0',
+    session: {
+      missionId: report.config.missionId,
+      missionName: report.config.missionName,
+      seed: report.seed,
+      lighting: report.config.lighting.name,
+      visibilityOrMu: report.config.visibilityOrMu,
+      maxOrm: report.config.maxOrm,
+      allowConcentrateRangeExtension: report.config.allowConcentrateRangeExtension,
+      perCharacterFovLos: report.config.perCharacterFovLos,
+    },
+    battlefield: {
+      widthMu: report.config.battlefieldSize,
+      heightMu: report.config.battlefieldSize,
+      movementSampleStepMu: 0.5,
+      lofWidthMu: 0.5,
+    },
+    turns: [],
+    frames: [],
+  };
+  
+  // Read the HTML viewer template
+  const viewerTemplatePath = join(process.cwd(), 'src', 'lib', 'mest-tactics', 'viewer', 'battle-report-viewer.html');
+  let viewerContent = '';
+  try {
+    viewerContent = readFileSync(viewerTemplatePath, 'utf-8');
+  } catch (e) {
+    // If template not found, create minimal viewer
+    viewerContent = createMinimalViewerTemplate();
+  }
+  
+  const viewerPath = join(battleDir, 'battle-report.html');
+  writeFileSync(viewerPath, viewerContent, 'utf-8');
+  
+  // Write audit.json for viewer to load
+  const auditPath = join(battleDir, 'audit.json');
+  writeFileSync(auditPath, JSON.stringify(auditData, null, 2), 'utf-8');
+  
+  return viewerPath;
+}
+
+/**
+ * Create minimal viewer template if file not found
+ */
+function createMinimalViewerTemplate(): string {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle Report Viewer</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #1a1a2e; color: #eee; padding: 2rem; }
+    h1 { color: #e94560; }
+    .error { color: #e94560; background: #16213e; padding: 1rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>⚔️ Battle Report Viewer</h1>
+  <div class="error">
+    <h2>Viewer Template Not Found</h2>
+    <p>The battle-report-viewer.html template was not found.</p>
+    <p>Audit data is available in <code>audit.json</code> in this directory.</p>
+  </div>
+</body>
+</html>`;
 }
 
 export function formatBattleReportFromJson(jsonText: string): string {
@@ -6569,6 +6771,22 @@ function parseMissionIdArg(value: string | undefined, fallback: string = 'QAI_11
 const args = process.argv.slice(2);
 const command = args[0];
 
+// Parse flags
+let enableAudit = false;
+let enableViewer = false;
+let seedValue: number | undefined;
+
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '--audit') {
+    enableAudit = true;
+  } else if (args[i] === '--viewer') {
+    enableViewer = true;
+  } else if (args[i] === '--seed' && args[i + 1]) {
+    seedValue = parseInt(args[i + 1], 10);
+    i++;
+  }
+}
+
 if (command === '--interactive' || command === '-i') {
   runInteractive();
 } else if (command === '--render-report' || command === '-r') {
@@ -6624,6 +6842,12 @@ Usage:
   npm run ai-battle -- -v SIZE DENSITY RUNS SEED [LIGHTING] [LOADOUT_PROFILE] [DOCTRINE_ALPHA[,DOCTRINE_BRAVO]] [MISSION_ID]
   npm run ai-battle -- -v SIZE DENSITY RUNS SEED [LIGHTING] [LOADOUT_PROFILE] [DOCTRINE_ALPHA] [DOCTRINE_BRAVO] [MISSION_ID]
   npm run ai-battle -- SIZE DENSITY [LIGHTING]    # Quick battle with custom params
+  
+Visual Audit Options:
+  npm run ai-battle -- --audit         # Enable audit capture
+  npm run ai-battle -- --viewer        # Generate HTML viewer
+  npm run ai-battle -- --audit --viewer --seed 12345  # Audit + viewer with seed
+  npm run ai-battle -- very-small --audit --viewer  # VERY_SMALL with viewer
 
 Game Sizes: VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE
 Lighting: DAY (default) | TWILIGHT
@@ -6634,6 +6858,8 @@ Examples:
   npm run ai-battle -- VERY_LARGE 50   # Large battle, 50% terrain
   npm run ai-battle -- VERY_LARGE 50 TWILIGHT
   npm run ai-battle -- SMALL 30        # Small battle, 30% terrain
+  npm run ai-battle -- very-small --audit --viewer  # Quick battle with visual audit
+  npm run ai-battle -- --audit --viewer --seed 424242  # Audit with reproducible seed
   npm run ai-battle -- -v SMALL 50 1 424242 DAY MELEE_ONLY
   npm run ai-battle -- -v SMALL 50 1 424242 DAY MELEE_ONLY juggernaut
   npm run ai-battle -- -v SMALL 50 1 424242 DAY DEFAULT operative,watchman QAI_11
@@ -6655,5 +6881,5 @@ Examples:
     VERY_LARGE: GameSize.VERY_LARGE,
   };
   const gameSize = toGameSize[sizeArg] ?? GameSize.VERY_LARGE;
-  runQuickBattle(gameSize, 'QAI_11', densityArg, lighting);
+  runQuickBattle(gameSize, 'QAI_11', densityArg, lighting, enableAudit, enableViewer, seedValue);
 }

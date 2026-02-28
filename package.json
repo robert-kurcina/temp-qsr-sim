@@ -14,13 +14,12 @@
     "validate:user-content": "node scripts/validate-user-content.js",
     "generate:svg": "node --import tsx scripts/generate-svg-output.ts",
     "generate:portraits": "node --import tsx scripts/generate-portraits-index.ts",
-    "cli": "tsx src/cli.ts",
+    "battle": "npx tsx scripts/battle.ts",
+    "battle:audit": "npx tsx scripts/battle.ts --audit --viewer",
+    "battle:terrain": "npx tsx scripts/battle.ts --terrain-only",
     "ai-battle": "node --import tsx scripts/ai-battle-setup.ts",
-    "ai-battle:very-large": "node --import tsx scripts/ai-battle-setup.ts VERY_LARGE 50",
-    "ai-battle:validate": "node --import tsx scripts/ai-battle-setup.ts -v VERY_LARGE 50 3 424242",
-    "ai-battle:render": "node --import tsx scripts/ai-battle-setup.ts -r",
-    "ai-battle:interactive": "node --import tsx scripts/ai-battle-setup.ts --interactive",
-    "validate:r4": "node --import tsx scripts/mission-validation-scan.ts"
+    "ai-battle:audit": "node --import tsx scripts/ai-battle-setup.ts --audit --viewer",
+    "serve:reports": "node --import tsx scripts/serve-terrain-audit.ts"
   },
   "dependencies": {
     "@astrojs/react": "^4.4.2",

@@ -5,6 +5,7 @@ import { TerrainElement, TerrainElementInfo } from '../terrain/TerrainElement';
 import { LOSOperations } from '../los/LOSOperations';
 import { PathfindingEngine } from '../pathfinding/PathfindingEngine';
 import { TerrainType } from '../terrain/Terrain';
+import { placeTerrain, exportTerrainForReport } from '../terrain/TerrainPlacement';
 
 export interface TerrainWeights {
   area: number;

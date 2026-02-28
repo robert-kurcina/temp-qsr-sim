@@ -33,7 +33,7 @@ import { DamageResolution } from '../subroutines/damage-test';
 import { BonusActionSelection } from '../actions/bonus-actions';
 import { ReactEvent, ReactOption } from '../actions/react-actions';
 import { GroupAction } from './group-actions';
-import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction } from '../actions/simple-actions';
+import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction, executeStowItem, executeUnstowItem, executeSwapItem } from '../actions/simple-actions';
 import { getActiveToggleOptions, getBonusActionOptions, getPassiveOptions, getReactOptions, getReactOptionsSorted } from '../actions/option-builders';
 import { executeMoveAction } from '../actions/move-action';
 import { createGroupAction } from '../actions/group-actions';
@@ -74,6 +74,8 @@ import {
 } from './end-game-trigger';
 import { MissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
 import { SideCoordinatorManager } from '../ai/core/SideAICoordinator';
+import { AuditService, ModelStateAudit, AuditVector, ModelEffectAudit } from '../audit/AuditService';
+import { Side } from '../core/Side';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -121,6 +123,11 @@ export class GameManager {
   public roundsPerTurn: number = 1;
   public phase: TurnPhase = TurnPhase.Setup;
   public lastInitiativeWinnerSideId: string | null = null;
+  public lastInitiativeTestResults: {
+    rolls: { sideId: string; dice: number[]; successes: number; pips: number }[];
+    winner: string | null;
+    ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[];
+  } | null = null;
   public allowKOdAttacks: boolean = false;
   public kodControllerTraitsByCharacterId?: Record<string, string[]>;
   public kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
@@ -138,11 +145,21 @@ export class GameManager {
   private endGameTriggerState: EndGameTriggerState;
   private missionRuntimeAdapter: MissionRuntimeAdapter | null = null;
   private sideCoordinatorManager: SideCoordinatorManager | null = null;
+  private auditService: AuditService | null = null;
+  private sides: Side[] = [];
 
-  constructor(characters: Character[], battlefield: Battlefield | null = null, endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN) {
+  constructor(
+    characters: Character[],
+    battlefield: Battlefield | null = null,
+    endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN,
+    auditService?: AuditService,
+    sides?: Side[]
+  ) {
     this.characters = characters;
     this.battlefield = battlefield;
     this.endGameTriggerState = createEndGameTriggerState(endGameTriggerTurn);
+    this.auditService = auditService || null;
+    this.sides = sides || [];
     this.initializeCharacterStatus();
   }
 
@@ -168,14 +185,20 @@ export class GameManager {
   /**
    * Roll Initiative for all characters and award Initiative Points to Sides
    * QSR: Start of Turn - Initiative Tests and Initiative Points
-   * 
+   *
    * @param roller - Random number generator (default: Math.random)
    * @param sides - Optional array of sides to award IP to (if not provided, IP not awarded)
+   * @returns Initiative test results for logging
    */
-  public rollInitiative(roller: () => number = Math.random, sides?: MissionSide[]): void {
+  public rollInitiative(roller: () => number = Math.random, sides?: MissionSide[]): {
+    rolls: { sideId: string; dice: number[]; successes: number; pips: number }[];
+    winner: string | null;
+    ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[];
+  } {
     const initiativeResults: Array<{
       character: Character;
       initiative: number;
+      dice: number[];
       dicePips: number;
       side?: MissionSide;
     }> = [];
@@ -197,9 +220,11 @@ export class GameManager {
       // Roll 2 Base dice + Tactics bonus dice
       let initiativeRoll = 0;
       let dicePips = 0;
+      const dice: number[] = [];
       const totalDice = 2 + tacticsBonus;
       for (let i = 0; i < totalDice; i++) {
         const roll = Math.floor(roller() * 6) + 1;
+        dice.push(roll);
         dicePips += roll; // Track total pips for tie-breaker
         // Base dice: 4-5 = 1 success, 6 = 2 successes
         if (roll >= 6) {
@@ -216,6 +241,7 @@ export class GameManager {
       initiativeResults.push({
         character,
         initiative: character.initiative,
+        dice,
         dicePips,
         side,
       });
@@ -245,12 +271,14 @@ export class GameManager {
       .map(result => result.character);
 
     // Award Initiative Points to Sides (QSR: Start of Turn)
+    const ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[] = [];
+    
     if (sides && initiativeResults.length > 0) {
       // Find winner (highest initiative)
       const winner = initiativeResults[0];
       this.lastInitiativeWinnerSideId = winner.side?.id ?? null;
       const lowestScore = initiativeResults[initiativeResults.length - 1].initiative;
-      
+
       // Group results by side
       const sideResults = new Map<MissionSide, Array<typeof winner>>();
       for (const result of initiativeResults) {
@@ -264,30 +292,57 @@ export class GameManager {
       // Award IP to each side
       for (const [side, results] of sideResults.entries()) {
         const sideInitiative = Math.max(...results.map(r => r.initiative));
-        
+
         if (sideInitiative === winner.initiative && side === winner.side) {
-          // Winner: IP = difference between winner and lowest score
-          const ipAwarded = winner.initiative - lowestScore;
-          if (ipAwarded > 0) {
-            awardInitiativePoints(side, ipAwarded);
+          // Winner: IP = difference between winner and lowest score (QSR Lines 691-692)
+          const ipAmount = winner.initiative - lowestScore;
+          if (ipAmount > 0) {
+            awardInitiativePoints(side, ipAmount);
+            ipAwarded.push({
+              sideId: side.id,
+              amount: ipAmount,
+              reason: 'highest_initiative',
+            });
           }
         } else {
-          // All other sides: 1 IP per carry-over Base die (rolled 6)
-          // For simplicity, award 1 IP per character with carry-over
+          // All other sides: 1 IP per Base die that scored a carry-over (rolled 6)
+          // QSR Lines 691-692: "All Players, except the winner, acquire an IP for each of their Base dice which have a carry-over."
           let carryOverCount = 0;
           for (const result of results) {
-            // Count dice that scored 6 (carry-over)
-            // This is a simplification - full implementation would track individual dice
-            if (result.dicePips >= 12) { // At least one 6 rolled
-              carryOverCount++;
-            }
+            // Count Base dice carry-over from p1Result and p2Result
+            // carryOverDice.base contains the count of Base dice that rolled 6
+            const p1CarryOver = result.p1Result?.carryOverDice?.base || 0;
+            const p2CarryOver = result.p2Result?.carryOverDice?.base || 0;
+            carryOverCount += p1CarryOver + p2CarryOver;
           }
           if (carryOverCount > 0) {
             awardInitiativePoints(side, carryOverCount);
+            ipAwarded.push({
+              sideId: side.id,
+              amount: carryOverCount,
+              reason: 'carry_over',
+            });
           }
         }
       }
     }
+
+    // Build rolls data for logging
+    const rolls = sides?.map(side => {
+      const sideMembers = initiativeResults.filter(r => r.side === side);
+      return {
+        sideId: side.id,
+        dice: sideMembers.flatMap(r => r.dice),
+        successes: sideMembers.reduce((sum, r) => sum + r.initiative - (r.character.attributes.int || 0), 0),
+        pips: sideMembers.reduce((sum, r) => sum + r.dicePips, 0),
+      };
+    }) || [];
+
+    return {
+      rolls,
+      winner: this.lastInitiativeWinnerSideId,
+      ipAwarded,
+    };
   }
 
   /**
@@ -347,6 +402,23 @@ export class GameManager {
     // Refund IP if no Delay token to remove
     awardInitiativePoints(side, 1);
     return false;
+  }
+
+  /**
+   * Refresh: Spend 1 IP to remove Delay token (finds side automatically)
+   * QSR: Spending Initiative Points - Refresh costs 1 IP
+   */
+  public refreshForCharacter(character: Character): boolean {
+    // Find the side this character belongs to
+    const side = this.missionSides?.find(s => 
+      s.members.some(m => m.character.id === character.id)
+    );
+    
+    if (!side) {
+      return false;
+    }
+    
+    return this.refresh(character, side);
   }
 
   public getNextToActivate(): Character | undefined {
@@ -440,21 +512,53 @@ export class GameManager {
    * @param roller - Random number generator
    * @param sides - Optional array of sides for IP awarding
    */
-  public startTurn(roller: () => number = Math.random, sides?: MissionSide[]): void {
+  /**
+   * Start a new turn
+   * @param roller - Random number generator (default: Math.random)
+   * @param sides - Optional array of sides for IP awarding
+   * @param missionId - Optional mission ID for audit
+   * @param missionName - Optional mission name for audit
+   * @param lighting - Optional lighting condition for audit
+   * @param visibilityOrMu - Optional visibility OR for audit
+   * @param maxOrm - Optional max ORM for audit
+   * @param battlefieldWidth - Optional battlefield width for audit
+   * @param battlefieldHeight - Optional battlefield height for audit
+   */
+  public startTurn(
+    roller: () => number = Math.random,
+    sides?: MissionSide[],
+    options?: {
+      missionId?: string;
+      missionName?: string;
+      lighting?: string;
+      visibilityOrMu?: number;
+      maxOrm?: number;
+      battlefieldWidth?: number;
+      battlefieldHeight?: number;
+    }
+  ): void {
     this.currentRound = 1;
     this.initializeCharacterStatus();
 
-    // QSR: Optimized Initiative - Side with least BP gets +1b on first Turn
-    // (Not implemented - would need BP tracking per side)
+    // Initialize audit service on turn 1
+    if (this.currentTurn === 1 && this.auditService && options) {
+      this.auditService.initialize({
+        missionId: options.missionId || 'unknown',
+        missionName: options.missionName || 'Unknown Mission',
+        lighting: options.lighting || 'Day, Clear',
+        visibilityOrMu: options.visibilityOrMu || 16,
+        maxOrm: options.maxOrm || 3,
+        allowConcentrateRangeExtension: true,
+        perCharacterFovLos: false,
+        battlefieldWidth: options.battlefieldWidth || 24,
+        battlefieldHeight: options.battlefieldHeight || 24,
+      });
+    }
 
-    // Roll Initiative and award IP to Sides
-    this.rollInitiative(roller, sides);
-
-    this.refreshUsed.clear();
-    this.rallyUsed.clear();
-    this.reviveUsed.clear();
-    this.reactedThisTurn.clear();
-    this.phase = TurnPhase.Activation;
+    // Start turn audit
+    if (this.auditService) {
+      this.auditService.startTurn(this.currentTurn);
+    }
 
     // R1.5: Update scoring context for all Sides at start of turn
     if (sides && this.sideCoordinatorManager) {
@@ -464,6 +568,15 @@ export class GameManager {
       }
       this.updateAllScoringContexts(sideKeyScores);
     }
+
+    // Roll Initiative and award IP to Sides
+    this.lastInitiativeTestResults = this.rollInitiative(roller, sides);
+
+    this.refreshUsed.clear();
+    this.rallyUsed.clear();
+    this.reviveUsed.clear();
+    this.reactedThisTurn.clear();
+    this.phase = TurnPhase.Activation;
   }
 
   public startRound(): void {
@@ -517,8 +630,18 @@ export class GameManager {
     this.phase = TurnPhase.RoundEnd;
   }
 
-  public endTurn(): void {
+  public endTurn(sides?: MissionSide[]): void {
     this.phase = TurnPhase.TurnEnd;
+
+    // End turn audit
+    if (this.auditService && sides) {
+      const sideSummaries = sides.map(side => ({
+        sideName: side.name,
+        activeModelsStart: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
+        activeModelsEnd: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
+      }));
+      this.auditService.endTurn(sideSummaries);
+    }
   }
 
   /**
@@ -564,13 +687,18 @@ export class GameManager {
     return this.endGameTriggerState.endReason;
   }
 
-  public advancePhase(options: { roller?: () => number; roundsPerTurn?: number } = {}): TurnPhase {
+  public setSides(sides: MissionSide[]): void {
+    this.missionSides = sides;
+  }
+
+  public advancePhase(options: { roller?: () => number; roundsPerTurn?: number; sides?: MissionSide[] } = {}): TurnPhase {
     const roundsPerTurn = Math.max(1, options.roundsPerTurn ?? this.roundsPerTurn);
     const roller = options.roller ?? Math.random;
+    const sides = options.sides ?? this.missionSides;
 
     switch (this.phase) {
       case TurnPhase.Setup:
-        this.startTurn(roller);
+        this.startTurn(roller, sides);
         return this.phase;
       case TurnPhase.Activation:
         if (!this.isTurnOver()) {
@@ -595,7 +723,7 @@ export class GameManager {
         this.nextTurn();
         return this.phase;
       default:
-        this.startTurn(roller);
+        this.startTurn(roller, sides);
         return this.phase;
     }
   }
@@ -667,6 +795,8 @@ export class GameManager {
     options: Parameters<GameManager['executeRangedAttack']>[3] = {}
   ) {
     // TODO: Implement group ranged attack
+    // Rules Reference: rules-combat.md - Concentrated Attacks
+    // This would allow multiple models to coordinate ranged attacks on a single target
     throw new Error('Group ranged attack not implemented');
   }
 
@@ -677,6 +807,8 @@ export class GameManager {
     options: Parameters<GameManager['executeCloseCombatAttack']>[3] = {}
   ) {
     // TODO: Implement group close combat attack
+    // Rules Reference: rules-situational-modifiers.md - Assist (+1 Impact per extra model)
+    // rules-multiple.md - Multiple Weapons and coordinated attacks
     throw new Error('Group close combat attack not implemented');
   }
 
@@ -741,8 +873,42 @@ export class GameManager {
           }
           return terrain as 'Clear' | 'Rough' | 'Difficult' | 'Impassable';
         },
+        canOccupy: (position: Position, baseDiameter: number) => this.battlefield!.canOccupy(position, baseDiameter),
         executeCloseCombatAttack: (attacker: Character, defender: Character, weapon: Item, actionOptions) =>
           this.executeCloseCombatAttack(attacker, defender, weapon, actionOptions as any),
+        findPathCost: (start: Position, end: Position) => {
+          // Simple terrain cost calculation for straight-line movement
+          // Check terrain along the path and apply cost multipliers
+          const dx = end.x - start.x;
+          const dy = end.y - start.y;
+          const distance = Math.hypot(dx, dy);
+          
+          if (distance === 0) return 0;
+          
+          // Sample terrain along the path
+          const samples = Math.ceil(distance * 2); // Sample every 0.5 MU
+          let totalCost = 0;
+          
+          for (let i = 0; i <= samples; i++) {
+            const t = i / samples;
+            const samplePos = { x: start.x + dx * t, y: start.y + dy * t };
+            const terrainFeature = this.battlefield!.getTerrainAt(samplePos);
+            
+            let costMultiplier = 1;
+            if (terrainFeature.type === BattlefieldTerrainType.Rough) {
+              costMultiplier = 2;
+            } else if (terrainFeature.type === BattlefieldTerrainType.Difficult) {
+              costMultiplier = 3;
+            } else if (terrainFeature.type === BattlefieldTerrainType.Obstacle) {
+              return null; // Blocked
+            }
+            
+            const segmentCost = (distance / samples) * costMultiplier;
+            totalCost += segmentCost;
+          }
+          
+          return totalCost;
+        },
       },
       mover,
       destination,
@@ -753,7 +919,7 @@ export class GameManager {
   public executeRally(
     actor: Character,
     target: Character,
-    options: { context?: TestContext; rolls?: number[] } = {}
+    options: { context?: TestContext; rolls?: number[]; side?: MissionSide } = {}
   ) {
     return executeRallyAction(this.simpleActionDeps(), actor, target, options);
   }
@@ -778,6 +944,38 @@ export class GameManager {
     } = {}
   ) {
     return executeFiddleAction(this.simpleActionDeps(), actor, options);
+  }
+
+  public executeStowItem(
+    actor: Character,
+    options: {
+      itemIndex?: number;
+      itemName?: string;
+    } = {}
+  ) {
+    return executeStowItem(this.simpleActionDeps(), actor, options);
+  }
+
+  public executeUnstowItem(
+    actor: Character,
+    options: {
+      itemIndex?: number;
+      itemName?: string;
+    } = {}
+  ) {
+    return executeUnstowItem(this.simpleActionDeps(), actor, options);
+  }
+
+  public executeSwapItem(
+    actor: Character,
+    options: {
+      stowItemIndex?: number;
+      stowItemName?: string;
+      drawItemIndex?: number;
+      drawItemName?: string;
+    } = {}
+  ) {
+    return executeSwapItem(this.simpleActionDeps(), actor, options);
   }
 
   public executeAcquireObjectiveMarker(
@@ -1330,13 +1528,277 @@ export class GameManager {
       orderedCandidate: Character | null;
       opposingCount: number;
       rolls?: number[];
-    }>
+      side?: MissionSide;
+    }>,
+    battlefield: Battlefield | null = null
   ): Record<string, BottleTestResult> {
-    return runBottleTests(
+    const results = runBottleTests(
       {
         setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
       },
-      sides
+      sides,
+      battlefield
+    );
+
+    // Store bottle test results for logging
+    this.lastBottleTestResults = results;
+
+    return results;
+  }
+  
+  public lastBottleTestResults: Record<string, BottleTestResult> | null = null;
+
+  // ============================================================================
+  // Game Loop - Full Battle Execution
+  // ============================================================================
+
+  /**
+   * Run a complete game from start to finish with AI controllers
+   * 
+   * @param missionAdapter - Mission runtime adapter for scoring and objectives
+   * @param aiConfigs - AI controller configurations for each side
+   * @returns Battle result with winner, statistics, and turn count
+   */
+  public async runGame(
+    missionAdapter: MissionRuntimeAdapter,
+    aiConfigs: Array<{
+      sideId: string;
+      characterAI: import('../ai/core/CharacterAI').CharacterAI;
+      tacticalDoctrine?: import('../ai/stratagems/AIStratagems').TacticalDoctrine;
+    }>
+  ): Promise<{
+    winner: string | null;
+    turnsCompleted: number;
+    stats: {
+      totalActions: number;
+      moves: number;
+      attacks: number;
+      closeCombats: number;
+      rangedCombats: number;
+      disengages: number;
+      eliminations: number;
+      kos: number;
+    };
+  }> {
+    const { CharacterAI } = await import('../ai/core/CharacterAI');
+    const { TacticalDoctrine } = await import('../ai/stratagems/AIStratagems');
+    const { DEFAULT_CHARACTER_AI_CONFIG } = await import('../ai/core/CharacterAI');
+
+    if (!this.battlefield) {
+      throw new Error('Battlefield not set');
+    }
+
+    // Set mission runtime adapter
+    this.setMissionRuntimeAdapter(missionAdapter);
+
+    // Initialize statistics tracking
+    const stats = {
+      totalActions: 0,
+      moves: 0,
+      attacks: 0,
+      closeCombats: 0,
+      rangedCombats: 0,
+      disengages: 0,
+      eliminations: 0,
+      kos: 0,
+    };
+
+    // Create AI controller map by side
+    const aiBySide = new Map<string, typeof aiConfigs[0]>();
+    for (const config of aiConfigs) {
+      aiBySide.set(config.sideId, config);
+    }
+
+    // Get sides from mission adapter
+    const sides = missionAdapter.sides;
+
+    // Build ally/enemy maps for each side
+    const alliesBySide = new Map<string, Character[]>();
+    const enemiesBySide = new Map<string, Character[]>();
+    for (const side of sides) {
+      const sideChars = side.members.map(m => m.character);
+      const enemyChars = sides
+        .filter(s => s.id !== side.id)
+        .flatMap(s => s.members.map(m => m.character));
+      alliesBySide.set(side.id, sideChars);
+      enemiesBySide.set(side.id, enemyChars);
+    }
+
+    // Main game loop
+    while (!this.isGameEnded() && this.currentTurn <= 10) {
+      // Start turn (roll initiative, etc.)
+      this.startTurn(Math.random, sides);
+
+      // Process activations until turn is over
+      while (!this.isTurnOver()) {
+        // Get next character to activate
+        const character = this.getNextToActivate();
+        if (!character) break;
+
+        // Find AI controller for this character's side
+        const characterSide = sides.find(s => s.members.some(m => m.character.id === character.id));
+        if (!characterSide) continue;
+
+        const aiConfig = aiBySide.get(characterSide.id);
+        if (!aiConfig) continue;
+
+        // Begin activation
+        this.beginActivation(character);
+        const apRemaining = this.getApRemaining(character);
+
+        // Build AI context
+        const allies = alliesBySide.get(characterSide.id) || [];
+        const enemies = enemiesBySide.get(characterSide.id) || [];
+
+        const aiContext: import('../ai/core/AIController').AIContext = {
+          character,
+          allies,
+          enemies,
+          battlefield: this.battlefield,
+          currentTurn: this.currentTurn,
+          currentRound: this.currentRound,
+          apRemaining,
+          sideId: characterSide.id,
+          objectiveMarkers: [],
+          knowledge: aiConfig.characterAI.updateKnowledge({
+            character,
+            allies,
+            enemies,
+            battlefield: this.battlefield,
+            currentTurn: this.currentTurn,
+            currentRound: this.currentRound,
+            apRemaining,
+            sideId: characterSide.id,
+            objectiveMarkers: [],
+            knowledge: {} as any,
+            config: DEFAULT_CHARACTER_AI_CONFIG,
+          }),
+          config: DEFAULT_CHARACTER_AI_CONFIG,
+        };
+
+        // Get AI decision
+        const decision = aiConfig.characterAI.decideAction(aiContext);
+
+        // Execute action
+        if (decision && decision.decision && decision.decision.type !== 'none' && decision.decision.type !== 'hold') {
+          stats.totalActions++;
+          
+          try {
+            switch (decision.decision.type) {
+              case 'move':
+              case 'charge':
+                if (decision.decision.position) {
+                  this.moveCharacter(character, decision.decision.position);
+                  stats.moves++;
+                }
+                break;
+
+              case 'close_combat':
+                if (decision.decision.target && decision.decision.weapon) {
+                  const result = this.executeCloseCombatAttack(
+                    character,
+                    decision.decision.target,
+                    decision.decision.weapon,
+                    { isCharge: decision.decision.isCharge }
+                  );
+                  stats.closeCombats++;
+                  stats.attacks++;
+                  if (result.damageResolution?.defenderKOd) stats.kos++;
+                  if (result.damageResolution?.defenderEliminated) stats.eliminations++;
+                }
+                break;
+
+              case 'ranged_combat':
+                if (decision.decision.target && decision.decision.weapon) {
+                  const result = this.executeRangedAttack(
+                    character,
+                    decision.decision.target,
+                    decision.decision.weapon,
+                    {}
+                  );
+                  stats.rangedCombats++;
+                  stats.attacks++;
+                  if (result.damageResolution?.defenderKOd) stats.kos++;
+                  if (result.damageResolution?.defenderEliminated) stats.eliminations++;
+                }
+                break;
+
+              case 'disengage':
+                if (decision.decision.target) {
+                  this.executeDisengageAction(character, decision.decision.target);
+                  stats.disengages++;
+                }
+                break;
+
+              case 'wait':
+                this.executeWaitAction(character);
+                stats.waits++;
+                break;
+                
+              case 'rally':
+              case 'revive':
+              case 'fiddle':
+              case 'reload':
+                // These actions are handled but not tracked in basic stats
+                break;
+            }
+          } catch (error) {
+            console.error(`Error executing action for ${character.name}:`, error);
+          }
+        }
+
+        // End activation
+        this.endActivation(character);
+      }
+
+      // End turn (check end-game trigger)
+      this.endTurn();
+      this.advancePhase({ roller: Math.random });
+    }
+
+    // Determine winner
+    let winner: string | null = null;
+    const sideRemaining = sides.map(side => ({
+      sideId: side.id,
+      remaining: side.members.filter(m => 
+        !m.character.state.isEliminated && !m.character.state.isKOd
+      ).length,
+    }));
+
+    const maxRemaining = Math.max(...sideRemaining.map(s => s.remaining));
+    const winners = sideRemaining.filter(s => s.remaining === maxRemaining);
+
+    if (winners.length === 1) {
+      winner = winners[0].sideId;
+    }
+
+    return {
+      winner,
+      turnsCompleted: this.currentTurn,
+      stats,
+    };
+  }
+
+  // Helper methods for action execution
+  private executeWaitAction(character: Character): void {
+    executeWaitAction({
+      setCharacterStatus: (id: string, status: CharacterStatus) => this.setCharacterStatus(id, status),
+      getCharacterStatus: (id: string) => this.getCharacterStatus(id),
+    }, character);
+  }
+
+  public executeDisengageAction(
+    disengager: Character,
+    opponent: Character
+  ): void {
+    executeDisengageAction(
+      {
+        battlefield: this.battlefield!,
+        getCharacterStatus: (id: string) => this.getCharacterStatus(id),
+        setCharacterStatus: (id: string, status: CharacterStatus) => this.setCharacterStatus(id, status),
+      },
+      disengager,
+      opponent
     );
   }
 }

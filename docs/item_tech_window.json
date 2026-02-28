@@ -317,8 +317,8 @@
   {
     "item": "Armor, Combat Suit",
     "tech_window": {
-      "early": 1,
-      "latest": 11
+      "early": 15,
+      "latest": 15
     }
   },
   {
@@ -702,7 +702,7 @@
   {
     "item": "Axe-Sword of Tan-doc",
     "tech_window": {
-      "early": 5,
+      "early": 15,
       "latest": 15
     }
   },
@@ -721,7 +721,7 @@
     }
   },
   {
-    "item": "Balllista, Light",
+    "item": "Ballista, Light",
     "tech_window": {
       "early": 3,
       "latest": 20
@@ -765,7 +765,7 @@
   {
     "item": "Beam Carbine, Advanced",
     "tech_window": {
-      "early": 15,
+      "early": 16,
       "latest": 20
     }
   },
@@ -779,7 +779,7 @@
   {
     "item": "Beam Gun, Advanced",
     "tech_window": {
-      "early": 15,
+      "early": 16,
       "latest": 20
     }
   },
@@ -793,7 +793,7 @@
   {
     "item": "Beam Pistol, Advanced",
     "tech_window": {
-      "early": 16,
+      "early": 17,
       "latest": 20
     }
   },
@@ -807,7 +807,7 @@
   {
     "item": "Beam Rifle, Advanced",
     "tech_window": {
-      "early": 15,
+      "early": 16,
       "latest": 20
     }
   },
@@ -1717,7 +1717,7 @@
   {
     "item": "Dagger, Stiletto",
     "tech_window": {
-      "early": 1,
+      "early": 6,
       "latest": 15
     }
   },
@@ -1787,7 +1787,7 @@
   {
     "item": "Device, Synchron, Archaic",
     "tech_window": {
-      "early": 8,
+      "early": 10,
       "latest": 20
     }
   },
@@ -1836,21 +1836,21 @@
   {
     "item": "Dynamic Armor, Heavy",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Dynamic Armor, Light",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Dynamic Armor, Medium",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
@@ -2004,21 +2004,21 @@
   {
     "item": "Exxo-skeleton, Heavy",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Exxo-skeleton, Lifter Frame",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Exxo-skeleton, Light",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
@@ -2032,7 +2032,7 @@
   {
     "item": "Exxo-skin, Carapace",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
@@ -2137,21 +2137,21 @@
   {
     "item": "Force Armor, Heavy",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Force Armor, Light",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Force Armor, Medium",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
@@ -2445,7 +2445,7 @@
   {
     "item": "Goggles, Night-vision, Adv.",
     "tech_window": {
-      "early": 12,
+      "early": 13,
       "latest": 20
     }
   },
@@ -2501,7 +2501,7 @@
   {
     "item": "Grenade, Concussion, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2529,7 +2529,7 @@
   {
     "item": "Grenade, Flash-bang, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2543,7 +2543,7 @@
   {
     "item": "Grenade, Fragmentation, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2557,7 +2557,7 @@
   {
     "item": "Grenade, HE, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2571,7 +2571,7 @@
   {
     "item": "Grenade, Pulse, Adv.",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
@@ -2585,7 +2585,7 @@
   {
     "item": "Grenade, Shrapnel, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2599,7 +2599,7 @@
   {
     "item": "Grenade, Sonic, Adv.",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2690,49 +2690,49 @@
   {
     "item": "Hardsuit, Archaic",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
   {
     "item": "Hardsuit, Enhanced, Archaic",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
   {
     "item": "Hardsuit, Platform, Archaic",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
   {
     "item": "Hardsuit, Scout",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
   {
     "item": "Hardsuit, Standard",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
   {
     "item": "Hardsuit, War",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Hardsuit, Windup",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -2795,7 +2795,7 @@
   {
     "item": "Helmet, Riot",
     "tech_window": {
-      "early": 1,
+      "early": 11,
       "latest": 11
     }
   },
@@ -2928,7 +2928,7 @@
   {
     "item": "Jet-pack, Suit, Advanced",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
@@ -3005,14 +3005,14 @@
   {
     "item": "Knuckledusters",
     "tech_window": {
-      "early": 1,
+      "early": 9,
       "latest": 20
     }
   },
   {
     "item": "Knuckledusters, Spiked",
     "tech_window": {
-      "early": 1,
+      "early": 9,
       "latest": 20
     }
   },
@@ -3159,21 +3159,21 @@
   {
     "item": "Mage Armor, Heavy",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Mage Armor, Light",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Mage Armor, Medium",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
@@ -3614,14 +3614,14 @@
   {
     "item": "Phlogiston Suit",
     "tech_window": {
-      "early": 1,
+      "early": 11,
       "latest": 20
     }
   },
   {
     "item": "Phlogiston Suit, Fireproof",
     "tech_window": {
-      "early": 1,
+      "early": 12,
       "latest": 20
     }
   },
@@ -3845,14 +3845,14 @@
   {
     "item": "Powered Armor-Early",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Powered Armor-Exxo",
     "tech_window": {
-      "early": 14,
+      "early": 15,
       "latest": 20
     }
   },
@@ -3929,7 +3929,7 @@
   {
     "item": "Proximity Suit, Fireproof",
     "tech_window": {
-      "early": 1,
+      "early": 12,
       "latest": 20
     }
   },
@@ -3943,21 +3943,21 @@
   {
     "item": "Psi Armor, Heavy",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Psi Armor, Light",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
   {
     "item": "Psi Armor, Medium",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },
@@ -4461,7 +4461,7 @@
   {
     "item": "Silencer, Advanced",
     "tech_window": {
-      "early": 11,
+      "early": 12,
       "latest": 20
     }
   },
@@ -4699,7 +4699,7 @@
   {
     "item": "Stealth Suit",
     "tech_window": {
-      "early": 1,
+      "early": 15,
       "latest": 20
     }
   },
@@ -4923,7 +4923,7 @@
   {
     "item": "Torch, Flashlight",
     "tech_window": {
-      "early": 1,
+      "early": 10,
       "latest": 20
     }
   },
@@ -5028,35 +5028,35 @@
   {
     "item": "Waldo, Claws, Long",
     "tech_window": {
-      "early": 1,
+      "early": 12,
       "latest": 14
     }
   },
   {
     "item": "Waldo, Claws, Short",
     "tech_window": {
-      "early": 1,
+      "early": 12,
       "latest": 14
     }
   },
   {
     "item": "Waldo, Hand",
     "tech_window": {
-      "early": 1,
+      "early": 12,
       "latest": 20
     }
   },
   {
     "item": "Waldo, Saw, Large",
     "tech_window": {
-      "early": 1,
+      "early": 12,
       "latest": 20
     }
   },
   {
     "item": "Waldo, Saw, Small",
     "tech_window": {
-      "early": 1,
+      "early": 12,
       "latest": 20
     }
   },
@@ -5091,7 +5091,7 @@
   {
     "item": "Wheeled, Tankette",
     "tech_window": {
-      "early": 11,
+      "early": 15,
       "latest": 20
     }
   },

@@ -29,11 +29,27 @@ Close Combat involves direct, hand-to-hand fighting.
 
 ### Combat Maneuvers (Spending Cascades)
 
-If the Attacker succeeds on their Hit Test, they may spend cascades *before* the Damage Test to perform special maneuvers. Each maneuver costs cascades.
+If the Attacker succeeds on their Hit Test, they may spend cascades *before* the Damage Test to perform special maneuvers called **Bonus Actions**.
 
-*   **Push-back (1 Cascade):** Reposition the target 1" directly away from the attacker. For every 2 additional cascades spent, push the target an additional 1". If the target is pushed into a wall, obstacle, or another character, they receive a Delay token.
-*   **Reversal (2 Cascades):** Switch positions with the target, maintaining the same distance of separation.
-*   **Pull-back (1 Cascade):** After the attack is fully resolved, reposition your character 1" directly away from the target.
+**For complete Bonus Action rules, see:** [[rules-bonus-actions|Rules: Bonus Actions & Passive Player Options]]
+
+**Quick Reference:**
+
+*   **Push-back:** Reposition the target 1" directly away from the attacker. Base cost: 1 cascade. Additional clauses may apply (◆➔).
+*   **Reversal:** Switch positions with the target, maintaining the same distance of separation. Base cost: 1 cascade. Additional clauses may apply (◆✷).
+*   **Pull-back:** After the attack is fully resolved, reposition your character 1" directly away from the target. Base cost: 1 cascade. Additional clauses may apply (➔).
+
+**Additional Clauses:**
+
+| Symbol | Name | Effect |
+|--------|------|--------|
+| **◆** | Diamond-Star | +1 cascade unless in base-contact with target |
+| **➔** | Arrow | +1 cascade per point of Physicality difference (if Attacker < Target) |
+| **✷** | Starburst | +1 cascade (+2 if Engaged→Free) |
+
+**Physicality** = Higher of **STR** or **SIZ**
+
+**Note:** If the Bonus Action causes the Active character to no longer have the target within Melee Range, **do not perform the Damage Test**.
 
 ## 3. Range Combat
 

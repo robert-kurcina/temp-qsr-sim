@@ -86,9 +86,15 @@ function _calculateModifiers(
     }
 
     // Overreach penalty: give defender a modifier bonus die
+    // QSR Line 470: Overreach also gives -1 REF penalty
     if (context.isOverreach) {
         defenderBonus[DiceType.Modifier] = (defenderBonus[DiceType.Modifier] || 0) + 1;
         disengagerAttributeModifier -= 1;
+    }
+    
+    // QSR Line 470: Defender -1 REF penalty if Overreaching
+    if (defender.state.isOverreach) {
+        defenderAttributeModifier -= 1;
     }
 
     return { disengagerBonus, disengagerPenalty, defenderBonus, defenderPenalty, disengagerAttributeModifier, defenderAttributeModifier };

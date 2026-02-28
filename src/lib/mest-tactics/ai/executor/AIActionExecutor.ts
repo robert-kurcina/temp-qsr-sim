@@ -13,6 +13,8 @@ import { GameManager } from '../engine/GameManager';
 import { ActionDecision, ActionType } from '../core/AIController';
 import { validateAction, ActionValidation } from '../tactical/GOAP';
 import { attemptHide, attemptDetect } from '../../status/concealment';
+import { performPushing } from '../../actions/pushing-and-maneuvers';
+import { InstrumentationLogger, LoggedActionType, LoggedAction } from '../../instrumentation/QSRInstrumentation';
 
 /**
  * Execution result for an AI action
@@ -76,17 +78,20 @@ export interface AIExecutionContext {
 
 /**
  * AI Action Executor
- * 
+ *
  * Executes AI decisions through the GameManager.
  */
 export class AIActionExecutor {
   config: AIExecutorConfig;
   private manager: GameManager;
+  private logger: InstrumentationLogger | null = null;
   private replanAttempts: Map<string, number> = new Map();
+  private lastDecision: ActionDecision | null = null;
 
-  constructor(manager: GameManager, config: Partial<AIExecutorConfig> = {}) {
+  constructor(manager: GameManager, config: Partial<AIExecutorConfig> = {}, logger?: InstrumentationLogger) {
     this.manager = manager;
     this.config = { ...DEFAULT_EXECUTOR_CONFIG, ...config };
+    this.logger = logger || null;
   }
 
   /**
@@ -143,7 +148,12 @@ export class AIActionExecutor {
     // Execute the action
     try {
       const result = this.executeDecision(decision, character, context);
-      
+
+      // Log action if logger is available
+      if (this.logger && result.success) {
+        this.logAction(decision, character, context, result);
+      }
+
       // Reset replan attempts on success
       if (result.success) {
         this.replanAttempts.delete(key);
@@ -238,6 +248,9 @@ export class AIActionExecutor {
     character: Character,
     context: AIExecutionContext
   ): ExecutionResult {
+    // Store decision for sub-action execution (e.g., fiddle stow/unstow)
+    this.lastDecision = decision;
+    
     const { battlefield } = context;
 
     switch (decision.type) {
@@ -283,6 +296,12 @@ export class AIActionExecutor {
       case 'wait':
         return this.executeWait(character, context);
 
+      case 'pushing':
+        return this.executePushing(character, context);
+
+      case 'refresh':
+        return this.executeRefresh(character, context);
+
       case 'hide':
         return this.executeHide(character, context);
 
@@ -316,6 +335,87 @@ export class AIActionExecutor {
   }
 
   /**
+   * Execute Pushing action (QSR p.789-791)
+   * Character gains +1 AP but acquires a Delay token
+   * Does NOT cost AP to perform
+   */
+  private executePushing(
+    character: Character,
+    context: AIExecutionContext
+  ): ExecutionResult {
+    const result = performPushing(
+      this.manager.activationDeps(),
+      character
+    );
+
+    if (result.success) {
+      return this.createSuccess(
+        { type: 'pushing', reason: 'Pushing for extra AP', priority: 2, requiresAP: false },
+        character,
+        `Pushing: gained ${result.apGained} AP, acquired Delay token`
+      );
+    }
+
+    return this.createFailure(
+      { type: 'pushing', reason: 'Pushing failed', priority: 2, requiresAP: false },
+      character,
+      result.reason ?? 'Pushing failed'
+    );
+  }
+
+  /**
+   * Execute Refresh action (QSR p.784)
+   * Spend 1 IP from Side to remove 1 Delay token from character
+   * Does NOT cost AP to perform
+   */
+  private executeRefresh(
+    character: Character,
+    context: AIExecutionContext
+  ): ExecutionResult {
+    // Spend 1 IP and remove 1 Delay token
+    const result = this.manager.refreshForCharacter(character);
+
+    if (result) {
+      // Log IP spending (grade 2+)
+      if (this.logger && this.logger['config'].grade >= 2) {
+        // Find character's side for logging
+        const side = this.findCharacterSideForLogging(character);
+        if (side) {
+          this.logger.logIpSpending(side, character.id, 'refresh', context.currentTurn);
+        }
+      }
+      
+      return this.createSuccess(
+        { type: 'refresh', reason: 'Refresh: remove Delay token', priority: 2, requiresAP: false },
+        character,
+        'Refresh: removed 1 Delay token, spent 1 IP'
+      );
+    }
+
+    return this.createFailure(
+      { type: 'refresh', reason: 'Refresh failed', priority: 2, requiresAP: false },
+      character,
+      'Insufficient IP or no Delay tokens to remove'
+    );
+  }
+
+  /**
+   * Find character's side for logging purposes
+   */
+  private findCharacterSideForLogging(character: Character): string | null {
+    // Try to find side from manager's missionSides
+    const missionSides = (this.manager as any).missionSides;
+    if (!missionSides) return null;
+    
+    for (const side of missionSides) {
+      if (side.members?.some((m: any) => m.character.id === character.id)) {
+        return side.id;
+      }
+    }
+    return null;
+  }
+
+  /**
    * Execute Move action
    */
   private executeMove(
@@ -325,6 +425,11 @@ export class AIActionExecutor {
   ): ExecutionResult {
     if (!this.manager.battlefield) {
       return this.createFailure({ type: 'move', reason: '', priority: 0, requiresAP: true }, character, 'No battlefield');
+    }
+
+    // Spend 1 AP for move action
+    if (!this.manager.spendAp(character, 1)) {
+      return this.createFailure({ type: 'move', reason: '', priority: 0, requiresAP: true }, character, 'Not enough AP');
     }
 
     // Find a weapon for opportunity attack check
@@ -361,6 +466,11 @@ export class AIActionExecutor {
   ): ExecutionResult {
     if (!this.manager.battlefield) {
       return this.createFailure({ type: 'close_combat', reason: '', priority: 0, requiresAP: true }, character, 'No battlefield');
+    }
+
+    // Spend 1 AP for close combat attack
+    if (!this.manager.spendAp(character, 1)) {
+      return this.createFailure({ type: 'close_combat', reason: '', priority: 0, requiresAP: true }, character, 'Not enough AP');
     }
 
     const selectedWeapon = weapon ?? this.findMeleeWeapon(character);
@@ -411,6 +521,11 @@ export class AIActionExecutor {
       return this.createFailure({ type: 'ranged_combat', reason: '', priority: 0, requiresAP: true }, character, 'No battlefield');
     }
 
+    // Spend 1 AP for ranged combat attack
+    if (!this.manager.spendAp(character, 1)) {
+      return this.createFailure({ type: 'ranged_combat', reason: '', priority: 0, requiresAP: true }, character, 'Not enough AP');
+    }
+
     const selectedWeapon = weapon ?? this.findRangedWeapon(character);
     if (!selectedWeapon) {
       return this.createFailure(
@@ -424,7 +539,7 @@ export class AIActionExecutor {
       // Calculate distance and ORM
       const attackerPos = this.manager.battlefield.getCharacterPosition(character);
       const targetPos = this.manager.battlefield.getCharacterPosition(target);
-      
+
       if (!attackerPos || !targetPos) {
         return this.createFailure(
           { type: 'ranged_combat', target, weapon: selectedWeapon, reason: 'Ranged combat', priority: 3, requiresAP: true },
@@ -710,6 +825,45 @@ export class AIActionExecutor {
     }
 
     try {
+      // Check for weapon swap sub-action
+      const decision = this.lastDecision;
+      if (decision?.subAction === 'unstow' && decision.itemName) {
+        const result = this.manager.executeUnstowItem(character, {
+          itemName: decision.itemName,
+        });
+        if (!result.success) {
+          return this.createFailure(
+            { type: 'fiddle', reason: 'Unstow', priority: 2, requiresAP: true },
+            character,
+            result.reason || 'Unstow failed'
+          );
+        }
+        return this.createSuccess(
+          { type: 'fiddle', reason: `Unstow ${decision.itemName}`, priority: 2, requiresAP: true },
+          character,
+          `Drew ${decision.itemName}`
+        );
+      }
+      
+      if (decision?.subAction === 'stow' && decision.itemName) {
+        const result = this.manager.executeStowItem(character, {
+          itemName: decision.itemName,
+        });
+        if (!result.success) {
+          return this.createFailure(
+            { type: 'fiddle', reason: 'Stow', priority: 2, requiresAP: true },
+            character,
+            result.reason || 'Stow failed'
+          );
+        }
+        return this.createSuccess(
+          { type: 'fiddle', reason: `Stow ${decision.itemName}`, priority: 2, requiresAP: true },
+          character,
+          `Stowed ${decision.itemName}`
+        );
+      }
+
+      // Default fiddle action
       const result = this.manager.executeFiddle(character, {
         spendAp: true,
         attribute: 'int',
@@ -841,6 +995,69 @@ export class AIActionExecutor {
   }
 
   /**
+   * Log an action to the instrumentation logger
+   */
+  private logAction(
+    decision: ActionDecision,
+    character: Character,
+    context: AIExecutionContext,
+    result: ExecutionResult
+  ): void {
+    if (!this.logger) return;
+
+    const actionType = this.mapActionTypeToLogged(decision.type);
+    const apRemaining = this.manager.getApRemaining(character);
+    const loggedAction: LoggedAction = {
+      turn: context.currentTurn,
+      initiative: 0, // Would need to get from manager
+      actorId: character.id,
+      actorName: character.name || character.profile.name,
+      actorProfile: character.profile.name,
+      actionType,
+      description: this.getActionDescription(decision, character),
+      apSpent: 1, // Most actions cost 1 AP
+      apRemaining,
+      targetId: decision.target?.id,
+      targetName: decision.target?.name,
+      targetProfile: decision.target?.profile.name,
+      outcome: result.error || 'Completed',
+      timestamp: new Date().toISOString(),
+    };
+
+    this.logger.logAction(loggedAction);
+  }
+
+  private mapActionTypeToLogged(type: ActionType): LoggedActionType {
+    const typeMap: Record<ActionType, LoggedActionType> = {
+      'move': LoggedActionType.MOVE,
+      'close_combat': LoggedActionType.CLOSE_COMBAT,
+      'ranged_combat': LoggedActionType.RANGE_COMBAT,
+      'disengage': LoggedActionType.DISENGAGE,
+      'wait': LoggedActionType.WAIT,
+      'hide': LoggedActionType.HIDE,
+      'rally': LoggedActionType.RALLY,
+      'revive': LoggedActionType.REVIVE,
+      'fiddle': LoggedActionType.FIDDLE,
+      'hold': LoggedActionType.OTHER,
+      'detect': LoggedActionType.OTHER,
+      'none': LoggedActionType.OTHER,
+      'pushing': LoggedActionType.OTHER, // Pushing is a special action
+      'refresh': LoggedActionType.OTHER, // Refresh is IP spending
+    };
+    return typeMap[type] || LoggedActionType.OTHER;
+  }
+
+  private getActionDescription(decision: ActionDecision, character: Character): string {
+    if (decision.target) {
+      return `${decision.type} vs ${decision.target.name || decision.target.profile.name}`;
+    }
+    if (decision.position) {
+      return `Move to (${decision.position.x}, ${decision.position.y})`;
+    }
+    return decision.type;
+  }
+
+  /**
    * Reset replan attempts (call at start of each turn)
    */
   resetReplanAttempts(): void {
@@ -853,7 +1070,8 @@ export class AIActionExecutor {
  */
 export function createAIExecutor(
   manager: GameManager,
-  config?: Partial<AIExecutorConfig>
+  config?: Partial<AIExecutorConfig>,
+  logger?: InstrumentationLogger
 ): AIActionExecutor {
-  return new AIActionExecutor(manager, config);
+  return new AIActionExecutor(manager, config, logger);
 }

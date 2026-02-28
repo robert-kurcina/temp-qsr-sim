@@ -1,0 +1,1073 @@
+/**
+ * QSR Instrumentation System
+ * 
+ * Provides configurable detail levels for battle reports and action logging.
+ * Enables troubleshooting of combat, Wait status, Damage application, and AI behavior.
+ * 
+ * Detail Levels (Grades):
+ * - [0] None: No instrumentation
+ * - [1] Summary: High-level battle summary only
+ * - [2] By Action: Actions performed by each model
+ * - [3] By Action with Tests: Actions + Test results (pass/fail, cascades)
+ * - [4] By Action with Tests and Dice Rolls: Actions + Tests + individual dice results
+ * - [5] Full Detail: Actions + Tests + Dice + Traits by source + Situational Modifiers
+ */
+
+import { Character } from '../core/Character';
+import { Item } from '../core/Item';
+
+// ============================================================================
+// INSTRUMENTATION GRADES
+// ============================================================================
+
+/**
+ * Instrumentation detail level
+ */
+export enum InstrumentationGrade {
+  /** No instrumentation */
+  NONE = 0,
+  /** Summary information only (default) */
+  SUMMARY = 1,
+  /** Actions performed by each model */
+  BY_ACTION = 2,
+  /** Actions + Test results */
+  BY_ACTION_WITH_TESTS = 3,
+  /** Actions + Tests + Dice rolls */
+  BY_ACTION_WITH_DICE = 4,
+  /** Full detail: Actions + Tests + Dice + Traits + Modifiers */
+  FULL_DETAIL = 5,
+}
+
+/**
+ * Instrumentation configuration
+ */
+export interface InstrumentationConfig {
+  /** Detail level (0-5) */
+  grade: InstrumentationGrade;
+  /** Include trait source information (archetype, item) */
+  includeTraitSources?: boolean;
+  /** Include situational test modifiers */
+  includeSituationalModifiers?: boolean;
+  /** Include AI decision reasoning */
+  includeAIReasoning?: boolean;
+  /** Output format */
+  format?: 'json' | 'console' | 'both';
+}
+
+/**
+ * Default instrumentation config
+ */
+export const DEFAULT_INSTRUMENTATION_CONFIG: InstrumentationConfig = {
+  grade: InstrumentationGrade.SUMMARY,
+  includeTraitSources: false,
+  includeSituationalModifiers: false,
+  includeAIReasoning: false,
+  format: 'both',
+};
+
+// ============================================================================
+// ACTION LOGGING TYPES
+// ============================================================================
+
+/**
+ * Action type enumeration
+ */
+export enum LoggedActionType {
+  MOVE = 'Move',
+  CLOSE_COMBAT = 'Close Combat',
+  RANGE_COMBAT = 'Range Combat',
+  DISENGAGE = 'Disengage',
+  WAIT = 'Wait',
+  HIDE = 'Hide',
+  RALLY = 'Rally',
+  REVIVE = 'Revive',
+  FIDDLE = 'Fiddle',
+  REACT = 'React',
+  BONUS_ACTION = 'Bonus Action',
+  PASSIVE_OPTION = 'Passive Option',
+  INITIATIVE_TEST = 'Initiative Test',
+  MORALE_TEST = 'Morale Test',
+  SUPPRESSION_TEST = 'Suppression Test',
+  OTHER = 'Other',
+}
+
+/**
+ * Test result logging
+ */
+export interface LoggedTestResult {
+  /** Test type */
+  testType: string;
+  /** Test score (successes) */
+  score: number;
+  /** Opponent score (if opposed) */
+  opponentScore?: number;
+  /** Pass/fail result */
+  passed: boolean;
+  /** Cascades generated */
+  cascades: number;
+  /** Carry-over dice */
+  carryOver: number;
+}
+
+/**
+ * Dice roll logging
+ */
+export interface LoggedDiceRoll {
+  /** Dice type (Base, Modifier, Wild) */
+  diceType: 'Base' | 'Modifier' | 'Wild';
+  /** Individual die results */
+  rolls: number[];
+  /** Successes from this roll */
+  successes: number;
+  /** Carry-over from this roll */
+  carryOver: number;
+}
+
+/**
+ * Trait source logging
+ */
+export interface LoggedTraitSource {
+  /** Trait name */
+  trait: string;
+  /** Trait level */
+  level?: number;
+  /** Source type */
+  sourceType: 'archetype' | 'item' | 'status' | 'terrain';
+  /** Source name (archetype name, item name, etc.) */
+  sourceName: string;
+  /** Applied effect */
+  effect: string;
+}
+
+/**
+ * Situational modifier logging
+ */
+export interface LoggedSituationalModifier {
+  /** Modifier name */
+  name: string;
+  /** Modifier value (e.g., +1m, -1b) */
+  value: string;
+  /** Reason for modifier */
+  reason: string;
+}
+
+/**
+ * Complete action log entry
+ */
+export interface LoggedAction {
+  /** Turn number */
+  turn: number;
+  /** Initiative number */
+  initiative: number;
+  /** Actor character ID */
+  actorId: string;
+  /** Actor character name */
+  actorName: string;
+  /** Actor profile name (grade 1+) */
+  actorProfile?: string;
+  /** Action type */
+  actionType: LoggedActionType;
+  /** Action description */
+  description: string;
+  /** AP spent */
+  apSpent: number;
+  /** AP remaining after action */
+  apRemaining: number;
+  /** Target character ID (if applicable) */
+  targetId?: string;
+  /** Target character name (if applicable) */
+  targetName?: string;
+  /** Target profile name (grade 1+) */
+  targetProfile?: string;
+  /** Test results (grade 3+) */
+  testResults?: LoggedTestResult[];
+  /** Dice rolls (grade 4+) */
+  diceRolls?: LoggedDiceRoll[];
+  /** Traits used (grade 5) */
+  traitsUsed?: LoggedTraitSource[];
+  /** Situational modifiers (grade 5) */
+  situationalModifiers?: LoggedSituationalModifier[];
+  /** AI reasoning (if AI-controlled) */
+  aiReasoning?: string;
+  /** Outcome summary */
+  outcome: string;
+  /** Timestamp */
+  timestamp: string;
+}
+
+// ============================================================================
+// BATTLE LOG STRUCTURE
+// ============================================================================
+
+/**
+ * Initiative Points tracking per turn (grade 2+)
+ */
+export interface TurnInitiativeTracking {
+  /** Turn number */
+  turn: number;
+  /** Initiative Points per side at start of turn */
+  ipBySide: Record<string, number>;
+  /** IP spending log */
+  ipSpending: {
+    /** Side ID */
+    sideId: string;
+    /** Character ID who spent IP */
+    characterId: string;
+    /** IP spent (usually 1) */
+    ipSpent: number;
+    /** Reason for spending */
+    reason: 'push' | 'react' | 'bonus_action';
+    /** Turn when spent */
+    turn: number;
+  }[];
+}
+
+/**
+ * Complete battle log
+ */
+export interface BattleLog {
+  /** Battle ID */
+  battleId: string;
+  /** Instrumentation config used */
+  config: InstrumentationConfig;
+  /** Start timestamp */
+  startedAt: string;
+  /** End timestamp */
+  endedAt: string;
+  /** Total turns */
+  totalTurns: number;
+  /** Action log entries */
+  actions: LoggedAction[];
+  /** Summary statistics */
+  summary: BattleLogSummary;
+  /** Roster info (grade 1+) */
+  roster?: RosterInfo[];
+  /** Initiative tracking per turn (grade 2+) */
+  initiativeTracking?: TurnInitiativeTracking[];
+}
+
+/**
+ * Character roster info for instrumentation (grade 1+)
+ */
+export interface RosterInfo {
+  /** Side ID */
+  sideId: string;
+  /** Side name */
+  sideName: string;
+  /** Assembly name */
+  assemblyName: string;
+  /** Archetype name */
+  archetypeName: string;
+  /** Characters in assembly */
+  characters: {
+    /** Character ID */
+    id: string;
+    /** Character name */
+    name: string;
+    /** Profile name */
+    profile: string;
+    /** Archetype */
+    archetype: string;
+    /** Items equipped */
+    items: string[];
+  }[];
+}
+
+/**
+ * Battle log summary statistics
+ */
+export interface BattleLogSummary {
+  /** Total actions performed */
+  totalActions: number;
+  /** Actions by type */
+  actionsByType: Record<string, number>;
+  /** Total tests performed */
+  totalTests: number;
+  /** Tests passed */
+  testsPassed: number;
+  /** Tests failed */
+  testsFailed: number;
+  /** Total cascades generated */
+  totalCascades: number;
+  /** Total dice rolled */
+  totalDiceRolled: number;
+  /** Traits used count */
+  traitsUsedCount: number;
+  /** Wait actions performed */
+  waitActions: number;
+  /** React actions performed */
+  reactActions: number;
+  /** Bonus actions performed */
+  bonusActions: number;
+  /** Casualties per side */
+  casualties: Record<string, number>;
+}
+
+// ============================================================================
+// BATTLE INSTRUMENTATION STRUCTURE (Grade 2+)
+// ============================================================================
+
+/**
+ * Start of Game Report
+ */
+export interface StartOfGameReport {
+  /** Mission Configuration */
+  mission: {
+    id: string;
+    name: string;
+    gameSize: string;
+    sides: number;
+    terrainDensity: number;
+    lighting: {
+      name: string;
+      visibilityOR: number;
+    };
+    battlefieldSize: number;
+    endGameTriggerTurn: number;
+  };
+  
+  /** Battlefield Visualization */
+  battlefield: {
+    svgPath: string;
+    svgUrl?: string;
+    terrainElements: {
+      id: string;
+      type: string;
+      vertices: { x: number; y: number }[];
+    }[];
+    modelStartingPositions: {
+      sideId: string;
+      models: {
+        modelId: string;
+        characterName: string;
+        position: { x: number; y: number };
+      }[];
+    }[];
+  };
+  
+  /** Side Declarations */
+  sides: {
+    sideId: string;
+    sideName: string;
+    tacticalDoctrine: string;
+    assemblies: {
+      assemblyName: string;
+      totalBP: number;
+      characters: {
+        modelId: string;
+        characterName: string;
+        profile: {
+          name: string;
+          archetype: string;
+          totalBP: number;
+          attributes: {
+            cca: number; rca: number; ref: number;
+            int: number; pow: number; str: number;
+            for: number; mov: number; siz: number;
+          };
+          traits: string[];
+          items: {
+            name: string;
+            classification: string;
+            traits: string[];
+            bp: number;
+          }[];
+        };
+        deploymentPosition: { x: number; y: number };
+      }[];
+    }[];
+    initiativePoints: number;
+    hasInitiativeCard: boolean;
+  }[];
+  
+  /** AI Configuration */
+  aiConfig: {
+    strategicLayerEnabled: boolean;
+    tacticalLayerEnabled: boolean;
+    characterAIEnabled: boolean;
+    maxActionsPerTurn: number;
+    instrumentationGrade: number;
+  };
+  
+  /** Random Seed */
+  seed?: number;
+}
+
+/**
+ * Initiative Test Report (Start of Turn)
+ */
+export interface InitiativeTestReport {
+  turn: number;
+  modelsInLOS: {
+    sideId: string;
+    models: {
+      modelId: string;
+      visibleEnemies: string[];
+    }[];
+  }[];
+  leadershipBonus?: { modelId: string; bonus: number };
+  tacticsBonus?: { modelId: string; bonus: number };
+  rolls: {
+    sideId: string;
+    dice: number[];
+    successes: number;
+    pips: number;
+  }[];
+  winner: string | null;
+  tieBroken: boolean;
+  initiativeCardUsed: boolean;
+  ipAwarded: {
+    sideId: string;
+    amount: number;
+    reason: 'highest_initiative' | 'carry_over' | 'tie_break';
+  }[];
+  initiativeCard: {
+    holder: string | null;
+    transferred: boolean;
+  };
+  ipAvailable: Record<string, number>;
+}
+
+/**
+ * Turn Action Report (During Turn)
+ */
+export interface TurnActionReport {
+  turn: number;
+  activations: {
+    sideId: string;
+    modelId: string;
+    apStart: number;
+    actions: {
+      actionType: string;
+      apSpent: number;
+      apRemaining: number;
+      result: 'success' | 'failure';
+      details?: any;
+      tests?: {
+        testType: string;
+        dicePool: { base: number; modifier: number; wild: number };
+        rolls: number[];
+        successes: number;
+        result: 'pass' | 'fail';
+        initiativeCardUsed: boolean;
+      }[];
+      ipSpent?: {
+        sideId: string;
+        amount: number;
+        purpose: 'maintain_initiative' | 'force_initiative' | 'refresh';
+        characterId?: string;
+      };
+    }[];
+    apEnd: number;
+  }[];
+  initiativeCard: {
+    holder: string | null;
+    usedThisTurn: boolean;
+    transferred: boolean;
+  };
+}
+
+/**
+ * Turn End Report
+ */
+export interface TurnEndReport {
+  turn: number;
+  ipDiscarded: {
+    sideId: string;
+    amount: number;
+  }[];
+  bottleTests?: {
+    sideId: string;
+    modelsRequired: string[];
+    results: {
+      modelId: string;
+      roll: number;
+      target: number;
+      result: 'pass' | 'fail';
+    }[];
+    sideBottled: boolean;
+  }[];
+  endGameTrigger: {
+    diceAdded: boolean;
+    totalDice: number;
+    rolled: boolean;
+    rolls?: number[];
+    gameEnded: boolean;
+  };
+  standings: {
+    sideId: string;
+    victoryPoints: number;
+    resourcePoints: number;
+  }[];
+}
+
+/**
+ * Game End Report
+ */
+export interface GameEndReport {
+  endReason: 'elimination' | 'bottled' | 'end_game_trigger' | 'turn_limit';
+  finalStandings: {
+    sideId: string;
+    victoryPoints: number;
+    resourcePoints: number;
+    modelsRemaining: number;
+    rank: number;
+  }[];
+  winner: {
+    sideId: string | null;
+    tie: boolean;
+    tieBreakMethod: 'none' | 'rp' | 'initiative_card';
+    reason: string;
+  };
+  keysAchieved: {
+    sideId: string;
+    keys: {
+      keyName: string;
+      achieved: boolean;
+      details?: any;
+    }[];
+  }[];
+  statistics: {
+    totalTurns: number;
+    totalActions: number;
+    totalTests: number;
+    totalIPSpent: Record<string, number>;
+    casualties: Record<string, number>;
+  };
+}
+
+// ============================================================================
+// INSTRUMENTATION LOGGER
+// ============================================================================
+
+/**
+ * Instrumentation logger class
+ */
+export class InstrumentationLogger {
+  private config: InstrumentationConfig;
+  private battleLog: BattleLog | null = null;
+  private actionBuffer: LoggedAction[] = [];
+
+  constructor(config: InstrumentationConfig = DEFAULT_INSTRUMENTATION_CONFIG) {
+    this.config = config;
+  }
+
+  /**
+   * Start logging for a battle
+   */
+  startBattle(battleId: string): void {
+    this.battleLog = {
+      battleId,
+      config: { ...this.config },
+      startedAt: new Date().toISOString(),
+      endedAt: '',
+      totalTurns: 0,
+      actions: [],
+      summary: {
+        totalActions: 0,
+        actionsByType: {},
+        totalTests: 0,
+        testsPassed: 0,
+        testsFailed: 0,
+        totalCascades: 0,
+        totalDiceRolled: 0,
+        traitsUsedCount: 0,
+        waitActions: 0,
+        reactActions: 0,
+        bonusActions: 0,
+        casualties: {},
+      },
+    };
+    this.actionBuffer = [];
+  }
+
+  /**
+   * Log roster information (grade 1+)
+   */
+  logRoster(roster: RosterInfo[]): void {
+    if (!this.battleLog || this.config.grade === InstrumentationGrade.NONE) {
+      return;
+    }
+    if (this.config.grade >= InstrumentationGrade.SUMMARY) {
+      this.battleLog.roster = roster;
+    }
+  }
+
+  /**
+   * Log initiative points at start of turn (grade 2+)
+   */
+  logInitiativePoints(turn: number, ipBySide: Record<string, number>): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    if (!this.battleLog.initiativeTracking) {
+      this.battleLog.initiativeTracking = [];
+    }
+    this.battleLog.initiativeTracking.push({
+      turn,
+      ipBySide,
+      ipSpending: [],
+    });
+  }
+
+  /**
+   * Log IP spending (grade 2+)
+   */
+  logIpSpending(sideId: string, characterId: string, reason: 'push' | 'react' | 'bonus_action', turn: number): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    const turnTracking = this.battleLog.initiativeTracking?.find(t => t.turn === turn);
+    if (turnTracking) {
+      turnTracking.ipSpending.push({
+        sideId,
+        characterId,
+        ipSpent: 1,
+        reason,
+        turn,
+      });
+    }
+  }
+
+  /**
+   * Log Start of Game report (grade 2+)
+   */
+  logStartOfGame(report: StartOfGameReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store in battleLog for later retrieval
+    (this.battleLog as any).startOfGame = report;
+  }
+
+  /**
+   * Log Initiative Test report (grade 2+)
+   */
+  logInitiativeTest(report: InitiativeTestReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Update initiative tracking with full report
+    const turnTracking = this.battleLog.initiativeTracking?.find(t => t.turn === report.turn);
+    if (turnTracking) {
+      turnTracking.ipBySide = report.ipAvailable;
+    }
+    // Store detailed report for later retrieval
+    if (!(this.battleLog as any).initiativeTests) {
+      (this.battleLog as any).initiativeTests = [];
+    }
+    (this.battleLog as any).initiativeTests.push(report);
+  }
+
+  /**
+   * Log Turn Action report (grade 2+)
+   */
+  logTurnActions(report: TurnActionReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store detailed report for later retrieval
+    if (!(this.battleLog as any).turnActions) {
+      (this.battleLog as any).turnActions = [];
+    }
+    (this.battleLog as any).turnActions.push(report);
+  }
+
+  /**
+   * Log Turn End report (grade 2+)
+   */
+  logTurnEnd(report: TurnEndReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store detailed report for later retrieval
+    if (!(this.battleLog as any).turnEnds) {
+      (this.battleLog as any).turnEnds = [];
+    }
+    (this.battleLog as any).turnEnds.push(report);
+  }
+
+  /**
+   * Log Game End report (grade 2+)
+   */
+  logGameEnd(report: GameEndReport): void {
+    if (!this.battleLog || this.config.grade < InstrumentationGrade.BY_ACTION) {
+      return;
+    }
+    // Store in battleLog for later retrieval
+    (this.battleLog as any).gameEnd = report;
+  }
+
+  /**
+   * End logging for a battle
+   */
+  endBattle(totalTurns: number): BattleLog | null {
+    if (!this.battleLog) return null;
+
+    this.battleLog.endedAt = new Date().toISOString();
+    this.battleLog.totalTurns = totalTurns;
+    this.battleLog.actions = [...this.actionBuffer];
+
+    // Calculate summary statistics
+    this.calculateSummary();
+
+    const log = this.battleLog;
+    this.battleLog = null;
+    this.actionBuffer = [];
+
+    return log;
+  }
+
+  /**
+   * Log an action
+   */
+  logAction(action: LoggedAction): void {
+    if (!this.battleLog || this.config.grade === InstrumentationGrade.NONE) {
+      return;
+    }
+
+    // Filter detail based on grade
+    const filteredAction = this.filterActionByGrade(action);
+    this.actionBuffer.push(filteredAction);
+    
+    // Sync to battle log for immediate access
+    this.battleLog.actions = [...this.actionBuffer];
+
+    // Update summary counters
+    this.updateSummary(action);
+
+    // Console output if configured
+    if (this.config.format === 'console' || this.config.format === 'both') {
+      this.printToConsole(action);
+    }
+  }
+
+  /**
+   * Filter action details based on instrumentation grade
+   */
+  private filterActionByGrade(action: LoggedAction): LoggedAction {
+    if (this.config.grade < InstrumentationGrade.BY_ACTION_WITH_TESTS) {
+      // Remove test results for grade 1-2
+      delete action.testResults;
+    }
+
+    if (this.config.grade < InstrumentationGrade.BY_ACTION_WITH_DICE) {
+      // Remove dice rolls for grade 1-3
+      delete action.diceRolls;
+    }
+
+    if (this.config.grade < InstrumentationGrade.FULL_DETAIL) {
+      // Remove traits and modifiers for grade 1-4
+      delete action.traitsUsed;
+      delete action.situationalModifiers;
+    }
+
+    if (!this.config.includeAIReasoning) {
+      delete action.aiReasoning;
+    }
+
+    return action;
+  }
+
+  /**
+   * Update summary statistics
+   */
+  private updateSummary(action: LoggedAction): void {
+    if (!this.battleLog) return;
+
+    const summary = this.battleLog.summary;
+    summary.totalActions++;
+
+    // Count by action type
+    const actionType = action.actionType;
+    summary.actionsByType[actionType] = (summary.actionsByType[actionType] || 0) + 1;
+
+    // Count specific action types
+    if (actionType === LoggedActionType.WAIT) {
+      summary.waitActions++;
+    } else if (actionType === LoggedActionType.REACT) {
+      summary.reactActions++;
+    } else if (actionType === LoggedActionType.BONUS_ACTION) {
+      summary.bonusActions++;
+    }
+
+    // Count tests and cascades
+    if (action.testResults) {
+      for (const test of action.testResults) {
+        summary.totalTests++;
+        if (test.passed) {
+          summary.testsPassed++;
+        } else {
+          summary.testsFailed++;
+        }
+        summary.totalCascades += test.cascades;
+      }
+    }
+
+    // Count dice rolls
+    if (action.diceRolls) {
+      for (const roll of action.diceRolls) {
+        summary.totalDiceRolled += roll.rolls.length;
+      }
+    }
+
+    // Count traits used
+    if (action.traitsUsed) {
+      summary.traitsUsedCount += action.traitsUsed.length;
+    }
+  }
+
+  /**
+   * Calculate final summary statistics
+   */
+  private calculateSummary(): void {
+    if (!this.battleLog) return;
+
+    // Additional calculations can be added here
+  }
+
+  /**
+   * Print action to console
+   */
+  private printToConsole(action: LoggedAction): void {
+    if (this.config.grade === InstrumentationGrade.NONE) return;
+
+    const grade = this.config.grade;
+    const indent = '  ';
+
+    // Grade 1: Summary
+    if (grade >= InstrumentationGrade.SUMMARY) {
+      console.log(`\n[T${action.turn} I${action.initiative}] ${action.actorName}: ${action.actionType}`);
+      console.log(`${indent}${action.description}`);
+      console.log(`${indent}Outcome: ${action.outcome}`);
+    }
+
+    // Grade 2+: Action details
+    if (grade >= InstrumentationGrade.BY_ACTION) {
+      console.log(`${indent}AP: ${action.apSpent} spent, ${action.apRemaining} remaining`);
+      if (action.targetName) {
+        console.log(`${indent}Target: ${action.targetName}`);
+      }
+    }
+
+    // Grade 3+: Test results
+    if (grade >= InstrumentationGrade.BY_ACTION_WITH_TESTS && action.testResults) {
+      console.log(`${indent}Tests:`);
+      for (const test of action.testResults) {
+        const result = test.passed ? '✓ PASS' : '✗ FAIL';
+        console.log(`${indent}${indent}${test.testType}: ${result} (Score: ${test.score}, Cascades: ${test.cascades})`);
+      }
+    }
+
+    // Grade 4+: Dice rolls
+    if (grade >= InstrumentationGrade.BY_ACTION_WITH_DICE && action.diceRolls) {
+      console.log(`${indent}Dice:`);
+      for (const roll of action.diceRolls) {
+        console.log(`${indent}${indent}${roll.diceType}: [${roll.rolls.join(', ')}] → ${roll.successes} successes`);
+      }
+    }
+
+    // Grade 5: Traits and modifiers
+    if (grade >= InstrumentationGrade.FULL_DETAIL) {
+      if (action.traitsUsed && action.traitsUsed.length > 0) {
+        console.log(`${indent}Traits:`);
+        for (const trait of action.traitsUsed) {
+          console.log(`${indent}${indent}${trait.trait}${trait.level ? ` ${trait.level}` : ''} (${trait.sourceType}: ${trait.sourceName}) → ${trait.effect}`);
+        }
+      }
+
+      if (action.situationalModifiers && action.situationalModifiers.length > 0) {
+        console.log(`${indent}Modifiers:`);
+        for (const mod of action.situationalModifiers) {
+          console.log(`${indent}${indent}${mod.name}: ${mod.value} (${mod.reason})`);
+        }
+      }
+    }
+
+    // AI reasoning
+    if (action.aiReasoning && this.config.includeAIReasoning) {
+      console.log(`${indent}AI Reasoning: ${action.aiReasoning}`);
+    }
+  }
+
+  /**
+   * Get current battle log
+   */
+  getBattleLog(): BattleLog | null {
+    return this.battleLog;
+  }
+
+  /**
+   * Export battle log as JSON
+   */
+  exportToJSON(): string | null {
+    if (!this.battleLog) return null;
+    return JSON.stringify(this.battleLog, null, 2);
+  }
+
+  /**
+   * Set instrumentation grade
+   */
+  setGrade(grade: InstrumentationGrade): void {
+    this.config.grade = grade;
+  }
+
+  /**
+   * Enable/disable specific features
+   */
+  configure(options: Partial<InstrumentationConfig>): void {
+    this.config = { ...this.config, ...options };
+  }
+}
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Create a logged test result
+ */
+export function createLoggedTestResult(
+  testType: string,
+  score: number,
+  opponentScore: number | undefined,
+  passed: boolean,
+  cascades: number,
+  carryOver: number
+): LoggedTestResult {
+  return {
+    testType,
+    score,
+    opponentScore,
+    passed,
+    cascades,
+    carryOver,
+  };
+}
+
+/**
+ * Create a logged dice roll
+ */
+export function createLoggedDiceRoll(
+  diceType: 'Base' | 'Modifier' | 'Wild',
+  rolls: number[],
+  successes: number,
+  carryOver: number
+): LoggedDiceRoll {
+  return {
+    diceType,
+    rolls,
+    successes,
+    carryOver,
+  };
+}
+
+/**
+ * Create a logged trait source
+ */
+export function createLoggedTraitSource(
+  trait: string,
+  sourceType: 'archetype' | 'item' | 'status' | 'terrain',
+  sourceName: string,
+  effect: string,
+  level?: number
+): LoggedTraitSource {
+  return {
+    trait,
+    level,
+    sourceType,
+    sourceName,
+    effect,
+  };
+}
+
+/**
+ * Create a logged situational modifier
+ */
+export function createLoggedSituationalModifier(
+  name: string,
+  value: string,
+  reason: string
+): LoggedSituationalModifier {
+  return {
+    name,
+    value,
+    reason,
+  };
+}
+
+/**
+ * Get trait sources from character and items
+ */
+export function getTraitSources(character: Character): LoggedTraitSource[] {
+  const sources: LoggedTraitSource[] = [];
+
+  // Archetype traits
+  if (character.profile?.allTraits) {
+    for (const trait of character.profile.allTraits) {
+      sources.push({
+        trait,
+        sourceType: 'archetype',
+        sourceName: character.profile.archetypeName || 'Unknown',
+        effect: 'Trait bonus',
+      });
+    }
+  }
+
+  // Item traits
+  const items = [
+    ...(character.profile?.equipment || []),
+    ...(character.profile?.items || []),
+    ...(character.profile?.inHandItems || []),
+  ];
+
+  for (const item of items) {
+    if (item.traits) {
+      for (const trait of item.traits) {
+        sources.push({
+          trait,
+          sourceType: 'item',
+          sourceName: item.name,
+          effect: 'Item trait',
+        });
+      }
+    }
+  }
+
+  return sources;
+}
+
+// ============================================================================
+// GLOBAL LOGGER INSTANCE
+// ============================================================================
+
+/**
+ * Global instrumentation logger instance
+ */
+let globalLogger: InstrumentationLogger | null = null;
+
+/**
+ * Get or create global logger
+ */
+export function getInstrumentationLogger(): InstrumentationLogger {
+  if (!globalLogger) {
+    globalLogger = new InstrumentationLogger(DEFAULT_INSTRUMENTATION_CONFIG);
+  }
+  return globalLogger;
+}
+
+/**
+ * Set global logger configuration
+ */
+export function configureInstrumentation(config: InstrumentationConfig): void {
+  const logger = getInstrumentationLogger();
+  logger.configure(config);
+}
+
+/**
+ * Set global instrumentation grade
+ */
+export function setInstrumentationGrade(grade: InstrumentationGrade): void {
+  const logger = getInstrumentationLogger();
+  logger.setGrade(grade);
+}

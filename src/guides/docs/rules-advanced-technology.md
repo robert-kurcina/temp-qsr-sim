@@ -1,0 +1,151 @@
+---
+title: Advanced Rules - Technology
+description: Complete rules for Technological Ages, Kardeshev Scale, and anachronistic technology.
+priority: 6
+---
+
+# Advanced Rules - Technology
+
+**Rule Level:** Advanced ()
+
+---
+
+## Technological Ages
+
+MEST Tactics identify "**ages**" as shown in the list below, such as "**Stone Age**" or "**Atomic Age**" to limit weapons, armor, equipment, and archetypes available for play.
+
+### Periods & Ages
+
+The **Ovodium Cosmogos** is a collection of parallel universes; a multiverse. Elements from one Frame Parallel may have incursions that affect adjacent universes.
+
+Many **anachronistic** ("out-of-time") elements exist which come from future Ages. These are things such as the presence of energy weapons during the Iron Age perhaps as a per se "**magic staff of power**", or the use powered battle armor during the Machine Age. Players are free to invent their own cross-over elements as they desire in order to have the gaming experience that they want.
+
+---
+
+## The Historical Periods
+
+At the time of this writing, it is 2020 CE and we as a civilization are near the beginning of the **Robotics Age** just a few decades into the **Information Age**. Each of the Historical Periods includes many sub-divisions into Ages that include technological inventions or evolutions that create global turmoil.
+
+### Ancient Period
+
+- **Rudimentary Light or Medium armor**, usually just Mail
+- **Spear, Sword, Club, Sling, and Bow weapons**
+
+### Archaic Period
+
+- Features **Heavy and Field armors**
+- Introduces the very first **Single action Pistols, Muskets, and Rifles** all using Blackpowder
+- **Early bombs**
+
+### Expansionist Period
+
+- **Telescopes, Sailing ships**, standardized weapons, armor, and equipment
+- **Telegraph, telephone**, and modern smokeless Gun-powder weapons
+
+### Modern Period
+
+- **Machine and submachine-gun weapons with ROF**
+- **Hand grenades, Bulletproof or Bombproof armors**
+- **Radio Comm-links**
+- Very few if any Melee weapons
+
+### Near Future Period
+
+- **Robots, androids ("automatons")**, Beam Weapons
+- **Force fields and shields**
+- **Vibro swords and power-gloves** are introduced
+
+### Far Future Period
+
+- **Virtual bodies**, Just-in-time weapons and armor
+- **Supercomputer brains**, and gene-crafted beasts
+- **Psionic weapons** and rogue killer robots roam the battlefields
+- Human-kind experiences **genetic drift**
+
+### Fantastic Period
+
+- The entry point into **high-fantasy and hellish chaos clouds**
+- The ever presence of **demons, eldritch beings, dark wizards** and literal **reality-distortion fields**
+
+---
+
+## Kardeshev Scale
+
+A **Technological Singularity** occurs during the late **Fusion Age** (circa 2050 CE) which helps advance civilization on Earth into the start of a **Type I Kardeshev Scale** once it is properly controlled. Uncontrolled it destroys civilization.
+
+The **Kardeshev Scale** is used as a rough estimate of how much energy a civilization generates in total with implications of how it came to be there and what it means in terms of what is possible.
+
+The numbers **, , , and ** indicate the **Kardashev Civilization Types: I, II, III, or IV**. Up to this point, Earth is a "**Type Zero**" civilization which can be considered a "**Third World backwater**" planet for the rest of the universe. As with Ages, there are aspects of each type which may appear sporadically in earlier types.
+
+### Type I
+
+Enough of physics and science has been discovered and engineered to allow **interplanetary colonization**. This is the rise of corporation-driven warfare of all forms across the planets within the Solar system. At this point, belligerent life elsewhere in the universe takes greater interest in earthly affairs.
+
+### Type II
+
+Earth is capable of **interstellar colonization** and will meet alien life, some of which are classified as "**sophonts**" meaning intelligent. Competition for newly discovered resources provide a basis for interstellar warfare and sophont exploitation using **MEMSics**.
+
+### Type III
+
+By this stage, human civilization has met and caused conflicts against other **intra-galactic civilizations**, and has begun **inter-dimensional exploration**. Through technological enhancement of the microtubules within each brain cell, **psionics becomes wide-spread** and no longer an isolated biological phenomenon.
+
+### Type IV
+
+At Type IV, **local reality manipulation** becomes common place. Dreams and wishes create **memetic** ("mind things") effects that affect the world around each charismatic and willful practitioner. It is the creation of "**psychic spheres**" where the collective unconscious of a culture or religion persists as a tangible "**Fifth Dimension**", that can be visited and also have its visitors come to us.
+
+### Type V
+
+This is the official start of "**scientific magic**" known as "**Arcanics**" layered upon the psychic spheres which now can have instant cross-universe effects.
+
+---
+
+## Anachronisms
+
+At the root of every setting within each genre of MEST Tactics is some form of **anachronism** where technology from later Technological Ages is present earlier than usual.
+
+Something from the future, even from the very next "Age", be it a radio or a main battle tank, will always require:
+- Greater manufacturing infrastructure
+- More inter-disciplinary science and engineering effort
+- An immense logistical support network not normally available
+
+It would be **absurd**, but entirely possible within the in-game universe that is within the MEST.
+
+---
+
+## Time Lines
+
+### Technological Periods and Ages
+
+| Period | Age | Circa | Notes |
+|--------|-----|-------|-------|
+| **Ancient** | Stone | 5000 BCE | Alcohol. Hide Armor. Flint Weapons. Slings. Bows. Shields. Horse riders |
+| **Ancient** | Bronze | 2250 BCE | Math. Writing. Bronze Weapons. Swords. Metal Armor. Chariots. Oared Ships |
+| **Ancient** | Iron | 500 BCE | Cartography. Scrolls. Iron weapons. Crossbow. Aqueducts. Bridges and Dams. Streets. Gears. Locks |
+| **Archaic** | Dark | 500 CE | Roads. Medicine. Sanitation. Stirrup. Chemical Warfare. Horse-collar. Lenses |
+| **Archaic** | Medieval | 1000 CE | Gun-powder. Explosives. Compass. Movable Type. Scientific Method |
+| **Archaic** | Renaissance | 1300 CE | Steel Weapons. Chemistry. Algebra. Artillery. Longbow |
+| **Expansionist** | Colonial | 1500 CE | Plate Armor. Armored Horse Cavalry. Blackpowder Weapons |
+| **Expansionist** | Sail | 1650 CE | Full Sail Ships. Encryption. Calculus. Telescope. Difference Engine. Clockworks. Germ Theory |
+| **Expansionist** | Industrial | 1750 CE | Steam Power. Railroads. Telegraph. Machined parts. Hot Air Balloons. Leyden Capacitors. Hydrogen Gas |
+| **Machine** | Machine | 1850 CE | Electric Power. Batteries. Telephone. Antiseptics. Anesthetics. Vaccinations. Ironclads. Helium and Dirigibles. Plastics |
+| **Modern** | Modern | 1900 CE | Petroleum. Mechanized Warfare. Bio-fuels. Vacuum Tube. Radio. Aircraft |
+| **Modern** | Atomic | 1950 CE | Nuclear power. Jet Engines. Rockets. Radar. Printed-circuits. Brain Surgery |
+| **Near Future** | Information | 2000 CE | Computers. Genetic Manipulation. Holograms. Rail Weapons. 3D Printing. Miniaturization. Designer Drugs |
+| **Near Future** | Robotics | 2025 CE | Robotics. Cybernetics. Automatons. Fuel Cells. Artificial Life. Early Nanotech. Superconductors. Cloning. Jet-packs |
+| **Near Future** | Fusion | 2050 CE | Fusion Power. Beam Weapons. Powered Armor. Mega-structures. Cryonics. Space Colonies. Energy |
+| **Far Future** | Quantum | 2100 CE |  Quantum Computing and Materials. Vibro Weapons. Virtual Cultures. Psychotronics |
+| **Far Future** | Energy | 2250 CE |  Anti-matter Power. Grey Goo. Biomimicry. Force fields. Synthetic Bodies. Light-drives. MEMSics |
+| **Fantastic** | Gravity | 3000 CE |  Gravity Control. Terraforming. Biomemesis. Warp Drives. Dimensional Portals. Star Gates. Etherics |
+| **Fantastic** | Psionic | 3350 CE |  Psionic Dimensions. Eldritch Beings. Pocket Universes. Demons. Psionics |
+| **Fantastic** | Symbolic | 5000 CE |  Manipulation of Reality. Teleporters. Time-travel. Magic. Arcanics |
+
+---
+
+## Related Files
+
+- [[rules-advanced-champions|Advanced Rules - Champions]] - Champions and LoA
+- [[rules-technology-genres|Rules: Technology Genres]] - Genre definitions
+
+---
+
+**Source:** `docs/MEST.Tactics.Advanced-Technology.txt`

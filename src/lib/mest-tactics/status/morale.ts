@@ -13,7 +13,16 @@ export interface MoraleOptions {
   visibilityOrMu?: number;
   opposingModels?: Character[];
 }
-// TODO: Plan AI hooks for compulsory action targeting/paths and bot-driven Morale/Bottle decisions.
+/**
+ * Morale rules for MEST Tactics
+ *
+ * **Rules Reference:** [[rules-damage-and-morale|Rules: Damage & Morale]] - Fear Tests and Morale
+ * **Rules Reference:** [[rules-status|Rules: Status]] - Fear states (Nervous, Disordered, Panicked)
+ *
+ * AI hooks for compulsory action targeting/paths are handled in:
+ * - compulsory-actions.ts - getCompulsoryActions()
+ * - AI utility scorer reads fear state for action prioritization
+ */
 
 export interface FearResult {
   pass: boolean;

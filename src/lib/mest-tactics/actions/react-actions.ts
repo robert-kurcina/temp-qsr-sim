@@ -212,7 +212,9 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
 
     const waitBonus = opponent.state.isWaiting ? 1 : 0;
     const soloBonus = event.isGroupAction ? 1 : 0;
-    const effectiveRef = (opponent.finalAttributes.ref ?? opponent.attributes.ref ?? 0) + waitBonus + soloBonus;
+    // QSR Line 470: Overreach -1 REF penalty
+    const overreachPenalty = opponent.state.isOverreach ? -1 : 0;
+    const effectiveRef = (opponent.finalAttributes.ref ?? opponent.attributes.ref ?? 0) + waitBonus + soloBonus + overreachPenalty;
     const requiredRefBase = event.trigger === 'Move' ? activeMov : activeRef;
     const requiredRef = requiredRefBase + (event.reactingToReact ? 1 : 0);
     const available = effectiveRef >= requiredRef

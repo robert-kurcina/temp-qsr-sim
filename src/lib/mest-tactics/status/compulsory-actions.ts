@@ -31,8 +31,10 @@ export interface CompulsoryAction {
 
 /**
  * Determines the list of compulsory actions a character must perform based on their fear level and situation.
- * TODO: Review for min-max AI hook to choose compulsory action targets/paths.
- * 
+ *
+ * **Rules Reference:** [[rules-status|Rules: Status]] - Fear states and compulsory actions
+ * **AI Integration:** AI should use this for compulsory action target selection via Utility Scorer
+ *
  * @param character The character to check.
  * @returns An array of CompulsoryAction objects. Returns an empty array if no action is required.
  */

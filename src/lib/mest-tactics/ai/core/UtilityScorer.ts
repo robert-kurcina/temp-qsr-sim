@@ -20,6 +20,19 @@ import { forecastWaitReact, rolloutWaitReactBranches } from '../tactical/GOAP';
 import { calculateStratagemModifiers, TacticalDoctrine } from '../stratagems/AIStratagems';
 import { buildScoringContext, calculateScoringModifiers, combineModifiers } from '../stratagems/PredictedScoringIntegration';
 import { applyCombinedModifiersToActions } from '../stratagems/StratagemIntegration';
+import {
+  // ROF/Suppression scoring
+  scoreROFPlacement,
+  scoreSuppressionZone,
+  scoreFirelaneFOF,
+  scorePositionSafety,
+  type ROFMarker,
+  type SuppressionMarker,
+} from './ROFScoring';
+import { calculateAgility, resolveFallingTest } from '../../actions/agility';
+import { getLeapAgilityBonus } from '../../traits/combat-traits';
+import { TERRAIN_HEIGHTS } from '../../battlefield/terrain/TerrainElement';
+import { detectGapAlongLine, canJumpGap, getGapTacticalValue } from '../../battlefield/GapDetector';
 
 /**
  * Weight configuration for utility scoring
@@ -290,13 +303,21 @@ export class UtilityScorer {
           score *= 1.08;
         }
         score *= missionBias.attackPressure;
-        
+
         // Multiple Weapons bonus consideration for melee
         if (qualifiesForMultipleWeapons(context.character, true)) {
           const bonus = getMultipleWeaponsBonus(context.character, 0, true);
           score += bonus * 0.3;
         }
-        
+
+        // Priority 1: Bonus Action potential (Push-back, Pull-back, Reversal)
+        // Evaluate after we know we have a valid melee target
+        const attackerPosition = context.battlefield.getCharacterPosition(context.character);
+        const bonusActionEval = this.evaluateBonusActions(context, target.target, 2, attackerPosition);
+        if (bonusActionEval.score > 0) {
+          score += bonusActionEval.score * 0.5; // Weight bonus actions moderately
+        }
+
         attackActions.push({
           action: 'close_combat',
           target: target.target,
@@ -318,8 +339,19 @@ export class UtilityScorer {
         // Heavier ORM penalties make long, low-probability shots less dominant.
         score *= 1 / (1 + (rangedOpportunity.orm * 0.35));
         if (rangedOpportunity.requiresConcentrate) {
-          // Keep this viable, but less preferred than immediate fire.
-          score *= 0.8;
+          // Priority 3: Prefer Concentrate + Attack when Outnumbered
+          // Concentrate removes +1 Wild die from Opposing Outnumber bonus
+          const friendsNearby = this.countFriendlyInMeleeRange(context, characterPos, 1.5);
+          const enemiesNearby = this.countEnemyInMeleeRange(context, characterPos, 1.5);
+          const isOutnumbered = enemiesNearby > friendsNearby;
+          
+          if (isOutnumbered) {
+            // Strongly prefer Concentrate when outnumbered - removes enemy outnumber bonus
+            score *= 1.4;
+          } else {
+            // Keep this viable, but less preferred than immediate fire
+            score *= 0.8;
+          }
         }
         if (rangedOpportunity.leanOpportunity) {
           score += 1.2;
@@ -447,6 +479,10 @@ export class UtilityScorer {
       const supportActions = this.evaluateSupportActions(context);
       actions.push(...supportActions);
 
+      // Phase 2.5: Evaluate weapon swap actions (stow/unstow items)
+      const weaponSwapActions = this.evaluateWeaponSwap(context);
+      actions.push(...weaponSwapActions);
+
       const canConsiderWait =
         context.apRemaining >= 2 &&
         !context.character.state.isWaiting &&
@@ -461,17 +497,100 @@ export class UtilityScorer {
         const exposure = waitForecast.exposureCount;
         const potentialReactTargets = waitForecast.potentialReactTargets;
         const refBreakpointCount = waitForecast.refGatePassCount;
+        
+        // Cap react-related bonuses to prevent runaway Wait scores
+        // Caps scale with game size - more models = more valid react opportunities
+        // But we cap to prevent 64-model battles from generating 40+ Wait scores
+        const gameSize = context.config.gameSize || 'SMALL';
+        const sizeMultiplier = {
+          'VERY_SMALL': 0.5,
+          'SMALL': 1.0,
+          'MEDIUM': 1.5,
+          'LARGE': 2.0,
+          'VERY_LARGE': 2.5,
+        }[gameSize] || 1.0;
+        
+        const cappedRefBreakpoints = Math.min(refBreakpointCount, Math.round(3 * sizeMultiplier));
+        const cappedReactTargets = Math.min(potentialReactTargets, Math.round(4 * sizeMultiplier));
+
         const waitRefBonus =
-          (refBreakpointCount * 0.78) +
-          (Math.max(0, potentialReactTargets - refBreakpointCount) * 0.2);
+          (cappedRefBreakpoints * 0.78) +
+          (Math.max(0, cappedReactTargets - cappedRefBreakpoints) * 0.2);
         const existingDelay = Math.max(0, context.character.state.delayTokens ?? 0);
         const waitDelayAvoidance = waitForecast.potentialReactTargets > 0
           ? Math.min(1.8, 0.3 + (waitForecast.expectedTriggerCount * 0.5) + (existingDelay * 0.25))
           : 0;
 
+        // Phase 3.4: Wait/React Coordination - bonus for coordinated defense
+        // If allies are already on Wait, add bonus for area denial coverage
+        const alliesOnWait = context.allies.filter(ally => 
+          ally.state.isWaiting && 
+          ally.state.isAttentive && 
+          ally.state.isOrdered &&
+          !ally.state.isKOd &&
+          !ally.state.isEliminated
+        ).length;
+        const waitCoordinationBonus = alliesOnWait > 0 ? alliesOnWait * 0.5 : 0; // +0.5 per ally on Wait
+
         // R2: Tactical Condition Weighting for Wait Uptake
         // Add multipliers when specific tactical conditions favor Wait
-        const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions);
+        const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions) + waitCoordinationBonus;
+
+        // R2.1: Elimination Mission Wait Penalty
+        // Reduce Wait baseline for Elimination mission to encourage combat
+        const missionId = context.config.missionId;
+        const currentTurn = context.currentTurn ?? 1;
+        const eliminationWaitPenalty = missionId === 'QAI_11' ? 1.5 : 0;
+        
+        // R2.2: ZERO VP DESPERATION - Strong penalty for zero VP as turns progress
+        // This directly reduces waitBaseline to force action in Elimination missions
+        const sideVP = context.side?.state.victoryPoints ?? 0;
+        const sideRP = context.side?.state.resourcePoints ?? 0;
+
+        // Priority 4: Always pursue VP/RP - calculate VP deficit vs opponent
+        const opponentVP = context.enemySides?.reduce((max, side) =>
+          Math.max(max, side.state?.victoryPoints ?? 0), 0) ?? 0;
+        const opponentRP = context.enemySides?.reduce((max, side) =>
+          Math.max(max, side.state?.resourcePoints ?? 0), 0) ?? 0;
+        const vpDeficit = Math.max(0, opponentVP - sideVP);
+        const rpDeficit = Math.max(0, opponentRP - sideRP);
+
+        // VP ASPIRATION: AI should always want more VP than opponent
+        // If behind on VP, apply strong penalty to Wait to encourage action
+        if (vpDeficit > 0) {
+          // Base penalty: -3 per VP behind
+          const vpPursuitPenalty = vpDeficit * 3;
+          waitTacticalBonus = Math.max(-10, waitTacticalBonus - vpPursuitPenalty);
+        }
+        
+        // If tied on VP but opponent has more RP, still encourage action
+        if (vpDeficit === 0 && rpDeficit > 0) {
+          const rpPursuitPenalty = rpDeficit * 1.5;
+          waitTacticalBonus = Math.max(-5, waitTacticalBonus - rpPursuitPenalty);
+        }
+
+        // If ahead on VP, allow more defensive play but still encourage securing lead
+        if (sideVP > opponentVP) {
+          const vpLead = sideVP - opponentVP;
+          // Small lead (1-2 VP): slight bonus to Wait (play safer)
+          if (vpLead <= 2) {
+            waitTacticalBonus += vpLead * 0.5;
+          }
+          // Comfortable lead (3+ VP): bigger bonus to Wait (run down clock)
+          else {
+            waitTacticalBonus += 1 + (vpLead - 2) * 0.3;
+          }
+        }
+
+        let zeroVpDesperation = 0;
+        if (missionId === 'QAI_11' && sideVP === 0 && sideRP === 0 && currentTurn >= 4) {
+          // Turn 4-5: -8 Wait score (must start acting)
+          // Turn 6-7: -12 Wait score (desperate)
+          // Turn 8+: -20 Wait score (ALL IN - attack or lose!)
+          if (currentTurn >= 8) zeroVpDesperation = 20;
+          else if (currentTurn >= 6) zeroVpDesperation = 12;
+          else zeroVpDesperation = 8;
+        }
 
         const hasAttackOption = attackActions.length > 0;
         const bestAttackScore = attackActions[0]?.score ?? 0;
@@ -492,7 +611,9 @@ export class UtilityScorer {
           waitRefBonus +
           waitDelayAvoidance +
           waitMissionBias +
-          waitTacticalBonus;
+          waitTacticalBonus -
+          eliminationWaitPenalty -
+          zeroVpDesperation;
         const immediateScore = hasAttackOption ? bestAttackScore : Math.max(0.5, bestMoveScore * 0.85);
         const waitRollout = rolloutWaitReactBranches(context, {
           immediateScore,
@@ -587,6 +708,258 @@ export class UtilityScorer {
       // Re-sort after applying modifiers
       finalActions.sort((a, b) => b.score - a.score);
 
+      // Evaluate Pushing action (QSR p.789-791)
+      // Pushing allows character to gain +1 AP once per Initiative, but adds a Delay token
+      // Evaluate BEFORE finalizing action list so Pushing can enable other actions
+      const canPush =
+        !context.character.state.hasPushedThisInitiative &&
+        (context.character.state.delayTokens ?? 0) === 0;
+      
+      if (canPush) {
+        // Pushing is valuable when character can use extra AP effectively:
+        // 1. Has multiple valuable actions (move + attack, attack + attack, etc.)
+        // 2. Could use Concentrate for important attack
+        // 3. Needs extra movement to reach objective/enemy
+        // 4. Could use extra AP to Hide (become Hidden near enemy)
+        // 5. Side has IP available (can Refresh to remove Delay token)
+        // 6. Is in good position (not vulnerable after gaining Delay)
+        
+        const actionCount = finalActions.filter(a =>
+          ['move', 'close_combat', 'ranged_combat'].includes(a.action) && a.score > 0.3
+        ).length;
+        
+        const topActionScore = finalActions[0]?.score ?? 0;
+        const secondActionScore = finalActions[1]?.score ?? 0;
+        
+        // Check if character could benefit from Concentrate
+        const hasImportantTarget = finalActions.some(a =>
+          (a.action === 'close_combat' || a.action === 'ranged_combat') &&
+          a.score > 0.7 &&
+          a.target &&
+          (a.target.profile?.archetype === 'Elite' || 
+           a.target.profile?.archetype === 'Veteran' ||
+           a.factors?.isOutnumbered)
+        );
+        
+        // Check if extra movement would be valuable
+        const needsMovement = finalActions.some(a =>
+          a.action === 'move' && a.score > 0.5
+        );
+        
+        // Check if character could benefit from Hiding
+        // Hiding is valuable when:
+        // - Character is in/near cover or terrain that blocks LOS
+        // - Enemy models are nearby (within LOS/FOV range)
+        // - Character would benefit from being Hidden (ranged model, low defense, etc.)
+        const couldHide = !context.character.state.isHidden &&
+          (context.character.profile?.items?.some(i => 
+            (i.classification || i.class || '').toLowerCase().includes('range') ||
+            (i.classification || i.class || '').toLowerCase().includes('bow')
+          ) ?? false);
+        
+        let enemiesNearby = 0;
+        let isInCover = false;
+        
+        if (characterPos) {
+          enemiesNearby = context.enemies.filter(e => {
+            const enemyPos = context.battlefield.getCharacterPosition(e);
+            if (!enemyPos) return false;
+            const dist = Math.hypot(
+              characterPos.x - enemyPos.x,
+              characterPos.y - enemyPos.y
+            );
+            return dist <= 16; // Within typical visibility range
+          }).length;
+          
+          isInCover = this.evaluateCover(characterPos, context) > 0;
+        }
+        
+        const couldBenefitFromHiding = couldHide && enemiesNearby > 0 && isInCover;
+        
+        // Check if Side has IP available (can Refresh to remove Delay token)
+        // Having IP reduces the risk/cost of Pushing
+        const sideHasIP = (context.side?.state.initiativePoints ?? 0) >= 1;
+        const ipAggressionBonus = sideHasIP ? 0.3 : 0; // Bonus for having IP available
+
+        // Check Tactical Doctrine - Aggressive doctrines encourage Pushing
+        const doctrine = context.config.tacticalDoctrine ?? TacticalDoctrine.Operative;
+        const stratagemModifiers = calculateStratagemModifiers(doctrine);
+        const doctrinePushBonus = stratagemModifiers.pushAdvantage ? 0.3 : 0;
+
+        // Check if character is in good position (not vulnerable)
+        const isInGoodPosition = !context.battlefield.isEngaged?.(context.character) ||
+          this.countEnemyInMeleeRange(context, characterPos, 1.5) <= 
+          this.countFriendlyInMeleeRange(context, characterPos, 1.5);
+        
+        // Calculate Pushing score
+        let pushScore = 0;
+        
+        // Base score from enabling multiple actions
+        if (actionCount >= 2) {
+          pushScore += (topActionScore + secondActionScore) * 0.6;
+        } else if (actionCount === 1) {
+          pushScore += topActionScore * 0.4;
+        }
+        
+        // Bonus for Concentrate on important target
+        if (hasImportantTarget) {
+          pushScore += 0.5;
+        }
+        
+        // Bonus for extra movement
+        if (needsMovement) {
+          pushScore += 0.3;
+        }
+        
+        // Bonus for Hiding (significant tactical benefit)
+        if (couldBenefitFromHiding) {
+          // Hiding is very valuable - enemies can't target you easily
+          pushScore += 0.6;
+          
+          // Extra bonus if multiple enemies nearby
+          if (enemiesNearby >= 2) {
+            pushScore += 0.2;
+          }
+        }
+        
+        // Bonus if Side has IP (can Refresh to remove Delay token)
+        // This encourages aggressive Pushing when resources are available
+        if (sideHasIP) {
+          pushScore += ipAggressionBonus;
+        }
+
+        // Bonus if Tactical Doctrine encourages pushing (Aggressive doctrines)
+        if (doctrinePushBonus > 0) {
+          pushScore += doctrinePushBonus;
+        }
+
+        // Penalty if vulnerable (gaining Delay token is risky)
+        if (!isInGoodPosition) {
+          pushScore *= 0.5;
+        }
+        
+        // Penalty for Delay token cost (reduced if Side has IP)
+        const delayTokenCost = sideHasIP ? -0.1 : -0.2; // Less penalty if can Refresh
+        pushScore += delayTokenCost;
+        
+        // Only recommend Pushing if net benefit is positive
+        if (pushScore > 0.2) {
+          finalActions.push({
+            action: 'pushing',
+            score: pushScore,
+            factors: {
+              actionCount,
+              hasImportantTarget: hasImportantTarget ? 1 : 0,
+              needsMovement: needsMovement ? 1 : 0,
+              couldBenefitFromHiding: couldBenefitFromHiding ? 1 : 0,
+              sideHasIP: sideHasIP ? 1 : 0,
+              enemiesNearby,
+              isInCover: isInCover ? 1 : 0,
+              isInGoodPosition: isInGoodPosition ? 1 : 0,
+              concentrateBenefit: hasImportantTarget ? 0.5 : 0,
+              hideBenefit: couldBenefitFromHiding ? 0.6 : 0,
+              ipAggressionBonus: ipAggressionBonus,
+              doctrinePushBonus: doctrinePushBonus,
+              delayTokenCost,
+            },
+          });
+        }
+      }
+
+      // Evaluate Refresh action (QSR p.784)
+      // Spend 1 IP from Side to remove 1 Delay token from character
+      // Only valuable if character has Delay tokens and IP is available
+      const hasDelayTokens = (context.character.state.delayTokens ?? 0) > 0;
+      const sideHasIP = (context.side?.state.initiativePoints ?? 0) >= 1;
+
+      if (hasDelayTokens && sideHasIP) {
+        // Refresh is valuable when:
+        // 1. Character has multiple Delay tokens (can act again sooner)
+        // 2. Character is in a valuable position (engaged with enemy, near objective)
+        // 3. Side has excess IP (more than 2)
+        // 4. Character could benefit from acting sooner (ranged model, etc.)
+        // 5. Tactical Doctrine encourages IP spending (Aggressive) or hoarding (Commander)
+
+        const delayTokenCount = context.character.state.delayTokens ?? 0;
+        const isEngaged = context.battlefield.isEngaged?.(context.character) ?? false;
+        const hasExcessIP = (context.side?.state.initiativePoints ?? 0) > 2;
+
+        // Check if character would benefit from acting sooner
+        const isRanged = context.character.profile?.items?.some(i =>
+          (i.classification || i.class || '').toLowerCase().includes('range') ||
+          (i.classification || i.class || '').toLowerCase().includes('bow')
+        ) ?? false;
+        const couldBenefitFromActingSooner = isRanged || isEngaged;
+
+        // Check Tactical Doctrine - affects IP spending behavior
+        const doctrine = context.config.tacticalDoctrine ?? TacticalDoctrine.Operative;
+        const stratagemModifiers = calculateStratagemModifiers(doctrine);
+        
+        // Aggressive doctrines spend IP more freely
+        // Defensive/Commander doctrines hoard IP for Force Initiative
+        let doctrineIPModifier = 0;
+        if (stratagemModifiers.pushAdvantage) {
+          doctrineIPModifier = 0.2; // Aggressive: spend IP freely
+        } else if (doctrine === TacticalDoctrine.Commander || 
+                   doctrine === TacticalDoctrine.Defender) {
+          doctrineIPModifier = -0.3; // Commander/Defender: hoard IP
+        }
+
+        let refreshScore = 0;
+
+        // Base score from removing Delay tokens (more tokens = more valuable)
+        refreshScore += delayTokenCount * 0.5;
+
+        // Bonus if engaged (can attack sooner)
+        if (isEngaged) {
+          refreshScore += 0.5;
+        }
+
+        // Bonus if ranged model (can shoot sooner)
+        if (isRanged && !isEngaged) {
+          refreshScore += 0.4;
+        }
+
+        // Bonus if side has excess IP
+        if (hasExcessIP) {
+          refreshScore += 0.3;
+        }
+
+        // Bonus if character could benefit from acting sooner
+        if (couldBenefitFromActingSooner) {
+          refreshScore += 0.2;
+        }
+
+        // Apply doctrine modifier
+        refreshScore += doctrineIPModifier;
+
+        // Lower threshold - Refresh is often valuable when IP is available
+        if (refreshScore > 0.2) {
+          finalActions.push({
+            action: 'refresh',
+            score: refreshScore,
+            factors: {
+              delayTokenCount,
+              isEngaged: isEngaged ? 1 : 0,
+              isRanged: isRanged ? 1 : 0,
+              hasExcessIP: hasExcessIP ? 1 : 0,
+              couldBenefitFromActingSooner: couldBenefitFromActingSooner ? 1 : 0,
+              doctrineIPModifier,
+              ipCost: -0.1, // Small penalty for spending IP
+            },
+          });
+        }
+      }
+
+      // Fallback: If no valid actions, add a hold action
+      if (finalActions.length === 0) {
+        finalActions.push({
+          action: 'hold',
+          score: 0.1, // Low score but better than nothing
+          factors: {},
+        });
+      }
+
       return finalActions;
     } finally {
       this.activeEvaluationSession = previousSession;
@@ -609,6 +982,7 @@ export class UtilityScorer {
     // Local + strategic sampling:
     // - local ring to retain tactical nuance
     // - board-aware path endpoints to avoid short-horizon stagnation
+    // Strategic samples are already pathfinding-validated, so we trust them
     const sampleRadius = Math.max(
       1,
       (context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2) + 2
@@ -624,10 +998,19 @@ export class UtilityScorer {
 
     for (const pos of samples) {
       if (pos.x === characterPos.x && pos.y === characterPos.y) continue;
-      const distance = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
-      if (distance > movementAllowance + 1e-6) continue;
+      
+      // Check if position is occupied by another model
       const occupant = context.battlefield.getCharacterAt(pos);
       if (occupant && occupant.id !== context.character.id) continue;
+
+      // For local samples, check straight-line distance
+      // For strategic samples, trust pathfinding (already validated)
+      const isLocalSample = localSamples.some(s => s.x === pos.x && s.y === pos.y);
+      if (isLocalSample) {
+        const distance = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
+        if (distance > movementAllowance + 1e-6) continue;
+      }
+      // Strategic samples are pathfinding-validated, so we accept them regardless of straight-line distance
 
       const cover = this.evaluateCover(pos, context);
       const distanceScore = this.evaluateDistance(pos, context);
@@ -639,10 +1022,26 @@ export class UtilityScorer {
       const leanOpportunity = isRanged ? this.evaluateLeanOpportunity(pos, context) : 0;
       const exposureRisk = this.evaluateExposureRisk(pos, context);
 
+      // Priority 2: Outnumber-aware positioning
+      // Score positions that create local outnumbering advantage
+      const outnumberScore = this.evaluateOutnumberAdvantage(pos, context);
+
+      // R2.5: ROF/Suppression safety scoring
+      const positionSafety = this.evaluatePositionSafety(context.character, pos, context);
+      const suppressionZoneControl = this.evaluateSuppressionZoneControl(pos, context);
+
+      // Phase 2.4: Gap crossing evaluation
+      const gapCrossingResult = this.evaluateGapCrossing(context, characterPos, pos);
+      const gapCrossingBonus = gapCrossingResult.canCross ? gapCrossingResult.score : 0;
+
+      // Phase 3.2: Flanking Maneuvers - score positions that provide flanking advantage
+      const flankingScore = this.evaluateFlankingPosition(pos, context);
+
       // R3: Doctrine-aware scoring weights
       const coverWeight = this.weights.coverValue * (isRanged ? 1.3 : 1.0);
       const leanWeight = isRanged ? 1.5 : 0; // Only ranged models benefit from lean
       const exposurePenalty = isRanged ? 1.8 : 1.2; // Ranged models more exposed = bad
+      const safetyWeight = isRanged ? 2.0 : 1.5; // Ranged models should avoid suppression more
 
       const score =
         cover * coverWeight +
@@ -651,7 +1050,12 @@ export class UtilityScorer {
         visibility * 0.5 +
         cohesion * this.weights.cohesionValue +
         (leanOpportunity * leanWeight) -
-        (exposureRisk * exposurePenalty);
+        (exposureRisk * exposurePenalty) +
+        (outnumberScore * 2.0) + // Strong weight for outnumber advantage
+        (positionSafety * safetyWeight) + // R2.5: Safety from ROF/suppression
+        (suppressionZoneControl * 1.5) + // R2.5: Area denial value
+        gapCrossingBonus + // Phase 2.4: Gap crossing bonus
+        (flankingScore * 2.0); // Phase 3.2: Flanking maneuvers
 
       positions.push({
         position: pos,
@@ -664,6 +1068,9 @@ export class UtilityScorer {
           threatRelief,
           leanOpportunity,
           exposureRisk,
+          positionSafety,
+          suppressionZoneControl,
+          gapCrossing: gapCrossingBonus,
         },
       });
     }
@@ -680,6 +1087,35 @@ export class UtilityScorer {
     const characterPos = context.battlefield.getCharacterPosition(context.character);
     if (!characterPos) return targets;
 
+    // Get ROF level from character's weapon
+    const rofLevel = this.getCharacterROFLevel(context.character);
+
+    // Phase 3.1: Focus Fire Coordination - track which enemies allies are targeting
+    const allyTargetCounts = new Map<string, number>();
+    for (const ally of context.allies) {
+      if (ally.state.isAttentive && ally.state.isOrdered && !ally.state.isKOd && !ally.state.isEliminated) {
+        const allyPos = context.battlefield.getCharacterPosition(ally);
+        if (!allyPos) continue;
+        
+        // Find closest enemy to this ally
+        let closestEnemy: Character | null = null;
+        let closestDist = Infinity;
+        for (const enemy of context.enemies) {
+          const enemyPos = context.battlefield.getCharacterPosition(enemy);
+          if (!enemyPos) continue;
+          const dist = Math.hypot(enemyPos.x - allyPos.x, enemyPos.y - allyPos.y);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestEnemy = enemy;
+          }
+        }
+        if (closestEnemy) {
+          const count = allyTargetCounts.get(closestEnemy.id) || 0;
+          allyTargetCounts.set(closestEnemy.id, count + 1);
+        }
+      }
+    }
+
     for (const enemy of context.enemies) {
       if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
 
@@ -694,17 +1130,55 @@ export class UtilityScorer {
         : 1.0;
       const missionPriority = this.evaluateMissionPriority(enemy, context);
 
+      // R2.5: ROF Target Scoring - prioritize targets that are good for ROF attacks
+      const rofTargetScore = rofLevel > 0
+        ? this.evaluateROFTargetValue(context.character, enemy, context, rofLevel)
+        : 0;
+
+      // Phase 2.3: Falling Tactics - Jump Down Attack scoring
+      const jumpDownResult = this.evaluateJumpDownAttack(
+        context,
+        context.character,
+        enemy,
+        characterPos,
+        enemyPos
+      );
+      const jumpDownBonus = jumpDownResult.canJump ? jumpDownResult.score * 0.5 : 0;
+
+      // Phase 3.1: Focus Fire Coordination - bonus for targeting same enemy as allies
+      const allyTargetCount = allyTargetCounts.get(enemy.id) || 0;
+      const focusFireBonus = allyTargetCount > 0 ? allyTargetCount * 1.5 : 0; // +1.5 per ally targeting
+
+      // Phase 3.1: Focus Fire Coordination - bonus for finishing weakened targets
+      const enemySiz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
+      const enemyWounds = enemy.state.wounds;
+      const finishOffBonus = enemyWounds >= enemySiz - 1 ? 5.0 : 0; // High priority to eliminate
+
       const score =
         health * this.weights.targetHealth +
         threat * this.weights.targetThreat +
         distance * this.weights.distanceToTarget +
         visibility * 2.0 +
-        missionPriority * this.weights.victoryConditionValue;
+        missionPriority * this.weights.victoryConditionValue +
+        rofTargetScore * 1.5 + // ROF targets get 1.5x weight
+        jumpDownBonus + // Phase 2.3: Jump down attack
+        focusFireBonus + // Phase 3.1: Focus fire coordination
+        finishOffBonus; // Phase 3.1: Finish weakened targets
 
       targets.push({
         target: enemy,
         score,
-        factors: { health, threat, distance, visibility, missionPriority },
+        factors: { 
+          health, 
+          threat, 
+          distance, 
+          visibility, 
+          missionPriority, 
+          rofTargetScore,
+          jumpDown: jumpDownBonus,
+          focusFire: focusFireBonus,
+          finishOff: finishOffBonus,
+        },
       });
     }
 
@@ -749,9 +1223,162 @@ export class UtilityScorer {
     return actions;
   }
 
+  /**
+   * Evaluate weapon swap actions (stow/unstow items)
+   * QSR Lines 270-271: Use Fiddle action to switch out stowed items
+   */
+  evaluateWeaponSwap(context: AIContext): ScoredAction[] {
+    const actions: ScoredAction[] = [];
+    const character = context.character;
+    const inHand = character.profile?.inHandItems ?? [];
+    const stowed = character.profile?.stowedItems ?? [];
+    
+    if (stowed.length === 0) return actions; // Nothing to swap to
+    
+    // Calculate average enemy distance
+    const avgDistance = this.getAverageEnemyDistance(context.enemies, context);
+    
+    // Check current weapon type
+    const currentWeapon = inHand.find(item => this.isWeapon(item));
+    const hasRanged = currentWeapon ? this.isRangedWeapon(currentWeapon) : false;
+    const hasMelee = currentWeapon ? this.isMeleeWeapon(currentWeapon) : false;
+    
+    // Swap to ranged if enemies far and currently melee
+    if (avgDistance > 12 && !hasRanged) {
+      const rangedWeapon = stowed.find(item => this.isRangedWeapon(item));
+      if (rangedWeapon) {
+        const handsRequired = this.getItemHandRequirement(rangedWeapon);
+        const handsAvailable = this.getAvailableHands(character);
+        
+        if (handsAvailable >= handsRequired) {
+          const score = 4.0 + (avgDistance / 24) * 2; // Higher score for longer distance
+          actions.push({
+            action: 'fiddle',
+            subAction: 'unstow',
+            itemName: rangedWeapon.name,
+            score,
+            factors: { distance: avgDistance, weaponType: 'ranged' },
+            reason: 'Draw ranged weapon for distance',
+          });
+        }
+      }
+    }
+    
+    // Swap to melee if enemies close and currently ranged
+    if (avgDistance < 4 && hasRanged && !hasMelee) {
+      const meleeWeapon = stowed.find(item => this.isMeleeWeapon(item));
+      if (meleeWeapon) {
+        const score = 5.0 + (4 - avgDistance); // Higher score for closer enemies
+        actions.push({
+          action: 'fiddle',
+          subAction: 'unstow',
+          itemName: meleeWeapon.name,
+          score,
+          factors: { distance: avgDistance, weaponType: 'melee' },
+          reason: 'Draw melee weapon for close combat',
+        });
+      }
+    }
+    
+    // Swap to shield if under fire and no shield
+    const hasShield = inHand.some(item => this.isShield(item));
+    if (!hasShield && context.enemies.length > 0) {
+      const shield = stowed.find(item => this.isShield(item));
+      if (shield) {
+        const handsRequired = this.getItemHandRequirement(shield);
+        const handsAvailable = this.getAvailableHands(character);
+        
+        if (handsAvailable >= handsRequired) {
+          const score = 3.5; // Defensive value
+          actions.push({
+            action: 'fiddle',
+            subAction: 'unstow',
+            itemName: shield.name,
+            score,
+            factors: { defensive: true },
+            reason: 'Draw shield for defense',
+          });
+        }
+      }
+    }
+    
+    return actions;
+  }
+
   // ============================================================================
   // Evaluation Helpers
   // ============================================================================
+
+  /**
+   * Check if item is a weapon
+   */
+  private isWeapon(item: Item): boolean {
+    const classifications = ['Melee', 'Firearm', 'Bow', 'Range', 'Thrown', 'Support', 'Ordnance'];
+    return item.classification ? classifications.includes(item.classification) : false;
+  }
+
+  /**
+   * Check if item is a ranged weapon
+   */
+  private isRangedWeapon(item: Item): boolean {
+    const classifications = ['Firearm', 'Bow', 'Range', 'Thrown', 'Support', 'Ordnance'];
+    return item.classification ? classifications.includes(item.classification) : false;
+  }
+
+  /**
+   * Check if item is a melee weapon
+   */
+  private isMeleeWeapon(item: Item): boolean {
+    return item.classification === 'Melee';
+  }
+
+  /**
+   * Check if item is a shield
+   */
+  private isShield(item: Item): boolean {
+    return item.classification === 'Shield' || item.class?.includes('Shield');
+  }
+
+  /**
+   * Get hand requirement for item
+   */
+  private getItemHandRequirement(item: Item): number {
+    if (item.traits?.includes('[2H]') || item.traits?.includes('2H')) return 2;
+    if (item.traits?.includes('[1H]') || item.traits?.includes('1H')) return 1;
+    return 0;
+  }
+
+  /**
+   * Get available hands for character
+   */
+  private getAvailableHands(character: Character): number {
+    const totalHands = character.profile?.totalHands ?? 2;
+    const inHand = character.profile?.inHandItems ?? [];
+    let committed = 0;
+    for (const item of inHand) {
+      committed += this.getItemHandRequirement(item);
+    }
+    return Math.max(0, totalHands - committed);
+  }
+
+  /**
+   * Get average distance to enemies
+   */
+  private getAverageEnemyDistance(enemies: Character[], context: AIContext): number {
+    const characterPos = context.battlefield.getCharacterPosition(context.character);
+    if (!characterPos || enemies.length === 0) return 999;
+    
+    let totalDistance = 0;
+    let count = 0;
+    for (const enemy of enemies) {
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (enemyPos) {
+        totalDistance += Math.hypot(enemyPos.x - characterPos.x, enemyPos.y - characterPos.y);
+        count++;
+      }
+    }
+    return count > 0 ? totalDistance / count : 999;
+  }
 
   private evaluateCover(position: Position, context: AIContext): number {
     const session = this.getEvaluationSession(context);
@@ -1076,6 +1703,119 @@ export class UtilityScorer {
     );
     // Prefer closer targets
     return Math.max(0, 1 - dist / 24);
+  }
+
+  // ============================================================================
+  // R2.5: ROF/Suppression/Firelane Scoring Integration
+  // ============================================================================
+
+  /**
+   * Get ROF level from character's equipped weapon
+   */
+  private getCharacterROFLevel(character: Character): number {
+    const equipment = character.profile?.equipment || character.profile?.items || [];
+    for (const item of equipment) {
+      for (const trait of item.traits || []) {
+        const match = trait.match(/ROF\s*(\d+)/i);
+        if (match) {
+          return parseInt(match[1], 10);
+        }
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * Evaluate target value for ROF attacks
+   * Higher score for targets that are:
+   * - Near other enemies (multi-target potential)
+   * - In open ground (no cover)
+   * - Within optimal ROF range
+   */
+  private evaluateROFTargetValue(
+    attacker: Character,
+    primaryTarget: Character,
+    context: AIContext,
+    rofLevel: number
+  ): number {
+    const attackerPos = context.battlefield.getCharacterPosition(attacker);
+    const primaryTargetPos = context.battlefield.getCharacterPosition(primaryTarget);
+    if (!attackerPos || !primaryTargetPos) return 0;
+
+    // Score ROF placement for this target
+    const allCharacters = [attacker, primaryTarget, ...context.allies, ...context.enemies];
+    const rofScore = scoreROFPlacement(
+      attacker,
+      context.battlefield,
+      primaryTarget,
+      rofLevel,
+      allCharacters
+    );
+
+    let score = 0;
+
+    // Bonus for multiple targets in ROF range
+    score += rofScore.targetsInRange * 2;
+
+    // Bonus for good ROF dice bonus
+    score += rofScore.rofDiceBonus * 0.5;
+
+    // Penalty for Friendly fire risk
+    if (!rofScore.avoidsFriendlyFire) {
+      score -= 5; // Strong penalty for Friendly fire risk
+    }
+
+    return Math.max(0, score);
+  }
+
+  /**
+   * Evaluate position safety from ROF/Suppression
+   * Lower score for positions in suppression zones or ROF kill zones
+   */
+  private evaluatePositionSafety(
+    character: Character,
+    position: Position,
+    context: AIContext
+  ): number {
+    // Get suppression markers from battlefield state
+    // TODO: Integrate with battlefield suppression marker tracking
+    const suppressionMarkers: SuppressionMarker[] = [];
+    const rofMarkers: ROFMarker[] = [];
+
+    const safety = scorePositionSafety(
+      character,
+      context.battlefield,
+      position,
+      suppressionMarkers,
+      rofMarkers
+    );
+
+    // Return safety score (higher = safer)
+    return safety.score / 10; // Normalize to 0-1 range
+  }
+
+  /**
+   * Evaluate suppression zone control for area denial
+   * Higher score for zones that trap enemies
+   */
+  private evaluateSuppressionZoneControl(
+    position: Position,
+    context: AIContext
+  ): number {
+    // Get suppression markers from battlefield state
+    // TODO: Integrate with battlefield suppression marker tracking
+    const suppressionMarkers: SuppressionMarker[] = [];
+    const allCharacters = [context.character, ...context.allies, ...context.enemies];
+
+    const zoneScore = scoreSuppressionZone(
+      context.battlefield,
+      suppressionMarkers,
+      position,
+      allCharacters
+    );
+
+    // Score based on enemies trapped minus friendlies at risk
+    return zoneScore.enemiesInZone * 2 - zoneScore.friendliesInZone * 3;
   }
 
   private evaluateMissionPriority(target: Character, context: AIContext): number {
@@ -1592,6 +2332,675 @@ export class UtilityScorer {
     return nearest;
   }
 
+  // ============================================================================
+  // BONUS ACTION EVALUATION (Priority 1)
+  // ============================================================================
+
+  /**
+   * Evaluate bonus action opportunities after a successful hit
+   * Push-back, Pull-back, Rotate, Reversal for:
+   * - Reducing outnumbering against self
+   * - Increasing outnumbering against enemy
+   * - Causing Delay tokens (push into walls/impassable)
+   */
+  private evaluateBonusActions(
+    context: AIContext,
+    target: Character,
+    hitCascades: number,
+    attackerPos?: Position
+  ): { score: number; reason: string; bonusType?: string } {
+    const battlefield = context.battlefield;
+    const attacker = context.character;
+    const attackerPosition = attackerPos ?? battlefield.getCharacterPosition(attacker);
+    const targetPosition = battlefield.getCharacterPosition(target);
+
+    if (!attackerPosition || !targetPosition) {
+      return { score: 0, reason: 'No position data' };
+    }
+
+    // Count cascades available for bonus actions
+    const availableCascades = hitCascades;
+    if (availableCascades < 1) {
+      return { score: 0, reason: 'No cascades available' };
+    }
+
+    let bestScore = 0;
+    let bestReason = '';
+    let bestBonusType = '';
+
+    // 1. PUSH-BACK: Check if pushing target creates advantage
+    const pushBackScore = this.evaluatePushBack(context, attacker, target, attackerPosition, targetPosition, availableCascades);
+    if (pushBackScore.score > bestScore) {
+      bestScore = pushBackScore.score;
+      bestReason = pushBackScore.reason;
+      bestBonusType = 'push-back';
+    }
+
+    // 2. PULL-BACK: Check if pulling target creates advantage
+    const pullBackScore = this.evaluatePullBack(context, attacker, target, attackerPosition, targetPosition, availableCascades);
+    if (pullBackScore.score > bestScore) {
+      bestScore = pullBackScore.score;
+      bestReason = pullBackScore.reason;
+      bestBonusType = 'pull-back';
+    }
+
+    // 3. REVERSAL: Check if swapping positions creates advantage
+    const reversalScore = this.evaluateReversal(context, attacker, target, attackerPosition, targetPosition, availableCascades);
+    if (reversalScore.score > bestScore) {
+      bestScore = reversalScore.score;
+      bestReason = reversalScore.reason;
+      bestBonusType = 'reversal';
+    }
+
+    return {
+      score: bestScore,
+      reason: bestReason,
+      bonusType: bestBonusType || undefined,
+    };
+  }
+
+  private evaluatePushBack(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    cascades: number
+  ): { score: number; reason: string } {
+    const battlefield = context.battlefield;
+    const pushDistance = Math.floor(cascades / 2); // 1" per 2 cascades
+    if (pushDistance < 1) {
+      return { score: 0, reason: 'Not enough cascades' };
+    }
+
+    // Calculate push direction (away from attacker)
+    const dx = targetPos.x - attackerPos.x;
+    const dy = targetPos.y - attackerPos.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const pushDir = { x: dx / dist, y: dy / dist };
+
+    // Check where target would be pushed
+    const newPos = {
+      x: targetPos.x + pushDir.x * pushDistance,
+      y: targetPos.y + pushDir.y * pushDistance,
+    };
+
+    let score = 0;
+    const reasons: string[] = [];
+
+    // 1. Check for Delay token (push into wall/impassable/precipice)
+    const terrainAtNewPos = battlefield.getTerrainAt(newPos);
+    if (terrainAtNewPos?.movement === 'Impassable' || terrainAtNewPos?.movement === 'Blocking') {
+      score += 8; // High value for causing Delay
+      reasons.push('Delay token (wall)');
+    }
+
+    // 2. Check if push reduces outnumbering against attacker
+    const friendsBefore = this.countFriendlyInMeleeRange(context, attackerPos, 1.5);
+    const enemiesBefore = this.countEnemyInMeleeRange(context, attackerPos, 1.5);
+    const outnumberedBefore = enemiesBefore > friendsBefore;
+
+    // After push, target is no longer in melee range
+    const enemiesAfter = enemiesBefore - 1;
+    const outnumberedAfter = enemiesAfter > friendsBefore;
+
+    if (outnumberedBefore && !outnumberedAfter) {
+      score += 6; // Good value for escaping outnumber
+      reasons.push('Escape outnumber');
+    }
+
+    // 3. Check if push creates outnumbering against target
+    const friendsNearNewPos = this.countFriendlyInMeleeRange(context, newPos, 1.5);
+    const enemiesNearNewPos = this.countEnemyInMeleeRange(context, newPos, 1.5);
+    const createsOutnumber = friendsNearNewPos > enemiesNearNewPos && enemiesNearNewPos > 0;
+
+    if (createsOutnumber) {
+      score += 5; // Good value for creating local advantage
+      reasons.push('Create outnumber');
+    }
+
+    // 4. Check if push breaks engagement with other enemies
+    const engagedBefore = battlefield.isEngaged?.(attacker) ?? false;
+    // After push, target is no longer engaged with attacker
+    if (engagedBefore && enemiesBefore === 1) {
+      score += 3; // Moderate value for breaking engagement
+      reasons.push('Break engagement');
+    }
+
+    return {
+      score,
+      reason: reasons.join(', ') || 'Push-back',
+    };
+  }
+
+  private evaluatePullBack(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    cascades: number
+  ): { score: number; reason: string } {
+    const pullDistance = Math.floor(cascades / 2);
+    if (pullDistance < 1) {
+      return { score: 0, reason: 'Not enough cascades' };
+    }
+
+    // Pull toward attacker
+    const dx = attackerPos.x - targetPos.x;
+    const dy = attackerPos.y - targetPos.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    const pullDir = { x: dx / dist, y: dy / dist };
+
+    const newPos = {
+      x: targetPos.x + pullDir.x * pullDistance,
+      y: targetPos.y + pullDir.y * pullDistance,
+    };
+
+    let score = 0;
+    const reasons: string[] = [];
+
+    // Pull-back is valuable when it:
+    // 1. Pulls enemy into our outnumbering zone
+    const friendsNearNewPos = this.countFriendlyInMeleeRange(context, newPos, 1.5);
+    const enemiesNearNewPos = this.countEnemyInMeleeRange(context, newPos, 1.5);
+    const createsOutnumber = friendsNearNewPos > enemiesNearNewPos && enemiesNearNewPos > 0;
+
+    if (createsOutnumber) {
+      score += 6;
+      reasons.push('Pull into outnumber');
+    }
+
+    // 2. Pulls enemy away from their support
+    const friendsNearOldPos = this.countFriendlyInMeleeRange(context, targetPos, 1.5);
+    if (friendsNearOldPos > friendsNearNewPos) {
+      score += 3;
+      reasons.push('Isolate from support');
+    }
+
+    return {
+      score,
+      reason: reasons.join(', ') || 'Pull-back',
+    };
+  }
+
+  /**
+   * Evaluate jump down attack opportunity
+   * QSR: Jump down onto enemy to cause Falling Collision
+   * - Falling character ignores one miss
+   * - Target must make Falling Test (potential Stun damage)
+   */
+  private evaluateJumpDownAttack(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position
+  ): { score: number; reason: string; canJump: boolean } {
+    const battlefield = context.battlefield;
+    
+    // Get terrain heights
+    const attackerTerrain = battlefield.getTerrainAt(attackerPos);
+    const targetTerrain = battlefield.getTerrainAt(targetPos);
+    
+    const attackerHeight = this.getTerrainHeight(attackerTerrain);
+    const targetHeight = this.getTerrainHeight(targetTerrain);
+    
+    // Calculate fall distance
+    const fallDistance = attackerHeight - targetHeight;
+    
+    // Can only jump down if attacker is higher
+    if (fallDistance <= 0) {
+      return { score: 0, reason: 'Not elevated', canJump: false };
+    }
+    
+    // Calculate max jump range
+    const maxJumpRange = this.calculateMaxJumpRange(attacker, false);
+    
+    // Check horizontal distance
+    const horizontalDistance = Math.hypot(
+      attackerPos.x - targetPos.x,
+      attackerPos.y - targetPos.y
+    );
+    
+    // For every 1 MU down, allow +0.5 MU across
+    const maxAcrossFromFall = fallDistance * 0.5;
+    const effectiveMaxJump = maxJumpRange + maxAcrossFromFall;
+    
+    // Check if jump is possible
+    if (horizontalDistance > effectiveMaxJump) {
+      return { score: 0, reason: 'Too far', canJump: false };
+    }
+    
+    // Calculate expected damage to target
+    const targetAgi = calculateAgility(target);
+    const fallingResult = resolveFallingTest(target, fallDistance, targetAgi);
+    const expectedStun = fallingResult.delayTokens;
+    const expectedWound = fallingResult.woundAdded;
+    
+    // Calculate risk to self (also takes Falling Test, but ignores one miss)
+    const attackerAgi = calculateAgility(attacker);
+    const attackerFallingResult = resolveFallingTest(attacker, fallDistance, attackerAgi);
+    const attackerRisk = Math.max(0, attackerFallingResult.delayTokens - 1); // Ignores one miss
+    
+    // Score calculation
+    let score = 0;
+    const reasons: string[] = [];
+    
+    // High value for eliminating weakened enemy
+    const targetSiz = target.finalAttributes?.siz ?? target.attributes?.siz ?? 3;
+    const targetWounds = target.state.wounds;
+    if (expectedWound && targetWounds >= targetSiz - 1) {
+      score += 15; // Very high value for potential elimination
+      reasons.push('Eliminate weakened');
+    } else if (expectedStun >= 2) {
+      score += 8; // High value for significant Stun
+      reasons.push(`${expectedStun} Stun`);
+    } else if (expectedStun >= 1) {
+      score += 4; // Moderate value for Stun
+      reasons.push(`${expectedStun} Stun`);
+    }
+    
+    // Subtract risk to self
+    if (attackerRisk >= 2) {
+      score -= 6; // High risk
+      reasons.push(`High risk (${attackerRisk} Stun)`);
+    } else if (attackerRisk >= 1) {
+      score -= 3; // Moderate risk
+      reasons.push(`Risk (${attackerRisk} Stun)`);
+    }
+    
+    // Bonus for height advantage (tactical positioning)
+    if (fallDistance >= 2) {
+      score += 2;
+      reasons.push('Height advantage');
+    }
+    
+    return {
+      score: Math.max(0, score),
+      reason: reasons.join(', ') || 'Jump down',
+      canJump: true,
+    };
+  }
+
+  /**
+   * Evaluate push off ledge opportunity
+   * QSR: Push enemy off ledge to cause falling damage
+   * - Target receives Delay token if resists falling
+   * - Target makes Falling Test (potential Stun/Wounds)
+   */
+  private evaluatePushOffLedge(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    pushDirection: { x: number; y: number }
+  ): { score: number; reason: string; canPush: boolean } {
+    const battlefield = context.battlefield;
+    
+    // Calculate push destination
+    const pushDistance = attacker.finalAttributes?.siz ?? 3; // Base push = SIZ
+    const destPos = {
+      x: targetPos.x + pushDirection.x * pushDistance,
+      y: targetPos.y + pushDirection.y * pushDistance,
+    };
+    
+    // Check if destination is off battlefield (Elimination!)
+    if (this.isOffBattlefield(destPos, battlefield)) {
+      return {
+        score: 20, // Very high value for elimination
+        reason: 'Push off battlefield (Elimination)',
+        canPush: true,
+      };
+    }
+    
+    // Get terrain heights
+    const targetTerrain = battlefield.getTerrainAt(targetPos);
+    const destTerrain = battlefield.getTerrainAt(destPos);
+    
+    const targetHeight = this.getTerrainHeight(targetTerrain);
+    const destHeight = this.getTerrainHeight(destTerrain);
+    
+    // Check if there's a height difference (ledge)
+    const fallDistance = targetHeight - destHeight;
+    
+    if (fallDistance < 1.0) {
+      return { score: 0, reason: 'No ledge', canPush: false };
+    }
+    
+    // Calculate expected falling damage
+    const targetAgi = calculateAgility(target);
+    const fallingResult = resolveFallingTest(target, fallDistance, targetAgi);
+    const expectedStun = fallingResult.delayTokens;
+    const expectedWound = fallingResult.woundAdded;
+    
+    // Score calculation
+    let score = 0;
+    const reasons: string[] = [];
+    
+    // Delay token for falling (QSR: resists being pushed across ledge)
+    score += 5;
+    reasons.push('Delay token');
+    
+    // High value for eliminating weakened enemy
+    const targetSiz = target.finalAttributes?.siz ?? target.attributes?.siz ?? 3;
+    const targetWounds = target.state.wounds;
+    if (expectedWound && targetWounds >= targetSiz - 1) {
+      score += 15; // Very high value for potential elimination
+      reasons.push('Eliminate weakened');
+    } else if (expectedStun >= 2) {
+      score += 8; // High value for significant Stun
+      reasons.push(`${expectedStun} Stun`);
+    } else if (expectedStun >= 1) {
+      score += 4; // Moderate value for Stun
+      reasons.push(`${expectedStun} Stun`);
+    }
+    
+    // Bonus for significant fall
+    if (fallDistance >= 3) {
+      score += 3;
+      reasons.push(`${fallDistance.toFixed(1)} MU fall`);
+    }
+    
+    return {
+      score: Math.max(0, score),
+      reason: reasons.join(', ') || 'Push off ledge',
+      canPush: true,
+    };
+  }
+
+  /**
+   * Calculate maximum jump range for a character
+   * QSR: Jump range = Agility + Leap X bonus + Running bonus (if applicable)
+   */
+  private calculateMaxJumpRange(character: Character, hasRunningStart: boolean = false): number {
+    const agility = calculateAgility(character);
+    const leapBonus = getLeapAgilityBonus(character);
+    
+    // Running start bonus: +1 MU per 4 MU run (simplified: +2 MU if has running start)
+    const runningBonus = hasRunningStart ? 2 : 0;
+    
+    return agility + leapBonus + runningBonus;
+  }
+
+  /**
+   * Get terrain height from TerrainElement per OVR-003
+   */
+  private getTerrainHeight(terrain: any): number {
+    if (!terrain || !terrain.name) return 0;
+    const heightData = TERRAIN_HEIGHTS[terrain.name.toLowerCase()];
+    return heightData?.height ?? 0;
+  }
+
+  /**
+   * Check if position is off the battlefield
+   */
+  private isOffBattlefield(position: Position, battlefield: Battlefield): boolean {
+    return position.x < 0 || position.x > battlefield.width ||
+           position.y < 0 || position.y > battlefield.height;
+  }
+
+  /**
+   * Evaluate gap crossing opportunity
+   * QSR: Jump across gaps using Agility + Leap + Running bonus
+   * - For every 1 MU down, +0.5 MU across
+   * - Wall-to-wall jumps provide tactical advantage
+   */
+  private evaluateGapCrossing(
+    context: AIContext,
+    fromPos: Position,
+    toPos: Position
+  ): { score: number; reason: string; canCross: boolean } {
+    const battlefield = context.battlefield;
+    const character = context.character;
+    
+    // Detect gap between positions
+    const gap = detectGapAlongLine(battlefield, fromPos, toPos);
+    
+    if (!gap || gap.width < 0.5) {
+      return { score: 0, reason: 'No gap', canCross: false };
+    }
+    
+    // Calculate jump capability
+    const agility = calculateAgility(character);
+    const leapBonus = getLeapAgilityBonus(character);
+    
+    // Downward jump bonus
+    const fallDistance = gap.startHeight - gap.endHeight;
+    const downwardBonus = fallDistance > 0 ? fallDistance * 0.5 : 0;
+    
+    const maxJumpRange = agility + leapBonus + downwardBonus;
+    
+    // Check if gap is crossable
+    const canCross = gap.width <= maxJumpRange;
+    
+    if (!canCross) {
+      return { score: 0, reason: `Gap too wide (${gap.width.toFixed(1)} MU)`, canCross: false };
+    }
+    
+    // Score calculation
+    let score = 0;
+    const reasons: string[] = [];
+    
+    // Base value for crossing gap (tactical mobility)
+    score += 3;
+    reasons.push('Cross gap');
+    
+    // Wall-to-wall jump is tactically valuable (chokepoint control)
+    if (gap.isWallToWall) {
+      score += 4;
+      reasons.push('Wall-to-wall');
+    }
+    
+    // Height advantage bonus
+    if (fallDistance >= 1) {
+      score += 2;
+      reasons.push(`${fallDistance.toFixed(1)} MU height`);
+    }
+    
+    // Gap tactical value
+    const tacticalValue = getGapTacticalValue(gap);
+    score += tacticalValue;
+    
+    // Risk assessment (falling if failed)
+    if (fallDistance >= 2) {
+      score -= 2; // Risk penalty
+      reasons.push('Risk');
+    }
+    
+    return {
+      score: Math.max(0, score),
+      reason: reasons.join(', ') || 'Gap crossing',
+      canCross: true,
+    };
+  }
+
+  private evaluateReversal(
+    context: AIContext,
+    attacker: Character,
+    target: Character,
+    attackerPos: Position,
+    targetPos: Position,
+    cascades: number
+  ): { score: number; reason: string } {
+    // Reversal costs 2 cascades
+    if (cascades < 2) {
+      return { score: 0, reason: 'Need 2+ cascades' };
+    }
+
+    let score = 0;
+    const reasons: string[] = [];
+
+    // Reversal is valuable when it:
+    // 1. Moves attacker out of enemy outnumbering
+    const friendsAtOld = this.countFriendlyInMeleeRange(context, attackerPos, 1.5);
+    const enemiesAtOld = this.countEnemyInMeleeRange(context, attackerPos, 1.5);
+    const outnumberedAtOld = enemiesAtOld > friendsAtOld;
+
+    const friendsAtNew = this.countFriendlyInMeleeRange(context, targetPos, 1.5);
+    const enemiesAtNew = this.countEnemyInMeleeRange(context, targetPos, 1.5);
+    const outnumberedAtNew = enemiesAtNew > friendsAtNew;
+
+    if (outnumberedAtOld && !outnumberedAtNew) {
+      score += 7;
+      reasons.push('Escape outnumber');
+    }
+
+    // 2. Moves attacker into better position (cover, objective, etc.)
+    const coverAtOld = this.evaluateCover(attackerPos, context);
+    const coverAtNew = this.evaluateCover(targetPos, context);
+    if (coverAtNew > coverAtOld) {
+      score += 3;
+      reasons.push('Better cover');
+    }
+
+    return {
+      score,
+      reason: reasons.join(', ') || 'Reversal',
+    };
+  }
+
+  private countFriendlyInMeleeRange(context: AIContext, position: Position, range: number): number {
+    const battlefield = context.battlefield;
+    const mySideId = context.sideId;
+    let count = 0;
+
+    for (const side of context.allSides || []) {
+      if (side.id !== mySideId) continue;
+      for (const member of side.members) {
+        if (member.character.state.isEliminated || member.character.state.isKOd) continue;
+        const memberPos = battlefield.getCharacterPosition(member.character);
+        if (!memberPos) continue;
+        const dist = Math.hypot(position.x - memberPos.x, position.y - memberPos.y);
+        if (dist <= range) {
+          count++;
+        }
+      }
+    }
+
+    return count;
+  }
+
+  private countEnemyInMeleeRange(context: AIContext, position: Position, range: number): number {
+    const battlefield = context.battlefield;
+    const mySideId = context.sideId;
+    let count = 0;
+
+    for (const enemy of context.enemies) {
+      if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+      const enemyPos = battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      const dist = Math.hypot(position.x - enemyPos.x, position.y - enemyPos.y);
+      if (dist <= range) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+  /**
+   * Priority 2: Evaluate outnumber advantage at a position
+   * Returns positive score if position creates local outnumbering
+   * Returns negative score if position puts model at disadvantage
+   */
+  private evaluateOutnumberAdvantage(position: Position, context: AIContext): number {
+    const friends = this.countFriendlyInMeleeRange(context, position, 1.5);
+    const enemies = this.countEnemyInMeleeRange(context, position, 1.5);
+
+    // Calculate local ratio
+    if (enemies === 0) {
+      return 0; // No enemies nearby, no advantage
+    }
+
+    const ratio = friends / Math.max(1, enemies);
+
+    if (ratio >= 2) {
+      return 3; // Strong 2:1+ advantage
+    } else if (ratio >= 1.5) {
+      return 2; // Good advantage
+    } else if (ratio >= 1) {
+      return 1; // Slight advantage or equal
+    } else if (ratio >= 0.5) {
+      return -1; // Slightly outnumbered
+    } else {
+      return -3; // Badly outnumbered (1:2+ disadvantage)
+    }
+  }
+
+  /**
+   * Phase 3.2: Evaluate flanking position
+   * Returns positive score if position provides flanking advantage
+   * Flanking = position is on opposite side of enemy from allies
+   */
+  private evaluateFlankingPosition(position: Position, context: AIContext): number {
+    let flankingScore = 0;
+
+    // Find enemies within range of this position
+    const enemiesInRange: Character[] = [];
+    for (const enemy of context.enemies) {
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+      const dist = Math.hypot(enemyPos.x - position.x, enemyPos.y - position.y);
+      if (dist <= 6) { // Within 6 MU
+        enemiesInRange.push(enemy);
+      }
+    }
+
+    if (enemiesInRange.length === 0) {
+      return 0; // No enemies to flank
+    }
+
+    // For each enemy, check if this position provides flanking
+    for (const enemy of enemiesInRange) {
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+
+      // Find allies already engaging this enemy
+      const alliesEngaging: Position[] = [];
+      for (const ally of context.allies) {
+        if (ally.id === context.character.id) continue; // Skip self
+        if (ally.state.isKOd || ally.state.isEliminated) continue;
+        
+        const allyPos = context.battlefield.getCharacterPosition(ally);
+        if (!allyPos) continue;
+        
+        const allyDist = Math.hypot(allyPos.x - enemyPos.x, allyPos.y - enemyPos.y);
+        if (allyDist <= 1.5) { // Ally is in melee range
+          alliesEngaging.push(allyPos);
+        }
+      }
+
+      if (alliesEngaging.length > 0) {
+        // Check if this position is on opposite side from allies
+        for (const allyPos of alliesEngaging) {
+          // Calculate angle from enemy to ally and from enemy to this position
+          const allyAngle = Math.atan2(allyPos.y - enemyPos.y, allyPos.x - enemyPos.x);
+          const thisAngle = Math.atan2(position.y - enemyPos.y, position.x - enemyPos.x);
+          
+          // Normalize angles to 0-2π
+          const normalizeAngle = (angle: number) => angle < 0 ? angle + 2 * Math.PI : angle;
+          const normalizedAllyAngle = normalizeAngle(allyAngle);
+          const normalizedThisAngle = normalizeAngle(thisAngle);
+          
+          // Calculate angle difference
+          let angleDiff = Math.abs(normalizedThisAngle - normalizedAllyAngle);
+          if (angleDiff > Math.PI) {
+            angleDiff = 2 * Math.PI - angleDiff;
+          }
+          
+          // If angle difference is > 90 degrees (π/2), it's a flanking position
+          if (angleDiff > Math.PI / 2) {
+            flankingScore += 2; // Good flanking position
+          }
+        }
+      }
+    }
+
+    return Math.min(flankingScore, 6); // Cap at 6
+  }
+
   private evaluateObjectiveMarkerActions(
     context: AIContext,
     missionBias: MissionBias,
@@ -1852,13 +3261,31 @@ export class UtilityScorer {
     }
 
     // Condition 6: Scoring context - losing and need react opportunities
-    if (!context.scoringContext?.amILeading && 
+    if (!context.scoringContext?.amILeading &&
         context.scoringContext?.losingKeys?.includes('elimination')) {
       tacticalBonus += 0.4; // Behind on eliminations, need reactive opportunities
     }
 
+    // R2.1: ZERO VP PENALTY - Discourage excessive Wait in Elimination mission
+    // As turns progress with 0 VP, reduce Wait bonus to encourage action
+    const missionId = context.config.missionId;
+    const currentTurn = context.currentTurn ?? 1;
+    const sideVP = context.side?.state.victoryPoints ?? 0;
+    const sideRP = context.side?.state.resourcePoints ?? 0;
+
+    if (missionId === 'QAI_11' && (sideVP === 0 && sideRP === 0) && currentTurn >= 3) {
+      // Turn 3+: -0.5 per turn with zero VP
+      // Turn 5+: -1.0 per turn with zero VP (desperation mode)
+      const zeroVpPenalty = currentTurn >= 5 ? 1.0 : 0.5;
+      const turnsAtZero = currentTurn - 2; // Starts counting at turn 3
+      tacticalBonus -= zeroVpPenalty * turnsAtZero;
+    }
+
     // Cap total tactical bonus to prevent runaway scores
-    return Math.min(tacticalBonus, 3.0);
+    // But allow negative values for zero VP penalty
+    const maxBonus = 3.0;
+    const minBonus = -2.0; // Allow penalty to go negative
+    return Math.max(minBonus, Math.min(tacticalBonus, maxBonus));
   }
 
   private getDoctrinePlanning(context: AIContext): 'aggression' | 'keys_to_victory' | 'balanced' {

@@ -3,7 +3,10 @@ import { TestContext } from '../utils/TestContext';
 import { resolveTest } from '../subroutines/dice-roller';
 import { CharacterStatus } from '../core/types';
 import { hasReload, getReloadActionsRequired, isWeaponLoaded, setWeaponLoaded } from '../traits/combat-traits';
-import { validateFiddleAction, hasUsingOneLessHandPenalty, clearUsingOneLessHand } from './hand-requirements';
+import { validateFiddleAction, hasUsingOneLessHandPenalty, clearUsingOneLessHand, getAvailableHands, getItemHandRequirement } from './hand-requirements';
+import { getLeaderRallyBonus } from '../core/leader-identification';
+import { MissionSide } from '../mission/MissionSide';
+import { Item } from '../core/Item';
 
 export interface SimpleActionDeps {
   spendAp: (character: Character, cost: number) => boolean;
@@ -22,24 +25,42 @@ export function executeRallyAction(
   deps: SimpleActionDeps,
   actor: Character,
   target: Character,
-  options: { context?: TestContext; rolls?: number[] } = {}
+  options: { 
+    context?: TestContext; 
+    rolls?: number[];
+    side?: MissionSide;
+  } = {}
 ) {
   if (deps.hasRallyUsed(target.id)) {
     return { success: false, reason: 'Target already rallied this turn.' };
   }
+  
+  // Get leader rally bonus if side provided
+  let rallyBonus = 0;
+  if (options.side) {
+    rallyBonus = getLeaderRallyBonus(actor, options.side);
+  }
+  
   const result = resolveTest(
-    { character: target, attribute: 'pow', bonusDice: options.context?.isFocusing ? { wild: 1 } : undefined },
+    { 
+      character: target, 
+      attribute: 'pow', 
+      bonusDice: {
+        ...(options.context?.isFocusing ? { wild: 1 } : {}),
+        ...(rallyBonus > 0 ? { modifier: rallyBonus } : {}),
+      }
+    },
     { isSystemPlayer: true },
     options.rolls ?? null
   );
   if (!result.pass) {
-    return { success: false, result };
+    return { success: false, result, leaderBonusApplied: rallyBonus };
   }
   const cascades = result.cascades ?? 0;
   target.state.fearTokens = Math.max(0, target.state.fearTokens - cascades);
   target.refreshStatusFlags();
   deps.markRallyUsed(target.id);
-  return { success: true, result, fearRemoved: cascades };
+  return { success: true, result, fearRemoved: cascades, leaderBonusApplied: rallyBonus };
 }
 
 export function executeReviveAction(
@@ -168,4 +189,144 @@ export function executeWaitAction(
   }
   deps.setWaiting(actor);
   return { success: true };
+}
+
+// ============================================================================
+// STOW/UNSTOW ITEMS (QSR Lines 270-271)
+// ============================================================================
+
+/**
+ * Stow an in-hand item (move to stowedItems)
+ * QSR: Use Fiddle action to stow item on person
+ * Cost: 0 AP if first Fiddle, 1 AP otherwise
+ */
+export function executeStowItem(
+  deps: SimpleActionDeps,
+  actor: Character,
+  options: {
+    itemIndex?: number; // Index in inHandItems (default: last)
+    itemName?: string;  // Or specify by name
+  } = {}
+): { success: boolean; reason?: string; itemStowed?: Item } {
+  const inHand = actor.profile?.inHandItems ?? [];
+  const stowed = actor.profile?.stowedItems ?? [];
+  
+  if (inHand.length === 0) {
+    return { success: false, reason: 'No items in hand to stow' };
+  }
+  
+  // Find item to stow
+  let itemIndex = options.itemIndex ?? (inHand.length - 1);
+  if (options.itemName) {
+    itemIndex = inHand.findIndex(item => item.name === options.itemName);
+  }
+  
+  if (itemIndex < 0 || itemIndex >= inHand.length) {
+    return { success: false, reason: 'Invalid item index or name' };
+  }
+  
+  const itemToStow = inHand[itemIndex];
+  
+  // Move item from in-hand to stowed
+  actor.profile.inHandItems = inHand.filter((_, i) => i !== itemIndex);
+  actor.profile.stowedItems = [...stowed, itemToStow];
+  
+  return { success: true, itemStowed: itemToStow };
+}
+
+/**
+ * Unstow/draw a stowed item (move to inHandItems)
+ * QSR: Use Fiddle action to draw stowed item
+ * Cost: 0 AP if first Fiddle, 1 AP otherwise
+ * Requires: Enough available hands for item
+ */
+export function executeUnstowItem(
+  deps: SimpleActionDeps,
+  actor: Character,
+  options: {
+    itemIndex?: number; // Index in stowedItems (default: last)
+    itemName?: string;  // Or specify by name
+  } = {}
+): { success: boolean; reason?: string; itemDrawn?: Item } {
+  const inHand = actor.profile?.inHandItems ?? [];
+  const stowed = actor.profile?.stowedItems ?? [];
+  
+  if (stowed.length === 0) {
+    return { success: false, reason: 'No stowed items to draw' };
+  }
+  
+  // Find item to draw
+  let itemIndex = options.itemIndex ?? (stowed.length - 1);
+  if (options.itemName) {
+    itemIndex = stowed.findIndex(item => item.name === options.itemName);
+  }
+  
+  if (itemIndex < 0 || itemIndex >= stowed.length) {
+    return { success: false, reason: 'Invalid item index or name' };
+  }
+  
+  const itemToDraw = stowed[itemIndex];
+  const handsRequired = getItemHandRequirement(itemToDraw);
+  const handsAvailable = getAvailableHands(actor);
+  
+  if (handsAvailable < handsRequired) {
+    return { 
+      success: false, 
+      reason: `Not enough hands (${handsAvailable}/${handsRequired} required)`,
+    };
+  }
+  
+  // Move item from stowed to in-hand
+  actor.profile.stowedItems = stowed.filter((_, i) => i !== itemIndex);
+  actor.profile.inHandItems = [...inHand, itemToDraw];
+  
+  return { success: true, itemDrawn: itemToDraw };
+}
+
+/**
+ * Swap items (stow one, draw another)
+ * QSR: Use Fiddle action to switch out items
+ * Cost: 0 AP if first Fiddle, 1 AP otherwise
+ * Combines stow + unstow in single action
+ */
+export function executeSwapItem(
+  deps: SimpleActionDeps,
+  actor: Character,
+  options: {
+    stowItemIndex?: number;
+    stowItemName?: string;
+    drawItemIndex?: number;
+    drawItemName?: string;
+  } = {}
+): { success: boolean; reason?: string; itemStowed?: Item; itemDrawn?: Item } {
+  // First stow the item
+  const stowResult = executeStowItem(deps, actor, {
+    itemIndex: options.stowItemIndex,
+    itemName: options.stowItemName,
+  });
+  
+  if (!stowResult.success) {
+    return { success: false, reason: stowResult.reason };
+  }
+  
+  // Then draw the new item
+  const drawResult = executeUnstowItem(deps, actor, {
+    itemIndex: options.drawItemIndex,
+    itemName: options.drawItemName,
+  });
+  
+  if (!drawResult.success) {
+    // Restore stowed item if draw fails
+    if (stowResult.itemStowed) {
+      actor.profile.inHandItems = [...(actor.profile?.inHandItems ?? []), stowResult.itemStowed];
+      actor.profile.stowedItems = (actor.profile?.stowedItems ?? []).filter(i => i !== stowResult.itemStowed);
+    }
+    return { success: false, reason: drawResult.reason };
+  }
+  
+  return { 
+    success: true, 
+    itemStowed: stowResult.itemStowed, 
+    itemDrawn: drawResult.itemDrawn 
+  };
 }

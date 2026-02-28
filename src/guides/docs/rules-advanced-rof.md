@@ -1,0 +1,118 @@
+---
+title: Advanced Rules - ROF Weapons
+description: Complete rules for Rate-of-Fire weapons, ROF markers, and associated Disability traits.
+priority: 6
+---
+
+# Advanced Rules - ROF Weapons
+
+**Rule Level:** Advanced ()
+
+ROF (Rate-of-Fire) weapons such as machine guns shoot many bullets or projectiles rapidly at any target and the swath of area near them. This allows many targets to be hit at once using ROF markers.
+
+ROF markers are normally on the reverse side of a Suppression marker.
+
+---
+
+## Overview
+
+ROF weapons are very powerful, but using them requires some care. All ROF weapons have the **ROF X** trait which, in simplest terms, allows the Attacker a number of ROF markers, X, to be placed between potential targets on the battlefield.
+
+ROF weapons allow the use of Suppression, and are often limited by the addition of several Disability traits such as **[Feed]**, **[Jam]**, and **[Jitter]**.
+
+---
+
+## ROF Markers
+
+### Placement
+
+Place up to **X ROF markers** between targets within LOS along the LOF, but each marker must not be more than **Cohesion** apart from the last one placed.
+
+- A player may always choose not to use all or any of the allowed ROF markers
+- Markers must be within LOS, and is blocked by models
+- Each additional time that the Attacker uses ROF this Initiative, **reduce X by 1**
+
+### Restrictions
+
+ROF markers may **not** be placed:
+- Within range of any Friendly models
+- Within range of the Attacker
+- Within range of a target that is in base-contact with a Friendly model
+
+**Range of Effect:** The range of effect for a ROF marker is **1" from its center**.
+
+### Physical Placement
+
+- ROF markers should be placed on the battlefield and atop Obstacles, but **not upon the bases of any models**
+- Very large models such as Vehicles or models of **SIZ 6 or greater** have ample room to place these markers
+- Conceivably, if it were physically possible to keep them in place, ROF markers could be placed attached to Walls to represent attacks specifically to that area
+- If numerous ROF markers need to be placed in a single location, consider using a small six-sided die to identify how many there are to conserve markers
+- If there are ROF markers within range to a target from a prior Action, flip those to the Suppression marker side if using the optional Suppression rules, or remove them first
+
+---
+
+## Resolving Attacks
+
+### Primary Target
+
+Identify one target as the **Primary target** using a reminder pawn. This defaults to the **closest target**. Any cascades for Bonus Actions come from Tests against the Primary target.
+
+### Attack Resolution
+
+For every model, Friendly or Opposing, within LOS to the Attacker and within range of one or more ROF markers:
+
+1. Resolve the Attacker Range Combat starting with the Primary target
+2. For each target, add a **Wild die as an "ROF die"** for every marker in range for the Hit Test
+3. All bonuses from Concentrate are against just the Primary target. Roll its bonus Wild die separate from the ROF dice
+4. Do not perform any Bonus Actions or Morale Tests until all attacks have been resolved
+5. Remove the ROF markers afterwards, unless also using the optional Suppression rules
+
+---
+
+## Situational Test Modifiers
+
+These are some common penalties when using ROF weapons.
+
+### Obscured
+
+Attacker Hit or Detect Tests for **1, 2, 5, or 10 other models** within LOF to the target, and for non-Opposing models beyond but within 1 MU of LOF. Each is **-1 Modifier die**.
+
+### Snap-shot
+
+When using ROF during a **React**, **Counter-fire**, or with **Agility**, or after performing the **Move action**: **reduce ROF available by 1**.
+
+---
+
+## Disability Traits
+
+The most common Disability traits associated with ROF weapons are **[Feed]**, **[Jam]**, and **[Jitter]**.
+
+### Simplified Play
+
+To keep things simple, both **[Feed]** and **[Jam]** should be ignored when first learning these rules. Doing so will increase the cost of a weapon by:
+- **+5 BP** if one is ignored
+- **+10 BP** if both are ignored
+
+---
+
+## Related Traits
+
+| Trait | Description |
+|-------|-------------|
+| **ROF X** | Rate of Fire - allows X ROF markers to be placed |
+| **[Feed]** | Requires careful ammunition feeding. Weapon jams on roll of 1 on any attack die |
+| **[Jam]** | Weapon may jam when fired. Check after each attack |
+| **[Jitter]** | Extra AP costs if ROF > STR |
+| **[Burst]** | Fires in bursts. +1b to Hit Test, but weapon jams on roll of 1 on any die |
+
+---
+
+## Related Files
+
+- [[rules-advanced-suppression|Advanced Rules - Suppression]] - Suppression markers and effects
+- [[rules-advanced-firelane|Advanced Rules - Firelane]] - Fire-lane weapons and ROF
+- `src/lib/mest-tactics/traits/combat-traits.ts` - ROF trait implementations
+
+---
+
+**Source:** `docs/MEST.Tactics.Advanced-ROF.txt`

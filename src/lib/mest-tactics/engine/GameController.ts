@@ -382,7 +382,8 @@ export class GameController {
     config: SkirmishConfig,
     onTurnEnd?: (bottleResults: Record<string, BottleTestResult>) => boolean,
     sideIds: string[] = [],
-    hooks: TurnExecutionHooks = {}
+    hooks: TurnExecutionHooks = {},
+    missionSides?: MissionSide[]
   ): void {
     const maxTurns = config.maxTurns ?? 3;
     const rng = config.rng ?? Math.random;
@@ -557,7 +558,9 @@ export class GameController {
           characters: side,
           orderedCandidate: this.pickOrderedCandidate(side),
           opposingCount: this.countRemaining(sides.filter((_, i) => i !== index).flat()),
-        }))
+          side: missionSides?.[index],
+        })),
+        this.battlefield
       );
       for (const [sideId, result] of Object.entries(bottleResults)) {
         if (result.bottledOut) {

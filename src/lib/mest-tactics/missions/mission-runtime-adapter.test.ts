@@ -22,9 +22,12 @@ describe('MissionRuntimeAdapter event forwarding semantics', () => {
 
     const first = adapter.recordAttack(sideA.id, 1);
     expect(first.firstBloodSideId).toBe(sideA.id);
+    expect(first.delta.vpBySide).toEqual({}); // VP awarded by mission-flow, not here
 
     const second = adapter.recordAttack(sideB.id, 2);
-    expect(second.firstBloodSideId).toBeUndefined();
+    // firstBloodSideId remains set to first side, no VP awarded
+    expect(second.firstBloodSideId).toBe(first.firstBloodSideId);
+    expect(second.delta.vpBySide).toEqual({}); // No VP awarded
   });
 
   it('awards targeted elimination bonus exactly once for the same model', () => {

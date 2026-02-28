@@ -6,6 +6,8 @@ import {
   computeEliminationScores,
   computeBottledScores,
   computeOutnumberedScores,
+  computeAggressionScores,
+  AggressionState,
 } from './mission-scoring';
 
 /**
@@ -20,6 +22,12 @@ export interface EliminationMissionState {
   eliminatedBpBySide: Map<string, number>;
   /** VP from eliminations per side */
   vpBySide: Map<string, number>;
+  /** Aggression tracking (models crossing mid-line) */
+  aggression: AggressionState;
+  /** First Blood tracking (first side to inflict wounds) */
+  firstBloodSideId?: string;
+  /** Scholar RP tracking (RP from Scholar X trait) */
+  scholarRpBySide: Record<string, number>;
   /** Has the mission ended? */
   ended: boolean;
   /** Winning side ID (if ended) */
@@ -47,6 +55,9 @@ export class EliminationMissionManager {
       eliminationsBySide: new Map(),
       eliminatedBpBySide: new Map(),
       vpBySide: new Map(),
+      aggression: { crossedBySide: {}, firstCrossedSideId: undefined },
+      firstBloodSideId: undefined,
+      scholarRpBySide: {},
       ended: false,
     };
 
@@ -56,10 +67,57 @@ export class EliminationMissionManager {
       this.state.eliminationsBySide.set(side.id, 0);
       this.state.eliminatedBpBySide.set(side.id, 0);
       this.state.vpBySide.set(side.id, 0);
+      this.state.scholarRpBySide[side.id] = 0;
+      
+      // Calculate initial Scholar RP (characters that start with Scholar trait)
+      this.state.scholarRpBySide[side.id] = this.calculateScholarRp(side);
     }
 
     // Set up event hooks
     this.setupEventHooks();
+  }
+
+  /**
+   * Calculate Scholar RP for a side (sum of Scholar X levels for surviving characters)
+   */
+  private calculateScholarRp(side: MissionSide): number {
+    let totalScholarRp = 0;
+    for (const member of side.members) {
+      const character = member.character;
+      if (!character || character.state.isEliminated || character.state.isKOd) continue;
+      
+      const scholarLevel = this.getScholarLevel(character);
+      if (scholarLevel > 0) {
+        totalScholarRp += scholarLevel;
+      }
+    }
+    return totalScholarRp;
+  }
+
+  /**
+   * Get Scholar trait level from a character
+   */
+  private getScholarLevel(character: any): number {
+    // Check profile traits for Scholar X
+    const traits = character.profile?.finalTraits ?? [];
+    for (const trait of traits) {
+      if (typeof trait === 'string' && trait.startsWith('Scholar')) {
+        const match = trait.match(/Scholar\s*(\d+)?/);
+        if (match) {
+          return match[1] ? parseInt(match[1], 10) : 1;
+        }
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * Track First Blood (first side to inflict wounds)
+   * Awards 1 VP to first side to wound an enemy model
+   */
+  public recordFirstBlood(sideId: string): void {
+    if (this.state.firstBloodSideId) return; // Already awarded
+    this.state.firstBloodSideId = sideId;
   }
 
   /**
@@ -299,6 +357,63 @@ export class EliminationMissionManager {
   }
 
   /**
+   * Track a model crossing the midline for Aggression scoring
+   * QSR: Aggression key - +1 VP if half models cross, +1 RP to first to cross
+   */
+  trackMidlineCross(modelId: string, sideId: string, position: { x: number; y: number }, battlefieldCenter: { x: number; y: number }): void {
+    // Check if model has crossed the midline (toward opponent)
+    // For a 2-side battle, midline is perpendicular to the deployment axis
+    // Simple check: model's x position is past the center toward opponent
+
+    const side = this.sides.get(sideId);
+    if (!side) return;
+
+    const startingCount = side.members.length;
+    const threshold = Math.ceil(startingCount / 2);
+    const currentCrossed = this.state.aggression.crossedBySide[sideId] ?? 0;
+
+    // Check if this model has already crossed (track unique models)
+    // For simplicity, we track count of models that have crossed
+    // A more sophisticated implementation would track individual model IDs
+
+    // Determine if model is past midline (simple x-axis check for opposite deployment)
+    // Assuming Side A deploys at x=0, Side B at x=battlefieldSize
+    // Midline is at battlefieldSize/2
+    const hasCrossed = position.x > battlefieldCenter.x;
+
+    if (hasCrossed && currentCrossed < threshold) {
+      // Track this crossing
+      const newCrossed = currentCrossed + 1;
+      this.state.aggression.crossedBySide[sideId] = newCrossed;
+
+      // Award RP to first side to cross
+      if (!this.state.aggression.firstCrossedSideId) {
+        this.state.aggression.firstCrossedSideId = sideId;
+      }
+    }
+  }
+
+  /**
+   * Track a Scholar character elimination for RP scoring
+   * QSR: Scholar X awards X RP only if character survives
+   */
+  processScholarElimination(modelId: string, sideId: string): void {
+    const side = this.sides.get(sideId);
+    if (!side) return;
+
+    // Find the character and calculate their Scholar level
+    const member = side.members.find(m => m.id === modelId || m.character?.id === modelId);
+    if (!member || !member.character) return;
+
+    const scholarLevel = this.getScholarLevel(member.character);
+    if (scholarLevel > 0) {
+      // Reduce Scholar RP for this side (character no longer survives)
+      const currentRp = this.state.scholarRpBySide[sideId] ?? 0;
+      this.state.scholarRpBySide[sideId] = Math.max(0, currentRp - scholarLevel);
+    }
+  }
+
+  /**
    * Calculate end-game scoring for Elimination mission
    * Awards VP for: Elimination (highest BP), Bottled, Outnumbered
    */
@@ -375,6 +490,28 @@ export class EliminationMissionManager {
     const outnumberedVp = computeOutnumberedScores(sideStatuses);
     for (const [sideId, vp] of Object.entries(outnumberedVp)) {
       vpBySide[sideId] = (vpBySide[sideId] ?? 0) + vp;
+    }
+
+    // Aggression: +1 VP if at least half of models crossed midline, +1 RP to first to cross
+    const aggressionScores = computeAggressionScores(sideStatuses, this.state.aggression);
+    for (const [sideId, vp] of Object.entries(aggressionScores.vpBySide)) {
+      vpBySide[sideId] = (vpBySide[sideId] ?? 0) + vp;
+    }
+    for (const [sideId, rp] of Object.entries(aggressionScores.rpBySide)) {
+      rpBySide[sideId] = (rpBySide[sideId] ?? 0) + rp;
+    }
+
+    // First Blood: +1 VP to first side to inflict wounds
+    if (this.state.firstBloodSideId) {
+      vpBySide[this.state.firstBloodSideId] = (vpBySide[this.state.firstBloodSideId] ?? 0) + 1;
+    }
+
+    // Scholar RP: Add RP from surviving Scholar X characters
+    // QSR: Scholar X awards X RP if character survives the mission
+    for (const [sideId, scholarRp] of Object.entries(this.state.scholarRpBySide)) {
+      if (scholarRp > 0) {
+        rpBySide[sideId] = (rpBySide[sideId] ?? 0) + scholarRp;
+      }
     }
 
     return { vpBySide, rpBySide };
@@ -506,6 +643,82 @@ export class EliminationMissionManager {
           leadMargin: vpAward,
         };
         sideScores[smaller.sideId].predictedVp += vpAward;
+      }
+    }
+
+    // Calculate Aggression key scores
+    const aggressionScores = computeAggressionScores(sideStatuses, this.state.aggression);
+    for (const [sideId, vp] of Object.entries(aggressionScores.vpBySide)) {
+      const crossed = this.state.aggression.crossedBySide[sideId] ?? 0;
+      const threshold = Math.ceil(sideStatuses.find(s => s.sideId === sideId)?.startingCount / 2 ?? 1);
+      const predicted = crossed >= threshold ? 1 : 0;
+      const confidence = predicted > 0 ? 1.0 : 0.0;
+
+      sideScores[sideId].keyScores['aggression'] = {
+        current: 0,
+        predicted,
+        confidence,
+        leadMargin: predicted,
+      };
+      sideScores[sideId].predictedVp += predicted;
+    }
+    for (const [sideId, rp] of Object.entries(aggressionScores.rpBySide)) {
+      sideScores[sideId].predictedRp += rp;
+      sideScores[sideId].keyScores['aggression_rp'] = {
+        current: 0,
+        predicted: rp,
+        confidence: rp > 0 ? 1.0 : 0.0,
+        leadMargin: rp,
+      };
+    }
+
+    // Calculate First Blood key scores
+    // First Blood is already awarded or not - it's deterministic
+    if (this.state.firstBloodSideId) {
+      sideScores[this.state.firstBloodSideId].keyScores['first_blood'] = {
+        current: 1, // Already awarded
+        predicted: 1,
+        confidence: 1.0,
+        leadMargin: 1,
+      };
+      sideScores[this.state.firstBloodSideId].predictedVp += 1;
+    } else {
+      // First Blood not yet awarded - all sides have equal chance
+      // For prediction purposes, assume it will be awarded (most likely scenario)
+      // In a real game, the side with more aggressive play will get it
+      // For simplicity, we'll mark it as 0 predicted but available
+      for (const sideId of Object.keys(sideScores)) {
+        sideScores[sideId].keyScores['first_blood'] = {
+          current: 0,
+          predicted: 0, // Will be awarded when first wound is inflicted
+          confidence: 0.0,
+          leadMargin: 0,
+        };
+      }
+    }
+
+    // Calculate Scholar RP key scores
+    // Scholar X awards X RP if character survives - this is predictable based on current survival
+    for (const [sideId, scholarRp] of Object.entries(this.state.scholarRpBySide)) {
+      if (scholarRp > 0) {
+        // Calculate predicted Scholar RP based on surviving characters
+        const side = this.sides.get(sideId);
+        let predictedScholarRp = 0;
+        if (side) {
+          for (const member of side.members) {
+            const character = member.character;
+            if (!character || character.state.isEliminated || character.state.isKOd) continue;
+            predictedScholarRp += this.getScholarLevel(character);
+          }
+        }
+        
+        sideScores[sideId].predictedRp += predictedScholarRp;
+        sideScores[sideId].keyScores['scholar_rp'] = {
+          current: 0, // RP awarded at end game
+          predicted: predictedScholarRp,
+          confidence: 1.0, // High confidence - based on current survival
+          leadMargin: predictedScholarRp,
+        };
       }
     }
 

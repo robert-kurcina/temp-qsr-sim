@@ -62,6 +62,7 @@ export function resolveDamage(
     weapon: Item,
     hitTestResult: TestResult, // Assumes a successful hit
     context: TestContext = {},
+    cleaveExtraWounds: number = 0, // Extra wounds from Cleave 2+ trait
 ): DamageResolution {
 
     let woundsFromStun = 0;
@@ -177,6 +178,12 @@ export function resolveDamage(
     if (woundsFromDamage > 0 && hasGrit(defender) && !defender.state.gritWoundIgnored) {
         woundsFromDamage = Math.max(0, woundsFromDamage - 1);
         defender.state.gritWoundIgnored = true;
+    }
+
+    // Apply Cleave extra wounds (X-1 for Cleave level X >= 2)
+    // These are added BEFORE KO check per QSR: "presume target has first received an extra X-1 Wounds"
+    if (cleaveExtraWounds > 0) {
+        woundsFromDamage += cleaveExtraWounds;
     }
 
     // 4. Sum all wounds and update defender state

@@ -845,6 +845,13 @@ export class PathfindingEngine {
       return [start, end];
     }
 
+    // Validate start and end positions
+    if (!start || !end ||
+        !Number.isFinite(start.x) || !Number.isFinite(start.y) ||
+        !Number.isFinite(end.x) || !Number.isFinite(end.y)) {
+      return [start, end];
+    }
+
     const trianglePath = navMesh.findTrianglePath(start, end, diameter, {
       portalNarrowPenalty: options.portalNarrowPenalty,
       portalNarrowThresholdFactor: options.portalNarrowThresholdFactor,
@@ -854,8 +861,23 @@ export class PathfindingEngine {
     }
 
     const portals = navMesh.buildPortals(trianglePath);
+    if (portals.length === 0) {
+      return [start, end];
+    }
+    
     const navPath = navMesh.funnelPath(start, end, portals);
-    return navPath.length > 1 ? navPath : [start, end];
+    
+    // Validate result
+    if (!navPath || navPath.length === 0) {
+      return [start, end];
+    }
+    
+    // Filter out any invalid positions from the path
+    const validPath = navPath.filter(p => 
+      p && Number.isFinite(p.x) && Number.isFinite(p.y)
+    );
+    
+    return validPath.length > 1 ? validPath : [start, end];
   }
 
   private findHierarchicalPath(

@@ -1,0 +1,109 @@
+
+Attribute Upgrades and LoA
+Champions with Attribute Upgrades might also select a
+Baseline host which already has its own Attribute
+Upgrades. This may affect the Level-of-Absurdity.
+ Each +++ instead becomes a +1 Attribute value.
+ If the total of any Attribute improvement is +2 or more,
+the LoA is increased by 1 for that character. If 3
+Attributes are at this, the LoA is increased by 2. If 6 or
+more Attributes are at this, the LoA is increased by 3.
+Altering Intellect
+The [Beast!], [Beast], [Beast+], and [Primitive] traits are
+sequentially tied together as aspects of Intellect which is a
+higher-order pattern for Champions.
+Sample > Intellect Traits Removal Table
+XP Notes
+Trait LoA [Beast!] 2 11 As [Beast]
+[Beast] 1 8 As [Beast+]
+[Beast+] 1 6 As [Primitive]
+[Primitive] 0 2 -
+ As a result, these Disabilities associated with Intellect
+are very hard to remove as each only slightly improves
+how much control a Champion has over the next such
+host.
+ For 11 XP  [Beast!] becomes [Beast].
+ For 8 XP  [Beast] becomes [Beast+].
+ For 6 XP  [Beast+] becomes [Primitive].
+ For 2 XP  [Primitive] is removed.
+ The [Beast!] trait has an LoA of 2 to remove. Assign any
+character which had this trait +2 LoA if it becomes
+[Beast+] or removes [Beast!] entirely.
+ The [Beast+] trait has an LoA of 1 to remove. Assign any
+character which had this trait +1 LoA if it removes this
+trait entirely.
+
+Escalation of Intent
+A Player’s set of Champions exists upon the Roster for a
+relatively short time. Each Champion, being embodiments
+themselves of higher-order Thought Beings, yearns to grow
+to be free of the prison that is the Codon Barrier to rejoin
+the Dios Primin, the First Thought, within the entirety of
+the Ovodium Cosmogos.
+Reputation
+All Champions will eventually and automatically acquire
+the Reputation trait.
+ Each Champion which has acquired at least 1 XP in each
+of every 6 Missions participated, receives +1 Reputation.
+ Reputation behaves like the Fear trait, but it is
+something which all living creatures, especially
+intelligent ones, can recognize.
+Here’s what the Reputation trait looks like;
+Reputation X () — Intrinsic. Intrinsic. Psychology. For every
+Reputation level higher than the target within Visibility and
+LOS, receive +1 Modifier die for all Opposed tests against that
+target.
+ Reality Distortion Field — If that target could be affected
+adversely by several Opposing characters with Reputation,
+use only the highest difference in Reputation levels.
+ If the target has one or more of these Outsider,
+Invader, Mythos, Fear, or Beast traits, then Reputation
+will not affect them unless also have those same traits.
+ If Opposing models have the Reputation trait, reduce X
+by the lower rating experienced by either model.
+ Embodiment Limit — A character is allowed at most 1
+Virtuosity trait per Reputation level, and a maximum of
+Reputation X trait levels for any Virtuosity trait.
+ LoA Limit — Allowed LoA is increased to the highest
+Reputation level of any Friendly character on the battlefield
+
+Reality Distortion Fields
+A key game-feature of Champions is that the create
+localized “reality distortion fields” around them.
+When they are deployed with an Assembly, it allows
+archetypes, weapons, armor, and equipment to be used
+from settings with a Level-of-Absurdity [ LoA ] to match
+that Champion’s Reputation trait level.
+ Do not assign archetypes to an Assembly if it requires a
+higher LoA than the setting.
+ Do not assign Packages or Upgrades to Baselines or
+Champions if these require a higher LoA than the
+setting.
+ Do not assign Weapons, Armor, or Equipment from
+higher LoA lists to any characters in a setting with a
+lower LoA.
+ Do not assign Fantastic Items keywords which require
+higher LoA to any Items in a setting with a lower LoA.
+ Exception — The exception is if the Assembly has a
+Champion with a Reputation trait level at or higher than
+the required LoA.
+The Intent of Champions
+Each player’s Champions will begin to learn enough from
+its period of confinement within the Frame Parallels and
+eventually understand how to escape the Codon Barrier.
+ At the end of a Mission, as soon as a Champion receives
+the Reputation trait; its Player must perform a
+Champion’s Intent Test as a +X Modifier die Unopposed
+Reputation Test.
+ For X, use the LoA of the setting where the Mission took
+place. The higher the LoA, the easier the Test.
+ Upon passing, the Champion has learned enough about
+reality to escape the Codon Barrier. It is removed from
+the Roster.
+ Opportunity — For each Friendly Champion which has
+escaped for this Mission, receive +1 Base die when
+checking other Friendly Champions which were also
+deployed.
+ Campaign Victory Points — The very first Champion of
+each Side which has escaped for any Mission awards its
+Side +1 CVP.

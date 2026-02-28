@@ -38,6 +38,7 @@ Use the standard rules. There are just 2 Sides.
 - Elimination: +1 VP to Side with highest total BP value of KO'd and Eliminated Opposing models at game end.
 - Bottled: +1 VP if Opposing Side fails Bottle Test or has no Ordered models remaining at game end.
 - Outnumbered: +1 VP to Side outnumbered 3:2 models or greater at game start; +2 VP if outnumbered 2:1 or greater (only if multiple Sides remain at game end).
+- Aggression: +1 VP if at least half of the Assembly's models cross an imaginary mid-line. +1 RP to the first model to cross.
 
 ## QAI Mission 12: Convergence
 
@@ -79,7 +80,7 @@ Use the standard rules. There can be 2 to 4 mutually Opposing Sides.
 - Dominance: Immediate victory upon reaching VP threshold.
 - Elimination: +1 VP for most BP eliminated (tiebreaker only).
 - Bottled: +1 VP if Opposing Side fails Bottle Test (tiebreaker only).
-- First Blood: +1 VP to first Side to Wound an Opposing model.
+- Encroachment: +1 VP to first Side with a model to cross the mid-point line toward an Opposing Assembly.
 
 ## QAI Mission 13: Assault
 
@@ -169,6 +170,7 @@ Use the standard rules. There are just 2 Sides.
 - Sanctuary: VP from maintaining reserve force.
 - Elimination: +1 VP for most BP eliminated (tiebreaker only).
 - Bottled: +1 VP if Opponent fails Bottle Test (tiebreaker only).
+- Encroachment: +1 VP to first Side with a model to cross the mid-point line toward an Opposing Assembly.
 
 ## QAI Mission 15: Recovery
 
@@ -326,6 +328,7 @@ Use the standard rules. There are 3 mutually Opposing Sides.
 - Commander Elimination: +2 VP immediately.
 - Sanctuary: +1 VP per Turn maintaining at least 25 percent of BP within own Entry Edge zone.
 - Bottled: +1 VP if Opposing Side fails Bottle Test.
+- Encroachment: +1 VP to first Side with a model to cross the mid-point line toward an Opposing Assembly.
 
 ## QAI Mission 18: Stealth
 

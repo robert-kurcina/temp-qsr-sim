@@ -14,20 +14,216 @@ import { VictoryConditionType, ScoringType } from '../../missions/mission-defini
 
 /**
  * Elimination Mission AI
- * 
+ *
  * Baseline mission: eliminate all enemy models.
- * Standard AI behavior is sufficient, but we can optimize for:
- * - Focus fire on wounded targets
- * - Avoid risky actions when winning
- * - Push advantage when ahead
+ * Key behaviors:
+ * - Prioritize attacks on wounded targets
+ * - Push forward to cross midline (Aggression key)
+ * - Avoid excessive Wait action selection
+ * - Focus fire to secure eliminations and VP
  */
 export class EliminationMissionAI extends MissionAI {
   readonly missionId = 'QAI_11';
   readonly missionName = 'Elimination';
 
   getDecision(character: Character, context: MissionAIContext): MissionAIDecision | undefined {
-    // Standard AI is sufficient for Elimination
-    // Could add optimization for focus fire on wounded targets
+    const battlefield = context.battlefield;
+    const charPos = battlefield.getCharacterPosition(character);
+    if (!charPos) return undefined;
+
+    const currentTurn = context.currentTurn;
+    const scoringContext = context.scoringContext;
+
+    // Priority 1: Attack CRITICALLY wounded enemies (1-2 attacks from elimination)
+    // These are priority targets to secure eliminations
+    const criticalEnemies = context.enemySides
+      .flatMap(s => s.members)
+      .filter(m => {
+        const enemy = m.character;
+        const wounds = enemy.state.wounds ?? 0;
+        const siz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
+        // Critical = within 2 wounds of elimination (SIZ+3)
+        return wounds >= siz + 1 && !enemy.state.isKOd && !enemy.state.isEliminated;
+      })
+      .map(m => m.character);
+
+    if (criticalEnemies.length > 0) {
+      // Find closest critical enemy
+      let closestCritical: Character | null = null;
+      let closestDist = Infinity;
+      for (const enemy of criticalEnemies) {
+        const enemyPos = battlefield.getCharacterPosition(enemy);
+        if (!enemyPos) continue;
+        const dist = Math.hypot(enemyPos.x - charPos.x, enemyPos.y - charPos.y);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestCritical = enemy;
+        }
+      }
+
+      if (closestCritical) {
+        const enemyPos = battlefield.getCharacterPosition(closestCritical);
+        if (enemyPos) {
+          const inRCC = closestDist <= 1.5;
+          const inRCRange = closestDist <= (character.finalAttributes.orm ?? 8);
+
+          if (inRCC) {
+            return {
+              override: {
+                type: 'close_combat',
+                target: closestCritical,
+                reason: 'Finish off critically wounded enemy',
+                priority: 6, // Higher than regular wounded
+                requiresAP: true,
+              },
+              context: 'Elimination: Finish off critical',
+            };
+          } else if (inRCRange) {
+            return {
+              override: {
+                type: 'ranged_combat',
+                target: closestCritical,
+                reason: 'Finish off critically wounded enemy',
+                priority: 6,
+                requiresAP: true,
+              },
+              context: 'Elimination: Finish off critical',
+            };
+          }
+        }
+      }
+    }
+
+    // Priority 2: Attack wounded enemies (focus fire)
+    const woundedEnemies = context.enemySides
+      .flatMap(s => s.members)
+      .filter(m => {
+        const enemy = m.character;
+        return enemy.state.wounds > 0 &&
+               !enemy.state.isKOd &&
+               !enemy.state.isEliminated;
+      })
+      .map(m => m.character);
+
+    if (woundedEnemies.length > 0) {
+      // Find closest wounded enemy
+      let closestWounded: Character | null = null;
+      let closestDist = Infinity;
+      for (const enemy of woundedEnemies) {
+        const enemyPos = battlefield.getCharacterPosition(enemy);
+        if (!enemyPos) continue;
+        const dist = Math.hypot(enemyPos.x - charPos.x, enemyPos.y - charPos.y);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closestWounded = enemy;
+        }
+      }
+
+      if (closestWounded) {
+        const enemyPos = battlefield.getCharacterPosition(closestWounded);
+        if (enemyPos) {
+          // Check if in range combat range
+          const inRCC = closestDist <= 1.5; // Base-to-base contact
+          const inRCRange = closestDist <= (character.finalAttributes.orm ?? 8);
+
+          if (inRCC) {
+            return {
+              override: {
+                type: 'close_combat',
+                target: closestWounded,
+                reason: 'Focus fire on wounded enemy',
+                priority: 5,
+                requiresAP: true,
+              },
+              context: 'Elimination: Focus fire wounded',
+            };
+          } else if (inRCRange) {
+            return {
+              override: {
+                type: 'ranged_combat',
+                target: closestWounded,
+                reason: 'Focus fire on wounded enemy',
+                priority: 5,
+                requiresAP: true,
+              },
+              context: 'Elimination: Focus fire wounded',
+            };
+          }
+        }
+      }
+    }
+
+    // Priority 2: Push forward for Aggression key (cross midline)
+    // Increase pressure as turns progress
+    const aggressionTurnThreshold = currentTurn >= 3 ? 1.0 : 0.7;
+    const scoringPressure = scoringContext?.amILeading === false ? 1.2 : aggressionTurnThreshold;
+
+    const battlefieldCenter = battlefield.width / 2;
+    const deploymentEdge = character.startingPosition?.x ?? 0;
+    const movingTowardCenter = deploymentEdge < battlefieldCenter
+      ? charPos.x < battlefieldCenter
+      : charPos.x > battlefieldCenter;
+
+    if (movingTowardCenter && currentTurn <= 4) {
+      // Early turns: advance toward midline
+      const advanceTarget = {
+        x: battlefieldCenter + (deploymentEdge < battlefieldCenter ? 2 : -2),
+        y: charPos.y,
+      };
+      return {
+        override: {
+          type: 'move',
+          position: advanceTarget,
+          reason: 'Advance for Aggression key',
+          priority: 4 * scoringPressure,
+          requiresAP: true,
+        },
+        context: 'Elimination: Aggression advance',
+      };
+    }
+
+    // Priority 3: Late game - be more aggressive if behind on VP
+    if (currentTurn >= 5 && scoringContext && !scoringContext.amILeading) {
+      // Find any enemy and attack
+      const visibleEnemies = context.enemies.filter(e => {
+        if (e.state.isEliminated || e.state.isKOd) return false;
+        const enemyPos = battlefield.getCharacterPosition(e);
+        if (!enemyPos) return false;
+        return battlefield.hasLineOfSight(charPos, enemyPos);
+      });
+
+      if (visibleEnemies.length > 0) {
+        const target = visibleEnemies[0];
+        const targetPos = battlefield.getCharacterPosition(target);
+        if (targetPos) {
+          const dist = Math.hypot(targetPos.x - charPos.x, targetPos.y - charPos.y);
+          if (dist <= 1.5) {
+            return {
+              override: {
+                type: 'close_combat',
+                target,
+                reason: 'Late game desperation attack',
+                priority: 5,
+                requiresAP: true,
+              },
+              context: 'Elimination: Late game aggression',
+            };
+          } else if (dist <= (character.finalAttributes.orm ?? 8)) {
+            return {
+              override: {
+                type: 'ranged_combat',
+                target,
+                reason: 'Late game desperation attack',
+                priority: 5,
+                requiresAP: true,
+              },
+              context: 'Elimination: Late game aggression',
+            };
+          }
+        }
+      }
+    }
+
     return undefined;
   }
 
@@ -43,7 +239,7 @@ export class EliminationMissionAI extends MissionAI {
 
     return {
       priorityTargets: woundedEnemies,
-      objectives: ['eliminate_enemies'],
+      objectives: ['eliminate_enemies', 'cross_midline'],
     };
   }
 }

@@ -3,6 +3,13 @@ import { Assembly } from '../core/Assembly';
 import { Character } from '../core/Character';
 import { Profile } from '../core/Profile';
 import { createProfiles } from '../utils/profile-generator';
+import {
+  filterItemsByTechLevel,
+  TechLevelConfig,
+  TechnologicalAge,
+  createTechConfigFromAge,
+  validateItemsForTechLevel,
+} from '../utils/tech-level-filter';
 
 export interface AssemblyRoster {
   assembly: Assembly;
@@ -29,6 +36,20 @@ export interface AssemblyConfig {
 export interface BuildProfileOptions {
   secondaryArchetypeNames?: string[];
   itemNames?: string[];
+  /**
+   * Technological age for item filtering
+   * Default: 'Medieval' (Tech Level 5)
+   */
+  technologicalAge?: TechnologicalAge;
+  /**
+   * Extended tech range for QSR (allows Tech 1-5 instead of 1-3)
+   * Default: false
+   */
+  extendedQSR?: boolean;
+  /**
+   * Custom tech level config (overrides technologicalAge)
+   */
+  techLevelConfig?: TechLevelConfig;
 }
 
 // Game size defaults (QSR standard)
@@ -99,11 +120,36 @@ export function buildProfile(
     throw new Error(`Unknown archetype: ${primaryArchetypeName}`);
   }
 
+  // Determine tech level config
+  const age = options.technologicalAge ?? 'Medieval';
+  const extended = options.extendedQSR ?? false;
+  let techConfig: TechLevelConfig;
+  if (options.techLevelConfig) {
+    techConfig = options.techLevelConfig;
+  } else {
+    techConfig = createTechConfigFromAge(age, extended);
+  }
+
+  // Filter items by tech level
+  let filteredItemNames = options.itemNames;
+  if (options.itemNames && options.itemNames.length > 0) {
+    filteredItemNames = filterItemsByTechLevel(options.itemNames, techConfig);
+
+    // Validate and warn about filtered items
+    const invalidItems = validateItemsForTechLevel(options.itemNames, techConfig.maxTechLevel);
+    if (invalidItems.length > 0) {
+      console.warn(
+        `Tech Level ${techConfig.maxTechLevel} (${age}): ` +
+        `Filtered out ${invalidItems.length} items not available: ${invalidItems.join(', ')}`
+      );
+    }
+  }
+
   const profiles = createProfiles(
     primaryArchetypeName,
     primaryArchetypeData,
     options.secondaryArchetypeNames || [],
-    options.itemNames || []
+    filteredItemNames || []
   );
 
   if (profiles.length === 0) {

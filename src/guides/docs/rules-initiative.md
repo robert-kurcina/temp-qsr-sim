@@ -171,6 +171,75 @@ interface Character {
 
 ---
 
+## Spending Initiative Points
+
+Initiative Points (IP) are a **Side-level resource** that can be spent on tactical abilities:
+
+### IP Spending Abilities
+
+| Ability | IP Cost | Effect | QSR Reference |
+|---------|---------|--------|---------------|
+| **Maintain Initiative** | 1 IP | Activate another model from the same Side | QSR p.784 |
+| **Force Initiative** | 1 IP | Pass Initiative to another Side (swap activation order) | QSR p.784 |
+| **Refresh** | 1 IP | Remove 1 Delay token from a Friendly model | QSR p.784 |
+
+### IP Awarding
+
+At the **start of each Turn**, after Initiative Tests are rolled:
+- **Winner** (highest Initiative): IP = difference between winner's score and lowest score
+- **Other Sides**: IP = difference between their score and the next higher score
+- **Lowest Score**: Receives 0 IP
+
+### IP Reset
+
+At the **End of Turn**, all unspent IP are **lost**. IP do not carry over between Turns.
+
+### Implementation
+
+```typescript
+// Award IP to Side
+awardInitiativePoints(side, amount);
+
+// Spend IP (returns true if successful)
+spendInitiativePoints(side, amount);
+
+// Helper functions
+maintainInitiative(side);      // Spend 1 IP to activate another model
+forceInitiative(side);         // Spend 1 IP to pass Initiative
+refreshInitiative(side);       // Spend 1 IP to remove Delay token
+clearInitiativePoints(side);   // Reset IP at End of Turn
+```
+
+---
+
+## Pushing (Character Action)
+
+**Pushing** is a **character-level action** that does NOT cost Initiative Points:
+
+> **Pushing** — Once per Initiative, at the option of the player; Active characters having no Delay tokens may use "Pushing" to push themselves to their limit and acquire **1 AP**. They will also immediately acquire a **Delay token**.
+
+### Pushing Rules
+
+| Requirement | Effect |
+|-------------|--------|
+| No Delay tokens | Gain +1 AP |
+| Once per Initiative | Acquire 1 Delay token |
+| Active character only | Mark as having Pushed |
+
+### Implementation
+
+```typescript
+// Pushing does NOT cost IP - it's a free character action
+const result = performPushing(deps, character);
+if (result.success) {
+  // Character gains 1 AP and 1 Delay token
+}
+```
+
+**Note:** Pushing is logged separately from IP spending in instrumentation (grade 2+).
+
+---
+
 ## Summary
 
 | Concept | Who Has It | Purpose |
@@ -179,6 +248,7 @@ interface Character {
 | **Initiative Points (IP)** | **Side / Player** | Spendable resource for tactical abilities |
 | **Initiative Card** | Mission Attacker (transferable) | Advanced rule for tie-breaking and re-rolls |
 | **Initiative Order** | Side-level | Sequence of Side activations per Turn |
+| **Pushing** | Character (once/Initiative) | Gain +1 AP, acquire Delay token |
 
 ---
 
@@ -188,5 +258,7 @@ interface Character {
 - QSR "Spending Initiative Points" section: IP abilities (Maintain, Force, Refresh)
 - QSR "The Initiative Card" section: Advanced rule for tie-breaking
 - QSR "Game Play Sequence" summary: Turn structure
-- `rules-actions.md`: Action Points and activation
+- QSR "Pushing" section (p.789-791): Character-level AP gain
+- `rules-actions.md`: Action Points, activation, and Pushing
 - `MissionSide.ts`: Side state management (initiativePoints field)
+- `pushing-and-maneuvers.ts`: Pushing action implementation

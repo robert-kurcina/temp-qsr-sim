@@ -264,6 +264,11 @@ export function calculateScoringModifiers(context: ScoringContext): ScoringModif
         // Losing movement keys - push forward
         modifiers.aggressionMultiplier *= 1.15;
         modifiers.riskMultiplier *= 1.1;
+        // Additional pressure for Aggression key specifically
+        if (key === 'aggression') {
+          modifiers.aggressionMultiplier *= 1.1; // Stack to 1.265x total
+          modifiers.meleePreference *= 1.15; // Prefer melee to close distance
+        }
         break;
       case 'firstBlood':
         // Missed first blood - compensate with aggression

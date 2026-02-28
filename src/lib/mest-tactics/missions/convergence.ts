@@ -67,7 +67,7 @@ export const ConvergenceMission: MissionDefinition = {
   turnLimit: 8,
   endGameDieRoll: true,
   endGameDieStart: 5,
-  keys: ['POI'], // Uses POI/Zone control system
+  keys: ['POI', 'Encroachment'], // Zone control + first to cross midline
   sizes: {
     VERY_SMALL: {
       poiVP: 2,

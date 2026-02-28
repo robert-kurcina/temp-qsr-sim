@@ -10,6 +10,7 @@ export interface MoveActionDeps {
   getCharacterPosition: (character: Character) => Position | undefined;
   moveCharacter: (character: Character, position: Position) => boolean;
   getTerrainAt: (position: Position) => TerrainType;
+  canOccupy: (position: Position, baseDiameter: number) => boolean; // QSR: Footprint validation
   executeCloseCombatAttack: (
     attacker: Character,
     defender: Character,
@@ -21,15 +22,17 @@ export interface MoveActionDeps {
       weaponIndex?: number;
     }
   ) => unknown;
+  /** Optional pathfinding engine for calculating actual movement cost */
+  findPathCost?: (start: Position, end: Position) => number | null;
 }
 
 export function executeMoveAction(
   deps: MoveActionDeps,
   mover: Character,
   destination: Position,
-  options: { 
-    opponents?: Character[]; 
-    allowOpportunityAttack?: boolean; 
+  options: {
+    opponents?: Character[];
+    allowOpportunityAttack?: boolean;
     opportunityWeapon?: Item;
     isMovingStraight?: boolean;
     isAtStartOrEndOfMovement?: boolean;
@@ -39,46 +42,60 @@ export function executeMoveAction(
   if (!start) {
     throw new Error('Missing mover position.');
   }
-  
+
   // Sprint X: Bonus movement when moving in a straight line
   const sprintBonus = getSprintMovementBonus(mover, options.isMovingStraight ?? false, mover.state.isAttentive, true);
-  
+
   // Leap X: Agility bonus at start or end of movement
   const leapResult = checkLeapUsage(mover, options.isAtStartOrEndOfMovement ?? false);
   const agilityBonus = leapResult.agilityBonus;
-  
+
   // Surefooted X: Upgrade terrain effects
   const currentTerrain = deps.getTerrainAt(destination);
   if (currentTerrain === 'Impassable') {
     return { moved: false, reason: 'Destination is impassable terrain' };
   }
   const upgradedTerrain = getSurefootedTerrainBonus(mover, currentTerrain);
-  
+
   // Calculate effective movement allowance per QSR:
   // normal Move allowance is MOV + 2 MU, then apply trait-based bonuses.
   const baseMov = mover.finalAttributes.mov ?? 2;
-  const effectiveMov = baseMov + 2 + sprintBonus;
-  
-  // Check if destination is within movement range (considering terrain costs)
-  const dx = destination.x - start.x;
-  const dy = destination.y - start.y;
-  const distance = Math.hypot(dx, dy);
-  
-  // Terrain movement cost (Surefooted may upgrade this)
-  let terrainCostMultiplier = 1;
-  if (upgradedTerrain === 'Rough' || upgradedTerrain === 'Difficult') {
-    terrainCostMultiplier = 2;
+  const effectiveMov = baseMov + 2 + sprintBonus + agilityBonus;
+
+  // Check for impassable terrain at destination
+  if (currentTerrain === 'Impassable') {
+    return { moved: false, reason: 'Destination is impassable terrain' };
   }
-  
-  const effectiveDistance = distance * terrainCostMultiplier;
-  
+
+  // QSR: Check if model can fit at destination (footprint validation)
+  const moverBase = getBaseDiameterFromSiz(mover.finalAttributes.siz ?? mover.attributes.siz ?? 3);
+  if (!deps.canOccupy(destination, moverBase)) {
+    return { moved: false, reason: `Destination too small for model (requires ${moverBase.toFixed(1)} MU clearance)` };
+  }
+
+  // Calculate movement cost using pathfinding if available, otherwise use straight-line distance
+  let movementCost: number;
+  if (deps.findPathCost) {
+    const pathCost = deps.findPathCost(start, destination);
+    if (pathCost !== null) {
+      movementCost = pathCost;
+    } else {
+      // Pathfinding failed (blocked), can't move
+      return { moved: false, reason: 'Path blocked by terrain or obstacles' };
+    }
+  } else {
+    // Fallback to straight-line distance (for AI moves that were pathfinding-validated)
+    const dx = destination.x - start.x;
+    const dy = destination.y - start.y;
+    movementCost = Math.hypot(dx, dy);
+  }
+
   // Allow move if within effective movement allowance
-  const canMove = effectiveDistance <= effectiveMov + agilityBonus;
-  
-  if (!canMove) {
-    return { moved: false, reason: 'Destination out of range' };
+  // Add small epsilon for floating point comparison
+  if (movementCost > effectiveMov + 1e-6) {
+    return { moved: false, reason: `Destination out of range: ${movementCost.toFixed(1)} MU exceeds max movement (${effectiveMov} MU)` };
   }
-  
+
   const moved = deps.moveCharacter(mover, destination);
   if (!moved) {
     return { moved: false };

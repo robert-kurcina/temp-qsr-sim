@@ -31,6 +31,8 @@ export class Character {
     isOrdered: boolean;
     isKOd: boolean;
     isEliminated: boolean;
+    eliminatedByFear: boolean; // QSR: Track if eliminated by Fear tokens (vs combat)
+    isOverreach: boolean; // QSR: -1 REF penalty when Overreach declared
     statusEffects: string[];
     statusTokens: Record<string, number>;
     statusPendingTokens: Record<string, number>;
@@ -90,11 +92,19 @@ export class Character {
       isOrdered: true,
       isKOd: false,
       isEliminated: false,
+      eliminatedByFear: false, // QSR: Track if eliminated by Fear tokens
+      isOverreach: false, // QSR: -1 REF penalty when Overreach declared
       hasPushedThisInitiative: false,
       statusEffects: [],
       statusTokens: {},
       statusPendingTokens: {},
-      armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 },
+      armor: {
+        total: profile.totalAR || 0,
+        suit: 0,
+        gear: 0,
+        shield: 0,
+        helm: 0
+      },
       loadedWeapons: [],
       reloadProgress: 0,
       initiativePoints: 0,

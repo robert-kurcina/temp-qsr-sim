@@ -1,0 +1,43 @@
+Webbing & Strands ()
+Giant spiders and mystic chains are relatively common
+features in fantasy genres. These Webbing rules work in
+conjunction with the Webcaster and Webcrawler traits.
+Strand Markers
+Strands are created by characters with the Webcaster X
+trait. Strands are represented by Strand markers.
+ A Strand marker is about X × 2 MU long by 0.1 MU wide.
+ These are best represented by strands of cotton fiber
+twisted into the proper lengths. A 2 MU width is
+ A less messy alternative are white pipe-cleaners or strings
+of white yarn cut to size.
+ Strand markers can swivel, warp, twist; whichever is
+ideal to affect as many Opposing models as necessary
+when first placed after an Attack action.
+ Place Strand markers from the perspective of the
+Attacking model towards the first and nearest of the
+Opposing models or terrain elements.
+ Warp or bend the markers as desired but maintain
+contact with that first model and any which may follow.
+ Morass — Strand markers are Difficult terrain.
+ However, models which start in base-contact with a
+Strand marker are considered as crossing Rough terrain
+for the first AP spent for Movement.
+ Each Strand marker in base-contact with a target causes a
+penalty of -1 MOV, and are also penalized -1 Wild die
+Defender Combat Tests.
+
+Removing Strands
+ Models may remove Strand markers from base-contact,
+or assigned to themselves or to any model in base-
+contact by performing a Fiddle action using an
+Unopposed Physicality (higher of STR or SIZ) Test.
+ Upon passing remove one Strand from base-contact and
+move it out of base-contact up to cascades × 1" away.
+ For every 3 cascades, do this for an additional Strand
+marker.
+ At the end of the Turn, roll 1 Modifier dice for each
+group of Strands within 1-inch of each other. For each
+success, remove 1 Strand marker from the group.
+ Strand markers in base-contact with Fire markers, or has
+the Fire trait, are immediately removed.
+
