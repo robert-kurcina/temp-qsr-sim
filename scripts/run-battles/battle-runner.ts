@@ -25,6 +25,12 @@ import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-gam
 import { InstrumentationLogger, InstrumentationGrade, StartOfGameReport, InitiativeTestReport, TurnActionReport, TurnEndReport, GameEndReport } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
 import { SvgRenderer } from '../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
 import { AIGameLoop, DEFAULT_AI_GAME_LOOP_CONFIG } from '../../src/lib/mest-tactics/ai/executor/AIGameLoop';
+import { 
+  executeIntelligentDeployment, 
+  DeploymentDoctrine,
+  DEFAULT_DOCTRINES 
+} from '../../src/lib/mest-tactics/engine/DeploymentPlacer';
+import { createDefaultDeploymentZones } from '../../src/lib/mest-tactics/mission/deployment-system';
 
 // Re-export for convenience
 export { GameSize, InstrumentationGrade };
@@ -436,13 +442,87 @@ export class BattleRunner {
   }
 
   /**
-   * Deploy models to battlefield within deployment zones
+   * Deploy models to battlefield using intelligent deployment system
+   * QSR-compliant: terrain-aware, role-based, doctrine-aware placement
    */
   private async deployModels(sides: any[], battlefield: Battlefield): Promise<void> {
-    console.log('Deploying models...');
-
+    console.log('🎯 Deploying models (intelligent deployment)...');
+    
     const battlefieldSize = this.getBattlefieldSize();
-    const zoneHeight = Math.floor(battlefieldSize / 8); // Deployment zone is 1/8 of battlefield
+    const sideIds = sides.map((s: any) => s.id);
+    
+    // Create deployment zones
+    const zones = createDefaultDeploymentZones(
+      battlefieldSize,
+      battlefieldSize,
+      sideIds
+    );
+    
+    console.log(`   Created ${zones.length} deployment zones`);
+    
+    // Map doctrine strings to DeploymentDoctrine
+    const doctrineMap: Record<string, DeploymentDoctrine> = {
+      'Aggressive': DEFAULT_DOCTRINES.aggressive,
+      'Defensive': DEFAULT_DOCTRINES.defensive,
+      'Balanced': DEFAULT_DOCTRINES.balanced,
+      'Objective': DEFAULT_DOCTRINES.objective,
+      'Opportunistic': DEFAULT_DOCTRINES.balanced,
+    };
+    
+    // Prepare sides for intelligent deployment
+    const deploymentSides = sides.map((side: any) => {
+      const characters = side.members.map((m: any) => m.character);
+      const doctrineName = side.doctrine || 'Balanced';
+      const doctrine = doctrineMap[doctrineName] || DEFAULT_DOCTRINES.balanced;
+      
+      return {
+        sideId: side.id,
+        characters,
+        doctrine,
+      };
+    });
+    
+    // Execute intelligent deployment
+    const result = executeIntelligentDeployment(
+      deploymentSides,
+      battlefield,
+      zones,
+      [], // No objectives in Elimination mission
+      6 // Minimum 6" between opposing models
+    );
+    
+    if (!result.success) {
+      console.warn(`⚠️  Deployment warning: ${result.error}`);
+      // Fallback to simple deployment
+      this.deployModelsSimple(sides, battlefield);
+      return;
+    }
+    
+    // Place characters on battlefield
+    for (const [characterId, position] of result.placements.entries()) {
+      const side = sides.find((s: any) => 
+        s.members.some((m: any) => m.character.id === characterId)
+      );
+      if (side) {
+        const member = side.members.find((m: any) => m.character.id === characterId);
+        if (member) {
+          battlefield.placeCharacter(member.character, position);
+        }
+      }
+    }
+    
+    console.log(`   ✓ ${result.placements.size} models deployed with terrain awareness`);
+    console.log('');
+  }
+  
+  /**
+   * Fallback simple deployment (legacy)
+   */
+  private deployModelsSimple(sides: any[], battlefield: Battlefield): void {
+    console.log('   Using fallback simple deployment...');
+    
+    const battlefieldSize = this.getBattlefieldSize();
+    const zoneHeight = Math.floor(battlefieldSize / 8);
     const modelsPerRow = 3;
     const spacing = Math.floor(battlefieldSize / (modelsPerRow + 1));
 
@@ -451,22 +531,19 @@ export class BattleRunner {
         const row = Math.floor(i / modelsPerRow);
         const col = i % modelsPerRow;
         const x = spacing + col * spacing;
-        
-        // Deploy within deployment zone (zoneHeight from edge)
-        // Side 0 (Side A) deploys at bottom, Side 1 (Side B) deploys at top
+
         const y = sideIndex === 0
-          ? (battlefieldSize - zoneHeight) + (row + 1) * (zoneHeight / (modelsPerRow + 1))  // Bottom zone
-          : (row + 1) * (zoneHeight / (modelsPerRow + 1));  // Top zone
-        
-        // Round to integer coordinates for grid placement
+          ? (battlefieldSize - zoneHeight) + (row + 1) * (zoneHeight / (modelsPerRow + 1))
+          : (row + 1) * (zoneHeight / (modelsPerRow + 1));
+
         const gridX = Math.round(x);
         const gridY = Math.round(y);
-        
+
         battlefield.placeCharacter(member.character, { x: gridX, y: gridY });
       });
     });
-
-    console.log('✓ Models deployed\n');
+    
+    console.log('   ✓ Simple deployment complete\n');
   }
 
   /**

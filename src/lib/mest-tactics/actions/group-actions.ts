@@ -68,33 +68,33 @@ export function buildGroupActionContext(context: TestContext = {}): TestContext 
 
 /**
  * Check if all members are within Cohesion of the leader
- * QSR: Cohesion = half Visibility (rounded), minimum 4 MU
+ * QSR: Cohesion = half Visibility (rounded), max 8 MU (Line 1168)
  */
 export function validateGroupCohesion(
   group: GroupAction,
-  getCharacterPosition: (character: Character) => Position | undefined
+  getCharacterPosition: (character: Character) => Position | undefined,
+  visibilityOrMu: number = 16 // Default: Day Clear
 ): boolean {
   const leaderPos = getCharacterPosition(group.leader);
   if (!leaderPos) {
     return false;
   }
 
-  // Calculate cohesion distance (default 4 MU minimum)
-  const leaderVisibility = 16; // Default day/clear visibility
-  const cohesionDistance = Math.max(4, Math.floor(leaderVisibility / 2));
+  // QSR: Cohesion = half Visibility OR, max 8 MU
+  const cohesionDistance = Math.min(8, Math.floor(visibilityOrMu / 2));
 
   for (const member of group.members) {
     if (member.id === group.leader.id) {
       continue;
     }
-    
+
     const memberPos = getCharacterPosition(member);
     if (!memberPos) {
       return false;
     }
 
     const distance = Math.sqrt(
-      Math.pow(memberPos.x - leaderPos.x, 2) + 
+      Math.pow(memberPos.x - leaderPos.x, 2) +
       Math.pow(memberPos.y - leaderPos.y, 2)
     );
 

@@ -135,13 +135,16 @@ function resolveBlindIndirectContext(options: {
   knownAtInitiativeStart?: boolean;
   spotters?: Character[];
   cohesionRangeMu?: number;
+  visibilityOrMu?: number; // QSR: Spotter cohesion = visibilityOR / 4
 }): BlindIndirectContext {
   if (options.hasLOS) {
     return { isBlind: false, allowed: true, usedSpotter: false, usedKnown: false };
   }
 
   const usedKnown = options.knownAtInitiativeStart === true;
-  const cohesionRange = Math.max(0, options.cohesionRangeMu ?? 4);
+  // QSR: Spotter cohesion = visibilityOR / 4 (default 4 MU at Day Clear)
+  const visibilityOrMu = options.visibilityOrMu ?? 16;
+  const cohesionRange = options.cohesionRangeMu ?? Math.floor(visibilityOrMu / 4);
   const targetModel: SpatialModel = {
     id: options.target.id,
     position: options.target.position,

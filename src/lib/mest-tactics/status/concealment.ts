@@ -20,6 +20,7 @@ export interface HideOptions {
 
 export interface DetectOptions {
   detectOrMu?: number;
+  visibilityOrMu?: number; // QSR: Detection limited by Visibility OR
   allowReposition?: boolean;
   revealReposition?: (options: RevealRepositionOptions) => PositionResult | null;
   attackerLeaning?: boolean;
@@ -134,11 +135,11 @@ export function attemptDetect(
   const cover = SpatialRules.getCoverResult(battlefield, attackerSpatial, targetSpatial);
   if (!cover.hasLOS) return { success: false, reason: 'No LOS to target.' };
 
-  if (typeof options.detectOrMu === 'number') {
-    const distance = LOSOperations.distance(attackerSpatial.position, targetSpatial.position);
-    if (distance > options.detectOrMu) {
-      return { success: false, reason: 'Out of detect range.' };
-    }
+  // QSR: Detection range limited by Visibility OR
+  const detectRange = options.detectOrMu ?? options.visibilityOrMu ?? 16;
+  const distance = LOSOperations.distance(attackerSpatial.position, targetSpatial.position);
+  if (distance > detectRange) {
+    return { success: false, reason: `Out of detect range (${distance.toFixed(1)} MU > ${detectRange} MU).` };
   }
 
   const attackerParticipant: TestParticipant = {

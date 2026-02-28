@@ -180,3 +180,195 @@ const defaults = {
 - QSR Line 63-65: Game Size definitions
 - `src/lib/mest-tactics/engine/end-game-trigger.ts`: Implementation
 - `src/lib/mest-tactics/mission/assembly-builder.ts`: Game size defaults
+
+---
+
+## OVR-003: Terrain Height Data (2D Placeholder)
+
+Status: **Active** (Temporary until 3D implementation)
+
+### Purpose
+
+This override defines **2D height data** for terrain elements as a placeholder until full 3D terrain implementation is complete.
+
+These heights are used for:
+- Climbing requirements (Hands, Agility tests)
+- Jump down restrictions
+- Line of Sight blocking
+- Falling damage calculations
+- Movement restrictions
+
+### Terrain Height Table
+
+| Terrain Type | Height (MU) | Large Variant Height | Enterable? | Stand Atop? | Jump Down? | Notes |
+|--------------|-------------|---------------------|------------|-------------|------------|-------|
+| **Wall** | 1.0 | 1.5 | ✅ (Climb) | ✅ | ✅ | Requires [2H] to climb up, [1H] down. Clear movement atop. |
+| **Building** | 3.0 | 4.0 | ❌ | ❌ | ❌ | Blocking terrain. Cannot enter or climb (3D required). |
+| **Tree** | 6.0 | N/A | ❌ | ❌ | ❌ | Blocking terrain. Models cannot enter Tree terrain. |
+| **Shrub** | 0.5 | N/A | ✅ | ✅ | ❌ | Models can stand atop. Can only move down (no jump). |
+| **Rocky** | 0.5 | N/A | ✅ | ✅ | ❌ | Models can stand atop. Climb without Hands. No jump down/across. |
+
+### Movement Rules by Terrain
+
+#### Walls (1.0 MU / 1.5 MU Large)
+
+**Climbing Requirements:**
+- **Up:** Requires [2H] commitment (both hands free)
+- **Down:** Requires [1H] commitment (one hand free)
+- **Agility Cost:** Uses Agility rating for climb distance
+- **Test Required:** Difficult climbs may require Unopposed Agility Test
+
+**Atop Wall Movement:**
+- Movement treated as **Clear** terrain
+- No additional Agility cost
+- Can jump down from wall (standard falling rules apply)
+
+**QSR Reference:** Lines 955-960 (Climbing)
+
+#### Buildings (3.0 MU / 4.0 MU Large)
+
+**Restrictions:**
+- **Cannot enter** (interior navigation requires 3D implementation)
+- **Cannot climb** (too tall for current mechanics)
+- **Blocking terrain** for LOS and movement
+
+**Future Implementation (3D):**
+- Interior navigation with rooms, corridors
+- Staircases, ladders, elevators
+- Windows for LOS/LOF
+- Rooftop access and movement
+
+#### Trees (6.0 MU)
+
+**Restrictions:**
+- **Cannot enter** (dense foliage blocking movement)
+- **Cannot climb** (requires advanced climbing rules)
+- **Blocking terrain** for LOS and movement
+
+**Future Implementation:**
+- Climb rules for trees (Agility test, [1H] or [2H])
+- Canopy movement (if large enough)
+- Falling from trees (special rules)
+
+#### Shrubs (0.5 MU)
+
+**Movement:**
+- **Can enter** normally (treated as Rough terrain)
+- **Can stand atop** (0.5 MU elevation gain)
+- **Cannot jump down** (too low for jump, must move down)
+
+**Moving Down from Shrub:**
+- No Agility test required
+- No Falling Test required (height < 1 MU)
+- Treated as normal movement (1 AP)
+
+#### Rocky (0.5 MU)
+
+**Movement:**
+- **Can enter** normally (treated as Rough terrain)
+- **Can stand atop** (0.5 MU elevation gain)
+- **Can climb** without Hands (natural scrambling)
+- **Cannot jump down** (must move down normally)
+- **Cannot jump across** from Rocky terrain
+
+**Climbing Requirements:**
+- **No Hands required** (natural handholds)
+- **Agility Cost:** Uses Agility rating
+- **Test Required:** Only for difficult rock faces
+
+**Moving Down from Rocky:**
+- No Agility test required
+- No Falling Test required (height < 1 MU)
+- Treated as normal movement (1 AP)
+
+### Jump Down Rules
+
+**General Rule:**
+- **Minimum Height for Jump:** 1.0 MU
+- **Below 1.0 MU:** Must move down normally (no jump)
+- **1.0 MU or higher:** Can jump down (standard falling rules apply)
+
+**Falling Test:**
+- **Trigger:** Fall distance > Agility
+- **DR:** SIZ + (MU beyond Agility ÷ 4), rounded
+- **Effect:** Failed test = misses as Delay tokens (Stun damage)
+- **Wound:** Added if fall >= Agility - 0.5 MU
+
+**Falling Collision:**
+- **Falling Model:** May ignore ONE miss on Falling Test
+- **Target Models:** Must perform Falling Test using same DR
+- **Strategy:** Jump down onto enemies to cause Collision effects
+
+### Implementation Notes
+
+**In Code (Temporary 2D):**
+```typescript
+// TerrainElement.ts - Temporary 2D height data
+interface TerrainElement {
+  type: 'wall' | 'building' | 'tree' | 'shrub' | 'rocky' | 'clear' | 'rough';
+  height: number;  // MU (2D placeholder)
+  isLarge: boolean;
+  isBlocking: boolean;
+  isEnterable: boolean;
+  canStandAtop: boolean;
+  canJumpDown: boolean;
+  climbHandsRequired?: '1H' | '2H' | 'none';
+}
+
+// Height lookup table
+const TERRAIN_HEIGHTS = {
+  wall: { normal: 1.0, large: 1.5, climb: '2H' },
+  building: { normal: 3.0, large: 4.0, enterable: false },
+  tree: { normal: 6.0, enterable: false },
+  shrub: { normal: 0.5, standAtop: true, jumpDown: false },
+  rocky: { normal: 0.5, standAtop: true, climb: 'none', jumpDown: false },
+};
+
+// Jump down validation
+function canJumpDown(terrain: TerrainElement): boolean {
+  if (!terrain.canStandAtop) return false;
+  if (!terrain.canJumpDown) return false;
+  return terrain.height >= 1.0;  // Minimum height for jump
+}
+
+// Climb hand requirements
+function getClimbHandRequirement(terrain: TerrainElement, goingUp: boolean): number {
+  if (!terrain.climbHandsRequired) return 0;
+  if (goingUp && terrain.climbHandsRequired === '2H') return 2;
+  if (!goingUp && terrain.climbHandsRequired === '1H') return 1;
+  if (terrain.climbHandsRequired === 'none') return 0;
+  return goingUp ? 2 : 1;
+}
+```
+
+**Future Implementation (3D):**
+- Full 3D mesh collision detection
+- Interior building navigation
+- Multi-level terrain (bridges, balconies, towers)
+- Vertical combat (ranged attacks between levels)
+- Elevation-based LOS/LOF (high ground bonus)
+
+### QSR Compliance
+
+**Implemented:**
+- ✅ Climbing hand requirements ([2H] up, [1H] down)
+- ✅ Jump down height restrictions (minimum 1.0 MU)
+- ✅ Falling Test mechanics (DR calculation)
+- ✅ Falling Collision (ignore one miss, targets test)
+
+**Pending (3D Required):**
+- ⏳ Building interior navigation
+- ⏳ Tree climbing mechanics
+- ⏳ Multi-level combat
+- ⏳ Elevation-based LOS bonuses
+
+### Source Reference
+
+- QSR Lines 955-960: Climbing rules
+- QSR Lines 962-964: Jump Up
+- QSR Lines 965-970: Jump Down, Falling Test
+- QSR Lines 971-974: Jump Across
+- QSR Lines 985-990: Falling Collision
+- `src/lib/mest-tactics/actions/agility.ts`: Jump/fall implementation
+- `src/lib/mest-tactics/actions/pushing-and-maneuvers.ts`: Push maneuvers
+- `docs/falling-tactics-audit.md`: Falling tactics audit

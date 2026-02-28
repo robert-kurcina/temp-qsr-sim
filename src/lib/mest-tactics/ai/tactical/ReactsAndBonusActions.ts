@@ -21,6 +21,8 @@ export interface ReactConfig {
   enableCounterStrike: boolean;
   /** Enable counter-fire react */
   enableCounterFire: boolean;
+  /** Enable counter-charge react */
+  enableCounterCharge: boolean;
   /** Aggression affects react tendency */
   aggression: number;
   /** Caution affects react tendency */
@@ -31,6 +33,7 @@ export const DEFAULT_REACT_CONFIG: ReactConfig = {
   enableReactMove: true,
   enableCounterStrike: true,
   enableCounterFire: true,
+  enableCounterCharge: true, // NEW: Enable counter-charge tactical evaluation
   aggression: 0.5,
   caution: 0.5,
 };
@@ -94,13 +97,38 @@ export class ReactEvaluator {
 
   /**
    * Evaluate react to movement
+   * QSR: Counter-charge can block entrances, exits, objective access, or prevent scrum addition
    */
   private evaluateMoveReact(
     character: Character,
     actor: Character,
     context: AIContext
   ): ReactResult {
-    if (!this.config.enableReactMove) {
+    // Check for Counter-charge opportunity first (tactical evaluation)
+    if (this.config.enableCounterCharge) {
+      const counterChargeResult = this.evaluateCounterChargeTactical(character, actor, context);
+      if (counterChargeResult.shouldReact) {
+        return counterChargeResult;
+      }
+    }
+
+    // Fall back to standard Counter-charge on disengage attempt
+    return this.evaluateDisengageReact(character, actor, context);
+  }
+
+  /**
+   * Counter-charge Tactical Evaluation
+   * QSR: Counter-charge can be used to:
+   * - Block entrance/exit (doorway, gate, chokepoint)
+   * - Foil objective access (prevent enemy from reaching objective marker)
+   * - Prevent scrum addition (stop enemy from joining engagement for outnumbering)
+   */
+  private evaluateCounterChargeTactical(
+    character: Character,
+    actor: Character,
+    context: AIContext
+  ): ReactResult {
+    if (!this.config.enableCounterCharge) {
       return { shouldReact: false, reactType: 'none', priority: 0 };
     }
 
@@ -111,7 +139,12 @@ export class ReactEvaluator {
       return { shouldReact: false, reactType: 'none', priority: 0 };
     }
 
-    // Check LOS to actor
+    // Check if character can counter-charge (Attentive + Ordered)
+    if (!character.state.isAttentive || !character.state.isOrdered) {
+      return { shouldReact: false, reactType: 'none', priority: 0 };
+    }
+
+    // Check LOS and Visibility
     const charModel = {
       id: character.id,
       position: charPos,
@@ -126,57 +159,226 @@ export class ReactEvaluator {
     };
 
     const hasLOS = SpatialRules.hasLineOfSight(context.battlefield, charModel, actorModel);
-    if (!hasLOS) {
+    const visibilityOrMu = context.config.visibilityOrMu ?? 16;
+    const edgeDistance = SpatialRules.distanceEdgeToEdge(charModel, actorModel);
+
+    if (!hasLOS || edgeDistance > visibilityOrMu) {
       return { shouldReact: false, reactType: 'none', priority: 0 };
     }
 
-    // Check if character has ranged weapon
-    const hasRangedWeapon = character.profile?.items?.some(i => {
-      const classification = i.classification || i.class || '';
-      // Check for ranged weapon classifications
-      if (classification === 'Bow' ||
-          classification === 'Thrown' ||
-          classification === 'Range' ||
-          classification === 'Firearm' ||
-          classification === 'Support') {
-        return true;
-      }
-      // Check for Melee/Natural weapons with Throwable trait (can be thrown)
-      if ((classification === 'Melee' || classification === 'Natural') &&
-          i.traits && i.traits.some(t => t.toLowerCase().includes('throwable'))) {
-        return true;
-      }
-      return false;
-    }) ?? false;
+    // Check if character can reach actor (MOV check)
+    const moveLimit = character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+    const canEngage = edgeDistance <= moveLimit;
 
-    if (!hasRangedWeapon) {
+    if (!canEngage) {
       return { shouldReact: false, reactType: 'none', priority: 0 };
     }
 
-    // Calculate priority based on aggression and opportunity
+    // Calculate tactical priority based on strategic value
     let priority = 2.0 + this.config.aggression;
+    let tacticalReason = '';
 
-    // Higher priority if actor is moving into advantageous position
-    const distance = Math.sqrt(
-      Math.pow(charPos.x - actorPos.x, 2) +
-      Math.pow(charPos.y - actorPos.y, 2)
-    );
-
-    // Prefer react when enemy is in optimal range
-    if (distance >= 4 && distance <= 12) {
-      priority += 1.0;
+    // 1. Block Entrance/Exit (doorway, gate, chokepoint)
+    const isBlockingChokepoint = this.isBlockingChokepoint(actorPos, context);
+    if (isBlockingChokepoint) {
+      priority += 2.0;
+      tacticalReason = 'Block chokepoint';
     }
 
-    // Prefer react when enemy is wounded
-    if (actor.state.wounds > 0) {
-      priority += 0.5;
+    // 2. Foil Objective Access (enemy moving toward objective)
+    const isMovingToObjective = this.isMovingTowardObjective(actor, context);
+    if (isMovingToObjective) {
+      priority += 2.5;
+      tacticalReason = 'Deny objective access';
+    }
+
+    // 3. Prevent Scrum Addition (enemy trying to join engagement for outnumbering)
+    const isJoiningScrum = this.isEnemyJoiningScrum(actor, context);
+    if (isJoiningScrum) {
+      priority += 3.0; // Highest priority - prevents outnumbering
+      tacticalReason = 'Prevent scrum addition (deny outnumbering)';
+    }
+
+    // 4. Wounded enemy (easy kill)
+    const siz = actor.finalAttributes.siz ?? actor.attributes.siz ?? 3;
+    if (actor.state.wounds >= siz - 1) {
+      priority += 1.5;
+      if (!tacticalReason) tacticalReason = 'Wounded target';
+    }
+
+    // 5. High-value target (leader, VIP)
+    if (this.isHighValueTarget(actor, context)) {
+      priority += 1.0;
+      if (!tacticalReason) tacticalReason = 'High-value target';
     }
 
     return {
-      shouldReact: priority > 2.5,
-      reactType: 'react-move',
+      shouldReact: priority > 3.0, // Higher threshold for tactical counter-charge
+      reactType: 'counter_charge',
       priority,
+      reason: tacticalReason,
     };
+  }
+
+  /**
+   * Get effective movement allowance for a character
+   * QSR: Accounts for Sprint X (×4 MU/level) and Flight X (MOV +X, +6 MU/level flying)
+   */
+  private getEffectiveMovement(character: Character, considerFlying: boolean = false): number {
+    const baseMov = character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+    let effectiveMov = baseMov;
+
+    // Check for Sprint X trait
+    const sprintTrait = character.profile?.finalTraits?.find(t => t.toLowerCase().includes('sprint'));
+    if (sprintTrait) {
+      // Extract level from trait (e.g., "Sprint 2" -> level 2)
+      const match = sprintTrait.match(/Sprint\s*(\d+)?/i);
+      const level = match && match[1] ? parseInt(match[1], 10) : 1;
+      // Sprint X: X × 4 MU in straight line
+      effectiveMov = Math.max(effectiveMov, level * 4);
+    }
+
+    // Check for Flight X trait (if considering flying status)
+    if (considerFlying) {
+      const flightTrait = character.profile?.finalTraits?.find(t => t.toLowerCase().includes('flight'));
+      if (flightTrait) {
+        // Extract level from trait (e.g., "Flight 3" -> level 3)
+        const match = flightTrait.match(/Flight\s*(\d+)?/i);
+        const level = match && match[1] ? parseInt(match[1], 10) : 1;
+        // Flight X: MOV + X, +6 MU/level while flying
+        effectiveMov = Math.max(effectiveMov, baseMov + level + (level * 6));
+      }
+    }
+
+    return effectiveMov;
+  }
+
+  /**
+   * Check if actor is moving through a chokepoint (entrance/exit)
+   * QSR: Uses character's effective MOV for threat range
+   */
+  private isBlockingChokepoint(position: Position, context: AIContext): boolean {
+    // Check if position is near terrain that forms a chokepoint
+    // Use dynamic threat range based on actor's movement capability
+    const actorMov = this.getEffectiveMovement(context.character);
+    const threatRange = Math.min(6, actorMov); // Cap at 6 for chokepoint detection
+    const nearbyBlocking = this.countNearbyBlockingTerrain(position, context.battlefield, threatRange);
+    return nearbyBlocking >= 2;
+  }
+
+  /**
+   * Check if actor is moving toward an objective marker
+   * QSR: Uses character's effective MOV for threat range
+   */
+  private isMovingTowardObjective(actor: Character, context: AIContext): boolean {
+    if (!context.objectives || context.objectives.length === 0) {
+      return false;
+    }
+
+    const actorPos = context.battlefield.getCharacterPosition(actor);
+    if (!actorPos) return false;
+
+    // Use actor's effective movement as threat range
+    const threatRange = this.getEffectiveMovement(actor);
+
+    for (const obj of context.objectives) {
+      if (obj.position) {
+        const dx = actorPos.x - obj.position.x;
+        const dy = actorPos.y - obj.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        // Within threat range of objective
+        if (distance <= threatRange) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Check if actor is trying to join an existing engagement (scrum)
+   * QSR: Uses character's effective MOV for threat range
+   */
+  private isEnemyJoiningScrum(actor: Character, context: AIContext): boolean {
+    const actorPos = context.battlefield.getCharacterPosition(actor);
+    if (!actorPos) return false;
+
+    const actorModel = {
+      id: actor.id,
+      position: actorPos,
+      baseDiameter: getBaseDiameterFromSiz(actor.finalAttributes.siz ?? 3),
+      siz: actor.finalAttributes.siz ?? 3,
+    };
+
+    // Use actor's effective movement as threat range
+    const threatRange = this.getEffectiveMovement(actor);
+
+    // Find engaged models
+    for (const enemy of context.enemies) {
+      if (enemy.id === actor.id) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+
+      // Check if enemy is engaged
+      const enemyModel = {
+        id: enemy.id,
+        position: enemyPos,
+        baseDiameter: getBaseDiameterFromSiz(enemy.finalAttributes.siz ?? 3),
+        siz: enemy.finalAttributes.siz ?? 3,
+      };
+
+      if (SpatialRules.isEngaged(enemyModel, actorModel)) {
+        // Actor is already engaged, not joining
+        return false;
+      }
+
+      // Check if actor is moving toward this engagement
+      const dx = actorPos.x - enemyPos.x;
+      const dy = actorPos.y - enemyPos.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Within threat range of engagement
+      if (distance <= threatRange && distance > 1) {
+        return true; // Moving toward engagement, could join for outnumbering
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Count nearby blocking terrain elements
+   */
+  private countNearbyBlockingTerrain(position: Position, battlefield: Battlefield, radius: number): number {
+    let count = 0;
+    // Simplified: check 4 cardinal directions
+    const directions = [
+      { x: position.x + radius, y: position.y },
+      { x: position.x - radius, y: position.y },
+      { x: position.x, y: position.y + radius },
+      { x: position.x, y: position.y - radius },
+    ];
+
+    for (const dir of directions) {
+      if (dir.x >= 0 && dir.x < battlefield.width && dir.y >= 0 && dir.y < battlefield.height) {
+        const terrain = battlefield.getTerrainAt(dir);
+        if (terrain.type === 'blocking' || terrain.type === 'impassable') {
+          count++;
+        }
+      }
+    }
+
+    return count;
+  }
+
+  /**
+   * Check if target is high-value (leader, VIP)
+   */
+  private isHighValueTarget(target: Character, context: AIContext): boolean {
+    // Simplified: check if target has Leadership trait or is designated VIP
+    const hasLeadership = target.profile?.finalTraits?.some(t => t.toLowerCase().includes('leadership')) ?? false;
+    return hasLeadership;
   }
 
   /**

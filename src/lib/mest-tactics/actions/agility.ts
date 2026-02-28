@@ -12,6 +12,7 @@ import { TerrainElement } from '../battlefield/terrain/TerrainElement';
 import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { d6, getDieSuccesses, DiceType } from '../subroutines/dice-roller';
+import { getAvailableHands, getTotalHands } from './hand-requirements';
 
 export interface AgilityState {
   agilitySpent: number;
@@ -101,7 +102,7 @@ export function bypassTerrain(
 /**
  * QSR Agility: Climb
  * Climb up or down, reach across a gap within base-height
- * Requires [2H] going up, [1H] down
+ * Requires [2H] going up, [1H] down per OVR-003
  * Ends action or acquires Delay token
  */
 export function climbTerrain(
@@ -121,18 +122,34 @@ export function climbTerrain(
     };
   }
 
-  // Check hand requirements: [2H] going up, [1H] down
+  // QSR: Check hand requirements - [2H] going up, [1H] down per OVR-003
   const goingUp = (options.terrainHeight ?? 0) > 0;
   const handsRequired = goingUp ? 2 : 1;
-  
-  // Note: Full hand enforcement would check available hands here
-  // For now, we just note the requirement
+  const handsAvailable = getAvailableHands(character);
+  const totalHands = getTotalHands(character);
+
+  // Check if character has enough hands
+  if (handsAvailable < handsRequired) {
+    // Can only use one less hand if it's a [1H] requirement and character has 1 hand free
+    const canUseOneLess = (handsRequired === 2 && handsAvailable === 1);
+    
+    if (!canUseOneLess) {
+      return {
+        success: false,
+        agilitySpent: 0,
+        reason: `Insufficient hands for climb: ${handsAvailable}/${totalHands} available, ${handsRequired} required (${goingUp ? '[2H] up' : '[1H] down'})`,
+      };
+    }
+    
+    // Apply -1b penalty for using one less hand (set flag for next test)
+    character.state.usingOneLessHand = true;
+  }
 
   return {
     success: true,
     agilitySpent: Math.min(agility, heightToClimb),
     delayAdded: true, // Climb ends action or adds Delay
-    reason: `Climb ${heightToClimb} MU (${goingUp ? 'up' : 'down'}, ${handsRequired}H required)`,
+    reason: `Climb ${heightToClimb} MU (${goingUp ? 'up' : 'down'}, ${handsRequired}H required, ${handsAvailable}/${totalHands} available)`,
   };
 }
 

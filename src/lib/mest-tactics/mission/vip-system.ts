@@ -232,6 +232,7 @@ export class VIPManager {
         isOrdered: boolean;
       }>;
       cohesionRangeMu?: number;
+      visibilityOrMu?: number; // QSR: Cohesion = half Visibility (max 8 MU)
     }
   ): { allowed: boolean; reason?: string } {
     const vip = this.getVIP(vipId);
@@ -248,7 +249,9 @@ export class VIPManager {
     if (distance > 0) {
       return { allowed: false, reason: 'Guardian not in base-contact' };
     }
-    const cohesion = options.cohesionRangeMu ?? 4;
+    // QSR: Cohesion = half Visibility OR, max 8 MU (Line 1168)
+    const visibilityOrMu = options.visibilityOrMu ?? 16; // Default: Day Clear
+    const cohesion = Math.min(8, Math.floor(visibilityOrMu / 2));
     for (const opposing of options.opposingModels) {
       if (!opposing.isOrdered) continue;
       const oppDistance = this.distanceEdgeToEdge(

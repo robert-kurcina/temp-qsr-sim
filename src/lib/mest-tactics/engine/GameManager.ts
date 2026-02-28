@@ -282,7 +282,7 @@ export class GameManager {
         const sideInitiative = Math.max(...results.map(r => r.initiative));
 
         if (sideInitiative === winner.initiative && side === winner.side) {
-          // Winner: IP = difference between winner and lowest score
+          // Winner: IP = difference between winner and lowest score (QSR Lines 691-692)
           const ipAmount = winner.initiative - lowestScore;
           if (ipAmount > 0) {
             awardInitiativePoints(side, ipAmount);
@@ -293,15 +293,15 @@ export class GameManager {
             });
           }
         } else {
-          // All other sides: 1 IP per carry-over Base die (rolled 6)
-          // For simplicity, award 1 IP per character with carry-over
+          // All other sides: 1 IP per Base die that scored a carry-over (rolled 6)
+          // QSR Lines 691-692: "All Players, except the winner, acquire an IP for each of their Base dice which have a carry-over."
           let carryOverCount = 0;
           for (const result of results) {
-            // Count dice that scored 6 (carry-over)
-            // This is a simplification - full implementation would track individual dice
-            if (result.dicePips >= 12) { // At least one 6 rolled
-              carryOverCount++;
-            }
+            // Count Base dice carry-over from p1Result and p2Result
+            // carryOverDice.base contains the count of Base dice that rolled 6
+            const p1CarryOver = result.p1Result?.carryOverDice?.base || 0;
+            const p2CarryOver = result.p2Result?.carryOverDice?.base || 0;
+            carryOverCount += p1CarryOver + p2CarryOver;
           }
           if (carryOverCount > 0) {
             awardInitiativePoints(side, carryOverCount);
