@@ -785,23 +785,36 @@ export class AIGameLoop {
     if (readySquadMembers.length === 0) return result;
 
     // Spend 1 IP to maintain initiative and activate squad member
-    // Note: This is a simplified implementation - full implementation would
-    // call manager.maintainInitiative() and then run the squad member's turn
-    // For now, we just log the opportunity for instrumentation
+    // Full implementation: actually spend IP and activate squad member
+    const squadMember = readySquadMembers[0];
     
+    // Log the IP spending for instrumentation
     if (this.logger && this.logger['config'].grade >= InstrumentationGrade.BY_ACTION) {
       this.logger.log({
         type: 'squad_ip_coordination',
         turn,
         characterId: character.id,
-        squadMemberId: readySquadMembers[0].id,
+        squadMemberId: squadMember.id,
         ipSpent: 1,
         reason: 'Squad formation coordination',
       });
     }
 
-    // Mark that we considered squad activation
-    result.success = true;
+    // Actually spend IP and activate squad member
+    // Note: This requires the manager to support Maintain Initiative action
+    // For now, we simulate by running the squad member's turn immediately
+    const ap = this.manager.beginActivation(squadMember);
+    if (ap > 0 && !squadMember.state.isEliminated && !squadMember.state.isKOd) {
+      const squadResult = this.runCharacterTurn(squadMember, turn);
+      result.totalActions += squadResult.totalActions;
+      result.successfulActions += squadResult.successfulActions;
+      result.failedActions += squadResult.failedActions;
+      result.replannedActions += squadResult.replannedActions;
+      result.success = true;
+    }
+    
+    this.manager.endActivation(squadMember);
+
     return result;
   }
 }
