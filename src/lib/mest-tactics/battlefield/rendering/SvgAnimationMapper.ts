@@ -7,6 +7,7 @@
 
 import { AuditFrame, AuditVector, ModelFrameState, StatusTokenState } from '../audit/AuditService';
 import { Position } from '../battlefield/Position';
+import { renderPortraitsSvg, getModelPortraitData, getPortraitCss, parseCallSign } from './PortraitRenderer';
 
 export interface SvgAnimationOutput {
   svgContent: string;
@@ -95,9 +96,9 @@ function generateBaseSvg(options: SvgAnimationOptions, modelStates: ModelFrameSt
       .grid-line { stroke: #999; stroke-width: 0.02; opacity: 0.2; }
       .grid-line-2mu { stroke: #666; stroke-width: 0.04; opacity: 0.4; }
       .grid-line-6mu { stroke: #333; stroke-width: 0.08; opacity: 0.6; }
-      .model-base { fill: #ffcc66; stroke: #cc9944; stroke-width: 0.05; }
-      .model-base-selected { fill: #ff9944; stroke: #cc6622; stroke-width: 0.08; }
-      .model-portrait { clip-path: url(#portrait-clip); }
+      .model-base-ring { fill: none; stroke: #cc9944; stroke-width: 0.05; opacity: 0.5; }
+      .model-portrait { cursor: pointer; transition: filter 0.2s; }
+      .model-portrait:hover { filter: brightness(1.2) drop-shadow(0 0 4px #ffcc66); }
       .vector-movement { stroke: #4488ff; stroke-width: 0.08; stroke-dasharray: 0.2 0.1; }
       .vector-los { stroke: #44ff44; stroke-width: 0.06; stroke-dasharray: 0.15 0.15; }
       .vector-lof { stroke: #ff4444; stroke-width: 0.06; stroke-dasharray: 0.3 0.15; }
@@ -109,6 +110,7 @@ function generateBaseSvg(options: SvgAnimationOptions, modelStates: ModelFrameSt
       .token-wait { fill: #8888ff; }
       .label { fill: #111; font-size: 0.5px; }
       .action-log { fill: #333; font-size: 0.4px; }
+      ${getPortraitCss()}
     ]]></style>
     <clipPath id="portrait-clip">
       <circle cx="0" cy="0" r="1" />
@@ -183,35 +185,51 @@ function renderDeploymentZones(width: number, height: number): string {
 }
 
 /**
- * Render models
+ * Render models with portraits
  */
-function renderModels(modelStates: ModelFrameState[]): string {
-  const models: string[] = [`<g id="models">`];
-
+function renderModels(modelStates: ModelFrameState[], scale: number = 1.0): string {
+  // Convert model states to portrait data
+  const portraitData = modelStates.map(model => {
+    // Try to extract call sign from modelId (format: "AA-00" or similar)
+    const callSign = model.modelId.includes('-') ? model.modelId : undefined;
+    return getModelPortraitData(
+      model.modelId,
+      callSign,
+      model.position,
+      model.sideId
+    );
+  });
+  
+  const parts: string[] = ['<g id="models">'];
+  
+  // Render portraits (or fallback circles)
+  parts.push(renderPortraitsSvg(portraitData, scale));
+  
+  // Render base circles and labels
   for (const model of modelStates) {
     const baseDiameter = 1.0; // SIZ 3 = 30mm = 1 MU
     const radius = baseDiameter / 2;
     
-    // Model base
-    models.push(
+    // Model base (subtle ring under portrait)
+    parts.push(
       `<circle cx="${model.position.x}" cy="${model.position.y}" r="${radius}" ` +
-        `class="model-base" data-model-id="${model.modelId}" data-side="${model.sideId}"/>`
+        `class="model-base-ring" data-model-id="${model.modelId}" data-side="${model.sideId}"/>`
     );
-
+    
     // Model label
-    models.push(
+    parts.push(
       `<text x="${model.position.x}" y="${model.position.y - radius - 0.2}" ` +
         `text-anchor="middle" class="label">${model.modelId}</text>`
     );
-
+    
     // Status tokens (radial arrangement)
     if (model.tokens && model.tokens.length > 0) {
-      models.push(renderTokens(model.position, radius, model.tokens));
+      parts.push(renderTokens(model.position, radius, model.tokens));
     }
   }
-
-  models.push(`</g>`);
-  return models.join('\n');
+  
+  parts.push('</g>');
+  return parts.join('\n');
 }
 
 /**

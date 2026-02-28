@@ -555,88 +555,99 @@ if (footprintDiameter <= 0.5 MU) {
 | `npm run cli:side` | Run mission side demo (legacy) |
 | `npm run cli:skirmish` | Run skirmish demo (legacy) |
 
-## Battle Runner CLI
+## Battle Scripts
 
-The new unified battle runner CLI provides automated AI vs AI battles with preset configurations and extensive customization options.
+Two battle scripts are available, each optimized for different use cases:
 
-### Quick Start
+### Quick Battles (`battle.ts`)
 
-```bash
-# Run default VERY_SMALL battle (QAI_11 Elimination)
-npm run cli
-
-# Run with preset configuration
-npm run cli -- --config small
-npm run cli -- --config medium
-npm run cli -- --config very-large
-
-# Custom mission
-npm run cli -- --mission QAI_12
-npm run cli -- --mission QAI_17
-
-# Custom lighting and terrain
-npm run cli -- --lighting "Night, Full Moon" --terrain 30
-
-# Visual Audit: Generate interactive battle replay
-npm run cli -- --audit --viewer
-npm run cli -- --config very-small --audit --viewer --seed 12345
-
-# Instrumentation levels (0=None, 1=Summary, 2=By Action, 3=With Tests, 4=With Dice, 5=Full Detail)
-npm run cli -- --instrumentation 2
-
-# JSON output for analysis
-npm run cli -- --output json
-
-# Reproducible battle with seed
-npm run cli -- --seed 424242
-
-# Show all options
-npm run cli -- --help
-```
-
-### Example: VERY_SMALL Battle
-
-Quick 3v3 melee battle for testing:
+**Best for:** Rapid testing, iteration, quick validation
 
 ```bash
-# Default VERY_SMALL battle (fastest)
-npm run cli
+# Default VERY_SMALL battle (QAI_11 Elimination)
+npm run battle
 
-# VERY_SMALL with custom settings
-npm run cli -- --config very-small --mission QAI_11 --terrain 50 --lighting "Day, Clear" --instrumentation 2
+# With preset configuration
+npm run battle -- --config small
+npm run battle -- --config medium
+npm run battle -- --config large
+npm run battle -- --config very-large
 
-# VERY_SMALL with JSON output for analysis
-npm run cli -- --config very-small --output json --seed 12345
+# With visual audit and viewer
+npm run battle -- --audit --viewer
+
+# Terrain only (no battle execution)
+npm run battle -- --terrain-only --seed 424242
 ```
 
-**Expected Output:**
-- **Battlefield:** 24"×24"
-- **Models:** 3 per side (6 total)
-- **Archetype:** Average with Sword, Broad + Armor, Light + Shield, Small
-- **Duration:** ~30-60 seconds
-- **End-Game Trigger:** Starts Turn 3
+**Output:**
+```
+generated/battle-reports/battle-report-TIMESTAMP/
+├── battlefield.svg         # Terrain visualization
+├── audit.json              # Battle audit (turns + activations)
+├── deployment.json         # Deployment data
+└── battle-report.html      # Interactive viewer
+```
 
-### Configuration Presets
+**Audit Level:** Basic (turns and activations captured, action steps empty)
 
-| Config | Sides | Models | Mission | Battlefield |
-|--------|-------|--------|---------|-------------|
-| `very-small` | 2 | 3 each | QAI_11 | 24"×24" |
-| `small` | 2 | 4 each | QAI_11 | 36"×36" |
-| `medium` | 2 | 6 each | QAI_11 | 48"×48" |
-| `large` | 2 | 8 each | QAI_11 | 60"×60" |
-| `very-large` | 2 | 16 each | QAI_11 | 72"×72" |
-| `convergence-3side` | 3 | 4 each | QAI_12 | 36"×36" |
-| `trinity` | 3 | 6 each | QAI_17 | 48"×48" |
-| `trinity-4side` | 4 | 8 each | QAI_17 | 60"×60" |
-| `ai-stress-test` | 4 | 6 each | QAI_12 | 48"×48" |
+### Full Battles (`ai-battle-setup.ts`)
 
-### Custom JSON Configuration
+**Best for:** Validation, detailed reports, visualization, AI behavior analysis
 
-Create a JSON file with your battle configuration:
+```bash
+# Default battle with full audit
+npm run ai-battle:audit
 
-```json
-{
-  "gameSize": "VERY_SMALL",
+# With specific seed for reproducibility
+npm run ai-battle:audit -- --seed 12345
+
+# Interactive setup
+npm run ai-battle:interactive
+```
+
+**Output:**
+```
+generated/battle-reports/battle-report-TIMESTAMP/
+├── audit.json              # Full battle audit (action-by-action)
+├── battle-report.html      # Interactive viewer
+generated/ai-battle-reports/
+└── battle-report-TIMESTAMP.json  # Complete battle report
+```
+
+**Audit Level:** Complete (turns, activations, AND detailed action steps)
+
+### Both Scripts Include
+
+- ✅ **Full AI vs AI** - Same AI stack (SideAI → AssemblyAI → CharacterAI)
+- ✅ **Terrain placement** - Using TerrainPlacementService
+- ✅ **Deployment zones** - QSR-compliant deployment
+- ✅ **Interactive viewer** - HTML viewer with timeline controls
+- ✅ **SVG battlefield** - Visual terrain layout
+
+### Script Comparison
+
+| Feature | `battle.ts` | `ai-battle-setup.ts` |
+|---------|-------------|---------------------|
+| **AI vs AI** | ✅ Full AI | ✅ Full AI |
+| **Turn capture** | ✅ Yes | ✅ Yes |
+| **Activation capture** | ✅ Yes | ✅ Yes |
+| **Action step capture** | ❌ Empty | ✅ Detailed |
+| **Decision reasoning** | ❌ Not captured | ✅ Captured |
+| **Speed** | ~30 seconds | ~2-3 minutes |
+| **Best for** | Quick testing | Validation/reports |
+
+### Serve Battle Reports
+
+```bash
+# Start server on port 3001
+npm run serve:reports
+
+# Then open in browser:
+# http://localhost:3001/terrain-audit
+```
+
+### Configuration Options
   "missionId": "QAI_11",
   "terrainDensity": 50,
   "lighting": {
@@ -762,20 +773,6 @@ End Reason: End-game Trigger dice rolled miss (1-3) on Turn 6
 The following scripts are deprecated and will be removed in a future version:
 
 - `scripts/battle-generator.ts` → Use `npm run cli`
-- `scripts/run-full-game.ts` → Use `npm run cli -- --config [size]`
-- `scripts/run-ai-melee-battle.ts` → Use `npm run cli -- --mission QAI_11`
-
-# Full detail instrumentation (Grade 5)
-npx tsx scripts/battle-generator.ts --instrumentation 5
-
-# Combined example
-npx tsx scripts/battle-generator.ts \
-  --gameSize LARGE \
-  --density 40 \
-  --lighting "Twilight, Clear" \
-  --mission QAI_14 \
-  --instrumentation 4
-```
 
 ### Configuration Options
 

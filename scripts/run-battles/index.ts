@@ -78,6 +78,9 @@ Options:
 
   --seed <number>          Random seed for reproducible battles
 
+  --audit                  Enable visual audit capture (generates audit.json)
+  --viewer                 Generate HTML battle report viewer (implies --audit)
+
   --help                   Show this help message
 
 Examples:
@@ -101,6 +104,9 @@ Examples:
 
   # Reproducible battle with seed
   npx tsx scripts/run-battles/ --seed 424242
+
+  # VERY_SMALL battle with visual audit
+  npx tsx scripts/run-battles/ --config very-small --audit --viewer
 `);
 }
 
@@ -166,6 +172,13 @@ async function parseArgs(): Promise<ParseResult> {
       case '--seed':
         overrides.seed = parseInt(value, 10);
         i++;
+        break;
+      case '--audit':
+        overrides.audit = true;
+        break;
+      case '--viewer':
+        overrides.viewer = true;
+        overrides.audit = true; // viewer implies audit
         break;
       case '--help':
         printHelp();

@@ -15,6 +15,8 @@ import { buildAssembly, buildProfile, GameSize, gameSizeDefaults } from '../../s
 import { buildMissionSide } from '../../src/lib/mest-tactics/mission/MissionSideBuilder';
 import { Battlefield } from '../../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
+import { placeTerrain, exportTerrainForReport } from '../../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { TerrainFeature } from '../../src/lib/mest-tactics/battlefield/terrain/Terrain';
 import { GameManager } from '../../src/lib/mest-tactics/engine/GameManager';
 import { CharacterAI } from '../../src/lib/mest-tactics/ai/core/CharacterAI';
 import { TacticalDoctrine } from '../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
@@ -25,12 +27,13 @@ import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-gam
 import { InstrumentationLogger, InstrumentationGrade, StartOfGameReport, InitiativeTestReport, TurnActionReport, TurnEndReport, GameEndReport } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
 import { SvgRenderer } from '../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
 import { AIGameLoop, DEFAULT_AI_GAME_LOOP_CONFIG } from '../../src/lib/mest-tactics/ai/executor/AIGameLoop';
-import { 
-  executeIntelligentDeployment, 
+import {
+  executeIntelligentDeployment,
   DeploymentDoctrine,
-  DEFAULT_DOCTRINES 
+  DEFAULT_DOCTRINES
 } from '../../src/lib/mest-tactics/engine/DeploymentPlacer';
 import { createDefaultDeploymentZones } from '../../src/lib/mest-tactics/mission/deployment-system';
+import { AuditService } from '../../src/lib/mest-tactics/audit/AuditService';
 
 // Re-export for convenience
 export { GameSize, InstrumentationGrade };
@@ -109,6 +112,10 @@ export interface BattleRunnerConfig {
   seed?: number;
   /** Instrumentation grade */
   instrumentationGrade: InstrumentationGrade;
+  /** Enable visual audit capture */
+  audit?: boolean;
+  /** Generate HTML viewer */
+  viewer?: boolean;
 }
 
 /**
@@ -226,10 +233,12 @@ export class BattleRunner {
   private config: BattleRunnerConfig;
   private rng: () => number;
   private logger: InstrumentationLogger;
+  private auditService: AuditService | null = null;
+  private terrain: any[] = []; // Store terrain for audit export
 
   constructor(config: BattleRunnerConfig) {
     this.config = config;
-    
+
     // Initialize RNG with seed if provided
     if (config.seed !== undefined) {
       const seed = config.seed;
@@ -243,6 +252,11 @@ export class BattleRunner {
       grade: config.instrumentationGrade,
       format: 'console',
     });
+
+    // Initialize audit service if enabled
+    if (config.audit || config.viewer) {
+      this.auditService = new AuditService();
+    }
   }
 
   /**
@@ -278,10 +292,10 @@ export class BattleRunner {
     // Create battlefield
     const battlefieldSize = this.getBattlefieldSize();
     const battlefield = new Battlefield(battlefieldSize, battlefieldSize);
-    const terrain = this.generateTerrain(battlefieldSize, this.config.terrainDensity);
-    terrain.forEach(t => battlefield.addTerrain(t));
+    this.terrain = this.generateTerrain(battlefieldSize, this.config.terrainDensity);
+    this.terrain.forEach(t => battlefield.addTerrain(t));
 
-    console.log(`✓ Battlefield created (${battlefieldSize}×${battlefieldSize} MU) with ${terrain.length} terrain elements\n`);
+    console.log(`✓ Battlefield created (${battlefieldSize}×${battlefieldSize} MU) with ${this.terrain.length} terrain elements\n`);
 
     // Build sides and assemblies
     const sides = await this.buildSides(battlefield);
@@ -290,14 +304,30 @@ export class BattleRunner {
     this.logRoster(sides);
     
     // Log Start of Game report (grade 2+)
-    await this.logStartOfGame(sides, battlefield, terrain);
+    await this.logStartOfGame(sides, battlefield, this.terrain);
 
     // Create game manager
     const allCharacters = sides.flatMap(side =>
       side.members.map((m: any) => m.character)
     );
     const endGameTriggerTurn = getEndGameTriggerTurn(this.config.gameSize);
-    const gameManager = new GameManager(allCharacters, battlefield, endGameTriggerTurn);
+    
+    // Initialize audit service if enabled
+    if (this.auditService && this.config.audit) {
+      this.auditService.initialize({
+        missionId: this.config.missionId,
+        missionName: 'Elimination',
+        lighting: this.config.lighting.name,
+        visibilityOrMu: this.config.lighting.visibilityOR,
+        maxOrm: 3,
+        allowConcentrateRangeExtension: true,
+        perCharacterFovLos: false,
+        battlefieldWidth: battlefieldSize,
+        battlefieldHeight: battlefieldSize,
+      });
+    }
+    
+    const gameManager = new GameManager(allCharacters, battlefield, endGameTriggerTurn, this.auditService || undefined, sides);
 
     console.log('✓ Game manager initialized\n');
 
@@ -561,6 +591,10 @@ export class BattleRunner {
       ...DEFAULT_AI_GAME_LOOP_CONFIG,
       verboseLogging: true,
       maxActionsPerTurn: 3,
+      auditService: this.auditService || undefined,
+      missionId: this.config.missionId,
+      missionName: 'Elimination',
+      lighting: this.config.lighting.name,
     }, this.logger);
 
     // Track Aggression (first to cross midline)
@@ -850,7 +884,26 @@ export class BattleRunner {
       winnerReason,
       stats,
       keys,
+      audit: this.auditService ? this.addTerrainToAudit(this.auditService.getAudit()) : undefined,
     };
+  }
+
+  /**
+   * Add terrain data to audit for viewer
+   */
+  private addTerrainToAudit(audit: any): any {
+    if (this.terrain && this.terrain.length > 0) {
+      return {
+        ...audit,
+        terrain: this.terrain.map(t => ({
+          id: t.id,
+          type: t.type,
+          vertices: t.vertices,
+          meta: t.meta,
+        })),
+      };
+    }
+    return audit;
   }
 
   /**
@@ -1139,6 +1192,8 @@ export class BattleRunner {
       battlefield: {
         svgPath: svgPath,
         svgUrl: `http://localhost:3000/${svgPath}`,
+        widthMu: battlefield.width,
+        heightMu: battlefield.height,
         terrainElements: terrainMarkers,
         modelStartingPositions: sides.map((side: any) => ({
           sideId: side.id,
@@ -1152,6 +1207,13 @@ export class BattleRunner {
           }),
         })),
       },
+      // Export terrain for audit viewer
+      terrain: terrainMarkers.map((t: any) => ({
+        id: t.id,
+        type: t.type,
+        vertices: t.vertices,
+        meta: t.meta,
+      })),
       sides: sides.map((side: any) => {
         const firstMember = side.members[0];
         return {

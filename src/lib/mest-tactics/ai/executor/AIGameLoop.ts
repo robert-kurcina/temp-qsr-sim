@@ -19,6 +19,7 @@ import { CharacterAI, createSideAI as createCharacterAIs } from '../core/Charact
 import { ActionDecision } from '../core/AIController';
 import { isAttackableEnemy } from '../core/ai-utils';
 import { InstrumentationLogger, InstrumentationGrade } from '../../instrumentation/QSRInstrumentation';
+import { AuditService, ModelStateAudit } from '../../audit/AuditService';
 
 /**
  * AI Game Loop configuration
@@ -54,6 +55,14 @@ export interface AIGameLoopConfig {
   allowConcentrateRangeExtension?: boolean;
   /** If true, require per-character LOS/FOV gates in AI range/path checks */
   perCharacterFovLos?: boolean;
+  /** Enable audit capture */
+  auditService?: AuditService;
+  /** Mission ID for audit */
+  missionId?: string;
+  /** Mission name for audit */
+  missionName?: string;
+  /** Lighting condition for audit */
+  lighting?: string;
 }
 
 /**
@@ -104,6 +113,7 @@ export class AIGameLoop {
   private battlefield: Battlefield;
   private executor: AIActionExecutor;
   private logger: InstrumentationLogger | null = null;
+  private auditService: AuditService | null = null;
   private sides: MissionSide[] = [];
 
   // AI layers
@@ -126,6 +136,7 @@ export class AIGameLoop {
     this.sides = sides;
     this.config = { ...DEFAULT_AI_GAME_LOOP_CONFIG, ...config };
     this.logger = logger || null;
+    this.auditService = config.auditService || null;
 
     // Create executor
     this.executor = createAIExecutor(manager, {
@@ -245,6 +256,11 @@ export class AIGameLoop {
       replannedActions: 0,
     };
 
+    // Start turn audit
+    if (this.auditService) {
+      this.auditService.startTurn(turn);
+    }
+
     // Initialize turn - set up activation order via initiative
     if (turn === 1 || this.manager.phase !== TurnPhase.Activation) {
       this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn, sides: this.sides });
@@ -275,6 +291,23 @@ export class AIGameLoop {
         continue;
       }
 
+      // Start activation audit
+      if (this.auditService) {
+        const side = this.sides.find(s => s.members.some(m => m.character.id === character.id));
+        this.auditService.startActivation({
+          activationSequence: 0,
+          turn,
+          sideIndex: side ? this.sides.indexOf(side) : 0,
+          sideName: side?.name || 'Unknown',
+          modelId: character.id,
+          modelName: character.name || character.id,
+          initiative: character.initiative || 0,
+          apStart: ap,
+          waitAtStart: character.isWaiting || false,
+          delayTokensAtStart: character.delayTokens || 0,
+        });
+      }
+
       const charResult = this.runCharacterTurn(character, turn);
       result.totalActions += charResult.totalActions;
       result.successfulActions += charResult.successfulActions;
@@ -292,7 +325,28 @@ export class AIGameLoop {
         }
       }
 
+      // End activation audit
+      if (this.auditService) {
+        const apRemaining = this.manager.getApRemaining(character);
+        this.auditService.endActivation(
+          apRemaining,
+          character.isWaiting || false,
+          false, // waitUpkeepPaid - would need tracking
+          character.delayTokens || 0
+        );
+      }
+
       this.manager.endActivation(character);
+    }
+
+    // End turn audit
+    if (this.auditService) {
+      const sideSummaries = this.sides.map(side => ({
+        sideName: side.name,
+        activeModelsStart: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
+        activeModelsEnd: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
+      }));
+      this.auditService.endTurn(sideSummaries);
     }
 
     // Advance phase at end of turn to properly transition to TurnEnd and check end-game trigger
@@ -338,8 +392,42 @@ export class AIGameLoop {
       // Create execution context (refresh AP remaining)
       const context = this.createExecutionContext(character);
 
+      // Capture state before action for audit
+      const apBefore = apRemaining;
+      const positionBefore = this.manager.getCharacterPosition(character);
+      const stateBefore = this.captureModelState(character);
+
       // Execute action
       const execResult = this.executor.executeAction(decision, character, context);
+
+      // Capture state after action for audit
+      const apAfter = this.manager.getApRemaining(character);
+      const positionAfter = this.manager.getCharacterPosition(character);
+      const stateAfter = this.captureModelState(character);
+
+      // Record action step in audit
+      if (this.auditService) {
+        this.auditService.recordAction({
+          sequence: actionsThisTurn + 1,
+          actionType: decision.type,
+          decisionReason: decision.reason,
+          resultCode: execResult.success ? 'SUCCESS' : 'FAILED',
+          success: execResult.success,
+          apBefore,
+          apAfter,
+          actorPositionBefore: positionBefore || undefined,
+          actorPositionAfter: positionAfter || undefined,
+          actorStateBefore: stateBefore,
+          actorStateAfter: stateAfter,
+          vectors: [],
+          targets: [],
+          affectedModels: [],
+          interactions: [],
+          details: {
+            replanningRecommended: execResult.replanningRecommended,
+          },
+        });
+      }
 
       result.totalActions++;
       actionsThisTurn++;
@@ -369,6 +457,23 @@ export class AIGameLoop {
     }
 
     return result;
+  }
+
+  /**
+   * Capture current model state for audit
+   */
+  private captureModelState(character: Character): ModelStateAudit {
+    return {
+      wounds: character.wounds || 0,
+      delayTokens: character.delayTokens || 0,
+      fearTokens: character.fearTokens || 0,
+      isKOd: character.state.isKOd || false,
+      isEliminated: character.state.isEliminated || false,
+      isHidden: character.state.isHidden || false,
+      isWaiting: character.state.isWaiting || false,
+      isAttentive: character.state.isAttentive || false,
+      isOrdered: character.state.isOrdered || false,
+    };
   }
 
   /**
