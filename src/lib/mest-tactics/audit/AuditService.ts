@@ -290,6 +290,7 @@ export class AuditService {
     this.currentTurn.sideSummaries = sideSummaries;
     this.auditTrace.turns.push(this.currentTurn);
     this.currentTurn = null;
+    this.actionSequence = 0;
   }
 
   /**
@@ -442,7 +443,7 @@ export class AuditService {
       sideId: this.currentActivation.sideName,
       position: actionStep.actorPositionAfter || actionStep.actorPositionBefore || { x: 0, y: 0 },
       state: actionStep.actorStateAfter,
-      tokens: thisModelStateToTokens(actionStep.actorStateAfter),
+      tokens: this.ModelStateToTokens(actionStep.actorStateAfter),
     });
 
     // Add affected model states
@@ -452,7 +453,7 @@ export class AuditService {
         sideId: effect.side || 'unknown',
         position: { x: 0, y: 0 }, // Position unchanged for most effects
         state: effect.after,
-        tokens: thisModelStateToTokens(effect.after),
+        tokens: this.ModelStateToTokens(effect.after),
       });
     }
 

@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle Report Viewer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: #16213e;
+      padding: 1rem;
+      border-bottom: 2px solid #0f3460;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      color: #e94560;
+      margin-bottom: 0.5rem;
+    }
+
+    .battle-info {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    .battle-info span {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .battle-info strong {
+      color: #fff;
+    }
+
+    .main-content {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .viewer-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      overflow: auto;
+    }
+
+    .svg-wrapper {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .svg-wrapper svg {
+      max-width: 100%;
+      max-height: 100%;
+    }
+
+    .controls {
+      background: #16213e;
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      border-top: 2px solid #0f3460;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    button {
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #e94560;
+    }
+
+    button:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+    }
+
+    .slider-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .slider-label {
+      font-size: 0.8rem;
+      color: #aaa;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #0f3460;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #e94560;
+      cursor: pointer;
+    }
+
+    .sidebar {
+      width: 350px;
+      background: #16213e;
+      border-left: 2px solid #0f3460;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-section {
+      padding: 1rem;
+      border-bottom: 1px solid #0f3460;
+    }
+
+    .sidebar-section h3 {
+      color: #e94560;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-log {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+    }
+
+    .log-entry {
+      padding: 0.5rem;
+      margin-bottom: 0.5rem;
+      background: #0f3460;
+      border-radius: 4px;
+      border-left: 3px solid #e94560;
+    }
+
+    .log-entry .turn {
+      color: #e94560;
+      font-weight: bold;
+      margin-right: 0.5rem;
+    }
+
+    .log-entry .action {
+      color: #fff;
+    }
+
+    .model-details {
+      font-size: 0.85rem;
+    }
+
+    .model-details p {
+      margin-bottom: 0.5rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .model-details .label {
+      color: #aaa;
+    }
+
+    .model-details .value {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .status-tokens {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .token-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+
+    .token-wound { background: #e82329; color: #fff; }
+    .token-delay { background: #4488ff; color: #fff; }
+    .token-fear { background: #ffcc00; color: #000; }
+    .token-hidden { background: #44aa44; color: #fff; }
+    .token-wait { background: #8888ff; color: #fff; }
+    .token-knocked_out { background: #888; color: #fff; }
+    .token-eliminated { background: #000; color: #fff; border: 1px solid #fff; }
+
+    .playback-speed {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .playback-speed select {
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>⚔️ Battle Report Viewer</h1>
+    <div class="battle-info">
+      <span>Mission: <strong id="mission-name">Loading...</strong></span>
+      <span>Turn: <strong id="current-turn">1</strong></span>
+      <span>Activation: <strong id="current-activation">-</strong></span>
+      <span>Side: <strong id="current-side">-</strong></span>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="viewer-container">
+      <div class="svg-wrapper" id="svg-container">
+        <!-- SVG will be injected here -->
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <h3>📊 Current Action</h3>
+        <div class="model-details" id="action-details">
+          <p><span class="label">Action Type:</span> <span class="value" id="action-type">-</span></p>
+          <p><span class="label">AP Spent:</span> <span class="value" id="ap-spent">-</span></p>
+          <p><span class="label">Character:</span> <span class="value" id="character-id">-</span></p>
+          <p><span class="label">Side:</span> <span class="value" id="action-side">-</span></p>
+          <div id="token-container" class="status-tokens"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-section" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+        <h3>📜 Action Log</h3>
+        <div class="action-log" id="action-log">
+          <!-- Log entries will be added here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="control-group">
+      <button id="btn-stop" title="Stop (Reset to Turn 1)">⏹</button>
+      <button id="btn-play" title="Play/Pause">⏯</button>
+      <button id="btn-back" title="Step Back">⏮</button>
+      <button id="btn-forward" title="Step Forward">⏭</button>
+    </div>
+
+    <div class="slider-container">
+      <div class="slider-label">
+        <span>Turn Timeline</span>
+        <span id="turn-display">Turn 1 / 12</span>
+      </div>
+      <input type="range" id="turn-slider" min="1" max="12" value="1">
+    </div>
+
+    <div class="control-group">
+      <div class="playback-speed">
+        <label for="speed-select">Speed:</label>
+        <select id="speed-select">
+          <option value="500">2x</option>
+          <option value="1000" selected>1x</option>
+          <option value="2000">0.5x</option>
+          <option value="3000">0.33x</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Battle Report Player Engine
+    class BattleReportPlayer {
+      constructor(auditData, svgBaseContent) {
+        this.auditData = auditData;
+        this.svgBaseContent = svgBaseContent;
+        this.frames = auditData.frames || [];
+        this.currentFrameIndex = 0;
+        this.currentTurn = 1;
+        this.isPlaying = false;
+        this.playbackSpeed = 1000; // ms per frame
+        this.playInterval = null;
+        this.actionLog = [];
+
+        this.initUI();
+        this.loadFrame(0);
+      }
+
+      initUI() {
+        // Get UI elements
+        this.btnStop = document.getElementById('btn-stop');
+        this.btnPlay = document.getElementById('btn-play');
+        this.btnBack = document.getElementById('btn-back');
+        this.btnForward = document.getElementById('btn-forward');
+        this.turnSlider = document.getElementById('turn-slider');
+        this.turnDisplay = document.getElementById('turn-display');
+        this.speedSelect = document.getElementById('speed-select');
+        this.svgContainer = document.getElementById('svg-container');
+        this.actionLogContainer = document.getElementById('action-log');
+        this.missionNameEl = document.getElementById('mission-name');
+        this.currentTurnEl = document.getElementById('current-turn');
+        this.currentActivationEl = document.getElementById('current-activation');
+        this.currentSideEl = document.getElementById('current-side');
+        this.actionTypeEl = document.getElementById('action-type');
+        this.apSpentEl = document.getElementById('ap-spent');
+        this.characterIdEl = document.getElementById('character-id');
+        this.actionSideEl = document.getElementById('action-side');
+        this.tokenContainer = document.getElementById('token-container');
+
+        // Set mission name
+        if (this.auditData.session) {
+          this.missionNameEl.textContent = `${this.auditData.session.missionName} (${this.auditData.session.missionId})`;
+        }
+
+        // Set slider max
+        const maxTurn = this.auditData.turns?.length || 12;
+        this.turnSlider.max = maxTurn;
+        this.turnDisplay.textContent = `Turn 1 / ${maxTurn}`;
+
+        // Bind events
+        this.btnStop.addEventListener('click', () => this.stop());
+        this.btnPlay.addEventListener('click', () => this.togglePlay());
+        this.btnBack.addEventListener('click', () => this.stepBack());
+        this.btnForward.addEventListener('click', () => this.stepForward());
+        this.turnSlider.addEventListener('input', (e) => this.goToTurn(parseInt(e.target.value)));
+        this.speedSelect.addEventListener('change', (e) => {
+          this.playbackSpeed = parseInt(e.target.value);
+          if (this.isPlaying) {
+            this.stop();
+            this.play();
+          }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          if (e.code === 'Space') {
+            e.preventDefault();
+            this.togglePlay();
+          } else if (e.code === 'ArrowLeft') {
+            this.stepBack();
+          } else if (e.code === 'ArrowRight') {
+            this.stepForward();
+          } else if (e.code === 'Home') {
+            this.stop();
+          }
+        });
+      }
+
+      togglePlay() {
+        if (this.isPlaying) {
+          this.pause();
+        } else {
+          this.play();
+        }
+      }
+
+      play() {
+        this.isPlaying = true;
+        this.btnPlay.textContent = '⏸';
+        this.btnPlay.title = 'Pause';
+
+        this.playInterval = setInterval(() => {
+          if (this.currentFrameIndex >= this.frames.length - 1) {
+            this.pause();
+            return;
+          }
+          this.stepForward();
+        }, this.playbackSpeed);
+      }
+
+      pause() {
+        this.isPlaying = false;
+        this.btnPlay.textContent = '⏯';
+        this.btnPlay.title = 'Play';
+
+        if (this.playInterval) {
+          clearInterval(this.playInterval);
+          this.playInterval = null;
+        }
+      }
+
+      stop() {
+        this.pause();
+        this.currentFrameIndex = 0;
+        this.currentTurn = 1;
+        this.turnSlider.value = 1;
+        this.turnDisplay.textContent = `Turn 1 / ${this.turnSlider.max}`;
+        this.loadFrame(0);
+      }
+
+      stepForward() {
+        if (this.currentFrameIndex < this.frames.length - 1) {
+          this.currentFrameIndex++;
+          this.loadFrame(this.currentFrameIndex);
+        }
+      }
+
+      stepBack() {
+        if (this.currentFrameIndex > 0) {
+          this.currentFrameIndex--;
+          this.loadFrame(this.currentFrameIndex);
+        }
+      }
+
+      goToTurn(turn) {
+        // Find first frame for this turn
+        const frameIndex = this.frames.findIndex(f => f.turn === turn);
+        if (frameIndex >= 0) {
+          this.currentFrameIndex = frameIndex;
+          this.currentTurn = turn;
+          this.loadFrame(frameIndex);
+        }
+      }
+
+      loadFrame(frameIndex) {
+        const frame = this.frames[frameIndex];
+        if (!frame) return;
+
+        // Update turn display
+        this.currentTurn = frame.turn;
+        this.turnSlider.value = frame.turn;
+        this.turnDisplay.textContent = `Turn ${frame.turn} / ${this.turnSlider.max}`;
+
+        // Update header info
+        this.currentTurnEl.textContent = frame.turn;
+        this.currentActivationEl.textContent = `${frame.activationIndex}`;
+        this.currentSideEl.textContent = frame.sideId;
+
+        // Update action details
+        this.actionTypeEl.textContent = frame.actionType.replace(/_/g, ' ');
+        this.apSpentEl.textContent = frame.apSpent;
+        this.characterIdEl.textContent = frame.characterId;
+        this.actionSideEl.textContent = frame.sideId;
+
+        // Update tokens
+        this.tokenContainer.innerHTML = '';
+        if (frame.modelStates && frame.modelStates.length > 0) {
+          const actorState = frame.modelStates[0];
+          if (actorState.tokens) {
+            for (const token of actorState.tokens) {
+              const badge = document.createElement('span');
+              badge.className = `token-badge token-${token.type}`;
+              badge.textContent = `${token.type.replace('_', ' ')} ×${token.count}`;
+              this.tokenContainer.appendChild(badge);
+            }
+          }
+        }
+
+        // Update SVG (simplified - just show base SVG for now)
+        this.renderSvg(frame);
+
+        // Add to action log
+        this.addToLog(frame);
+      }
+
+      renderSvg(frame) {
+        // For now, just show the base SVG
+        // In a full implementation, we'd update model positions dynamically
+        this.svgContainer.innerHTML = this.svgBaseContent;
+      }
+
+      addToLog(frame) {
+        // Avoid duplicate log entries
+        if (this.actionLog.length > 0 && 
+            this.actionLog[this.actionLog.length - 1].frameIndex === frame.frameIndex) {
+          return;
+        }
+
+        this.actionLog.push(frame);
+
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.innerHTML = `
+          <span class="turn">T${frame.turn}A${frame.activationIndex}</span>
+          <span class="action">${frame.actionLog}</span>
+        `;
+
+        this.actionLogContainer.appendChild(entry);
+        this.actionLogContainer.scrollTop = this.actionLogContainer.scrollHeight;
+      }
+    }
+
+    // Load battle report data
+    async function loadBattleReport() {
+      try {
+        // Try to load from URL parameter or default file
+        const urlParams = new URLSearchParams(window.location.search);
+        const reportFile = urlParams.get('report') || 'battle-report.json';
+
+        const response = await fetch(reportFile);
+        if (!response.ok) {
+          throw new Error(`Failed to load ${reportFile}`);
+        }
+
+        const auditData = await response.json();
+
+        // Generate base SVG (simplified)
+        const svgBaseContent = generateBaseSvg(auditData);
+
+        // Initialize player
+        window.player = new BattleReportPlayer(auditData, svgBaseContent);
+
+      } catch (error) {
+        console.error('Error loading battle report:', error);
+        document.getElementById('svg-container').innerHTML = `
+          <div style="padding: 2rem; text-align: center; color: #e94560;">
+            <h2>Error Loading Battle Report</h2>
+            <p>${error.message}</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: #aaa;">
+              Make sure the battle report JSON file exists and is accessible.
+            </p>
+          </div>
+        `;
+      }
+    }
+
+    // Generate simple base SVG
+    function generateBaseSvg(auditData) {
+      const width = 24;
+      const height = 24;
+
+      return `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="800" height="800">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#f5f5dc" stroke="#333" stroke-width="0.1"/>
+          <text x="${width/2}" y="${height/2}" text-anchor="middle" fill="#666" font-size="1">Battlefield Preview</text>
+          <text x="${width/2}" y="${height/2 + 1}" text-anchor="middle" fill="#999" font-size="0.5">Load frames to see models</text>
+        </svg>
+      `;
+    }
+
+    // Start loading when page is ready
+    document.addEventListener('DOMContentLoaded', loadBattleReport);
+  </script>
+</body>
+</html>

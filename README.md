@@ -15,6 +15,186 @@ This project is a collaborative effort between multiple AI engines (Qwen3-Max, G
 
 ---
 
+## Visual Audit System 🎬
+
+**Interactive battle replay with timeline controls**
+
+The Visual Audit system captures every action, movement, and combat resolution during a battle and generates an interactive HTML viewer for playback and analysis.
+
+### Quick Start: View a Battle Replay
+
+```bash
+# Generate a VERY_SMALL battle with audit enabled
+npm run cli -- --config very-small --audit --viewer
+
+# Open the generated viewer in your browser
+open generated/battle-reports/battle-report-*/battle-report.html
+```
+
+### Features
+
+**Timeline Controls:**
+- ⏹ **Stop** — Reset to Turn 1, Activation 0
+- ⏯ **Play/Pause** — Toggle automatic playback
+- ⏮ **Step Back** — Previous activation
+- ⏭ **Step Forward** — Next activation
+- 🎚 **Turn Slider** — Scrub through turns (1–N)
+- ⚡ **Speed Control** — 0.33x, 0.5x, 1x, 2x playback speed
+
+**Display Panels:**
+- **Battle Info** — Mission name, current turn/activation, active side
+- **Action Details** — Action type, AP spent, character ID, status tokens
+- **Action Log** — Scrollable turn-by-turn event history
+
+**Keyboard Shortcuts:**
+- `Space` — Play/Pause
+- `←` — Step Back
+- `→` — Step Forward
+- `Home` — Stop (reset to Turn 1)
+
+### Example: Generate and View a Battle
+
+```bash
+# Step 1: Generate a battle with audit enabled
+npm run cli -- --config very-small --audit --viewer --seed 12345
+
+# Step 2: Open the viewer (output shows path)
+# Generated: generated/battle-reports/battle-report-1740556789/
+#   - battle-report.html    (interactive viewer)
+#   - audit.json            (full audit data)
+#   - frames.json           (pre-computed frame data)
+
+# Step 3: Open in browser
+open generated/battle-reports/battle-report-1740556789/battle-report.html
+
+# Or serve locally and navigate:
+npx serve generated/battle-reports/
+# Then open: http://localhost:3000/battle-report-1740556789/battle-report.html
+```
+
+### Audit Data Structure
+
+The audit system captures:
+
+```json
+{
+  "version": "1.0",
+  "session": {
+    "missionId": "QAI_11",
+    "missionName": "Elimination",
+    "lighting": "Day, Clear",
+    "visibilityOrMu": 16
+  },
+  "battlefield": {
+    "widthMu": 24,
+    "heightMu": 24
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "activations": [
+        {
+          "activationSequence": 1,
+          "modelId": "char-001",
+          "modelName": "AA-00",
+          "steps": [
+            {
+              "actionType": "move",
+              "apSpent": 2,
+              "vectors": [
+                { "kind": "movement", "from": { "x": 5, "y": 5 }, "to": { "x": 9, "y": 5 } }
+              ],
+              "affectedModels": [],
+              "interactions": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Status Token Visualization
+
+Tokens are displayed radially around model bases:
+
+| Token | Color | Meaning |
+|-------|-------|---------|
+| 🔴 Wound | Red | Model has taken damage |
+| 🔵 Delay | Blue | Model has Delay token (pushing penalty) |
+| 🟡 Fear | Yellow | Model is fleeing (failed Morale) |
+| 🟢 Hidden | Green | Model is Hidden (concealed) |
+| 🟣 Wait | Purple | Model is on Wait (reactive stance) |
+| ⚫ KO | Gray | Model is Knocked Out |
+| ⬛ Eliminated | Black | Model is Eliminated |
+
+### Integration with Battle Runner
+
+The `--audit` flag enables audit capture:
+
+```bash
+# Enable audit capture (default: true when --viewer is used)
+npm run cli -- --audit
+
+# Disable audit for performance
+npm run cli -- --no-audit
+
+# Generate viewer only (requires existing audit.json)
+npm run cli -- --viewer --audit-file path/to/audit.json
+```
+
+### Output Files
+
+| File | Description |
+|------|-------------|
+| `battle-report.html` | Interactive viewer with timeline controls |
+| `audit.json` | Full audit trace (turn-by-turn actions) |
+| `frames.json` | Pre-computed animation frames |
+| `portraits.json` | Portrait clip metrics per model |
+
+### Programmatic Usage
+
+```typescript
+import { AuditService } from './src/lib/mest-tactics/audit/AuditService';
+import { mapAuditToSvgFrames } from './src/lib/mest-tactics/battlefield/rendering/SvgAnimationMapper';
+
+// Create audit service
+const auditService = new AuditService();
+
+// Initialize for a battle
+auditService.initialize({
+  missionId: 'QAI_11',
+  missionName: 'Elimination',
+  lighting: 'Day, Clear',
+  visibilityOrMu: 16,
+  battlefieldWidth: 24,
+  battlefieldHeight: 24,
+});
+
+// During game loop
+auditService.startTurn(1);
+auditService.startActivation({ /* activation data */ });
+auditService.recordAction({ /* action data */ });
+auditService.endActivation(/* end data */);
+auditService.endTurn(/* side summaries */);
+
+// Get audit data
+const audit = auditService.getAudit();
+const frames = auditService.getFrames();
+
+// Convert to SVG frames
+const svgOutput = mapAuditToSvgFrames(frames, {
+  width: 24,
+  height: 24,
+  title: 'Battle Report',
+});
+```
+
+---
+
+---
+
 ## AI System Features 🤖
 
 *Generalizable AI framework for tabletop wargames*
@@ -397,6 +577,10 @@ npm run cli -- --mission QAI_17
 # Custom lighting and terrain
 npm run cli -- --lighting "Night, Full Moon" --terrain 30
 
+# Visual Audit: Generate interactive battle replay
+npm run cli -- --audit --viewer
+npm run cli -- --config very-small --audit --viewer --seed 12345
+
 # Instrumentation levels (0=None, 1=Summary, 2=By Action, 3=With Tests, 4=With Dice, 5=Full Detail)
 npm run cli -- --instrumentation 2
 
@@ -494,6 +678,29 @@ Run with: `npm run cli -- --config-file my-battle.json`
 - `console` (default): Human-readable console output
 - `json`: Machine-readable JSON for analysis
 - `both`: Both console and JSON output
+- `audit`: Visual Audit JSON (for HTML viewer)
+- `viewer`: Interactive HTML battle report
+
+### Visual Audit Options
+
+| Option | Values | Default | Description |
+|--------|--------|---------|-------------|
+| `--audit` | (flag) | false | Enable audit capture during battle |
+| `--no-audit` | (flag) | false | Disable audit capture (performance) |
+| `--viewer` | (flag) | false | Generate HTML viewer from audit |
+| `--audit-file` | path | null | Path to existing audit.json for viewer |
+
+**Example:**
+```bash
+# Generate battle with audit and viewer
+npm run cli -- --audit --viewer --seed 12345
+
+# Generate viewer from existing audit
+npm run cli -- --viewer --audit-file generated/battle-reports/audit-123.json
+
+# Disable audit for faster simulation
+npm run cli -- --no-audit --config large
+```
 
 ### Winner Determination
 

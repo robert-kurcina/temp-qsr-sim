@@ -74,6 +74,8 @@ import {
 } from './end-game-trigger';
 import { MissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
 import { SideCoordinatorManager } from '../ai/core/SideAICoordinator';
+import { AuditService, ModelStateAudit, AuditVector, ModelEffectAudit } from '../audit/AuditService';
+import { Side } from '../core/Side';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -143,11 +145,21 @@ export class GameManager {
   private endGameTriggerState: EndGameTriggerState;
   private missionRuntimeAdapter: MissionRuntimeAdapter | null = null;
   private sideCoordinatorManager: SideCoordinatorManager | null = null;
+  private auditService: AuditService | null = null;
+  private sides: Side[] = [];
 
-  constructor(characters: Character[], battlefield: Battlefield | null = null, endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN) {
+  constructor(
+    characters: Character[],
+    battlefield: Battlefield | null = null,
+    endGameTriggerTurn: number = DEFAULT_END_GAME_TRIGGER_TURN,
+    auditService?: AuditService,
+    sides?: Side[]
+  ) {
     this.characters = characters;
     this.battlefield = battlefield;
     this.endGameTriggerState = createEndGameTriggerState(endGameTriggerTurn);
+    this.auditService = auditService || null;
+    this.sides = sides || [];
     this.initializeCharacterStatus();
   }
 
@@ -500,21 +512,53 @@ export class GameManager {
    * @param roller - Random number generator
    * @param sides - Optional array of sides for IP awarding
    */
-  public startTurn(roller: () => number = Math.random, sides?: MissionSide[]): void {
+  /**
+   * Start a new turn
+   * @param roller - Random number generator (default: Math.random)
+   * @param sides - Optional array of sides for IP awarding
+   * @param missionId - Optional mission ID for audit
+   * @param missionName - Optional mission name for audit
+   * @param lighting - Optional lighting condition for audit
+   * @param visibilityOrMu - Optional visibility OR for audit
+   * @param maxOrm - Optional max ORM for audit
+   * @param battlefieldWidth - Optional battlefield width for audit
+   * @param battlefieldHeight - Optional battlefield height for audit
+   */
+  public startTurn(
+    roller: () => number = Math.random,
+    sides?: MissionSide[],
+    options?: {
+      missionId?: string;
+      missionName?: string;
+      lighting?: string;
+      visibilityOrMu?: number;
+      maxOrm?: number;
+      battlefieldWidth?: number;
+      battlefieldHeight?: number;
+    }
+  ): void {
     this.currentRound = 1;
     this.initializeCharacterStatus();
 
-    // QSR: Optimized Initiative - Side with least BP gets +1b on first Turn
-    // (Not implemented - would need BP tracking per side)
+    // Initialize audit service on turn 1
+    if (this.currentTurn === 1 && this.auditService && options) {
+      this.auditService.initialize({
+        missionId: options.missionId || 'unknown',
+        missionName: options.missionName || 'Unknown Mission',
+        lighting: options.lighting || 'Day, Clear',
+        visibilityOrMu: options.visibilityOrMu || 16,
+        maxOrm: options.maxOrm || 3,
+        allowConcentrateRangeExtension: true,
+        perCharacterFovLos: false,
+        battlefieldWidth: options.battlefieldWidth || 24,
+        battlefieldHeight: options.battlefieldHeight || 24,
+      });
+    }
 
-    // Roll Initiative and award IP to Sides
-    this.lastInitiativeTestResults = this.rollInitiative(roller, sides);
-
-    this.refreshUsed.clear();
-    this.rallyUsed.clear();
-    this.reviveUsed.clear();
-    this.reactedThisTurn.clear();
-    this.phase = TurnPhase.Activation;
+    // Start turn audit
+    if (this.auditService) {
+      this.auditService.startTurn(this.currentTurn);
+    }
 
     // R1.5: Update scoring context for all Sides at start of turn
     if (sides && this.sideCoordinatorManager) {
@@ -524,6 +568,15 @@ export class GameManager {
       }
       this.updateAllScoringContexts(sideKeyScores);
     }
+
+    // Roll Initiative and award IP to Sides
+    this.lastInitiativeTestResults = this.rollInitiative(roller, sides);
+
+    this.refreshUsed.clear();
+    this.rallyUsed.clear();
+    this.reviveUsed.clear();
+    this.reactedThisTurn.clear();
+    this.phase = TurnPhase.Activation;
   }
 
   public startRound(): void {
@@ -577,8 +630,18 @@ export class GameManager {
     this.phase = TurnPhase.RoundEnd;
   }
 
-  public endTurn(): void {
+  public endTurn(sides?: MissionSide[]): void {
     this.phase = TurnPhase.TurnEnd;
+
+    // End turn audit
+    if (this.auditService && sides) {
+      const sideSummaries = sides.map(side => ({
+        sideName: side.name,
+        activeModelsStart: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
+        activeModelsEnd: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
+      }));
+      this.auditService.endTurn(sideSummaries);
+    }
   }
 
   /**
