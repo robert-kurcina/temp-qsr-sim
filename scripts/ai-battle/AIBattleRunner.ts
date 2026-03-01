@@ -68,19 +68,98 @@ import { createEmptyStats, createEmptyAdvancedRuleMetrics, safeRate, computePerc
 import { buildBonusActionOptions } from '../../src/lib/mest-tactics/actions/bonus-actions';
 import { StatisticsTracker } from './tracking/StatisticsTracker';
 
+// Import from new core modules
+import {
+  buildPredictedScoring,
+  buildSideStrategies,
+  findBestRetreatPosition,
+  findPushBackSelection,
+  getBonusActionPriority,
+  createBonusSelectionForType,
+  shouldUseDefendDeclared,
+  shouldUseTakeCoverDeclared,
+  getPassiveResponsePriority,
+  scoreCounterChargeObserver,
+  buildSpatialModelFor,
+  shouldUseLeanForRanged,
+  shouldUseLeanForDetect,
+  findRelocationPositionAgainstThreats,
+  findRelocationPosition,
+  findTakeCoverPosition,
+  buildAutoBonusActionSelections,
+  applyAutoBonusActionIfPossible,
+  type PredictedScoringResult,
+  type SideStrategy,
+  type RetreatPosition,
+  type PushBackSelection,
+} from './core/AIDecisionSupport';
+
+import {
+  executeCloseCombat,
+  executeRangedCombat,
+  executeDisengage,
+  pickMeleeWeapon,
+  pickRangedWeapon,
+  normalizeAttackResult,
+  extractWoundsAddedFromDamageResolution,
+  trackCombatExtras,
+  isAttackDecisionType,
+  extractDamageResolutionFromStepDetails,
+  extractDamageResolutionFromUnknown,
+  hasRangedWeapon,
+  hasMeleeWeapon,
+  getLoadoutProfile,
+  type AttackResult,
+  type WeaponSelection,
+} from './core/CombatExecutor';
+
+import {
+  createMissionRuntimeState,
+  createMissionSides,
+  buildMissionModelsFromSides,
+  applyMissionRuntimeUpdate,
+  resolveMissionWinnerName,
+  applyMissionStartOverrides,
+  syncMissionRuntimeForAttack,
+  buildAiObjectiveMarkerSnapshot,
+  getMarkerKeyIdsInHand,
+  initializeMissionRuntimeAdapter,
+  updateMissionRuntimeForTurnEnd,
+  checkMissionVictoryConditions,
+  type MissionRuntimeState,
+  type MissionModelsResult,
+  type MissionModel,
+} from './core/MissionRuntimeIntegration';
+
+import {
+  inspectPassiveOptions,
+  inspectMovePassiveOptions,
+  executeFailedHitPassiveResponse,
+  executeCounterChargeFromMove,
+  applyPassiveFollowupBonusActions,
+  countDiceInPool,
+  resolveCarryOverBonusCascades,
+  computeEngageMovePosition,
+  areEngaged,
+  isFreeFromEngagementInTurn,
+  computeFallbackMovePosition,
+  computeDirectAdvanceStep,
+  type PassiveResponseResult,
+  type CounterChargeResult,
+  type FollowupBonusResult,
+} from './core/PassiveResponseHandler';
+
 export class AIBattleRunner {
   private log: BattleLogEntry[] = [];
   private tracker: StatisticsTracker;
   private modelUsageByCharacter = new Map<Character, ModelUsageStats>();
   private sideNameByCharacterId = new Map<string, string>();
   private doctrineByCharacterId = new Map<string, TacticalDoctrine>();
-  private missionRuntimeAdapter: MissionRuntimeAdapter | null = null;
+  
+  // Mission runtime state (using new module)
+  private missionRuntimeState: MissionRuntimeState;
+  
   private currentBattlefield: Battlefield | null = null;
-  private missionSides: MissionSide[] = [];
-  private missionSideIds: string[] = [];
-  private missionVpBySide: Record<string, number> = {};
-  private missionRpBySide: Record<string, number> = {};
-  private missionImmediateWinnerSideId: string | null = null;
   private auditTurns: TurnAudit[] = [];
   private activationSequence = 0;
   private performanceProfilingEnabled = false;
@@ -102,15 +181,10 @@ export class AIBattleRunner {
     this.modelUsageByCharacter = new Map<Character, ModelUsageStats>();
     this.sideNameByCharacterId = new Map<string, string>();
     this.doctrineByCharacterId = new Map<string, TacticalDoctrine>();
-    this.missionRuntimeAdapter = null;
+    this.missionRuntimeState = createMissionRuntimeState();
     this.currentBattlefield = null;
     this.lastTerrainResult = null;
     this.battlefieldExportPath = null;
-    this.missionSides = [];
-    this.missionSideIds = [];
-    this.missionVpBySide = {};
-    this.missionRpBySide = {};
-    this.missionImmediateWinnerSideId = null;
     this.auditTurns = [];
     this.activationSequence = 0;
     this.performanceProfilingEnabled = false;

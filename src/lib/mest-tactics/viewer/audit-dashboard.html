@@ -880,6 +880,14 @@
       color: #aaa;
       display: flex;
       gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .battlefield-audit-item-stats {
+      font-size: 0.7rem;
+      color: #666;
+      margin-top: 0.25rem;
+      display: flex;
+      gap: 0.5rem;
     }
   </style>
 </head>
@@ -1344,6 +1352,26 @@
       <div class="battlefield-list-panel">
         <h3>Available Battlefields</h3>
         <div class="battlefield-list-filters">
+          <!-- Search -->
+          <input type="text" id="filter-search" placeholder="🔍 Search by ID or seed..." 
+            style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
+          
+          <!-- Mission Filter -->
+          <select id="filter-mission" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
+            <option value="">All Missions</option>
+            <option value="QAI_11">QAI_11 - Elimination</option>
+            <option value="QAI_12">QAI_12 - Convergence</option>
+            <option value="QAI_13">QAI_13 - Assault</option>
+            <option value="QAI_14">QAI_14 - Dominion</option>
+            <option value="QAI_15">QAI_15 - Recovery</option>
+            <option value="QAI_16">QAI_16 - Escort</option>
+            <option value="QAI_17">QAI_17 - Triumvirate</option>
+            <option value="QAI_18">QAI_18 - Stealth</option>
+            <option value="QAI_19">QAI_19 - Defiance</option>
+            <option value="QAI_20">QAI_20 - Breach</option>
+          </select>
+          
+          <!-- Game Size Filter -->
           <select id="filter-game-size" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
             <option value="">All Sizes</option>
             <option value="VERY_SMALL">VERY_SMALL (24×24)</option>
@@ -1352,17 +1380,23 @@
             <option value="LARGE">LARGE (60×60)</option>
             <option value="VERY_LARGE">VERY_LARGE (72×72)</option>
           </select>
-          <select id="filter-density" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
-            <option value="">All Densities</option>
-            <option value="20">20% (Sparse)</option>
-            <option value="50">50% (Moderate)</option>
-            <option value="80">80% (Dense)</option>
+          
+          <!-- Winner Filter -->
+          <select id="filter-winner" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
+            <option value="">All Winners</option>
+            <option value="Alpha">Alpha Wins</option>
+            <option value="Bravo">Bravo Wins</option>
+            <option value="Tie">Tie</option>
           </select>
-          <select id="filter-area-density" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px;">
-            <option value="">All Area Densities</option>
-            <option value="20">20% Area (Sparse)</option>
-            <option value="50">50% Area (Moderate)</option>
-            <option value="80">80% Area (Dense)</option>
+          
+          <!-- Sort -->
+          <select id="filter-sort" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
+            <option value="date-desc">Sort: Newest First</option>
+            <option value="date-asc">Sort: Oldest First</option>
+            <option value="turns-desc">Sort: Most Turns</option>
+            <option value="turns-asc">Sort: Fewest Turns</option>
+            <option value="actions-desc">Sort: Most Actions</option>
+            <option value="actions-asc">Sort: Fewest Actions</option>
           </select>
         </div>
         <div id="battlefield-audit-list" class="battlefield-audit-list">
@@ -2593,52 +2627,99 @@
 
     function renderBattlefieldAuditList(battlefields) {
       const listEl = document.getElementById('battlefield-audit-list');
+      
+      // Get filter values
+      const searchFilter = document.getElementById('filter-search').value.toLowerCase();
+      const missionFilter = document.getElementById('filter-mission').value;
       const sizeFilter = document.getElementById('filter-game-size').value;
-      const densityFilter = document.getElementById('filter-density').value;
-      const areaDensityFilter = document.getElementById('filter-area-density').value;
+      const winnerFilter = document.getElementById('filter-winner').value;
+      const sortValue = document.getElementById('filter-sort').value;
 
       // Filter battlefields
       let filtered = battlefields;
-      if (sizeFilter) {
-        filtered = filtered.filter(b => b.name.includes(sizeFilter));
-      }
-      if (densityFilter) {
-        filtered = filtered.filter(b => b.name.includes(`-${densityFilter}-`));
-      }
-      if (areaDensityFilter) {
-        filtered = filtered.filter(b => {
-          // Match pattern: NAME-DENSITY-AREA_DENSITY-BATTLE
-          const match = b.name.match(/-(\d+)-(\d+)-\d+$/);
-          return match && match[2] === areaDensityFilter;
-        });
+      
+      // Search filter (ID or seed)
+      if (searchFilter) {
+        filtered = filtered.filter(b => 
+          b.name.toLowerCase().includes(searchFilter) ||
+          (b.seed && b.seed.toString().includes(searchFilter))
+        );
       }
       
+      // Mission filter
+      if (missionFilter) {
+        filtered = filtered.filter(b => b.missionId === missionFilter);
+      }
+      
+      // Size filter
+      if (sizeFilter) {
+        filtered = filtered.filter(b => b.gameSize === sizeFilter);
+      }
+      
+      // Winner filter
+      if (winnerFilter) {
+        filtered = filtered.filter(b => {
+          if (winnerFilter === 'Tie') return b.tie || !b.winner;
+          return b.winner === winnerFilter;
+        });
+      }
+
+      // Sort battlefields
+      filtered.sort((a, b) => {
+        switch (sortValue) {
+          case 'date-desc':
+            return b.timestamp.localeCompare(a.timestamp);
+          case 'date-asc':
+            return a.timestamp.localeCompare(b.timestamp);
+          case 'turns-desc':
+            return (b.turnsCompleted || 0) - (a.turnsCompleted || 0);
+          case 'turns-asc':
+            return (a.turnsCompleted || 0) - (b.turnsCompleted || 0);
+          case 'actions-desc':
+            return (b.totalActions || 0) - (a.totalActions || 0);
+          case 'actions-asc':
+            return (a.totalActions || 0) - (b.totalActions || 0);
+          default:
+            return b.timestamp.localeCompare(a.timestamp);
+        }
+      });
+
       if (filtered.length === 0) {
         listEl.innerHTML = '<div class="loading">No battlefields match filters</div>';
         return;
       }
-      
+
       listEl.innerHTML = filtered.map((bf) => {
-        const sizeMatch = bf.name.match(/^(?:battlefield-)?(VERY_SMALL|SMALL|MEDIUM|LARGE|VERY_LARGE)/);
-        const densityMatch = bf.name.match(/-(\d+)-(\d+)-\d+$/);
-        const size = sizeMatch ? sizeMatch[1] : 'Unknown';
-        const density = densityMatch ? densityMatch[1] : 'Unknown';
-        const areaDensity = densityMatch ? densityMatch[2] : 'Unknown';
-        const sizeLabel = { VERY_SMALL: '24×24', SMALL: '36×36', MEDIUM: '48×48', LARGE: '60×60', VERY_LARGE: '72×72' }[size] || size;
+        const sizeLabel = { 
+          VERY_SMALL: '24×24', 
+          SMALL: '36×36', 
+          MEDIUM: '48×48', 
+          LARGE: '60×60', 
+          VERY_LARGE: '72×72' 
+        }[bf.gameSize] || bf.gameSize || 'Unknown';
+        
+        const missionName = bf.missionName || bf.missionId || 'Unknown';
+        const winnerText = bf.tie ? 'Tie' : (bf.winner || 'Unknown');
+        const turnsText = bf.turnsCompleted !== undefined ? `${bf.turnsCompleted} turns` : '';
+        const actionsText = bf.totalActions !== undefined ? `${bf.totalActions} actions` : '';
         const isActive = bf.name === currentBattlefieldName ? 'active' : '';
 
         return `
-          <div class="battlefield-audit-item ${isActive}" onclick="loadBattlefieldAuditView('${bf.name}')">
+          <div class="battlefield-audit-item ${isActive}" onclick="loadBattlefieldAuditView('${bf.name}')" title="Mission: ${missionName} | Winner: ${winnerText} | Seed: ${bf.seed || 'N/A'}">
             <div class="battlefield-audit-item-name">${bf.name}</div>
             <div class="battlefield-audit-item-meta">
               <span>Size: ${sizeLabel}</span>
-              <span>Density: ${density}%</span>
-              <span>Area: ${areaDensity}%</span>
+              <span>Mission: ${missionName}</span>
+              <span>Winner: ${winnerText}</span>
+            </div>
+            <div class="battlefield-audit-item-stats">
+              <span>${turnsText}</span>
+              <span>${actionsText}</span>
             </div>
           </div>
         `;
       }).join('');
-      
+
       // Auto-load first filtered battlefield if none selected or current not in filtered
       if (filtered.length > 0 && (!currentBattlefieldName || !filtered.find(b => b.name === currentBattlefieldName))) {
         loadBattlefieldAuditView(filtered[0].name);
@@ -2687,15 +2768,23 @@
     }
 
     // Filter event listeners
+    document.getElementById('filter-search').addEventListener('input', () => {
+      saveFilters();
+      renderBattlefieldAuditList(battlefieldAuditData);
+    });
+    document.getElementById('filter-mission').addEventListener('change', () => {
+      saveFilters();
+      renderBattlefieldAuditList(battlefieldAuditData);
+    });
     document.getElementById('filter-game-size').addEventListener('change', () => {
       saveFilters();
       renderBattlefieldAuditList(battlefieldAuditData);
     });
-    document.getElementById('filter-density').addEventListener('change', () => {
+    document.getElementById('filter-winner').addEventListener('change', () => {
       saveFilters();
       renderBattlefieldAuditList(battlefieldAuditData);
     });
-    document.getElementById('filter-area-density').addEventListener('change', () => {
+    document.getElementById('filter-sort').addEventListener('change', () => {
       saveFilters();
       renderBattlefieldAuditList(battlefieldAuditData);
     });
