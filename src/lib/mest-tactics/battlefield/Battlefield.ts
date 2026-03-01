@@ -5,6 +5,7 @@ import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './terrain/Terrain';
 import { TerrainElement } from './TerrainElement';
 import { ConstrainedNavMesh } from './pathfinding/ConstrainedNavMesh';
+import { AreaTerrainLayer } from './terrain/AreaTerrainLayer';
 import { getBaseDiameterFromSiz } from './spatial/size-utils';
 import { SpatialRules } from './spatial/spatial-rules';
 
@@ -76,6 +77,8 @@ export class Battlefield {
   public grid: Grid;
   public terrain: TerrainFeature[] = [];
   public opennessStats?: BattlefieldOpennessStats;
+  /** Area terrain layer for rough patches */
+  public areaTerrain: AreaTerrainLayer;
   private navigationMesh: Delaunay<Position> | null = null;
   private constrainedNavMesh: ConstrainedNavMesh | null = null;
   private characterPositions: Map<string, Position> = new Map();
@@ -87,6 +90,12 @@ export class Battlefield {
 
   constructor(public width: number, public height: number) {
     this.grid = new Grid(width, height);
+    this.areaTerrain = new AreaTerrainLayer({
+      width,
+      height,
+      cellResolution: 0.5,
+      maxOverlapRatio: 0.20,
+    });
   }
 
   private invalidateTerrainDerivedState(): void {
@@ -117,6 +126,52 @@ export class Battlefield {
 
   addTerrainElement(element: TerrainElement, deferNavMesh = false): void {
     this.addTerrain(element.toFeature(), deferNavMesh);
+  }
+
+  /**
+   * Place area terrain (rough patch) with overlap checking
+   * 
+   * @param typeName - Patch type name
+   * @param position - Center position
+   * @param rotation - Rotation in degrees (optional)
+   * @param deferNavMesh - Defer navigation mesh update (default: true for area terrain)
+   * @returns True if placement successful
+   */
+  placeAreaTerrain(
+    typeName: 'Small Rough Patch' | 'Medium Rough Patch' | 'Large Rough Patch',
+    position: Position,
+    rotation: number = 0,
+    deferNavMesh: boolean = true
+  ): boolean {
+    const placed = this.areaTerrain.tryPlace(typeName, position, rotation);
+    
+    if (placed) {
+      // Add to terrain list for rendering and LOS checks
+      const patch = this.areaTerrain.getPatches().pop();
+      if (patch) {
+        this.terrain.push(patch.feature);
+        this.invalidateTerrainDerivedState();
+        if (!deferNavMesh) {
+          this.finalizeTerrain();
+        }
+      }
+    }
+    
+    return placed;
+  }
+
+  /**
+   * Get movement cost at position (includes area terrain)
+   */
+  getMovementCostAt(position: Position): number {
+    return this.areaTerrain.getMovementCost(position);
+  }
+
+  /**
+   * Check if position is covered by area terrain
+   */
+  isAreaTerrainCovered(position: Position): boolean {
+    return this.areaTerrain.isCovered(position);
   }
 
   placeCharacter(character: Character, position: Position): boolean {

@@ -8,6 +8,7 @@ import {
   NamedPortraitAssignment,
   createPortraitAssignmentFromIndex,
 } from '../../../lib/portraits/portrait-naming';
+import { getPortraitSheetForProfile } from '../../../lib/portraits/portrait-sheet-registry';
 import { ObjectiveMarkerManager, ObjectiveMarker } from './objective-markers';
 
 /**
@@ -209,7 +210,9 @@ export function createMissionSide(
 
     for (const character of roster.characters) {
       const profile = character.profile;
-      const portrait = createPortraitAssignmentFromIndex(index, defaultSheet);
+      // Get species-appropriate portrait sheet
+      const sheet = getPortraitSheetForProfile(profile) || defaultSheet;
+      const portrait = createPortraitAssignmentFromIndex(index, sheet);
       const callSign = portrait.name;
 
       // Update character with callsign ID

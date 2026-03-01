@@ -23,6 +23,12 @@ export interface SvgRenderOptions {
   lofRays?: { from: Position; to: Position; color?: string; label?: string }[];
   annotations?: { position: Position; text: string; color?: string }[];
   coverageLabel?: { text: string; secondaryText?: string; color?: string };
+  /** Show clearance zones as red outlines around terrain */
+  showClearanceZones?: boolean;
+  clearanceZoneColor?: string;
+  /** Show grid cells covered by terrain (colored by terrain type) */
+  showCoveredCells?: boolean;
+  coveredCellColor?: string;
 }
 
 const defaultLayers: SvgLayerToggle[] = [
@@ -36,6 +42,7 @@ const defaultLayers: SvgLayerToggle[] = [
   { id: 'rocks', label: 'Rocks', enabled: true },
   { id: 'shrub', label: 'Shrubs', enabled: true },
   { id: 'terrain', label: 'Other Terrain', enabled: true },
+  { id: 'clearance', label: 'Clearance Zones', enabled: false },
   { id: 'models', label: 'Models', enabled: true },
   { id: 'paths', label: 'Paths', enabled: true },
   { id: 'vectors', label: 'Vectors', enabled: true },
@@ -120,7 +127,22 @@ ${categoryStyles}
     svgParts.push(this.renderDeploymentZones(options.deploymentZones ?? [], layers));
     svgParts.push(this.renderGrid(options.width, options.height, gridResolution, layers));
     svgParts.push(this.renderDelaunay(battlefield.getNavMesh(), layers));
-    svgParts.push(this.renderTerrain(battlefield.terrain, layers));
+    
+    // Render covered cells BEFORE terrain (so they appear underneath)
+    if (options.showCoveredCells) {
+      svgParts.push(this.renderCoveredCells(
+        battlefield.terrain,
+        gridResolution,
+        options.coveredCellColor ?? '#90EE90'
+      ));
+    }
+    
+    svgParts.push(this.renderTerrain(
+      battlefield.terrain,
+      layers,
+      options.showClearanceZones ?? false,
+      options.clearanceZoneColor ?? '#ff0000'
+    ));
     svgParts.push(this.renderModels(options.models ?? [], layers));
     svgParts.push(this.renderPaths(options.paths ?? [], layers));
     svgParts.push(this.renderVectors(options.vectors ?? [], layers));
@@ -216,7 +238,12 @@ ${categoryStyles}
     return lines.join('\n');
   }
 
-  static renderTerrain(terrain: TerrainFeature[], layers: SvgLayerToggle[]): string {
+  static renderTerrain(
+    terrain: TerrainFeature[],
+    layers: SvgLayerToggle[],
+    showClearanceZones: boolean = false,
+    clearanceZoneColor: string = '#ff0000'
+  ): string {
     const areaLayer = layers.find(item => item.id === 'area');
     const buildingLayer = layers.find(item => item.id === 'building');
     const wallLayer = layers.find(item => item.id === 'wall');
@@ -239,6 +266,7 @@ ${categoryStyles}
     const rocks: string[] = [`<g id="layer-rocks" class="layer ${rocksHidden}">`];
     const shrub: string[] = [`<g id="layer-shrub" class="layer ${shrubHidden}">`];
     const other: string[] = [`<g id="layer-terrain" class="layer ${terrainHidden}">`];
+    const clearanceZones: string[] = [`<g id="layer-clearance" class="layer ${showClearanceZones ? '' : 'hidden'}">`];
 
     for (const feature of terrain) {
       const color = feature.meta?.color ?? '#bbb';
@@ -248,6 +276,8 @@ ${categoryStyles}
       const polygon = `<polygon points="${points}" class="${layer === 'area' ? 'terrain-area' : 'terrain-solid'}"/>`;
       const centroid = SvgRenderer.calculateCentroid(feature.vertices);
       const colorLabel = `<text x="${centroid.x}" y="${centroid.y}" class="label">${color}</text>`;
+      
+      // Add terrain to appropriate layer
       if (layer === 'area') {
         area.push(polygon, colorLabel);
       } else if (category === 'building') {
@@ -263,6 +293,12 @@ ${categoryStyles}
       } else {
         other.push(polygon, colorLabel);
       }
+      
+      // Add clearance zone outline (inflated terrain shape)
+      if (showClearanceZones && feature.vertices.length >= 3) {
+        const clearanceSvg = SvgRenderer.createClearanceOutline(feature, 0.5, clearanceZoneColor);
+        clearanceZones.push(clearanceSvg);
+      }
     }
 
     area.push(`</g>`);
@@ -272,6 +308,8 @@ ${categoryStyles}
     rocks.push(`</g>`);
     shrub.push(`</g>`);
     other.push(`</g>`);
+    clearanceZones.push(`</g>`);
+    
     return [
       area.join('\n'),
       building.join('\n'),
@@ -280,7 +318,66 @@ ${categoryStyles}
       rocks.join('\n'),
       shrub.join('\n'),
       other.join('\n'),
+      clearanceZones.join('\n'),
     ].join('\n');
+  }
+
+  /**
+   * Expand bounds by margin for clearance zone visualization
+   */
+  static expandBounds(vertices: Position[], margin: number): { minX: number; minY: number; maxX: number; maxY: number } {
+    let minX = Infinity, minY = Infinity;
+    let maxX = -Infinity, maxY = -Infinity;
+
+    for (const v of vertices) {
+      minX = Math.min(minX, v.x);
+      minY = Math.min(minY, v.y);
+      maxX = Math.max(maxX, v.x);
+      maxY = Math.max(maxY, v.y);
+    }
+
+    return {
+      minX: minX - margin,
+      minY: minY - margin,
+      maxX: maxX + margin,
+      maxY: maxY + margin,
+    };
+  }
+
+  /**
+   * Create clearance outline that matches terrain shape (inflated by margin)
+   * For circles/ellipses: inflated ellipse
+   * For rectangles: inflated rectangle with same rotation
+   */
+  static createClearanceOutline(feature: TerrainFeature, margin: number, color: string): string {
+    const shape = feature.meta?.shape ?? 'rectangle';
+    const dimensions = feature.meta?.dimensions;
+    const rotation = feature.meta?.rotationDegrees ?? 0;
+    const centroid = this.calculateCentroid(feature.vertices);
+
+    if (shape === 'circle' && dimensions?.diameter) {
+      // Circle: inflate radius
+      const radius = (dimensions.diameter / 2) + margin;
+      return `<circle cx="${centroid.x}" cy="${centroid.y}" r="${radius}" fill="none" stroke="${color}" stroke-width="0.08" stroke-dasharray="0.2 0.1" opacity="0.9"/>`;
+    }
+
+    if (shape === 'ellipse' && dimensions?.width && dimensions?.length) {
+      // Ellipse: inflate both axes
+      const rx = (dimensions.width / 2) + margin;
+      const ry = (dimensions.length / 2) + margin;
+      return `<ellipse cx="${centroid.x}" cy="${centroid.y}" rx="${rx}" ry="${ry}" fill="none" stroke="${color}" stroke-width="0.08" stroke-dasharray="0.2 0.1" opacity="0.9" transform="rotate(${rotation} ${centroid.x} ${centroid.y})"/>`;
+    }
+
+    if (shape === 'rectangle' && dimensions?.width && dimensions?.length) {
+      // Rectangle: inflate width and length, keep rotation
+      const width = dimensions.width + (margin * 2);
+      const length = dimensions.length + (margin * 2);
+      return `<rect x="${centroid.x - width / 2}" y="${centroid.y - length / 2}" width="${width}" height="${length}" fill="none" stroke="${color}" stroke-width="0.08" stroke-dasharray="0.2 0.1" opacity="0.9" transform="rotate(${rotation} ${centroid.x} ${centroid.y})"/>`;
+    }
+
+    // Fallback: use polygon offset (simple bounding box for unknown shapes)
+    const bounds = this.expandBounds(feature.vertices, margin);
+    return `<rect x="${bounds.minX}" y="${bounds.minY}" width="${bounds.maxX - bounds.minX}" height="${bounds.maxY - bounds.minY}" fill="none" stroke="${color}" stroke-width="0.08" stroke-dasharray="0.2 0.1" opacity="0.9"/>`;
   }
 
   static renderModels(models: SvgRenderOptions['models'], layers: SvgLayerToggle[]): string {
@@ -296,6 +393,79 @@ ${categoryStyles}
     }
     items.push(`</g>`);
     return items.join('\n');
+  }
+
+  /**
+   * Render grid cells covered by terrain
+   * Colors cells based on terrain category (building=black, wall=gray, rocks=lightgray)
+   */
+  static renderCoveredCells(
+    terrain: TerrainFeature[],
+    cellSize: number,
+    baseColor: string
+  ): string {
+    const coveredCells = new Map<string, { x: number; y: number; category: string }>();
+    
+    // For each terrain feature, mark covered cells
+    for (const feature of terrain) {
+      const category = feature.meta?.category ?? 'terrain';
+      const bounds = this.expandBounds(feature.vertices, 0);
+      
+      // Calculate cell range
+      const minXCell = Math.floor(bounds.minX / cellSize);
+      const maxXCell = Math.ceil(bounds.maxX / cellSize);
+      const minYCell = Math.floor(bounds.minY / cellSize);
+      const maxYCell = Math.ceil(bounds.maxY / cellSize);
+      
+      // Mark cells
+      for (let cx = minXCell; cx < maxXCell; cx++) {
+        for (let cy = minYCell; cy < maxYCell; cy++) {
+          const cellX = cx * cellSize;
+          const cellY = cy * cellSize;
+          const cellKey = `${cx},${cy}`;
+          
+          // Check if cell center is inside terrain
+          const cellCenter = { x: cellX + cellSize / 2, y: cellY + cellSize / 2 };
+          if (this.pointInPolygon(cellCenter, feature.vertices)) {
+            coveredCells.set(cellKey, { x: cellX, y: cellY, category });
+          }
+        }
+      }
+    }
+    
+    // Render covered cells
+    const parts: string[] = [`<g id="layer-covered-cells" class="layer">`];
+    
+    for (const cell of coveredCells.values()) {
+      let color = baseColor;
+      if (cell.category === 'building') color = '#444444';
+      else if (cell.category === 'wall') color = '#666666';
+      else if (cell.category === 'rocks') color = '#AAAAAA';
+      else if (cell.category === 'area') color = '#C49A6C';
+      
+      parts.push(
+        `<rect x="${cell.x}" y="${cell.y}" width="${cellSize}" height="${cellSize}" ` +
+        `fill="${color}" opacity="0.5" stroke="none"/>`
+      );
+    }
+    
+    parts.push(`</g>`);
+    return parts.join('\n');
+  }
+
+  /**
+   * Check if point is inside polygon
+   */
+  static pointInPolygon(point: Position, polygon: Position[]): boolean {
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      const xi = polygon[i].x, yi = polygon[i].y;
+      const xj = polygon[j].x, yj = polygon[j].y;
+      const intersects = ((yi > point.y) !== (yj > point.y))
+        && (point.x < (xj - xi) * (point.y - yi) / ((yj - yi) || Number.EPSILON) + xi);
+      if (intersects) inside = !inside;
+    }
+    return inside;
   }
 
   static renderPaths(paths: SvgRenderOptions['paths'], layers: SvgLayerToggle[]): string {

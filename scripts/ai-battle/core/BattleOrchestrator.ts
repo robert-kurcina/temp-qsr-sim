@@ -1,0 +1,268 @@
+/**
+ * Battle Orchestrator
+ * 
+ * Unified battle execution engine for MEST Tactics.
+ * Consolidates common functionality between battle.ts and ai-battle-setup.ts.
+ * 
+ * Usage:
+ *   const orchestrator = new BattleOrchestrator(config);
+ *   const report = await orchestrator.runBattle();
+ */
+
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { Battlefield } from '../../src/lib/mest-tactics/battlefield/Battlefield';
+import { placeTerrain } from '../../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { SvgRenderer } from '../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
+import { AIBattleRunner } from './AIBattleRunner';
+import { writeBattlefieldSvg } from './reporting/BattleReportWriter';
+import type { GameConfig, BattleReport } from '../shared/BattleReportTypes';
+import type { GameSize } from '../../src/lib/mest-tactics/mission/assembly-builder';
+
+export interface BattleOrchestratorConfig {
+  missionId: string;
+  gameSize: GameSize;
+  densityRatio: number;
+  lighting: { name: string; visibilityOR: number };
+  seed?: number;
+  audit?: boolean;
+  viewer?: boolean;
+  verbose?: boolean;
+}
+
+export interface BattleOutput {
+  report: BattleReport;
+  svgPath?: string;
+  jsonPath?: string;
+  auditPath?: string;
+  viewerPath?: string;
+}
+
+export class BattleOrchestrator {
+  private config: BattleOrchestratorConfig;
+  private outputDir: string;
+  private runner: AIBattleRunner;
+
+  constructor(config: BattleOrchestratorConfig) {
+    this.config = config;
+    this.outputDir = this.createOutputDir();
+    this.runner = new AIBattleRunner();
+  }
+
+  private createOutputDir(): string {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const dir = join(process.cwd(), 'generated', 'battle-reports', `battle-report-${timestamp}`);
+    mkdirSync(dir, { recursive: true });
+    return dir;
+  }
+
+  /**
+   * Generate battlefield terrain and SVG
+   */
+  async generateBattlefield(): Promise<{
+    battlefield: Battlefield;
+    svgPath: string;
+  }> {
+    const { gameSize, densityRatio } = this.config;
+    const battlefieldSize = this.getBattlefieldSize(gameSize);
+    
+    // Generate terrain
+    const terrainResult = placeTerrain({
+      mode: 'balanced',
+      density: densityRatio,
+      battlefieldSize,
+      terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
+    });
+
+    // Create battlefield with terrain
+    const battlefield = new Battlefield(battlefieldSize, battlefieldSize);
+    for (const terrainFeature of terrainResult.terrain) {
+      const centroid = this.getCentroid(terrainFeature.vertices);
+      const typeLower = (terrainFeature.id || terrainFeature.type || 'Tree').toLowerCase();
+      let terrainName = 'Tree';
+
+      if (typeLower.includes('shrub') || typeLower.includes('bush')) {
+        terrainName = 'Shrub';
+      } else if (typeLower.includes('rock')) {
+        terrainName = Math.random() > 0.5 ? 'Small Rocks' : 'Medium Rocks';
+      } else if (typeLower.includes('tree')) {
+        terrainName = 'Tree';
+      }
+
+      const rotation = Math.floor(Math.random() * 360);
+      battlefield.addTerrainElement({
+        type: terrainName as any,
+        position: centroid,
+        rotation,
+      });
+    }
+
+    // Generate SVG
+    const config = this.buildGameConfig();
+    const svgPath = writeBattlefieldSvg(battlefield, config);
+
+    return { battlefield, svgPath };
+  }
+
+  /**
+   * Run full AI battle
+   */
+  async runBattle(): Promise<BattleOutput> {
+    const config = this.buildGameConfig();
+    
+    const report = await this.runner.runBattle(config, {
+      seed: this.config.seed,
+      suppressOutput: !this.config.verbose,
+    });
+
+    const output: BattleOutput = { report };
+
+    // Generate SVG if not already generated
+    if (!output.svgPath) {
+      // SVG is now generated automatically by AIBattleRunner
+    }
+
+    return output;
+  }
+
+  /**
+   * Run quick battle without AI (terrain + deployment only)
+   */
+  async runQuickBattle(): Promise<{
+    battlefield: Battlefield;
+    svgPath: string;
+  }> {
+    return this.generateBattlefield();
+  }
+
+  private buildGameConfig(): GameConfig {
+    const battlefieldSize = this.getBattlefieldSize(this.config.gameSize);
+    const maxTurns = this.getMaxTurns(this.config.gameSize);
+    const bpPerSide = this.getBPPerSide(this.config.gameSize);
+    const modelCount = this.getModelCount(this.config.gameSize);
+
+    return {
+      missionId: this.config.missionId,
+      missionName: this.getMissionName(this.config.missionId),
+      gameSize: this.config.gameSize,
+      battlefieldSize,
+      maxTurns,
+      endGameTurn: maxTurns - 2,
+      sides: [
+        {
+          name: 'Alpha',
+          bp: bpPerSide[1],
+          modelCount: modelCount[1],
+          tacticalDoctrine: 'Operative' as any,
+          assemblyName: 'Alpha Assembly',
+        },
+        {
+          name: 'Bravo',
+          bp: bpPerSide[1],
+          modelCount: modelCount[1],
+          tacticalDoctrine: 'Operative' as any,
+          assemblyName: 'Bravo Assembly',
+        },
+      ],
+      densityRatio: this.config.densityRatio,
+      lighting: this.config.lighting,
+      visibilityOrMu: this.config.lighting.visibilityOR,
+      maxOrm: 3,
+      allowConcentrateRangeExtension: true,
+      perCharacterFovLos: false,
+      verbose: this.config.verbose ?? true,
+      seed: this.config.seed,
+      audit: this.config.audit,
+      viewer: this.config.viewer,
+    };
+  }
+
+  private getBattlefieldSize(gameSize: GameSize): number {
+    const sizes: Record<GameSize, number> = {
+      VERY_SMALL: 24,
+      SMALL: 36,
+      MEDIUM: 48,
+      LARGE: 60,
+      VERY_LARGE: 72,
+    };
+    return sizes[gameSize] || 24;
+  }
+
+  private getMaxTurns(gameSize: GameSize): number {
+    const turns: Record<GameSize, number> = {
+      VERY_SMALL: 6,
+      SMALL: 8,
+      MEDIUM: 10,
+      LARGE: 12,
+      VERY_LARGE: 15,
+    };
+    return turns[gameSize] || 6;
+  }
+
+  private getBPPerSide(gameSize: GameSize): number[] {
+    const bp: Record<GameSize, number[]> = {
+      VERY_SMALL: [250, 300, 350],
+      SMALL: [400, 450, 500],
+      MEDIUM: [600, 700, 800],
+      LARGE: [900, 1000, 1100],
+      VERY_LARGE: [1400, 1500, 1600],
+    };
+    return bp[gameSize] || [250, 300, 350];
+  }
+
+  private getModelCount(gameSize: GameSize): number[] {
+    const counts: Record<GameSize, number[]> = {
+      VERY_SMALL: [3, 4, 5],
+      SMALL: [4, 5, 6],
+      MEDIUM: [6, 7, 8],
+      LARGE: [8, 9, 10],
+      VERY_LARGE: [16, 17, 18],
+    };
+    return counts[gameSize] || [3, 4, 5];
+  }
+
+  private getMissionName(missionId: string): string {
+    const names: Record<string, string> = {
+      QAI_11: 'Elimination',
+      QAI_12: 'Convergence',
+      QAI_13: 'Assault',
+      QAI_14: 'Dominion',
+      QAI_15: 'Recovery',
+      QAI_16: 'Escort',
+      QAI_17: 'Triumvirate',
+      QAI_18: 'Stealth',
+      QAI_19: 'Defiance',
+      QAI_20: 'Breach',
+    };
+    return names[missionId] || 'Elimination';
+  }
+
+  private getCentroid(vertices: { x: number; y: number }[]): { x: number; y: number } {
+    if (!vertices || vertices.length === 0) return { x: 0, y: 0 };
+    let x = 0, y = 0;
+    for (const v of vertices) {
+      x += v.x;
+      y += v.y;
+    }
+    return { x: x / vertices.length, y: y / vertices.length };
+  }
+}
+
+/**
+ * Run battle with default configuration
+ */
+export async function runBattle(config: Partial<BattleOrchestratorConfig> = {}): Promise<BattleOutput> {
+  const fullConfig: BattleOrchestratorConfig = {
+    missionId: config.missionId || 'QAI_11',
+    gameSize: config.gameSize || 'VERY_SMALL' as GameSize,
+    densityRatio: config.densityRatio ?? 50,
+    lighting: config.lighting || { name: 'Day, Clear', visibilityOR: 16 },
+    seed: config.seed,
+    audit: config.audit ?? true,
+    viewer: config.viewer ?? false,
+    verbose: config.verbose ?? true,
+  };
+
+  const orchestrator = new BattleOrchestrator(fullConfig);
+  return orchestrator.runBattle();
+}

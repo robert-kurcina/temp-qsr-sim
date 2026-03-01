@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle Audit Dashboard - MEST Tactics</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1a1a2e;
+      color: #eee;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: #16213e;
+      padding: 1rem;
+      border-bottom: 2px solid #0f3460;
+      flex-shrink: 0;
+    }
+    .header h1 { color: #e94560; font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .header p { color: #aaa; font-size: 0.9rem; }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: #0f3460;
+      border-bottom: 2px solid #16213e;
+      flex-shrink: 0;
+    }
+    .tab {
+      padding: 0.75rem 1.5rem;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: #aaa;
+      font-size: 0.9rem;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab:hover { color: #fff; background: #16213e; }
+    .tab.active {
+      color: #e94560;
+      border-bottom-color: #e94560;
+      background: #1a1a2e;
+    }
+
+    /* Tab 4: Portrait Review */
+    .portrait-review-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .portrait-sheet-card {
+      background: #16213e;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #0f3460;
+    }
+    .portrait-sheet-card h3 {
+      color: #e94560;
+      font-size: 0.9rem;
+      padding: 0.75rem;
+      margin: 0;
+      border-bottom: 1px solid #0f3460;
+    }
+    .portrait-sheet-preview {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      background: #fff;
+    }
+    .portrait-sheet-info {
+      padding: 0.75rem;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    .portrait-sheet-info strong {
+      color: #fff;
+    }
+    .tab-content {
+      display: none;
+      flex: 1;
+      overflow: auto;
+      padding: 1rem;
+    }
+    .tab-content.active { display: block; }
+
+    /* Tab 2: Visual Audit */
+    .visual-audit-container {
+      display: flex;
+      height: 100%;
+      gap: 1rem;
+    }
+    .visual-audit-viewer {
+      flex: 1;
+      background: #fff;
+      border-radius: 8px;
+      overflow: auto;
+    }
+    .visual-audit-viewer svg {
+      margin: 1rem;
+    }
+    .visual-audit-sidebar {
+      width: 450px;
+      background: #16213e;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .sidebar-tabs {
+      display: flex;
+      background: #0f3460;
+      border-bottom: 1px solid #16213e;
+    }
+    .sidebar-tab {
+      flex: 1;
+      padding: 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: #aaa;
+      font-size: 0.8rem;
+      border-bottom: 2px solid transparent;
+    }
+    .sidebar-tab.active {
+      color: #fff;
+      border-bottom-color: #e94560;
+      background: #16213e;
+    }
+    .model-roster {
+      padding: 1rem;
+      border-bottom: 1px solid #0f3460;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .model-roster h3 {
+      color: #e94560;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .model-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+    }
+    .model-portrait {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid #0f3460;
+      cursor: pointer;
+      position: relative;
+      background: #fff;
+    }
+    .model-portrait:hover {
+      border-color: #e94560;
+    }
+    .model-portrait.selected {
+      border-color: #e94560;
+      box-shadow: 0 0 8px #e94560;
+    }
+    .model-portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      clip-path: circle(50% at 50% 50%);
+    }
+    .model-portrait .callsign {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-size: 0.65rem;
+      text-align: center;
+      padding: 2px 0;
+    }
+    .model-stats {
+      padding: 1rem;
+      border-bottom: 1px solid #0f3460;
+      max-height: 250px;
+      overflow-y: auto;
+      display: none;
+    }
+    .model-stats.active {
+      display: block;
+    }
+    .model-stats h3 {
+      color: #e94560;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid #0f3460;
+    }
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+    .stat-label {
+      color: #aaa;
+    }
+    .stat-value {
+      color: #fff;
+      font-weight: bold;
+    }
+    .visualization-toggles {
+      padding: 1rem;
+      border-bottom: 1px solid #0f3460;
+    }
+    .visualization-toggles h3 {
+      color: #e94560;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.25rem 0;
+      font-size: 0.8rem;
+    }
+    .toggle-row label {
+      color: #aaa;
+      cursor: pointer;
+    }
+    .toggle-row input[type="checkbox"] {
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+    .path-line {
+      stroke-linecap: round;
+      pointer-events: none;
+    }
+    .path-waypoint {
+      pointer-events: none;
+    }
+    .los-line {
+      stroke-dasharray: 0.2, 0.2;
+      pointer-events: none;
+    }
+    .lof-arc {
+      stroke-dasharray: 0.3, 0.3;
+      fill: none;
+      pointer-events: none;
+    }
+    .audit-controls {
+      padding: 1rem;
+      border-bottom: 1px solid #0f3460;
+    }
+    .speed-control {
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .audit-controls select {
+      width: 100%;
+      padding: 0.5rem;
+      background: #0f3460;
+      color: #fff;
+      border: 1px solid #16213e;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .timeline-controls button {
+      flex: 1;
+      padding: 0.5rem;
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .timeline-controls button:hover { background: #e94560; }
+    .timeline-slider {
+      padding: 0 1rem 1rem;
+    }
+    .timeline-slider input {
+      width: 100%;
+    }
+    .action-log {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+    .log-entry {
+      padding: 0.4rem;
+      margin-bottom: 0.3rem;
+      background: #0f3460;
+      border-left: 2px solid #e94560;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s, border-left-width 0.2s;
+    }
+    .log-entry:hover {
+      background: #1a4a7a;
+    }
+    .log-entry.active {
+      background: #1a4a7a;
+      border-left-color: #27ae60;
+      border-left-width: 4px;
+    }
+    .log-entry.failed-action {
+      border-left-color: #e74c3c;
+      opacity: 0.8;
+    }
+    
+    /* Tab 3: Human-Readable Summary */
+    .summary-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .summary-card {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #0f3460;
+    }
+    .summary-card h2 {
+      color: #e94560;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #0f3460;
+    }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .summary-stat {
+      background: #0f3460;
+      padding: 1rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .summary-stat .value {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #e94560;
+    }
+    .summary-stat .label {
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-top: 0.25rem;
+    }
+    .turn-highlights {
+      margin-top: 1rem;
+    }
+    .turn-highlight {
+      background: #0f3460;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      border-left: 3px solid #e94560;
+    }
+    .turn-highlight h4 {
+      color: #fff;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .turn-highlight p {
+      font-size: 0.85rem;
+      color: #ccc;
+    }
+    .no-battles {
+      text-align: center;
+      padding: 3rem;
+      color: #aaa;
+    }
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #e94560;
+    }
+    
+    /* Tab 5: Battlefield Audit */
+    .battlefield-audit-container {
+      display: flex;
+      height: calc(100vh - 180px);
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .battlefield-viewer {
+      flex: 0 0 80%;
+      display: flex;
+      flex-direction: column;
+      background: #16213e;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .battlefield-audit-svg {
+      flex: 1;
+      background: #fff;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .battlefield-audit-svg svg {
+      max-width: 100%;
+      max-height: 100%;
+      margin: 1rem;
+    }
+    .battlefield-audit-info {
+      padding: 1rem;
+      border-top: 1px solid #0f3460;
+      background: #1a1a2e;
+    }
+    .battlefield-audit-info h3 {
+      color: #e94560;
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+    }
+    .audit-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.5rem;
+    }
+    .audit-stat {
+      background: #0f3460;
+      padding: 0.5rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+    .audit-stat-label {
+      display: block;
+      font-size: 0.7rem;
+      color: #aaa;
+      margin-bottom: 0.25rem;
+    }
+    .audit-stat-value {
+      display: block;
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: bold;
+    }
+    .battlefield-list-panel {
+      flex: 1;
+      background: #16213e;
+      border-radius: 8px;
+      padding: 1rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .battlefield-list-panel h3 {
+      color: #e94560;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+    .battlefield-list-filters {
+      margin-bottom: 0.75rem;
+    }
+    .battlefield-audit-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .battlefield-audit-item {
+      background: #0f3460;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 4px;
+      border-left: 3px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .battlefield-audit-item:hover {
+      background: #1a4a7a;
+      border-left-color: #e94560;
+    }
+    .battlefield-audit-item.active {
+      background: #1a4a7a;
+      border-left-color: #27ae60;
+    }
+    .battlefield-audit-item-name {
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    .battlefield-audit-item-meta {
+      font-size: 0.75rem;
+      color: #aaa;
+      display: flex;
+      gap: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>⚔️ Battle Audit Dashboard</h1>
+    <p>Unified viewer for all MEST Tactics battle audits</p>
+  </div>
+  
+  <div class="tabs">
+    <button class="tab active" data-tab="tab2">🎬 Visual Audit</button>
+    <button class="tab" data-tab="tab3">📊 Summary</button>
+    <button class="tab" data-tab="tab4">🖼️ Portraits</button>
+    <button class="tab" data-tab="tab5">🗂️ Battlefield Audit</button>
+  </div>
+
+  <!-- Tab 2: Visual Audit -->
+  <div id="tab2" class="tab-content">
+    <div class="visual-audit-container">
+      <div class="visual-audit-viewer">
+        <svg id="battlefield-svg" viewBox="0 0 600 600"></svg>
+      </div>
+      <div class="visual-audit-sidebar">
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab active" data-sidebar="models">Models</button>
+          <button class="sidebar-tab" data-sidebar="stats">Stats</button>
+          <button class="sidebar-tab" data-sidebar="toggles">View</button>
+        </div>
+        <div id="sidebar-models" class="sidebar-content active">
+          <div class="model-roster">
+            <h3>Model Roster</h3>
+            <div id="model-list" class="model-list"></div>
+          </div>
+        </div>
+        <div id="sidebar-stats" class="sidebar-content" style="display: none;">
+          <div class="model-stats active">
+            <h3>Model Statistics</h3>
+            <div id="model-stats-content">
+              <div style="color: #666; font-size: 0.8rem;">Select a model to view stats</div>
+            </div>
+          </div>
+        </div>
+        <div id="sidebar-toggles" class="sidebar-content" style="display: none;">
+          <div class="visualization-toggles">
+            <h3>Visualization Toggles</h3>
+            <div class="toggle-row">
+              <label><input type="checkbox" id="toggle-paths" checked> Show Paths</label>
+            </div>
+            <div class="toggle-row">
+              <label><input type="checkbox" id="toggle-los" checked> Show LOS</label>
+            </div>
+            <div class="toggle-row">
+              <label><input type="checkbox" id="toggle-lof" checked> Show LOF</label>
+            </div>
+            <div class="toggle-row">
+              <label><input type="checkbox" id="toggle-delaunay" checked> Show Delaunay Mesh</label>
+            </div>
+            <div class="toggle-row">
+              <label><input type="checkbox" id="toggle-grid" checked> Show Grid</label>
+            </div>
+            <div class="toggle-row">
+              <label><input type="checkbox" id="toggle-deployment" checked> Show Deployment</label>
+            </div>
+          </div>
+        </div>
+        <div class="audit-controls">
+          <select id="battle-select">
+            <option value="">Select a battle...</option>
+          </select>
+          <div class="timeline-controls">
+            <button id="btn-stop">⏹ Stop</button>
+            <button id="btn-play">⏯ Play</button>
+            <button id="btn-prev">⏮ Prev</button>
+            <button id="btn-next">⏭ Next</button>
+          </div>
+          <div class="speed-control">
+            <label style="font-size: 0.8rem; color: #aaa;">Speed:</label>
+            <select id="playback-speed" style="background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; padding: 0.25rem 0.5rem; font-size: 0.8rem;">
+              <option value="0.25">0.25x</option>
+              <option value="0.5">0.5x</option>
+              <option value="1" selected>1x</option>
+              <option value="2">2x</option>
+              <option value="4">4x</option>
+            </select>
+          </div>
+        </div>
+        <div class="timeline-slider">
+          <label style="font-size: 0.8rem; color: #aaa;">Turn: <span id="turn-display">1</span></label>
+          <input type="range" id="turn-slider" min="1" max="10" value="1">
+        </div>
+        <div id="action-log" class="action-log">
+          <div class="log-entry">Select a battle to view audit...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Tab 3: Human-Readable Summary -->
+  <div id="tab3" class="tab-content">
+    <div id="summary-list" class="summary-container">
+      <div class="loading">Loading summaries...</div>
+    </div>
+  </div>
+
+  <!-- Tab 4: Portrait Review -->
+  <div id="tab4" class="tab-content">
+    <div id="portrait-review" class="portrait-review-grid">
+      <div class="loading">Loading portrait sheets...</div>
+    </div>
+  </div>
+
+  <!-- Tab 5: Battlefield Audit -->
+  <div id="tab5" class="tab-content">
+    <div class="battlefield-audit-container">
+      <div class="battlefield-viewer">
+        <div id="battlefield-audit-svg" class="battlefield-audit-svg">
+          <div class="loading">Select a battlefield from the list...</div>
+        </div>
+        <div class="battlefield-audit-info">
+          <h3 id="audit-battlefield-name">No battlefield selected</h3>
+          <div class="audit-stats">
+            <div class="audit-stat"><span class="audit-stat-label">Size:</span><span id="audit-size" class="audit-stat-value">-</span></div>
+            <div class="audit-stat"><span class="audit-stat-label">Density:</span><span id="audit-density" class="audit-stat-value">-</span></div>
+            <div class="audit-stat"><span class="audit-stat-label">Terrain:</span><span id="audit-terrain" class="audit-stat-value">-</span></div>
+            <div class="audit-stat"><span class="audit-stat-label">Mesh Vertices:</span><span id="audit-vertices" class="audit-stat-value">-</span></div>
+            <div class="audit-stat"><span class="audit-stat-label">Mesh Triangles:</span><span id="audit-triangles" class="audit-stat-value">-</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="battlefield-list-panel">
+        <h3>Available Battlefields</h3>
+        <div class="battlefield-list-filters">
+          <select id="filter-game-size" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
+            <option value="">All Sizes</option>
+            <option value="VERY_SMALL">VERY_SMALL (24×24)</option>
+            <option value="SMALL">SMALL (36×36)</option>
+            <option value="MEDIUM">MEDIUM (48×48)</option>
+            <option value="LARGE">LARGE (60×60)</option>
+            <option value="VERY_LARGE">VERY_LARGE (72×72)</option>
+          </select>
+          <select id="filter-density" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px; margin-bottom: 0.5rem;">
+            <option value="">All Densities</option>
+            <option value="20">20% (Sparse)</option>
+            <option value="50">50% (Moderate)</option>
+            <option value="80">80% (Dense)</option>
+          </select>
+          <select id="filter-area-density" style="width: 100%; padding: 0.5rem; background: #0f3460; color: #fff; border: 1px solid #16213e; border-radius: 4px;">
+            <option value="">All Area Densities</option>
+            <option value="20">20% Area (Sparse)</option>
+            <option value="50">50% Area (Moderate)</option>
+            <option value="80">80% Area (Dense)</option>
+          </select>
+        </div>
+        <div id="battlefield-audit-list" class="battlefield-audit-list">
+          <div class="loading">Loading battlefields...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let battles = [];
+    let currentBattle = null;
+    let currentTurn = 1;
+    let isPlaying = false;
+    let playInterval = null;
+    let selectedModel = null;
+    let visualizationState = {
+      paths: true,
+      los: true,
+      lof: true,
+      delaunay: true,
+      grid: true,
+      deployment: true
+    };
+
+    // Sidebar tab switching
+    document.querySelectorAll('.sidebar-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.sidebar-content').forEach(c => c.style.display = 'none');
+        tab.classList.add('active');
+        document.getElementById('sidebar-' + tab.dataset.sidebar).style.display = 'block';
+      });
+    });
+
+    // Visualization toggles
+    document.getElementById('toggle-paths').addEventListener('change', (e) => {
+      visualizationState.paths = e.target.checked;
+      updateVisualization();
+    });
+    document.getElementById('toggle-los').addEventListener('change', (e) => {
+      visualizationState.los = e.target.checked;
+      updateVisualization();
+    });
+    document.getElementById('toggle-lof').addEventListener('change', (e) => {
+      visualizationState.lof = e.target.checked;
+      updateVisualization();
+    });
+    document.getElementById('toggle-delaunay').addEventListener('change', (e) => {
+      visualizationState.delaunay = e.target.checked;
+      updateVisualization();
+    });
+    document.getElementById('toggle-grid').addEventListener('change', (e) => {
+      visualizationState.grid = e.target.checked;
+      updateVisualization();
+    });
+    document.getElementById('toggle-deployment').addEventListener('change', (e) => {
+      visualizationState.deployment = e.target.checked;
+      updateVisualization();
+    });
+
+    function updateVisualization() {
+      const svg = document.getElementById('battlefield-svg');
+      if (!svg) return;
+      
+      // Toggle visibility of different layers
+      const paths = svg.querySelectorAll('.path-line, .path-waypoint');
+      const los = svg.querySelectorAll('.los-line');
+      const lof = svg.querySelectorAll('.lof-arc');
+      const delaunay = svg.querySelectorAll('.delaunay-line');
+      const grid = svg.querySelectorAll('.grid-line');
+      const deployment = svg.querySelectorAll('.deployment-zone');
+      
+      paths.forEach(el => el.style.display = visualizationState.paths ? 'block' : 'none');
+      los.forEach(el => el.style.display = visualizationState.los ? 'block' : 'none');
+      lof.forEach(el => el.style.display = visualizationState.lof ? 'block' : 'none');
+      delaunay.forEach(el => el.style.display = visualizationState.delaunay ? 'block' : 'none');
+      grid.forEach(el => el.style.display = visualizationState.grid ? 'block' : 'none');
+      deployment.forEach(el => el.style.display = visualizationState.deployment ? 'block' : 'none');
+      
+      console.log('Visualization updated:', {
+        paths: paths.length,
+        los: los.length,
+        lof: lof.length,
+        delaunay: delaunay.length,
+        grid: grid.length,
+        deployment: deployment.length
+      });
+    }
+
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+        
+        // Save last selected tab
+        saveLastTab(tab.dataset.tab);
+
+        if (tab.dataset.tab === 'tab2') loadBattleSelect();
+        if (tab.dataset.tab === 'tab3') loadSummaries();
+        if (tab.dataset.tab === 'tab4') loadPortraitReview();
+        if (tab.dataset.tab === 'tab5') loadBattlefieldAudit();
+      });
+    });
+
+    // Load battles from API
+    async function loadBattles() {
+      try {
+        const response = await fetch('/api/battles');
+        battles = await response.json();
+        return battles;
+      } catch (error) {
+        console.error('Failed to load battles:', error);
+        return [];
+      }
+    }
+
+    // Tab 2: Load battle select dropdown
+    async function loadBattleSelect() {
+      const select = document.getElementById('battle-select');
+      const battles = await loadBattles();
+      
+      select.innerHTML = '<option value="">Select a battle...</option>' +
+        battles.map(b => `<option value="${b.id}">${b.missionName} - ${new Date(b.timestamp).toLocaleString()}</option>`).join('');
+    }
+
+    // Load battle in visual audit viewer
+    async function loadBattleInViewer(battleId) {
+      // Switch to tab 2
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector('[data-tab="tab2"]').classList.add('active');
+      document.getElementById('tab2').classList.add('active');
+      
+      // Load battle data
+      try {
+        const [auditResponse, svgResponse] = await Promise.all([
+          fetch(`/api/battles/${battleId}/audit`),
+          fetch(`/api/battles/${battleId}/svg`)
+        ]);
+        
+        currentBattle = await auditResponse.json();
+        const svgText = await svgResponse.text();
+        
+        // Display SVG
+        const svgEl = document.getElementById('battlefield-svg');
+        svgEl.innerHTML = svgText;
+        
+        // Render path overlays
+        renderPathOverlays(currentBattle, svgEl);
+        
+        // Render LOS/LOF overlays
+        renderLOSLOFOverlays(currentBattle, svgEl);
+        
+        // Update select
+        document.getElementById('battle-select').value = battleId;
+        
+        // Load model roster with portraits
+        loadModelRoster(currentBattle);
+        
+        // Load action log
+        loadActionLog(currentBattle);
+        
+        // Update turn slider
+        const slider = document.getElementById('turn-slider');
+        slider.max = currentBattle.turns?.length || 1;
+        slider.value = 1;
+        currentTurn = 1;
+        document.getElementById('turn-display').textContent = '1';
+        
+      } catch (error) {
+        console.error('Failed to load battle:', error);
+        document.getElementById('action-log').innerHTML = 
+          '<div class="log-entry">Error loading battle: ' + error.message + '</div>';
+      }
+    }
+
+    // Render path overlays on SVG
+    function renderPathOverlays(battle, svgEl) {
+      if (!battle || !battle.turns) return;
+      
+      // Create or get path layer
+      let pathLayer = svgEl.querySelector('#layer-paths');
+      if (!pathLayer) {
+        pathLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        pathLayer.id = 'layer-paths';
+        pathLayer.setAttribute('class', 'layer');
+        // Insert after terrain layer
+        const terrainLayer = svgEl.querySelector('#layer-area') || svgEl.querySelector('g');
+        if (terrainLayer && terrainLayer.nextSibling) {
+          svgEl.insertBefore(pathLayer, terrainLayer.nextSibling);
+        } else {
+          svgEl.appendChild(pathLayer);
+        }
+      }
+      
+      // Clear existing paths
+      pathLayer.innerHTML = '';
+      
+      // Collect all movement vectors from position changes
+      const allPaths = [];
+      battle.turns.forEach(turn => {
+        turn.activations.forEach(act => {
+          act.steps.forEach(step => {
+            if (step.actionType === 'move' && step.actorPositionBefore && step.actorPositionAfter) {
+              allPaths.push({
+                from: step.actorPositionBefore,
+                to: step.actorPositionAfter,
+                turn: turn.turn,
+                model: act.modelName,
+                success: step.success !== false
+              });
+            }
+          });
+        });
+      });
+      
+      // Render paths
+      const viewBox = svgEl.getAttribute('viewBox').split(' ').map(Number);
+      const scaleX = viewBox[2] / (battle.battlefield?.widthMu || 24);
+      const scaleY = viewBox[3] / (battle.battlefield?.heightMu || 24);
+      
+      allPaths.forEach((path, index) => {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', path.from.x * scaleX);
+        line.setAttribute('y1', path.from.y * scaleY);
+        line.setAttribute('x2', path.to.x * scaleX);
+        line.setAttribute('y2', path.to.y * scaleY);
+        line.setAttribute('class', 'path-line');
+        line.setAttribute('stroke', path.success ? '#27ae60' : '#e74c3c');
+        line.setAttribute('stroke-width', '0.1');
+        line.setAttribute('opacity', '0.7');
+        line.setAttribute('data-turn', path.turn);
+        line.setAttribute('data-model', path.model);
+        
+        // Add arrowhead marker for direction
+        const midX = (path.from.x + path.to.x) / 2 * scaleX;
+        const midY = (path.from.y + path.to.y) / 2 * scaleY;
+        const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        arrow.setAttribute('cx', midX);
+        arrow.setAttribute('cy', midY);
+        arrow.setAttribute('r', '0.15');
+        arrow.setAttribute('fill', path.success ? '#27ae60' : '#e74c3c');
+        arrow.setAttribute('class', 'path-waypoint');
+        
+        pathLayer.appendChild(line);
+        pathLayer.appendChild(arrow);
+      });
+      
+      console.log(`Rendered ${allPaths.length} path segments`);
+    }
+
+    // Render LOS/LOF overlays on SVG
+    function renderLOSLOFOverlays(battle, svgEl) {
+      if (!battle || !battle.turns) return;
+      
+      // Create or get LOS/LOF layer
+      let losLayer = svgEl.querySelector('#layer-los');
+      if (!losLayer) {
+        losLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        losLayer.id = 'layer-los';
+        losLayer.setAttribute('class', 'layer');
+        svgEl.appendChild(losLayer);
+      }
+      
+      // Clear existing
+      losLayer.innerHTML = '';
+      
+      // Collect all LOS/LOF vectors
+      const allLOS = [];
+      const allLOF = [];
+      
+      battle.turns.forEach(turn => {
+        turn.activations.forEach(act => {
+          act.steps.forEach(step => {
+            if (step.vectors) {
+              step.vectors.forEach(vec => {
+                if (vec.kind === 'los') {
+                  allLOS.push({
+                    from: vec.from,
+                    to: vec.to,
+                    turn: turn.turn,
+                    model: act.modelName,
+                    success: vec.success !== false
+                  });
+                } else if (vec.kind === 'lof') {
+                  allLOF.push({
+                    from: vec.from,
+                    to: vec.to,
+                    turn: turn.turn,
+                    model: act.modelName,
+                    width: vec.widthMu || 1
+                  });
+                }
+              });
+            }
+          });
+        });
+      });
+      
+      // Render
+      const viewBox = svgEl.getAttribute('viewBox').split(' ').map(Number);
+      const scaleX = viewBox[2] / (battle.battlefield?.widthMu || 24);
+      const scaleY = viewBox[3] / (battle.battlefield?.heightMu || 24);
+      
+      // Render LOS lines
+      allLOS.forEach((los, index) => {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', los.from.x * scaleX);
+        line.setAttribute('y1', los.from.y * scaleY);
+        line.setAttribute('x2', los.to.x * scaleX);
+        line.setAttribute('y2', los.to.y * scaleY);
+        line.setAttribute('class', 'los-line');
+        line.setAttribute('stroke', los.success ? '#3498db' : '#e74c3c');
+        line.setAttribute('stroke-width', '0.08');
+        line.setAttribute('opacity', '0.6');
+        line.setAttribute('data-turn', los.turn);
+        line.setAttribute('data-model', los.model);
+        losLayer.appendChild(line);
+      });
+      
+      // Render LOF arcs (as lines for now, could be curved)
+      allLOF.forEach((lof, index) => {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', lof.from.x * scaleX);
+        line.setAttribute('y1', lof.from.y * scaleY);
+        line.setAttribute('x2', lof.to.x * scaleX);
+        line.setAttribute('y2', lof.to.y * scaleY);
+        line.setAttribute('class', 'lof-arc');
+        line.setAttribute('stroke', '#9b59b6');
+        line.setAttribute('stroke-width', lof.width * 0.1 || 0.1);
+        line.setAttribute('opacity', '0.4');
+        line.setAttribute('data-turn', lof.turn);
+        line.setAttribute('data-model', lof.model);
+        losLayer.appendChild(line);
+      });
+      
+      console.log(`Rendered ${allLOS.length} LOS lines, ${allLOF.length} LOF arcs`);
+    }
+
+    // Load model roster with portraits
+    function loadModelRoster(audit) {
+      const modelList = document.getElementById('model-list');
+      if (!audit || !audit.session) {
+        modelList.innerHTML = '<div style="color:#666;font-size:0.8rem;">No model data</div>';
+        return;
+      }
+      
+      // Extract models from audit turns
+      const models = new Map();
+      if (audit.turns && audit.turns.length > 0) {
+        audit.turns.forEach(turn => {
+          turn.activations.forEach(act => {
+            if (!models.has(act.modelId)) {
+              models.set(act.modelId, {
+                id: act.modelId,
+                name: act.modelName,
+                side: act.sideName,
+                callSign: act.modelId.split('-').pop() || act.modelId,
+              });
+            }
+          });
+        });
+      }
+      
+      if (models.size === 0) {
+        modelList.innerHTML = '<div style="color:#666;font-size:0.8rem;">No models found</div>';
+        return;
+      }
+      
+      // Generate portrait grid
+      modelList.innerHTML = Array.from(models.values()).map(model => {
+        const { column, row } = parseCallSign(model.callSign);
+        const clipData = getPortraitClipData(column, row);
+        
+        return `
+          <div class="model-portrait" onclick="selectModel('${model.id}')" title="${model.name} (${model.side})">
+            <img src="${clipData.sheetPath}" 
+                 style="object-position: ${clipData.clipX}px ${clipData.clipY}px;" 
+                 alt="${model.callSign}">
+            <div class="callsign">${model.callSign}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Parse call sign to column/row
+    function parseCallSign(callSign) {
+      const match = callSign.match(/^([A-Z]{2})-(\d)(\d)$/);
+      if (!match) return { column: 0, row: 0 };
+      return {
+        column: parseInt(match[2], 10),
+        row: parseInt(match[3], 10)
+      };
+    }
+
+    // Get portrait clip data
+    function getPortraitClipData(column, row, siz = 3) {
+      // Sheet metrics (8 columns x 6 rows on 1920x1920)
+      const cellWidth = 1920 / 8;
+      const cellHeight = 1920 / 6;
+      const baseCx = 168.47746;
+      const baseCy = 456.87289;
+      const baseR = 94.130058;
+      
+      const clipX = baseCx + column * cellWidth;
+      const clipY = baseCy + row * cellHeight;
+      
+      // SIZ-based radius scaling
+      const sizScale = siz === 1 ? 0.33 : siz === 2 ? 0.67 : 1.0;
+      
+      return {
+        sheetPath: 'assets/portraits/human-quaggkhir-male.jpg',
+        clipX,
+        clipY,
+        radius: baseR * sizScale,
+        siz
+      };
+    }
+
+    // Select model
+    function selectModel(modelId) {
+      document.querySelectorAll('.model-portrait').forEach(el => el.classList.remove('selected'));
+      event.currentTarget.classList.add('selected');
+      
+      // Store selected model
+      selectedModel = modelId;
+      
+      // Switch to stats tab
+      document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.sidebar-content').forEach(c => c.style.display = 'none');
+      document.querySelector('[data-sidebar="stats"]').classList.add('active');
+      document.getElementById('sidebar-stats').style.display = 'block';
+      
+      // Show model stats
+      showModelStats(modelId);
+      
+      // Highlight model on battlefield (future)
+      highlightModelOnBattlefield(modelId);
+    }
+
+    // Show model statistics
+    function showModelStats(modelId) {
+      const statsContent = document.getElementById('model-stats-content');
+      if (!currentBattle || !currentBattle.audit) {
+        statsContent.innerHTML = '<div style="color:#666;">No data available</div>';
+        return;
+      }
+      
+      // Find model in audit data
+      let modelData = null;
+      for (const turn of currentBattle.audit.turns) {
+        for (const act of turn.activations) {
+          if (act.modelId === modelId) {
+            modelData = act;
+            break;
+          }
+        }
+        if (modelData) break;
+      }
+      
+      if (!modelData) {
+        statsContent.innerHTML = '<div style="color:#666;">Model not found in audit</div>';
+        return;
+      }
+      
+      // Count actions
+      let actionCounts = {};
+      let totalAP = 0;
+      for (const turn of currentBattle.audit.turns) {
+        for (const act of turn.activations) {
+          if (act.modelId === modelId) {
+            for (const step of act.steps) {
+              const actionType = step.actionType || 'Unknown';
+              actionCounts[actionType] = (actionCounts[actionType] || 0) + 1;
+              totalAP += step.apSpent || 0;
+            }
+          }
+        }
+      }
+      
+      // Generate stats HTML
+      statsContent.innerHTML = `
+        <div class="stat-row">
+          <span class="stat-label">Call Sign:</span>
+          <span class="stat-value">${modelData.modelId}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Name:</span>
+          <span class="stat-value">${modelData.modelName}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Side:</span>
+          <span class="stat-value">${modelData.sideName}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Total AP Spent:</span>
+          <span class="stat-value">${totalAP}</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-label">Activations:</span>
+          <span class="stat-value">${modelData.initiative || 'N/A'}</span>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #0f3460; margin: 0.5rem 0;">
+        <div style="color: #e94560; font-size: 0.85rem; margin-bottom: 0.5rem;">Action Breakdown:</div>
+        ${Object.entries(actionCounts).map(([action, count]) => `
+          <div class="stat-row">
+            <span class="stat-label">${action}:</span>
+            <span class="stat-value">${count}</span>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    // Highlight model on battlefield
+    function highlightModelOnBattlefield(modelId) {
+      const svg = document.getElementById('battlefield-svg');
+      if (!svg) return;
+      
+      // Remove existing highlights
+      svg.querySelectorAll('.model-highlight').forEach(el => el.remove());
+      
+      // Find model position in current turn (simplified - would need full position tracking)
+      // For now, just log that we'd highlight here
+      console.log('Would highlight model:', modelId);
+    }
+
+    // Load action log from audit
+    function loadActionLog(audit) {
+      const logContainer = document.getElementById('action-log');
+      if (!audit.turns || audit.turns.length === 0) {
+        logContainer.innerHTML = '<div class="log-entry">No audit data available</div>';
+        return;
+      }
+
+      const entries = [];
+      audit.turns.forEach(turn => {
+        turn.activations.forEach((act, actIndex) => {
+          act.steps.forEach((step, stepIndex) => {
+            entries.push({
+              turn: turn.turn,
+              turnIndex: audit.turns.indexOf(turn),
+              activationIndex: actIndex,
+              stepIndex: stepIndex,
+              modelId: act.modelId,
+              modelName: act.modelName,
+              side: act.sideName,
+              actionType: step.actionType || 'Idle',
+              success: step.success !== false
+            });
+          });
+          // If no steps, still add an entry for the activation
+          if (act.steps.length === 0) {
+            entries.push({
+              turn: turn.turn,
+              turnIndex: audit.turns.indexOf(turn),
+              activationIndex: actIndex,
+              stepIndex: 0,
+              modelId: act.modelId,
+              modelName: act.modelName,
+              side: act.sideName,
+              actionType: 'Idle',
+              success: true
+            });
+          }
+        });
+      });
+
+      logContainer.innerHTML = entries.map((e, index) => {
+        const successClass = e.success ? '' : 'failed-action';
+        const clickable = e.turnIndex !== undefined ? `onclick="jumpToTurn(${e.turnIndex}, '${e.modelId}', this)"` : '';
+        return `
+          <div class="log-entry ${successClass}" ${clickable} data-turn="${e.turn}" data-model="${e.modelId}">
+            Turn ${e.turn}: ${e.side} - ${e.modelName}: ${e.actionType}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Jump to specific turn and highlight model
+    function jumpToTurn(turnIndex, modelId, element) {
+      if (!currentBattle || !currentBattle.turns) return;
+      
+      // Highlight clicked entry
+      document.querySelectorAll('.log-entry').forEach(el => el.classList.remove('active'));
+      if (element) element.classList.add('active');
+      
+      // Update turn slider
+      const slider = document.getElementById('turn-slider');
+      const turnDisplay = document.getElementById('turn-display');
+      const targetTurn = currentBattle.turns[turnIndex]?.turn || 1;
+      
+      slider.value = targetTurn;
+      turnDisplay.textContent = targetTurn;
+      currentTurn = targetTurn;
+      
+      // Re-render overlays for this turn
+      const svgEl = document.getElementById('battlefield-svg');
+      if (svgEl) {
+        // Clear and re-render overlays
+        renderPathOverlays(currentBattle, svgEl);
+        renderLOSLOFOverlays(currentBattle, svgEl);
+      }
+      
+      // Highlight model
+      selectedModel = modelId;
+      highlightModelOnBattlefield(modelId);
+      
+      // Switch to stats tab to show model
+      document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.sidebar-content').forEach(c => c.style.display = 'none');
+      document.querySelector('[data-sidebar="stats"]').classList.add('active');
+      document.getElementById('sidebar-stats').style.display = 'block';
+      showModelStats(modelId);
+      
+      // Scroll log to keep clicked entry visible
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      
+      console.log(`Jumped to Turn ${targetTurn}, model ${modelId}`);
+    }
+
+    // Tab 3: Load summaries
+    async function loadSummaries() {
+      const container = document.getElementById('summary-list');
+      const battles = await loadBattles();
+      
+      if (battles.length === 0) {
+        container.innerHTML = '<div class="no-battles">No battles found. Run a battle first!</div>';
+        return;
+      }
+      
+      container.innerHTML = battles.map(battle => `
+        <div class="summary-card">
+          <h2>${battle.missionName} - ${new Date(battle.timestamp).toLocaleString()}</h2>
+          <div class="summary-grid">
+            <div class="summary-stat">
+              <div class="value">${battle.winner || 'Draw'}</div>
+              <div class="label">Winner</div>
+            </div>
+            <div class="summary-stat">
+              <div class="value">${battle.turnsCompleted || 0}</div>
+              <div class="label">Turns</div>
+            </div>
+            <div class="summary-stat">
+              <div class="value">${battle.totalActions || 0}</div>
+              <div class="label">Total Actions</div>
+            </div>
+            <div class="summary-stat">
+              <div class="value">${battle.gameSize}</div>
+              <div class="label">Game Size</div>
+            </div>
+          </div>
+          <div class="turn-highlights">
+            <h4 style="color:#e94560;font-size:0.9rem;margin-bottom:0.5rem;">Key Moments</h4>
+            ${battle.turnHighlights ? battle.turnHighlights.map(h => 
+              `<div class="turn-highlight"><h4>Turn ${h.turn}</h4><p>${h.description}</p></div>`
+            ).join('') : '<p style="color:#666;font-size:0.85rem;">No highlights available</p>'}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Timeline controls
+    document.getElementById('btn-stop').addEventListener('click', () => {
+      stopPlayback();
+      currentTurn = 1;
+      updateTurnDisplay();
+    });
+
+    document.getElementById('btn-play').addEventListener('click', () => {
+      if (isPlaying) {
+        stopPlayback();
+      } else {
+        startPlayback();
+      }
+    });
+
+    document.getElementById('btn-prev').addEventListener('click', () => {
+      if (currentTurn > 1) {
+        currentTurn--;
+        updateTurnDisplay();
+      }
+    });
+
+    document.getElementById('btn-next').addEventListener('click', () => {
+      const maxTurn = currentBattle?.turns?.length || 1;
+      if (currentTurn < maxTurn) {
+        currentTurn++;
+        updateTurnDisplay();
+      }
+    });
+
+    document.getElementById('turn-slider').addEventListener('input', (e) => {
+      currentTurn = parseInt(e.target.value);
+      updateTurnDisplay();
+    });
+
+    document.getElementById('battle-select').addEventListener('change', (e) => {
+      if (e.target.value) {
+        loadBattleInViewer(e.target.value);
+      }
+    });
+
+    function startPlayback() {
+      isPlaying = true;
+      document.getElementById('btn-play').textContent = '⏸ Pause';
+      const maxTurn = currentBattle?.turns?.length || 1;
+      
+      // Get playback speed
+      const speedSelect = document.getElementById('playback-speed');
+      const speed = parseFloat(speedSelect?.value || '1');
+      
+      // Calculate interval (1000ms at 1x speed)
+      const interval = 1000 / speed;
+      
+      playInterval = setInterval(() => {
+        if (currentTurn >= maxTurn) {
+          stopPlayback();
+          currentTurn = 1;
+        } else {
+          currentTurn++;
+          updateTurnDisplay();
+        }
+      }, interval);
+    }
+
+    function stopPlayback() {
+      isPlaying = false;
+      document.getElementById('btn-play').textContent = '⏯ Play';
+      if (playInterval) {
+        clearInterval(playInterval);
+        playInterval = null;
+      }
+    }
+
+    function updateTurnDisplay() {
+      document.getElementById('turn-display').textContent = currentTurn;
+      document.getElementById('turn-slider').value = currentTurn;
+      // TODO: Update SVG to show turn state
+    }
+
+    // Load portrait review (Tab 4)
+    async function loadPortraitReview() {
+      const container = document.getElementById('portrait-review');
+      
+      // Portrait sheets data (from rules-portraits.md)
+      const sheets = [
+        { name: 'Alef Akrunai-Auldaran Male', path: 'assets/portraits/alef-akrunai-auldfaran-male.jpg', species: 'Humaniki', siz: 3 },
+        { name: 'Alef Akrunai-Borondan Male', path: 'assets/portraits/alef-akruniai-borondan-male.jpg', species: 'Humaniki', siz: 3 },
+        { name: 'Babbita Indelan Male', path: 'assets/portraits/babbita-indelan-male.jpg', species: 'Humaniki', siz: 3 },
+        { name: 'Human Eniyaski Male', path: 'assets/portraits/human-eniyaski-male.jpg', species: 'Humaniki', siz: 3 },
+        { name: 'Human Quaggkhir Female', path: 'assets/portraits/human-quaggkhir-female.jpg', species: 'Humaniki', siz: 3 },
+        { name: 'Human Quaggkhir Male', path: 'assets/portraits/human-quaggkhir-male.jpg', species: 'Humaniki', siz: 3, default: true },
+        { name: 'Human Vasikhan Male', path: 'assets/portraits/human-vasikhan-male.jpg', species: 'Humaniki', siz: 3 },
+        { name: 'Orok Orogu Male', path: 'assets/portraits/orugu-common-male.jpg', species: 'Orogulun', siz: 3 },
+        { name: 'Jhastra Jhasu Male', path: 'assets/portraits/lizardfolk-common-male.jpg', species: 'Jhastruj', siz: 2 },
+        { name: 'Golbrini Globlin Male', path: 'assets/portraits/golbrini-common-male.jpg', species: 'Gorblun', siz: 2 },
+        { name: 'Korkbul Kolboh Male', path: 'assets/portraits/kobolds-common-male.jpg', species: 'Klobalun', siz: 1 },
+      ];
+
+      container.innerHTML = sheets.map(sheet => `
+        <div class="portrait-sheet-card">
+          <h3>${sheet.name}${sheet.default ? ' (Default)' : ''}</h3>
+          <img src="${sheet.path}" alt="${sheet.name}" class="portrait-sheet-preview" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><text x=%2250%%22 y=%2250%%22 text-anchor=%22middle%22 fill=%22%23999%22>Not Found</text></svg>'">
+          <div class="portrait-sheet-info">
+            <div><strong>Species:</strong> ${sheet.species}</div>
+            <div><strong>SIZ:</strong> ${sheet.siz} (${sheet.siz === 1 ? '10mm' : sheet.siz === 2 ? '20mm' : '30mm'})</div>
+            <div><strong>Grid:</strong> 8×6 (48 portraits)</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Load battlefield audit (Tab 5)
+    let battlefieldAuditData = [];
+    let currentBattlefieldName = null;
+    
+    // LocalStorage keys
+    const STORAGE_KEY_LAST_TAB = 'mest-dashboard-last-tab';
+    const STORAGE_KEY_LAST_BATTLEFIELD = 'mest-dashboard-last-battlefield';
+    const STORAGE_KEY_FILTER_SIZE = 'mest-dashboard-filter-size';
+    const STORAGE_KEY_FILTER_DENSITY = 'mest-dashboard-filter-density';
+    const STORAGE_KEY_FILTER_AREA_DENSITY = 'mest-dashboard-filter-area-density';
+
+    // Restore last selected tab
+    function restoreLastTab() {
+      const lastTab = localStorage.getItem(STORAGE_KEY_LAST_TAB);
+      if (lastTab && document.querySelector(`[data-tab="${lastTab}"]`)) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        const tab = document.querySelector(`[data-tab="${lastTab}"]`);
+        tab.classList.add('active');
+        document.getElementById(lastTab).classList.add('active');
+
+        // Load tab content
+        if (lastTab === 'tab2') loadBattleSelect();
+        if (lastTab === 'tab3') loadSummaries();
+        if (lastTab === 'tab4') loadPortraitReview();
+        if (lastTab === 'tab5') loadBattlefieldAudit();
+      }
+    }
+
+    // Save last selected tab
+    function saveLastTab(tabId) {
+      localStorage.setItem(STORAGE_KEY_LAST_TAB, tabId);
+    }
+
+    // Restore filter selections
+    function restoreFilters() {
+      const lastSize = localStorage.getItem(STORAGE_KEY_FILTER_SIZE);
+      const lastDensity = localStorage.getItem(STORAGE_KEY_FILTER_DENSITY);
+      const lastAreaDensity = localStorage.getItem(STORAGE_KEY_FILTER_AREA_DENSITY);
+      
+      if (lastSize) {
+        document.getElementById('filter-game-size').value = lastSize;
+      }
+      if (lastDensity) {
+        document.getElementById('filter-density').value = lastDensity;
+      }
+      if (lastAreaDensity) {
+        document.getElementById('filter-area-density').value = lastAreaDensity;
+      }
+    }
+
+    // Save filter selections
+    function saveFilters() {
+      const sizeFilter = document.getElementById('filter-game-size').value;
+      const densityFilter = document.getElementById('filter-density').value;
+      const areaDensityFilter = document.getElementById('filter-area-density').value;
+      
+      localStorage.setItem(STORAGE_KEY_FILTER_SIZE, sizeFilter);
+      localStorage.setItem(STORAGE_KEY_FILTER_DENSITY, densityFilter);
+      localStorage.setItem(STORAGE_KEY_FILTER_AREA_DENSITY, areaDensityFilter);
+    }
+    
+    // Restore last selected battlefield
+    function restoreLastBattlefield() {
+      const lastBattlefield = localStorage.getItem(STORAGE_KEY_LAST_BATTLEFIELD);
+      if (lastBattlefield && battlefieldAuditData.length > 0) {
+        const exists = battlefieldAuditData.find(b => b.name === lastBattlefield);
+        if (exists) {
+          loadBattlefieldAuditView(lastBattlefield);
+        }
+      }
+    }
+    
+    // Save last selected battlefield
+    function saveLastBattlefield(battlefieldName) {
+      localStorage.setItem(STORAGE_KEY_LAST_BATTLEFIELD, battlefieldName);
+    }
+    
+    async function loadBattlefieldAudit() {
+      // Restore filters first
+      restoreFilters();
+      
+      // Only load if not already loaded
+      if (battlefieldAuditData.length > 0) {
+        restoreLastBattlefield();
+        return;
+      }
+
+      try {
+        // Fetch list of battlefield JSON files
+        const response = await fetch('/api/battlefields');
+        battlefieldAuditData = await response.json();
+        renderBattlefieldAuditList(battlefieldAuditData);
+
+        // Try to restore last selected battlefield first
+        if (!restoreLastBattlefield() && battlefieldAuditData.length > 0) {
+          // Otherwise load first battlefield as default
+          loadBattlefieldAuditView(battlefieldAuditData[0].name);
+        }
+      } catch (error) {
+        console.error('Failed to load battlefields:', error);
+        document.getElementById('battlefield-audit-list').innerHTML =
+          '<div class="loading">Error loading battlefields</div>';
+      }
+    }
+
+    function renderBattlefieldAuditList(battlefields) {
+      const listEl = document.getElementById('battlefield-audit-list');
+      const sizeFilter = document.getElementById('filter-game-size').value;
+      const densityFilter = document.getElementById('filter-density').value;
+      const areaDensityFilter = document.getElementById('filter-area-density').value;
+
+      // Filter battlefields
+      let filtered = battlefields;
+      if (sizeFilter) {
+        filtered = filtered.filter(b => b.name.includes(sizeFilter));
+      }
+      if (densityFilter) {
+        filtered = filtered.filter(b => b.name.includes(`-${densityFilter}-`));
+      }
+      if (areaDensityFilter) {
+        filtered = filtered.filter(b => {
+          // Match pattern: NAME-DENSITY-AREA_DENSITY-BATTLE
+          const match = b.name.match(/-(\d+)-(\d+)-\d+$/);
+          return match && match[2] === areaDensityFilter;
+        });
+      }
+      
+      if (filtered.length === 0) {
+        listEl.innerHTML = '<div class="loading">No battlefields match filters</div>';
+        return;
+      }
+      
+      listEl.innerHTML = filtered.map((bf) => {
+        const sizeMatch = bf.name.match(/^(?:battlefield-)?(VERY_SMALL|SMALL|MEDIUM|LARGE|VERY_LARGE)/);
+        const densityMatch = bf.name.match(/-(\d+)-(\d+)-\d+$/);
+        const size = sizeMatch ? sizeMatch[1] : 'Unknown';
+        const density = densityMatch ? densityMatch[1] : 'Unknown';
+        const areaDensity = densityMatch ? densityMatch[2] : 'Unknown';
+        const sizeLabel = { VERY_SMALL: '24×24', SMALL: '36×36', MEDIUM: '48×48', LARGE: '60×60', VERY_LARGE: '72×72' }[size] || size;
+        const isActive = bf.name === currentBattlefieldName ? 'active' : '';
+
+        return `
+          <div class="battlefield-audit-item ${isActive}" onclick="loadBattlefieldAuditView('${bf.name}')">
+            <div class="battlefield-audit-item-name">${bf.name}</div>
+            <div class="battlefield-audit-item-meta">
+              <span>Size: ${sizeLabel}</span>
+              <span>Density: ${density}%</span>
+              <span>Area: ${areaDensity}%</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Auto-load first filtered battlefield if none selected or current not in filtered
+      if (filtered.length > 0 && (!currentBattlefieldName || !filtered.find(b => b.name === currentBattlefieldName))) {
+        loadBattlefieldAuditView(filtered[0].name);
+      }
+    }
+
+    async function loadBattlefieldAuditView(battlefieldName) {
+      try {
+        // Update current battlefield name
+        currentBattlefieldName = battlefieldName;
+        
+        // Save to localStorage
+        saveLastBattlefield(battlefieldName);
+
+        // Highlight selected item
+        document.querySelectorAll('.battlefield-audit-item').forEach(el => {
+          const isActive = el.querySelector('.battlefield-audit-item-name').textContent === battlefieldName;
+          el.classList.toggle('active', isActive);
+        });
+        
+        // Load battlefield JSON
+        const jsonResponse = await fetch(`/api/battlefields/${battlefieldName}.json`);
+        const battlefieldData = await jsonResponse.json();
+        
+        // Load SVG
+        const svgResponse = await fetch(`/api/battlefields/${battlefieldName}.svg`);
+        const svgText = await svgResponse.text();
+        
+        // Display SVG
+        const svgContainer = document.getElementById('battlefield-audit-svg');
+        svgContainer.innerHTML = svgText;
+        
+        // Update info panel
+        document.getElementById('audit-battlefield-name').textContent = battlefieldName;
+        document.getElementById('audit-size').textContent = `${battlefieldData.dimensions.width}×${battlefieldData.dimensions.height} MU`;
+        document.getElementById('audit-density').textContent = `${(battlefieldData.stats.density * 100).toFixed(1)}%`;
+        document.getElementById('audit-terrain').textContent = battlefieldData.terrainInstances.length;
+        document.getElementById('audit-vertices').textContent = battlefieldData.delaunayMesh.vertices.length;
+        document.getElementById('audit-triangles').textContent = battlefieldData.delaunayMesh.triangles.length;
+        
+      } catch (error) {
+        console.error('Failed to load battlefield:', error);
+        document.getElementById('battlefield-audit-svg').innerHTML = 
+          '<div class="loading">Error loading battlefield</div>';
+      }
+    }
+
+    // Filter event listeners
+    document.getElementById('filter-game-size').addEventListener('change', () => {
+      saveFilters();
+      renderBattlefieldAuditList(battlefieldAuditData);
+    });
+    document.getElementById('filter-density').addEventListener('change', () => {
+      saveFilters();
+      renderBattlefieldAuditList(battlefieldAuditData);
+    });
+    document.getElementById('filter-area-density').addEventListener('change', () => {
+      saveFilters();
+      renderBattlefieldAuditList(battlefieldAuditData);
+    });
+
+    // Initialize - restore last tab or default to Visual Audit
+    restoreLastTab();
+  </script>
+</body>
+</html>

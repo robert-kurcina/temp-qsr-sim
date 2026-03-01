@@ -1,0 +1,394 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-02-28T20:13:02.650Z",
+  "totalBattles": 9,
+  "battles": [
+    {
+      "id": "battle-report-2026-02-28T19-57-41-914Z",
+      "timestamp": "2026-02-28T19-57-41-914Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_SMALL",
+      "turnsCompleted": 6,
+      "winner": "Draw",
+      "totalActions": 98,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "medium",
+        "moderate",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": true,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T19-57-30-776Z",
+      "timestamp": "2026-02-28T19-57-30-776Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_SMALL",
+      "turnsCompleted": 6,
+      "winner": "Draw",
+      "totalActions": 151,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "medium",
+        "high-action",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": true,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T19-32-06-557Z",
+      "timestamp": "2026-02-28T19-32-06-557Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_SMALL",
+      "turnsCompleted": 6,
+      "winner": "Draw",
+      "totalActions": 87,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "medium",
+        "moderate",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": false,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T19-32-00-400Z",
+      "timestamp": "2026-02-28T19-32-00-400Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_SMALL",
+      "turnsCompleted": 6,
+      "winner": "Draw",
+      "totalActions": 163,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "medium",
+        "high-action",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": false,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T19-29-42-459Z",
+      "timestamp": "2026-02-28T19-29-42-459Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_SMALL",
+      "turnsCompleted": 6,
+      "winner": "Draw",
+      "totalActions": 58,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "medium",
+        "moderate",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": false,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T18-59-30-261Z",
+      "timestamp": "2026-02-28T18-59-30-261Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_SMALL",
+      "turnsCompleted": 6,
+      "winner": "Draw",
+      "totalActions": 95,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "medium",
+        "moderate",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": false,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T18-45-32-236Z",
+      "timestamp": "2026-02-28T18-45-32-236Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_SMALL",
+      "turnsCompleted": 6,
+      "winner": "Draw",
+      "totalActions": 47,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 4,
+          "bp": 300,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "medium",
+        "low-action",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": false,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T17-12-36-376Z",
+      "timestamp": "2026-02-28T17-12-36-376Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_LARGE",
+      "turnsCompleted": 10,
+      "winner": "Draw",
+      "totalActions": 22,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 32,
+          "bp": 2000,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 32,
+          "bp": 2000,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "long",
+        "low-action",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": false,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    },
+    {
+      "id": "battle-report-2026-02-28T17-11-57-539Z",
+      "timestamp": "2026-02-28T17-11-57-539Z",
+      "date": "2026-02-28",
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "gameSize": "VERY_LARGE",
+      "turnsCompleted": 8,
+      "winner": "Draw",
+      "totalActions": 2,
+      "totalEliminations": 0,
+      "totalKOs": 0,
+      "sides": [
+        {
+          "name": "Alpha",
+          "models": 32,
+          "bp": 2000,
+          "doctrine": "operative"
+        },
+        {
+          "name": "Bravo",
+          "models": 32,
+          "bp": 2000,
+          "doctrine": "operative"
+        }
+      ],
+      "fitness": "Good",
+      "tags": [
+        "long",
+        "low-action",
+        "stalemate",
+        "qai_11"
+      ],
+      "svgAvailable": false,
+      "auditAvailable": true,
+      "summaryAvailable": true
+    }
+  ],
+  "byMission": {
+    "QAI_11": [
+      "battle-report-2026-02-28T19-57-41-914Z",
+      "battle-report-2026-02-28T19-57-30-776Z",
+      "battle-report-2026-02-28T19-32-06-557Z",
+      "battle-report-2026-02-28T19-32-00-400Z",
+      "battle-report-2026-02-28T19-29-42-459Z",
+      "battle-report-2026-02-28T18-59-30-261Z",
+      "battle-report-2026-02-28T18-45-32-236Z",
+      "battle-report-2026-02-28T17-12-36-376Z",
+      "battle-report-2026-02-28T17-11-57-539Z"
+    ]
+  },
+  "byGameSize": {
+    "VERY_SMALL": [
+      "battle-report-2026-02-28T19-57-41-914Z",
+      "battle-report-2026-02-28T19-57-30-776Z",
+      "battle-report-2026-02-28T19-32-06-557Z",
+      "battle-report-2026-02-28T19-32-00-400Z",
+      "battle-report-2026-02-28T19-29-42-459Z",
+      "battle-report-2026-02-28T18-59-30-261Z",
+      "battle-report-2026-02-28T18-45-32-236Z"
+    ],
+    "VERY_LARGE": [
+      "battle-report-2026-02-28T17-12-36-376Z",
+      "battle-report-2026-02-28T17-11-57-539Z"
+    ]
+  },
+  "byDate": {
+    "2026-02-28": [
+      "battle-report-2026-02-28T19-57-41-914Z",
+      "battle-report-2026-02-28T19-57-30-776Z",
+      "battle-report-2026-02-28T19-32-06-557Z",
+      "battle-report-2026-02-28T19-32-00-400Z",
+      "battle-report-2026-02-28T19-29-42-459Z",
+      "battle-report-2026-02-28T18-59-30-261Z",
+      "battle-report-2026-02-28T18-45-32-236Z",
+      "battle-report-2026-02-28T17-12-36-376Z",
+      "battle-report-2026-02-28T17-11-57-539Z"
+    ]
+  },
+  "byWinner": {
+    "Draw": [
+      "battle-report-2026-02-28T19-57-41-914Z",
+      "battle-report-2026-02-28T19-57-30-776Z",
+      "battle-report-2026-02-28T19-32-06-557Z",
+      "battle-report-2026-02-28T19-32-00-400Z",
+      "battle-report-2026-02-28T19-29-42-459Z",
+      "battle-report-2026-02-28T18-59-30-261Z",
+      "battle-report-2026-02-28T18-45-32-236Z",
+      "battle-report-2026-02-28T17-12-36-376Z",
+      "battle-report-2026-02-28T17-11-57-539Z"
+    ]
+  }
+}

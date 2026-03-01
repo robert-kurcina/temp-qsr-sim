@@ -1,0 +1,340 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="960" height="960" font-family="Arial" font-size="0.6">
+<defs>
+  <style><![CDATA[
+    .layer { display: inline; }
+    .layer.hidden { display: none; }
+    .grid-line { stroke: #999; stroke-width: 0.02; opacity: 0.2; }
+    .grid-line-2mu { stroke: #666; stroke-width: 0.04; opacity: 0.4; }
+    .grid-line-6mu { stroke: #333; stroke-width: 0.08; opacity: 0.6; }
+    .delaunay-line { stroke: #4a6fa5; stroke-width: 0.03; opacity: 0.3; }
+    #layer-area { opacity: 0.8; }
+    #layer-building, #layer-wall, #layer-tree, #layer-rocks, #layer-shrub, #layer-terrain { opacity: 0.8; }
+    .terrain-area { stroke: none; }
+    .terrain-solid { stroke: #000; stroke-width: 0.05; }
+    .model { stroke: #ff0000; stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .path { fill: none; stroke-width: 0.12; }
+    .vector { stroke-width: 0.1; }
+    .los-ray { stroke-width: 0.08; stroke-dasharray: 0.2 0.2; }
+    .lof-ray { stroke-width: 0.08; stroke-dasharray: 0.3 0.15; }
+    .label { fill: #111 !important; font-size: 0.6px; }
+    .toggle { cursor: pointer; }
+    .toggle.disabled { cursor: default; }
+    .toggle.disabled rect { stroke: #ccc; fill: #fff; }
+    .toggle.disabled text { fill: #ccc; }
+#layer-building { fill: #000000; }
+#layer-wall { fill: #555555; }
+  ]]></style>
+</defs>
+<rect x="0" y="0" width="24" height="24" fill="#ffffff" stroke="#111" stroke-width="0.05"/>
+<script><![CDATA[
+      function toggleLayer(id) {
+        var layer = document.getElementById('layer-' + id);
+        if (!layer) return;
+        if (layer.classList.contains('hidden')) {
+          layer.classList.remove('hidden');
+        } else {
+          layer.classList.add('hidden');
+        }
+      }
+    ]]></script>
+<text x="0.4" y="23.6" class="label">MEDIUM-DENSITY: 50% density - moderate structures</text>
+<g id="layer-deployment" class="layer ">
+</g>
+<g id="layer-grid" class="layer hidden">
+<line x1="0" y1="0" x2="0" y2="24" class="grid-line-6mu"/>
+<line x1="0.5" y1="0" x2="0.5" y2="24" class="grid-line"/>
+<line x1="1" y1="0" x2="1" y2="24" class="grid-line"/>
+<line x1="1.5" y1="0" x2="1.5" y2="24" class="grid-line"/>
+<line x1="2" y1="0" x2="2" y2="24" class="grid-line-2mu"/>
+<line x1="2.5" y1="0" x2="2.5" y2="24" class="grid-line"/>
+<line x1="3" y1="0" x2="3" y2="24" class="grid-line"/>
+<line x1="3.5" y1="0" x2="3.5" y2="24" class="grid-line"/>
+<line x1="4" y1="0" x2="4" y2="24" class="grid-line-2mu"/>
+<line x1="4.5" y1="0" x2="4.5" y2="24" class="grid-line"/>
+<line x1="5" y1="0" x2="5" y2="24" class="grid-line"/>
+<line x1="5.5" y1="0" x2="5.5" y2="24" class="grid-line"/>
+<line x1="6" y1="0" x2="6" y2="24" class="grid-line-6mu"/>
+<line x1="6.5" y1="0" x2="6.5" y2="24" class="grid-line"/>
+<line x1="7" y1="0" x2="7" y2="24" class="grid-line"/>
+<line x1="7.5" y1="0" x2="7.5" y2="24" class="grid-line"/>
+<line x1="8" y1="0" x2="8" y2="24" class="grid-line-2mu"/>
+<line x1="8.5" y1="0" x2="8.5" y2="24" class="grid-line"/>
+<line x1="9" y1="0" x2="9" y2="24" class="grid-line"/>
+<line x1="9.5" y1="0" x2="9.5" y2="24" class="grid-line"/>
+<line x1="10" y1="0" x2="10" y2="24" class="grid-line-2mu"/>
+<line x1="10.5" y1="0" x2="10.5" y2="24" class="grid-line"/>
+<line x1="11" y1="0" x2="11" y2="24" class="grid-line"/>
+<line x1="11.5" y1="0" x2="11.5" y2="24" class="grid-line"/>
+<line x1="12" y1="0" x2="12" y2="24" class="grid-line-6mu"/>
+<line x1="12.5" y1="0" x2="12.5" y2="24" class="grid-line"/>
+<line x1="13" y1="0" x2="13" y2="24" class="grid-line"/>
+<line x1="13.5" y1="0" x2="13.5" y2="24" class="grid-line"/>
+<line x1="14" y1="0" x2="14" y2="24" class="grid-line-2mu"/>
+<line x1="14.5" y1="0" x2="14.5" y2="24" class="grid-line"/>
+<line x1="15" y1="0" x2="15" y2="24" class="grid-line"/>
+<line x1="15.5" y1="0" x2="15.5" y2="24" class="grid-line"/>
+<line x1="16" y1="0" x2="16" y2="24" class="grid-line-2mu"/>
+<line x1="16.5" y1="0" x2="16.5" y2="24" class="grid-line"/>
+<line x1="17" y1="0" x2="17" y2="24" class="grid-line"/>
+<line x1="17.5" y1="0" x2="17.5" y2="24" class="grid-line"/>
+<line x1="18" y1="0" x2="18" y2="24" class="grid-line-6mu"/>
+<line x1="18.5" y1="0" x2="18.5" y2="24" class="grid-line"/>
+<line x1="19" y1="0" x2="19" y2="24" class="grid-line"/>
+<line x1="19.5" y1="0" x2="19.5" y2="24" class="grid-line"/>
+<line x1="20" y1="0" x2="20" y2="24" class="grid-line-2mu"/>
+<line x1="20.5" y1="0" x2="20.5" y2="24" class="grid-line"/>
+<line x1="21" y1="0" x2="21" y2="24" class="grid-line"/>
+<line x1="21.5" y1="0" x2="21.5" y2="24" class="grid-line"/>
+<line x1="22" y1="0" x2="22" y2="24" class="grid-line-2mu"/>
+<line x1="22.5" y1="0" x2="22.5" y2="24" class="grid-line"/>
+<line x1="23" y1="0" x2="23" y2="24" class="grid-line"/>
+<line x1="23.5" y1="0" x2="23.5" y2="24" class="grid-line"/>
+<line x1="24" y1="0" x2="24" y2="24" class="grid-line-6mu"/>
+<line x1="0" y1="0" x2="24" y2="0" class="grid-line-6mu"/>
+<line x1="0" y1="0.5" x2="24" y2="0.5" class="grid-line"/>
+<line x1="0" y1="1" x2="24" y2="1" class="grid-line"/>
+<line x1="0" y1="1.5" x2="24" y2="1.5" class="grid-line"/>
+<line x1="0" y1="2" x2="24" y2="2" class="grid-line-2mu"/>
+<line x1="0" y1="2.5" x2="24" y2="2.5" class="grid-line"/>
+<line x1="0" y1="3" x2="24" y2="3" class="grid-line"/>
+<line x1="0" y1="3.5" x2="24" y2="3.5" class="grid-line"/>
+<line x1="0" y1="4" x2="24" y2="4" class="grid-line-2mu"/>
+<line x1="0" y1="4.5" x2="24" y2="4.5" class="grid-line"/>
+<line x1="0" y1="5" x2="24" y2="5" class="grid-line"/>
+<line x1="0" y1="5.5" x2="24" y2="5.5" class="grid-line"/>
+<line x1="0" y1="6" x2="24" y2="6" class="grid-line-6mu"/>
+<line x1="0" y1="6.5" x2="24" y2="6.5" class="grid-line"/>
+<line x1="0" y1="7" x2="24" y2="7" class="grid-line"/>
+<line x1="0" y1="7.5" x2="24" y2="7.5" class="grid-line"/>
+<line x1="0" y1="8" x2="24" y2="8" class="grid-line-2mu"/>
+<line x1="0" y1="8.5" x2="24" y2="8.5" class="grid-line"/>
+<line x1="0" y1="9" x2="24" y2="9" class="grid-line"/>
+<line x1="0" y1="9.5" x2="24" y2="9.5" class="grid-line"/>
+<line x1="0" y1="10" x2="24" y2="10" class="grid-line-2mu"/>
+<line x1="0" y1="10.5" x2="24" y2="10.5" class="grid-line"/>
+<line x1="0" y1="11" x2="24" y2="11" class="grid-line"/>
+<line x1="0" y1="11.5" x2="24" y2="11.5" class="grid-line"/>
+<line x1="0" y1="12" x2="24" y2="12" class="grid-line-6mu"/>
+<line x1="0" y1="12.5" x2="24" y2="12.5" class="grid-line"/>
+<line x1="0" y1="13" x2="24" y2="13" class="grid-line"/>
+<line x1="0" y1="13.5" x2="24" y2="13.5" class="grid-line"/>
+<line x1="0" y1="14" x2="24" y2="14" class="grid-line-2mu"/>
+<line x1="0" y1="14.5" x2="24" y2="14.5" class="grid-line"/>
+<line x1="0" y1="15" x2="24" y2="15" class="grid-line"/>
+<line x1="0" y1="15.5" x2="24" y2="15.5" class="grid-line"/>
+<line x1="0" y1="16" x2="24" y2="16" class="grid-line-2mu"/>
+<line x1="0" y1="16.5" x2="24" y2="16.5" class="grid-line"/>
+<line x1="0" y1="17" x2="24" y2="17" class="grid-line"/>
+<line x1="0" y1="17.5" x2="24" y2="17.5" class="grid-line"/>
+<line x1="0" y1="18" x2="24" y2="18" class="grid-line-6mu"/>
+<line x1="0" y1="18.5" x2="24" y2="18.5" class="grid-line"/>
+<line x1="0" y1="19" x2="24" y2="19" class="grid-line"/>
+<line x1="0" y1="19.5" x2="24" y2="19.5" class="grid-line"/>
+<line x1="0" y1="20" x2="24" y2="20" class="grid-line-2mu"/>
+<line x1="0" y1="20.5" x2="24" y2="20.5" class="grid-line"/>
+<line x1="0" y1="21" x2="24" y2="21" class="grid-line"/>
+<line x1="0" y1="21.5" x2="24" y2="21.5" class="grid-line"/>
+<line x1="0" y1="22" x2="24" y2="22" class="grid-line-2mu"/>
+<line x1="0" y1="22.5" x2="24" y2="22.5" class="grid-line"/>
+<line x1="0" y1="23" x2="24" y2="23" class="grid-line"/>
+<line x1="0" y1="23.5" x2="24" y2="23.5" class="grid-line"/>
+<line x1="0" y1="24" x2="24" y2="24" class="grid-line-6mu"/>
+</g>
+<g id="layer-delaunay" class="layer hidden">
+<line x1="9.991058581609972" y1="11.609210286638584" x2="15.987403543724545" y2="11.818607266853588" class="delaunay-line"/>
+<line x1="15.987403543724545" y1="11.818607266853588" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="9.991058581609972" y2="11.609210286638584" class="delaunay-line"/>
+<line x1="15.987403543724545" y1="11.818607266853588" x2="16.532527160547264" y2="9.504727778347512" class="delaunay-line"/>
+<line x1="16.532527160547264" y1="9.504727778347512" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="15.987403543724545" y2="11.818607266853588" class="delaunay-line"/>
+<line x1="9.991058581609972" y1="11.609210286638584" x2="15.847805556914542" y2="15.816170574929972" class="delaunay-line"/>
+<line x1="15.847805556914542" y1="15.816170574929972" x2="15.987403543724545" y2="11.818607266853588" class="delaunay-line"/>
+<line x1="15.987403543724545" y1="11.818607266853588" x2="9.991058581609972" y2="11.609210286638584" class="delaunay-line"/>
+<line x1="9.851460594799969" y1="15.606773594714968" x2="15.847805556914542" y2="15.816170574929972" class="delaunay-line"/>
+<line x1="15.847805556914542" y1="15.816170574929972" x2="9.991058581609972" y2="11.609210286638584" class="delaunay-line"/>
+<line x1="9.991058581609972" y1="11.609210286638584" x2="9.851460594799969" y2="15.606773594714968" class="delaunay-line"/>
+<line x1="15.987403543724545" y1="11.818607266853588" x2="17.26261386138542" y2="17.191996745786213" class="delaunay-line"/>
+<line x1="17.26261386138542" y1="17.191996745786213" x2="16.532527160547264" y2="9.504727778347512" class="delaunay-line"/>
+<line x1="16.532527160547264" y1="9.504727778347512" x2="15.987403543724545" y2="11.818607266853588" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="16.77020998487932" y2="17.105172656952746" class="delaunay-line"/>
+<line x1="16.77020998487932" y1="17.105172656952746" x2="15.847805556914542" y2="15.816170574929972" class="delaunay-line"/>
+<line x1="15.847805556914542" y1="15.816170574929972" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="15.847805556914542" y1="15.816170574929972" x2="17.26261386138542" y2="17.191996745786213" class="delaunay-line"/>
+<line x1="17.26261386138542" y1="17.191996745786213" x2="15.987403543724545" y2="11.818607266853588" class="delaunay-line"/>
+<line x1="15.987403543724545" y1="11.818607266853588" x2="15.847805556914542" y2="15.816170574929972" class="delaunay-line"/>
+<line x1="16.77020998487932" y1="17.105172656952746" x2="17.26261386138542" y2="17.191996745786213" class="delaunay-line"/>
+<line x1="17.26261386138542" y1="17.191996745786213" x2="15.847805556914542" y2="15.816170574929972" class="delaunay-line"/>
+<line x1="15.847805556914542" y1="15.816170574929972" x2="16.77020998487932" y2="17.105172656952746" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="6.454033746346006" y2="8.562171092104382" class="delaunay-line"/>
+<line x1="6.454033746346006" y1="8.562171092104382" x2="9.991058581609972" y2="11.609210286638584" class="delaunay-line"/>
+<line x1="9.991058581609972" y1="11.609210286638584" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="9.991058581609972" y1="11.609210286638584" x2="6.454033746346006" y2="8.562171092104382" class="delaunay-line"/>
+<line x1="6.454033746346006" y1="8.562171092104382" x2="9.851460594799969" y2="15.606773594714968" class="delaunay-line"/>
+<line x1="9.851460594799969" y1="15.606773594714968" x2="9.991058581609972" y2="11.609210286638584" class="delaunay-line"/>
+<line x1="0.6864635707160933" y1="10.215995227006378" x2="8.553033599880887" y2="18.183405949245696" class="delaunay-line"/>
+<line x1="8.553033599880887" y1="18.183405949245696" x2="9.851460594799969" y2="15.606773594714968" class="delaunay-line"/>
+<line x1="9.851460594799969" y1="15.606773594714968" x2="0.6864635707160933" y2="10.215995227006378" class="delaunay-line"/>
+<line x1="9.851460594799969" y1="15.606773594714968" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="15.847805556914542" y2="15.816170574929972" class="delaunay-line"/>
+<line x1="15.847805556914542" y1="15.816170574929972" x2="9.851460594799969" y2="15.606773594714968" class="delaunay-line"/>
+<line x1="16.77020998487932" y1="17.105172656952746" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="17.26261386138542" y2="17.191996745786213" class="delaunay-line"/>
+<line x1="17.26261386138542" y1="17.191996745786213" x2="16.77020998487932" y2="17.105172656952746" class="delaunay-line"/>
+<line x1="13.29355861441286" y1="3.0619734948789885" x2="10.258960881416707" y2="4.875206524872908" class="delaunay-line"/>
+<line x1="10.258960881416707" y1="4.875206524872908" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="13.29355861441286" y2="3.0619734948789885" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="6.794859266278952" y2="6.875206524872908" class="delaunay-line"/>
+<line x1="6.794859266278952" y1="6.875206524872908" x2="6.454033746346006" y2="8.562171092104382" class="delaunay-line"/>
+<line x1="6.454033746346006" y1="8.562171092104382" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="6.794859266278952" y1="6.875206524872908" x2="6.316215068437508" y2="8.081540244135223" class="delaunay-line"/>
+<line x1="6.316215068437508" y1="8.081540244135223" x2="6.454033746346006" y2="8.562171092104382" class="delaunay-line"/>
+<line x1="6.454033746346006" y1="8.562171092104382" x2="6.794859266278952" y2="6.875206524872908" class="delaunay-line"/>
+<line x1="0.6864635707160933" y1="10.215995227006378" x2="8.390249522652308" y2="18.656165237045357" class="delaunay-line"/>
+<line x1="8.390249522652308" y1="18.656165237045357" x2="8.553033599880887" y2="18.183405949245696" class="delaunay-line"/>
+<line x1="8.553033599880887" y1="18.183405949245696" x2="0.6864635707160933" y2="10.215995227006378" class="delaunay-line"/>
+<line x1="10.258960881416707" y1="4.875206524872908" x2="6.794859266278952" y2="6.875206524872908" class="delaunay-line"/>
+<line x1="6.794859266278952" y1="6.875206524872908" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="10.258960881416707" y2="4.875206524872908" class="delaunay-line"/>
+<line x1="0.6864635707160933" y1="10.215995227006378" x2="9.851460594799969" y2="15.606773594714968" class="delaunay-line"/>
+<line x1="9.851460594799969" y1="15.606773594714968" x2="6.454033746346006" y2="8.562171092104382" class="delaunay-line"/>
+<line x1="6.454033746346006" y1="8.562171092104382" x2="0.6864635707160933" y2="10.215995227006378" class="delaunay-line"/>
+<line x1="8.553033599880887" y1="18.183405949245696" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="9.851460594799969" y2="15.606773594714968" class="delaunay-line"/>
+<line x1="9.851460594799969" y1="15.606773594714968" x2="8.553033599880887" y2="18.183405949245696" class="delaunay-line"/>
+<line x1="14.063360976248209" y1="20.609574163788295" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="8.553033599880887" y2="18.183405949245696" class="delaunay-line"/>
+<line x1="8.553033599880887" y1="18.183405949245696" x2="14.063360976248209" y2="20.609574163788295" class="delaunay-line"/>
+<line x1="8.390249522652308" y1="18.656165237045357" x2="14.063360976248209" y2="20.609574163788295" class="delaunay-line"/>
+<line x1="14.063360976248209" y1="20.609574163788295" x2="8.553033599880887" y2="18.183405949245696" class="delaunay-line"/>
+<line x1="8.553033599880887" y1="18.183405949245696" x2="8.390249522652308" y2="18.656165237045357" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="16.22072479538384" y2="23.10084326385946" class="delaunay-line"/>
+<line x1="16.22072479538384" y1="23.10084326385946" x2="17.26261386138542" y2="17.191996745786213" class="delaunay-line"/>
+<line x1="17.26261386138542" y1="17.191996745786213" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="17.263743220978146" y1="3.549450868499579" x2="13.29355861441286" y2="3.0619734948789885" class="delaunay-line"/>
+<line x1="13.29355861441286" y1="3.0619734948789885" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="17.263743220978146" y2="3.549450868499579" class="delaunay-line"/>
+<line x1="0.548644892807594" y1="9.735364379037218" x2="6.316215068437508" y2="8.081540244135223" class="delaunay-line"/>
+<line x1="6.316215068437508" y1="8.081540244135223" x2="6.794859266278952" y2="6.875206524872908" class="delaunay-line"/>
+<line x1="6.794859266278952" y1="6.875206524872908" x2="0.548644892807594" y2="9.735364379037218" class="delaunay-line"/>
+<line x1="24" y1="0" x2="17.263743220978146" y2="3.549450868499579" class="delaunay-line"/>
+<line x1="17.263743220978146" y1="3.549450868499579" x2="16.532527160547264" y2="9.504727778347512" class="delaunay-line"/>
+<line x1="16.532527160547264" y1="9.504727778347512" x2="24" y2="0" class="delaunay-line"/>
+<line x1="16.532527160547264" y1="9.504727778347512" x2="17.263743220978146" y2="3.549450868499579" class="delaunay-line"/>
+<line x1="17.263743220978146" y1="3.549450868499579" x2="12.562342553981974" y2="9.01725040472692" class="delaunay-line"/>
+<line x1="12.562342553981974" y1="9.01725040472692" x2="16.532527160547264" y2="9.504727778347512" class="delaunay-line"/>
+<line x1="8.390249522652308" y1="18.656165237045357" x2="15.728320918877738" y2="23.014019175025993" class="delaunay-line"/>
+<line x1="15.728320918877738" y1="23.014019175025993" x2="14.063360976248209" y2="20.609574163788295" class="delaunay-line"/>
+<line x1="14.063360976248209" y1="20.609574163788295" x2="8.390249522652308" y2="18.656165237045357" class="delaunay-line"/>
+<line x1="14.063360976248209" y1="20.609574163788295" x2="15.728320918877738" y2="23.014019175025993" class="delaunay-line"/>
+<line x1="15.728320918877738" y1="23.014019175025993" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="14.063360976248209" y2="20.609574163788295" class="delaunay-line"/>
+<line x1="15.728320918877738" y1="23.014019175025993" x2="16.22072479538384" y2="23.10084326385946" class="delaunay-line"/>
+<line x1="16.22072479538384" y1="23.10084326385946" x2="14.226145053476788" y2="20.136814875988634" class="delaunay-line"/>
+<line x1="14.226145053476788" y1="20.136814875988634" x2="15.728320918877738" y2="23.014019175025993" class="delaunay-line"/>
+<line x1="0.548644892807594" y1="9.735364379037218" x2="6.454033746346006" y2="8.562171092104382" class="delaunay-line"/>
+<line x1="6.454033746346006" y1="8.562171092104382" x2="6.316215068437508" y2="8.081540244135223" class="delaunay-line"/>
+<line x1="6.316215068437508" y1="8.081540244135223" x2="0.548644892807594" y2="9.735364379037218" class="delaunay-line"/>
+<line x1="0.548644892807594" y1="9.735364379037218" x2="0.6864635707160933" y2="10.215995227006378" class="delaunay-line"/>
+<line x1="0.6864635707160933" y1="10.215995227006378" x2="6.454033746346006" y2="8.562171092104382" class="delaunay-line"/>
+<line x1="6.454033746346006" y1="8.562171092104382" x2="0.548644892807594" y2="9.735364379037218" class="delaunay-line"/>
+<line x1="0.548644892807594" y1="9.735364379037218" x2="6.794859266278952" y2="6.875206524872908" class="delaunay-line"/>
+<line x1="6.794859266278952" y1="6.875206524872908" x2="3.7948592662789524" y2="1.6790541021662762" class="delaunay-line"/>
+<line x1="3.7948592662789524" y1="1.6790541021662762" x2="0.548644892807594" y2="9.735364379037218" class="delaunay-line"/>
+<line x1="7.258960881416707" y1="-0.32094589783372385" x2="6.794859266278952" y2="6.875206524872908" class="delaunay-line"/>
+<line x1="6.794859266278952" y1="6.875206524872908" x2="10.258960881416707" y2="4.875206524872908" class="delaunay-line"/>
+<line x1="10.258960881416707" y1="4.875206524872908" x2="7.258960881416707" y2="-0.32094589783372385" class="delaunay-line"/>
+<line x1="24" y1="0" x2="7.258960881416707" y2="-0.32094589783372385" class="delaunay-line"/>
+<line x1="7.258960881416707" y1="-0.32094589783372385" x2="13.29355861441286" y2="3.0619734948789885" class="delaunay-line"/>
+<line x1="13.29355861441286" y1="3.0619734948789885" x2="24" y2="0" class="delaunay-line"/>
+<line x1="13.29355861441286" y1="3.0619734948789885" x2="7.258960881416707" y2="-0.32094589783372385" class="delaunay-line"/>
+<line x1="7.258960881416707" y1="-0.32094589783372385" x2="10.258960881416707" y2="4.875206524872908" class="delaunay-line"/>
+<line x1="10.258960881416707" y1="4.875206524872908" x2="13.29355861441286" y2="3.0619734948789885" class="delaunay-line"/>
+<line x1="7.258960881416707" y1="-0.32094589783372385" x2="3.7948592662789524" y2="1.6790541021662762" class="delaunay-line"/>
+<line x1="3.7948592662789524" y1="1.6790541021662762" x2="6.794859266278952" y2="6.875206524872908" class="delaunay-line"/>
+<line x1="6.794859266278952" y1="6.875206524872908" x2="7.258960881416707" y2="-0.32094589783372385" class="delaunay-line"/>
+<line x1="16.22072479538384" y1="23.10084326385946" x2="24" y2="24" class="delaunay-line"/>
+<line x1="24" y1="24" x2="17.26261386138542" y2="17.191996745786213" class="delaunay-line"/>
+<line x1="17.26261386138542" y1="17.191996745786213" x2="16.22072479538384" y2="23.10084326385946" class="delaunay-line"/>
+<line x1="17.26261386138542" y1="17.191996745786213" x2="24" y2="24" class="delaunay-line"/>
+<line x1="24" y1="24" x2="16.532527160547264" y2="9.504727778347512" class="delaunay-line"/>
+<line x1="16.532527160547264" y1="9.504727778347512" x2="17.26261386138542" y2="17.191996745786213" class="delaunay-line"/>
+<line x1="24" y1="24" x2="24" y2="0" class="delaunay-line"/>
+<line x1="24" y1="0" x2="16.532527160547264" y2="9.504727778347512" class="delaunay-line"/>
+<line x1="16.532527160547264" y1="9.504727778347512" x2="24" y2="24" class="delaunay-line"/>
+<line x1="17.263743220978146" y1="3.549450868499579" x2="24" y2="0" class="delaunay-line"/>
+<line x1="24" y1="0" x2="13.29355861441286" y2="3.0619734948789885" class="delaunay-line"/>
+<line x1="13.29355861441286" y1="3.0619734948789885" x2="17.263743220978146" y2="3.549450868499579" class="delaunay-line"/>
+<line x1="0.6864635707160933" y1="10.215995227006378" x2="0" y2="24" class="delaunay-line"/>
+<line x1="0" y1="24" x2="8.390249522652308" y2="18.656165237045357" class="delaunay-line"/>
+<line x1="8.390249522652308" y1="18.656165237045357" x2="0.6864635707160933" y2="10.215995227006378" class="delaunay-line"/>
+<line x1="8.390249522652308" y1="18.656165237045357" x2="0" y2="24" class="delaunay-line"/>
+<line x1="0" y1="24" x2="15.728320918877738" y2="23.014019175025993" class="delaunay-line"/>
+<line x1="15.728320918877738" y1="23.014019175025993" x2="8.390249522652308" y2="18.656165237045357" class="delaunay-line"/>
+<line x1="15.728320918877738" y1="23.014019175025993" x2="0" y2="24" class="delaunay-line"/>
+<line x1="0" y1="24" x2="16.22072479538384" y2="23.10084326385946" class="delaunay-line"/>
+<line x1="16.22072479538384" y1="23.10084326385946" x2="15.728320918877738" y2="23.014019175025993" class="delaunay-line"/>
+<line x1="16.22072479538384" y1="23.10084326385946" x2="0" y2="24" class="delaunay-line"/>
+<line x1="0" y1="24" x2="24" y2="24" class="delaunay-line"/>
+<line x1="24" y1="24" x2="16.22072479538384" y2="23.10084326385946" class="delaunay-line"/>
+<line x1="0.548644892807594" y1="9.735364379037218" x2="0" y2="24" class="delaunay-line"/>
+<line x1="0" y1="24" x2="0.6864635707160933" y2="10.215995227006378" class="delaunay-line"/>
+<line x1="0.6864635707160933" y1="10.215995227006378" x2="0.548644892807594" y2="9.735364379037218" class="delaunay-line"/>
+<line x1="3.7948592662789524" y1="1.6790541021662762" x2="0" y2="0" class="delaunay-line"/>
+<line x1="0" y1="0" x2="0.548644892807594" y2="9.735364379037218" class="delaunay-line"/>
+<line x1="0.548644892807594" y1="9.735364379037218" x2="3.7948592662789524" y2="1.6790541021662762" class="delaunay-line"/>
+<line x1="0.548644892807594" y1="9.735364379037218" x2="0" y2="0" class="delaunay-line"/>
+<line x1="0" y1="0" x2="0" y2="24" class="delaunay-line"/>
+<line x1="0" y1="24" x2="0.548644892807594" y2="9.735364379037218" class="delaunay-line"/>
+<line x1="7.258960881416707" y1="-0.32094589783372385" x2="0" y2="0" class="delaunay-line"/>
+<line x1="0" y1="0" x2="3.7948592662789524" y2="1.6790541021662762" class="delaunay-line"/>
+<line x1="3.7948592662789524" y1="1.6790541021662762" x2="7.258960881416707" y2="-0.32094589783372385" class="delaunay-line"/>
+</g>
+<g id="layer-area" class="layer hidden">
+</g>
+<g id="layer-building" class="layer ">
+<polygon points="13.29355861441286,3.0619734948789885 17.263743220978146,3.549450868499579 16.532527160547264,9.504727778347512 12.562342553981974,9.01725040472692" class="terrain-solid"/>
+<text x="14.91304288748006" y="6.28335063661325" class="label">#000000</text>
+<polygon points="15.987403543724545,11.818607266853588 15.847805556914542,15.816170574929972 9.851460594799969,15.606773594714968 9.991058581609972,11.609210286638584" class="terrain-solid"/>
+<text x="12.919432069262257" y="13.712690430784278" class="label">#000000</text>
+<polygon points="10.258960881416707,4.875206524872908 6.794859266278952,6.875206524872908 3.7948592662789524,1.6790541021662762 7.258960881416707,-0.32094589783372385" class="terrain-solid"/>
+<text x="7.02691007384783" y="3.277130313519592" class="label">#000000</text>
+</g>
+<g id="layer-wall" class="layer ">
+<polygon points="16.77020998487932,17.105172656952746 17.26261386138542,17.191996745786213 16.22072479538384,23.10084326385946 15.728320918877738,23.014019175025993" class="terrain-solid"/>
+<text x="16.49546739013158" y="20.103007960406103" class="label">#555555</text>
+<polygon points="8.390249522652308,18.656165237045357 8.553033599880887,18.183405949245696 14.226145053476788,20.136814875988634 14.063360976248209,20.609574163788295" class="terrain-solid"/>
+<text x="11.308197288064548" y="19.396490056516996" class="label">#555555</text>
+<polygon points="6.316215068437508,8.081540244135223 6.454033746346006,8.562171092104382 0.6864635707160933,10.215995227006378 0.548644892807594,9.735364379037218" class="terrain-solid"/>
+<text x="3.5013393195768003" y="9.1487677355708" class="label">#555555</text>
+</g>
+<g id="layer-tree" class="layer hidden">
+</g>
+<g id="layer-rocks" class="layer hidden">
+</g>
+<g id="layer-shrub" class="layer hidden">
+</g>
+<g id="layer-terrain" class="layer hidden">
+</g>
+<g id="layer-models" class="layer ">
+</g>
+<g id="layer-paths" class="layer ">
+</g>
+<g id="layer-vectors" class="layer ">
+</g>
+<g id="layer-los" class="layer ">
+</g>
+<g id="layer-lof" class="layer ">
+</g>
+
+<g id="legend">
+<g class="toggle" onclick="toggleLayer('building')"><rect x="0.4" y="0.14999999999999997" width="0.4" height="0.4" fill="#222" stroke="#222" stroke-width="0.05"/><text x="1.0" y="0.5499999999999999" class="label">Buildings</text></g>
+<g class="toggle" onclick="toggleLayer('wall')"><rect x="0.4" y="0.95" width="0.4" height="0.4" fill="#222" stroke="#222" stroke-width="0.05"/><text x="1.0" y="1.3499999999999999" class="label">Walls</text></g>
+<g class="toggle" onclick="toggleLayer('grid')"><rect x="0.4" y="1.7500000000000002" width="0.4" height="0.4" fill="#fff" stroke="#222" stroke-width="0.05"/><text x="1.0" y="2.1500000000000004" class="label">0.5 MU Grid</text></g>
+<g class="toggle disabled"><rect x="0.4" y="2.55" width="0.4" height="0.4" fill="#fff" stroke="#222" stroke-width="0.05"/><text x="1.0" y="2.95" class="label">Area Terrain</text></g>
+<g class="toggle disabled"><rect x="0.4" y="3.3499999999999996" width="0.4" height="0.4" fill="#fff" stroke="#222" stroke-width="0.05"/><text x="1.0" y="3.75" class="label">Trees</text></g>
+<g class="toggle disabled"><rect x="0.4" y="4.1499999999999995" width="0.4" height="0.4" fill="#fff" stroke="#222" stroke-width="0.05"/><text x="1.0" y="4.55" class="label">Rocks</text></g>
+<g class="toggle disabled"><rect x="0.4" y="4.949999999999999" width="0.4" height="0.4" fill="#fff" stroke="#222" stroke-width="0.05"/><text x="1.0" y="5.35" class="label">Shrubs</text></g>
+<g class="toggle" onclick="toggleLayer('delaunay')"><rect x="0.4" y="5.749999999999999" width="0.4" height="0.4" fill="#fff" stroke="#222" stroke-width="0.05"/><text x="1.0" y="6.1499999999999995" class="label">Delaunay Mesh</text></g>
+<g class="toggle" onclick="toggleLayer('terrain')"><rect x="0.4" y="6.549999999999999" width="0.4" height="0.4" fill="#fff" stroke="#222" stroke-width="0.05"/><text x="1.0" y="6.949999999999999" class="label">Other Terrain</text></g>
+</g>
+</svg>

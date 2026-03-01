@@ -11,6 +11,7 @@
  */
 
 import { getClipMetrics, ClipMetrics } from '../portraits/portrait-clip';
+import { getBaseDiameterForProfile } from '../portraits/portrait-sheet-registry';
 
 export interface PortraitRenderOptions {
   /** Portrait sheet image path (default: human-quaggkhir-male.jpg) */
@@ -21,6 +22,8 @@ export interface PortraitRenderOptions {
   sheetHeight?: number;
   /** Model base diameter in MU (default: 1.0 for SIZ 3) */
   baseDiameterMu?: number;
+  /** Character profile for auto SIZ detection */
+  profile?: { species?: string; ancestry?: string; lineage?: string; sex?: string; siz?: number };
 }
 
 export interface PortraitClipData {
@@ -101,18 +104,19 @@ export function getPortraitClipData(
 
 /**
  * Generate SVG portrait element with circular clip
- * 
+ *
  * @param clipData - Portrait clip data
  * @param position - Position on battlefield (MU coordinates)
  * @param scale - Scale factor for rendering (default: 1.0)
+ * @param baseDiameterMu - Model base diameter (default: 1.0 for SIZ 3)
  * @returns SVG element string
  */
 export function renderPortraitSvg(
   clipData: PortraitClipData,
   position: { x: number; y: number },
-  scale: number = 1.0
+  scale: number = 1.0,
+  baseDiameterMu: number = 1.0
 ): string {
-  const baseDiameterMu = 1.0; // SIZ 3 = 30mm = 1 MU
   const radiusMu = baseDiameterMu / 2;
   const radiusPx = radiusMu * scale;
   

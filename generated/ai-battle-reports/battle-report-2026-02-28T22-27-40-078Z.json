@@ -1,0 +1,6000 @@
+{
+  "config": {
+    "missionId": "QAI_11",
+    "missionName": "Elimination",
+    "gameSize": "VERY_SMALL",
+    "battlefieldSize": 24,
+    "maxTurns": 6,
+    "sides": [
+      {
+        "name": "Alpha",
+        "bp": 300,
+        "modelCount": 4,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Alpha Assembly"
+      },
+      {
+        "name": "Bravo",
+        "bp": 300,
+        "modelCount": 4,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Bravo Assembly"
+      }
+    ],
+    "densityRatio": 50,
+    "lighting": "Day, Clear",
+    "visibilityOrMu": 16,
+    "maxOrm": 3,
+    "allowConcentrateRangeExtension": true,
+    "perCharacterFovLos": false,
+    "verbose": true,
+    "audit": false,
+    "viewer": false
+  },
+  "winner": "Draw",
+  "finalCounts": [
+    {
+      "name": "Alpha",
+      "remaining": 4
+    },
+    {
+      "name": "Bravo",
+      "remaining": 4
+    }
+  ],
+  "stats": {
+    "totalActions": 63,
+    "moves": 9,
+    "movesWhileWaiting": 0,
+    "closeCombats": 0,
+    "rangedCombats": 0,
+    "disengages": 0,
+    "waits": 3,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 6,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 42,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 6,
+    "losChecks": 0,
+    "lofChecks": 0,
+    "totalPathLength": 9,
+    "modelsMoved": 0
+  },
+  "missionRuntime": {
+    "vpBySide": {
+      "Alpha": 0,
+      "Bravo": 0
+    },
+    "rpBySide": {
+      "Alpha": 0,
+      "Bravo": 0
+    },
+    "predictedScoring": {
+      "bySide": {
+        "Alpha": {
+          "predictedVp": 0,
+          "predictedRp": 0,
+          "keyScores": {
+            "elimination": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 1,
+              "leadMargin": 0
+            },
+            "bottled": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "first_blood": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            }
+          }
+        },
+        "Bravo": {
+          "predictedVp": 0,
+          "predictedRp": 0,
+          "keyScores": {
+            "elimination": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "bottled": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "first_blood": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "usage": {
+    "modelCount": 8,
+    "modelsMoved": 4,
+    "modelsUsedWait": 0,
+    "modelsUsedDetect": 0,
+    "modelsUsedHide": 0,
+    "modelsUsedReact": 0,
+    "totalPathLength": 9,
+    "averagePathLengthPerMovedModel": 2.25,
+    "averagePathLengthPerModel": 1.125,
+    "topPathModels": [
+      {
+        "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Alpha",
+        "pathLength": 6,
+        "moveActions": 6,
+        "waitChoicesGiven": 6,
+        "waitAttempts": 3,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+        "modelName": "veteran-sword-broad-loadout",
+        "side": "Alpha",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-2-veteran-loadout",
+        "modelName": "veteran-loadout",
+        "side": "Alpha",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-4-veteran-loadout",
+        "modelName": "veteran-loadout",
+        "side": "Bravo",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      }
+    ],
+    "modelUsage": [
+      {
+        "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+        "modelName": "veteran-sword-broad-loadout",
+        "side": "Alpha",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-2-veteran-loadout",
+        "modelName": "veteran-loadout",
+        "side": "Alpha",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+        "modelName": "elite-sword-broad-loadout",
+        "side": "Alpha",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Alpha",
+        "pathLength": 6,
+        "moveActions": 6,
+        "waitChoicesGiven": 6,
+        "waitAttempts": 3,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+        "modelName": "average-sword-broad-shield-medium-loadout",
+        "side": "Bravo",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Bravo",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Bravo",
+        "pathLength": 0,
+        "moveActions": 0,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-4-veteran-loadout",
+        "modelName": "veteran-loadout",
+        "side": "Bravo",
+        "pathLength": 1,
+        "moveActions": 1,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 6,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      }
+    ]
+  },
+  "nestedSections": {
+    "sides": [
+      {
+        "name": "Alpha",
+        "assemblies": [
+          {
+            "name": "Alpha Assembly",
+            "totalBP": 345,
+            "characters": [
+              {
+                "id": "Alpha Assembly-1-veteran-sword-broad-loadout",
+                "name": "veteran-sword-broad-loadout",
+                "profile": {
+                  "name": "veteran-sword-broad-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 78,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Sword, Broad",
+                      "classification": "Melee",
+                      "traits": [
+                        "Parry",
+                        "Cleave",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 3,
+                  "y": 3
+                },
+                "endPosition": {
+                  "x": 4,
+                  "y": 3
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Alpha Assembly-2-veteran-loadout",
+                "name": "veteran-loadout",
+                "profile": {
+                  "name": "veteran-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 61,
+                  "burdenTotal": 0,
+                  "equipment": []
+                },
+                "startPosition": {
+                  "x": 9,
+                  "y": 3
+                },
+                "endPosition": {
+                  "x": 10,
+                  "y": 3
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "name": "elite-sword-broad-loadout",
+                "profile": {
+                  "name": "elite-sword-broad-loadout",
+                  "archetype": "Elite",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 3,
+                    "pow": 3,
+                    "str": 3,
+                    "for": 3,
+                    "mov": 3,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 3,
+                    "pow": 3,
+                    "str": 3,
+                    "for": 3,
+                    "mov": 3,
+                    "siz": 3
+                  },
+                  "totalBp": 146,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Sword, Broad",
+                      "classification": "Melee",
+                      "traits": [
+                        "Parry",
+                        "Cleave",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 14,
+                  "y": 3
+                },
+                "endPosition": {
+                  "x": 14,
+                  "y": 3
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+                "name": "militia-spear-medium-shield-medium-loadout",
+                "profile": {
+                  "name": "militia-spear-medium-shield-medium-loadout",
+                  "archetype": "Militia",
+                  "attributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 60,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Spear, Medium",
+                      "classification": "Melee",
+                      "traits": [
+                        "Reach",
+                        "Throwable",
+                        "Charge",
+                        "Perimeter",
+                        "[2H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 20,
+                  "y": 3
+                },
+                "endPosition": {
+                  "x": 23,
+                  "y": 6
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bravo",
+        "assemblies": [
+          {
+            "name": "Bravo Assembly",
+            "totalBP": 238,
+            "characters": [
+              {
+                "id": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+                "name": "average-sword-broad-shield-medium-loadout",
+                "profile": {
+                  "name": "average-sword-broad-shield-medium-loadout",
+                  "archetype": "Average",
+                  "attributes": {
+                    "cca": 2,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 2,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 57,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Sword, Broad",
+                      "classification": "Melee",
+                      "traits": [
+                        "Parry",
+                        "Cleave",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 3,
+                  "y": 15
+                },
+                "endPosition": {
+                  "x": 3,
+                  "y": 15
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+                "name": "militia-spear-medium-shield-medium-loadout",
+                "profile": {
+                  "name": "militia-spear-medium-shield-medium-loadout",
+                  "archetype": "Militia",
+                  "attributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 60,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Spear, Medium",
+                      "classification": "Melee",
+                      "traits": [
+                        "Reach",
+                        "Throwable",
+                        "Charge",
+                        "Perimeter",
+                        "[2H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 9,
+                  "y": 15
+                },
+                "endPosition": {
+                  "x": 9,
+                  "y": 15
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+                "name": "militia-spear-medium-shield-medium-loadout",
+                "profile": {
+                  "name": "militia-spear-medium-shield-medium-loadout",
+                  "archetype": "Militia",
+                  "attributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 60,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Spear, Medium",
+                      "classification": "Melee",
+                      "traits": [
+                        "Reach",
+                        "Throwable",
+                        "Charge",
+                        "Perimeter",
+                        "[2H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 14,
+                  "y": 15
+                },
+                "endPosition": {
+                  "x": 14,
+                  "y": 15
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Bravo Assembly-4-veteran-loadout",
+                "name": "veteran-loadout",
+                "profile": {
+                  "name": "veteran-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 61,
+                  "burdenTotal": 0,
+                  "equipment": []
+                },
+                "startPosition": {
+                  "x": 20,
+                  "y": 15
+                },
+                "endPosition": {
+                  "x": 20,
+                  "y": 14
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "battlefieldLayout": {
+      "widthMu": 24,
+      "heightMu": 24,
+      "densityRatio": 50,
+      "terrainFeatures": [
+        {
+          "id": "Shrub",
+          "type": "Difficult",
+          "metaName": "Shrub",
+          "movement": "Difficult",
+          "los": "Soft",
+          "rotationDegrees": 189,
+          "vertices": [
+            {
+              "x": 3.789093885362554,
+              "y": 9.34681586467362
+            },
+            {
+              "x": 3.8566179734830777,
+              "y": 9.163783814835758
+            },
+            {
+              "x": 3.989045429513886,
+              "y": 9.020524600006262
+            },
+            {
+              "x": 4.166215373732171,
+              "y": 8.938848136994897
+            },
+            {
+              "x": 4.361155288180239,
+              "y": 8.931188926896166
+            },
+            {
+              "x": 4.544187338018097,
+              "y": 8.998713015016689
+            },
+            {
+              "x": 4.687446552847597,
+              "y": 9.131140471047498
+            },
+            {
+              "x": 4.769123015858963,
+              "y": 9.308310415265781
+            },
+            {
+              "x": 4.776782225957692,
+              "y": 9.50325032971385
+            },
+            {
+              "x": 4.709258137837169,
+              "y": 9.686282379551711
+            },
+            {
+              "x": 4.57683068180636,
+              "y": 9.829541594381208
+            },
+            {
+              "x": 4.399660737588076,
+              "y": 9.911218057392572
+            },
+            {
+              "x": 4.204720823140008,
+              "y": 9.918877267491304
+            },
+            {
+              "x": 4.02168877330215,
+              "y": 9.851353179370781
+            },
+            {
+              "x": 3.8784295584726496,
+              "y": 9.718925723339972
+            },
+            {
+              "x": 3.7967530954612854,
+              "y": 9.541755779121688
+            }
+          ]
+        },
+        {
+          "id": "Small Rocks",
+          "type": "Rough",
+          "metaName": "Small Rocks",
+          "movement": "Rough",
+          "los": "Hard",
+          "rotationDegrees": 257,
+          "vertices": [
+            {
+              "x": 11.880039760763223,
+              "y": 5.439161961623995
+            },
+            {
+              "x": 12.2614767312584,
+              "y": 5.390161672452769
+            },
+            {
+              "x": 12.601966760149166,
+              "y": 5.422790737957595
+            },
+            {
+              "x": 12.849673327086702,
+              "y": 5.532081678698575
+            },
+            {
+              "x": 12.966885352720391,
+              "y": 5.701395939672747
+            },
+            {
+              "x": 12.93575836867716,
+              "y": 5.9049569594843865
+            },
+            {
+              "x": 12.761031176110777,
+              "y": 6.111774418152409
+            },
+            {
+              "x": 12.46930440618353,
+              "y": 6.290362232399544
+            },
+            {
+              "x": 12.104990815107088,
+              "y": 6.41353202640923
+            },
+            {
+              "x": 11.723553844611912,
+              "y": 6.462532315580456
+            },
+            {
+              "x": 11.383063815721146,
+              "y": 6.429903250075631
+            },
+            {
+              "x": 11.13535724878361,
+              "y": 6.32061230933465
+            },
+            {
+              "x": 11.01814522314992,
+              "y": 6.151298048360478
+            },
+            {
+              "x": 11.049272207193152,
+              "y": 5.947737028548839
+            },
+            {
+              "x": 11.223999399759535,
+              "y": 5.740919569880816
+            },
+            {
+              "x": 11.515726169686781,
+              "y": 5.562331755633681
+            }
+          ]
+        }
+      ],
+      "deployments": [
+        {
+          "characterId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+          "characterName": "veteran-sword-broad-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 3,
+            "y": 3
+          },
+          "endPosition": {
+            "x": 4,
+            "y": 3
+          }
+        },
+        {
+          "characterId": "Alpha Assembly-2-veteran-loadout",
+          "characterName": "veteran-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 9,
+            "y": 3
+          },
+          "endPosition": {
+            "x": 10,
+            "y": 3
+          }
+        },
+        {
+          "characterId": "Alpha Assembly-3-elite-sword-broad-loadout",
+          "characterName": "elite-sword-broad-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 14,
+            "y": 3
+          },
+          "endPosition": {
+            "x": 14,
+            "y": 3
+          }
+        },
+        {
+          "characterId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+          "characterName": "militia-spear-medium-shield-medium-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 20,
+            "y": 3
+          },
+          "endPosition": {
+            "x": 23,
+            "y": 6
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+          "characterName": "average-sword-broad-shield-medium-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 3,
+            "y": 15
+          },
+          "endPosition": {
+            "x": 3,
+            "y": 15
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+          "characterName": "militia-spear-medium-shield-medium-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 9,
+            "y": 15
+          },
+          "endPosition": {
+            "x": 9,
+            "y": 15
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+          "characterName": "militia-spear-medium-shield-medium-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 14,
+            "y": 15
+          },
+          "endPosition": {
+            "x": 14,
+            "y": 15
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-4-veteran-loadout",
+          "characterName": "veteran-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 20,
+            "y": 15
+          },
+          "endPosition": {
+            "x": 20,
+            "y": 14
+          }
+        }
+      ]
+    }
+  },
+  "advancedRules": {
+    "bonusActions": {
+      "opportunities": 0,
+      "optionsOffered": 0,
+      "optionsAvailable": 0,
+      "offeredByType": {},
+      "availableByType": {},
+      "executed": 0,
+      "executedByType": {}
+    },
+    "passiveOptions": {
+      "opportunities": 18,
+      "optionsOffered": 72,
+      "optionsAvailable": 0,
+      "offeredByType": {
+        "CounterCharge": 36,
+        "OpportunityAttack": 36
+      },
+      "availableByType": {},
+      "used": 0,
+      "usedByType": {}
+    },
+    "situationalModifiers": {
+      "testsObserved": 0,
+      "modifiedTests": 0,
+      "modifiersApplied": 0,
+      "byType": {}
+    }
+  },
+  "log": [
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "veteran-sword-broad-loadout",
+      "action": "move",
+      "detail": "Best action (score: 22.98; gapCrossing=7.00, suppressionZoneControl=2.00, moveMultiplier=1.95)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "veteran-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Alpha Assembly-2-veteran-loadout",
+      "side": "Alpha",
+      "model": "veteran-loadout",
+      "action": "move",
+      "detail": "Best action (score: 17.92; gapCrossing=7.00, suppressionZoneControl=2.00, moveMultiplier=1.50)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Alpha Assembly-2-veteran-loadout",
+      "side": "Alpha",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Bravo Assembly-4-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "move",
+      "detail": "Best action (score: 17.88; gapCrossing=7.00, suppressionZoneControl=2.00, moveMultiplier=1.50)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "round": 1,
+      "modelId": "Bravo Assembly-4-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "veteran-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "Alpha Assembly-2-veteran-loadout",
+      "side": "Alpha",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 2,
+      "round": 1,
+      "modelId": "Bravo Assembly-4-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "veteran-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "Alpha Assembly-2-veteran-loadout",
+      "side": "Alpha",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 3,
+      "round": 1,
+      "modelId": "Bravo Assembly-4-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "veteran-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Alpha Assembly-2-veteran-loadout",
+      "side": "Alpha",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 12.38; gapCrossing=7.00, goapFutureWaitValue=2.88, suppressionZoneControl=2.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 11.84; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 4,
+      "round": 1,
+      "modelId": "Bravo Assembly-4-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "veteran-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Alpha Assembly-2-veteran-loadout",
+      "side": "Alpha",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 12.44; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 11.96; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 5,
+      "round": 1,
+      "modelId": "Bravo Assembly-4-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "veteran-sword-broad-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Alpha Assembly-2-veteran-loadout",
+      "side": "Alpha",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 12.63; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 11.12; gapCrossing=7.00, goapFutureWaitValue=2.88, suppressionZoneControl=2.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    },
+    {
+      "turn": 6,
+      "round": 1,
+      "modelId": "Bravo Assembly-4-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "hide",
+      "detail": "Hide behind cover (priority: 3.3)",
+      "result": "hide=false:Exposed to opposing LOS."
+    }
+  ],
+  "audit": {
+    "version": "1.0",
+    "session": {
+      "missionId": "QAI_11",
+      "missionName": "Elimination",
+      "lighting": "Day, Clear",
+      "visibilityOrMu": 16,
+      "maxOrm": 3,
+      "allowConcentrateRangeExtension": true,
+      "perCharacterFovLos": false
+    },
+    "battlefield": {
+      "widthMu": 24,
+      "heightMu": 24,
+      "movementSampleStepMu": 0.5,
+      "lofWidthMu": 1,
+      "exportPath": "/Users/kitrok/projects/temp-qsr-sim/generated/battlefields/battlefield-2026-02-28T22-27-39-610Z.json"
+    },
+    "turns": [
+      {
+        "turn": 1,
+        "activations": [
+          {
+            "activationSequence": 1,
+            "turn": 1,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "initiative": 3,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 2,
+            "turn": 1,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 1,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 22.98; gapCrossing=7.00, suppressionZoneControl=2.00, moveMultiplier=1.95)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 2,
+                "apAfter": 1,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 3,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 3,
+                      "y": 3
+                    },
+                    "to": {
+                      "x": 4,
+                      "y": 3
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 3,
+                        "y": 3
+                      },
+                      {
+                        "x": 3.5,
+                        "y": 3
+                      },
+                      {
+                        "x": 4,
+                        "y": 3
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              },
+              {
+                "sequence": 2,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 1,
+                "apAfter": 1,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 3,
+            "turn": 1,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 1,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 17.92; gapCrossing=7.00, suppressionZoneControl=2.00, moveMultiplier=1.50)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 2,
+                "apAfter": 1,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 9,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 9,
+                      "y": 3
+                    },
+                    "to": {
+                      "x": 10,
+                      "y": 3
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 9,
+                        "y": 3
+                      },
+                      {
+                        "x": 9.5,
+                        "y": 3
+                      },
+                      {
+                        "x": 10,
+                        "y": 3
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              },
+              {
+                "sequence": 2,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 1,
+                "apAfter": 1,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 4,
+            "turn": 1,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [],
+            "skippedReason": "no_executed_steps"
+          },
+          {
+            "activationSequence": 5,
+            "turn": 1,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 6,
+            "turn": 1,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 7,
+            "turn": 1,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 8,
+            "turn": 1,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-4-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 1,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 17.88; gapCrossing=7.00, suppressionZoneControl=2.00, moveMultiplier=1.50)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 2,
+                "apAfter": 1,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 20,
+                      "y": 15
+                    },
+                    "to": {
+                      "x": 20,
+                      "y": 14
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 20,
+                        "y": 15
+                      },
+                      {
+                        "x": 20,
+                        "y": 14.5
+                      },
+                      {
+                        "x": 20,
+                        "y": 14
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              },
+              {
+                "sequence": 2,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 1,
+                "apAfter": 1,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorPositionAfter": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "sideSummaries": [
+          {
+            "sideName": "Alpha",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          },
+          {
+            "sideName": "Bravo",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          }
+        ]
+      },
+      {
+        "turn": 2,
+        "activations": [
+          {
+            "activationSequence": 9,
+            "turn": 2,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "initiative": 3,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 10,
+            "turn": 2,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 11,
+            "turn": 2,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 12,
+            "turn": 2,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [],
+            "skippedReason": "no_executed_steps"
+          },
+          {
+            "activationSequence": 13,
+            "turn": 2,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 14,
+            "turn": 2,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 15,
+            "turn": 2,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 16,
+            "turn": 2,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-4-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorPositionAfter": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "sideSummaries": [
+          {
+            "sideName": "Alpha",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          },
+          {
+            "sideName": "Bravo",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          }
+        ]
+      },
+      {
+        "turn": 3,
+        "activations": [
+          {
+            "activationSequence": 17,
+            "turn": 3,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "initiative": 3,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 18,
+            "turn": 3,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 19,
+            "turn": 3,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 20,
+            "turn": 3,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [],
+            "skippedReason": "no_executed_steps"
+          },
+          {
+            "activationSequence": 21,
+            "turn": 3,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 22,
+            "turn": 3,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 23,
+            "turn": 3,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 24,
+            "turn": 3,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-4-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorPositionAfter": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "sideSummaries": [
+          {
+            "sideName": "Alpha",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          },
+          {
+            "sideName": "Bravo",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          }
+        ]
+      },
+      {
+        "turn": 4,
+        "activations": [
+          {
+            "activationSequence": 25,
+            "turn": 4,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "initiative": 3,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 26,
+            "turn": 4,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 27,
+            "turn": 4,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 28,
+            "turn": 4,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 0,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 12.38; gapCrossing=7.00, goapFutureWaitValue=2.88, suppressionZoneControl=2.00)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 2,
+                "apAfter": 1,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 21,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 20,
+                      "y": 3
+                    },
+                    "to": {
+                      "x": 21,
+                      "y": 3
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 20,
+                        "y": 3
+                      },
+                      {
+                        "x": 20.5,
+                        "y": 3
+                      },
+                      {
+                        "x": 21,
+                        "y": 3
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              },
+              {
+                "sequence": 2,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 11.84; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 1,
+                "apAfter": 0,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 21,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 22,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 21,
+                      "y": 3
+                    },
+                    "to": {
+                      "x": 22,
+                      "y": 3
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 21,
+                        "y": 3
+                      },
+                      {
+                        "x": 21.5,
+                        "y": 3
+                      },
+                      {
+                        "x": 22,
+                        "y": 3
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 29,
+            "turn": 4,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 30,
+            "turn": 4,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 31,
+            "turn": 4,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 32,
+            "turn": 4,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-4-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorPositionAfter": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "sideSummaries": [
+          {
+            "sideName": "Alpha",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          },
+          {
+            "sideName": "Bravo",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          }
+        ]
+      },
+      {
+        "turn": 5,
+        "activations": [
+          {
+            "activationSequence": 33,
+            "turn": 5,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "initiative": 3,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 34,
+            "turn": 5,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 35,
+            "turn": 5,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 36,
+            "turn": 5,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 0,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 12.44; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 2,
+                "apAfter": 1,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 22,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 23,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 22,
+                      "y": 3
+                    },
+                    "to": {
+                      "x": 23,
+                      "y": 3
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 22,
+                        "y": 3
+                      },
+                      {
+                        "x": 22.5,
+                        "y": 3
+                      },
+                      {
+                        "x": 23,
+                        "y": 3
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              },
+              {
+                "sequence": 2,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 11.96; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 1,
+                "apAfter": 0,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 23,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 23,
+                  "y": 4
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 23,
+                      "y": 3
+                    },
+                    "to": {
+                      "x": 23,
+                      "y": 4
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 23,
+                        "y": 3
+                      },
+                      {
+                        "x": 23,
+                        "y": 3.5
+                      },
+                      {
+                        "x": 23,
+                        "y": 4
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 37,
+            "turn": 5,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 38,
+            "turn": 5,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 39,
+            "turn": 5,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 40,
+            "turn": 5,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-4-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorPositionAfter": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "sideSummaries": [
+          {
+            "sideName": "Alpha",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          },
+          {
+            "sideName": "Bravo",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          }
+        ]
+      },
+      {
+        "turn": 6,
+        "activations": [
+          {
+            "activationSequence": 41,
+            "turn": 6,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "initiative": 3,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 42,
+            "turn": 6,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 4,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 43,
+            "turn": 6,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorPositionAfter": {
+                  "x": 10,
+                  "y": 3
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 44,
+            "turn": 6,
+            "sideIndex": 0,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-4-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 0,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 12.63; gapCrossing=7.00, goapFutureWaitValue=3.08, suppressionZoneControl=2.00)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 2,
+                "apAfter": 1,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 23,
+                  "y": 4
+                },
+                "actorPositionAfter": {
+                  "x": 23,
+                  "y": 5
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 23,
+                      "y": 4
+                    },
+                    "to": {
+                      "x": 23,
+                      "y": 5
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 23,
+                        "y": 4
+                      },
+                      {
+                        "x": 23,
+                        "y": 4.5
+                      },
+                      {
+                        "x": 23,
+                        "y": 5
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              },
+              {
+                "sequence": 2,
+                "actionType": "move",
+                "decisionReason": "Best action (score: 11.12; gapCrossing=7.00, goapFutureWaitValue=2.88, suppressionZoneControl=2.00)",
+                "resultCode": "move=true",
+                "success": true,
+                "apBefore": 1,
+                "apAfter": 0,
+                "apSpent": 1,
+                "actorPositionBefore": {
+                  "x": 23,
+                  "y": 5
+                },
+                "actorPositionAfter": {
+                  "x": 23,
+                  "y": 6
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [
+                  {
+                    "kind": "movement",
+                    "from": {
+                      "x": 23,
+                      "y": 5
+                    },
+                    "to": {
+                      "x": 23,
+                      "y": 6
+                    },
+                    "distanceMu": 1,
+                    "sampleStepMu": 0.5,
+                    "sampledPoints": [
+                      {
+                        "x": 23,
+                        "y": 5
+                      },
+                      {
+                        "x": 23,
+                        "y": 5.5
+                      },
+                      {
+                        "x": 23,
+                        "y": 6
+                      }
+                    ]
+                  }
+                ],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "moveResult": {
+                    "moved": true,
+                    "opportunityAttack": null,
+                    "sprintBonusApplied": false,
+                    "leapBonusApplied": false,
+                    "terrainUpgraded": false
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 45,
+            "turn": 6,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 3,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 46,
+            "turn": 6,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 9,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 47,
+            "turn": 6,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorPositionAfter": {
+                  "x": 14,
+                  "y": 15
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "activationSequence": 48,
+            "turn": 6,
+            "sideIndex": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-4-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "initiative": 2,
+            "apStart": 2,
+            "apEnd": 2,
+            "waitAtStart": false,
+            "waitMaintained": false,
+            "waitUpkeepPaid": false,
+            "delayTokensAtStart": 0,
+            "delayTokensAfterUpkeep": 0,
+            "steps": [
+              {
+                "sequence": 1,
+                "actionType": "hide",
+                "decisionReason": "Hide behind cover (priority: 3.3)",
+                "resultCode": "hide=false:Exposed to opposing LOS.",
+                "success": false,
+                "apBefore": 2,
+                "apAfter": 2,
+                "apSpent": 0,
+                "actorPositionBefore": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorPositionAfter": {
+                  "x": 20,
+                  "y": 14
+                },
+                "actorStateBefore": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "actorStateAfter": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                },
+                "vectors": [],
+                "targets": [],
+                "affectedModels": [],
+                "interactions": [],
+                "details": {
+                  "hideResult": {
+                    "canHide": false,
+                    "apCost": 0,
+                    "hasOpposingLOS": true,
+                    "hasCoverAgainstLOS": false,
+                    "reason": "Exposed to opposing LOS."
+                  },
+                  "planning": {
+                    "source": "utility"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "sideSummaries": [
+          {
+            "sideName": "Alpha",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          },
+          {
+            "sideName": "Bravo",
+            "activeModelsStart": 4,
+            "activeModelsEnd": 4
+          }
+        ]
+      }
+    ],
+    "terrain": [
+      {
+        "id": "Shrub",
+        "type": "Difficult",
+        "vertices": [
+          {
+            "x": 3.789093885362554,
+            "y": 9.34681586467362
+          },
+          {
+            "x": 3.8566179734830777,
+            "y": 9.163783814835758
+          },
+          {
+            "x": 3.989045429513886,
+            "y": 9.020524600006262
+          },
+          {
+            "x": 4.166215373732171,
+            "y": 8.938848136994897
+          },
+          {
+            "x": 4.361155288180239,
+            "y": 8.931188926896166
+          },
+          {
+            "x": 4.544187338018097,
+            "y": 8.998713015016689
+          },
+          {
+            "x": 4.687446552847597,
+            "y": 9.131140471047498
+          },
+          {
+            "x": 4.769123015858963,
+            "y": 9.308310415265781
+          },
+          {
+            "x": 4.776782225957692,
+            "y": 9.50325032971385
+          },
+          {
+            "x": 4.709258137837169,
+            "y": 9.686282379551711
+          },
+          {
+            "x": 4.57683068180636,
+            "y": 9.829541594381208
+          },
+          {
+            "x": 4.399660737588076,
+            "y": 9.911218057392572
+          },
+          {
+            "x": 4.204720823140008,
+            "y": 9.918877267491304
+          },
+          {
+            "x": 4.02168877330215,
+            "y": 9.851353179370781
+          },
+          {
+            "x": 3.8784295584726496,
+            "y": 9.718925723339972
+          },
+          {
+            "x": 3.7967530954612854,
+            "y": 9.541755779121688
+          }
+        ],
+        "meta": {
+          "name": "Shrub",
+          "movement": "Difficult",
+          "los": "Soft",
+          "shape": "circle",
+          "dimensions": {
+            "diameter": 1
+          },
+          "rotationDegrees": 189,
+          "category": "shrub",
+          "distribution": 3,
+          "color": "#006400",
+          "initialMovement": "Impassable",
+          "layer": "terrain"
+        }
+      },
+      {
+        "id": "Small Rocks",
+        "type": "Rough",
+        "vertices": [
+          {
+            "x": 11.880039760763223,
+            "y": 5.439161961623995
+          },
+          {
+            "x": 12.2614767312584,
+            "y": 5.390161672452769
+          },
+          {
+            "x": 12.601966760149166,
+            "y": 5.422790737957595
+          },
+          {
+            "x": 12.849673327086702,
+            "y": 5.532081678698575
+          },
+          {
+            "x": 12.966885352720391,
+            "y": 5.701395939672747
+          },
+          {
+            "x": 12.93575836867716,
+            "y": 5.9049569594843865
+          },
+          {
+            "x": 12.761031176110777,
+            "y": 6.111774418152409
+          },
+          {
+            "x": 12.46930440618353,
+            "y": 6.290362232399544
+          },
+          {
+            "x": 12.104990815107088,
+            "y": 6.41353202640923
+          },
+          {
+            "x": 11.723553844611912,
+            "y": 6.462532315580456
+          },
+          {
+            "x": 11.383063815721146,
+            "y": 6.429903250075631
+          },
+          {
+            "x": 11.13535724878361,
+            "y": 6.32061230933465
+          },
+          {
+            "x": 11.01814522314992,
+            "y": 6.151298048360478
+          },
+          {
+            "x": 11.049272207193152,
+            "y": 5.947737028548839
+          },
+          {
+            "x": 11.223999399759535,
+            "y": 5.740919569880816
+          },
+          {
+            "x": 11.515726169686781,
+            "y": 5.562331755633681
+          }
+        ],
+        "meta": {
+          "name": "Small Rocks",
+          "movement": "Rough",
+          "los": "Hard",
+          "shape": "ellipse",
+          "dimensions": {
+            "width": 1,
+            "length": 2
+          },
+          "rotationDegrees": 257,
+          "category": "rocks",
+          "distribution": 3,
+          "color": "#D3D3D3",
+          "initialMovement": "Impassable",
+          "layer": "terrain"
+        }
+      }
+    ]
+  }
+}

@@ -7,6 +7,12 @@ import {
   ModelSlotStatus,
 } from './MissionSide';
 import { Profile } from '../core/Profile';
+import {
+  DEFAULT_PORTRAIT_SHEET,
+  NamedPortraitAssignment,
+  createPortraitAssignmentFromIndex,
+} from '../../../lib/portraits/portrait-naming';
+import { getPortraitSheetForProfile } from '../../../lib/portraits/portrait-sheet-registry';
 
 /**
  * Extended options for building a MissionSide
