@@ -6,6 +6,17 @@ import { LOSOperations } from '../los/LOSOperations';
 import { PathfindingEngine } from '../pathfinding/PathfindingEngine';
 import { TerrainType } from '../terrain/Terrain';
 import { placeTerrain, exportTerrainForReport } from '../terrain/TerrainPlacement';
+import {
+  orientation,
+  onSegment,
+  segmentsIntersect,
+  pointInPolygon,
+  polygonsOverlap,
+  distance,
+  polygonsDistance,
+  distancePointToRect,
+  distancePointToPolygon,
+} from '../terrain/BattlefieldUtils';
 
 export interface TerrainWeights {
   area: number;
@@ -66,12 +77,6 @@ function snapRotation(degrees: number): number {
 
 function degreesFromVector(from: Position, to: Position): number {
   return (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI;
-}
-
-function distance(a: Position, b: Position): number {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return Math.sqrt(dx * dx + dy * dy);
 }
 
 function shufflePositions(positions: Position[]): Position[] {
@@ -292,7 +297,7 @@ export class BattlefieldFactory {
             return centerDistance < radius + existing.radius - DISTANCE_EPSILON;
           }
           const newFeature = new TerrainElement(elementName, position, wallRotation);
-          const distanceBetween = BattlefieldFactory.polygonsDistance(
+          const distanceBetween = polygonsDistance(
             newFeature.toFeature().vertices,
             existing.feature.toFeature().vertices
           );
@@ -375,7 +380,7 @@ export class BattlefieldFactory {
               return centerDistance < radius + existing.radius - DISTANCE_EPSILON;
             }
             const newFeature = new TerrainElement(elementName, position);
-            const distanceBetween = BattlefieldFactory.polygonsDistance(
+            const distanceBetween = polygonsDistance(
               newFeature.toFeature().vertices,
               existing.feature.toFeature().vertices
             );
@@ -613,7 +618,7 @@ export class BattlefieldFactory {
     ];
 
     for (const point of rectPoints) {
-      if (BattlefieldFactory.pointInPolygon(point, polygon)) {
+      if (pointInPolygon(point, polygon)) {
         return true;
       }
     }
@@ -623,7 +628,7 @@ export class BattlefieldFactory {
       const p2 = polygon[i];
       for (let m = 0; m < rectPoints.length; m++) {
         const n = (m + 1) % rectPoints.length;
-        if (BattlefieldFactory.segmentIntersection(p1, p2, rectPoints[m], rectPoints[n])) {
+        if (segmentsIntersect(p1, p2, rectPoints[m], rectPoints[n])) {
           return true;
         }
       }
@@ -632,61 +637,19 @@ export class BattlefieldFactory {
     return false;
   }
 
-  private static polygonsDistance(a: Position[], b: Position[]): number {
-    if (a.length === 0 || b.length === 0) return Infinity;
-    if (BattlefieldFactory.polygonsOverlap(a, b)) return 0;
-    let min = Infinity;
-    for (let i = 0, j = a.length - 1; i < a.length; j = i++) {
-      const a1 = a[j];
-      const a2 = a[i];
-      for (let m = 0, n = b.length - 1; m < b.length; n = m++) {
-        const b1 = b[n];
-        const b2 = b[m];
-        const dist = BattlefieldFactory.segmentDistance(a1, a2, b1, b2);
-        if (dist < min) min = dist;
-        if (min <= 0) return 0;
-      }
-    }
-    return min;
-  }
-
-  private static segmentDistance(a1: Position, a2: Position, b1: Position, b2: Position): number {
-    if (BattlefieldFactory.segmentIntersection(a1, a2, b1, b2)) return 0;
-    return Math.min(
-      BattlefieldFactory.pointToSegmentDistance(a1, b1, b2),
-      BattlefieldFactory.pointToSegmentDistance(a2, b1, b2),
-      BattlefieldFactory.pointToSegmentDistance(b1, a1, a2),
-      BattlefieldFactory.pointToSegmentDistance(b2, a1, a2)
-    );
-  }
-
-  private static pointToSegmentDistance(point: Position, segStart: Position, segEnd: Position): number {
-    const dx = segEnd.x - segStart.x;
-    const dy = segEnd.y - segStart.y;
-    if (Math.abs(dx) < DISTANCE_EPSILON && Math.abs(dy) < DISTANCE_EPSILON) {
-      return Math.hypot(point.x - segStart.x, point.y - segStart.y);
-    }
-    const t = ((point.x - segStart.x) * dx + (point.y - segStart.y) * dy) / (dx * dx + dy * dy);
-    if (t <= 0) return Math.hypot(point.x - segStart.x, point.y - segStart.y);
-    if (t >= 1) return Math.hypot(point.x - segEnd.x, point.y - segEnd.y);
-    const projX = segStart.x + t * dx;
-    const projY = segStart.y + t * dy;
-    return Math.hypot(point.x - projX, point.y - projY);
-  }
-
   private static isInDeploymentExclusion(
     position: Position,
     radius: number,
     deployment: { zones: { x: number; y: number; width: number; height: number }[]; buffer: number; corridors: { x: number; y: number; width: number; height: number }[] }
   ): boolean {
     for (const zone of deployment.zones) {
-      const distanceToZone = BattlefieldFactory.distancePointToRect(position, zone);
+      const distanceToZone = distancePointToRect(position, zone);
       if (distanceToZone <= radius + deployment.buffer) {
         return true;
       }
     }
     for (const corridor of deployment.corridors) {
-      const distanceToCorridor = BattlefieldFactory.distancePointToRect(position, corridor);
+      const distanceToCorridor = distancePointToRect(position, corridor);
       if (distanceToCorridor <= radius) {
         return true;
       }
@@ -700,81 +663,6 @@ export class BattlefieldFactory {
     if (maxDimension <= 36) return 4;
     if (maxDimension <= 48) return 6;
     return 8;
-  }
-
-  private static distancePointToRect(
-    point: Position,
-    rect: { x: number; y: number; width: number; height: number }
-  ): number {
-    const rx1 = rect.x;
-    const ry1 = rect.y;
-    const rx2 = rect.x + rect.width;
-    const ry2 = rect.y + rect.height;
-    const dx = Math.max(rx1 - point.x, 0, point.x - rx2);
-    const dy = Math.max(ry1 - point.y, 0, point.y - ry2);
-    return Math.sqrt(dx * dx + dy * dy);
-  }
-
-  private static polygonsOverlap(a: Position[], b: Position[]): boolean {
-    if (a.length === 0 || b.length === 0) return false;
-    // Edge intersection check
-    for (let i = 0, j = a.length - 1; i < a.length; j = i++) {
-      for (let m = 0, n = b.length - 1; m < b.length; n = m++) {
-        if (BattlefieldFactory.segmentIntersection(a[j], a[i], b[n], b[m])) {
-          return true;
-        }
-      }
-    }
-    // Containment check
-    if (BattlefieldFactory.pointInPolygon(a[0], b)) return true;
-    if (BattlefieldFactory.pointInPolygon(b[0], a)) return true;
-    return false;
-  }
-
-  private static segmentIntersection(p1: Position, p2: Position, p3: Position, p4: Position): boolean {
-    const o1 = BattlefieldFactory.orientation(p1, p2, p3);
-    const o2 = BattlefieldFactory.orientation(p1, p2, p4);
-    const o3 = BattlefieldFactory.orientation(p3, p4, p1);
-    const o4 = BattlefieldFactory.orientation(p3, p4, p2);
-
-    if (o1 !== o2 && o3 !== o4) return true;
-    if (o1 === 0 && BattlefieldFactory.onSegment(p1, p3, p2)) return true;
-    if (o2 === 0 && BattlefieldFactory.onSegment(p1, p4, p2)) return true;
-    if (o3 === 0 && BattlefieldFactory.onSegment(p3, p1, p4)) return true;
-    if (o4 === 0 && BattlefieldFactory.onSegment(p3, p2, p4)) return true;
-    return false;
-  }
-
-  private static orientation(p: Position, q: Position, r: Position): number {
-    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-    if (Math.abs(val) < DISTANCE_EPSILON) return 0;
-    return val > 0 ? 1 : 2;
-  }
-
-  private static onSegment(p: Position, q: Position, r: Position): boolean {
-    return (
-      q.x <= Math.max(p.x, r.x) + DISTANCE_EPSILON &&
-      q.x >= Math.min(p.x, r.x) - DISTANCE_EPSILON &&
-      q.y <= Math.max(p.y, r.y) + DISTANCE_EPSILON &&
-      q.y >= Math.min(p.y, r.y) - DISTANCE_EPSILON
-    );
-  }
-
-  private static pointInPolygon(point: Position, polygon: Position[]): boolean {
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const xi = polygon[i].x, yi = polygon[i].y;
-      const xj = polygon[j].x, yj = polygon[j].y;
-      if (BattlefieldFactory.onSegment(polygon[j], point, polygon[i])) {
-        return true;
-      }
-      const intersect = ((yi > point.y) !== (yj > point.y))
-        && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
-      if (intersect) {
-        inside = !inside;
-      }
-    }
-    return inside;
   }
 
   private static generateCandidatePositions(
@@ -960,7 +848,7 @@ export class BattlefieldFactory {
     let min = Infinity;
     for (const feature of battlefield.terrain) {
       if (feature.type !== TerrainType.Obstacle) continue;
-      const distance = PathfindingEngine.distancePointToPolygon(point, feature.vertices);
+      const distance = distancePointToPolygon(point, feature.vertices);
       if (distance < min) {
         min = distance;
       }

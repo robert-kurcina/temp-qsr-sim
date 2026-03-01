@@ -2,31 +2,12 @@ import pathfinding from 'pathfinding';
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { TerrainType } from '../terrain/Terrain';
+import { pointInPolygon } from '../terrain/BattlefieldUtils';
 
 const { AStarFinder, Grid: PFGrid } = pathfinding as {
   AStarFinder: new (options: { diagonalMovement: number; heuristic: (dx: number, dy: number) => number }) => AStarFinder;
   Grid: typeof import('pathfinding').Grid;
 };
-
-/**
- * Checks if a point is inside a polygon using the ray-casting algorithm.
- * @param point The point to check.
- * @param polygon The vertices of the polygon.
- * @returns True if the point is inside the polygon, false otherwise.
- */
-function isPointInPolygon(point: Position, polygon: Position[]): boolean {
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i].x, yi = polygon[i].y;
-    const xj = polygon[j].x, yj = polygon[j].y;
-    const intersect = ((yi > point.y) !== (yj > point.y))
-        && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
-    if (intersect) {
-        inside = !inside;
-    }
-  }
-  return inside;
-}
 
 export class Pathfinder {
   private battlefield: Battlefield;
@@ -49,7 +30,7 @@ export class Pathfinder {
       for (let x = 0; x < this.battlefield.width; x++) {
         const currentPoint = { x: x + 0.5, y: y + 0.5 }; // Check cell center
         for (const feature of this.battlefield.terrain) {
-          if (feature.type === TerrainType.Obstacle && isPointInPolygon(currentPoint, feature.vertices)) {
+          if (feature.type === TerrainType.Obstacle && pointInPolygon(currentPoint, feature.vertices)) {
             pfGrid.setWalkableAt(x, y, false);
             break; // Point is in an obstacle, no need to check other features
           }

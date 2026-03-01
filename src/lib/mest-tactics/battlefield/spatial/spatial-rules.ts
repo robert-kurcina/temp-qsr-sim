@@ -4,6 +4,18 @@ import { LOFOperations, LOFModel } from '../los/LOFOperations';
 import { Position } from '../battlefield/Position';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
 import { TestContext } from '../../utils/TestContext';
+import {
+  orientation,
+  onSegment,
+  segmentsIntersect,
+  pointInPolygon,
+  pointToSegmentDistance,
+  segmentToSegmentDistance,
+  closestDistanceToPolygon,
+  segmentDistanceToPolygon,
+  segmentPolygonIntersections,
+  clipSegmentEnd,
+} from '../terrain/BattlefieldUtils';
 
 export interface SpatialModel extends LOFModel {
   position: Position;
@@ -226,11 +238,11 @@ export class SpatialRules {
     const samples = LOSOperations.buildCircularPerimeterPoints(model.position, model.baseDiameter);
     samples.push(model.position);
     for (const sample of samples) {
-      if (SpatialRules.pointInPolygon(sample, feature.vertices)) {
+      if (pointInPolygon(sample, feature.vertices)) {
         return true;
       }
     }
-    const closest = SpatialRules.closestDistanceToPolygon(model.position, feature.vertices);
+    const closest = closestDistanceToPolygon(model.position, feature.vertices);
     return closest <= radius + buffer + DISTANCE_EPSILON;
   }
 
@@ -241,16 +253,16 @@ export class SpatialRules {
     targetRadius: number,
     buffer = 0
   ): boolean {
-    const clipped = SpatialRules.clipSegmentEnd(start, end, targetRadius);
+    const clipped = clipSegmentEnd(start, end, targetRadius);
     if (!clipped) {
       return false;
     }
-    const intersections = SpatialRules.segmentPolygonIntersections(clipped.start, clipped.end, feature.vertices);
+    const intersections = segmentPolygonIntersections(clipped.start, clipped.end, feature.vertices);
     if (intersections.length === 0) {
       if (buffer <= 0) {
         return false;
       }
-      const distance = SpatialRules.segmentDistanceToPolygon(clipped.start, clipped.end, feature.vertices);
+      const distance = segmentDistanceToPolygon(clipped.start, clipped.end, feature.vertices);
       return distance <= buffer + DISTANCE_EPSILON;
     }
     const targetDistance = LOSOperations.distance(clipped.start, clipped.end);
@@ -261,131 +273,5 @@ export class SpatialRules {
       }
     }
     return false;
-  }
-
-  private static segmentPolygonIntersections(
-    start: Position,
-    end: Position,
-    polygon: Position[]
-  ): Position[] {
-    const intersections: Position[] = [];
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const hit = LOSOperations.segmentIntersection(start, end, polygon[j], polygon[i]);
-      if (hit) intersections.push(hit);
-    }
-    return intersections;
-  }
-
-  private static clipSegmentEnd(
-    start: Position,
-    end: Position,
-    clipDistance: number
-  ): { start: Position; end: Position } | null {
-    if (clipDistance <= 0) return { start, end };
-    const length = LOSOperations.distance(start, end);
-    if (length <= clipDistance + DISTANCE_EPSILON) return null;
-    const ratio = (length - clipDistance) / length;
-    return {
-      start,
-      end: {
-        x: start.x + (end.x - start.x) * ratio,
-        y: start.y + (end.y - start.y) * ratio,
-      },
-    };
-  }
-
-  private static segmentDistanceToPolygon(
-    start: Position,
-    end: Position,
-    polygon: Position[]
-  ): number {
-    let min = Infinity;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const distance = SpatialRules.segmentToSegmentDistance(start, end, polygon[j], polygon[i]);
-      if (distance < min) min = distance;
-      if (min <= 0) return 0;
-    }
-    return min;
-  }
-
-  private static segmentToSegmentDistance(
-    a1: Position,
-    a2: Position,
-    b1: Position,
-    b2: Position
-  ): number {
-    if (SpatialRules.segmentsIntersect(a1, a2, b1, b2)) return 0;
-    return Math.min(
-      SpatialRules.pointToSegmentDistance(a1, b1, b2),
-      SpatialRules.pointToSegmentDistance(a2, b1, b2),
-      SpatialRules.pointToSegmentDistance(b1, a1, a2),
-      SpatialRules.pointToSegmentDistance(b2, a1, a2)
-    );
-  }
-
-  private static segmentsIntersect(
-    p1: Position,
-    p2: Position,
-    p3: Position,
-    p4: Position
-  ): boolean {
-    const o1 = SpatialRules.orientation(p1, p2, p3);
-    const o2 = SpatialRules.orientation(p1, p2, p4);
-    const o3 = SpatialRules.orientation(p3, p4, p1);
-    const o4 = SpatialRules.orientation(p3, p4, p2);
-
-    if (o1 !== o2 && o3 !== o4) return true;
-    if (o1 === 0 && SpatialRules.onSegment(p1, p3, p2)) return true;
-    if (o2 === 0 && SpatialRules.onSegment(p1, p4, p2)) return true;
-    if (o3 === 0 && SpatialRules.onSegment(p3, p1, p4)) return true;
-    if (o4 === 0 && SpatialRules.onSegment(p3, p2, p4)) return true;
-    return false;
-  }
-
-  private static orientation(p: Position, q: Position, r: Position): number {
-    const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-    if (Math.abs(val) < DISTANCE_EPSILON) return 0;
-    return val > 0 ? 1 : 2;
-  }
-
-  private static onSegment(p: Position, q: Position, r: Position): boolean {
-    return (
-      q.x <= Math.max(p.x, r.x) + DISTANCE_EPSILON &&
-      q.x >= Math.min(p.x, r.x) - DISTANCE_EPSILON &&
-      q.y <= Math.max(p.y, r.y) + DISTANCE_EPSILON &&
-      q.y >= Math.min(p.y, r.y) - DISTANCE_EPSILON
-    );
-  }
-
-  private static closestDistanceToPolygon(point: Position, polygon: Position[]): number {
-    let min = Infinity;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const distance = SpatialRules.pointToSegmentDistance(point, polygon[j], polygon[i]);
-      if (distance < min) min = distance;
-    }
-    return min;
-  }
-
-  private static pointToSegmentDistance(point: Position, a: Position, b: Position): number {
-    const lengthSquared = (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
-    if (lengthSquared === 0) return LOSOperations.distance(point, a);
-    let t = ((point.x - a.x) * (b.x - a.x) + (point.y - a.y) * (b.y - a.y)) / lengthSquared;
-    t = Math.max(0, Math.min(1, t));
-    const projection = { x: a.x + t * (b.x - a.x), y: a.y + t * (b.y - a.y) };
-    return LOSOperations.distance(point, projection);
-  }
-
-  private static pointInPolygon(point: Position, polygon: Position[]): boolean {
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const xi = polygon[i].x, yi = polygon[i].y;
-      const xj = polygon[j].x, yj = polygon[j].y;
-      const intersect = ((yi > point.y) !== (yj > point.y))
-        && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
-      if (intersect) {
-        inside = !inside;
-      }
-    }
-    return inside;
   }
 }

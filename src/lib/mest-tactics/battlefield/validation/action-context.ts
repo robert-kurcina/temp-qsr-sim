@@ -5,6 +5,7 @@ import { SpatialModel, SpatialRules } from '../spatial/spatial-rules';
 import { TestContext } from '../../utils/TestContext';
 import { Position } from '../battlefield/Position';
 import { TerrainType } from '../terrain/Terrain';
+import { pointInPolygon } from '../terrain/BattlefieldUtils';
 
 export interface ActionContextInput {
   battlefield: Battlefield;
@@ -207,20 +208,6 @@ function hasFlankingOpponent(
     }
   }
   return false;
-}
-
-function pointInPolygon(point: Position, polygon: Position[]): boolean {
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i].x, yi = polygon[i].y;
-    const xj = polygon[j].x, yj = polygon[j].y;
-    const intersect = ((yi > point.y) !== (yj > point.y))
-      && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
-    if (intersect) {
-      inside = !inside;
-    }
-  }
-  return inside;
 }
 
 export function resolveChargeSnapPosition(

@@ -4,7 +4,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { placeTerrain, exportTerrainForReport, importTerrainFromReport } from './TerrainPlacement';
-import { validateTerrainFitness, checkOverlap, distance } from './TerrainFitness';
+import { validateTerrainFitness, checkOverlap } from './TerrainFitness';
+import { distance } from './BattlefieldUtils';
 
 describe('TerrainPlacement', () => {
   describe('placeTerrain', () => {

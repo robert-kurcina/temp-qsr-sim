@@ -8,67 +8,7 @@ import { ConstrainedNavMesh } from './pathfinding/ConstrainedNavMesh';
 import { AreaTerrainLayer } from './terrain/AreaTerrainLayer';
 import { getBaseDiameterFromSiz } from './spatial/size-utils';
 import { SpatialRules } from './spatial/spatial-rules';
-
-function segmentsIntersect(p1: Position, q1: Position, p2: Position, q2: Position): boolean {
-    function orientation(p: Position, q: Position, r: Position): number {
-        const val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-        if (val === 0) return 0; // Collinear
-        return (val > 0) ? 1 : 2; // Clockwise or Counterclockwise
-    }
-
-    function onSegment(p: Position, q: Position, r: Position): boolean {
-        return (
-            q.x <= Math.max(p.x, r.x) && q.x >= Math.min(p.x, r.x) &&
-            q.y <= Math.max(p.y, r.y) && q.y >= Math.min(p.y, r.y)
-        );
-    }
-
-    const o1 = orientation(p1, q1, p2);
-    const o2 = orientation(p1, q1, q2);
-    const o3 = orientation(p2, q2, p1);
-    const o4 = orientation(p2, q2, q1);
-
-    if (o1 !== o2 && o3 !== o4) return true;
-    if (o1 === 0 && onSegment(p1, p2, q1)) return true;
-    if (o2 === 0 && onSegment(p1, q2, q1)) return true;
-    if (o3 === 0 && onSegment(p2, p1, q2)) return true;
-    if (o4 === 0 && onSegment(p2, q1, q2)) return true;
-
-    return false;
-}
-
-function pointOnSegment(point: Position, a: Position, b: Position): boolean {
-  const cross = (point.y - a.y) * (b.x - a.x) - (point.x - a.x) * (b.y - a.y);
-  if (Math.abs(cross) > 1e-9) return false;
-  const dot = (point.x - a.x) * (b.x - a.x) + (point.y - a.y) * (b.y - a.y);
-  if (dot < 0) return false;
-  const squaredLength = (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
-  return dot <= squaredLength;
-}
-
-function pointInPolygon(point: Position, polygon: Position[]): boolean {
-  if (polygon.length < 3) return false;
-
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    if (pointOnSegment(point, polygon[j], polygon[i])) {
-      return true;
-    }
-  }
-
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i].x;
-    const yi = polygon[i].y;
-    const xj = polygon[j].x;
-    const yj = polygon[j].y;
-    const intersects = ((yi > point.y) !== (yj > point.y))
-      && (point.x < (xj - xi) * (point.y - yi) / ((yj - yi) || Number.EPSILON) + xi);
-    if (intersects) {
-      inside = !inside;
-    }
-  }
-  return inside;
-}
+import { segmentsIntersect, pointInPolygon } from './terrain/BattlefieldUtils';
 
 const LOS_KEY_SCALE = 100;
 const MAX_LOS_CACHE_ENTRIES = 25000;

@@ -1,14 +1,15 @@
 /**
  * Terrain Fitness Validator
- * 
+ *
  * Validates terrain placement legality according to QSR rules.
  * Checks for overlaps, spacing violations, and bounds errors.
- * 
+ *
  * @module mest-tactics/battlefield/terrain
  */
 
 import { TerrainFeature } from './Terrain';
 import { Position } from '../Position';
+import { distance } from './BattlefieldUtils';
 
 /**
  * Terrain fitness issue severity
@@ -61,15 +62,6 @@ export interface TerrainBounds {
   minY: number;
   maxX: number;
   maxY: number;
-}
-
-/**
- * Calculate distance between two positions
- */
-export function distance(a: Position, b: Position): number {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return Math.sqrt(dx * dx + dy * dy);
 }
 
 /**
