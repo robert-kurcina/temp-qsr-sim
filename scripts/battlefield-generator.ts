@@ -100,8 +100,12 @@ export async function generateBattlefield(
       maxPlacementMs: 30000,
     });
 
-    // Generate SVG using static render method
-    const svg = SvgRenderer.render(battlefield, {});
+    // Generate SVG using static render method with proper dimensions
+    const svg = SvgRenderer.render(battlefield, {
+      width: battlefield.width,
+      height: battlefield.height,
+      title: `Generated Battlefield ${config.gameSize}`,
+    });
 
     // Export battlefield JSON
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');

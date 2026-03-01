@@ -18,12 +18,12 @@ import { execSync } from 'child_process';
 import { generateBattleSummary, formatSummaryAsText } from './ai-battle/reporting/BattleSummaryFormatter';
 import { INDEX_PATH } from './generate-battle-index';
 import { generateBattlefield } from './battlefield-generator';
-import { PathfindingEngine } from './src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
-import { Battlefield } from './src/lib/mest-tactics/battlefield/Battlefield';
-import { LOSOperations } from './src/lib/mest-tactics/battlefield/los/LOSOperations';
-import { LOFOperations } from './src/lib/mest-tactics/battlefield/los/LOFOperations';
-import { SpatialRules } from './src/lib/mest-tactics/battlefield/spatial/spatial-rules';
-import { TerrainFeature, TerrainType } from './src/lib/mest-tactics/battlefield/terrain/Terrain';
+import { PathfindingEngine } from '../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
+import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
+import { LOSOperations } from '../src/lib/mest-tactics/battlefield/los/LOSOperations';
+import { LOFOperations } from '../src/lib/mest-tactics/battlefield/los/LOFOperations';
+import { SpatialRules } from '../src/lib/mest-tactics/battlefield/spatial/spatial-rules';
+import { TerrainFeature, TerrainType } from '../src/lib/mest-tactics/battlefield/terrain/Terrain';
 
 // Kill any existing server on port 3001
 function killExistingServer(port: number) {
@@ -770,23 +770,23 @@ const server = http.createServer((req, res) => {
 
   // API: List battlefields
   if (req.url === '/api/battlefields') {
-    const battlefieldsDir = path.join(process.cwd(), 'generated', 'test-battlefields');
-    
+    const battlefieldsDir = path.join(process.cwd(), 'generated', 'battlefields');
+
     fs.readdir(battlefieldsDir, (err, files) => {
       if (err) {
         res.writeHead(500);
         res.end(JSON.stringify({ error: 'Failed to read battlefields directory' }));
         return;
       }
-      
+
       // Get unique battlefield names (without extension)
-      const jsonFiles = files.filter(f => f.endsWith('.json'));
+      const jsonFiles = files.filter(f => f.endsWith('.json') && !f.endsWith('.svg.json'));
       const battlefields = jsonFiles.map(f => ({
         name: f.replace('.json', ''),
         jsonPath: `/api/battlefields/${f}`,
         svgPath: `/api/battlefields/${f.replace('.json', '.svg')}`
       }));
-      
+
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(battlefields));
     });
@@ -798,7 +798,7 @@ const server = http.createServer((req, res) => {
     const match = req.url.match(/^\/api\/battlefields\/([^\/]+)\.json$/);
     if (match) {
       const battlefieldName = match[1];
-      const filePath = path.join(process.cwd(), 'generated', 'test-battlefields', `${battlefieldName}.json`);
+      const filePath = path.join(process.cwd(), 'generated', 'battlefields', `${battlefieldName}.json`);
       
       fs.readFile(filePath, 'utf8', (err, content) => {
         if (err) {
@@ -819,15 +819,15 @@ const server = http.createServer((req, res) => {
     const match = req.url.match(/^\/api\/battlefields\/([^\/]+)\.svg$/);
     if (match) {
       const battlefieldName = match[1];
-      const filePath = path.join(process.cwd(), 'generated', 'test-battlefields', `${battlefieldName}.svg`);
-      
+      const filePath = path.join(process.cwd(), 'generated', 'battlefields', `${battlefieldName}.svg`);
+
       fs.readFile(filePath, (err, content) => {
         if (err) {
           res.writeHead(404);
           res.end('Battlefield SVG not found');
           return;
         }
-        
+
         res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
         res.end(content);
       });

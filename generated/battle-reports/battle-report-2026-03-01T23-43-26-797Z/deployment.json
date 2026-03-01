@@ -1,0 +1,96 @@
+[
+  {
+    "sideId": "Alpha",
+    "sideName": "Alpha",
+    "totalBP": 252,
+    "models": [
+      {
+        "modelId": "Alpha-1",
+        "characterName": "Alpha-1",
+        "assemblyName": "Alpha Assembly-1",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 3,
+          "y": 3
+        }
+      },
+      {
+        "modelId": "Alpha-2",
+        "characterName": "Alpha-2",
+        "assemblyName": "Alpha Assembly-2",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 5,
+          "y": 3
+        }
+      },
+      {
+        "modelId": "Alpha-3",
+        "characterName": "Alpha-3",
+        "assemblyName": "Alpha Assembly-3",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 7,
+          "y": 3
+        }
+      },
+      {
+        "modelId": "Alpha-4",
+        "characterName": "Alpha-4",
+        "assemblyName": "Alpha Assembly-4",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 3,
+          "y": 5
+        }
+      }
+    ]
+  },
+  {
+    "sideId": "Bravo",
+    "sideName": "Bravo",
+    "totalBP": 252,
+    "models": [
+      {
+        "modelId": "Bravo-1",
+        "characterName": "Bravo-1",
+        "assemblyName": "Bravo Assembly-1",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 3,
+          "y": 15
+        }
+      },
+      {
+        "modelId": "Bravo-2",
+        "characterName": "Bravo-2",
+        "assemblyName": "Bravo Assembly-2",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 6,
+          "y": 15
+        }
+      },
+      {
+        "modelId": "Bravo-3",
+        "characterName": "Bravo-3",
+        "assemblyName": "Bravo Assembly-3",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 7,
+          "y": 15
+        }
+      },
+      {
+        "modelId": "Bravo-4",
+        "characterName": "Bravo-4",
+        "assemblyName": "Bravo Assembly-4",
+        "profile": "average-sword-broad-armor-light-loadout",
+        "position": {
+          "x": 3,
+          "y": 17
+        }
+      }
+    ]
+  }
+]
