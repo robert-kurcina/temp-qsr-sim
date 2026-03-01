@@ -394,7 +394,303 @@
       padding: 3rem;
       color: #e94560;
     }
-    
+
+    /* Battlefield Generator Panel */
+    .battlefield-generator-panel {
+      background: #16213e;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem;
+      border: 1px solid #0f3460;
+    }
+    .battlefield-generator-panel h3 {
+      color: #e94560;
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+    }
+    .generator-section {
+      margin-bottom: 1.5rem;
+    }
+    .generator-section label {
+      display: block;
+      color: #fff;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .generator-section select {
+      width: 100%;
+      max-width: 300px;
+      padding: 0.5rem;
+      background: #0f3460;
+      color: #fff;
+      border: 1px solid #16213e;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .density-sliders {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .slider-label {
+      min-width: 120px;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .density-slider {
+      flex: 1;
+      height: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #0f3460;
+      border-radius: 3px;
+      outline: none;
+    }
+    .density-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #e94560;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .density-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: #e94560;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+    .slider-presets {
+      display: flex;
+      gap: 0.25rem;
+    }
+    .slider-presets button {
+      min-width: 32px;
+      height: 28px;
+      background: #0f3460;
+      color: #aaa;
+      border: 1px solid #16213e;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      transition: all 0.2s;
+    }
+    .slider-presets button:hover {
+      background: #1a4a7a;
+      color: #fff;
+    }
+    .slider-value {
+      min-width: 40px;
+      text-align: right;
+      color: #e94560;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    .primary-button {
+      background: #e94560;
+      color: #fff;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .primary-button:hover {
+      background: #ff6b6b;
+      transform: translateY(-1px);
+    }
+    .primary-button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .progress-indicator {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #0f3460;
+      border-radius: 4px;
+      color: #fff;
+    }
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid #16213e;
+      border-top-color: #e94560;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .generation-result {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+    .generation-result.success {
+      background: #1a4a3a;
+      border: 1px solid #2d7a5a;
+      color: #4ade80;
+    }
+    .generation-result.error {
+      background: #4a1a1a;
+      border: 1px solid #7a2d2d;
+      color: #f87171;
+    }
+    .result-message {
+      font-size: 0.9rem;
+    }
+    .placement-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .placement-btn {
+      padding: 0.5rem 1rem;
+      background: #0f3460;
+      color: #aaa;
+      border: 1px solid #16213e;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .placement-btn:hover {
+      background: #1a4a7a;
+      color: #fff;
+    }
+    .placement-btn.active {
+      background: #e94560;
+      color: #fff;
+      border-color: #e94560;
+    }
+    .pathfinding-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .pathfinding-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .pathfinding-options input[type="range"] {
+      flex: 1;
+      max-width: 200px;
+    }
+    .pathfinding-options input[type="checkbox"] {
+      margin-right: 0.25rem;
+    }
+    .target-type-toggle {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .target-type-toggle label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #aaa;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .los-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .los-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .los-options input[type="number"] {
+      width: 60px;
+      padding: 0.25rem;
+      background: #0f3460;
+      color: #fff;
+      border: 1px solid #16213e;
+      border-radius: 4px;
+    }
+    .results-panel {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #0f3460;
+      border-radius: 4px;
+    }
+    .result-section {
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #16213e;
+    }
+    .result-section:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .result-section h4 {
+      color: #e94560;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    .result-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.25rem 0;
+      font-size: 0.85rem;
+    }
+    .result-stat .label {
+      color: #aaa;
+    }
+    .result-stat .value {
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* Sub-tabs for Tab 5 */
+    .sub-tabs {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #0f3460;
+      margin-bottom: 1rem;
+    }
+    .sub-tab {
+      padding: 0.5rem 1rem;
+      background: #0f3460;
+      color: #aaa;
+      border: none;
+      border-radius: 4px 4px 0 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sub-tab:hover {
+      background: #1a4a7a;
+      color: #fff;
+    }
+    .sub-tab.active {
+      background: #e94560;
+      color: #fff;
+    }
+
     /* Tab 5: Battlefield Audit */
     .battlefield-audit-container {
       display: flex;
@@ -455,6 +751,85 @@
       font-size: 0.9rem;
       color: #fff;
       font-weight: bold;
+    }
+    .character-stats {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .character-stats label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+    .character-stats input[type="number"] {
+      padding: 0.25rem;
+      background: #0f3460;
+      color: #fff;
+      border: 1px solid #16213e;
+      border-radius: 4px;
+    }
+    .agility-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .agility-opportunities h5,
+    .agility-recommendations h5 {
+      color: #e94560;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    .opportunities-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .opportunity-item {
+      background: #0f3460;
+      padding: 0.5rem;
+      border-radius: 4px;
+      border-left: 3px solid #4ade80;
+      font-size: 0.8rem;
+    }
+    .opportunity-item.sub-optimal {
+      border-left-color: #fbbf24;
+    }
+    .opportunity-item.missed {
+      border-left-color: #f87171;
+    }
+    .opportunity-type {
+      font-weight: bold;
+      color: #e94560;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+    }
+    .opportunity-description {
+      color: #aaa;
+      margin-top: 0.25rem;
+    }
+    .opportunity-mu {
+      color: #fff;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+    .recommendations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .recommendation-item {
+      background: #0f3460;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      color: #aaa;
+      border-left: 3px solid #60a5fa;
     }
     .battlefield-list-panel {
       flex: 1;
@@ -519,6 +894,13 @@
     <button class="tab" data-tab="tab3">📊 Summary</button>
     <button class="tab" data-tab="tab4">🖼️ Portraits</button>
     <button class="tab" data-tab="tab5">🗂️ Battlefield Audit</button>
+  </div>
+
+  <!-- Sub-tabs for Tab 5 -->
+  <div id="tab5-subtabs" class="sub-tabs" style="display: none; margin: 0 1rem;">
+    <button class="sub-tab active" data-subtab="generator">🗺️ Generator</button>
+    <button class="sub-tab" data-subtab="pathfinding">🧭 Pathfinding</button>
+    <button class="sub-tab" data-subtab="los">👁️ LOS/Cover</button>
   </div>
 
   <!-- Tab 2: Visual Audit -->
@@ -618,6 +1000,331 @@
 
   <!-- Tab 5: Battlefield Audit -->
   <div id="tab5" class="tab-content">
+    <!-- Battlefield Generator Panel -->
+    <div class="battlefield-generator-panel">
+      <h3>🗺️ Generate Battlefield</h3>
+      
+      <!-- Game Size Selector -->
+      <div class="generator-section">
+        <label for="bf-size-select">Battlefield Size:</label>
+        <select id="bf-size-select">
+          <option value="VERY_SMALL">VERY_SMALL (24×24 MU)</option>
+          <option value="SMALL">SMALL (36×36 MU)</option>
+          <option value="MEDIUM" selected>MEDIUM (48×48 MU)</option>
+          <option value="LARGE">LARGE (60×60 MU)</option>
+          <option value="VERY_LARGE">VERY_LARGE (72×72 MU)</option>
+        </select>
+      </div>
+      
+      <!-- Terrain Density Sliders -->
+      <div class="generator-section">
+        <label>Terrain Densities (%):</label>
+        <div class="density-sliders">
+          <div class="slider-row">
+            <span class="slider-label">Area Terrain:</span>
+            <input type="range" id="density-area" min="0" max="100" step="5" value="50" class="density-slider">
+            <div class="slider-presets">
+              <button type="button" data-target="density-area" data-value="0">0</button>
+              <button type="button" data-target="density-area" data-value="20">20</button>
+              <button type="button" data-target="density-area" data-value="50">50</button>
+              <button type="button" data-target="density-area" data-value="80">80</button>
+              <button type="button" data-target="density-area" data-value="100">100</button>
+            </div>
+            <span class="slider-value" id="density-area-value">50%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Buildings:</span>
+            <input type="range" id="density-building" min="0" max="100" step="5" value="30" class="density-slider">
+            <div class="slider-presets">
+              <button type="button" data-target="density-building" data-value="0">0</button>
+              <button type="button" data-target="density-building" data-value="20">20</button>
+              <button type="button" data-target="density-building" data-value="50">50</button>
+              <button type="button" data-target="density-building" data-value="80">80</button>
+              <button type="button" data-target="density-building" data-value="100">100</button>
+            </div>
+            <span class="slider-value" id="density-building-value">30%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Walls:</span>
+            <input type="range" id="density-wall" min="0" max="100" step="5" value="30" class="density-slider">
+            <div class="slider-presets">
+              <button type="button" data-target="density-wall" data-value="0">0</button>
+              <button type="button" data-target="density-wall" data-value="20">20</button>
+              <button type="button" data-target="density-wall" data-value="50">50</button>
+              <button type="button" data-target="density-wall" data-value="80">80</button>
+              <button type="button" data-target="density-wall" data-value="100">100</button>
+            </div>
+            <span class="slider-value" id="density-wall-value">30%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Trees:</span>
+            <input type="range" id="density-tree" min="0" max="100" step="5" value="50" class="density-slider">
+            <div class="slider-presets">
+              <button type="button" data-target="density-tree" data-value="0">0</button>
+              <button type="button" data-target="density-tree" data-value="20">20</button>
+              <button type="button" data-target="density-tree" data-value="50">50</button>
+              <button type="button" data-target="density-tree" data-value="80">80</button>
+              <button type="button" data-target="density-tree" data-value="100">100</button>
+            </div>
+            <span class="slider-value" id="density-tree-value">50%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Rocks:</span>
+            <input type="range" id="density-rocks" min="0" max="100" step="5" value="40" class="density-slider">
+            <div class="slider-presets">
+              <button type="button" data-target="density-rocks" data-value="0">0</button>
+              <button type="button" data-target="density-rocks" data-value="20">20</button>
+              <button type="button" data-target="density-rocks" data-value="50">50</button>
+              <button type="button" data-target="density-rocks" data-value="80">80</button>
+              <button type="button" data-target="density-rocks" data-value="100">100</button>
+            </div>
+            <span class="slider-value" id="density-rocks-value">40%</span>
+          </div>
+          <div class="slider-row">
+            <span class="slider-label">Shrubs:</span>
+            <input type="range" id="density-shrub" min="0" max="100" step="5" value="40" class="density-slider">
+            <div class="slider-presets">
+              <button type="button" data-target="density-shrub" data-value="0">0</button>
+              <button type="button" data-target="density-shrub" data-value="20">20</button>
+              <button type="button" data-target="density-shrub" data-value="50">50</button>
+              <button type="button" data-target="density-shrub" data-value="80">80</button>
+              <button type="button" data-target="density-shrub" data-value="100">100</button>
+            </div>
+            <span class="slider-value" id="density-shrub-value">40%</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Generate Button -->
+      <button id="btn-generate" class="primary-button">
+        🎲 Generate Battlefield
+      </button>
+      
+      <!-- Progress Indicator -->
+      <div id="generate-progress" class="progress-indicator" style="display: none;">
+        <div class="spinner"></div>
+        <span>Generating battlefield...</span>
+      </div>
+      
+      <!-- Generation Result -->
+      <div id="generate-result" class="generation-result" style="display: none;">
+        <div class="result-message"></div>
+      </div>
+    </div>
+
+    <!-- Pathfinding Checker Panel -->
+    <div class="battlefield-generator-panel" id="pathfinding-panel" style="display: none;">
+      <h3>🧭 Pathfinding Check</h3>
+      
+      <!-- Placement Mode -->
+      <div class="generator-section">
+        <label>Placement Mode:</label>
+        <div class="placement-buttons">
+          <button type="button" id="btn-place-start" class="placement-btn active">🟢 Place Start</button>
+          <button type="button" id="btn-place-end" class="placement-btn">🔴 Place End</button>
+          <button type="button" id="btn-clear-markers">❌ Clear</button>
+        </div>
+      </div>
+      
+      <!-- Pathfinding Options -->
+      <div class="generator-section">
+        <label>Options:</label>
+        <div class="pathfinding-options">
+          <label>
+            Footprint (MU):
+            <input type="range" id="pf-footprint" min="0.5" max="3" step="0.5" value="1">
+            <span id="pf-footprint-value">1.0</span>
+          </label>
+          <label>
+            Movement Allowance (MU):
+            <input type="range" id="pf-movement" min="1" max="12" step="1" value="6">
+            <span id="pf-movement-value">6</span>
+          </label>
+          <label>
+            <input type="checkbox" id="pf-show-grid">
+            Show Grid
+          </label>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <button id="btn-navigate" class="primary-button">🚀 Navigate</button>
+      <button id="btn-analyze-agility" class="primary-button" style="margin-top: 0.5rem; background: #2d7a5a;">🏃 Analyze Agility</button>
+
+      <!-- Character Stats for Agility -->
+      <div class="generator-section" style="margin-top: 1rem;">
+        <label>Character Stats:</label>
+        <div class="character-stats">
+          <label>
+            MOV:
+            <input type="number" id="char-mov" min="1" max="12" value="4" style="width: 60px;">
+          </label>
+          <label>
+            SIZ:
+            <input type="number" id="char-siz" min="1" max="9" value="3" style="width: 60px;">
+          </label>
+          <label>
+            Base (MU):
+            <input type="number" id="char-base" min="0.5" max="3" step="0.5" value="1" style="width: 60px;">
+          </label>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="pathfinding-results" class="results-panel" style="display: none;">
+        <div class="result-stat">
+          <span class="label">Total Distance:</span>
+          <span class="value" id="pf-total-distance">0 MU</span>
+        </div>
+        <div class="result-stat">
+          <span class="label">Effective MU:</span>
+          <span class="value" id="pf-effective-mu">0 MU</span>
+        </div>
+        <div class="result-stat">
+          <span class="label">Remaining:</span>
+          <span class="value" id="pf-remaining">0 MU</span>
+        </div>
+        <div class="result-stat">
+          <span class="label">Reachable:</span>
+          <span class="value" id="pf-reachable">-</span>
+        </div>
+      </div>
+
+      <!-- Agility Analysis Results -->
+      <div id="agility-results" class="results-panel" style="display: none;">
+        <h4>🏃 Agility Analysis</h4>
+        <div class="agility-stats">
+          <div class="result-stat">
+            <span class="label">Base MU Cost:</span>
+            <span class="value" id="ag-base-cost">0 MU</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">Agility MU Cost:</span>
+            <span class="value" id="ag-agility-cost">0 MU</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">MU Saved:</span>
+            <span class="value" id="ag-mu-saved" style="color: #4ade80;">0 MU</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">Optimal Path:</span>
+            <span class="value" id="ag-optimal">-</span>
+          </div>
+        </div>
+        
+        <!-- Opportunities List -->
+        <div class="agility-opportunities" style="margin-top: 1rem;">
+          <h5>Opportunities Detected (<span id="ag-opportunity-count">0</span>)</h5>
+          <div id="ag-opportunities-list" class="opportunities-list"></div>
+        </div>
+        
+        <!-- Recommendations -->
+        <div class="agility-recommendations" style="margin-top: 1rem;">
+          <h5>Recommendations</h5>
+          <div id="ag-recommendations-list" class="recommendations-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOS & Cover Checker Panel -->
+    <div class="battlefield-generator-panel" id="los-panel" style="display: none;">
+      <h3>👁️ LOS & Cover Check</h3>
+      
+      <!-- Placement Mode -->
+      <div class="generator-section">
+        <label>Placement Mode:</label>
+        <div class="placement-buttons">
+          <button type="button" id="btn-place-active" class="placement-btn active">🔵 Place Active</button>
+          <button type="button" id="btn-place-target" class="placement-btn">🟠 Place Target</button>
+          <button type="button" id="btn-clear-los-markers">❌ Clear</button>
+        </div>
+      </div>
+      
+      <!-- Target Type Toggle -->
+      <div class="generator-section">
+        <label>Target Type:</label>
+        <div class="target-type-toggle">
+          <label>
+            <input type="radio" name="target-type" value="model" checked>
+            Target is Model
+          </label>
+          <label>
+            <input type="radio" name="target-type" value="location">
+            Target is Location (Indirect)
+          </label>
+        </div>
+      </div>
+      
+      <!-- Options -->
+      <div class="generator-section">
+        <label>Options:</label>
+        <div class="los-options">
+          <label>
+            <input type="checkbox" id="los-active-leaning">
+            Active Model is Leaning
+          </label>
+          <label>
+            <input type="checkbox" id="los-show-lof-arc" checked>
+            Show LOF Arc
+          </label>
+          <label>
+            Target SIZ:
+            <input type="number" id="los-target-siz" min="1" max="9" value="3">
+          </label>
+        </div>
+      </div>
+      
+      <!-- Action Button -->
+      <button id="btn-check-los" class="primary-button">🔍 Check LOS & Cover</button>
+      
+      <!-- Results -->
+      <div id="los-results" class="results-panel" style="display: none;">
+        <div class="result-section">
+          <h4>Line of Sight</h4>
+          <div class="result-stat">
+            <span class="label">Status:</span>
+            <span class="value" id="los-status">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">Blocked By:</span>
+            <span class="value" id="los-blocked-by">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">Distance:</span>
+            <span class="value" id="los-distance">0 MU</span>
+          </div>
+        </div>
+        
+        <div class="result-section">
+          <h4>Cover</h4>
+          <div class="result-stat">
+            <span class="label">Direct Cover:</span>
+            <span class="value" id="los-direct-cover">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">Intervening:</span>
+            <span class="value" id="los-intervening">-</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">Result:</span>
+            <span class="value" id="los-cover-result">-</span>
+          </div>
+        </div>
+        
+        <div class="result-section" id="lof-section">
+          <h4>Line of Fire</h4>
+          <div class="result-stat">
+            <span class="label">LOF Arc:</span>
+            <span class="value" id="los-lof-arc">60°</span>
+          </div>
+          <div class="result-stat">
+            <span class="label">Targets in Arc:</span>
+            <span class="value" id="los-targets-in-arc">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="battlefield-audit-container">
       <div class="battlefield-viewer">
         <div id="battlefield-audit-svg" class="battlefield-audit-svg">
@@ -682,6 +1389,349 @@
       deployment: true
     };
 
+    // ========== Battlefield Generator =========
+    // Initialize density slider value displays
+    document.querySelectorAll('.density-slider').forEach(slider => {
+      const valueDisplay = document.getElementById(`${slider.id}-value`);
+      if (valueDisplay) {
+        valueDisplay.textContent = `${slider.value}%`;
+        slider.addEventListener('input', () => {
+          valueDisplay.textContent = `${slider.value}%`;
+        });
+      }
+    });
+
+    // Initialize preset button handlers
+    document.querySelectorAll('.slider-presets button').forEach(button => {
+      button.addEventListener('click', () => {
+        const targetId = button.dataset.target;
+        const value = button.dataset.value;
+        const slider = document.getElementById(targetId);
+        const valueDisplay = document.getElementById(`${targetId}-value`);
+        if (slider && valueDisplay) {
+          slider.value = value;
+          valueDisplay.textContent = `${value}%`;
+        }
+      });
+    });
+
+    // Generate button handler
+    const generateBtn = document.getElementById('btn-generate');
+    const progressIndicator = document.getElementById('generate-progress');
+    const resultPanel = document.getElementById('generate-result');
+    const resultMessage = resultPanel?.querySelector('.result-message');
+
+    if (generateBtn) {
+      generateBtn.addEventListener('click', async () => {
+        // Gather form data
+        const gameSize = document.getElementById('bf-size-select').value;
+        const terrainDensities = {
+          area: parseInt(document.getElementById('density-area').value),
+          building: parseInt(document.getElementById('density-building').value),
+          wall: parseInt(document.getElementById('density-wall').value),
+          tree: parseInt(document.getElementById('density-tree').value),
+          rocks: parseInt(document.getElementById('density-rocks').value),
+          shrub: parseInt(document.getElementById('density-shrub').value),
+        };
+
+        // Disable button and show progress
+        generateBtn.disabled = true;
+        progressIndicator.style.display = 'flex';
+        resultPanel.style.display = 'none';
+
+        try {
+          const response = await fetch('/api/battlefields/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ gameSize, terrainDensities }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            // Show success message
+            resultPanel.className = 'generation-result success';
+            resultMessage.innerHTML = `
+              <strong>✅ Battlefield generated!</strong><br>
+              ID: ${result.battlefieldId}<br>
+              Terrain: ${result.stats.totalTerrain} features | 
+              Coverage: ${(result.stats.coverageRatio * 100).toFixed(0)}% | 
+              Fitness: ${result.stats.fitnessScore}<br>
+              <small>Generation time: ${result.generationTimeMs}ms</small>
+            `;
+            resultPanel.style.display = 'block';
+
+            // Refresh battlefield list
+            await loadBattlefieldAudit();
+          } else {
+            throw new Error(result.error || 'Generation failed');
+          }
+        } catch (error) {
+          // Show error message
+          resultPanel.className = 'generation-result error';
+          resultMessage.textContent = `❌ Error: ${error.message}`;
+          resultPanel.style.display = 'block';
+        } finally {
+          // Re-enable button and hide progress
+          generateBtn.disabled = false;
+          progressIndicator.style.display = 'none';
+        }
+      });
+    }
+
+    // ========== Tab 5 Sub-tabs (Generator/Pathfinding/LOS) ==========
+    const subTabsContainer = document.getElementById('tab5-subtabs');
+    const generatorPanel = document.querySelector('.battlefield-generator-panel:not(#pathfinding-panel):not(#los-panel)');
+    const pathfindingPanel = document.getElementById('pathfinding-panel');
+    const losPanel = document.getElementById('los-panel');
+
+    // Show sub-tabs when Tab 5 is active
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (tab.dataset.tab === 'tab5') {
+          subTabsContainer.style.display = 'flex';
+        } else {
+          subTabsContainer.style.display = 'none';
+        }
+      });
+    });
+
+    // Sub-tab switching
+    document.querySelectorAll('.sub-tab').forEach(subTab => {
+      subTab.addEventListener('click', () => {
+        // Update active state
+        document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+        subTab.classList.add('active');
+
+        // Show/hide panels
+        const subTabName = subTab.dataset.subtab;
+        if (generatorPanel) generatorPanel.style.display = subTabName === 'generator' ? 'block' : 'none';
+        if (pathfindingPanel) pathfindingPanel.style.display = subTabName === 'pathfinding' ? 'block' : 'none';
+        if (losPanel) losPanel.style.display = subTabName === 'los' ? 'block' : 'none';
+      });
+    });
+
+    // ========== Pathfinding & Agility Analysis ==========
+    let currentBattlefieldId = null;
+    let currentPath = null;
+
+    // Analyze Agility button handler
+    const analyzeAgilityBtn = document.getElementById('btn-analyze-agility');
+    const agilityResultsPanel = document.getElementById('agility-results');
+    
+    if (analyzeAgilityBtn) {
+      analyzeAgilityBtn.addEventListener('click', async () => {
+        // Get character stats
+        const mov = parseFloat(document.getElementById('char-mov').value) || 4;
+        const siz = parseFloat(document.getElementById('char-siz').value) || 3;
+        const baseDiameter = parseFloat(document.getElementById('char-base').value) || 1;
+
+        // Use a sample path for demonstration
+        const samplePath = [
+          { x: 2, y: 2 },
+          { x: 5, y: 5 },
+          { x: 10, y: 5 }
+        ];
+
+        // Get current battlefield ID
+        const battlefieldId = currentBattlefieldId || 'latest';
+
+        try {
+          analyzeAgilityBtn.disabled = true;
+          analyzeAgilityBtn.textContent = '⏳ Analyzing...';
+
+          const response = await fetch('/api/battlefields/analyze-agility', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              battlefieldId: battlefieldId,
+              path: samplePath,
+              character: { mov, siz, baseDiameter }
+            }),
+          });
+
+          const result = await response.json();
+
+          if (result.pathLength !== undefined) {
+            // Display agility stats
+            document.getElementById('ag-base-cost').textContent = `${result.baseMuCost} MU`;
+            document.getElementById('ag-agility-cost').textContent = `${result.agilityMuCost} MU`;
+            
+            const muSavedEl = document.getElementById('ag-mu-saved');
+            muSavedEl.textContent = `${result.muSaved >= 0 ? '+' : ''}${result.muSaved} MU`;
+            muSavedEl.style.color = result.muSaved >= 0 ? '#4ade80' : '#f87171';
+
+            document.getElementById('ag-optimal').textContent = result.optimalPath ? '✅ Yes' : '❌ No';
+            document.getElementById('ag-optimal').style.color = result.optimalPath ? '#4ade80' : '#f87171';
+
+            // Display opportunities
+            const opportunitiesList = document.getElementById('ag-opportunities-list');
+            document.getElementById('ag-opportunity-count').textContent = result.opportunities.length;
+
+            opportunitiesList.innerHTML = result.opportunities.map((opp, index) => `
+              <div class="opportunity-item ${opp.optimal ? '' : 'sub-optimal'}" data-opportunity-index="${index}" style="cursor: pointer;">
+                <div class="opportunity-type">${opp.type.replace('_', ' ')}</div>
+                <div class="opportunity-description">${opp.description}</div>
+                <div class="opportunity-mu">Cost: ${opp.muCost} MU | Saved: ${opp.muSaved} MU</div>
+              </div>
+            `).join('') || '<div style="color: #666; font-size: 0.8rem;">No opportunities detected</div>';
+
+            // Add click handlers for opportunity items
+            document.querySelectorAll('.opportunity-item').forEach(item => {
+              item.addEventListener('click', () => {
+                const index = parseInt(item.dataset.opportunityIndex);
+                const opp = result.opportunities[index];
+                highlightOpportunityOnSvg(opp);
+              });
+            });
+
+            // Display recommendations
+            const recommendationsList = document.getElementById('ag-recommendations-list');
+            recommendationsList.innerHTML = result.recommendations.map(rec => `
+              <div class="recommendation-item">${rec}</div>
+            `).join('') || '<div style="color: #666; font-size: 0.8rem;">No recommendations</div>';
+
+            // Show results panel
+            agilityResultsPanel.style.display = 'block';
+
+            // Render SVG markers for opportunities
+            renderAgilityMarkers(result.opportunities);
+          } else {
+            alert(`Error: ${result.error || 'Analysis failed'}`);
+          }
+        } catch (error) {
+          alert(`Error analyzing agility: ${error.message}`);
+        } finally {
+          analyzeAgilityBtn.disabled = false;
+          analyzeAgilityBtn.textContent = '🏃 Analyze Agility';
+        }
+      });
+    }
+
+    // ========== SVG Marker Rendering ==========
+    function renderAgilityMarkers(opportunities) {
+      // Remove existing markers
+      const existingMarkers = document.querySelectorAll('.agility-marker, .agility-marker-label');
+      existingMarkers.forEach(el => el.remove());
+
+      const svg = document.getElementById('battlefield-svg');
+      if (!svg || !svg.querySelector('svg')) return;
+
+      const svgEl = svg.querySelector('svg');
+      const viewBox = svgEl.getAttribute('viewBox') || '0 0 600 600';
+      const [, , width, height] = viewBox.split(' ').map(Number);
+
+      // Create marker group if it doesn't exist
+      let markerGroup = svgEl.querySelector('.agility-markers');
+      if (!markerGroup) {
+        markerGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        markerGroup.setAttribute('class', 'agility-markers');
+        svgEl.appendChild(markerGroup);
+      }
+
+      // Render markers for each opportunity
+      opportunities.forEach((opp, index) => {
+        const marker = opp.svgMarker;
+        if (!marker) return;
+
+        // Scale position to SVG coordinates
+        const cx = (marker.cx / 24) * width;
+        const cy = (marker.cy / 24) * height;
+        const r = marker.r * (width / 24);
+
+        // Create circle marker
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'agility-marker');
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
+        circle.setAttribute('r', r);
+        circle.setAttribute('fill', marker.color);
+        circle.setAttribute('opacity', '0.7');
+        circle.setAttribute('stroke', '#fff');
+        circle.setAttribute('stroke-width', '2');
+        circle.setAttribute('style', 'cursor: pointer;');
+        circle.dataset.opportunityIndex = index;
+
+        // Add click handler
+        circle.addEventListener('click', () => {
+          highlightOpportunityOnSvg(opp);
+          // Scroll to corresponding list item
+          const listItem = document.querySelector(`.opportunity-item[data-opportunity-index="${index}"]`);
+          if (listItem) {
+            listItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            listItem.style.background = '#1a4a7a';
+            setTimeout(() => {
+              listItem.style.background = '';
+            }, 1000);
+          }
+        });
+
+        // Create label
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('class', 'agility-marker-label');
+        text.setAttribute('x', cx);
+        text.setAttribute('y', cy - r - 5);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('fill', '#fff');
+        text.setAttribute('font-size', '10');
+        text.setAttribute('font-weight', 'bold');
+        text.setAttribute('style', 'pointer-events: none; text-shadow: 1px 1px 2px #000;');
+        text.textContent = marker.label;
+
+        markerGroup.appendChild(circle);
+        markerGroup.appendChild(text);
+      });
+    }
+
+    function highlightOpportunityOnSvg(opp) {
+      // Highlight the opportunity on SVG (pulse animation)
+      const svg = document.getElementById('battlefield-svg');
+      if (!svg || !svg.querySelector('svg')) return;
+
+      const svgEl = svg.querySelector('svg');
+      const viewBox = svgEl.getAttribute('viewBox') || '0 0 600 600';
+      const [, , width, height] = viewBox.split(' ').map(Number);
+
+      const cx = (opp.position.x / 24) * width;
+      const cy = (opp.position.y / 24) * height;
+
+      // Create highlight circle
+      const highlight = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      highlight.setAttribute('class', 'agility-highlight');
+      highlight.setAttribute('cx', cx);
+      highlight.setAttribute('cy', cy);
+      highlight.setAttribute('r', '20');
+      highlight.setAttribute('fill', 'none');
+      highlight.setAttribute('stroke', '#fff');
+      highlight.setAttribute('stroke-width', '3');
+      highlight.setAttribute('opacity', '1');
+
+      // Add animation
+      const animate = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+      animate.setAttribute('attributeName', 'r');
+      animate.setAttribute('from', '10');
+      animate.setAttribute('to', '40');
+      animate.setAttribute('dur', '1s');
+      animate.setAttribute('repeatCount', '3');
+
+      const animateOpacity = document.createElementNS('http://www.w3.org/2000/svg', 'animate');
+      animateOpacity.setAttribute('attributeName', 'opacity');
+      animateOpacity.setAttribute('from', '1');
+      animateOpacity.setAttribute('to', '0');
+      animateOpacity.setAttribute('dur', '1s');
+      animateOpacity.setAttribute('repeatCount', '3');
+
+      highlight.appendChild(animate);
+      highlight.appendChild(animateOpacity);
+      svgEl.appendChild(highlight);
+
+      // Remove after animation
+      setTimeout(() => {
+        highlight.remove();
+      }, 3000);
+    }
+
+    // ========== Existing Code =========
     // Sidebar tab switching
     document.querySelectorAll('.sidebar-tab').forEach(tab => {
       tab.addEventListener('click', () => {

@@ -1,4 +1,5 @@
 import { Position } from './Position';
+import { distance, pointToSegmentDistance } from '../terrain/BattlefieldUtils';
 
 export interface LOFModel {
   id: string;
@@ -100,25 +101,15 @@ export class LOFOperations {
   }
 
   static distanceEdgeToEdge(a: LOFModel, b: LOFModel): number {
-    const distance = LOFOperations.distance(a.position, b.position);
-    return Math.max(0, distance - (a.baseDiameter / 2) - (b.baseDiameter / 2));
+    const dist = distance(a.position, b.position);
+    return Math.max(0, dist - (a.baseDiameter / 2) - (b.baseDiameter / 2));
   }
 
   static distancePointToSegment(point: Position, a: Position, b: Position): number {
-    const lengthSquared = (b.x - a.x) ** 2 + (b.y - a.y) ** 2;
-    if (lengthSquared === 0) return LOFOperations.distance(point, a);
-    let t = ((point.x - a.x) * (b.x - a.x) + (point.y - a.y) * (b.y - a.y)) / lengthSquared;
-    t = Math.max(0, Math.min(1, t));
-    const projection = {
-      x: a.x + t * (b.x - a.x),
-      y: a.y + t * (b.y - a.y),
-    };
-    return LOFOperations.distance(point, projection);
+    return pointToSegmentDistance(point, a, b);
   }
 
   static distance(a: Position, b: Position): number {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    return distance(a, b);
   }
 }

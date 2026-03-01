@@ -1,6 +1,7 @@
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
+import { distance, segmentIntersection } from '../terrain/BattlefieldUtils';
 
 export interface LOSSampleOptions {
   samples?: number;
@@ -286,25 +287,10 @@ export class LOSOperations {
     p3: Position,
     p4: Position
   ): Position | null {
-    const denominator = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
-    if (denominator === 0) return null;
-
-    const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / denominator;
-    const u = -((p1.x - p2.x) * (p1.y - p3.y) - (p1.y - p2.y) * (p1.x - p3.x)) / denominator;
-
-    if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
-      return {
-        x: p1.x + t * (p2.x - p1.x),
-        y: p1.y + t * (p2.y - p1.y),
-      };
-    }
-
-    return null;
+    return segmentIntersection(p1, p2, p3, p4);
   }
 
   static distance(a: Position, b: Position): number {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    return distance(a, b);
   }
 }

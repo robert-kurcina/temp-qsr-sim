@@ -57,19 +57,21 @@ export function segmentsIntersect(
  */
 export function segmentIntersection(
   p1: Position,
-  q1: Position,
   p2: Position,
-  q2: Position
+  p3: Position,
+  p4: Position
 ): Position | null {
-  const d1 = (q1.x - p1.x) * (p2.y - q2.y) - (p1.y - q1.y) * (q2.x - p2.x);
-  if (Math.abs(d1) < 1e-6) return null; // Parallel
+  const denominator = (p1.x - p2.x) * (p3.y - p4.y) - (p1.y - p2.y) * (p3.x - p4.x);
+  if (Math.abs(denominator) < 1e-6) return null; // Parallel
 
-  const t = ((p1.x - p2.x) * (p2.y - q2.y) - (p1.y - p2.y) * (q2.x - p2.x)) / d1;
-  if (t < 0 || t > 1) return null; // Intersection outside segment
+  const t = ((p1.x - p3.x) * (p3.y - p4.y) - (p1.y - p3.y) * (p3.x - p4.x)) / denominator;
+  const u = -((p1.x - p2.x) * (p1.y - p3.y) - (p1.y - p2.y) * (p1.x - p3.x)) / denominator;
+
+  if (t < 0 || t > 1 || u < 0 || u > 1) return null; // Intersection outside segments
 
   return {
-    x: p1.x + t * (q1.x - p1.x),
-    y: p1.y + t * (q1.y - p1.y),
+    x: p1.x + t * (p2.x - p1.x),
+    y: p1.y + t * (p2.y - p1.y),
   };
 }
 

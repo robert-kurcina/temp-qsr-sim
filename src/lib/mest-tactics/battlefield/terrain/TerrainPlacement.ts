@@ -11,7 +11,8 @@
 import { TerrainFeature, TerrainType } from './Terrain';
 import { TerrainElement } from './TerrainElement';
 import { Position } from '../Position';
-import { validateTerrainFitness, TerrainFitnessReport, distance } from './TerrainFitness';
+import { validateTerrainFitness, TerrainFitnessReport } from './TerrainFitness';
+import { distance } from './BattlefieldUtils';
 import { AreaTerrainLayer } from './AreaTerrainLayer';
 import { StructuresLayer } from './StructuresLayer';
 import { RocksLayer } from './RocksLayer';

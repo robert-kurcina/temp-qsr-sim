@@ -1,6 +1,12 @@
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
+import {
+  pointInPolygon,
+  distance,
+  pointToSegmentDistance,
+  closestDistanceToPolygon,
+} from '../terrain/BattlefieldUtils';
 
 export interface PathVector {
   from: Position;
@@ -1365,45 +1371,15 @@ export class PathfindingEngine {
   }
 
   static isPointInPolygon(point: Position, polygon: Position[]): boolean {
-    let inside = false;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const xi = polygon[i].x, yi = polygon[i].y;
-      const xj = polygon[j].x, yj = polygon[j].y;
-      const intersect = ((yi > point.y) !== (yj > point.y))
-        && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
-      if (intersect) {
-        inside = !inside;
-      }
-    }
-    return inside;
+    return pointInPolygon(point, polygon);
   }
 
   static distancePointToPolygon(point: Position, polygon: Position[]): number {
-    if (PathfindingEngine.isPointInPolygon(point, polygon)) {
-      return 0;
-    }
-    let minDistance = Infinity;
-    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-      const distance = PathfindingEngine.distancePointToSegment(point, polygon[j], polygon[i]);
-      if (distance < minDistance) {
-        minDistance = distance;
-      }
-    }
-    return minDistance;
+    return closestDistanceToPolygon(point, polygon);
   }
 
   static distancePointToSegment(point: Position, a: Position, b: Position): number {
-    const abx = b.x - a.x;
-    const aby = b.y - a.y;
-    const apx = point.x - a.x;
-    const apy = point.y - a.y;
-    const abLenSq = abx * abx + aby * aby;
-    if (abLenSq === 0) {
-      return PathfindingEngine.distance(point, a);
-    }
-    const t = Math.max(0, Math.min(1, (apx * abx + apy * aby) / abLenSq));
-    const closest = { x: a.x + abx * t, y: a.y + aby * t };
-    return PathfindingEngine.distance(point, closest);
+    return pointToSegmentDistance(point, a, b);
   }
 
   static buildCircleSamplePoints(center: Position, radius: number): Position[] {
@@ -1426,8 +1402,6 @@ export class PathfindingEngine {
   }
 
   static distance(a: Position, b: Position): number {
-    const dx = a.x - b.x;
-    const dy = a.y - b.y;
-    return Math.sqrt(dx * dx + dy * dy);
+    return distance(a, b);
   }
 }
