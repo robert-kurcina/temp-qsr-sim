@@ -65,15 +65,19 @@ Status: **Active**
 
 This override defines the complete Game Size configurations for MEST Tactics, including the extended VERY_SMALL and VERY_LARGE sizes used for testing and simulation.
 
+**Data Source:** `src/data/game_sizes.json` (canonical) and `src/lib/data.ts` (exported).
+
 ### Game Size Table
 
-| Game Size | Models per Side | BP per Side | End-Game Trigger | Battlefield Size | Use Case |
-|-----------|-----------------|-------------|------------------|------------------|----------|
-| **VERY_SMALL** | 2-4 | 125-250 | Turn 3 | 24"×24" | Quick tests, skirmishes, tutorials |
-| **SMALL** | 4-8 | 250-500 | Turn 4 | 36"×36" | Standard QSR games, learning games |
-| **MEDIUM** | 6-12 | 500-750 | Turn 6 | 48"×48" | Standard competitive games |
-| **LARGE** | 8-16 | 750-1000 | Turn 8 | 60"×60" | Extended battles, campaigns |
-| **VERY_LARGE** | 16-24 | 1000-1250 | Turn 10 | 72"×72" | Epic battles, AI validation, stress tests |
+| Game Size | Models per Side | BP per Side | End-Game Trigger | Battlefield Size (W×H MU) | Use Case |
+|-----------|-----------------|-------------|------------------|---------------------------|----------|
+| **VERY_SMALL** | 2-4 | 125-250 | Turn 3 | 18×24 | Quick tests, skirmishes, tutorials |
+| **SMALL** | 4-8 | 250-500 | Turn 4 | 24×24 | Standard QSR games, learning games |
+| **MEDIUM** | 6-12 | 500-750 | Turn 6 | 36×36 | Standard competitive games |
+| **LARGE** | 8-12 | 750-1000 | Turn 8 | 48×48 | Extended battles, campaigns |
+| **VERY_LARGE** | 10-20 | 1000-1250 | Turn 10 | 72×48 | Epic battles, AI validation, stress tests |
+
+**Note:** Battlefield dimensions are Width × Height (horizontal × vertical). Rectangular battlefields (VERY_SMALL, VERY_LARGE) are displayed with the longer dimension running left-to-right for optimal viewing.
 
 ### End-Game Trigger Rules
 
@@ -106,7 +110,8 @@ Per QSR Line 744-750:
 - Example: 4 models × 65 BP = 260 BP (slightly over, acceptable)
 
 **Battlefield:**
-- Size: 24"×24" (minimum playable area)
+- Size: **18 MU width × 24 MU height** (rectangular, portrait orientation)
+- For display: Rotate to landscape (24 MU left-to-right, 18 MU top-to-bottom)
 - Terrain: 2-4 elements (10-15% density)
 - Deployment: 3" from edges, 6" separation
 
@@ -127,12 +132,13 @@ Per QSR Line 744-750:
 
 **Assembly Building:**
 - BP Limit: 1000-1250 BP
-- Model Count: 16-24 models
+- Model Count: 10-20 models
 - Typical Profile: Mix of Elite (129 BP), Veteran (61 BP), Average (30 BP)
 - Example: 8 Elite (1032 BP) + 4 Veteran (244 BP) = 1276 BP
 
 **Battlefield:**
-- Size: 72"×72" (large play area required)
+- Size: **72 MU width × 48 MU height** (rectangular, landscape orientation)
+- Display: 72 MU left-to-right, 48 MU top-to-bottom
 - Terrain: 20-30 elements (15-20% density)
 - Deployment: 6" from edges, 12" separation
 

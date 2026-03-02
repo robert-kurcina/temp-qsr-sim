@@ -217,7 +217,8 @@ export async function runValidationBatch(
     missionId: resolvedMissionId,
     missionName,
     gameSize,
-    battlefieldSize: GAME_SIZE_CONFIG[gameSize].battlefieldSize,
+    battlefieldWidth: GAME_SIZE_CONFIG[gameSize].battlefieldWidth,
+    battlefieldHeight: GAME_SIZE_CONFIG[gameSize].battlefieldHeight,
     maxTurns,
     endGameTurn: Math.min(GAME_SIZE_CONFIG[gameSize].endGameTurn, maxTurns),
     sides: [

@@ -91,7 +91,8 @@ async function runQuickBattle(
     missionId: resolvedMissionId,
     missionName: MISSION_NAME_BY_ID[resolvedMissionId] ?? resolvedMissionId,
     gameSize,
-    battlefieldSize: GAME_SIZE_CONFIG[gameSize].battlefieldSize,
+    battlefieldWidth: GAME_SIZE_CONFIG[gameSize].battlefieldWidth,
+    battlefieldHeight: GAME_SIZE_CONFIG[gameSize].battlefieldHeight,
     maxTurns: GAME_SIZE_CONFIG[gameSize].maxTurns,
     endGameTurn: GAME_SIZE_CONFIG[gameSize].endGameTurn,
     sides: [

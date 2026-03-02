@@ -60,7 +60,8 @@ import { getEndGameTriggerTurn } from '../src/lib/mest-tactics/engine/end-game-t
 
 interface BattleConfig {
   gameSize: GameSize;
-  battlefieldSize: number;
+  battlefieldWidth: number;
+  battlefieldHeight: number;
   maxTurns: number;
   endGameTriggerTurn: number;
   terrainDensity: number;
@@ -96,7 +97,8 @@ const LIGHTING_PRESETS: Record<string, LightingPreset> = {
 
 const DEFAULT_CONFIG: BattleConfig = {
   gameSize: GameSize.VERY_SMALL,
-  battlefieldSize: 24,
+  battlefieldWidth: 18,
+  battlefieldHeight: 24,
   maxTurns: 10,
   endGameTriggerTurn: 3, // VERY_SMALL = Turn 3
   terrainDensity: 0.50,
@@ -270,20 +272,21 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   config.endGameTriggerTurn = getEndGameTriggerTurn(config.gameSize);
 
   // Update battlefield size based on game size
-  const sizeDefaults: Record<GameSize, number> = {
-    [GameSize.VERY_SMALL]: 24,
-    [GameSize.SMALL]: 36,
-    [GameSize.MEDIUM]: 48,
-    [GameSize.LARGE]: 60,
-    [GameSize.VERY_LARGE]: 72,
+  const sizeDefaults: Record<GameSize, { battlefieldWidth: number; battlefieldHeight: number }> = {
+    [GameSize.VERY_SMALL]: { battlefieldWidth: 18, battlefieldHeight: 24 },
+    [GameSize.SMALL]: { battlefieldWidth: 24, battlefieldHeight: 24 },
+    [GameSize.MEDIUM]: { battlefieldWidth: 36, battlefieldHeight: 36 },
+    [GameSize.LARGE]: { battlefieldWidth: 48, battlefieldHeight: 48 },
+    [GameSize.VERY_LARGE]: { battlefieldWidth: 72, battlefieldHeight: 48 },
   };
-  config.battlefieldSize = sizeDefaults[config.gameSize];
+  config.battlefieldWidth = sizeDefaults[config.gameSize].battlefieldWidth;
+  config.battlefieldHeight = sizeDefaults[config.gameSize].battlefieldHeight;
 
   console.log('⚔️  AI vs AI BATTLE GENERATOR');
   console.log('═══════════════════════════════════════');
   console.log(`Mission: ${config.missionId} (Elimination)`);
   console.log(`Game Size: ${config.gameSize}`);
-  console.log(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
+  console.log(`Battlefield: ${config.battlefieldWidth}×${config.battlefieldHeight} MU`);
   console.log(`Terrain Density: ${Math.round(config.terrainDensity * 100)}%`);
   console.log(`Lighting: ${config.lighting.name} (Visibility OR ${config.lighting.visibilityOR} MU)`);
   console.log(`End-Game Trigger: Turn ${config.endGameTriggerTurn}`);
@@ -303,8 +306,9 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   logger.startBattle(`battle-${config.gameSize}-${Date.now()}`);
 
   // Create battlefield
-  const battlefield = new Battlefield(config.battlefieldSize, config.battlefieldSize);
-  const terrain = generateTerrain(config.battlefieldSize, config.terrainDensity);
+  const battlefield = new Battlefield(config.battlefieldWidth, config.battlefieldHeight);
+  const terrainSize = Math.max(config.battlefieldWidth, config.battlefieldHeight);
+  const terrain = generateTerrain(terrainSize, config.terrainDensity);
   terrain.forEach(t => battlefield.addTerrain(t));
 
   console.log(`✓ Battlefield created with ${terrain.length} terrain elements\n`);
@@ -356,7 +360,7 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   // Deploy models
   console.log('Deploying models...');
   const modelsPerRow = Math.ceil(Math.sqrt(numModelsPerSide));
-  const spacing = Math.floor(config.battlefieldSize / (modelsPerRow + 1));
+  const spacing = Math.floor(config.battlefieldHeight / (modelsPerRow + 1));
 
   sideA.members.forEach((member: any, i: number) => {
     const row = Math.floor(i / modelsPerRow);
@@ -370,7 +374,7 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
     const row = Math.floor(i / modelsPerRow);
     const col = i % modelsPerRow;
     const x = spacing + col * spacing;
-    const y = config.battlefieldSize - spacing - row * spacing;
+    const y = config.battlefieldHeight - spacing - row * spacing;
     battlefield.placeCharacter(member.character, { x, y });
   });
 
@@ -680,7 +684,7 @@ function printBattleSummary(
   console.log('═══════════════════════════════════════');
   console.log(`Mission: ${config.missionId}`);
   console.log(`Game Size: ${config.gameSize}`);
-  console.log(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
+  console.log(`Battlefield: ${config.battlefieldWidth}×${config.battlefieldHeight} MU`);
   console.log(`Turns Played: ${summary.turnCount}${summary.gameEnded ? ` (Game ended: ${summary.endGameReason})` : ''}`);
   console.log('');
 

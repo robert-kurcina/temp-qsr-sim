@@ -274,7 +274,7 @@ Verify layers render in correct order (bottom to top):
 ## Performance Tests
 
 ### Test: Large Battle Loading
-- [ ] Generate LARGE battle (60×60 MU, 8-10 models/side)
+- [ ] Generate LARGE battle (48×48 MU, 8-12 models/side)
 - [ ] Load in dashboard
 - [ ] SVG renders in < 2 seconds
 - [ ] Overlays render in < 1 second

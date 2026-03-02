@@ -1984,8 +1984,8 @@ export class AIBattleRunner {
         perCharacterFovLos: config.perCharacterFovLos,
       },
       battlefield: {
-        widthMu: config.battlefieldSize,
-        heightMu: config.battlefieldSize,
+        widthMu: config.battlefieldWidth,
+        heightMu: config.battlefieldHeight,
         movementSampleStepMu: 0.5,
         lofWidthMu: 1,
         // Reference to exported battlefield.json
@@ -2214,7 +2214,7 @@ export class AIBattleRunner {
 
       out('\n⚔️  Starting Battle\n');
       out(`Mission: ${config.missionName}`);
-      out(`Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
+      out(`Battlefield: ${config.battlefieldWidth}×${config.battlefieldHeight} MU`);
       out(`Max Turns: ${config.maxTurns}\n`);
       if (this.performanceProgressEnabled) {
         console.log(
@@ -2236,16 +2236,17 @@ export class AIBattleRunner {
       out();
 
       // Create battlefield
+      const battlefieldSize = Math.max(config.battlefieldWidth, config.battlefieldHeight);
       const battlefield = this.withPhaseTiming(
         'setup.create_battlefield',
-        () => this.createBattlefield(config.battlefieldSize, config.densityRatio)
+        () => this.createBattlefield(battlefieldSize, config.densityRatio)
       );
       this.currentBattlefield = battlefield;
 
       // Deploy models
       this.withPhaseTiming('setup.deploy_models', () => {
         sides.forEach((side, i) => {
-          this.deployModels(side, battlefield, i, config.battlefieldSize);
+          this.deployModels(side, battlefield, i, config.battlefieldHeight);
         });
       });
       const allCharacters = sides.flatMap(s => s.characters);

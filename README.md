@@ -53,7 +53,7 @@ http://localhost:3001/dashboard
 
 | Control | Description | Options |
 |---------|-------------|---------|
-| **Battlefield Size** | Select battlefield dimensions | VERY_SMALL (24×24), SMALL (36×36), MEDIUM (48×48), LARGE (60×60), VERY_LARGE (72×72) |
+| **Battlefield Size** | Select battlefield dimensions | VERY_SMALL (18×24), SMALL (24×24), MEDIUM (36×36), LARGE (48×48), VERY_LARGE (72×48) |
 | **Area Terrain** | Rough patches density | 0-100% (presets: 0, 20, 50, 80, 100) |
 | **Buildings** | Building density | 0-100% (presets: 0, 20, 50, 80, 100) |
 | **Walls** | Wall density | 0-100% (presets: 0, 20, 50, 80, 100) |
@@ -371,12 +371,13 @@ generated/
 ### Battle Config Options
 
 ```bash
-# Game sizes
-VERY_SMALL   # 24×24 MU, 3-5 models, 250-350 BP
-SMALL        # 36×36 MU, 4-6 models, 400-500 BP
-MEDIUM       # 48×48 MU, 6-8 models, 600-800 BP
-LARGE        # 60×60 MU, 8-10 models, 900-1100 BP
-VERY_LARGE   # 72×72 MU, 16-18 models, 1400-1600 BP
+# Game sizes (Width × Height in MU)
+# Note: Rectangular battlefields display with longer dimension left-to-right
+VERY_SMALL   # 18×24 MU, 3-5 models, 250-350 BP (rectangular)
+SMALL        # 24×24 MU, 4-6 models, 400-500 BP (square)
+MEDIUM       # 36×36 MU, 6-8 models, 600-800 BP (square)
+LARGE        # 48×48 MU, 8-10 models, 900-1100 BP (square)
+VERY_LARGE   # 72×48 MU, 16-18 models, 1400-1600 BP (rectangular)
 
 # Density (0-100%)
 0    # No terrain

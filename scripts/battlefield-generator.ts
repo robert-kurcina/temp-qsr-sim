@@ -81,6 +81,7 @@ export async function generateBattlefield(
     };
 
     // Calculate overall density ratio (average of non-area terrains)
+    // If all densities are 0, use 0 (no terrain)
     const nonAreaDensity = (
       config.terrainDensities.building +
       config.terrainDensities.wall +
@@ -89,11 +90,15 @@ export async function generateBattlefield(
       config.terrainDensities.shrub
     ) / 5;
 
+    // Only apply density if user requested terrain (respect 0 setting)
+    const effectiveDensity = nonAreaDensity > 0 ? Math.max(10, Math.min(100, nonAreaDensity)) : 0;
+    const effectiveAreaDensity = config.terrainDensities.area > 0 ? Math.max(10, Math.min(100, config.terrainDensities.area)) : 0;
+
     // Create battlefield using factory
     const battlefield = BattlefieldFactory.create(size, size, {
       terrain: terrainWeights,
-      densityRatio: Math.max(10, Math.min(100, nonAreaDensity)),
-      areaDensityRatio: config.terrainDensities.area,
+      densityRatio: effectiveDensity,
+      areaDensityRatio: effectiveAreaDensity,
       maxNonAreaSpacing: 0.5,
       maxPlacementAttempts: 1000,
       maxFillerAttempts: 1000,

@@ -6,7 +6,8 @@
     "minModels": 2,
     "maxModels": 4,
     "battlefieldWidthMU": 18,
-    "battlefieldHeightMU": 24
+    "battlefieldHeightMU": 24,
+    "endGameTrigger": 3
   },
   "SMALL": {
     "name": "Small",
@@ -15,7 +16,8 @@
     "minModels": 4,
     "maxModels": 8,
     "battlefieldWidthMU": 24,
-    "battlefieldHeightMU": 24
+    "battlefieldHeightMU": 24,
+    "endGameTrigger": 4
   },
   "MEDIUM": {
     "name": "Medium",
@@ -24,7 +26,8 @@
     "minModels": 6,
     "maxModels": 12,
     "battlefieldWidthMU": 36,
-    "battlefieldHeightMU": 36
+    "battlefieldHeightMU": 36,
+    "endGameTrigger": 6
   },
   "LARGE": {
     "name": "Large",
@@ -33,7 +36,8 @@
     "minModels": 8,
     "maxModels": 12,
     "battlefieldWidthMU": 48,
-    "battlefieldHeightMU": 48
+    "battlefieldHeightMU": 48,
+    "endGameTrigger": 8
   },
   "VERY_LARGE": {
     "name": "Very Large",
@@ -42,6 +46,7 @@
     "minModels": 10,
     "maxModels": 20,
     "battlefieldWidthMU": 72,
-    "battlefieldHeightMU": 48
+    "battlefieldHeightMU": 48,
+    "endGameTrigger": 10
   }
 }

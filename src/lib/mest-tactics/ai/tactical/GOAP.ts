@@ -122,7 +122,7 @@ export class GOAPPlanner {
    */
   plan(goal: GOAPGoal, context: AIContext): ActionPlan | null {
     const currentState = this.captureState(context);
-    
+
     // Check if goal is already satisfied
     if (this.isGoalSatisfied(goal, currentState)) {
       return {
@@ -133,9 +133,10 @@ export class GOAPPlanner {
       };
     }
 
-    // Backward chain from goal
-    const plan = this.backwardChain(goal, currentState, 0);
-    
+    // Backward chain from goal with visited set to prevent cycles
+    const visitedGoals = new Set<string>();
+    const plan = this.backwardChain(goal, currentState, 0, visitedGoals);
+
     if (plan) {
       return {
         actions: plan,
@@ -154,11 +155,19 @@ export class GOAPPlanner {
   private backwardChain(
     goal: GOAPGoal,
     currentState: WorldState,
-    depth: number
+    depth: number,
+    visitedGoals: Set<string>
   ): GOAPAction[] | null {
     if (depth >= this.maxDepth) {
       return null;
     }
+
+    // Create a unique identifier for this goal to detect cycles
+    const goalId = `${goal.name}:${goal.conditions.map(c => `${c.property}=${c.value}`).join(',')}`;
+    if (visitedGoals.has(goalId)) {
+      return null; // Cycle detected
+    }
+    visitedGoals.add(goalId);
 
     // Find actions that achieve goal conditions
     const relevantActions = this.findRelevantActions(goal, currentState);
@@ -177,8 +186,8 @@ export class GOAPPlanner {
         isUrgent: goal.isUrgent,
       };
 
-      const subPlan = this.backwardChain(preconditionGoal, currentState, depth + 1);
-      
+      const subPlan = this.backwardChain(preconditionGoal, currentState, depth + 1, visitedGoals);
+
       if (subPlan) {
         return [...subPlan, action];
       }

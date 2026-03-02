@@ -209,8 +209,13 @@ export class BattlefieldFactory {
 
   private static createOnce(width: number, height: number, config: BattlefieldFactoryConfig = {}): Battlefield {
     const battlefield = new Battlefield(width, height);
-    const densityRatio = clamp(config.densityRatio ?? 25, 10, 100);
-    const areaDensityRatio = clamp(config.areaDensityRatio ?? 25, 0, 100);
+    // Respect 0 density (no terrain), otherwise clamp between 10-100
+    const densityRatio = config.densityRatio !== undefined
+      ? (config.densityRatio > 0 ? clamp(config.densityRatio, 10, 100) : 0)
+      : 25;
+    const areaDensityRatio = config.areaDensityRatio !== undefined
+      ? (config.areaDensityRatio > 0 ? clamp(config.areaDensityRatio, 10, 100) : 0)
+      : 25;
     const deployment = BattlefieldFactory.resolveDeploymentZone(width, height, config.deploymentZone);
     const weights: TerrainWeights = {
       ...defaultTerrainWeights,

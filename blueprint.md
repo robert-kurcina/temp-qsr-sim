@@ -1679,9 +1679,10 @@ src/lib/mest-tactics/battlefield/terrain/
 ```typescript
 interface TerrainPlacementOptions {
   mode: 'fast' | 'balanced' | 'thorough';
-  density: number;          // 0-100
-  battlefieldSize: number;  // MU
-  seed?: number;            // For reproducibility
+  density: number;              // 0-100
+  battlefieldWidth: number;     // MU
+  battlefieldHeight: number;    // MU
+  seed?: number;                // For reproducibility
 }
 
 interface TerrainPlacementResult {
@@ -2778,14 +2779,15 @@ npx tsx scripts/run-battles/ --mission QAI_11 --iterations 10
 interface BattleConfig {
   // Game settings
   gameSize: GameSize;
-  battlefieldSize: number;
+  battlefieldWidth: number;
+  battlefieldHeight: number;
   maxTurns: number;
   endGameTriggerTurn: number;
-  
+
   // Terrain & Lighting
   terrainDensity: number;  // 0-100%
   lighting: LightingPreset;
-  
+
   // Mission
   missionId: string;  // QAI_11, QAI_12, etc.
   
@@ -2959,14 +2961,15 @@ npx tsx scripts/run-battles/ --mission QAI_11 --iterations 10
 interface BattleConfig {
   // Game settings
   gameSize: GameSize;
-  battlefieldSize: number;
+  battlefieldWidth: number;
+  battlefieldHeight: number;
   maxTurns: number;
   endGameTriggerTurn: number;
-  
+
   // Terrain & Lighting
   terrainDensity: number;  // 0-100%
   lighting: LightingPreset;
-  
+
   // Mission
   missionId: string;  // QAI_11, QAI_12, etc.
   
@@ -3672,7 +3675,8 @@ interface StartOfGameReport {
       name: string;       // e.g., 'Day, Clear'
       visibilityOR: number; // e.g., 16 MU
     };
-    battlefieldSize: number; // e.g., 24 MU
+    battlefieldWidth: number;  // e.g., 24 MU
+    battlefieldHeight: number; // e.g., 24 MU
     endGameTriggerTurn: number; // e.g., 3
   };
   
@@ -5856,11 +5860,11 @@ This runs complete games that:
 
 | Size | Models/Side | BP/Side | Battlefield | Turns |
 |------|-------------|---------|-------------|-------|
-| Skirmish | 2-4 | 125-250 | 18×18 MU | 3 |
+| Skirmish (VERY_SMALL) | 2-4 | 125-250 | 18×24 MU | 3 |
 | Small | 4-8 | 250-500 | 24×24 MU | 4 |
 | Medium | 6-12 | 500-750 | 36×36 MU | 6 |
-| Large | 8-16 | 750-1000 | 48×48 MU | 8 |
-| Epic | 16-32 | 1000-2000 | 60×60 MU | 10 |
+| Large | 8-12 | 750-1000 | 48×48 MU | 8 |
+| Epic (VERY_LARGE) | 10-20 | 1000-1250 | 72×48 MU | 10 |
 
 ### AI Capabilities
 
@@ -5878,7 +5882,7 @@ The AI controllers make decisions based on:
 ```
 ⚔️  Starting Skirmish Game
 
-Battlefield: 18×18 MU
+Battlefield: 18×24 MU
 Max Turns: 3
 
 Alpha: 2 models
@@ -6248,11 +6252,11 @@ All distance functions are now in `BattlefieldUtils.ts`:
 #### 2. Battlefield Size Selector
 - **UI Component:** Dropdown or radio buttons
 - **Options:**
-  - VERY_SMALL (24×24 MU)
-  - SMALL (36×36 MU)
-  - MEDIUM (48×48 MU)
-  - LARGE (60×60 MU)
-  - VERY_LARGE (72×72 MU)
+  - VERY_SMALL (18×24 MU)
+  - SMALL (24×24 MU)
+  - MEDIUM (36×36 MU)
+  - LARGE (48×48 MU)
+  - VERY_LARGE (72×48 MU)
 - **Default:** Based on most recent battle or user preference
 
 #### 3. Generate Button
@@ -6322,11 +6326,11 @@ interface GenerateBattlefieldResponse {
   <div class="generator-section">
     <label>Battlefield Size:</label>
     <select id="bf-size-select">
-      <option value="VERY_SMALL">VERY_SMALL (24×24 MU)</option>
-      <option value="SMALL">SMALL (36×36 MU)</option>
-      <option value="MEDIUM" selected>MEDIUM (48×48 MU)</option>
-      <option value="LARGE">LARGE (60×60 MU)</option>
-      <option value="VERY_LARGE">VERY_LARGE (72×72 MU)</option>
+      <option value="VERY_SMALL">VERY_SMALL (18×24 MU)</option>
+      <option value="SMALL">SMALL (24×24 MU)</option>
+      <option value="MEDIUM" selected>MEDIUM (36×36 MU)</option>
+      <option value="LARGE">LARGE (48×48 MU)</option>
+      <option value="VERY_LARGE">VERY_LARGE (72×48 MU)</option>
     </select>
   </div>
   
@@ -6471,8 +6475,8 @@ export async function generateBattlefield(
   
   // Generate battlefield
   const battlefield = factory.create({
-    width: dimensions.battlefieldSize,
-    height: dimensions.battlefieldSize,
+    width: dimensions.battlefieldWidth,
+    height: dimensions.battlefieldHeight,
     seed: config.seed,
   });
   

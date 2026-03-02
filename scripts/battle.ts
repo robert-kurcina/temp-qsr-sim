@@ -37,7 +37,8 @@ import { LightingCondition, getVisibilityOrForLighting } from '../src/lib/mest-t
 interface BattleConfig {
   missionId: string;
   gameSize: GameSize;
-  battlefieldSize: number;
+  battlefieldWidth: number;
+  battlefieldHeight: number;
   maxTurns: number;
   sides: SideConfig[];
   density: number;
@@ -57,12 +58,12 @@ interface SideConfig {
   assemblyName: string;
 }
 
-const GAME_SIZE_CONFIG: Record<GameSize, { battlefieldSize: number; maxTurns: number; bpPerSide: number[]; modelsPerSide: number[] }> = {
-  [GameSize.VERY_SMALL]: { battlefieldSize: 24, maxTurns: 6, bpPerSide: [250, 300, 350], modelsPerSide: [3, 4, 5] },
-  [GameSize.SMALL]: { battlefieldSize: 36, maxTurns: 8, bpPerSide: [400, 450, 500], modelsPerSide: [4, 5, 6] },
-  [GameSize.MEDIUM]: { battlefieldSize: 48, maxTurns: 10, bpPerSide: [600, 700, 800], modelsPerSide: [6, 7, 8] },
-  [GameSize.LARGE]: { battlefieldSize: 60, maxTurns: 12, bpPerSide: [900, 1000, 1100], modelsPerSide: [8, 9, 10] },
-  [GameSize.VERY_LARGE]: { battlefieldSize: 72, maxTurns: 15, bpPerSide: [1400, 1500, 1600], modelsPerSide: [16, 17, 18] },
+const GAME_SIZE_CONFIG: Record<GameSize, { battlefieldWidth: number; battlefieldHeight: number; maxTurns: number; bpPerSide: number[]; modelsPerSide: number[] }> = {
+  [GameSize.VERY_SMALL]: { battlefieldWidth: 18, battlefieldHeight: 24, maxTurns: 6, bpPerSide: [250, 300, 350], modelsPerSide: [3, 4, 5] },
+  [GameSize.SMALL]: { battlefieldWidth: 24, battlefieldHeight: 24, maxTurns: 8, bpPerSide: [400, 450, 500], modelsPerSide: [4, 5, 6] },
+  [GameSize.MEDIUM]: { battlefieldWidth: 36, battlefieldHeight: 36, maxTurns: 10, bpPerSide: [600, 700, 800], modelsPerSide: [6, 7, 8] },
+  [GameSize.LARGE]: { battlefieldWidth: 48, battlefieldHeight: 48, maxTurns: 12, bpPerSide: [900, 1000, 1100], modelsPerSide: [8, 9, 10] },
+  [GameSize.VERY_LARGE]: { battlefieldWidth: 72, battlefieldHeight: 48, maxTurns: 15, bpPerSide: [1400, 1500, 1600], modelsPerSide: [16, 17, 18] },
 };
 
 // ============================================================================
@@ -101,7 +102,7 @@ class UnifiedBattle {
     console.log('═══════════════════════════════════════');
     console.log(`Mission: ${this.config.missionId}`);
     console.log(`Game Size: ${this.config.gameSize}`);
-    console.log(`Battlefield: ${this.config.battlefieldSize}×${this.config.battlefieldSize} MU`);
+    console.log(`Battlefield: ${this.config.battlefieldWidth}×${this.config.battlefieldHeight} MU`);
     console.log(`Sides: ${this.config.sides.length}`);
     console.log(`Terrain Density: ${Math.round(this.config.density * 100)}%`);
     console.log(`Lighting: ${this.config.lighting.name} (Visibility OR ${this.config.lighting.visibilityOR} MU)`);
@@ -109,10 +110,11 @@ class UnifiedBattle {
 
     // 1. Place terrain
     console.log('🌲 Placing terrain...');
+    const terrainSize = Math.max(this.config.battlefieldWidth, this.config.battlefieldHeight);
     const terrainResult = placeTerrain({
       mode: 'balanced',
       density: this.config.density * 100,
-      battlefieldSize: this.config.battlefieldSize,
+      battlefieldSize: terrainSize,
       seed: this.config.seed,
       terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
     });
@@ -127,7 +129,7 @@ class UnifiedBattle {
 
     // 3. Create battlefield
     console.log('🗺️  Creating battlefield...');
-    const battlefield = new Battlefield(this.config.battlefieldSize, this.config.battlefieldSize);
+    const battlefield = new Battlefield(this.config.battlefieldWidth, this.config.battlefieldHeight);
     for (const terrainFeature of terrainResult.terrain) {
       const centroid = this.getCentroid(terrainFeature.vertices);
       // Map terrain type to valid TerrainElement name
@@ -167,8 +169,8 @@ class UnifiedBattle {
         maxOrm: 3,
         allowConcentrateRangeExtension: true,
         perCharacterFovLos: false,
-        battlefieldWidth: this.config.battlefieldSize,
-        battlefieldHeight: this.config.battlefieldSize,
+        battlefieldWidth: this.config.battlefieldWidth,
+        battlefieldHeight: this.config.battlefieldHeight,
       });
     }
 
@@ -193,8 +195,8 @@ class UnifiedBattle {
         maxOrm: 3,
         allowConcentrateRangeExtension: true,
         perCharacterFovLos: false,
-        battlefieldWidth: this.config.battlefieldSize,
-        battlefieldHeight: this.config.battlefieldSize,
+        battlefieldWidth: this.config.battlefieldWidth,
+        battlefieldHeight: this.config.battlefieldHeight,
         battlefield,
         sides,
       });
@@ -230,7 +232,7 @@ class UnifiedBattle {
 
   private generateSvg(terrain: any[]): string {
     // Simplified SVG generation - uses SvgRenderer
-    const battlefield = new Battlefield(this.config.battlefieldSize, this.config.battlefieldSize);
+    const battlefield = new Battlefield(this.config.battlefieldWidth, this.config.battlefieldHeight);
     for (const t of terrain) {
       const centroid = this.getCentroid(t.vertices);
       // Map terrain type to valid TerrainElement name
@@ -249,8 +251,8 @@ class UnifiedBattle {
     }
 
     return SvgRenderer.render(battlefield, {
-      width: this.config.battlefieldSize,
-      height: this.config.battlefieldSize,
+      width: this.config.battlefieldWidth,
+      height: this.config.battlefieldHeight,
       gridResolution: 0.5,
       title: `${this.config.missionId} - ${this.config.gameSize}`,
       layers: [
@@ -306,13 +308,13 @@ class UnifiedBattle {
   }
 
   private async deployModels(sides: any[], battlefield: Battlefield): Promise<void> {
-    const battlefieldSize = this.config.battlefieldSize;
-    const deploymentDepth = Math.max(6, Math.floor(battlefieldSize * 0.2));
+    const battlefieldHeight = this.config.battlefieldHeight;
+    const deploymentDepth = Math.max(6, Math.floor(battlefieldHeight * 0.2));
     const edgeMargin = 3;
 
     for (let sideIndex = 0; sideIndex < sides.length; sideIndex++) {
       const side = sides[sideIndex];
-      const sideStartY = sideIndex === 0 ? edgeMargin : Math.max(edgeMargin, battlefieldSize - edgeMargin - deploymentDepth);
+      const sideStartY = sideIndex === 0 ? edgeMargin : Math.max(edgeMargin, battlefieldHeight - edgeMargin - deploymentDepth);
 
       for (let memberIndex = 0; memberIndex < side.members.length; memberIndex++) {
         const member = side.members[memberIndex];
@@ -457,7 +459,8 @@ async function main() {
   const config: BattleConfig = {
     missionId: 'QAI_11',
     gameSize,
-    battlefieldSize: sizeConfig.battlefieldSize,
+    battlefieldWidth: sizeConfig.battlefieldWidth,
+    battlefieldHeight: sizeConfig.battlefieldHeight,
     maxTurns: sizeConfig.maxTurns,
     sides: [
       { name: 'Alpha', bp: sizeConfig.bpPerSide[1], modelCount: sizeConfig.modelsPerSide[1], tacticalDoctrine: TacticalDoctrine.Balanced, assemblyName: 'Alpha Assembly' },

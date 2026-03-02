@@ -78,11 +78,11 @@ export class AIBattleSetup {
 
   private async selectGameSize(): Promise<GameSize> {
     console.log('\n📏 Select Game Size:\n');
-    console.log('  1. VERY_SMALL  (2-4 models/side, 125-250 BP, 18×18 MU)');
+    console.log('  1. VERY_SMALL  (2-4 models/side, 125-250 BP, 18×24 MU)');
     console.log('  2. SMALL       (4-8 models/side, 250-500 BP, 24×24 MU)');
     console.log('  3. MEDIUM      (6-12 models/side, 500-750 BP, 36×36 MU)');
-    console.log('  4. LARGE       (8-16 models/side, 750-1000 BP, 48×48 MU)');
-    console.log('  5. VERY_LARGE  (16-32 models/side, 1000-2000 BP, 60×60 MU)');
+    console.log('  4. LARGE       (8-12 models/side, 750-1000 BP, 48×48 MU)');
+    console.log('  5. VERY_LARGE  (10-20 models/side, 1000-1250 BP, 72×48 MU)');
 
     const choice = await this.question('\nGame size [1-5] (default: 5): ');
 
@@ -202,7 +202,8 @@ export class AIBattleSetup {
       missionId: mission.id,
       missionName: mission.name,
       gameSize,
-      battlefieldSize: GAME_SIZE_CONFIG[gameSize].battlefieldSize,
+      battlefieldWidth: GAME_SIZE_CONFIG[gameSize].battlefieldWidth,
+      battlefieldHeight: GAME_SIZE_CONFIG[gameSize].battlefieldHeight,
       maxTurns: GAME_SIZE_CONFIG[gameSize].maxTurns,
       endGameTurn: GAME_SIZE_CONFIG[gameSize].endGameTurn,
       sides,
@@ -219,7 +220,7 @@ export class AIBattleSetup {
     console.log('\n📋 Configuration Summary:\n');
     console.log(`  Mission: ${config.missionName} (${config.missionId})`);
     console.log(`  Game Size: ${GAME_SIZE_CONFIG[gameSize].name}`);
-    console.log(`  Battlefield: ${config.battlefieldSize}×${config.battlefieldSize} MU`);
+    console.log(`  Battlefield: ${config.battlefieldWidth}×${config.battlefieldHeight} MU`);
     console.log(`  Max Turns: ${config.maxTurns}`);
     console.log(`  Terrain Density: ${config.densityRatio}%`);
     console.log(`  Lighting: ${config.lighting} (Visibility OR ${config.visibilityOrMu} MU)`);

@@ -694,9 +694,10 @@
     /* Tab 5: Battlefield Audit */
     .battlefield-audit-container {
       display: flex;
-      height: calc(100vh - 180px);
+      height: calc(100vh - 220px);
       gap: 1rem;
       padding: 1rem;
+      overflow: hidden;
     }
     .battlefield-viewer {
       flex: 0 0 80%;
@@ -705,22 +706,21 @@
       background: #16213e;
       border-radius: 8px;
       overflow: hidden;
+      width: 100%;
     }
     .battlefield-audit-svg {
       flex: 1;
       background: #fff;
       overflow: auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 500px;
+      display: block;
       width: 100%;
+      min-height: 500px;
     }
     .battlefield-audit-svg svg {
-      width: 100%;
-      height: auto;
-      max-width: 100%;
-      max-height: 100%;
+      display: block;
+      width: 100% !important;
+      height: auto !important;
+      max-width: 100% !important;
     }
     .battlefield-audit-info {
       padding: 1rem;
@@ -919,9 +919,10 @@
       background: #16213e;
       border-radius: 8px;
       padding: 1rem;
-      overflow: hidden;
+      overflow: auto;
       display: flex;
       flex-direction: column;
+      min-width: 250px;
     }
     .battlefield-list-panel h3 {
       color: #e94560;
@@ -1100,11 +1101,11 @@
       <div class="generator-section">
         <label for="bf-size-select">Battlefield Size:</label>
         <select id="bf-size-select">
-          <option value="VERY_SMALL">VERY_SMALL (24×24 MU)</option>
-          <option value="SMALL">SMALL (36×36 MU)</option>
-          <option value="MEDIUM" selected>MEDIUM (48×48 MU)</option>
-          <option value="LARGE">LARGE (60×60 MU)</option>
-          <option value="VERY_LARGE">VERY_LARGE (72×72 MU)</option>
+          <option value="VERY_SMALL">VERY_SMALL (18×24 MU)</option>
+          <option value="SMALL">SMALL (24×24 MU)</option>
+          <option value="MEDIUM" selected>MEDIUM (36×36 MU)</option>
+          <option value="LARGE">LARGE (48×48 MU)</option>
+          <option value="VERY_LARGE">VERY_LARGE (72×48 MU)</option>
         </select>
       </div>
       
@@ -1581,16 +1582,65 @@
     };
 
     // ========== Battlefield Generator =========
-    // Initialize density slider value displays
+    // LocalStorage keys for density sliders
+    const DENSITY_STORAGE_KEYS = {
+      'density-area': 'mest-density-area',
+      'density-building': 'mest-density-building',
+      'density-wall': 'mest-density-wall',
+      'density-tree': 'mest-density-tree',
+      'density-rocks': 'mest-density-rocks',
+      'density-shrub': 'mest-density-shrub'
+    };
+
+    // Save density slider values to localStorage
+    function saveDensitySliders() {
+      try {
+        Object.entries(DENSITY_STORAGE_KEYS).forEach(([sliderId, storageKey]) => {
+          const slider = document.getElementById(sliderId);
+          if (slider) {
+            localStorage.setItem(storageKey, slider.value);
+          }
+        });
+      } catch (e) {
+        // Silently fail if localStorage is unavailable
+      }
+    }
+
+    // Restore density slider values from localStorage
+    function restoreDensitySliders() {
+      try {
+        Object.entries(DENSITY_STORAGE_KEYS).forEach(([sliderId, storageKey]) => {
+          const savedValue = localStorage.getItem(storageKey);
+          if (savedValue !== null) {
+            const slider = document.getElementById(sliderId);
+            const display = document.getElementById(`${sliderId}-value`);
+            if (slider) {
+              slider.value = savedValue;
+              if (display) display.textContent = `${savedValue}%`;
+            }
+          }
+        });
+      } catch (e) {
+        // Silently fail if localStorage is unavailable
+      }
+    }
+
+    // Initialize density slider value displays and persistence
     document.querySelectorAll('.density-slider').forEach(slider => {
       const valueDisplay = document.getElementById(`${slider.id}-value`);
       if (valueDisplay) {
         valueDisplay.textContent = `${slider.value}%`;
         slider.addEventListener('input', () => {
           valueDisplay.textContent = `${slider.value}%`;
+          saveDensitySliders();
         });
       }
     });
+
+    // Restore saved slider values (only if sliders exist on this tab)
+    if (document.getElementById('density-area')) {
+      restoreDensitySliders();
+    }
 
     // Initialize preset button handlers
     document.querySelectorAll('.slider-presets button').forEach(button => {
@@ -1602,6 +1652,7 @@
         if (slider && valueDisplay) {
           slider.value = value;
           valueDisplay.textContent = `${value}%`;
+          saveDensitySliders();
         }
       });
     });
@@ -1625,6 +1676,9 @@
           shrub: parseInt(document.getElementById('density-shrub').value),
         };
 
+        // Debug: log slider values
+        console.log('Generating battlefield with densities:', terrainDensities);
+
         // Disable button and show progress
         generateBtn.disabled = true;
         progressIndicator.style.display = 'flex';
@@ -1645,15 +1699,23 @@
             resultMessage.innerHTML = `
               <strong>✅ Battlefield generated!</strong><br>
               ID: ${result.battlefieldId}<br>
-              Terrain: ${result.stats.totalTerrain} features | 
-              Coverage: ${(result.stats.coverageRatio * 100).toFixed(0)}% | 
+              Terrain: ${result.stats.totalTerrain} features |
+              Coverage: ${(result.stats.coverageRatio * 100).toFixed(0)}% |
               Fitness: ${result.stats.fitnessScore}<br>
               <small>Generation time: ${result.generationTimeMs}ms</small>
             `;
             resultPanel.style.display = 'block';
 
-            // Refresh battlefield list
-            await loadBattlefieldAudit();
+            console.log('Battlefield generated:', result.battlefieldId, 'Terrain:', result.stats.totalTerrain);
+
+            // Refresh battlefield list and load new battlefield
+            await loadBattlefieldAudit(true);  // Force reload
+
+            // Load the newly generated battlefield after a short delay
+            setTimeout(() => {
+              console.log('Loading newly generated battlefield:', result.battlefieldId);
+              loadBattlefieldAuditView(result.battlefieldId);
+            }, 500);
           } else {
             throw new Error(result.error || 'Generation failed');
           }
@@ -2780,7 +2842,7 @@
     // Load battlefield audit (Tab 5)
     let battlefieldAuditData = [];
     let currentBattlefieldName = null;
-    
+
     // LocalStorage keys
     const STORAGE_KEY_LAST_TAB = 'mest-dashboard-last-tab';
     const STORAGE_KEY_LAST_BATTLEFIELD = 'mest-dashboard-last-battlefield';
@@ -2824,9 +2886,9 @@
       localStorage.setItem(STORAGE_KEY_LAST_BATTLEFIELD, battlefieldName);
     }
     
-    async function loadBattlefieldAudit() {
-      // Only load if not already loaded
-      if (battlefieldAuditData.length > 0) {
+    async function loadBattlefieldAudit(forceReload = false) {
+      // Only load if not already loaded (unless force reload)
+      if (battlefieldAuditData.length > 0 && !forceReload) {
         restoreLastBattlefield();
         return;
       }
@@ -2837,8 +2899,8 @@
         battlefieldAuditData = await response.json();
         renderBattlefieldAuditList(battlefieldAuditData);
 
-        // Try to restore last selected battlefield first
-        if (!restoreLastBattlefield() && battlefieldAuditData.length > 0) {
+        // Try to restore last selected battlefield first (only if not forcing reload)
+        if (!forceReload && !restoreLastBattlefield() && battlefieldAuditData.length > 0) {
           // Otherwise load first battlefield as default
           loadBattlefieldAuditView(battlefieldAuditData[0].name);
         }
@@ -3025,9 +3087,11 @@
 
     async function loadBattlefieldAuditView(battlefieldName) {
       try {
+        console.log('Loading battlefield:', battlefieldName);
+        
         // Update current battlefield name
         currentBattlefieldName = battlefieldName;
-        
+
         // Save to localStorage
         saveLastBattlefield(battlefieldName);
 
@@ -3036,26 +3100,33 @@
           const isActive = el.querySelector('.battlefield-audit-item-name').textContent === battlefieldName;
           el.classList.toggle('active', isActive);
         });
-        
+
         // Load battlefield JSON
         const jsonResponse = await fetch(`/api/battlefields/${battlefieldName}.json`);
         const battlefieldData = await jsonResponse.json();
+
+        console.log('Battlefield data loaded:', battlefieldName, 'Terrain:', battlefieldData.terrainInstances?.length);
         
         // Load SVG
         const svgResponse = await fetch(`/api/battlefields/${battlefieldName}.svg`);
         const svgText = await svgResponse.text();
 
-        // Display SVG
+        // Display SVG and force full-width display
         const svgContainer = document.getElementById('battlefield-audit-svg');
         svgContainer.innerHTML = svgText;
         
-        // Fix SVG scaling - remove fixed dimensions to let CSS control display
+        // Force SVG to display at full width
         const svgEl = svgContainer.querySelector('svg');
         if (svgEl) {
-          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-          // Let CSS handle sizing for full-width display
+          // Remove any fixed dimensions
           svgEl.removeAttribute('width');
           svgEl.removeAttribute('height');
+          // Set proper scaling
+          svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+          // Force inline styles
+          svgEl.style.width = '100%';
+          svgEl.style.height = 'auto';
+          svgEl.style.display = 'block';
         }
         
         // Update info panel

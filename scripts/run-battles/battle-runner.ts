@@ -290,12 +290,14 @@ export class BattleRunner {
     console.log('═══════════════════════════════════════\n');
 
     // Create battlefield
-    const battlefieldSize = this.getBattlefieldSize();
-    const battlefield = new Battlefield(battlefieldSize, battlefieldSize);
-    this.terrain = this.generateTerrain(battlefieldSize, this.config.terrainDensity);
+    const battlefieldWidth = this.getBattlefieldWidth();
+    const battlefieldHeight = this.getBattlefieldHeight();
+    const terrainSize = Math.max(battlefieldWidth, battlefieldHeight);
+    const battlefield = new Battlefield(battlefieldWidth, battlefieldHeight);
+    this.terrain = this.generateTerrain(terrainSize, this.config.terrainDensity);
     this.terrain.forEach(t => battlefield.addTerrain(t));
 
-    console.log(`✓ Battlefield created (${battlefieldSize}×${battlefieldSize} MU) with ${this.terrain.length} terrain elements\n`);
+    console.log(`✓ Battlefield created (${battlefieldWidth}×${battlefieldHeight} MU) with ${this.terrain.length} terrain elements\n`);
 
     // Build sides and assemblies
     const sides = await this.buildSides(battlefield);
@@ -322,8 +324,8 @@ export class BattleRunner {
         maxOrm: 3,
         allowConcentrateRangeExtension: true,
         perCharacterFovLos: false,
-        battlefieldWidth: battlefieldSize,
-        battlefieldHeight: battlefieldSize,
+        battlefieldWidth: battlefieldWidth,
+        battlefieldHeight: battlefieldHeight,
       });
     }
     
@@ -388,19 +390,31 @@ export class BattleRunner {
   }
 
   /**
-   * Get battlefield size for game size
+   * Get battlefield width for game size
    */
-  private getBattlefieldSize(): number {
-    const defaults = gameSizeDefaults[this.config.gameSize];
-    // Use approximate size based on game size
+  private getBattlefieldWidth(): number {
     const sizeMap: Record<GameSize, number> = {
-      [GameSize.VERY_SMALL]: 24,
-      [GameSize.SMALL]: 36,
-      [GameSize.MEDIUM]: 48,
-      [GameSize.LARGE]: 60,
+      [GameSize.VERY_SMALL]: 18,
+      [GameSize.SMALL]: 24,
+      [GameSize.MEDIUM]: 36,
+      [GameSize.LARGE]: 48,
       [GameSize.VERY_LARGE]: 72,
     };
-    return sizeMap[this.config.gameSize] || 48;
+    return sizeMap[this.config.gameSize] || 24;
+  }
+
+  /**
+   * Get battlefield height for game size
+   */
+  private getBattlefieldHeight(): number {
+    const sizeMap: Record<GameSize, number> = {
+      [GameSize.VERY_SMALL]: 24,
+      [GameSize.SMALL]: 24,
+      [GameSize.MEDIUM]: 36,
+      [GameSize.LARGE]: 48,
+      [GameSize.VERY_LARGE]: 48,
+    };
+    return sizeMap[this.config.gameSize] || 24;
   }
 
   /**
@@ -477,14 +491,15 @@ export class BattleRunner {
    */
   private async deployModels(sides: any[], battlefield: Battlefield): Promise<void> {
     console.log('🎯 Deploying models (intelligent deployment)...');
-    
-    const battlefieldSize = this.getBattlefieldSize();
+
+    const battlefieldWidth = this.getBattlefieldWidth();
+    const battlefieldHeight = this.getBattlefieldHeight();
     const sideIds = sides.map((s: any) => s.id);
-    
+
     // Create deployment zones
     const zones = createDefaultDeploymentZones(
-      battlefieldSize,
-      battlefieldSize,
+      battlefieldWidth,
+      battlefieldHeight,
       sideIds
     );
     
@@ -550,11 +565,11 @@ export class BattleRunner {
    */
   private deployModelsSimple(sides: any[], battlefield: Battlefield): void {
     console.log('   Using fallback simple deployment...');
-    
-    const battlefieldSize = this.getBattlefieldSize();
-    const zoneHeight = Math.floor(battlefieldSize / 8);
+
+    const battlefieldHeight = this.getBattlefieldHeight();
+    const zoneHeight = Math.floor(battlefieldHeight / 8);
     const modelsPerRow = 3;
-    const spacing = Math.floor(battlefieldSize / (modelsPerRow + 1));
+    const spacing = Math.floor(battlefieldHeight / (modelsPerRow + 1));
 
     sides.forEach((side, sideIndex) => {
       side.members.forEach((member: any, i: number) => {
@@ -563,7 +578,7 @@ export class BattleRunner {
         const x = spacing + col * spacing;
 
         const y = sideIndex === 0
-          ? (battlefieldSize - zoneHeight) + (row + 1) * (zoneHeight / (modelsPerRow + 1))
+          ? (battlefieldHeight - zoneHeight) + (row + 1) * (zoneHeight / (modelsPerRow + 1))
           : (row + 1) * (zoneHeight / (modelsPerRow + 1));
 
         const gridX = Math.round(x);
@@ -921,7 +936,7 @@ export class BattleRunner {
     console.log('═══════════════════════════════════════');
     console.log(`Mission: ${this.config.missionId}`);
     console.log(`Game Size: ${this.config.gameSize}`);
-    console.log(`Battlefield: ${this.getBattlefieldSize()}×${this.getBattlefieldSize()} MU`);
+    console.log(`Battlefield: ${this.getBattlefieldWidth()}×${this.getBattlefieldHeight()} MU`);
     console.log(`Turns Played: ${result.turnsPlayed}${result.gameEnded ? ` (Game ended: ${result.endGameReason})` : ''}`);
     console.log('');
 
@@ -1186,7 +1201,8 @@ export class BattleRunner {
           name: this.config.lighting.name,
           visibilityOR: this.config.lighting.visibilityOR,
         },
-        battlefieldSize: battlefield.width,
+        battlefieldWidth: battlefield.width,
+        battlefieldHeight: battlefield.height,
         endGameTriggerTurn: getEndGameTriggerTurn(this.config.gameSize),
       },
       battlefield: {

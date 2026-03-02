@@ -623,13 +623,23 @@ export class ConstrainedNavMesh {
   }
 
   private static isMovementBlocking(feature: TerrainFeature): boolean {
+    // Area terrain (zones) are never blocking
     if (feature.meta?.category === 'area' || feature.meta?.layer === 'area') {
       return false;
     }
+    // Only true obstacles and impassable terrain block navMesh
     if (feature.type === TerrainType.Obstacle || feature.type === TerrainType.Impassable) {
       return true;
     }
-    return feature.meta?.initialMovement === 'Impassable';
+    // Rough and Difficult terrain are traversable (just costly), not blocking
+    // Only treat explicit structures (buildings, walls) as blocking
+    const blockingCategories = ['building', 'wall', 'structure'];
+    if (feature.meta?.category && blockingCategories.includes(feature.meta.category)) {
+      return true;
+    }
+    // Default: terrain features like trees, rocks, shrubs are NOT navMesh-blocking
+    // They affect movement cost but don't make the area completely impassable
+    return false;
   }
 
   private static pointInTriangle(p: Position, a: Position, b: Position, c: Position): boolean {

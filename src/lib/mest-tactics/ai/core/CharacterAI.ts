@@ -79,8 +79,8 @@ export const DEFAULT_CHARACTER_AI_CONFIG: CharacterAIConfig = {
     memoryDuration: 3,
     visionRange: 1.0,
   },
-  enablePatterns: true,
-  enableGOAP: true,
+  enablePatterns: true, // Re-enable patterns - issue is elsewhere
+  enableGOAP: false, // Disabled by default - can cause infinite recursion in edge cases
   goapDepth: 4,
 };
 

@@ -651,7 +651,7 @@ describe('Full End-to-End AI vs AI Game Simulation', () => {
     expect(result.stats.totalActions).toBeGreaterThan(0);
   });
 
-  it('should run a complete VERY_LARGE game (16-32 models)', async () => {
+  it('should run a complete VERY_LARGE game (10-20 models)', async () => {
     const result = await runner.runGame(GAME_SIZES.VERY_LARGE, 'Grand Army A', 'Grand Army B', true);
     expect(result.winner).toBeDefined();
     expect(result.log.length).toBeGreaterThan(0);

@@ -64,18 +64,20 @@ export class BattleOrchestrator {
     svgPath: string;
   }> {
     const { gameSize, densityRatio } = this.config;
-    const battlefieldSize = this.getBattlefieldSize(gameSize);
-    
+    const battlefieldWidth = this.getBattlefieldWidth(gameSize);
+    const battlefieldHeight = this.getBattlefieldHeight(gameSize);
+    const terrainSize = Math.max(battlefieldWidth, battlefieldHeight);
+
     // Generate terrain
     const terrainResult = placeTerrain({
       mode: 'balanced',
       density: densityRatio,
-      battlefieldSize,
+      battlefieldSize: terrainSize,
       terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
     });
 
     // Create battlefield with terrain
-    const battlefield = new Battlefield(battlefieldSize, battlefieldSize);
+    const battlefield = new Battlefield(battlefieldWidth, battlefieldHeight);
     for (const terrainFeature of terrainResult.terrain) {
       const centroid = this.getCentroid(terrainFeature.vertices);
       const typeLower = (terrainFeature.id || terrainFeature.type || 'Tree').toLowerCase();
@@ -136,7 +138,8 @@ export class BattleOrchestrator {
   }
 
   private buildGameConfig(): GameConfig {
-    const battlefieldSize = this.getBattlefieldSize(this.config.gameSize);
+    const battlefieldWidth = this.getBattlefieldWidth(this.config.gameSize);
+    const battlefieldHeight = this.getBattlefieldHeight(this.config.gameSize);
     const maxTurns = this.getMaxTurns(this.config.gameSize);
     const bpPerSide = this.getBPPerSide(this.config.gameSize);
     const modelCount = this.getModelCount(this.config.gameSize);
@@ -145,7 +148,8 @@ export class BattleOrchestrator {
       missionId: this.config.missionId,
       missionName: this.getMissionName(this.config.missionId),
       gameSize: this.config.gameSize,
-      battlefieldSize,
+      battlefieldWidth,
+      battlefieldHeight,
       maxTurns,
       endGameTurn: maxTurns - 2,
       sides: [
@@ -177,13 +181,24 @@ export class BattleOrchestrator {
     };
   }
 
-  private getBattlefieldSize(gameSize: GameSize): number {
+  private getBattlefieldWidth(gameSize: GameSize): number {
+    const sizes: Record<GameSize, number> = {
+      VERY_SMALL: 18,
+      SMALL: 24,
+      MEDIUM: 36,
+      LARGE: 48,
+      VERY_LARGE: 72,
+    };
+    return sizes[gameSize] || 24;
+  }
+
+  private getBattlefieldHeight(gameSize: GameSize): number {
     const sizes: Record<GameSize, number> = {
       VERY_SMALL: 24,
-      SMALL: 36,
-      MEDIUM: 48,
-      LARGE: 60,
-      VERY_LARGE: 72,
+      SMALL: 24,
+      MEDIUM: 36,
+      LARGE: 48,
+      VERY_LARGE: 48,
     };
     return sizes[gameSize] || 24;
   }
