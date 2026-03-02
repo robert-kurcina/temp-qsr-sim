@@ -50,7 +50,7 @@
 - Unit tests with different lighting (Day 16 MU, Twilight 8 MU, Night 4 MU, Pitch-black 0 MU)
 - Integration tests verifying AI behavior changes with visibility
 - Battle validation: `npm run cli -- --lighting "Day, Clear"` vs `--lighting "Night, Full Moon"`
-- Code review against `docs/hardcoded-distances-audit.md`
+- Code review against [`docs/audit/hardcoded-distances.md`](../../audit/hardcoded-distances.md)
 
 **Exit Criteria:** ✅ MET (Core fixes complete)
 - ✅ All 6 high-priority hardcoded values remediated
@@ -615,10 +615,10 @@ fs.writeFileSync('test-output.svg', svgString);
 
 | File | Description |
 |------|-------------|
-| [`/Users/kitrok/projects/temp-qsr-sim/docs/hardcoded-distances-audit.md`](/Users/kitrok/projects/temp-qsr-sim/docs/hardcoded-distances-audit.md) | Hardcoded distances audit (Phase 2.1) |
-| [`/Users/kitrok/projects/temp-qsr-sim/docs/agility-hands-audit.md`](/Users/kitrok/projects/temp-qsr-sim/docs/agility-hands-audit.md) | Agility hands audit (Phase 2.2) |
-| [`/Users/kitrok/projects/temp-qsr-sim/docs/falling-tactics-audit.md`](/Users/kitrok/projects/temp-qsr-sim/docs/falling-tactics-audit.md) | Falling tactics audit (Phase 2.3) |
-| [`/Users/kitrok/projects/temp-qsr-sim/docs/running-jump-audit.md`](/Users/kitrok/projects/temp-qsr-sim/docs/running-jump-audit.md) | Running jump audit (Phase 2.4) |
+| [`docs/audit/hardcoded-distances.md`](../../audit/hardcoded-distances.md) | Hardcoded distances audit (Phase 2.1) |
+| [`docs/audit/agility-hands.md`](../../audit/agility-hands.md) | Agility hands audit (Phase 2.2) |
+| [`docs/audit/falling-tactics.md`](../../audit/falling-tactics.md) | Falling tactics audit (Phase 2.3) |
+| [`docs/audit/running-jump.md`](../../audit/running-jump.md) | Running jump audit (Phase 2.4) |
 
 ---
 

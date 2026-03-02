@@ -45,7 +45,7 @@ My update process for this document is to **Read, Modify, and Write**. I will al
     - **Weapon-based ranges:** Use weapon's OR (Optimal Range) for range bands, point-blank, ORM penalties.
     - **Trait-based modifications:** Apply trait levels (Sprint X, Flight X, Stealthy X, etc.) to movement, detection, and concealment calculations.
     - **Exception:** Rule-defined constants (Suppression 1 MU, ROF spacing 1 MU, Firelane arc 90°) may be hardcoded as they are fixed by QSR.
-    - **Audit requirement:** See `docs/hardcoded-distances-audit.md` for approved constants vs. values requiring dynamic calculation.
+    - **Audit requirement:** See [`docs/audit/hardcoded-distances.md`](../audit/hardcoded-distances.md) for approved constants vs. values requiring dynamic calculation.
 5.  **Filesystem First:** Before making any changes or additions to the codebase, the filesystem must be scanned to confirm the presence or absence of relevant files.
 6.  **Headless First Development:** All development must be focused on the core, headless simulation logic. UI-related files, dependencies (Astro, React, etc.), and configurations are to be ignored until explicitly commanded to work on them. The primary interface for the application is the command line.
 
@@ -86,7 +86,7 @@ My update process for this document is to **Read, Modify, and Write**. I will al
     - **ALWAYS** derive from: `character.finalAttributes.mov`, `lighting.visibilityOR`, `weapon.OR`, or trait levels.
     - **ALWAYS** pass context parameters (`visibilityOrMu`, `effectiveMov`) through function signatures.
     - **DOCUMENT** any constant values with QSR rule reference in comments.
-    - **REVIEW** against `docs/hardcoded-distances-audit.md` before merging.
+    - **REVIEW** against [`docs/audit/hardcoded-distances.md`](../audit/hardcoded-distances.md) before merging.
     - **Code Review Checklist:**
       ```typescript
       // ❌ WRONG: Hardcoded distance
