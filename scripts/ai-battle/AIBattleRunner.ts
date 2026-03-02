@@ -64,9 +64,10 @@ import type { GameConfig, SideConfig, BattleReport, BattleStats, AdvancedRuleMet
 import { GAME_SIZE_CONFIG } from '../shared/AIBattleConfig';
 import { formatBattleReportHumanReadable } from './reporting/BattleReportFormatter';
 import { writeSingleBattleReport, writeVisualAuditReport, writeBattleReportViewer, writeBattlefieldSvg } from './reporting/BattleReportWriter';
-import { createEmptyStats, createEmptyAdvancedRuleMetrics, safeRate, computePercentile, createSeededRandom, emptyKnowledge, CONTEXT_MODIFIER_KEYS, type RuleTypeBreakdown, type SideSection, type CharacterSection, type ReactAuditResult } from './validation/ValidationMetrics';
+import { createEmptyStats, createEmptyAdvancedRuleMetrics, safeRate, createSeededRandom, emptyKnowledge, CONTEXT_MODIFIER_KEYS, type RuleTypeBreakdown, type SideSection, type CharacterSection, type ReactAuditResult } from './validation/ValidationMetrics';
 import { buildBonusActionOptions } from '../../src/lib/mest-tactics/actions/bonus-actions';
 import { StatisticsTracker } from './tracking/StatisticsTracker';
+import { PerformanceProfiler } from './instrumentation/PerformanceProfiler';
 
 // Import from new core modules
 import {
@@ -152,32 +153,24 @@ import {
 export class AIBattleRunner {
   private log: BattleLogEntry[] = [];
   private tracker: StatisticsTracker;
+  private profiler: PerformanceProfiler;
   private modelUsageByCharacter = new Map<Character, ModelUsageStats>();
   private sideNameByCharacterId = new Map<string, string>();
   private doctrineByCharacterId = new Map<string, TacticalDoctrine>();
-  
+
   // Mission runtime state (using new module)
   private missionRuntimeState: MissionRuntimeState;
-  
+
   private currentBattlefield: Battlefield | null = null;
   private auditTurns: TurnAudit[] = [];
   private activationSequence = 0;
-  private performanceProfilingEnabled = false;
-  private performanceProgressEnabled = false;
-  private performanceProgressEachActivation = false;
-  private performanceHeartbeatEveryActivations = 25;
-  private performanceRunStartMs = 0;
-  private performancePhases: Record<string, { count: number; totalMs: number; maxMs: number }> = {};
-  private performanceTurns: TurnTimingSummary[] = [];
-  private performanceSlowestActivations: SlowActivationSummary[] = [];
-  private performanceActivationSamplesMs: number[] = [];
-  private activationsProcessed = 0;
   private lastTerrainResult: TerrainPlacementResult | null = null;
   private battlefieldExportPath: string | null = null;
 
   private resetRunState() {
     this.log = [];
     this.tracker = new StatisticsTracker();
+    this.profiler = new PerformanceProfiler();
     this.modelUsageByCharacter = new Map<Character, ModelUsageStats>();
     this.sideNameByCharacterId = new Map<string, string>();
     this.doctrineByCharacterId = new Map<string, TacticalDoctrine>();
@@ -187,56 +180,22 @@ export class AIBattleRunner {
     this.battlefieldExportPath = null;
     this.auditTurns = [];
     this.activationSequence = 0;
-    this.performanceProfilingEnabled = false;
-    this.performanceProgressEnabled = false;
-    this.performanceProgressEachActivation = false;
-    this.performanceHeartbeatEveryActivations = 25;
-    this.performanceRunStartMs = 0;
-    this.performancePhases = {};
-    this.performanceTurns = [];
-    this.performanceSlowestActivations = [];
-    this.performanceActivationSamplesMs = [];
-    this.activationsProcessed = 0;
   }
 
   private setupPerformanceInstrumentation(forceProfiling: boolean = false): void {
-    this.performanceProfilingEnabled =
-      forceProfiling || process.env.AI_BATTLE_PROFILE === '1' || process.env.AI_BATTLE_PROGRESS === '1';
-    this.performanceProgressEnabled = process.env.AI_BATTLE_PROGRESS === '1';
-    this.performanceProgressEachActivation = process.env.AI_BATTLE_PROGRESS_EACH_ACTIVATION === '1';
-    const rawHeartbeat = Number.parseInt(process.env.AI_BATTLE_HEARTBEAT_EVERY ?? '', 10);
-    if (Number.isFinite(rawHeartbeat) && rawHeartbeat > 0) {
-      this.performanceHeartbeatEveryActivations = rawHeartbeat;
-    }
-    this.performanceRunStartMs = Date.now();
+    this.profiler.setupFromEnvironment(forceProfiling);
   }
 
   private recordPhaseDuration(phase: string, elapsedMs: number): void {
-    if (!this.performanceProfilingEnabled) return;
-    const safeElapsedMs = Number.isFinite(elapsedMs) ? Math.max(0, elapsedMs) : 0;
-    const bucket = this.performancePhases[phase] ?? { count: 0, totalMs: 0, maxMs: 0 };
-    bucket.count += 1;
-    bucket.totalMs += safeElapsedMs;
-    bucket.maxMs = Math.max(bucket.maxMs, safeElapsedMs);
-    this.performancePhases[phase] = bucket;
+    this.profiler.recordPhaseDuration(phase, elapsedMs);
   }
 
   private withPhaseTiming<T>(phase: string, fn: () => T): T {
-    const startedMs = Date.now();
-    try {
-      return fn();
-    } finally {
-      this.recordPhaseDuration(phase, Date.now() - startedMs);
-    }
+    return this.profiler.withPhaseTiming(phase, fn);
   }
 
   private async withAsyncPhaseTiming<T>(phase: string, fn: () => Promise<T>): Promise<T> {
-    const startedMs = Date.now();
-    try {
-      return await fn();
-    } finally {
-      this.recordPhaseDuration(phase, Date.now() - startedMs);
-    }
+    return this.profiler.withAsyncPhaseTiming(phase, fn);
   }
 
   private maybeLogActivationHeartbeat(
@@ -245,22 +204,11 @@ export class AIBattleRunner {
     character: Character,
     elapsedMs: number
   ): void {
-    if (!this.performanceProgressEnabled) return;
-    if (this.activationsProcessed % this.performanceHeartbeatEveryActivations !== 0) return;
-    const elapsedRunMs = Date.now() - this.performanceRunStartMs;
-    console.log(
-      `[PROFILE] act=${this.activationsProcessed} turn=${turn} side=${sideName} model=${character.profile.name} activationMs=${elapsedMs.toFixed(1)} totalMs=${elapsedRunMs}`
-    );
+    this.profiler.logHeartbeat(turn, sideName, character.profile.name, elapsedMs);
   }
 
   private recordSlowActivation(entry: SlowActivationSummary): void {
-    if (!this.performanceProfilingEnabled) return;
-    this.performanceSlowestActivations.push(entry);
-    this.performanceSlowestActivations
-      .sort((a, b) => b.elapsedMs - a.elapsedMs);
-    if (this.performanceSlowestActivations.length > 10) {
-      this.performanceSlowestActivations.length = 10;
-    }
+    this.profiler.recordSlowActivation(entry);
   }
 
   /**
@@ -364,43 +312,7 @@ export class AIBattleRunner {
   }
 
   private buildPerformanceSummary(battlefield?: Battlefield): BattlePerformanceSummary | undefined {
-    if (!this.performanceProfilingEnabled) return undefined;
-    const phases: Record<string, PhaseTimingSummary> = {};
-    for (const [phase, stats] of Object.entries(this.performancePhases)) {
-      phases[phase] = {
-        count: stats.count,
-        totalMs: Number(stats.totalMs.toFixed(2)),
-        avgMs: Number((stats.totalMs / Math.max(1, stats.count)).toFixed(2)),
-        maxMs: Number(stats.maxMs.toFixed(2)),
-      };
-    }
-    const activationSamples = this.performanceActivationSamplesMs
-      .filter(sample => Number.isFinite(sample) && sample >= 0)
-      .slice()
-      .sort((a, b) => a - b);
-    const activationSampleCount = activationSamples.length;
-    const activationSum = activationSamples.reduce((sum, value) => sum + value, 0);
-    const activationLatency = {
-      avgMs: Number((activationSampleCount > 0 ? activationSum / activationSampleCount : 0).toFixed(2)),
-      p50Ms: Number(computePercentile(activationSamples, 0.5).toFixed(2)),
-      p95Ms: Number(computePercentile(activationSamples, 0.95).toFixed(2)),
-      maxMs: Number((activationSampleCount > 0 ? activationSamples[activationSampleCount - 1] : 0).toFixed(2)),
-    };
-    const summary: BattlePerformanceSummary = {
-      elapsedMs: Number((Date.now() - this.performanceRunStartMs).toFixed(2)),
-      activationsProcessed: this.activationsProcessed,
-      heartbeatEveryActivations: this.performanceHeartbeatEveryActivations,
-      activationLatency,
-      phases,
-      turns: this.performanceTurns,
-      slowestActivations: this.performanceSlowestActivations,
-    };
-    if (battlefield) {
-      const los = battlefield.getLosCacheStats();
-      const pathfinding = new PathfindingEngine(battlefield).getCacheStats();
-      summary.caches = { los, pathfinding };
-    }
-    return summary;
+    return this.profiler.buildPerformanceSummary(battlefield);
   }
 
   private initializeModelUsage(
@@ -2216,7 +2128,8 @@ export class AIBattleRunner {
       out(`Mission: ${config.missionName}`);
       out(`Battlefield: ${config.battlefieldWidth}×${config.battlefieldHeight} MU`);
       out(`Max Turns: ${config.maxTurns}\n`);
-      if (this.performanceProgressEnabled) {
+      const profilerConfig = this.profiler.getConfig();
+      if (profilerConfig.progressEnabled) {
         console.log(
           `[PROFILE] start mission=${config.missionId} size=${config.gameSize} turns=${config.maxTurns} modelsPerSide=${config.sides.map(s => s.modelCount).join(',')}`
         );
@@ -2321,8 +2234,8 @@ export class AIBattleRunner {
         };
         this.auditTurns.push(turnAudit);
 
-        if (this.performanceProgressEnabled) {
-          const elapsedRunMs = Date.now() - this.performanceRunStartMs;
+        if (profilerConfig.progressEnabled) {
+          const elapsedRunMs = this.profiler.getElapsedMs();
           console.log(`[PROFILE] turn-start turn=${turn}/${config.maxTurns} elapsedMs=${elapsedRunMs}`);
         }
 
@@ -2337,7 +2250,7 @@ export class AIBattleRunner {
             .sort((a, b) => (b.finalAttributes?.int ?? b.attributes?.int ?? 0) - (a.finalAttributes?.int ?? a.attributes?.int ?? 0));
 
           for (const character of sideCharacters) {
-            if (this.performanceProgressEnabled && this.performanceProgressEachActivation) {
+            if (profilerConfig.progressEnabled && profilerConfig.progressEachActivation) {
               console.log(
                 `[PROFILE] activation-start turn=${turn} side=${config.sides[sideIndex].name} model=${character.profile.name}`
               );
@@ -2406,14 +2319,14 @@ export class AIBattleRunner {
         }
 
         const turnElapsedMs = Date.now() - turnStartedMs;
-        this.performanceTurns.push({
+        this.profiler.recordTurnTiming({
           turn,
           elapsedMs: Number(turnElapsedMs.toFixed(2)),
           activations: turnAudit.activations.length,
         });
         this.recordPhaseDuration('turn.total', turnElapsedMs);
-        if (this.performanceProgressEnabled) {
-          const elapsedRunMs = Date.now() - this.performanceRunStartMs;
+        if (this.profiler.getConfig().progressEnabled) {
+          const elapsedRunMs = this.profiler.getElapsedMs();
           console.log(
             `[PROFILE] turn-end turn=${turn}/${config.maxTurns} turnMs=${turnElapsedMs} activations=${turnAudit.activations.length} elapsedMs=${elapsedRunMs}`
           );
@@ -2710,8 +2623,8 @@ export class AIBattleRunner {
       const activationElapsedMs = Date.now() - activationStartedMs;
       this.recordPhaseDuration('activation.total', activationElapsedMs);
       this.recordPhaseDuration('activation.no_ap', activationElapsedMs);
-      this.performanceActivationSamplesMs.push(activationElapsedMs);
-      this.activationsProcessed += 1;
+      this.profiler.sampleActivationLatency(activationElapsedMs);
+      this.profiler.incrementActivationsProcessed();
       this.recordSlowActivation({
         turn,
         sideName,
@@ -3595,8 +3508,8 @@ export class AIBattleRunner {
     gameManager.endActivation(character);
     const activationElapsedMs = Date.now() - activationStartedMs;
     this.recordPhaseDuration('activation.total', activationElapsedMs);
-    this.performanceActivationSamplesMs.push(activationElapsedMs);
-    this.activationsProcessed += 1;
+    this.profiler.sampleActivationLatency(activationElapsedMs);
+    this.profiler.incrementActivationsProcessed();
     this.recordSlowActivation({
       turn,
       sideName,
