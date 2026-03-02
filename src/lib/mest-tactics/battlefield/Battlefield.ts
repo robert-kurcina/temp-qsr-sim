@@ -206,7 +206,15 @@ export class Battlefield {
     if (feature.type === TerrainType.Obstacle || feature.type === TerrainType.Impassable) {
       return true;
     }
-    return feature.meta?.initialMovement === 'Impassable';
+    // initialMovement: "Impassable" means models cannot START their movement in this terrain,
+    // but they CAN enter it. Only truly blocking terrain (trees, buildings, walls) should block movement.
+    // Check terrain category for blocking types per QSR rules-overrides.md OVR-003
+    const category = feature.meta?.category;
+    if (category === 'tree' || category === 'building' || category === 'wall') {
+      return true; // Cannot enter these terrain types
+    }
+    // Shrubs, rocky terrain, etc. can be entered (just cost more movement)
+    return false;
   }
   
   private distancePointToPolygon(point: Position, polygon: Position[]): number {

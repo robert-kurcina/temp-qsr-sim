@@ -33,7 +33,14 @@ function isMovementBlocking(feature: TerrainFeature): boolean {
   if (feature.type === 'Obstacle' || feature.type === 'Impassable') {
     return true;
   }
-  return feature.meta?.initialMovement === 'Impassable';
+  // initialMovement: "Impassable" means models cannot START their movement in this terrain,
+  // but they CAN enter it. Only truly blocking terrain (trees, buildings, walls) should block movement.
+  const category = feature.meta?.category;
+  if (category === 'tree' || category === 'building' || category === 'wall') {
+    return true; // Cannot enter these terrain types
+  }
+  // Shrubs, rocky terrain, etc. can be entered (just cost more movement)
+  return false;
 }
 
 function isFootprintClear(

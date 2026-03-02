@@ -221,7 +221,7 @@ These are known gaps/mismatches to be addressed later and treated as a prioritiz
 - **Mission AI objective behavior:** Mission runtime scoring now updates in AI validation runs, but AI action-selection remains mostly objective-agnostic in several missions (e.g., QAI_12/14/15/17 showed QAI_11-like action profiles under identical seed/loadout). See `generated/ai-battle-reports/mission-scan-summary-qai11-20.json`.
 - **Mission scoring parity:** Current mission scan shows empty mission VP payloads for QAI_11 and QAI_13 (`vp: {}`), which must be resolved by rule-confirmed scoring semantics or explicit mission-level no-VP documentation.
 - **Mission event hook coverage:** Mission runtime hooks are still strongest on direct-attack paths; reactive/passive/interrupt attack consequences are not yet fully reflected into mission event/scoring updates.
-- **Movement/Terrain:** Terrain categories and movement constraints require full QSR fidelity.
+- **Movement/Terrain:** ✅ **FIXED** (2026-03-02) — `isMovementBlocking` now correctly distinguishes between blocking terrain (trees, buildings, walls) vs. difficult/rough terrain (shrubs, rocks). Previously, `initialMovement: "Impassable"` was incorrectly treated as fully blocking instead of only preventing movement initiation.
 
 ### Optional Rule Toggle (Required)
 - **VP Tie-Breaker:** Optional flag. If enabled, the **Initiative Card holder wins ties after RP→VP adjustment**. Default: `false`.
