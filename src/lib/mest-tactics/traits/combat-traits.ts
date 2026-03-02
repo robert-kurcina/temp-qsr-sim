@@ -2820,3 +2820,89 @@ export function checkAcrobaticBonus(
     applies: true,
   };
 }
+
+// ============================================================================
+// EFFECTIVE MOVEMENT (TACTICAL HEURISTICS)
+// ============================================================================
+
+/**
+ * Get effective movement allowance for a character
+ * 
+ * QSR References:
+ * - Movement Allowance: Base MOV + 2 MU
+ * - Sprint X: X × 4" (attentive, free, straight line) or X × 2" (normal)
+ * - Leap X: AGI bonus at start/end of movement
+ * - Flight X: MOV + X + (X × 6) while flying
+ * 
+ * @param character - The character to calculate movement for
+ * @param options - Movement context options
+ * @returns Effective movement allowance in MU
+ */
+export interface EffectiveMovementOptions {
+  /** Is moving in a straight line (for Sprint bonus) */
+  isMovingStraight?: boolean;
+  /** Is at start or end of movement (for Leap bonus) */
+  isAtStartOrEnd?: boolean;
+  /** Is flying (for Flight bonus) */
+  isFlying?: boolean;
+  /** Is attentive (for Sprint full bonus) */
+  isAttentive?: boolean;
+  /** Is a free move (for Sprint full bonus) */
+  isFree?: boolean;
+}
+
+export function getEffectiveMovement(
+  character: Character,
+  options: EffectiveMovementOptions = {}
+): number {
+  const {
+    isMovingStraight = false,
+    isAtStartOrEnd = false,
+    isFlying = false,
+    isAttentive = false,
+    isFree = false,
+  } = options;
+
+  const baseMov = character.finalAttributes.mov ?? character.attributes.mov ?? 2;
+  let effectiveMov = baseMov + 2; // QSR: Base Move allowance is MOV + 2
+
+  // Sprint X bonus (only when moving straight)
+  if (isMovingStraight) {
+    const sprintBonus = getSprintMovementBonus(character, true, isAttentive, isFree);
+    effectiveMov += sprintBonus;
+  }
+
+  // Leap X bonus (only at start or end of movement)
+  if (isAtStartOrEnd) {
+    const leapResult = checkLeapUsage(character, true);
+    effectiveMov += leapResult.agilityBonus;
+  }
+
+  // Flight X bonus (when flying)
+  if (isFlying) {
+    const flightLevel = getCharacterTraitLevel(character, 'Flight');
+    if (flightLevel > 0) {
+      // Flight X: MOV + X + (X × 6) while flying
+      const flightBonus = flightLevel + (flightLevel * 6);
+      effectiveMov = Math.max(effectiveMov, baseMov + flightBonus);
+    }
+  }
+
+  return effectiveMov;
+}
+
+/**
+ * Get threat range for a character (distance they can threaten)
+ * This is their effective movement allowance
+ * 
+ * @param character - The character to calculate threat range for
+ * @returns Threat range in MU
+ */
+export function getThreatRange(character: Character): number {
+  return getEffectiveMovement(character, {
+    isMovingStraight: true,
+    isAtStartOrEnd: true,
+    isAttentive: true,
+    isFree: true,
+  });
+}

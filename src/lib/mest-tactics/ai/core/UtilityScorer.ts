@@ -15,6 +15,10 @@ import { getMultipleWeaponsBonus, qualifiesForMultipleWeapons } from '../../trai
 import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 import { PathfindingEngine } from '../../battlefield/pathfinding/PathfindingEngine';
+import {
+  createMultiGoalPathfinding,
+  type MultiGoalPathOptions,
+} from '../../battlefield/pathfinding/MultiGoalPathfinding';
 import { evaluateRangeWithVisibility, parseWeaponOptimalRangeMu } from '../../utils/visibility';
 import { forecastWaitReact, rolloutWaitReactBranches } from '../tactical/GOAP';
 import { calculateStratagemModifiers, TacticalDoctrine } from '../stratagems/AIStratagems';
@@ -30,7 +34,14 @@ import {
   type SuppressionMarker,
 } from './ROFScoring';
 import { calculateAgility, resolveFallingTest } from '../../actions/agility';
-import { getLeapAgilityBonus } from '../../traits/combat-traits';
+import { getLeapAgilityBonus, getEffectiveMovement, getThreatRange } from '../../traits/combat-traits';
+import {
+  getTacticallyRelevantEnemies,
+  findMyScrumGroup,
+  getCohesionAwareEnemies,
+  evaluateThreatImmediacy,
+  shouldSkipTargetEvaluation,
+} from './TacticalHeuristics';
 import { TERRAIN_HEIGHTS } from '../../battlefield/terrain/TerrainElement';
 import { detectGapAlongLine, canJumpGap, getGapTacticalValue } from '../../battlefield/GapDetector';
 
@@ -1081,11 +1092,21 @@ export class UtilityScorer {
 
   /**
    * Evaluate targets for attack
+   * 
+   * R9: Tactical Heuristics - Only evaluate tactically relevant enemies
+   * Uses engagement state filtering, cohesion-based prioritization,
+   * and early-out pruning to reduce O(n²) to O(n × k).
    */
   evaluateTargets(context: AIContext): ScoredTarget[] {
     const targets: ScoredTarget[] = [];
     const characterPos = context.battlefield.getCharacterPosition(context.character);
     if (!characterPos) return targets;
+
+    // R9: Get tactically relevant enemies (engagement filtering)
+    const relevantEnemies = getTacticallyRelevantEnemies(context);
+    
+    // R9: Categorize by cohesion (high vs low priority)
+    const cohesionAware = getCohesionAwareEnemies(context, characterPos);
 
     // Get ROF level from character's weapon
     const rofLevel = this.getCharacterROFLevel(context.character);
@@ -1096,11 +1117,11 @@ export class UtilityScorer {
       if (ally.state.isAttentive && ally.state.isOrdered && !ally.state.isKOd && !ally.state.isEliminated) {
         const allyPos = context.battlefield.getCharacterPosition(ally);
         if (!allyPos) continue;
-        
+
         // Find closest enemy to this ally
         let closestEnemy: Character | null = null;
         let closestDist = Infinity;
-        for (const enemy of context.enemies) {
+        for (const enemy of relevantEnemies) {
           const enemyPos = context.battlefield.getCharacterPosition(enemy);
           if (!enemyPos) continue;
           const dist = Math.hypot(enemyPos.x - allyPos.x, enemyPos.y - allyPos.y);
@@ -1116,74 +1137,130 @@ export class UtilityScorer {
       }
     }
 
-    for (const enemy of context.enemies) {
-      if (!isAttackableEnemy(context.character, enemy, context.config)) continue;
-
-      const enemyPos = context.battlefield.getCharacterPosition(enemy);
-      if (!enemyPos) continue;
-
-      const health = this.evaluateTargetHealth(enemy);
-      const threat = this.evaluateTargetThreat(enemy, context);
-      const distance = this.evaluateTargetDistance(characterPos, enemyPos);
-      const visibility = context.config.perCharacterFovLos
-        ? (this.hasLOS(context.character, enemy, context.battlefield) ? 1.0 : 0.0)
-        : 1.0;
-      const missionPriority = this.evaluateMissionPriority(enemy, context);
-
-      // R2.5: ROF Target Scoring - prioritize targets that are good for ROF attacks
-      const rofTargetScore = rofLevel > 0
-        ? this.evaluateROFTargetValue(context.character, enemy, context, rofLevel)
-        : 0;
-
-      // Phase 2.3: Falling Tactics - Jump Down Attack scoring
-      const jumpDownResult = this.evaluateJumpDownAttack(
-        context,
-        context.character,
+    // R9: Evaluate within-cohesion enemies first (high priority)
+    let currentBestScore = 0;
+    for (const enemy of cohesionAware.withinCohesion) {
+      // R9: Early-out pruning
+      if (shouldSkipTargetEvaluation(enemy, context, currentBestScore)) continue;
+      
+      const target = this.evaluateSingleTarget(
         enemy,
+        context,
         characterPos,
-        enemyPos
+        rofLevel,
+        allyTargetCounts,
+        currentBestScore
       );
-      const jumpDownBonus = jumpDownResult.canJump ? jumpDownResult.score * 0.5 : 0;
-
-      // Phase 3.1: Focus Fire Coordination - bonus for targeting same enemy as allies
-      const allyTargetCount = allyTargetCounts.get(enemy.id) || 0;
-      const focusFireBonus = allyTargetCount > 0 ? allyTargetCount * 1.5 : 0; // +1.5 per ally targeting
-
-      // Phase 3.1: Focus Fire Coordination - bonus for finishing weakened targets
-      const enemySiz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
-      const enemyWounds = enemy.state.wounds;
-      const finishOffBonus = enemyWounds >= enemySiz - 1 ? 5.0 : 0; // High priority to eliminate
-
-      const score =
-        health * this.weights.targetHealth +
-        threat * this.weights.targetThreat +
-        distance * this.weights.distanceToTarget +
-        visibility * 2.0 +
-        missionPriority * this.weights.victoryConditionValue +
-        rofTargetScore * 1.5 + // ROF targets get 1.5x weight
-        jumpDownBonus + // Phase 2.3: Jump down attack
-        focusFireBonus + // Phase 3.1: Focus fire coordination
-        finishOffBonus; // Phase 3.1: Finish weakened targets
-
-      targets.push({
-        target: enemy,
-        score,
-        factors: { 
-          health, 
-          threat, 
-          distance, 
-          visibility, 
-          missionPriority, 
-          rofTargetScore,
-          jumpDown: jumpDownBonus,
-          focusFire: focusFireBonus,
-          finishOff: finishOffBonus,
-        },
-      });
+      if (target) {
+        targets.push(target);
+        currentBestScore = Math.max(currentBestScore, target.score);
+      }
+    }
+    
+    // R9: Then evaluate outside-cohesion enemies (low priority, more aggressive pruning)
+    for (const enemy of cohesionAware.outsideCohesion) {
+      // R9: More aggressive pruning for outside-cohesion targets
+      if (shouldSkipTargetEvaluation(enemy, context, currentBestScore * 0.7)) continue;
+      
+      const target = this.evaluateSingleTarget(
+        enemy,
+        context,
+        characterPos,
+        rofLevel,
+        allyTargetCounts,
+        currentBestScore
+      );
+      if (target) {
+        targets.push(target);
+        currentBestScore = Math.max(currentBestScore, target.score);
+      }
     }
 
     targets.sort((a, b) => b.score - a.score);
     return targets;
+  }
+
+  /**
+   * Evaluate a single target with all scoring factors
+   * R9: Extracted for clarity and reuse
+   */
+  private evaluateSingleTarget(
+    enemy: Character,
+    context: AIContext,
+    characterPos: Position,
+    rofLevel: number,
+    allyTargetCounts: Map<string, number>,
+    currentBestScore: number
+  ): ScoredTarget | null {
+    if (!isAttackableEnemy(context.character, enemy, context.config)) return null;
+
+    const enemyPos = context.battlefield.getCharacterPosition(enemy);
+    if (!enemyPos) return null;
+
+    const health = this.evaluateTargetHealth(enemy);
+    const threat = this.evaluateTargetThreat(enemy, context);
+    const distance = this.evaluateTargetDistance(characterPos, enemyPos);
+    const visibility = context.config.perCharacterFovLos
+      ? (this.hasLOS(context.character, enemy, context.battlefield) ? 1.0 : 0.0)
+      : 1.0;
+    const missionPriority = this.evaluateMissionPriority(enemy, context);
+
+    // R2.5: ROF Target Scoring
+    const rofTargetScore = rofLevel > 0
+      ? this.evaluateROFTargetValue(context.character, enemy, context, rofLevel)
+      : 0;
+
+    // Phase 2.3: Falling Tactics - Jump Down Attack scoring
+    const jumpDownResult = this.evaluateJumpDownAttack(
+      context,
+      context.character,
+      enemy,
+      characterPos,
+      enemyPos
+    );
+    const jumpDownBonus = jumpDownResult.canJump ? jumpDownResult.score * 0.5 : 0;
+
+    // Phase 3.1: Focus Fire Coordination
+    const allyTargetCount = allyTargetCounts.get(enemy.id) || 0;
+    const focusFireBonus = allyTargetCount > 0 ? allyTargetCount * 1.5 : 0;
+
+    // Phase 3.1: Finish weakened targets
+    const enemySiz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
+    const enemyWounds = enemy.state.wounds;
+    const finishOffBonus = enemyWounds >= enemySiz - 1 ? 5.0 : 0;
+
+    // R9: Threat immediacy bonus
+    const threatImmediacy = evaluateThreatImmediacy(enemy, characterPos, context);
+    const threatImmediacyBonus = threatImmediacy.totalScore * 1.5;
+
+    const score =
+      health * this.weights.targetHealth +
+      threat * this.weights.targetThreat +
+      distance * this.weights.distanceToTarget +
+      visibility * 2.0 +
+      missionPriority * this.weights.victoryConditionValue +
+      rofTargetScore * 1.5 +
+      jumpDownBonus +
+      focusFireBonus +
+      finishOffBonus +
+      threatImmediacyBonus;
+
+    return {
+      target: enemy,
+      score,
+      factors: {
+        health,
+        threat,
+        distance,
+        visibility,
+        missionPriority,
+        rofTargetScore,
+        jumpDown: jumpDownBonus,
+        focusFire: focusFireBonus,
+        finishOff: finishOffBonus,
+        threatImmediacy: threatImmediacyBonus,
+      },
+    };
   }
 
   /**
@@ -2194,52 +2271,120 @@ export class UtilityScorer {
     const maxCoarseProbes = Math.max(1, session.strategicPathQueryBudget - reserveForRefinement);
     const coarseProbes: StrategicProbe[] = [];
 
-    for (let i = 0; i < candidates.length && i < maxCoarseProbes; i++) {
-      const candidate = candidates[i];
-      if (!this.tryConsumeStrategicPathBudget(session)) break;
-      const coarse = engine.findPathWithMaxMu(
+    // R8: Use multi-goal pathfinding for 3+ candidates (shared search tree optimization)
+    const useMultiGoal = candidates.length >= 3;
+    
+    if (useMultiGoal) {
+      // R8: Batch path query with shared search tree
+      const multiGoalEngine = createMultiGoalPathfinding(context.battlefield);
+      const candidatePositions = candidates.slice(0, maxCoarseProbes).map(c => c.position);
+      
+      const multiGoalOptions: MultiGoalPathOptions = {
+        footprintDiameter,
+        movementMetric: 'length',
+        useNavMesh: true,
+        useHierarchical: true,
+        optimizeWithLOS: false,
+        useTheta: false,
+        turnPenalty: 0,
+        portalNarrowPenalty: 0.08,
+        portalNarrowThresholdFactor: 1.25,
+        gridResolution: session.strategicCoarseResolution,
+        maxMu: movementAllowance,
+        maxDestinations: maxCoarseProbes,
+      };
+
+      const multiResult = multiGoalEngine.findPathsToMultipleGoals(
         characterPos,
-        candidate.position,
-        {
-          footprintDiameter,
-          movementMetric: 'length',
-          useNavMesh: true,
-          useHierarchical: true,
-          optimizeWithLOS: false,
-          useTheta: false,
-          turnPenalty: 0,
-          portalNarrowPenalty: 0.08,
-          portalNarrowThresholdFactor: 1.25,
-          gridResolution: session.strategicCoarseResolution,
-        },
-        movementAllowance
+        candidatePositions,
+        multiGoalOptions
       );
-      const coarseEnd = coarse.points[coarse.points.length - 1];
-      if (!coarseEnd) continue;
 
-      const distanceToTarget = Math.hypot(coarseEnd.x - candidate.position.x, coarseEnd.y - candidate.position.y);
-      const progress = Math.max(0, candidate.distance - distanceToTarget) / Math.max(1, candidate.distance);
-      const coarseTravelBase = Math.max(0.25, Math.min(candidate.distance, movementAllowance));
-      const detourRatio = coarse.totalLength / coarseTravelBase;
-      const needsFineResolution =
-        detourRatio >= 1.35 ||
-        (!coarse.reachedEnd && distanceToTarget > 1.25) ||
-        (footprintDiameter <= 1.0 && detourRatio >= 1.18);
-      const score =
-        (progress * 1.8) +
-        (candidate.sourcePriority * 0.6) +
-        (coarse.reachedEnd ? 0.35 : 0) -
-        (Math.max(0, detourRatio - 1.15) * 0.2);
+      // Convert multi-goal results to strategic probes
+      for (let i = 0; i < candidatePositions.length && i < candidates.length; i++) {
+        if (!this.tryConsumeStrategicPathBudget(session)) break;
+        
+        const candidate = candidates[i];
+        const path = multiResult.destinations.get(
+          `${candidate.position.x.toFixed(2)},${candidate.position.y.toFixed(2)}`
+        );
+        
+        if (!path || path.points.length === 0) continue;
+        
+        const coarseEnd = path.points[path.points.length - 1];
+        const distanceToTarget = Math.hypot(coarseEnd.x - candidate.position.x, coarseEnd.y - candidate.position.y);
+        const progress = Math.max(0, candidate.distance - distanceToTarget) / Math.max(1, candidate.distance);
+        const coarseTravelBase = Math.max(0.25, Math.min(candidate.distance, movementAllowance));
+        const detourRatio = path.totalLength / coarseTravelBase;
+        const needsFineResolution =
+          detourRatio >= 1.35 ||
+          (!path.reachedEnd && distanceToTarget > 1.25) ||
+          (footprintDiameter <= 1.0 && detourRatio >= 1.18);
+        const score =
+          (progress * 1.8) +
+          (candidate.sourcePriority * 0.6) +
+          (path.reachedEnd ? 0.35 : 0) -
+          (Math.max(0, detourRatio - 1.15) * 0.2);
 
-      coarseProbes.push({
-        source: candidate.source,
-        index: candidate.index,
-        targetPosition: candidate.position,
-        endpoint: this.snapToBoardCell(coarseEnd, context.battlefield),
-        score,
-        needsFineResolution,
-        distanceToTarget,
-      });
+        coarseProbes.push({
+          source: candidate.source,
+          index: candidate.index,
+          targetPosition: candidate.position,
+          endpoint: this.snapToBoardCell(coarseEnd, context.battlefield),
+          score,
+          needsFineResolution,
+          distanceToTarget,
+        });
+      }
+    } else {
+      // Legacy: Individual path queries for 1-2 candidates
+      for (let i = 0; i < candidates.length && i < maxCoarseProbes; i++) {
+        const candidate = candidates[i];
+        if (!this.tryConsumeStrategicPathBudget(session)) break;
+        const coarse = engine.findPathWithMaxMu(
+          characterPos,
+          candidate.position,
+          {
+            footprintDiameter,
+            movementMetric: 'length',
+            useNavMesh: true,
+            useHierarchical: true,
+            optimizeWithLOS: false,
+            useTheta: false,
+            turnPenalty: 0,
+            portalNarrowPenalty: 0.08,
+            portalNarrowThresholdFactor: 1.25,
+            gridResolution: session.strategicCoarseResolution,
+          },
+          movementAllowance
+        );
+        const coarseEnd = coarse.points[coarse.points.length - 1];
+        if (!coarseEnd) continue;
+
+        const distanceToTarget = Math.hypot(coarseEnd.x - candidate.position.x, coarseEnd.y - candidate.position.y);
+        const progress = Math.max(0, candidate.distance - distanceToTarget) / Math.max(1, candidate.distance);
+        const coarseTravelBase = Math.max(0.25, Math.min(candidate.distance, movementAllowance));
+        const detourRatio = coarse.totalLength / coarseTravelBase;
+        const needsFineResolution =
+          detourRatio >= 1.35 ||
+          (!coarse.reachedEnd && distanceToTarget > 1.25) ||
+          (footprintDiameter <= 1.0 && detourRatio >= 1.18);
+        const score =
+          (progress * 1.8) +
+          (candidate.sourcePriority * 0.6) +
+          (coarse.reachedEnd ? 0.35 : 0) -
+          (Math.max(0, detourRatio - 1.15) * 0.2);
+
+        coarseProbes.push({
+          source: candidate.source,
+          index: candidate.index,
+          targetPosition: candidate.position,
+          endpoint: this.snapToBoardCell(coarseEnd, context.battlefield),
+          score,
+          needsFineResolution,
+          distanceToTarget,
+        });
+      }
     }
 
     if (coarseProbes.length === 0) {

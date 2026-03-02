@@ -7,6 +7,11 @@ import {
   pointToSegmentDistance,
   closestDistanceToPolygon,
 } from '../terrain/BattlefieldUtils';
+import {
+  MultiGoalPathfindingEngine,
+  type MultiGoalPathOptions,
+  type MultiGoalPathResult,
+} from './MultiGoalPathfinding';
 
 export interface PathVector {
   from: Position;
@@ -1403,5 +1408,28 @@ export class PathfindingEngine {
 
   static distance(a: Position, b: Position): number {
     return distance(a, b);
+  }
+
+  /**
+   * Find paths from single start to multiple destinations
+   * 
+   * R8: Multi-Goal Pathfinding - Uses shared search tree to reduce redundant
+   * computation when evaluating multiple destinations from the same start position.
+   * 
+   * Best suited for 3+ destinations from same start position.
+   * For 1-2 destinations, use findPathWithMaxMu() directly.
+   * 
+   * @param start - Start position
+   * @param destinations - Array of destination positions
+   * @param options - Pathfinding options including maxMu
+   * @returns Multi-goal path result with paths to all reachable destinations
+   */
+  findPathsToMultipleGoals(
+    start: Position,
+    destinations: Position[],
+    options: MultiGoalPathOptions
+  ): MultiGoalPathResult {
+    const multiGoalEngine = new MultiGoalPathfindingEngine(this.battlefield);
+    return multiGoalEngine.findPathsToMultipleGoals(start, destinations, options);
   }
 }
