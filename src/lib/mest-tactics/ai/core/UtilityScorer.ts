@@ -2271,8 +2271,9 @@ export class UtilityScorer {
     const maxCoarseProbes = Math.max(1, session.strategicPathQueryBudget - reserveForRefinement);
     const coarseProbes: StrategicProbe[] = [];
 
-    // R8: Use multi-goal pathfinding for 3+ candidates (shared search tree optimization)
-    const useMultiGoal = candidates.length >= 3;
+    // R8: Use multi-goal pathfinding for 10+ candidates (shared search tree optimization)
+    // For fewer candidates, individual queries are faster due to lower overhead
+    const useMultiGoal = candidates.length >= 10;
     
     if (useMultiGoal) {
       // R8: Batch path query with shared search tree
