@@ -207,6 +207,12 @@ export interface AIContext {
     /** Which keys am I losing? */
     losingKeys: string[];
   };
+  /** Current VP by side for VP pressure calculations (VP_SCORING_GAP_ANALYSIS.md Fix 3) */
+  vpBySide?: Record<string, number>;
+  /** Current RP by side for RP pressure calculations */
+  rpBySide?: Record<string, number>;
+  /** Maximum turns in game for end-game urgency */
+  maxTurns?: number;
 }
 
 export interface AIObjectiveMarkerInfo {

@@ -20,6 +20,7 @@ import { ActionDecision } from '../core/AIController';
 import { isAttackableEnemy } from '../core/ai-utils';
 import { InstrumentationLogger, InstrumentationGrade } from '../../instrumentation/QSRInstrumentation';
 import { AuditService, ModelStateAudit } from '../../audit/AuditService';
+import { AuditVector, ModelEffectAudit } from '../../audit/AuditService';
 
 /**
  * AI Game Loop configuration
@@ -397,6 +398,18 @@ export class AIGameLoop {
       const positionBefore = this.manager.getCharacterPosition(character);
       const stateBefore = this.captureModelState(character);
 
+      // Build target data for audit
+      const targets: Array<{ modelId: string; modelName: string; side?: string; relation: 'enemy' | 'ally' | 'self' }> = [];
+      if (decision.target) {
+        const targetSide = this.getSideNameForCharacter(decision.target);
+        targets.push({
+          modelId: decision.target.id,
+          modelName: decision.target.profile.name,
+          side: targetSide,
+          relation: decision.target.id === character.id ? 'self' : (targetSide === this.getSideNameForCharacter(character) ? 'ally' : 'enemy'),
+        });
+      }
+
       // Execute action
       const execResult = this.executor.executeAction(decision, character, context);
 
@@ -404,6 +417,53 @@ export class AIGameLoop {
       const apAfter = this.manager.getApRemaining(character);
       const positionAfter = this.manager.getCharacterPosition(character);
       const stateAfter = this.captureModelState(character);
+
+      // Build vectors for audit (movement actions)
+      const vectors: AuditVector[] = [];
+      if (decision.type === 'move' && decision.position && positionBefore && positionAfter) {
+        vectors.push({
+          kind: 'movement',
+          from: positionBefore,
+          to: positionAfter,
+          distanceMu: Math.sqrt(Math.pow(positionAfter.x - positionBefore.x, 2) + Math.pow(positionAfter.y - positionBefore.y, 2)),
+        });
+      }
+
+      // Build affected models for audit (attacks, disengage, etc.)
+      const affectedModels: ModelEffectAudit[] = [];
+      if (decision.target && decision.target !== character) {
+        const targetSide = this.getSideNameForCharacter(decision.target);
+        const targetStateBefore = this.captureModelState(decision.target);
+        const targetStateAfter = this.captureModelState(decision.target);
+        const changed: string[] = [];
+        if (targetStateBefore.wounds !== targetStateAfter.wounds) changed.push('wounds');
+        if (targetStateBefore.delayTokens !== targetStateAfter.delayTokens) changed.push('delayTokens');
+        if (targetStateBefore.isKOd !== targetStateAfter.isKOd) changed.push('isKOd');
+        if (targetStateBefore.isEliminated !== targetStateAfter.isEliminated) changed.push('isEliminated');
+        if (changed.length > 0) {
+          affectedModels.push({
+            modelId: decision.target.id,
+            modelName: decision.target.profile.name,
+            side: targetSide,
+            relation: 'opponent',
+            before: targetStateBefore,
+            after: targetStateAfter,
+            changed,
+          });
+        }
+      }
+
+      // Build interactions for audit
+      const interactions: Array<{ kind: string; sourceModelId: string; targetModelId?: string; success?: boolean; detail?: string }> = [];
+      if (decision.type === 'close_combat' || decision.type === 'ranged_combat') {
+        interactions.push({
+          kind: 'attack',
+          sourceModelId: character.id,
+          targetModelId: decision.target?.id,
+          success: execResult.success,
+          detail: `${decision.type} vs ${decision.target?.profile.name || 'unknown'}`,
+        });
+      }
 
       // Record action step in audit
       if (this.auditService) {
@@ -415,14 +475,15 @@ export class AIGameLoop {
           success: execResult.success,
           apBefore,
           apAfter,
+          apSpent: apBefore - apAfter,
           actorPositionBefore: positionBefore || undefined,
           actorPositionAfter: positionAfter || undefined,
           actorStateBefore: stateBefore,
           actorStateAfter: stateAfter,
-          vectors: [],
-          targets: [],
-          affectedModels: [],
-          interactions: [],
+          vectors,
+          targets,
+          affectedModels,
+          interactions,
           details: {
             replanningRecommended: execResult.replanningRecommended,
           },
@@ -889,10 +950,6 @@ export class AIGameLoop {
 
     if (readySquadMembers.length === 0) return result;
 
-    // Spend 1 IP to maintain initiative and activate squad member
-    // Full implementation: actually spend IP and activate squad member
-    const squadMember = readySquadMembers[0];
-    
     // Log the IP spending for instrumentation
     if (this.logger && this.logger['config'].grade >= InstrumentationGrade.BY_ACTION) {
       this.logger.log({
@@ -921,6 +978,14 @@ export class AIGameLoop {
     this.manager.endActivation(squadMember);
 
     return result;
+  }
+
+  /**
+   * Get side name for a character
+   */
+  private getSideNameForCharacter(character: Character): string {
+    const side = this.sides.find(s => s.members.some(m => m.character.id === character.id));
+    return side?.name || 'Unknown';
   }
 }
 

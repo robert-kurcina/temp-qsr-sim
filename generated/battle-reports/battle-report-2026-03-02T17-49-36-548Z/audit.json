@@ -1,0 +1,1949 @@
+{
+  "version": "1.0",
+  "session": {
+    "missionId": "QAI_11",
+    "missionName": "Elimination",
+    "lighting": "Day, Clear",
+    "visibilityOrMu": 16,
+    "maxOrm": 3,
+    "allowConcentrateRangeExtension": true,
+    "perCharacterFovLos": false
+  },
+  "battlefield": {
+    "widthMu": 18,
+    "heightMu": 24,
+    "movementSampleStepMu": 0.5,
+    "lofWidthMu": 1
+  },
+  "turns": [
+    {
+      "turn": 1,
+      "activations": [
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-2",
+          "modelName": "Bravo-2",
+          "initiative": 4,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Best action (score: 30.13; gapCrossing=7.00, suppressionZoneControl=4.00, moveMultiplier=1.95)",
+              "resultCode": "SUCCESS",
+              "success": true,
+              "apBefore": 2,
+              "apAfter": 1,
+              "apSpent": 1,
+              "actorPositionBefore": {
+                "x": 5,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": false
+              }
+            },
+            {
+              "sequence": 2,
+              "actionType": "move",
+              "decisionReason": "Best action (score: 24.38; gapCrossing=7.00, suppressionZoneControl=2.00, moveMultiplier=1.95)",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 1,
+              "apAfter": 1,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 6,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-1",
+          "modelName": "Alpha-1",
+          "initiative": 4,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "close_combat",
+              "decisionReason": "Focus fire: isolated",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [
+                {
+                  "modelId": "Bravo-1",
+                  "modelName": "average-sword-broad-armor-light-loadout",
+                  "side": "Bravo",
+                  "relation": "enemy"
+                }
+              ],
+              "affectedModels": [],
+              "interactions": [
+                {
+                  "kind": "attack",
+                  "sourceModelId": "Alpha-1",
+                  "targetModelId": "Bravo-1",
+                  "success": false,
+                  "detail": "close_combat vs average-sword-broad-armor-light-loadout"
+                }
+              ],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-2",
+          "modelName": "Alpha-2",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Best action (score: 30.18; gapCrossing=7.00, suppressionZoneControl=4.00, moveMultiplier=1.95)",
+              "resultCode": "SUCCESS",
+              "success": true,
+              "apBefore": 2,
+              "apAfter": 1,
+              "apSpent": 1,
+              "actorPositionBefore": {
+                "x": 5,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": false
+              }
+            },
+            {
+              "sequence": 2,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 1,
+              "apAfter": 1,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 6,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-3",
+          "modelName": "Alpha-3",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 7,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 7,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-4",
+          "modelName": "Bravo-4",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 17
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 17
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-3",
+          "modelName": "Bravo-3",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 7,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 7,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-1",
+          "modelName": "Bravo-1",
+          "initiative": 2,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "close_combat",
+              "decisionReason": "Focus fire: isolated",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [
+                {
+                  "modelId": "Alpha-1",
+                  "modelName": "average-sword-broad-armor-light-loadout",
+                  "side": "Alpha",
+                  "relation": "enemy"
+                }
+              ],
+              "affectedModels": [],
+              "interactions": [
+                {
+                  "kind": "attack",
+                  "sourceModelId": "Bravo-1",
+                  "targetModelId": "Alpha-1",
+                  "success": false,
+                  "detail": "close_combat vs average-sword-broad-armor-light-loadout"
+                }
+              ],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 1,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-4",
+          "modelName": "Alpha-4",
+          "initiative": 2,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 5
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 5
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        }
+      ],
+      "sideSummaries": [
+        {
+          "sideName": "Alpha",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        },
+        {
+          "sideName": "Bravo",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        }
+      ]
+    },
+    {
+      "turn": 2,
+      "activations": [
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-3",
+          "modelName": "Alpha-3",
+          "initiative": 4,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 7,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 7,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-1",
+          "modelName": "Bravo-1",
+          "initiative": 4,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "close_combat",
+              "decisionReason": "Focus fire: isolated",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [
+                {
+                  "modelId": "Alpha-1",
+                  "modelName": "average-sword-broad-armor-light-loadout",
+                  "side": "Alpha",
+                  "relation": "enemy"
+                }
+              ],
+              "affectedModels": [],
+              "interactions": [
+                {
+                  "kind": "attack",
+                  "sourceModelId": "Bravo-1",
+                  "targetModelId": "Alpha-1",
+                  "success": false,
+                  "detail": "close_combat vs average-sword-broad-armor-light-loadout"
+                }
+              ],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-4",
+          "modelName": "Bravo-4",
+          "initiative": 4,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 17
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 17
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-2",
+          "modelName": "Alpha-2",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 6,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-3",
+          "modelName": "Bravo-3",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 7,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 7,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-1",
+          "modelName": "Alpha-1",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "close_combat",
+              "decisionReason": "Focus fire: isolated",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [
+                {
+                  "modelId": "Bravo-1",
+                  "modelName": "average-sword-broad-armor-light-loadout",
+                  "side": "Bravo",
+                  "relation": "enemy"
+                }
+              ],
+              "affectedModels": [],
+              "interactions": [
+                {
+                  "kind": "attack",
+                  "sourceModelId": "Alpha-1",
+                  "targetModelId": "Bravo-1",
+                  "success": false,
+                  "detail": "close_combat vs average-sword-broad-armor-light-loadout"
+                }
+              ],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-4",
+          "modelName": "Alpha-4",
+          "initiative": 2,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 5
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 5
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 2,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-2",
+          "modelName": "Bravo-2",
+          "initiative": 2,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 6,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        }
+      ],
+      "sideSummaries": [
+        {
+          "sideName": "Alpha",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        },
+        {
+          "sideName": "Bravo",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        }
+      ]
+    },
+    {
+      "turn": 3,
+      "activations": [
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-4",
+          "modelName": "Alpha-4",
+          "initiative": 5,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 5
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 5
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-1",
+          "modelName": "Alpha-1",
+          "initiative": 4,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "close_combat",
+              "decisionReason": "Focus fire: isolated",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [
+                {
+                  "modelId": "Bravo-1",
+                  "modelName": "average-sword-broad-armor-light-loadout",
+                  "side": "Bravo",
+                  "relation": "enemy"
+                }
+              ],
+              "affectedModels": [],
+              "interactions": [
+                {
+                  "kind": "attack",
+                  "sourceModelId": "Alpha-1",
+                  "targetModelId": "Bravo-1",
+                  "success": false,
+                  "detail": "close_combat vs average-sword-broad-armor-light-loadout"
+                }
+              ],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-2",
+          "modelName": "Bravo-2",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 6,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-1",
+          "modelName": "Bravo-1",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 1,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "close_combat",
+              "decisionReason": "Focus fire: isolated",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [
+                {
+                  "modelId": "Alpha-1",
+                  "modelName": "average-sword-broad-armor-light-loadout",
+                  "side": "Alpha",
+                  "relation": "enemy"
+                }
+              ],
+              "affectedModels": [],
+              "interactions": [
+                {
+                  "kind": "attack",
+                  "sourceModelId": "Bravo-1",
+                  "targetModelId": "Alpha-1",
+                  "success": false,
+                  "detail": "close_combat vs average-sword-broad-armor-light-loadout"
+                }
+              ],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-2",
+          "modelName": "Alpha-2",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 6,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 6,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 0,
+          "sideName": "Alpha",
+          "modelId": "Alpha-3",
+          "modelName": "Alpha-3",
+          "initiative": 3,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 7,
+                "y": 3
+              },
+              "actorPositionAfter": {
+                "x": 7,
+                "y": 3
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-4",
+          "modelName": "Bravo-4",
+          "initiative": 2,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 3,
+                "y": 17
+              },
+              "actorPositionAfter": {
+                "x": 3,
+                "y": 17
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        },
+        {
+          "activationSequence": 0,
+          "turn": 3,
+          "sideIndex": 1,
+          "sideName": "Bravo",
+          "modelId": "Bravo-3",
+          "modelName": "Bravo-3",
+          "initiative": 2,
+          "apStart": 2,
+          "apEnd": 2,
+          "waitAtStart": false,
+          "waitMaintained": false,
+          "waitUpkeepPaid": false,
+          "delayTokensAtStart": 0,
+          "delayTokensAfterUpkeep": 0,
+          "steps": [
+            {
+              "sequence": 1,
+              "actionType": "move",
+              "decisionReason": "Move to support overwhelmed ally",
+              "resultCode": "FAILED",
+              "success": false,
+              "apBefore": 2,
+              "apAfter": 2,
+              "apSpent": 0,
+              "actorPositionBefore": {
+                "x": 7,
+                "y": 15
+              },
+              "actorPositionAfter": {
+                "x": 7,
+                "y": 15
+              },
+              "actorStateBefore": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "actorStateAfter": {
+                "wounds": 0,
+                "delayTokens": 0,
+                "fearTokens": 0,
+                "isKOd": false,
+                "isEliminated": false,
+                "isHidden": false,
+                "isWaiting": false,
+                "isAttentive": true,
+                "isOrdered": true
+              },
+              "vectors": [],
+              "targets": [],
+              "affectedModels": [],
+              "interactions": [],
+              "details": {
+                "replanningRecommended": true
+              }
+            }
+          ]
+        }
+      ],
+      "sideSummaries": [
+        {
+          "sideName": "Alpha",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        },
+        {
+          "sideName": "Bravo",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        }
+      ]
+    },
+    {
+      "turn": 4,
+      "activations": [],
+      "sideSummaries": [
+        {
+          "sideName": "Alpha",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        },
+        {
+          "sideName": "Bravo",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        }
+      ]
+    },
+    {
+      "turn": 5,
+      "activations": [],
+      "sideSummaries": [
+        {
+          "sideName": "Alpha",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        },
+        {
+          "sideName": "Bravo",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        }
+      ]
+    },
+    {
+      "turn": 6,
+      "activations": [],
+      "sideSummaries": [
+        {
+          "sideName": "Alpha",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        },
+        {
+          "sideName": "Bravo",
+          "activeModelsStart": 4,
+          "activeModelsEnd": 4
+        }
+      ]
+    }
+  ],
+  "deployment": [
+    {
+      "sideId": "Alpha",
+      "sideName": "Alpha",
+      "models": [
+        {
+          "modelId": "Alpha-1",
+          "characterName": "Alpha-1",
+          "assemblyName": "Alpha Assembly-1",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "modelId": "Alpha-2",
+          "characterName": "Alpha-2",
+          "assemblyName": "Alpha Assembly-2",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "modelId": "Alpha-3",
+          "characterName": "Alpha-3",
+          "assemblyName": "Alpha Assembly-3",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "modelId": "Alpha-4",
+          "characterName": "Alpha-4",
+          "assemblyName": "Alpha Assembly-4",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ]
+    },
+    {
+      "sideId": "Bravo",
+      "sideName": "Bravo",
+      "models": [
+        {
+          "modelId": "Bravo-1",
+          "characterName": "Bravo-1",
+          "assemblyName": "Bravo Assembly-1",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "modelId": "Bravo-2",
+          "characterName": "Bravo-2",
+          "assemblyName": "Bravo Assembly-2",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "modelId": "Bravo-3",
+          "characterName": "Bravo-3",
+          "assemblyName": "Bravo Assembly-3",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "modelId": "Bravo-4",
+          "characterName": "Bravo-4",
+          "assemblyName": "Bravo Assembly-4",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        }
+      ]
+    }
+  ]
+}

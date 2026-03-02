@@ -160,6 +160,12 @@ export class AIBattleRunner {
 
   // Mission runtime state (using new module)
   private missionRuntimeState: MissionRuntimeState;
+  private missionSideIds: string[] = [];
+  private missionVpBySide: Record<string, number> = {};
+  private missionRpBySide: Record<string, number> = {};
+  private eliminatedBPBySide: Record<string, number> = {};  // For Elimination Key (QSR MEST.Tactics.Missions.txt)
+  private missionImmediateWinnerSideId: string | null = null;
+  private firstBloodAwarded: boolean = false;
 
   private currentBattlefield: Battlefield | null = null;
   private auditTurns: TurnAudit[] = [];
@@ -2180,6 +2186,7 @@ export class AIBattleRunner {
       this.missionSideIds = this.missionSides.map(side => side.id);
       this.missionVpBySide = Object.fromEntries(this.missionSideIds.map(sideId => [sideId, 0]));
       this.missionRpBySide = Object.fromEntries(this.missionSideIds.map(sideId => [sideId, 0]));
+      this.eliminatedBPBySide = Object.fromEntries(this.missionSideIds.map(sideId => [sideId, 0]));  // For Elimination Key
       this.missionRuntimeAdapter = createMissionRuntimeAdapter(config.missionId, this.missionSides);
       gameManager.setMissionRuntimeAdapter(this.missionRuntimeAdapter);
       this.applyMissionStartOverrides(config, sides, gameManager);
@@ -2349,6 +2356,42 @@ export class AIBattleRunner {
       const maxRemaining = Math.max(...finalCounts);
       const winners = config.sides.filter((_, i) => finalCounts[i] === maxRemaining);
       const usage = this.buildUsageMetrics();
+      
+      // === Award Elimination Key VP at game end (QSR MEST.Tactics.Missions.txt) ===
+      // "+1 VP to Side with highest total BP value of KO'd and Eliminated Opposing models at game end"
+      const eliminationKeyWinner = Object.entries(this.eliminatedBPBySide)
+        .sort((a, b) => b[1] - a[1])[0];
+      if (eliminationKeyWinner && eliminationKeyWinner[1] > 0) {
+        const [winnerSideId, bpValue] = eliminationKeyWinner;
+        this.missionVpBySide[winnerSideId] = (this.missionVpBySide[winnerSideId] ?? 0) + 1;
+        if (config.verbose) {
+          console.log(`\n🏆 Elimination Key: ${winnerSideId} wins +1 VP (eliminated ${bpValue} BP worth of enemies)`);
+        }
+      }
+      
+      // Award RP-based VP (QSR MEST.Tactics.MissionKeys.txt)
+      const rpEntries = Object.entries(this.missionRpBySide).sort((a, b) => b[1] - a[1]);
+      if (rpEntries.length >= 2) {
+        const topRp = rpEntries[0];
+        const secondRp = rpEntries[1];
+        const rpMargin = topRp[1] - secondRp[1];
+        
+        // +1 VP to side with most RPs
+        this.missionVpBySide[topRp[0]] = (this.missionVpBySide[topRp[0]] ?? 0) + 1;
+        
+        // +2 VP instead if double the RP and at least 10 RP more
+        if (topRp[1] >= secondRp[1] * 2 && rpMargin >= 10) {
+          this.missionVpBySide[topRp[0]] = (this.missionVpBySide[topRp[0]] ?? 0) + 1;  // Additional +1 VP (total +2)
+          if (config.verbose) {
+            console.log(`🏆 RP Dominance: ${topRp[0]} wins +2 VP (${topRp[1]} RP vs ${secondRp[1]} RP, margin ${rpMargin})`);
+          }
+        } else if (config.verbose) {
+          console.log(`🏆 RP Key: ${topRp[0]} wins +1 VP (${topRp[1]} RP vs ${secondRp[1]} RP)`);
+        }
+      } else if (rpEntries.length === 1 && config.verbose) {
+        console.log(`🏆 RP Key: ${rpEntries[0][0]} wins +1 VP (${rpEntries[0][1]} RP, no opposition)`);
+      }
+      
       const missionWinner = this.resolveMissionWinnerName();
       const resolvedWinner = missionWinner ?? (
         winners.length === 1 ? winners[0].name : (winners.length === 0 ? 'None' : 'Draw')
@@ -2664,6 +2707,10 @@ export class AIBattleRunner {
           objectiveMarkers: this.buildAiObjectiveMarkerSnapshot(gameManager),
           knowledge: emptyKnowledge(turn),
           config: aiController.getConfig(),
+          // VP/RP pressure for incentivizing combat (VP_SCORING_GAP_ANALYSIS.md Fix 3)
+          vpBySide: { ...this.missionVpBySide },
+          rpBySide: { ...this.missionRpBySide },
+          maxTurns: config.maxTurns,
         };
         context.knowledge = aiController.updateKnowledge(context);
 
@@ -3952,6 +3999,31 @@ export class AIBattleRunner {
       }
       if (normalized.eliminated) {
         this.tracker.trackElimination();
+        
+        // === VP_SCORING_GAP_ANALYSIS.md Fix 4: Track BP for Elimination Key ===
+        // QSR MEST.Tactics.Missions.txt: "+1 VP to Side with highest total BP value of KO'd and Eliminated Opposing models at game end"
+        // NOT per-elimination VP - BP value tracked and awarded at game end
+        const eliminatingSideId = this.missionSideIds[sideIndex];
+        const eliminatedBP = defender.profile?.bp ?? 0;
+        
+        if (eliminatingSideId && eliminatedBP > 0) {
+          // Track BP value of eliminated enemies (awarded at game end)
+          this.eliminatedBPBySide[eliminatingSideId] = (this.eliminatedBPBySide[eliminatingSideId] ?? 0) + eliminatedBP;
+          
+          // First Blood: +1 RP to first side to wound/eliminate an enemy (QSR MEST.Tactics.MissionKeys.txt)
+          if (!this.firstBloodAwarded) {
+            this.missionRpBySide[eliminatingSideId] = (this.missionRpBySide[eliminatingSideId] ?? 0) + 1;
+            this.firstBloodAwarded = true;
+            
+            if (config.verbose) {
+              console.log(`    → First Blood! +1 RP to ${eliminatingSideId}`);
+            }
+          }
+          
+          if (config.verbose) {
+            console.log(`    → Eliminated ${defender.profile.name} (${eliminatedBP} BP). Total BP by ${eliminatingSideId}: ${this.eliminatedBPBySide[eliminatingSideId]}`);
+          }
+        }
       }
       return {
         executed: true,
@@ -4157,6 +4229,31 @@ export class AIBattleRunner {
       }
       if (normalized.eliminated) {
         this.tracker.trackElimination();
+        
+        // === VP_SCORING_GAP_ANALYSIS.md Fix 4: Track BP for Elimination Key ===
+        // QSR MEST.Tactics.Missions.txt: "+1 VP to Side with highest total BP value of KO'd and Eliminated Opposing models at game end"
+        // NOT per-elimination VP - BP value tracked and awarded at game end
+        const eliminatingSideId = this.missionSideIds[sideIndex];
+        const eliminatedBP = defender.profile?.bp ?? 0;
+        
+        if (eliminatingSideId && eliminatedBP > 0) {
+          // Track BP value of eliminated enemies (awarded at game end)
+          this.eliminatedBPBySide[eliminatingSideId] = (this.eliminatedBPBySide[eliminatingSideId] ?? 0) + eliminatedBP;
+          
+          // First Blood: +1 RP to first side to wound/eliminate an enemy (QSR MEST.Tactics.MissionKeys.txt)
+          if (!this.firstBloodAwarded) {
+            this.missionRpBySide[eliminatingSideId] = (this.missionRpBySide[eliminatingSideId] ?? 0) + 1;
+            this.firstBloodAwarded = true;
+            
+            if (config.verbose) {
+              console.log(`    → First Blood! +1 RP to ${eliminatingSideId}`);
+            }
+          }
+          
+          if (config.verbose) {
+            console.log(`    → Eliminated ${defender.profile.name} (${eliminatedBP} BP). Total BP by ${eliminatingSideId}: ${this.eliminatedBPBySide[eliminatingSideId]}`);
+          }
+        }
       }
       return {
         executed: true,

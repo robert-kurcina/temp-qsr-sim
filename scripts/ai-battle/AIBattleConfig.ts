@@ -120,6 +120,35 @@ export function createDefaultGameConfig(
 ): GameConfig {
   const sizeConfig = GAME_SIZE_CONFIG[gameSize];
 
+  // Select doctrine based on mission type to ensure VP/RP incentivization
+  // Reference: docs/audit/VP_SCORING_GAP_ANALYSIS.md
+  const getDoctrineForMission = (missionId: string, sideIndex: number): TacticalDoctrine => {
+    switch (missionId) {
+      case 'QAI_11': // Elimination - aggressive pursuit of kills
+        return sideIndex === 0 ? TacticalDoctrine.Aggressive : TacticalDoctrine.Balanced;
+      case 'QAI_12': // Convergence - objective-focused
+        return TacticalDoctrine.Objective;
+      case 'QAI_13': // Assault - defender holds, attacker rushes
+        return sideIndex === 0 ? TacticalDoctrine.Defensive : TacticalDoctrine.Aggressive;
+      case 'QAI_14': // Dominion - beacon control
+        return TacticalDoctrine.Objective;
+      case 'QAI_15': // Recovery - intelligence extraction
+        return TacticalDoctrine.Objective;
+      case 'QAI_16': // Escort - VIP protection
+        return sideIndex === 0 ? TacticalDoctrine.Defensive : TacticalDoctrine.Balanced;
+      case 'QAI_17': // Triumvirate - free-for-all aggression
+        return TacticalDoctrine.Aggressive;
+      case 'QAI_18': // Stealth - covert ops
+        return TacticalDoctrine.Shadow;
+      case 'QAI_19': // Defiance - hold position
+        return TacticalDoctrine.Defensive;
+      case 'QAI_20': // Breach - breakthrough vs fortification
+        return sideIndex === 0 ? TacticalDoctrine.Aggressive : TacticalDoctrine.Defensive;
+      default:
+        return TacticalDoctrine.Balanced;
+    }
+  };
+
   return {
     missionId,
     missionName: 'Elimination',
@@ -133,14 +162,14 @@ export function createDefaultGameConfig(
         name: 'Alpha',
         bp: sizeConfig.bpPerSide[1],
         modelCount: sizeConfig.modelsPerSide[1],
-        tacticalDoctrine: TacticalDoctrine.Operative,
+        tacticalDoctrine: getDoctrineForMission(missionId, 0),
         assemblyName: 'Assembly Alpha',
       },
       {
         name: 'Bravo',
         bp: sizeConfig.bpPerSide[1],
         modelCount: sizeConfig.modelsPerSide[1],
-        tacticalDoctrine: TacticalDoctrine.Operative,
+        tacticalDoctrine: getDoctrineForMission(missionId, 1),
         assemblyName: 'Assembly Bravo',
       },
     ],

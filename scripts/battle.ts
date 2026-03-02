@@ -29,6 +29,7 @@ import { CharacterAI } from '../src/lib/mest-tactics/ai/core/CharacterAI';
 import { TacticalDoctrine } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { getEndGameTriggerTurn } from '../src/lib/mest-tactics/engine/end-game-trigger';
 import { LightingCondition, getVisibilityOrForLighting } from '../src/lib/mest-tactics/utils/visibility';
+import { ActionStepAudit, AuditVector, ModelEffectAudit, OpposedTestAudit } from '../src/lib/mest-tactics/audit/BattleAuditExporter';
 
 // ============================================================================
 // Configuration

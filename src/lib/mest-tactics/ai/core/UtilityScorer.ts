@@ -1229,6 +1229,53 @@ export class UtilityScorer {
     const enemyWounds = enemy.state.wounds;
     const finishOffBonus = enemyWounds >= enemySiz - 1 ? 5.0 : 0;
 
+    // === VP/RP Pressure Scoring (VP_SCORING_GAP_ANALYSIS.md Fix 3) ===
+    let vpPressureBonus = 0;
+    if (context.vpBySide && context.rpBySide && context.sideId) {
+      const myVp = context.vpBySide[context.sideId] ?? 0;
+      const myRp = context.rpBySide[context.sideId] ?? 0;
+      
+      // Calculate best enemy VP/RP
+      const enemyVp = Math.max(
+        0,
+        ...Object.entries(context.vpBySide)
+          .filter(([sid]) => sid !== context.sideId)
+          .map(([, vp]) => vp)
+      );
+      const enemyRp = Math.max(
+        0,
+        ...Object.entries(context.rpBySide)
+          .filter(([sid]) => sid !== context.sideId)
+          .map(([, rp]) => rp)
+      );
+      
+      const vpDeficit = enemyVp - myVp;
+      const rpDeficit = enemyRp - myRp;
+      
+      // VP deficit creates urgency (+0.5 per VP behind)
+      if (vpDeficit > 0) {
+        vpPressureBonus += vpDeficit * 0.5;
+      }
+      
+      // RP deficit creates moderate urgency (+0.25 per RP behind)
+      if (rpDeficit > 0) {
+        vpPressureBonus += rpDeficit * 0.25;
+      }
+      
+      // Elimination key: this enemy is worth VP
+      vpPressureBonus += 2;  // Base elimination pressure
+      
+      // Finish off bonus amplified by VP pressure
+      if (enemyWounds >= enemySiz - 1) {
+        vpPressureBonus += 3;  // Additional +3 for easy VP
+      }
+      
+      // Late game desperation (turns remaining ≤ 2 and VP behind)
+      if (context.maxTurns && context.currentTurn >= context.maxTurns - 2 && vpDeficit > 0) {
+        vpPressureBonus *= 1.5;  // 50% boost
+      }
+    }
+
     // R9: Threat immediacy bonus
     const threatImmediacy = evaluateThreatImmediacy(enemy, characterPos, context);
     const threatImmediacyBonus = threatImmediacy.totalScore * 1.5;
@@ -1243,6 +1290,7 @@ export class UtilityScorer {
       jumpDownBonus +
       focusFireBonus +
       finishOffBonus +
+      vpPressureBonus +  // === NEW: VP/RP pressure ===
       threatImmediacyBonus;
 
     return {
@@ -1258,6 +1306,7 @@ export class UtilityScorer {
         jumpDown: jumpDownBonus,
         focusFire: focusFireBonus,
         finishOff: finishOffBonus,
+        vpPressure: vpPressureBonus,  // === NEW: VP/RP pressure factor ===
         threatImmediacy: threatImmediacyBonus,
       },
     };

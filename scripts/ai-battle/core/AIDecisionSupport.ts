@@ -42,9 +42,22 @@ export interface PushBackSelection {
 
 /**
  * Build predicted scoring for AI decision making
+ * 
+ * @param sides - All mission sides
+ * @param vpBySide - Current VP by side (for VP pressure calculation)
+ * @param rpBySide - Current RP by side (for RP pressure calculation)
+ * @param currentTurn - Current turn number (for end-game urgency)
+ * @param maxTurns - Maximum turns in game
+ * @returns Predicted scoring and target priorities
+ * 
+ * @reference docs/audit/VP_SCORING_GAP_ANALYSIS.md - Fix 2: Wire VP/RP into utility scoring
  */
 export function buildPredictedScoring(
-  sides: MissionSide[]
+  sides: MissionSide[],
+  vpBySide?: Record<string, number>,
+  rpBySide?: Record<string, number>,
+  currentTurn?: number,
+  maxTurns?: number
 ): PredictedScoringResult {
   const predictedScores: Record<string, number> = {};
   const targetPriorities: Record<string, number> = {};
@@ -57,14 +70,14 @@ export function buildPredictedScoring(
       }
 
       const key = character.id;
-      predictedScores[key] = 0;
-      targetPriorities[key] = 0;
+      let score = 0;
+      let priority = 0;
 
-      // Score based on wounds (lower health = higher priority target)
+      // === Base: Health-based scoring (weakened = priority target) ===
       const healthRatio = character.state.wounds / character.profile.siz;
-      targetPriorities[key] += (1 - healthRatio) * 10;
+      priority += (1 - healthRatio) * 10;  // +10 for fresh, +0 for SIZ-1 wounds
 
-      // Score based on engagement status
+      // === Base: Engagement scoring ===
       const enemies = sides
         .filter(s => s.id !== side.id)
         .flatMap(s => s.members)
@@ -76,9 +89,67 @@ export function buildPredictedScoring(
           { id: character.id, position: character.position!, baseDiameter: character.baseDiameter, siz: character.profile.siz },
           { id: enemy.id, position: enemy.position!, baseDiameter: enemy.baseDiameter, siz: enemy.profile.siz }
         )) {
-          predictedScores[key] += 5;
+          score += 5;
+          priority += 3;  // Engaged enemies are priority targets
         }
       }
+
+      // === VP/RP Pressure Scoring (NEW) ===
+      if (vpBySide && rpBySide) {
+        const mySideId = side.id;
+        const myVp = vpBySide[mySideId] ?? 0;
+        const myRp = rpBySide[mySideId] ?? 0;
+        
+        // Calculate enemy VP/RP (max of all enemies)
+        const enemyVp = Math.max(
+          0,
+          ...Object.entries(vpBySide)
+            .filter(([sid]) => sid !== mySideId)
+            .map(([, vp]) => vp)
+        );
+        const enemyRp = Math.max(
+          0,
+          ...Object.entries(rpBySide)
+            .filter(([sid]) => sid !== mySideId)
+            .map(([, rp]) => rp)
+        );
+        
+        const vpDeficit = enemyVp - myVp;
+        const rpDeficit = enemyRp - myRp;
+        
+        // VP deficit creates urgency (+0.5 priority per VP behind)
+        if (vpDeficit > 0) {
+          priority += vpDeficit * 0.5;
+        }
+        
+        // RP deficit creates moderate urgency (+0.25 priority per RP behind)
+        if (rpDeficit > 0) {
+          priority += rpDeficit * 0.25;
+        }
+        
+        // Elimination key: enemy models are VP sources (1 VP per elimination)
+        // Weight this highly to encourage aggressive play
+        priority += 2;  // Base elimination pressure
+      }
+
+      // === Turn-based Urgency (NEW) ===
+      if (currentTurn !== undefined && maxTurns !== undefined) {
+        const turnsRemaining = maxTurns - currentTurn;
+        
+        // Late game + VP deficit = desperation mode
+        if (turnsRemaining <= 2 && vpBySide && (vpBySide[side.id] ?? 0) < enemyVp) {
+          priority *= 1.5;  // 50% urgency boost
+        }
+      }
+
+      // === Finish Off Bonus (NEW) ===
+      // Weakened enemies (SIZ-1 wounds) are high-value targets
+      if (character.state.wounds >= character.profile.siz - 1) {
+        priority += 5;  // +5 for easy elimination VP
+      }
+
+      predictedScores[key] = score;
+      targetPriorities[key] = priority;
     }
   }
 
