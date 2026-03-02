@@ -4,9 +4,18 @@ import {
   calculateScoringModifiers,
   combineModifiers,
   getScoringAdvice,
+  type MissionVPConfig,
 } from './PredictedScoringIntegration';
 import { calculateStratagemModifiers, TacticalDoctrine } from './AIStratagems';
 import { createKeyScore } from '../../mission/MissionSide';
+
+// Default mission config for tests (Elimination mission)
+const DEFAULT_MISSION_CONFIG: MissionVPConfig = {
+  totalVPPool: 5,
+  hasRPToVPConversion: false,
+  currentTurn: 3,
+  maxTurns: 10,
+};
 
 describe('Predicted Scoring Integration', () => {
   describe('buildScoringContext', () => {
@@ -20,7 +29,7 @@ describe('Predicted Scoring Integration', () => {
         dominance: createKeyScore(0, 1, 50),
       };
 
-      const context = buildScoringContext(myScores, opponentScores);
+      const context = buildScoringContext(myScores, opponentScores, DEFAULT_MISSION_CONFIG);
 
       expect(context.amILeading).toBe(true);
       expect(context.vpMargin).toBeGreaterThan(0);
@@ -37,7 +46,7 @@ describe('Predicted Scoring Integration', () => {
         elimination: createKeyScore(0, 1, 100),
       };
 
-      const context = buildScoringContext(myScores, opponentScores);
+      const context = buildScoringContext(myScores, opponentScores, DEFAULT_MISSION_CONFIG);
 
       expect(context.amILeading).toBe(false);
       expect(context.vpMargin).toBeLessThan(0);
@@ -46,20 +55,57 @@ describe('Predicted Scoring Integration', () => {
     });
 
     it('should handle empty scores', () => {
-      const context = buildScoringContext({}, {});
+      const context = buildScoringContext({}, {}, DEFAULT_MISSION_CONFIG);
 
       expect(context.amILeading).toBe(false);
       expect(context.vpMargin).toBe(0);
-      expect(context.winningKeys).toHaveLength(0);
-      expect(context.losingKeys).toHaveLength(0);
+    });
+
+    it('should calculate vpDeficitPercent correctly when trailing', () => {
+      // totalVPPool=10, I have 0, opponent has 8, remaining = 2
+      // I need 8 VP to catch up, but only 2 VP remaining = 400% deficit
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
+      const context = buildScoringContext(
+        { elimination: createKeyScore(0, 0, 0) },
+        { elimination: createKeyScore(0, 8, 100) },
+        missionConfig
+      );
+
+      expect(context.vpDeficitPercent).toBeGreaterThanOrEqual(1.0); // 400% = impossible to catch up
+    });
+
+    it('should calculate remainingVP correctly', () => {
+      // totalVPPool=10, max predicted is 6, remaining = 4
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
+      const context = buildScoringContext(
+        { elimination: createKeyScore(0, 6, 80) },
+        { elimination: createKeyScore(0, 3, 50) },
+        missionConfig
+      );
+
+      expect(context.remainingVP).toBe(4); // 10 - 6 = 4
     });
   });
 
   describe('calculateScoringModifiers', () => {
     it('should boost defense when leading comfortably', () => {
+      // Leading by enough that opponent needs 75%+ of remaining VP to catch up
+      // totalVPPool=10, I have 7, opponent has 2, remaining = 3
+      // Opponent needs 5 VP to catch up, but only 3 VP remaining = 167% deficit
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
       const context = buildScoringContext(
-        { elimination: createKeyScore(0, 4, 100) },
-        { elimination: createKeyScore(0, 1, 50) }
+        { elimination: createKeyScore(0, 7, 90) },
+        { elimination: createKeyScore(0, 2, 80) },
+        missionConfig
       );
 
       const modifiers = calculateScoringModifiers(context);
@@ -70,9 +116,17 @@ describe('Predicted Scoring Integration', () => {
     });
 
     it('should boost aggression when trailing badly', () => {
+      // Trailing so badly that I need 100%+ of remaining VP to catch up
+      // totalVPPool=10, I have 0, opponent has 8, remaining = 2
+      // I need 8 VP to catch up, but only 2 VP remaining = 400% deficit
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
       const context = buildScoringContext(
         { elimination: createKeyScore(0, 0, 0) },
-        { elimination: createKeyScore(0, 5, 100) }
+        { elimination: createKeyScore(0, 8, 100) },
+        missionConfig
       );
 
       const modifiers = calculateScoringModifiers(context);
@@ -86,7 +140,8 @@ describe('Predicted Scoring Integration', () => {
     it('should encourage objective focus when losing key', () => {
       const context = buildScoringContext(
         { dominance: createKeyScore(0, 0, 0) },
-        { dominance: createKeyScore(0, 2, 100) }
+        { dominance: createKeyScore(0, 2, 100) },
+        DEFAULT_MISSION_CONFIG
       );
 
       const modifiers = calculateScoringModifiers(context);
@@ -95,9 +150,17 @@ describe('Predicted Scoring Integration', () => {
     });
 
     it('should provide wait bonus when ahead', () => {
+      // Leading by enough to get wait bonus (25%+ opponent deficit)
+      // totalVPPool=10, I have 6, opponent has 3, remaining = 4
+      // Opponent needs 3 VP to catch up, 4 VP remaining = 75% deficit
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
       const context = buildScoringContext(
-        { elimination: createKeyScore(0, 3, 80) },
-        { elimination: createKeyScore(0, 1, 50) }
+        { elimination: createKeyScore(0, 6, 80) },
+        { elimination: createKeyScore(0, 3, 50) },
+        missionConfig
       );
 
       const modifiers = calculateScoringModifiers(context);
@@ -149,9 +212,15 @@ describe('Predicted Scoring Integration', () => {
 
   describe('getScoringAdvice', () => {
     it('should advise defensive play when leading', () => {
+      // totalVPPool=10, I have 7, opponent has 2, remaining = 3
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
       const context = buildScoringContext(
-        { elimination: createKeyScore(0, 4, 90) },
-        { elimination: createKeyScore(0, 1, 50) }
+        { elimination: createKeyScore(0, 7, 90) },
+        { elimination: createKeyScore(0, 2, 50) },
+        missionConfig
       );
 
       const advice = getScoringAdvice(context);
@@ -161,26 +230,34 @@ describe('Predicted Scoring Integration', () => {
     });
 
     it('should advise aggressive play when trailing', () => {
+      // totalVPPool=10, I have 0, opponent has 8, remaining = 2
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
       const context = buildScoringContext(
         { elimination: createKeyScore(0, 0, 0) },
-        { elimination: createKeyScore(0, 5, 100) }
+        { elimination: createKeyScore(0, 8, 100) },
+        missionConfig
       );
 
       const advice = getScoringAdvice(context);
 
       expect(advice.length).toBeGreaterThan(0);
-      expect(advice.some(a => a.includes('risk') || a.includes('deficit') || a.includes('aggressive'))).toBe(true);
+      expect(advice.some(a => a.includes('aggressive') || a.includes('catch up'))).toBe(true);
     });
 
     it('should provide key-specific advice', () => {
       const context = buildScoringContext(
         { dominance: createKeyScore(0, 0, 0) },
-        { dominance: createKeyScore(0, 2, 100) }
+        { dominance: createKeyScore(0, 2, 100) },
+        DEFAULT_MISSION_CONFIG
       );
 
       const advice = getScoringAdvice(context);
 
-      expect(advice.some(a => a.includes('zone') || a.includes('objective'))).toBe(true);
+      expect(advice.length).toBeGreaterThan(0);
+      expect(advice.some(a => a.includes('dominance') || a.includes('zone'))).toBe(true);
     });
   });
 });

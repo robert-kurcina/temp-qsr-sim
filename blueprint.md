@@ -4061,11 +4061,20 @@ This is the current execution plan for the latest identified gaps (mission scan 
 #### R1.5 (P0): Predicted VP/RP Scoring System for AI Planning
 **Objective:** Provide AI with real-time scoring visibility to enable strategic decision-making based on current battlefield state.
 
+**Core Principle:** **VP Scoring DOMINATES action selection.** Tactical positioning (cover, LOS, movement) exists to SUPPORT VP pursuit, not replace it.
+
+**Priority Hierarchy (Corrected):**
+```
+1. VP Pursuit (Keys to Victory)     → PRIMARY driver (10x+ multipliers)
+2. Tactical Positioning (cover, LOS) → SECONDARY (enables VP achievement)
+```
+
 **Concept:** Each side tracks **Predicted VP/RP** (what they would score if game ended now) separately from **Final VP/RP** (awarded at game end). This enables AI to:
 - Identify which Keys to Victory they are leading/trailing in
 - Prioritize actions based on scoring position (e.g., "behind in Dominance, focus on zones")
 - Assess risk tolerance (ahead = defensive, behind = aggressive)
 - Diversify key efforts (don't put all eggs in one basket)
+- Receive CONTINUOUS fractional VP feedback (not just 0/1 binary)
 
 **Implementation:**
 1. **Add Predicted Scoring to MissionSide State:**
@@ -4126,30 +4135,109 @@ This is the current execution plan for the latest identified gaps (mission scan 
 
 **Dependencies:** R1 (Mission Scoring Correctness) must be complete first.
 
-**Status:** ✅ COMPLETE (2026-02-25)
-- All 10 QAI mission managers implement `calculatePredictedScoring()`
-- MissionRuntimeAdapter updates predicted scores each turn
-- Battle reports include `predictedScoring` section with per-key breakdown
-- `KeyScoresBreakdown` interface covers all 17 Keys to Victory from rules-mission-keys.md
-- **SideAICoordinator architecture** (god mode, perfect coordination):
-  - `SideAICoordinator` - Side/Player-level strategy coordinator
-  - Computes `scoringContext` ONCE per turn for entire Side
-  - Distributes strategic context to all CharacterAI instances
-  - Characters are puppets with no autonomy - execute Side strategy
-  - `SideCoordinatorManager` manages coordinators for all Sides
-- AI stratagem integration (`PredictedScoringIntegration.ts`) provides:
-  - `ScoringContext` - AI's view of current scoring state (leading/trailing, winning/losing keys)
-  - `ScoringModifiers` - action multipliers based on scoring position:
-    - Leading comfortably (3+ VP): defense +30%, wait +2, risk -30%, play for time
-    - Trailing badly (4+ VP deficit): desperate mode, aggression +50%, risk +50%, wait -2
-    - Key-specific adjustments for all 17 keys (dominance, elimination, courier, etc.)
-  - `combineModifiers()` - merges stratagem + scoring modifiers
-  - `getScoringAdvice()` - tactical advice based on scoring position and key state
-- `UtilityScorer.evaluateActions()` now applies combined stratagem + scoring modifiers
-- `AIContext` extended with optional `scoringContext` field
-- `AIControllerConfig` extended with `tacticalDoctrine` field
-- 29 unit tests validate scoring context, modifiers, advice generation, and SideAICoordinator
-- Backward compatible: works without scoringContext (legacy stratagem-only behavior)
+**Status:** ✅ **COMPLETE** (2026-03-02) - Fractional VP tracking implemented, VP-dominant modifiers applied
+
+**Implementation Summary:**
+
+### Fractional VP Tracking (Elimination Mission)
+- **Elimination Key:** VP proportional to enemy BP eliminated (0.0-1.0)
+  - Example: 150/300 BP eliminated = 0.5 VP
+  - Leading side: Full fractional VP (0.0-1.0)
+  - Trailing side: Reduced fractional VP (0.0-0.5)
+- **Bottled Key:** VP based on opponent casualty rates (0.0-1.0)
+  - Opponent bottled: 0.5-1.0 VP based on ratio
+  - Progress tracking: VP based on casualty gap
+
+### VP-Dominant Action Modifiers
+**Core Principle:** VP modifiers MUST DOMINATE tactical scoring (10x+ multipliers).
+
+| VP Position | Aggression | Defense | Objective | Wait Bonus | Risk |
+|-------------|------------|---------|-----------|------------|------|
+| **Leading 3+ VP** | -70% | +200% | -60% | +10 | -70% |
+| **Leading 1-2 VP** | -40% | +80% | +50% | +5 | -50% |
+| **Trailing 0-1 VP** | +50% | - | +30% | -2 | - |
+| **Trailing 2-3 VP** | +150% | -40% | +100% | -5 | +80% |
+| **Trailing 4+ VP** | +400% | -70% | +300% | -10 | +200% |
+
+**Key-Specific Adjustments:**
+- Losing elimination → aggression ×1.5
+- Losing dominance/control → objective ×1.5
+- Winning elimination → risk ×0.5, aggression ×0.6
+- Winning zones → defense ×2.0
+
+**Files Modified:**
+- `src/lib/mest-tactics/missions/elimination-manager.ts` - Fractional VP for elimination/bottled keys
+- `src/lib/mest-tactics/ai/stratagems/PredictedScoringIntegration.ts` - VP-dominant modifiers (10x+)
+
+**Expected Behavior Change:**
+- AI trailing by 4+ VP: 5x aggression, 4x objective focus, -10 wait bonus → FORCED aggressive play
+- AI leading by 3+ VP: 3x defense, +10 wait bonus → FORCED defensive/stall play
+- Tactical scoring (cover, LOS) now SECONDARY to VP pursuit
+
+**Next Steps:**
+- ✅ Extend fractional VP to all 10 missions (dominance, assault, recovery, etc.) - SHARED UTILITIES CREATED
+- ✅ Add "VP Pursuit Mode" with PERCENTAGE-BASED thresholds (not fixed VP values)
+- ⏳ Validate AI behavior shows VP-prioritized decision making
+
+**Key Fix: Percentage-Based VP Deficit (2026-03-02)**
+
+Fixed critical bug where VP deficit thresholds used fixed values (e.g., "4+ VP") instead of mission-aware percentages.
+
+**Before (WRONG):**
+```typescript
+if (vpMargin <= -4) { /* desperate mode */ }
+// Problem: 4 VP deficit means 80% behind in Elimination (5 VP total)
+//          but only 33% behind in Triumvirate (12 VP total)
+```
+
+**After (CORRECT):**
+```typescript
+const remainingVP = totalVPPool - alreadyPredictedVP;
+const vpDeficitPercent = Math.abs(vpMargin) / remainingVP;
+
+if (vpDeficitPercent >= 1.0) { /* need 100%+ of remaining VP - impossible */ }
+else if (vpDeficitPercent >= 0.50) { /* need 50-100% of remaining VP - hard */ }
+else if (vpDeficitPercent >= 0.25) { /* need 25-50% of remaining VP - moderate */ }
+```
+
+**Mission VP Pools:**
+| Mission | Total VP Pool | VP Sources |
+|---------|--------------|------------|
+| QAI_11 Elimination | ~5 VP | Elimination (1), Bottled (1), Outnumbered (2), First Blood (1) |
+| QAI_12 Convergence | ~8 VP | Dominance (3), Elimination (1), Bottled (1), Encroachment (1), RP→VP |
+| QAI_14 Dominion | ~10 VP | Dominance (5), Elimination (1), Bottled (1), Encroachment (1), RP→VP |
+| QAI_17 Triumvirate | ~12 VP | Dominance (3), Harvest (3), Commander (2×2), Sanctuary (3), RP→VP |
+
+**Files Modified:**
+- `src/lib/mest-tactics/ai/stratagems/PredictedScoringIntegration.ts` - Added MissionVPConfig, vpDeficitPercent, remainingVP
+- `src/lib/mest-tactics/ai/core/SideAICoordinator.ts` - Pass missionConfig through updateScoringContext
+- `src/lib/mest-tactics/engine/GameManager.ts` - Pass missionConfig through startTurn options
+
+**Test Results:** All 1889 tests passing (1 pre-existing flaky failure unrelated)
+
+**Shared Fractional VP Utilities Created:**
+- `FractionalScoringUtils.ts` - Shared utilities for all missions:
+  - `calculateEliminationFractionalVP()` - BP-proportional elimination VP
+  - `calculateBottledFractionalVP()` - Casualty-rate bottled VP
+  - `calculateZoneControlFractionalVP()` - Zone-proportional VP (dominance, control, poi)
+  - `calculateMarkerControlFractionalVP()` - Marker-proportional VP (collection, acquisition, etc.)
+  - `calculateOutnumberedFractionalVP()` - Ratio-based outnumbered VP
+  - `calculateAggressionFractionalVP()` - Crossing-proportional aggression VP
+  - `calculateFirstBloodFractionalVP()` - First blood VP with confidence
+
+**Missions Updated:**
+- ✅ QAI_11 (Elimination) - Using shared utilities for elimination, bottled, outnumbered, aggression, first blood
+- ✅ QAI_12 (Convergence) - Using shared utilities for dominance, elimination, bottled, encroachment
+- ✅ QAI_13 (Assault) - Using shared utilities for poi, elimination, bottled
+- ✅ QAI_14 (Dominion) - Using shared utilities for dominance, elimination, bottled, encroachment
+- ✅ QAI_15 (Recovery) - Using shared utilities for elimination, bottled
+- ✅ QAI_16 (Escort) - Using shared utilities for elimination, bottled
+- ✅ QAI_17 (Triumvirate) - Using shared utilities for dominance, bottled, encroachment
+- ✅ QAI_18 (Stealth) - Using shared utilities for elimination, bottled
+- ✅ QAI_19 (Defiance) - Using shared utilities for bottled
+- ✅ QAI_20 (Breach) - Using shared utilities for control, elimination, bottled
+
+**All 10 missions now use fractional VP for AI planning!**
 
 **Future: Character Progression (Phase 5 - Non-QSR)**
 - Track per-character statistics: RPs scored, OMs acquired, VPs earned, eliminations
@@ -5529,7 +5617,7 @@ Transform the headless simulator into a full-featured online gaming platform whe
 └─────────────────────────────────────────────────────────────────┘
                               │
                               ▼
-┌─────────────────────────────────────────────────────────────────┐
+┌─���───────────────────────────────────────────────────────────────┐
 │                      Data Layer (Database)                      │
 │  ┌─���────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────────┐   │
 │  │Firestore │ │  Auth    │ │  Storage │ │  Realtime DB     │   │
@@ -6466,6 +6554,7 @@ npm test
 - ✅ **Fear auto-elimination** — Characters with 4+ Fear tokens are now automatically Eliminated
 - ✅ **Initiative Points (IP) system** — Full implementation with Maintain (1 IP), Force (2 IP), Refresh (1 IP) actions
 - ✅ **End-game Trigger Dice mechanics** — Game size-based trigger turns (VERY_SMALL=3, SMALL=4, MEDIUM=6, LARGE=8, VERY_LARGE=10), d6 roll on 1-3 ends game
+- ✅ **End-game Trigger redundant implementation fixed** (2026-03-02) — Removed duplicate `resolveEndGameState` in `mission-scoring.ts` that used hardcoded Turn 10 for all game sizes. Now correctly uses `getEndGameTriggerTurn()` from `end-game-trigger.ts` for all game sizes.
 - ✅ **Game size consistency** — All files now use VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE (no "skirmish" or "epic")
 - ✅ **Full Agility rules** — Bypass, Climb, Jump Up/Down/Across, Running Jump, Leaning (agility.ts)
 - ✅ **Hand requirements [1H]/[2H] enforcement** — Full validation system with penalty tracking (hand-requirements.ts)

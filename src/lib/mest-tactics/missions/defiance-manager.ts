@@ -4,6 +4,11 @@ import { VIP, VIPManager, VIPState, createVIP } from '../mission/vip-system';
 import { ReinforcementsManager, createReinforcementGroup, ReinforcementTrigger, ArrivalEdge } from '../mission/reinforcements-system';
 import { Position } from '../battlefield/Position';
 import { buildAssembly, buildProfile, AssemblyRoster } from '../mission/assembly-builder';
+import {
+  calculateEliminationFractionalVP,
+  calculateBottledFractionalVP,
+  calculateMarkerControlFractionalVP,
+} from './FractionalScoringUtils';
 
 /**
  * Defiance Mission State
@@ -628,19 +633,17 @@ export class DefianceMissionManager {
       };
     }
 
-    // Bottled: +1 VP if opponent bottles out
-    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    // Bottled: Fractional VP based on opponent casualty rates
     for (const side of sideStatuses) {
-      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
-      const predicted = isOpponentBottled ? 1 : 0;
+      const score = calculateBottledFractionalVP(side.sideId, sideStatuses);
 
       sideScores[side.sideId].keyScores['bottled'] = {
         current: 0,
-        predicted,
-        confidence: isOpponentBottled ? 1.0 : 0.0,
-        leadMargin: isOpponentBottled ? 1 : 0,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on bottleneck progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[side.sideId].predictedVp += predicted;
+      sideScores[side.sideId].predictedVp += score.predicted;
     }
 
     return { sideScores };

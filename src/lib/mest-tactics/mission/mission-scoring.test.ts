@@ -58,13 +58,45 @@ describe('mission-scoring', () => {
   });
 
   it('should resolve end-game die additions and endings', () => {
-    const state = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 4, endDice: 0 });
-    expect(state.addedEndDie).toBe(false);
-    expect(state.endDice).toBe(0);
+    // VERY_SMALL: trigger turn is 3
+    const beforeTrigger = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 2, endDice: 0 });
+    expect(beforeTrigger.addedEndDie).toBe(false);
+    expect(beforeTrigger.endDice).toBe(0);
 
+    const atTrigger = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 3, endDice: 0 });
+    expect(atTrigger.addedEndDie).toBe(true);
+    expect(atTrigger.endDice).toBe(1);
+
+    const afterTrigger = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 4, endDice: 1 });
+    expect(afterTrigger.addedEndDie).toBe(true);
+    expect(afterTrigger.endDice).toBe(2);
+
+    // Test end-game die ending on roll 1-3
     const ended = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 10, endDice: 1, rollResults: [2] });
     expect(ended.ended).toBe(true);
     expect(ended.reason).toBe('end-die');
+
+    // Test end-game die continuing on roll 4-6
+    const continued = resolveEndGameState({ gameSize: 'VERY_SMALL', turn: 10, endDice: 1, rollResults: [5] });
+    expect(continued.ended).toBe(false);
+    expect(continued.endDice).toBe(2); // Still adds die for next turn
+
+    // Test different game sizes have different trigger turns
+    const smallTrigger = resolveEndGameState({ gameSize: 'SMALL', turn: 4, endDice: 0 });
+    expect(smallTrigger.addedEndDie).toBe(true);
+    expect(smallTrigger.endDice).toBe(1);
+
+    const mediumTrigger = resolveEndGameState({ gameSize: 'MEDIUM', turn: 6, endDice: 0 });
+    expect(mediumTrigger.addedEndDie).toBe(true);
+    expect(mediumTrigger.endDice).toBe(1);
+
+    const largeTrigger = resolveEndGameState({ gameSize: 'LARGE', turn: 8, endDice: 0 });
+    expect(largeTrigger.addedEndDie).toBe(true);
+    expect(largeTrigger.endDice).toBe(1);
+
+    const veryLargeTrigger = resolveEndGameState({ gameSize: 'VERY_LARGE', turn: 10, endDice: 0 });
+    expect(veryLargeTrigger.addedEndDie).toBe(true);
+    expect(veryLargeTrigger.endDice).toBe(1);
   });
 
   it('should score aggression and first cross RP', () => {

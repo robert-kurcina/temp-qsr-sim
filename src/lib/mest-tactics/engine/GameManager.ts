@@ -478,9 +478,12 @@ export class GameManager {
    * Update scoring context for all Sides at start of turn
    * Called from startTurn() after mission state is updated
    */
-  public updateAllScoringContexts(sideKeyScores: Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>): void {
+  public updateAllScoringContexts(
+    sideKeyScores: Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>,
+    missionConfig: import('../ai/stratagems/PredictedScoringIntegration').MissionVPConfig
+  ): void {
     if (!this.sideCoordinatorManager) return;
-    this.sideCoordinatorManager.updateAllScoringContexts(sideKeyScores, this.currentTurn);
+    this.sideCoordinatorManager.updateAllScoringContexts(sideKeyScores, this.currentTurn, missionConfig);
   }
 
   /**
@@ -535,6 +538,7 @@ export class GameManager {
       maxOrm?: number;
       battlefieldWidth?: number;
       battlefieldHeight?: number;
+      missionConfig?: import('../ai/stratagems/PredictedScoringIntegration').MissionVPConfig;
     }
   ): void {
     this.currentRound = 1;
@@ -566,7 +570,14 @@ export class GameManager {
       for (const side of sides) {
         sideKeyScores.set(side.id, side.state.keyScores);
       }
-      this.updateAllScoringContexts(sideKeyScores);
+      // Default mission config if not provided (Elimination mission defaults)
+      const missionConfig = options?.missionConfig ?? {
+        totalVPPool: 5,  // Default: Elimination VP pool
+        hasRPToVPConversion: false,
+        currentTurn: this.currentTurn,
+        maxTurns: 10,  // Default max turns
+      };
+      this.updateAllScoringContexts(sideKeyScores, missionConfig);
     }
 
     // Roll Initiative and award IP to Sides

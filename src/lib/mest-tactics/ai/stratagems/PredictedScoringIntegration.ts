@@ -24,6 +24,14 @@ export interface ScoringContext {
   amILeading: boolean;
   /** VP lead margin */
   vpMargin: number;
+  /** NEW: Percentage of remaining VP that I'm behind by (0.0-1.0+) */
+  vpDeficitPercent: number;
+  /** NEW: Total VP still available to earn this game */
+  remainingVP: number;
+  /** NEW: Current turn number */
+  currentTurn: number;
+  /** NEW: Maximum turns for this game */
+  maxTurns: number;
   /** Which keys am I winning? */
   winningKeys: string[];
   /** Which keys am I losing? */
@@ -57,11 +65,28 @@ export interface ScoringModifiers {
 // ============================================================================
 
 /**
+ * Mission configuration for VP calculation
+ */
+export interface MissionVPConfig {
+  /** Total VP available in this mission (sum of all key VP values) */
+  totalVPPool: number;
+  /** Does this mission convert RP to VP at game end? */
+  hasRPToVPConversion: boolean;
+  /** Current turn number */
+  currentTurn: number;
+  /** Maximum turns for this game */
+  maxTurns: number;
+}
+
+/**
  * Build scoring context from predicted scores
+ * 
+ * Calculates percentage-based VP deficit for mission-agnostic thresholds.
  */
 export function buildScoringContext(
   myKeyScores: KeyScoresBreakdown,
-  opponentKeyScores: KeyScoresBreakdown
+  opponentKeyScores: KeyScoresBreakdown,
+  missionConfig: MissionVPConfig
 ): ScoringContext {
   const winningKeys: string[] = [];
   const losingKeys: string[] = [];
@@ -102,12 +127,30 @@ export function buildScoringContext(
   const amILeading = totalMyPredicted > totalOpponentPredicted;
   const vpMargin = totalMyPredicted - totalOpponentPredicted;
   const overallConfidence = keyCount > 0 ? totalConfidence / keyCount : 0.5;
+  
+  // Calculate remaining VP (what's still available to earn)
+  // This is the mission's total VP pool minus what's already been predicted
+  const alreadyPredictedVP = Math.max(totalMyPredicted, totalOpponentPredicted);
+  const remainingVP = Math.max(0, missionConfig.totalVPPool - alreadyPredictedVP);
+  
+  // Calculate VP deficit percentage
+  // If trailing: what % of remaining VP do I need to catch up?
+  // If leading: what % of remaining VP does opponent need to catch up?
+  let vpDeficitPercent = 0;
+  if (remainingVP > 0) {
+    const deficit = Math.abs(vpMargin);
+    vpDeficitPercent = deficit / remainingVP;
+  }
 
   return {
     myScores: myKeyScores,
     opponentScores: opponentKeyScores,
     amILeading,
     vpMargin,
+    vpDeficitPercent,
+    remainingVP,
+    currentTurn: missionConfig.currentTurn,
+    maxTurns: missionConfig.maxTurns,
     winningKeys,
     losingKeys,
     overallConfidence,
@@ -120,6 +163,13 @@ export function buildScoringContext(
 
 /**
  * Calculate scoring-based modifiers from context
+ * 
+ * CRITICAL: VP modifiers MUST DOMINATE tactical scoring.
+ * Tactical positioning (cover, LOS) exists to SUPPORT VP pursuit, not replace it.
+ * These multipliers are intentionally aggressive (10x+) to ensure AI prioritizes winning.
+ * 
+ * KEY CHANGE: Uses PERCENTAGE-BASED thresholds instead of fixed VP values.
+ * This accounts for different mission VP pools (Elimination ~5 VP vs Triumvirate ~12 VP).
  */
 export function calculateScoringModifiers(context: ScoringContext): ScoringModifiers {
   const modifiers: ScoringModifiers = {
@@ -132,74 +182,109 @@ export function calculateScoringModifiers(context: ScoringContext): ScoringModif
     desperateMode: false,
   };
 
-  const { amILeading, vpMargin, winningKeys, losingKeys, overallConfidence } = context;
+  const { 
+    amILeading, 
+    vpMargin, 
+    vpDeficitPercent, 
+    remainingVP,
+    currentTurn,
+    maxTurns,
+    winningKeys, 
+    losingKeys, 
+    overallConfidence 
+  } = context;
+
+  // Calculate time pressure (0.0 = early game, 1.0 = last turn)
+  const timePressure = maxTurns > 0 ? currentTurn / maxTurns : 0;
 
   // ============================================================================
-  // Scenario 1: Leading in VP
+  // Scenario 1: Leading in VP (Protect the Lead)
   // ============================================================================
   if (amILeading) {
-    if (vpMargin >= 3) {
-      // Comfortable lead (3+ VP)
-      modifiers.defenseMultiplier = 1.3; // Play safer
-      modifiers.waitBonus = 2; // Bonus to wait/react
+    // Use percentage of remaining VP that opponent would need to catch up
+    const opponentDeficitPercent = vpDeficitPercent;
+    
+    if (opponentDeficitPercent >= 0.75 && remainingVP > 0) {
+      // OPPONENT needs 75%+ of remaining VP to catch up - COMFORTABLE LEAD
+      modifiers.defenseMultiplier = 3.0;    // +200% defensive positioning
+      modifiers.waitBonus = 10;             // Massive wait/react bonus
       modifiers.playForTime = true;
-      modifiers.riskMultiplier = 0.7; // Avoid risks
+      modifiers.riskMultiplier = 0.3;       // -70% risk taking
+      modifiers.aggressionMultiplier = 0.3; // -70% aggression
 
       if (overallConfidence > 0.7) {
-        // High confidence - very defensive
-        modifiers.aggressionMultiplier = 0.6;
-        modifiers.objectiveMultiplier = 0.8; // Don't need more objectives
+        // High confidence - very defensive, stall for win
+        modifiers.objectiveMultiplier = 0.4; // Don't need more objectives
       }
-    } else if (vpMargin >= 1) {
-      // Small lead (1-2 VP)
-      modifiers.defenseMultiplier = 1.1;
-      modifiers.waitBonus = 1;
-      modifiers.riskMultiplier = 0.9;
+    } else if (opponentDeficitPercent >= 0.25 && remainingVP > 0) {
+      // OPPONENT needs 25-75% of remaining VP - SMALL LEAD
+      modifiers.defenseMultiplier = 1.8;    // +80% defensive
+      modifiers.waitBonus = 5;              // Strong wait bonus
+      modifiers.riskMultiplier = 0.5;       // -50% risk
+      modifiers.aggressionMultiplier = 0.6; // -40% aggression
 
       if (overallConfidence > 0.5) {
-        // Moderate confidence - consolidate
-        modifiers.objectiveMultiplier = 1.2; // Secure more objectives
+        // Moderate confidence - secure more VP
+        modifiers.objectiveMultiplier = 1.5; // +50% objective focus
       }
     }
   }
 
   // ============================================================================
-  // Scenario 2: Trailing in VP
+  // Scenario 2: Trailing in VP (Must Catch Up)
   // ============================================================================
   if (!amILeading) {
-    const deficit = Math.abs(vpMargin);
+    // vpDeficitPercent = what % of remaining VP do I need to catch up?
+    // 0.0 = tied, 0.5 = need 50% of remaining VP, 1.0+ = need more than all remaining VP
+    
+    if (vpDeficitPercent >= 1.0 && remainingVP > 0) {
+      // IMPOSSIBLE/NEARLY IMPOSSIBLE: Need 100%+ of remaining VP
+      // Only go desperate if there's still time
+      if (timePressure < 0.8) {
+        modifiers.desperateMode = true;
+        modifiers.aggressionMultiplier = 5.0;  // +400% aggression
+        modifiers.riskMultiplier = 3.0;        // +200% risk taking
+        modifiers.defenseMultiplier = 0.3;     // -70% defense (ignore safety)
+        modifiers.waitBonus = -10;             // Massive penalty to passive actions
+        modifiers.objectiveMultiplier = 4.0;   // +300% objective focus
 
-    if (deficit >= 4) {
-      // Large deficit (4+ VP) - desperate mode
-      modifiers.desperateMode = true;
-      modifiers.aggressionMultiplier = 1.5; // High risk, high reward
-      modifiers.riskMultiplier = 1.5;
-      modifiers.defenseMultiplier = 0.7; // Ignore safety
-      modifiers.waitBonus = -2; // Penalty to passive actions
-
-      // Focus on high-value keys
-      if (losingKeys.includes('elimination')) {
-        modifiers.aggressionMultiplier *= 1.3;
+        // EXTREME: Force VP-generating actions
+        if (losingKeys.includes('elimination')) {
+          modifiers.aggressionMultiplier *= 1.5; // +50% more for elimination
+        }
+        if (losingKeys.includes('dominance') || losingKeys.includes('control')) {
+          modifiers.objectiveMultiplier *= 1.5; // +50% more for zones
+        }
       }
-    } else if (deficit >= 2) {
-      // Moderate deficit (2-3 VP)
-      modifiers.aggressionMultiplier = 1.2;
-      modifiers.riskMultiplier = 1.2;
-      modifiers.objectiveMultiplier = 1.3; // Need objectives
+    } else if (vpDeficitPercent >= 0.50 && remainingVP > 0) {
+      // HARD: Need 50-100% of remaining VP - AGGRESSIVE comeback
+      modifiers.aggressionMultiplier = 2.5;  // +150% aggression
+      modifiers.riskMultiplier = 1.8;        // +80% risk
+      modifiers.defenseMultiplier = 0.6;     // -40% defense
+      modifiers.waitBonus = -5;              // Penalty to passive actions
+      modifiers.objectiveMultiplier = 2.0;   // +100% objective focus
 
       // Push for losing keys
       if (losingKeys.length > 0) {
-        modifiers.objectiveMultiplier *= 1.2;
+        modifiers.objectiveMultiplier *= 1.3; // +30% more for specific keys
       }
-    } else {
-      // Small deficit (0-1 VP)
-      modifiers.aggressionMultiplier = 1.1;
-      modifiers.objectiveMultiplier = 1.1;
+    } else if (vpDeficitPercent >= 0.25 && remainingVP > 0) {
+      // MODERATE: Need 25-50% of remaining VP - Slight pressure
+      modifiers.aggressionMultiplier = 1.5;  // +50% aggression
+      modifiers.objectiveMultiplier = 1.3;   // +30% objective focus
+      modifiers.waitBonus = -2;              // Small wait penalty
+    }
+    
+    // Late game pressure: If trailing with few turns left, increase aggression
+    if (!amILeading && timePressure > 0.7 && remainingVP > 0) {
+      const lateGameBonus = (timePressure - 0.7) * 3; // 0-0.9 bonus
+      modifiers.aggressionMultiplier *= (1 + lateGameBonus);
+      modifiers.objectiveMultiplier *= (1 + lateGameBonus);
     }
   }
 
   // ============================================================================
-  // Scenario 3: Key-Specific Adjustments
+  // Scenario 3: Key-Specific Adjustments (VP Pursuit Focus)
   // ============================================================================
 
   // Adjust based on which keys we're winning/losing
@@ -208,14 +293,16 @@ export function calculateScoringModifiers(context: ScoringContext): ScoringModif
       case 'dominance':
       case 'control':
       case 'poi':
-        // Leading in zones/objectives - defend them
-        modifiers.defenseMultiplier *= 1.1;
+        // Leading in zones/objectives - DEFEND THEM AT ALL COSTS
+        modifiers.defenseMultiplier *= 2.0;
+        modifiers.objectiveMultiplier *= 1.5; // Secure more
         break;
       case 'elimination':
       case 'commander_elimination':
       case 'vip_elimination':
-        // Leading in eliminations - avoid risky fights
-        modifiers.riskMultiplier *= 0.9;
+        // Leading in eliminations - AVOID risky fights, preserve lead
+        modifiers.riskMultiplier *= 0.5;
+        modifiers.aggressionMultiplier *= 0.6;
         break;
       case 'sabotage':
       case 'harvest':

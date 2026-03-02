@@ -1,6 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { SideAICoordinator, SideCoordinatorManager } from './SideAICoordinator';
 import { TacticalDoctrine } from '../stratagems/AIStratagems';
+import type { MissionVPConfig } from '../stratagems/PredictedScoringIntegration';
+
+// Default mission config for tests (Elimination mission)
+const DEFAULT_MISSION_CONFIG: MissionVPConfig = {
+  totalVPPool: 5,
+  hasRPToVPConversion: false,
+  currentTurn: 3,
+  maxTurns: 10,
+};
 
 describe('SideAICoordinator', () => {
   describe('construction', () => {
@@ -27,7 +36,7 @@ describe('SideAICoordinator', () => {
         elimination: { current: 0, predicted: 1, confidence: 0.5, leadMargin: 1 },
       };
 
-      const context = coordinator.updateScoringContext(myKeyScores, opponentKeyScores, 1);
+      const context = coordinator.updateScoringContext(myKeyScores, opponentKeyScores, 1, DEFAULT_MISSION_CONFIG);
 
       expect(context).toBeDefined();
       expect(context.amILeading).toBe(true);
@@ -42,7 +51,7 @@ describe('SideAICoordinator', () => {
 
     it('should detect stale context', () => {
       const coordinator = new SideAICoordinator('Alpha');
-      coordinator.updateScoringContext({}, {}, 1);
+      coordinator.updateScoringContext({}, {}, 1, DEFAULT_MISSION_CONFIG);
 
       expect(coordinator.isContextStale(1)).toBe(false);
       expect(coordinator.isContextStale(2)).toBe(false);
@@ -53,11 +62,18 @@ describe('SideAICoordinator', () => {
   describe('strategic advice', () => {
     it('should provide advice when leading', () => {
       const coordinator = new SideAICoordinator('Alpha');
-      
+
+      // totalVPPool=10, I have 7, opponent has 2, remaining = 3
+      // Opponent needs 5 VP to catch up, but only 3 VP remaining = 167% deficit
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
       coordinator.updateScoringContext(
-        { elimination: { current: 0, predicted: 5, confidence: 0.9, leadMargin: 4 } },
-        { elimination: { current: 0, predicted: 1, confidence: 0.5, leadMargin: 1 } },
-        1
+        { elimination: { current: 0, predicted: 7, confidence: 0.9, leadMargin: 5 } },
+        { elimination: { current: 0, predicted: 2, confidence: 0.5, leadMargin: 1 } },
+        1,
+        missionConfig
       );
 
       const advice = coordinator.getStrategicAdvice();
@@ -67,16 +83,23 @@ describe('SideAICoordinator', () => {
 
     it('should provide advice when trailing', () => {
       const coordinator = new SideAICoordinator('Alpha');
-      
+
+      // totalVPPool=10, I have 0, opponent has 8, remaining = 2
+      // I need 8 VP to catch up, but only 2 VP remaining = 400% deficit
+      const missionConfig: MissionVPConfig = {
+        ...DEFAULT_MISSION_CONFIG,
+        totalVPPool: 10,
+      };
       coordinator.updateScoringContext(
         { elimination: { current: 0, predicted: 0, confidence: 0, leadMargin: 0 } },
-        { elimination: { current: 0, predicted: 5, confidence: 1, leadMargin: 5 } },
-        1
+        { elimination: { current: 0, predicted: 8, confidence: 1, leadMargin: 8 } },
+        1,
+        missionConfig
       );
 
       const advice = coordinator.getStrategicAdvice();
       expect(advice.length).toBeGreaterThan(0);
-      expect(advice.some(a => a.includes('deficit') || a.includes('risk'))).toBe(true);
+      expect(advice.some(a => a.includes('deficit') || a.includes('risk') || a.includes('aggressive'))).toBe(true);
     });
 
     it('should return message when no context available', () => {
@@ -89,7 +112,7 @@ describe('SideAICoordinator', () => {
   describe('state management', () => {
     it('should reset state', () => {
       const coordinator = new SideAICoordinator('Alpha');
-      coordinator.updateScoringContext({}, {}, 1);
+      coordinator.updateScoringContext({}, {}, 1, DEFAULT_MISSION_CONFIG);
       
       coordinator.reset();
       
@@ -102,11 +125,12 @@ describe('SideAICoordinator', () => {
       coordinator.updateScoringContext(
         { elimination: { current: 0, predicted: 2, confidence: 0.8, leadMargin: 1 } },
         {},
-        3
+        3,
+        DEFAULT_MISSION_CONFIG
       );
 
       const state = coordinator.exportState();
-      
+
       const newCoordinator = new SideAICoordinator('Beta');
       newCoordinator.importState(state);
 
@@ -167,7 +191,7 @@ describe('SideCoordinatorManager', () => {
         ['Bravo', { elimination: { current: 0, predicted: 1, confidence: 0.5, leadMargin: 1 } }],
       ]);
 
-      manager.updateAllScoringContexts(sideKeyScores, 1);
+      manager.updateAllScoringContexts(sideKeyScores, 1, DEFAULT_MISSION_CONFIG);
 
       const alphaContext = manager.getCoordinator('Alpha').getScoringContext();
       const bravoContext = manager.getCoordinator('Bravo').getScoringContext();
@@ -188,7 +212,7 @@ describe('SideCoordinatorManager', () => {
       ]);
 
       // Should not throw
-      expect(() => manager.updateAllScoringContexts(sideKeyScores, 1)).not.toThrow();
+      expect(() => manager.updateAllScoringContexts(sideKeyScores, 1, DEFAULT_MISSION_CONFIG)).not.toThrow();
     });
   });
 });

@@ -1,6 +1,11 @@
 import { MissionSide } from '../mission/MissionSide';
 import { PointOfInterest, POIType, POIManager, createPOI } from '../mission/poi-zone-control';
 import { Position } from '../battlefield/Position';
+import {
+  calculateZoneControlFractionalVP,
+  calculateEliminationFractionalVP,
+  calculateBottledFractionalVP,
+} from './FractionalScoringUtils';
 import { EncroachmentState } from './mission-scoring';
 
 /**
@@ -418,7 +423,7 @@ export class TriumvirateMissionManager {
       };
     });
 
-    // Dominance: +1 VP per zone controlled
+    // Dominance: Fractional VP based on zone control ratio
     const zoneControllers = this.getZoneControllers();
     const zonesBySide: Record<string, number> = {};
     for (const sideId of this.state.sideIds) {
@@ -430,23 +435,22 @@ export class TriumvirateMissionManager {
       }
     }
 
+    // Calculate total zones for fractional VP
+    const totalZones = zoneControllers.size;
     const sortedZones = Object.entries(zonesBySide).sort((a, b) => b[1] - a[1]);
+    const bestZoneSide = sortedZones[0]?.[0];
+
     for (const [sideId, zoneCount] of Object.entries(zonesBySide)) {
-      const predicted = zoneCount;
-      const secondZoneCount = sortedZones[1]?.[1] ?? 0;
-      const leadMargin = zoneCount - secondZoneCount;
-      const opponentBest = sideId === sortedZones[0]?.[0] ? secondZoneCount : (sortedZones[0]?.[1] ?? 0);
-      const confidence = zoneCount > 0 && opponentBest > 0
-        ? Math.max(0, Math.min(1, 1 - (opponentBest / zoneCount)))
-        : (zoneCount > opponentBest ? 1 : 0);
+      const isLeading = sideId === bestZoneSide;
+      const score = calculateZoneControlFractionalVP(sideId, zoneCount, totalZones, isLeading);
 
       sideScores[sideId].keyScores['dominance'] = {
         current: this.state.vpBySide.get(sideId) ?? 0,
-        predicted,
-        confidence,
-        leadMargin,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on zone ratio
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[sideId].predictedVp += predicted;
+      sideScores[sideId].predictedVp += score.predicted;
     }
 
     // Harvest: +1 VP per NA extracted (already awarded in VP)
@@ -456,7 +460,7 @@ export class TriumvirateMissionManager {
       // Subtract dominance VP to estimate harvest VP
       const dominanceVP = zonesBySide[sideId] ?? 0;
       const harvestVP = Math.max(0, vp - dominanceVP);
-      
+
       sideScores[sideId].keyScores['harvest'] = {
         current: harvestVP,
         predicted: harvestVP,
@@ -488,7 +492,7 @@ export class TriumvirateMissionManager {
     // Sanctuary: +1 VP per turn maintaining 25% BP in entry edge zone
     for (const side of sideStatuses) {
       const sanctuaryVP = side.inPlayCount >= Math.ceil(side.startingCount * 0.25) ? 1 : 0;
-      
+
       sideScores[side.sideId].keyScores['sanctuary'] = {
         current: 0,
         predicted: sanctuaryVP,
@@ -498,41 +502,32 @@ export class TriumvirateMissionManager {
       sideScores[side.sideId].predictedVp += sanctuaryVP;
     }
 
-    // Bottled: +1 VP if opponent bottles out
-    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    // Bottled: Fractional VP based on opponent casualty rates
     for (const side of sideStatuses) {
-      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
-      const predicted = isOpponentBottled ? 1 : 0;
+      const score = calculateBottledFractionalVP(side.sideId, sideStatuses);
 
       sideScores[side.sideId].keyScores['bottled'] = {
         current: 0,
-        predicted,
-        confidence: isOpponentBottled ? 1.0 : 0.0,
-        leadMargin: isOpponentBottled ? 1 : 0,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on bottleneck progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[side.sideId].predictedVp += predicted;
+      sideScores[side.sideId].predictedVp += score.predicted;
     }
 
-    // Encroachment: +1 VP to first side to cross midline
-    const encroachmentSideId = this.state.encroachment.firstCrossedSideId;
-    if (encroachmentSideId) {
-      sideScores[encroachmentSideId].keyScores['encroachment'] = {
+    // Encroachment: Fractional VP based on crossing progress
+    for (const side of sideStatuses) {
+      const crossed = this.state.encroachment.crossedBySide?.[side.sideId] ?? 0;
+      const threshold = Math.ceil(side.startingCount / 2);
+      const score = calculateAggressionFractionalVP(side.sideId, crossed, threshold);
+
+      sideScores[side.sideId].keyScores['encroachment'] = {
         current: 0,
-        predicted: 1,
-        confidence: 1.0,
-        leadMargin: 1,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on crossing progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[encroachmentSideId].predictedVp += 1;
-    } else {
-      // Not yet awarded - either side could still get it
-      for (const side of sideStatuses) {
-        sideScores[side.sideId].keyScores['encroachment'] = {
-          current: 0,
-          predicted: 0,
-          confidence: 0.0,
-          leadMargin: 0,
-        };
-      }
+      sideScores[side.sideId].predictedVp += score.predicted;
     }
 
     return { sideScores };

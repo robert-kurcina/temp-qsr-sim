@@ -1,5 +1,6 @@
 import { Character } from '../core/Character';
 import { MissionSide } from '../mission/MissionSide';
+import { getEndGameTriggerTurn } from '../engine/end-game-trigger';
 
 export type GameSize = 'VERY_SMALL' | 'SMALL' | 'MEDIUM' | 'LARGE' | 'VERY_LARGE';
 
@@ -131,7 +132,8 @@ export function determineGameSize(bpPerSide: number, modelsPerSide: number): Gam
 export function resolveEndGameState(input: EndGameStateInput): EndGameStateResult {
   const endDice = input.endDice ?? 0;
   const rollResults = input.rollResults ?? [];
-  const thresholdTurn = 10;
+  // QSR-correct: Use game-size-aware trigger turn
+  const thresholdTurn = getEndGameTriggerTurn(input.gameSize);
 
   let ended = false;
   if (endDice > 0 && rollResults.length > 0) {

@@ -13,7 +13,7 @@
  */
 
 import { MissionSide } from '../../mission/MissionSide';
-import { ScoringContext, buildScoringContext, getScoringAdvice } from '../stratagems/PredictedScoringIntegration';
+import { ScoringContext, buildScoringContext, getScoringAdvice, MissionVPConfig } from '../stratagems/PredictedScoringIntegration';
 import { TacticalDoctrine } from '../stratagems/AIStratagems';
 
 /**
@@ -73,9 +73,10 @@ export class SideAICoordinator {
   updateScoringContext(
     myKeyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>,
     opponentKeyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>,
-    currentTurn: number
+    currentTurn: number,
+    missionConfig: MissionVPConfig
   ): ScoringContext {
-    const context = buildScoringContext(myKeyScores, opponentKeyScores);
+    const context = buildScoringContext(myKeyScores, opponentKeyScores, missionConfig);
     this.state.scoringContext = context;
     this.state.lastUpdatedTurn = currentTurn;
     return context;
@@ -178,7 +179,8 @@ export class SideCoordinatorManager {
    */
   updateAllScoringContexts(
     sideKeyScores: Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>,
-    currentTurn: number
+    currentTurn: number,
+    missionConfig: MissionVPConfig
   ): void {
     for (const [sideId, keyScores] of sideKeyScores.entries()) {
       const coordinator = this.coordinators.get(sideId);
@@ -186,7 +188,7 @@ export class SideCoordinatorManager {
 
       // Find best opponent's scores
       const opponentScores = this.findBestOpponentScores(sideId, sideKeyScores);
-      coordinator.updateScoringContext(keyScores, opponentScores, currentTurn);
+      coordinator.updateScoringContext(keyScores, opponentScores, currentTurn, missionConfig);
     }
   }
 

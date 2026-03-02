@@ -4,6 +4,11 @@ import { VIP, VIPManager, VIPState, createVIP } from '../mission/vip-system';
 import { ReinforcementsManager, createReinforcementGroup, ReinforcementTrigger, ArrivalEdge } from '../mission/reinforcements-system';
 import { Position } from '../battlefield/Position';
 import { buildAssembly, buildProfile, AssemblyRoster } from '../mission/assembly-builder';
+import {
+  calculateEliminationFractionalVP,
+  calculateBottledFractionalVP,
+  calculateMarkerControlFractionalVP,
+} from './FractionalScoringUtils';
 
 /**
  * VIP detection state
@@ -866,35 +871,44 @@ export class StealthMissionManager {
       }
     }
 
-    // Elimination: Security victory if all Infiltrators eliminated
-    const infiltratorsEliminated = sideStatuses
-      .filter(s => s.sideId !== sortedVP[0]?.[0]) // Assume attacker is not leading
-      .every(s => s.eliminatedCount === s.startingCount);
-    
-    if (infiltratorsEliminated && sortedVP[0]) {
-      const defenderId = sortedVP[0][0];
-      sideScores[defenderId].keyScores['elimination'] = {
-        current: 1,
-        predicted: 1,
-        confidence: 1.0,
-        leadMargin: 1,
-      };
-      sideScores[defenderId].predictedVp += 1;
+    // Elimination: Fractional VP based on BP eliminated ratio
+    const eliminationBpBySide: Record<string, number> = {};
+    const totalEnemyBpBySide: Record<string, number> = {};
+    for (const side of sideStatuses) {
+      let totalEnemyBpEliminated = 0;
+      let totalEnemyBp = 0;
+      for (const opponent of sideStatuses) {
+        if (opponent.sideId === side.sideId) continue;
+        totalEnemyBpEliminated += opponent.koBp + opponent.eliminatedBp;
+        totalEnemyBp += opponent.totalBp;
+      }
+      eliminationBpBySide[side.sideId] = totalEnemyBpEliminated;
+      totalEnemyBpBySide[side.sideId] = totalEnemyBp;
     }
 
-    // Bottled: +1 VP if opponent bottles out
-    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    for (const [sideId] of Object.entries(eliminationBpBySide)) {
+      const score = calculateEliminationFractionalVP(sideId, eliminationBpBySide, totalEnemyBpBySide);
+
+      sideScores[sideId].keyScores['elimination'] = {
+        current: 0,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on elimination progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
+      };
+      sideScores[sideId].predictedVp += score.predicted;
+    }
+
+    // Bottled: Fractional VP based on opponent casualty rates
     for (const side of sideStatuses) {
-      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
-      const predicted = isOpponentBottled ? 1 : 0;
+      const score = calculateBottledFractionalVP(side.sideId, sideStatuses);
 
       sideScores[side.sideId].keyScores['bottled'] = {
         current: 0,
-        predicted,
-        confidence: isOpponentBottled ? 1.0 : 0.0,
-        leadMargin: isOpponentBottled ? 1 : 0,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on bottleneck progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[side.sideId].predictedVp += predicted;
+      sideScores[side.sideId].predictedVp += score.predicted;
     }
 
     return { sideScores };

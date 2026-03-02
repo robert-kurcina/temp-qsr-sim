@@ -9,6 +9,13 @@ import {
   computeAggressionScores,
   AggressionState,
 } from './mission-scoring';
+import {
+  calculateEliminationFractionalVP,
+  calculateBottledFractionalVP,
+  calculateOutnumberedFractionalVP,
+  calculateAggressionFractionalVP,
+  calculateFirstBloodFractionalVP,
+} from './FractionalScoringUtils';
 
 /**
  * Elimination Mission State
@@ -574,93 +581,93 @@ export class EliminationMissionManager {
       };
     }
 
-    // Calculate Elimination key scores
+    // Calculate Elimination key scores (FRACTIONAL VP)
+    // Each side earns VP proportional to enemy BP eliminated
     const eliminationBpBySide: Record<string, number> = {};
+    const totalEnemyBpBySide: Record<string, number> = {};
+
     for (const side of sideStatuses) {
       let totalEnemyBpEliminated = 0;
+      let totalEnemyBp = 0;
+
       for (const opponent of sideStatuses) {
         if (opponent.sideId === side.sideId) continue;
         totalEnemyBpEliminated += opponent.koBp + opponent.eliminatedBp;
+        totalEnemyBp += opponent.totalBp;
       }
+
       eliminationBpBySide[side.sideId] = totalEnemyBpEliminated;
+      totalEnemyBpBySide[side.sideId] = totalEnemyBp;
     }
 
-    // Find best and second-best for confidence calculation
-    const sortedElimination = Object.entries(eliminationBpBySide)
-      .sort((a, b) => b[1] - a[1]);
-    const bestElimination = sortedElimination[0];
-    const secondElimination = sortedElimination[1];
-
-    for (const [sideId, bp] of Object.entries(eliminationBpBySide)) {
-      const isBest = bestElimination && sideId === bestElimination[0];
-      const predicted = isBest && (!secondElimination || bestElimination[1] > secondElimination[1]) ? 1 : 0;
-      const leadMargin = isBest && secondElimination ? bestElimination[1] - secondElimination[1] : 0;
-      const opponentBest = isBest && secondElimination ? secondElimination[1] : (bestElimination?.[1] ?? 0);
-      const confidence = bp > 0 && opponentBest > 0 ? Math.max(0, Math.min(1, 1 - (opponentBest / bp))) : (isBest ? 1 : 0);
+    // Use shared utility for fractional VP calculation
+    for (const [sideId] of Object.entries(eliminationBpBySide)) {
+      const score = calculateEliminationFractionalVP(sideId, eliminationBpBySide, totalEnemyBpBySide);
 
       sideScores[sideId].keyScores['elimination'] = {
-        current: 0, // Current VP awarded during game (none for elimination until end)
-        predicted,
-        confidence,
-        leadMargin,
+        current: 0,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on elimination progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[sideId].predictedVp += predicted;
+      sideScores[sideId].predictedVp += score.predicted;
     }
 
-    // Calculate Bottled key scores
-    const bottledSides = sideStatuses.filter(s => s.bottledOut);
+    // Calculate Bottled key scores (FRACTIONAL VP)
+    // Use shared utility for fractional VP calculation
     for (const side of sideStatuses) {
-      const isOpponentBottled = bottledSides.some(s => s.sideId !== side.sideId);
-      const predicted = isOpponentBottled ? 1 : 0;
-      const confidence = isOpponentBottled ? 1.0 : 0.0;
+      const score = calculateBottledFractionalVP(side.sideId, sideStatuses);
 
       sideScores[side.sideId].keyScores['bottled'] = {
         current: 0,
-        predicted,
-        confidence,
-        leadMargin: isOpponentBottled ? 1 : 0,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on bottleneck progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[side.sideId].predictedVp += predicted;
+      sideScores[side.sideId].predictedVp += score.predicted;
     }
 
-    // Calculate Outnumbered key scores
+    // Calculate Outnumbered key scores (FRACTIONAL VP)
+    // Use shared utility for fractional VP calculation
+    // Note: Outnumbered uses startingCount (original model count), not inPlayCount
     const activeSides = sideStatuses.filter(s => s.inPlayCount > 0);
     if (activeSides.length === 2) {
       const [a, b] = activeSides;
       const larger = a.startingCount >= b.startingCount ? a : b;
       const smaller = larger.sideId === a.sideId ? b : a;
-      const ratio = larger.startingCount / Math.max(1, smaller.startingCount);
 
-      let vpAward = 0;
-      if (ratio >= 2) vpAward = 2;
-      else if (ratio >= 1.5) vpAward = 1;
+      const score = calculateOutnumberedFractionalVP(
+        smaller.sideId,
+        smaller.startingCount,  // Use starting count for outnumbered key
+        larger.startingCount
+      );
 
-      if (vpAward > 0) {
+      if (score.predicted > 0) {
         sideScores[smaller.sideId].keyScores['outnumbered'] = {
           current: 0,
-          predicted: vpAward,
-          confidence: 1.0, // Deterministic based on starting counts
-          leadMargin: vpAward,
+          predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on ratio
+          confidence: score.confidence,
+          leadMargin: score.leadMargin,
         };
-        sideScores[smaller.sideId].predictedVp += vpAward;
+        sideScores[smaller.sideId].predictedVp += score.predicted;
       }
     }
 
-    // Calculate Aggression key scores
+    // Calculate Aggression key scores (FRACTIONAL VP)
+    // Use shared utility for fractional VP calculation
     const aggressionScores = computeAggressionScores(sideStatuses, this.state.aggression);
-    for (const [sideId, vp] of Object.entries(aggressionScores.vpBySide)) {
-      const crossed = this.state.aggression.crossedBySide[sideId] ?? 0;
-      const threshold = Math.ceil(sideStatuses.find(s => s.sideId === sideId)?.startingCount / 2 ?? 1);
-      const predicted = crossed >= threshold ? 1 : 0;
-      const confidence = predicted > 0 ? 1.0 : 0.0;
+    for (const side of sideStatuses) {
+      const crossed = this.state.aggression.crossedBySide[side.sideId] ?? 0;
+      const threshold = Math.ceil(side.startingCount / 2);
+      const score = calculateAggressionFractionalVP(side.sideId, crossed, threshold);
 
-      sideScores[sideId].keyScores['aggression'] = {
+      sideScores[side.sideId].keyScores['aggression'] = {
         current: 0,
-        predicted,
-        confidence,
-        leadMargin: predicted,
+        predicted: score.predicted,  // FRACTIONAL: 0.0-1.0 based on crossing progress
+        confidence: score.confidence,
+        leadMargin: score.leadMargin,
       };
-      sideScores[sideId].predictedVp += predicted;
+      sideScores[side.sideId].predictedVp += score.predicted;
     }
     for (const [sideId, rp] of Object.entries(aggressionScores.rpBySide)) {
       sideScores[sideId].predictedRp += rp;
@@ -673,7 +680,13 @@ export class EliminationMissionManager {
     }
 
     // Calculate First Blood key scores
-    // First Blood is already awarded or not - it's deterministic
+    // Use shared utility for fractional VP calculation
+    const firstBloodScore = calculateFirstBloodFractionalVP(
+      this.state.firstBloodSideId || '',
+      this.state.firstBloodSideId,
+      this.currentTurn
+    );
+    
     if (this.state.firstBloodSideId) {
       sideScores[this.state.firstBloodSideId].keyScores['first_blood'] = {
         current: 1, // Already awarded
