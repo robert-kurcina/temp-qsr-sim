@@ -275,6 +275,42 @@ describe('Focus Priority vs React (QSR 859)', () => {
     expect(decision.priority).toBeGreaterThan(4.0); // Base 1.5 + 3.0 for Hidden
   });
 
+  it('should prioritize Focus + Concentrate + Detect when AP available (FC.5)', () => {
+    // Setup: Enemy is Hidden, character in Wait, has AP for Concentrate
+    enemy.state.isHidden = true;
+    character.state.hasDetectedThisActivation = false; // First Detect available
+
+    const opportunity = {
+      trigger: 'move-only' as const,
+      actor: enemy,
+      actorPosition: { x: 20, y: 12 }, // Far away, poor React target
+      isZeroAPAction: false,
+      isReposition: false,
+      usedAgility: false,
+      isLeaning: false,
+    };
+
+    const context: AIContext = {
+      character,
+      allies: [],
+      enemies: [enemy],
+      battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2, // Enough for Concentrate (1 AP) + Detect (0 AP first)
+      knowledge: {} as any,
+      config: {} as any,
+    };
+
+    const decision = reactEvaluator.evaluateReacts(character, opportunity, context, false);
+
+    // Focus should be strongly preferred with Concentrate available
+    expect(decision.shouldReact).toBe(true);
+    expect(decision.reactType).toBe('focus');
+    // Priority should be boosted even higher for Focus + Concentrate + Detect combo
+    expect(decision.priority).toBeGreaterThan(5.5); // Base 1.5 + 3.0 for Hidden + 1.5 for Concentrate
+  });
+
   it('should evaluate React when good target available', () => {
     // Setup: Good React target (enemy in optimal range)
     const opportunity = {

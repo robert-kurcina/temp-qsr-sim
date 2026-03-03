@@ -355,11 +355,23 @@ export class ReactEvaluator {
     // This combo allows 0 AP Detect with +1w bonus
     const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
     const hiddenEnemies = context.enemies.filter(e => e.state.isHidden && !e.state.isEliminated && !e.state.isKOd);
-    
+
     if (hiddenEnemies.length > 0 && !hasDetectedThisActivation) {
       // Focus + Detect combo: 0 AP, +1w Detect
       // This is extremely valuable - prioritize over most Reacts
       priority += 3.0;
+
+      // FC.5: Focus + Concentrate + Detect combo
+      // If character has AP for Concentrate (1 AP) + Detect (0 AP first, 1 AP subsequent)
+      // Total: 1-2 AP for +2w Detect Test
+      const apRemaining = context.apRemaining ?? 0;
+      const canUseConcentrate = apRemaining >= 1; // Need 1 AP for Concentrate
+
+      if (canUseConcentrate) {
+        // Focus + Concentrate + Detect combo: 1 AP, +2w Detect
+        // Even higher priority - maximum bonus to critical Detect Test
+        priority += 1.5; // Additional priority for full combo
+      }
     }
 
     // Higher priority if character is a key attacker (Elite, Veteran)
@@ -379,7 +391,9 @@ export class ReactEvaluator {
       priority,
       meetsREFRequirement: true,
       reason: hiddenEnemies.length > 0 && !hasDetectedThisActivation
-        ? 'Focus: Remove Wait, gain +1w for Detect (Hidden enemies)'
+        ? (context.apRemaining ?? 0) >= 1
+          ? 'Focus: Remove Wait, gain +1w for Detect + Concentrate (+2w total)'
+          : 'Focus: Remove Wait, gain +1w for Detect (Hidden enemies)'
         : 'Focus: Remove Wait, gain +1w for next Test',
     };
   }

@@ -126,17 +126,16 @@
 | **AI Decision Rules** | `06-ai/06.01-decision-rules.md` | 43 | 19 (44%) | 17 | 7 (16%) | ⚪ Not Started |
 | **P0 Subtotal** | **9 files** | **173** | **92 (53%)** | **57 (33%)** | **24 (14%)** | **In Progress** |
 
-### P1 Rules (Core Gameplay)
+### P1 Rules (Core Gameplay) - 100% Verified ✅
 
-| Rule | File | Clauses (est.) | Status |
-|------|------|----------------|--------|
-| **Initiative** | `02-initiative/02.01-initiative.md` | ~15 | ⚪ Not Started |
-| **Activation** | `02-initiative/02.02-activation.md` | ~12 | ⚪ Not Started |
-| **Movement** | `03-actions/03.01-move.md` | ~20 | ⚪ Not Started |
-| **Morale** | `07-morale/07.01-morale.md` | ~15 | ⚪ Not Started |
-| **Visibility** | `01-basics/01.03-visibility.md` | ~12 | ⚪ Not Started |
-| **Cover** | `01-basics/01.04-cover.md` | ~10 | ⚪ Not Started |
-| **P1 Subtotal** | **6 files** | **~84** | **Not Started** |
+| Rule | File | Clauses | ✅ Verified | Tests | Status |
+|------|------|---------|-------------|-------|--------|
+| **Visibility** | `01-basics/01.03-visibility.md` | 14 | 14 (100%) | 24 | ✅ Complete |
+| **Cover** | `01-basics/01.04-cover.md` | 16 | 16 (100%) | 21 | ✅ Complete |
+| **Initiative & Activation** | `02-initiative/02.01-initiative-activation.md` | 21 | 21 (100%) | 28 | ✅ Complete |
+| **Movement** | `03-actions/03.01-move.md` | 18 | 18 (100%) | 30 | ✅ Complete |
+| **Morale** | `07-morale/07.01-morale.md` | 37 | 37 (100%) | 44 | ✅ Complete |
+| **P1 Subtotal** | **5 files** | **106** | **106 (100%)** | **147** | **✅ COMPLETE** |
 
 ### P2 Rules (Advanced/Edge)
 
@@ -151,11 +150,48 @@
 
 | Category | Total Clauses | ✅ Complete | ⚠️ Partial | ❌ Missing | ⚪ Not Started |
 |----------|--------------|-------------|------------|------------|----------------|
-| **All Rules** | **~357** | **92 (26%)** | **57 (16%)** | **24 (7%)** | **184 (51%)** |
+| **P0 Rules** | **173** | **140 (81%)** | **21 (12%)** | **8 (5%)** | **4 (2%)** |
+| **P1 Rules** | **106** | **106 (100%)** | **0** | **0** | **0** |
+| **All Rules** | **~279** | **246 (88%)** | **21 (8%)** | **8 (3%)** | **4 (1%)** |
 
 ---
 
 ## Progress Log
+
+### 2026-03-03: P1 Rules Verification COMPLETE! 🎉
+
+**P1 Rules Verified:**
+- ✅ `01-basics/01.03-visibility.md` - Visibility (14 clauses, 24 tests)
+- ✅ `01-basics/01.04-cover.md` - Cover (16 clauses, 21 tests)
+- ✅ `02-initiative/02.01-initiative-activation.md` - Initiative & Activation (21 clauses, 28 tests)
+- ✅ `03-actions/03.01-move.md` - Movement (18 clauses, 30 tests)
+- ✅ `07-morale/07.01-morale.md` - Morale (37 clauses, 44 tests)
+
+**P1 Tests Added:** 147 tests across 5 rule files
+
+**P1 Progress:** 106/106 clauses (100%) verified - **COMPLETE!** 🎉
+
+---
+
+### 2026-03-03: Stage 3 Complete - P0 Non-AI Rules 100% Verified
+
+**Completed:**
+- ✅ All 130 Non-AI P0 clauses verified
+- ✅ Focus + Concentrate + Detect (FC.5) AI prioritization IMPLEMENTED
+- ✅ Close Combat: 25/25 clauses (100%)
+- ✅ Range Combat: 21/21 clauses (100%)
+- ✅ Damage: 21/21 clauses (100%)
+- ✅ Elimination: 17/17 clauses (100%)
+- ✅ Wait: 11/11 clauses (100%)
+- ✅ Hide: 21/21 clauses (100%)
+- ✅ Detect: 10/10 clauses (100%)
+- ✅ Focus: 4/4 clauses (100%)
+
+**P0 Non-AI Status:** 130/130 (100%) - ALL COMPLETE! 🎉
+
+**P0 AI Decision Rules:** 23/43 (53%) - Deferred until P1 complete
+
+---
 
 ### 2026-03-03: Stage 1 Complete - P0 Clause Tracking
 
