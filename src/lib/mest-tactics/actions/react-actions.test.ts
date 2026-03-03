@@ -66,6 +66,51 @@ describe('react-actions', () => {
     expect(second.executed).toBe(false);
   });
 
+  it('should temporarily assign reacting model as active during another model initiative', () => {
+    const battlefield = new Battlefield(12, 12);
+    const active = new Character(makeProfile('Active', 2, 4));
+    const reactor = new Character(makeProfile('Reactor', 2, 4));
+    reactor.state.isWaiting = true;
+
+    const manager = new GameManager([active, reactor], battlefield);
+    manager.beginActivation(active);
+    expect(manager.getActiveCharacterId()).toBe(active.id);
+
+    let activeIdDuringReact: string | null = null;
+    const react = manager.executeReactAction(reactor, () => {
+      activeIdDuringReact = manager.getActiveCharacterId();
+      return true;
+    });
+
+    expect(react.executed).toBe(true);
+    expect(activeIdDuringReact).toBe(reactor.id);
+    expect(manager.getActiveCharacterId()).toBe(active.id);
+  });
+
+  it('should allow a model to become active again during another model initiative', () => {
+    const battlefield = new Battlefield(12, 12);
+    const active = new Character(makeProfile('Active', 2, 4));
+    const reactor = new Character(makeProfile('Reactor', 2, 4));
+
+    const manager = new GameManager([active, reactor], battlefield);
+    const ownAp = manager.beginActivation(reactor);
+    expect(ownAp).toBe(2);
+    manager.endActivation(reactor);
+
+    reactor.state.isWaiting = true;
+    manager.beginActivation(active);
+
+    let activeIdDuringReact: string | null = null;
+    const react = manager.executeReactAction(reactor, () => {
+      activeIdDuringReact = manager.getActiveCharacterId();
+      return true;
+    });
+
+    expect(react.executed).toBe(true);
+    expect(activeIdDuringReact).toBe(reactor.id);
+    expect(manager.getActiveCharacterId()).toBe(active.id);
+  });
+
   it('should sort react options by effective ref then initiative', () => {
     const battlefield = new Battlefield(12, 12);
     const active = new Character(makeProfile('Active', 2, 4));

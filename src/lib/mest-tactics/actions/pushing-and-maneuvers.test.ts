@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { performPushing, performCombatManeuver, CombatManeuverType } from './pushing-and-maneuvers';
+import { performCombatManeuver, CombatManeuverType } from './pushing-and-maneuvers';
 import { Character } from '../core/Character';
 import { Profile } from '../core/Profile';
 import { GameManager } from '../engine/GameManager';
@@ -49,7 +49,7 @@ describe('Pushing Action', () => {
     it('should grant 1 AP and add 1 Delay token when character has no Delay tokens', () => {
       const initialAp = gameManager.getApRemaining(character);
       
-      const result = performPushing(gameManager['activationDeps'](), character);
+      const result = gameManager.executePushing(character);
       
       expect(result.success).toBe(true);
       expect(result.apGained).toBe(1);
@@ -61,7 +61,7 @@ describe('Pushing Action', () => {
     it('should fail if character already has Delay tokens', () => {
       character.state.delayTokens = 1;
       
-      const result = performPushing(gameManager['activationDeps'](), character);
+      const result = gameManager.executePushing(character);
       
       expect(result.success).toBe(false);
       expect(result.apGained).toBe(0);
@@ -70,14 +70,14 @@ describe('Pushing Action', () => {
 
     it('should fail if character already pushed this Initiative', () => {
       // First push succeeds
-      const result1 = performPushing(gameManager['activationDeps'](), character);
+      const result1 = gameManager.executePushing(character);
       expect(result1.success).toBe(true);
       
       // Remove the Delay token to test the "already pushed" check
       character.state.delayTokens = 0;
       
       // Second push should fail due to already having pushed
-      const result2 = performPushing(gameManager['activationDeps'](), character);
+      const result2 = gameManager.executePushing(character);
       
       expect(result2.success).toBe(false);
       expect(result2.apGained).toBe(0);
@@ -86,14 +86,14 @@ describe('Pushing Action', () => {
 
     it('should reset hasPushedThisInitiative on new round', () => {
       // Push in first round
-      performPushing(gameManager['activationDeps'](), character);
+      gameManager.executePushing(character);
       
       // Start new round
       gameManager.startRound();
       gameManager.beginActivation(character);
       
       // Should be able to push again
-      const result = performPushing(gameManager['activationDeps'](), character);
+      const result = gameManager.executePushing(character);
       
       expect(result.success).toBe(true);
     });

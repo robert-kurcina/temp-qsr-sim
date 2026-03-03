@@ -95,4 +95,75 @@ describe('morale', () => {
     expect(results.length).toBe(1);
     expect(ally.state.fearTokens).toBeGreaterThanOrEqual(1);
   });
+
+  it('should not run a fear test if already Disordered', () => {
+    defender.state.fearTokens = 2;
+    defender.refreshStatusFlags();
+
+    const result = applyFearFromWounds(defender, 1, [1, 1]);
+
+    expect(result.pass).toBe(true);
+    expect(result.fearAdded).toBe(0);
+    expect(defender.state.fearTokens).toBe(2);
+  });
+
+  it('should not run a fear test if Engaged and not Distracted', () => {
+    defender.state.isEngaged = true;
+    defender.state.delayTokens = 0;
+    defender.state.isDistracted = false;
+
+    const result = applyFearFromWounds(defender, 1, [1, 1]);
+
+    expect(result.pass).toBe(true);
+    expect(result.fearAdded).toBe(0);
+    expect(defender.state.fearTokens).toBe(0);
+  });
+
+  it('should run a fear test if Engaged and Distracted', () => {
+    defender.finalAttributes.pow = 0;
+    defender.state.isEngaged = true;
+    defender.state.delayTokens = 1;
+    defender.refreshStatusFlags();
+    defender.state.isEngaged = true;
+
+    const result = applyFearFromWounds(defender, 1, [1, 1]);
+
+    expect(result.pass).toBe(false);
+    expect(result.fearAdded).toBeGreaterThan(0);
+  });
+
+  it('should only require one fear test per turn', () => {
+    defender.finalAttributes.pow = 0;
+
+    const first = applyFearFromWounds(defender, 1, [1, 1]);
+    const fearAfterFirst = defender.state.fearTokens;
+    const second = applyFearFromWounds(defender, 1, [1, 1]);
+
+    expect(first.pass).toBe(false);
+    expect(second.pass).toBe(true);
+    expect(second.fearAdded).toBe(0);
+    expect(defender.state.fearTokens).toBe(fearAfterFirst);
+  });
+
+  it('should set fear tokens to cascades when cascades exceed current fear', () => {
+    defender.finalAttributes.pow = 0;
+    defender.state.fearTokens = 1;
+    defender.refreshStatusFlags();
+
+    const result = applyFearFromWounds(defender, 1, [1, 1]);
+
+    expect(result.pass).toBe(false);
+    expect(defender.state.fearTokens).toBe(2);
+  });
+
+  it('should add exactly one fear token when cascades do not exceed current fear', () => {
+    defender.finalAttributes.pow = 1;
+    defender.state.fearTokens = 1;
+    defender.refreshStatusFlags();
+
+    const result = applyFearFromWounds(defender, 1, [1, 1]);
+
+    expect(result.pass).toBe(false);
+    expect(defender.state.fearTokens).toBe(2);
+  });
 });

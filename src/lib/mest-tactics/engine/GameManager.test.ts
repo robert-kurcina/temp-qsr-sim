@@ -9,6 +9,7 @@ import { TerrainType } from '../battlefield/terrain/Terrain';
 import { MissionSide } from '../mission/MissionSide';
 import { ObjectiveMarkerKind, ObjectiveMarkerManager, createObjectiveMarker } from '../mission/objective-markers';
 import { createMissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
+import { applyFearFromWounds } from '../status/morale';
 
 describe('GameManager', () => {
   let characters: Character[];
@@ -83,6 +84,14 @@ describe('GameManager', () => {
     // With same dice rolls, Bravo has higher INT (4 vs 2) so wins
     const next = gameManager.getNextToActivate();
     expect(next?.name).toBe('Bravo');
+  });
+
+  it('should assign each character a single initiative slot per turn', () => {
+    gameManager.startTurn(() => 0);
+
+    const orderIds = gameManager.activationOrder.map(character => character.id);
+    expect(orderIds).toHaveLength(characters.length);
+    expect(new Set(orderIds).size).toBe(orderIds.length);
   });
 
   it('should advance to the next character', () => {
@@ -239,6 +248,36 @@ describe('GameManager', () => {
     expect(gameManager.phase).toBe(TurnPhase.Activation);
   });
 
+  it('should resolve bottle tests when ending a turn with mission sides', () => {
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    characters[0].state.isKOd = true;
+    characters[0].refreshStatusFlags();
+
+    gameManager.endTurn([sideA, sideB]);
+
+    expect(gameManager.phase).toBe(TurnPhase.TurnEnd);
+    expect(gameManager.lastBottleTestResults).not.toBeNull();
+    expect(gameManager.lastBottleTestResults?.SideA?.bottledOut).toBe(true);
+  });
+
+  it('should resolve bottle tests through activation-to-turn-end phase advance', () => {
+    const sideA = buildMissionSide('SideA', characters[0]);
+    const sideB = buildMissionSide('SideB', characters[1]);
+    characters[0].state.isKOd = true;
+    characters[0].refreshStatusFlags();
+    gameManager.setSides([sideA, sideB]);
+    gameManager.phase = TurnPhase.Activation;
+    gameManager.setCharacterStatus(characters[0].id, CharacterStatus.Done);
+    gameManager.setCharacterStatus(characters[1].id, CharacterStatus.Done);
+
+    const phase = gameManager.advancePhase({ roundsPerTurn: 1, sides: [sideA, sideB] });
+
+    expect(phase).toBe(TurnPhase.TurnEnd);
+    expect(gameManager.lastBottleTestResults).not.toBeNull();
+    expect(gameManager.lastBottleTestResults?.SideA?.bottledOut).toBe(true);
+  });
+
   it('should eliminate a side that fails a bottle test', () => {
     const character = characters[0];
     const other = characters[1];
@@ -301,6 +340,28 @@ describe('GameManager', () => {
     const ap = gameManager.beginActivation(character);
     expect(ap).toBeGreaterThan(0);
     expect(character.state.wounds).toBe(3);
+  });
+
+  it('should reset per-turn fear test counters when a new turn starts', () => {
+    const character = characters[0];
+    character.finalAttributes.pow = 0;
+
+    const firstFear = applyFearFromWounds(character, 1, [1, 1]);
+    expect(firstFear.pass).toBe(false);
+    expect(character.state.fearTestsThisTurn).toBe(1);
+
+    character.state.fearTokens = 0;
+    character.refreshStatusFlags();
+    const blockedSameTurn = applyFearFromWounds(character, 1, [1, 1]);
+    expect(blockedSameTurn.pass).toBe(true);
+    expect(blockedSameTurn.fearAdded).toBe(0);
+
+    gameManager.startTurn(() => 0);
+    character.state.fearTokens = 0;
+    character.refreshStatusFlags();
+    const allowedNextTurn = applyFearFromWounds(character, 1, [1, 1]);
+    expect(allowedNextTurn.pass).toBe(false);
+    expect(character.state.fearTestsThisTurn).toBe(1);
   });
 
   it('should add delay tokens when charging an Awkward defender', () => {
@@ -391,6 +452,117 @@ describe('GameManager', () => {
     mover.finalAttributes.mov = 6;
     const allowed = gameManager.executeMove(mover, { x: 3, y: 1 });
     expect(allowed.moved).toBe(true);
+  });
+
+  it('should apply difficult terrain multipliers when executing move', () => {
+    const battlefield = new Battlefield(12, 12);
+    battlefield.addTerrain({
+      id: 'difficult-lane',
+      type: TerrainType.Difficult,
+      vertices: [
+        { x: 0, y: 0 },
+        { x: 6, y: 0 },
+        { x: 6, y: 2 },
+        { x: 0, y: 2 },
+      ],
+    });
+    gameManager.setBattlefield(battlefield);
+
+    const mover = characters[0];
+    gameManager.placeCharacter(mover, { x: 0, y: 1 });
+
+    mover.finalAttributes.mov = 6;
+    const blocked = gameManager.executeMove(mover, { x: 3, y: 1 });
+    expect(blocked.moved).toBe(false);
+    expect(blocked.reason).toContain('out of range');
+
+    mover.finalAttributes.mov = 10;
+    const allowed = gameManager.executeMove(mover, { x: 3, y: 1 });
+    expect(allowed.moved).toBe(true);
+  });
+
+  it('should require Disengage before Move when the mover starts engaged to an opposing model', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const mover = characters[0];
+    const opposing = characters[1];
+    gameManager.placeCharacter(mover, { x: 1, y: 1 });
+    gameManager.placeCharacter(opposing, { x: 2, y: 1 });
+
+    const blocked = gameManager.executeMove(mover, { x: 4, y: 1 }, {
+      opponents: [opposing],
+    });
+
+    expect(blocked.moved).toBe(false);
+    expect(blocked.reason).toContain('Disengage');
+    expect(gameManager.getCharacterPosition(mover)).toEqual({ x: 1, y: 1 });
+  });
+
+  it('should apply first-free and additional-cost swap position behavior during move', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const mover = characters[0];
+    const friendly = characters[1];
+    mover.finalAttributes.mov = 4;
+    friendly.finalAttributes.mov = 4;
+    friendly.state.isAttentive = true;
+
+    gameManager.placeCharacter(mover, { x: 1, y: 1 });
+    gameManager.placeCharacter(friendly, { x: 2, y: 1 });
+    gameManager.beginActivation(mover);
+
+    const firstSwap = gameManager.executeMove(mover, { x: 2, y: 1 }, {
+      swapTarget: friendly,
+      isFriendlyToMover: () => true,
+      opponents: [],
+    });
+    expect(firstSwap.moved).toBe(true);
+    expect(firstSwap.swapApCost).toBe(0);
+    expect(gameManager.getCharacterPosition(mover)).toEqual({ x: 2, y: 1 });
+    expect(gameManager.getCharacterPosition(friendly)).toEqual({ x: 1, y: 1 });
+    expect(gameManager.getApRemaining(mover)).toBe(2);
+
+    const secondSwap = gameManager.executeMove(mover, { x: 1, y: 1 }, {
+      swapTarget: friendly,
+      isFriendlyToMover: () => true,
+      opponents: [],
+    });
+    expect(secondSwap.moved).toBe(true);
+    expect(secondSwap.swapApCost).toBe(1);
+    expect(gameManager.getCharacterPosition(mover)).toEqual({ x: 1, y: 1 });
+    expect(gameManager.getCharacterPosition(friendly)).toEqual({ x: 2, y: 1 });
+    expect(gameManager.getApRemaining(mover)).toBe(1);
+  });
+
+  it('should block swapping with a target engaged to an Attentive Ordered opposing model', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const mover = characters[0];
+    const friendly = characters[1];
+    const opposing = new Character({
+      ...friendly.profile,
+      name: 'Opposing',
+    });
+    opposing.finalAttributes = opposing.attributes;
+    opposing.state.isAttentive = true;
+    opposing.state.isOrdered = true;
+    gameManager.characters.push(opposing);
+
+    gameManager.placeCharacter(mover, { x: 1, y: 1 });
+    gameManager.placeCharacter(friendly, { x: 2, y: 1 });
+    gameManager.placeCharacter(opposing, { x: 3, y: 1 });
+
+    const swap = gameManager.executeMove(mover, { x: 2, y: 1 }, {
+      swapTarget: friendly,
+      isFriendlyToMover: () => true,
+      opponents: [opposing],
+    });
+
+    expect(swap.moved).toBe(false);
+    expect(swap.reason).toContain('Attentive Ordered opposing');
   });
 
   it('should penalize fiddling when using one less hand', () => {

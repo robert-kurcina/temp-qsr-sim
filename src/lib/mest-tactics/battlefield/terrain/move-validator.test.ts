@@ -6,6 +6,7 @@ import { EngagementManager } from '../spatial/engagement-manager';
 import { Character } from '../../core/Character';
 import { Profile } from '../../core/Profile';
 import { Position } from './Position';
+import { TerrainType } from './Terrain';
 
 const createCharacter = (id: string, siz: number = 3): Character => {
   const profile: Profile = {
@@ -99,6 +100,68 @@ describe('MoveValidator', () => {
 
       expect(result.inThreatZone).toBe(true);
       expect(result.threatModels).toContain('B');
+    });
+
+    it('should allow movement through full open doorway aperture (DR.1)', () => {
+      const char = createCharacter('A', 3);
+      registry.register(char, { x: 2, y: 5 });
+
+      battlefield.addTerrain({
+        id: 'open-doorway',
+        type: TerrainType.Impassable,
+        vertices: [
+          { x: 4.5, y: 4.4 },
+          { x: 5.5, y: 4.4 },
+          { x: 5.5, y: 5.6 },
+          { x: 4.5, y: 5.6 },
+        ],
+        meta: {
+          name: 'Open Doorway',
+          movement: 'Impassable',
+          los: 'Clear',
+          shape: 'rectangle',
+          dimensions: { width: 1, height: 1.2 },
+          apertureKind: 'doorway',
+          openingWidthMu: 1,
+          openingHeightMu: 1.2,
+          isOpen: true,
+        } as any,
+      });
+
+      const result = validator.validateMove(char, { x: 2, y: 5 }, { x: 8, y: 5 });
+      expect(result.blocked).toBe(false);
+      expect(result.valid).toBe(true);
+    });
+
+    it('should block movement through small open window aperture (DR.4)', () => {
+      const char = createCharacter('A', 3);
+      registry.register(char, { x: 2, y: 5 });
+
+      battlefield.addTerrain({
+        id: 'small-window',
+        type: TerrainType.Obstacle,
+        vertices: [
+          { x: 4.5, y: 4.5 },
+          { x: 5.5, y: 4.5 },
+          { x: 5.5, y: 5.5 },
+          { x: 4.5, y: 5.5 },
+        ],
+        meta: {
+          name: 'Open Window',
+          movement: 'Obstacle',
+          los: 'Clear',
+          shape: 'rectangle',
+          dimensions: { width: 0.4, height: 0.4 },
+          apertureKind: 'window',
+          openingWidthMu: 0.4,
+          openingHeightMu: 0.4,
+          isOpen: true,
+        } as any,
+      });
+
+      const result = validator.validateMove(char, { x: 2, y: 5 }, { x: 8, y: 5 });
+      expect(result.blocked).toBe(true);
+      expect(result.valid).toBe(false);
     });
   });
 

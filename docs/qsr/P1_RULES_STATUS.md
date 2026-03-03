@@ -1,70 +1,113 @@
-# QSR Master Index - P1 Rules Status
+# QSR P1 Rules Status
 
-**Purpose:** Track P1 rules clause tracking progress
+**Purpose:** Track executable coverage progress for Priority 1 core rules files (Visibility, Cover, Initiative/Activation, Movement, Morale).
 
 **Last Updated:** 2026-03-03
-**Status:** ✅ **COMPLETE**
+**Status:** ⚠️ **IN PROGRESS (P1 runtime partials closed; source audits still ongoing)**
 
 ---
 
-## P1 Rules Created
+## Current Snapshot
 
-| Rule | File | Clauses | Status | Created | Tests |
-|------|------|---------|--------|---------|-------|
-| **Initiative & Activation** | `02-initiative/02.01-initiative-activation.md` | 21 | ✅ Verified | ✅ | 28 |
-| **Movement** | `03-actions/03.01-move.md` | 18 | ✅ Verified | ✅ | 30 |
-| **Morale** | `07-morale/07.01-morale.md` | 37 | ✅ Verified | ✅ | 44 |
-| **Visibility** | `01-basics/01.03-visibility.md` | 14 | ✅ Verified | ✅ | 24 |
-| **Cover** | `01-basics/01.04-cover.md` | 16 | ✅ Verified | ✅ | 21 |
-| **P1 Total** | **5 files** | **106** | **106 Verified** | **✅** | **147** |
+| File | Clause Rows | ✅ Verified/Complete | ⚠️ Partial | ❌ Missing | ⚠️ Not Audited |
+|------|-------------|----------------------|------------|------------|----------------|
+| `docs/qsr/01-basics/01.03-visibility.md` | 14 | 14 | 0 | 0 | 0 |
+| `docs/qsr/01-basics/01.04-cover.md` | 16 | 16 | 0 | 0 | 0 |
+| `docs/qsr/02-initiative/02.01-initiative-activation.md` | 21 | 21 | 0 | 0 | 0 |
+| `docs/qsr/03-actions/03.01-move.md` | 18 | 18 | 0 | 0 | 0 |
+| `docs/qsr/07-morale/07.01-morale.md` | 38 | 38 | 0 | 0 | 0 |
+| **Total** | **107** | **107** | **0** | **0** | **0** |
 
----
-
-## P1 Rules Complete! 🎉
-
-**All 106 P1 clauses have been verified with 147 tests!**
-
-### Initiative & Activation (21 clauses)
-- Initiative Test (IN.1-IN.6): 6 clauses
-- Activation (AC.1-AC.6): 6 clauses
-- Delay Tokens (DL.1-DL.2): 2 clauses
-- Pushing (PS.1-PS.5): 5 clauses
-- Done Status (DN.1-DN.2): 2 clauses
-
-### Movement (18 clauses)
-- Move Action (MV.1-MV.10): 10 clauses
-- Swap Positions (SW.1-SW.6): 6 clauses
-- Agility (AG.1-AG.2): 2 clauses
-
-### Morale (37 clauses)
-- Fear Tests (FT.1-FT.7): 7 clauses
-- Nervous (NV.1-NV.2): 2 clauses
-- Disordered (DS.1-DS.5): 5 clauses
-- Panicked (PN.1-PN.5): 5 clauses
-- Eliminated by Fear (EL.1-EL.2): 2 clauses
-- Rally (RL.1-RL.8): 8 clauses
-- Breakpoint (BP.1-BP.2): 2 clauses
-- Bottle Test (BT.1-BT.7): 7 clauses
-
-### Visibility (14 clauses)
-- Visibility OR (VS.1-VS.4): 4 clauses
-- Line of Sight (LOS.1-LOS.5): 5 clauses
-- Cover (CV.1-CV.4): 4 clauses
-- Cohesion (CH.1): 1 clause
-
-### Cover (16 clauses)
-- Cover Types (CV.1-CV.6): 6 clauses
-- Terrain Types (TR.1-TR.5): 5 clauses
-- Door/Window Rules (DR.1-DR.5): 5 clauses
+Notes:
+- There are currently **0 `❌ Missing` rows** in the P1 rule files.
+- There are currently **0 `⚠️ Partial` rows** in the 5 tracked P1 files.
 
 ---
 
-## Next Steps
+## P1-Labeled Clause Snapshot
 
-1. **Verify existing implementations** for each P1 rule
-2. **Create verification tests** for untested clauses
-3. **Update clause status** from ⚪ to ✅ as verified
+| Scope | Count |
+|------|-------|
+| P1-labeled clauses in these 5 files | 33 |
+| ✅ Verified/Complete | 33 |
+| ⚠️ Partial | 0 |
+| ❌ Missing | 0 |
+
+Open P1-labeled partial clause IDs:
+- None currently open.
 
 ---
 
-**P1 Rules Tracking:** 5 files created, 106 clauses identified, ready for verification.
+## Runtime Tests Added/Updated (This Hardening Pass)
+
+| File | Focus |
+|------|-------|
+| `src/lib/mest-tactics/engine/initiative-points.test.ts` | Initiative/IP scoring, carry-over, tie flows, and special-ability spending (`IN.1`, `IN.3`, `IN.6`) |
+| `src/lib/mest-tactics/actions/activation-rules.test.ts` | Activation AP/delay/done behavior + compulsory push enforcement (`DS.4`) |
+| `src/lib/mest-tactics/actions/pushing-and-maneuvers.test.ts` | `PS.1-PS.5` via runtime action path |
+| `src/lib/mest-tactics/actions/move-action-rules.test.ts` | `MV.5-MV.10`, `SW.1-SW.6`, EL.2 fear-exit elimination, core move/swap constraints |
+| `src/lib/mest-tactics/battlefield/validation/action-context.test.ts` | Leaning + agility LOS integration (`AG.2`) |
+| `src/lib/mest-tactics/status/morale-cohesion-visibility.test.ts` | Cohesion/visibility morale interactions |
+| `src/lib/mest-tactics/status/morale.test.ts` | Fear test gates and token application |
+| `src/lib/mest-tactics/actions/simple-actions-rally.test.ts` | Rally rules (`RL.*`) |
+| `src/lib/mest-tactics/status/bottle-tests.test.ts` | Breakpoint/Bottle/Forfeit flow |
+| `src/lib/mest-tactics/status/compulsory-actions-safety.test.ts` | Disordered/Panicked safety targeting (`DS.5`, `PN.4`) |
+| `src/lib/mest-tactics/battlefield/spatial/spatial-rules.test.ts` | `PN.5`, `CV.1`, `CV.4`, `CV.5`, `LOS.2`, `LOS.5`, `TR.1-TR.3` behavior |
+| `src/lib/mest-tactics/battlefield/terrain/TerrainElement.test.ts` | OVR-003 terrain name mapping hardening (building/wall/rocks canonical behavior) |
+| `src/lib/mest-tactics/battlefield/terrain/aperture-rules.test.ts` | Doorway/window/low-ceiling terrain classification (`DR.1-DR.5`) |
+| `src/lib/mest-tactics/battlefield/terrain/move-validator.test.ts` | Runtime movement pass/block integration for aperture terrain (`DR.1`, `DR.4`) |
+| `src/lib/mest-tactics/actions/react-actions.test.ts` | React active-model handoff and repeat activation behavior (`AC.5`, `AC.6`) |
+
+---
+
+## Code Fixes Applied During Coverage Work
+
+| File | Change |
+|------|--------|
+| `src/lib/mest-tactics/engine/GameManager.ts` | Fixed carry-over IP attribution, added runtime `executePushing()` path, designated-leader initiative/tie handling, end-turn bottle-test scheduling (`BT.1`), move-gate Disengage enforcement (`MV.2`), and React active-model tracking (`AC.6`) |
+| `src/lib/mest-tactics/actions/react-actions.ts` | Added explicit temporary active-character handoff during React execution and restoration after completion (`AC.5`, `AC.6`) |
+| `src/lib/mest-tactics/actions/activation.ts` | Added compulsory morale auto-push enforcement when AP is insufficient and push is legal (`DS.4`) |
+| `src/lib/mest-tactics/status/compulsory-actions.ts` | Added runtime disordered/panicked safety resolution for cover/LOS and edge-exit targeting (`DS.5`, `PN.4`) |
+| `src/lib/mest-tactics/status/morale.ts` | Hardened `FT.2-FT.7` behavior and per-turn fear-test tracking |
+| `src/lib/mest-tactics/core/Character.ts` | Added `fearTestsThisTurn` and `swapsThisInitiative` state tracking fields |
+| `src/lib/mest-tactics/actions/simple-actions.ts` | Rally AP/free gates + friendly/cohesion targeting (`RL.4`) and `RL.7`/`RL.8` modifiers |
+| `src/lib/mest-tactics/status/bottle-tests.ts` | Added explicit forfeit option (`BT.7`) |
+| `src/lib/mest-tactics/actions/move-action.ts` | Added path-segment costing (`MV.6-MV.9`) and runtime swap enforcement (`MV.10`, `SW.1-SW.6`) |
+| `src/lib/mest-tactics/engine/GameManager.test.ts` | Added runtime manager-path assertions for first-free/additional-cost swaps, turn reset of fear-test gating, difficult-terrain move cost enforcement (`MV.4`), and per-turn initiative-slot uniqueness (`AC.4`) |
+| `src/lib/mest-tactics/battlefield/spatial/spatial-rules.ts` | Added `PN.5` engagement exclusion, `CV.5` distance gating, and explicit visible-area obscuration fraction checks for `CV.1`/`CV.4` |
+| `src/lib/mest-tactics/battlefield/los/LOSOperations.ts` | Added explicit visible-area sampling (`LOS.2`) and half-base-height terrain blocking threshold (`LOS.5`) |
+| `src/lib/mest-tactics/battlefield/terrain/TerrainElement.ts` | Fixed OVR-003 terrain height/enterability mapping for canonical names (`Small/Large Building`, `Short/Medium/Large Wall`, rocks) |
+| `src/lib/mest-tactics/battlefield/terrain/aperture-rules.ts` | Added doorway/window/low-ceiling traversal classification with half-base threshold rules (`DR.1-DR.5`) |
+| `src/lib/mest-tactics/battlefield/terrain/move-validator.ts` | Wired aperture traversal resolution into move blocking with model-size-aware thresholds |
+| `src/lib/mest-tactics/battlefield/validation/action-context.ts` | Added leaning-aware agility LOS probing to codify `AG.2` |
+| `src/lib/mest-tactics/actions/combat-actions.ts` | Wired attacker agility budget into ranged/indirect LOS context when leaning |
+
+---
+
+## Redundancy Actions (Completed)
+
+| File | Action |
+|------|--------|
+| `src/lib/mest-tactics/actions/p1-visibility-verification.test.ts` | Removed (low-signal/tautological) |
+| `src/lib/mest-tactics/actions/p1-cover-verification.test.ts` | Removed (low-signal/tautological) |
+| `src/lib/mest-tactics/actions/p1-initiative-verification.test.ts` | Removed (replaced by runtime tests) |
+| `src/lib/mest-tactics/actions/p1-movement-verification.test.ts` | Removed (replaced by runtime tests) |
+| `src/lib/mest-tactics/actions/p1-morale-verification.test.ts` | Removed (replaced by runtime tests) |
+
+---
+
+## Validation Baseline
+
+- Full suite passes locally: **147 files, 2364 tests passing** (`npx vitest run`).
+- Known pre-existing non-blocking warnings remain in AI files:
+  - `UtilityScorer.ts` constant reassignment warning (`waitTacticalBonus`)
+  - `UtilityScorer.ts` duplicate member warnings
+  - `AIStratagems.ts` duplicate object key warning
+
+---
+
+## Next Priority 1 Steps
+
+1. Install/enable Vitest coverage provider and publish module-level line/branch/function metrics for P1 rule modules (currently blocked in this environment: `ENOTFOUND registry.npmjs.org` while installing `@vitest/coverage-v8`).
+2. Continue tightening `Not Started`/`Not Audited` inventories as source audits advance.
+3. Expand source-audit coverage outside the 5 tracked P1 files.

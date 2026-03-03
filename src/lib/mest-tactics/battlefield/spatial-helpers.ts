@@ -25,6 +25,7 @@ export function buildSpatialModel(
     position,
     baseDiameter: getBaseDiameterFromSiz(siz),
     siz,
+    isPanicked: character.state.isPanicked || character.state.fearTokens >= 3,
   };
 }
 

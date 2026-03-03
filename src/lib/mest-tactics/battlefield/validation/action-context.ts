@@ -1,7 +1,7 @@
 import { Battlefield } from '../Battlefield';
 import { LOSOperations } from '../los/LOSOperations';
 import { LOFOperations } from '../los/LOFOperations';
-import { SpatialModel, SpatialRules } from '../spatial/spatial-rules';
+import { CoverResult, SpatialModel, SpatialRules } from '../spatial/spatial-rules';
 import { TestContext } from '../../utils/TestContext';
 import { Position } from '../battlefield/Position';
 import { TerrainType } from '../terrain/Terrain';
@@ -15,6 +15,7 @@ export interface ActionContextInput {
   orm?: number;
   attackerEngagedOverride?: boolean;
   isLeaning?: boolean;
+  agilityMu?: number;
   isTargetLeaning?: boolean;
   lofWidthMu?: number;
 }
@@ -38,8 +39,55 @@ export interface ChargeSnapOptions {
   snapThresholdMu?: number;
 }
 
+const LEAN_SAMPLE_DIRECTIONS = 16;
+
+function resolveCoverResultWithAgility(input: ActionContextInput): CoverResult {
+  const baseCover = SpatialRules.getCoverResult(input.battlefield, input.attacker, input.target);
+  if (baseCover.hasLOS || !input.isLeaning) {
+    return baseCover;
+  }
+
+  const agilityMu = input.agilityMu ?? 0;
+  const maxLeanMu = Math.min(agilityMu, input.attacker.baseDiameter);
+  if (maxLeanMu <= 0) {
+    return baseCover;
+  }
+
+  let best: CoverResult | null = null;
+  let bestPenalty = Number.POSITIVE_INFINITY;
+  const radii = [maxLeanMu, maxLeanMu * 0.75, maxLeanMu * 0.5].filter(radius => radius > 0);
+
+  for (const radius of radii) {
+    for (let i = 0; i < LEAN_SAMPLE_DIRECTIONS; i++) {
+      const angle = (i / LEAN_SAMPLE_DIRECTIONS) * Math.PI * 2;
+      const candidatePosition: Position = {
+        x: input.attacker.position.x + Math.cos(angle) * radius,
+        y: input.attacker.position.y + Math.sin(angle) * radius,
+      };
+      if (!input.battlefield.isWithinBounds(candidatePosition, input.attacker.baseDiameter)) {
+        continue;
+      }
+      const cover = SpatialRules.getCoverResult(
+        input.battlefield,
+        { ...input.attacker, position: candidatePosition },
+        input.target
+      );
+      if (!cover.hasLOS) {
+        continue;
+      }
+      const penaltyScore = (cover.hasDirectCover ? 2 : 0) + (cover.hasInterveningCover ? 1 : 0);
+      if (penaltyScore < bestPenalty) {
+        best = cover;
+        bestPenalty = penaltyScore;
+      }
+    }
+  }
+
+  return best ?? baseCover;
+}
+
 export function buildRangedActionContext(input: ActionContextInput): TestContext {
-  const cover = SpatialRules.getCoverResult(input.battlefield, input.attacker, input.target);
+  const cover = resolveCoverResultWithAgility(input);
   const hasHardCover = cover.directCoverFeatures.some(feature => feature.meta?.los === 'Hard');
   const engaged = input.attackerEngagedOverride ?? SpatialRules.isEngaged(input.attacker, input.target);
   const edgeDistance = LOFOperations.distanceEdgeToEdge(input.attacker, input.target);
@@ -87,7 +135,7 @@ export function buildRangedActionContext(input: ActionContextInput): TestContext
 }
 
 export function buildLOSResultContext(input: ActionContextInput): Pick<TestContext, 'hasDirectCover' | 'hasInterveningCover' | 'hasHardCover'> & { hasLOS: boolean } {
-  const cover = SpatialRules.getCoverResult(input.battlefield, input.attacker, input.target);
+  const cover = resolveCoverResultWithAgility(input);
   const hasHardCover = cover.directCoverFeatures.some(feature => feature.meta?.los === 'Hard');
   return {
     hasLOS: cover.hasLOS,

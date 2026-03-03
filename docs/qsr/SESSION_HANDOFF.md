@@ -1,410 +1,139 @@
 # QSR Compliance Project - Session Handoff
 
 **Date:** 2026-03-03
-**Session:** P1 Rules COMPLETE! 🎉
-**Status:** ✅ **P1 RULES 100% VERIFIED**
+**Session:** Priority 1 Runtime Coverage Hardening
+**Status:** ⚠️ **IN PROGRESS (tracked P1 rows fully verified; broader source audits remain)**
 
 ---
 
-## Executive Summary
+## Executive Snapshot
 
-**Goal:** Create comprehensive QSR clause tracking to:
-1. Confirm QSR adherence
-2. Confirm test coverage
-3. Anchor implementation
-4. Discover redundancies
-5. Narrow AI debugging scope
-
-**Confidence:** 98% this approach provides significant value
-
-**Stage 3 Status:**
-- ✅ P0 Non-AI Rules: 130/130 (100%) - COMPLETE
-- ✅ P1 Rules: 106/106 (100%) - COMPLETE
-- ⚠️ P0 AI Decision Rules: 23/43 (53%) - Deferred
-- ✅ Documentation: 7 redundant files archived
-- ✅ Test Coverage: 2,404 tests (99.9% passing)
+- Clause catalogs for core P1 files are in place.
+- Runtime hardening replaced low-signal verification suites with behavior-backed tests.
+- Current P1 file snapshot: **107 clause rows total**, **107 verified**, **0 partial**, **0 missing**, **0 not-audited**.
+- Full test baseline: **147 test files, 2364 tests passing**.
 
 ---
 
-## What's Been Completed ✅
+## Completed In This Pass
 
-### P0 Non-AI Rules (100% Complete)
+### Runtime/Code
 
-| Rule | Clauses | Status | Tests |
-|------|---------|--------|-------|
-| **Focus** | 4 | ✅ 100% | 5 |
-| **Detect** | 10 | ✅ 100% | 8 |
-| **Wait** | 11 | ✅ 100% | 11 |
-| **Hide** | 21 | ✅ 100% | 21 |
-| **Close Combat** | 25 | ✅ 100% | 25 |
-| **Range Combat** | 21 | ✅ 100% | 21 |
-| **Damage** | 21 | ✅ 100% | 21 |
-| **Elimination** | 17 | ✅ 100% | 17 |
-| **P0 Non-AI Total** | **130** | **✅ 100%** | **129** |
+- Added first-class runtime action path for Pushing:
+  - `src/lib/mest-tactics/engine/GameManager.ts` (`executePushing`)
+- Closed targeted movement-sequencing gaps:
+  - `MV.6-MV.9` in `src/lib/mest-tactics/actions/move-action.ts`
+- Closed move engagement gate:
+  - `MV.2` in `src/lib/mest-tactics/engine/GameManager.ts` (engaged models must Disengage before Move)
+- Closed terrain-cost move validation:
+  - `MV.4` via runtime difficult-terrain movement-cost assertions in `GameManager.test.ts`
+- Closed agility-limited move extension:
+  - `MV.5` via Leap start/end-of-movement gating tests in `move-action-rules.test.ts`
+- Closed swap-position movement gaps:
+  - `MV.10`, `SW.1-SW.6` in `src/lib/mest-tactics/actions/move-action.ts`
+- Closed cover distance gate:
+  - `CV.5` in `src/lib/mest-tactics/battlefield/spatial/spatial-rules.ts`
+- Closed LOS/Cover geometry partials:
+  - `LOS.2`, `LOS.5` in `src/lib/mest-tactics/battlefield/los/LOSOperations.ts`
+  - `CV.1`, `CV.4` in `src/lib/mest-tactics/battlefield/spatial/spatial-rules.ts`
+- Closed OVR-003 terrain-name mismatch:
+  - `TerrainElement.ts` now maps canonical names (`Small Building`, `Short Wall`, rocks) to height/enterability rules correctly
+- Implemented DR.1-DR.5 doorway/window/low-ceiling traversal classification:
+  - `src/lib/mest-tactics/battlefield/terrain/aperture-rules.ts`
+  - integrated with movement blocking in `src/lib/mest-tactics/battlefield/terrain/move-validator.ts`
+- Closed remaining terrain semantics in P1 Cover:
+  - `TR.1-TR.3` via `spatial-rules.test.ts`
+- Closed agility-for-LOS integration:
+  - `AG.2` via leaning-aware LOS probing in `battlefield/validation/action-context.ts` wired from `combat-actions.ts`
+- Closed initiative special-ability spend path:
+  - `IN.6` via runtime coverage of `maintainInitiative`, `forceInitiative`, `refresh`
+- Closed initiative leader/tie semantics:
+  - `IN.1`, `IN.3` via designated-leader side initiative resolution and tie-path runtime tests
+- Closed activation lifecycle semantics:
+  - `AC.4`, `AC.5`, `AC.6` via per-turn initiative-slot uniqueness and React active-model handoff runtime behavior
+- Hardened morale paths:
+  - `FT.2-FT.7`, `DS.4`, `DS.5`, `PN.4`, `RL.1-RL.8`, `BT.7`, `PN.5`, `EL.2`
+  - added turn-cycle fear-test reset verification for `FT.5`
+- Closed rally friendly/cohesion gate:
+  - `RL.4` in `src/lib/mest-tactics/actions/simple-actions.ts` with dedicated rally runtime tests
+- Closed bottle-test scheduling path:
+  - `BT.1` via `GameManager.endTurn()` and activation-to-turn-end phase flow tests
 
-### P1 Rules (100% Complete) 🎉
+### Tests
 
-| Rule | Clauses | Status | Tests |
-|------|---------|--------|-------|
-| **Visibility** | 14 | ✅ 100% | 24 |
-| **Cover** | 16 | ✅ 100% | 21 |
-| **Initiative & Activation** | 21 | ✅ 100% | 28 |
-| **Movement** | 18 | ✅ 100% | 30 |
-| **Morale** | 37 | ✅ 100% | 44 |
-| **P1 Total** | **106** | **✅ 100%** | **147** |
+- Added/updated runtime suites:
+  - `initiative-points.test.ts`
+  - `action-context.test.ts`
+  - `activation-rules.test.ts`
+  - `move-action-rules.test.ts`
+  - `simple-actions-rally.test.ts`
+  - `compulsory-actions-safety.test.ts`
+  - `react-actions.test.ts`
+  - `morale.test.ts`
+  - `morale-cohesion-visibility.test.ts`
+  - `bottle-tests.test.ts`
+  - `spatial-rules.test.ts`
+  - `terrain/TerrainElement.test.ts`
+  - `terrain/aperture-rules.test.ts`
+  - `terrain/move-validator.test.ts`
 
-### Test Files Added (This Session)
+### Redundancy Reduction
 
-| File | Tests | Purpose |
-|------|-------|---------|
-| `p0-remaining-verification.test.ts` | 26 | Wait 859.4, Hide 847.x/849.x, Damage AR.3-AR.4, Elimination KV |
-| `p1-visibility-verification.test.ts` | 24 | Visibility OR, LOS, Cover, Cohesion |
-| `p1-cover-verification.test.ts` | 21 | Cover types, Terrain types, Door/Window rules |
-| `p1-initiative-verification.test.ts` | 28 | Initiative Test, Activation, Delay, Pushing, Done |
-| `p1-movement-verification.test.ts` | 30 | Move Action, Swap Positions, Agility |
-| `p1-morale-verification.test.ts` | 44 | Fear Tests, Nervous/Disordered/Panicked, Rally, Bottle |
-| **Total** | **173** | **All P0/P1 verification** |
+- Removed low-signal P1 verification files:
+  - `p1-visibility-verification.test.ts`
+  - `p1-cover-verification.test.ts`
+  - `p1-initiative-verification.test.ts`
+  - `p1-movement-verification.test.ts`
+  - `p1-morale-verification.test.ts`
+- Corrected stale QSR secondary-source references to non-existent `rules-react.md`:
+  - `docs/qsr/00-index.md`
+  - `docs/qsr/03-actions/03.06-wait.md`
+  - `docs/qsr/03-actions/03.07-focus.md`
 
-### Archived Redundant Files
+### Source Audit Inventory Progress
 
-| File | Reason |
-|------|--------|
-| `ARCHIVE_QSR_RULES_IMPLEMENTATION_PLAN.md` | Sequential snapshot |
-| `ARCHIVE_QSR_RULES_IMPLEMENTATION_FINAL.md` | Sequential snapshot |
-| `ARCHIVE_QSR_RULES_IMPLEMENTATION_COMPLETE.md` | Sequential snapshot |
-| `ARCHIVE_QSR_HIDE_DETECT_WAIT_COMPLETE_SUMMARY.md` | Superseded by clause tracking |
-| `ARCHIVE_HIDE_DETECT_MECHANICS_CORRECTED.md` | Superseded by clause tracking |
-| `ARCHIVE_FOCUS_DETECT_CONCENTRATE_COMBO.md` | Merged into clause tracking |
-| `ARCHIVE_HIDE_WAIT_TIMING_AND_SNEAKY_X.md` | Superseded by clause tracking |
-
-### Implementation Status (P0 Actions)
-
-| Rule | Clauses | ✅ Complete | ⚠️ Partial | ❌ Missing |
-|------|---------|-------------|------------|------------|
-| **Focus** | 4 | 4 (100%) | 0 | 0 |
-| **Detect** | 10 | 10 (100%) | 0 | 0 |
-| **Wait** | 11 | 11 (100%) | 0 | 0 |
-| **Hide** | 21 | 21 (100%) | 0 | 0 |
-| **Close Combat** | 25 | 25 (100%) | 0 | 0 |
-| **Range Combat** | 21 | 21 (100%) | 0 | 0 |
-| **Damage** | 21 | 21 (100%) | 0 | 0 |
-| **Elimination** | 17 | 17 (100%) | 0 | 0 |
-| **AI Decision** | 43 | 23 (53%) | 14 | 6 (14%) |
-| **P0 Total (Non-AI)** | **130** | **130 (100%)** | **0** | **0** |
-| **P0 Total** | **173** | **141 (82%)** | **20 (12%)** | **8 (5%)** |
-| **P1 Total** | **106** | **0 (0%)** | **0** | **106** |
-
-### Test Coverage Status
-
-| Rule | Clauses | Mapped Tests | Coverage |
-|------|---------|--------------|----------|
-| **Focus** | 4 | 4 | 100% |
-| **Detect** | 10 | 8 | 80% |
-| **Wait** | 11 | 11 | 100% |
-| **Hide** | 21 | 21 | 100% |
-| **Close Combat** | 25 | 25 | 100% |
-| **Range Combat** | 21 | 21 | 100% |
-| **Damage** | 21 | 21 | 100% |
-| **Elimination** | 17 | 17 | 100% |
-| **AI Decision** | 43 | 23 | 53% |
-| **P0 Total (Non-AI)** | **130** | **130** | **100%** |
-| **P0 Total** | **173** | **153** | **88%** |
-| **P1 Total** | **106** | **0** | **0%** |
-
-### AI Architecture Status
-
-The AI system **architecture** is COMPLETE (per `rules-ai.md`):
-
-| Component | Status |
-|-----------|--------|
-| Behavior Trees, HFSM, GOAP | ✅ Implemented |
-| Utility Scoring | ✅ Implemented |
-| Tactical Patterns | ✅ Implemented |
-| Stratagems (27 combos) | ✅ Implemented |
-| SideAI/AssemblyAI/CharacterAI | ✅ Implemented |
-
-**Note:** AI *decision rules* (specific QSR applications) are 51% complete.
-
-### Key Discoveries
-
-1. **Focus + Detect combo** - ✅ Tests added, AI prioritization IMPLEMENTED
-2. **Focus + Concentrate + Detect** - ✅ IMPLEMENTED (FC.5) - AI prioritizes when AP available
-3. **Documentation redundancy** - ✅ 7 files archived
-4. **Test coverage gaps** - ✅ Mapped in TEST_MAPPING.md
-5. **Critical missing clauses** - 6 identified (AI only, no Non-AI gaps!)
-6. **Wait maintenance (OVR-001)** - ✅ Verified and tested
-7. **Hide Visibility×3 rule** - ✅ Implemented and tested
-8. **Hide Mutual Exposure** - ✅ Implemented and tested (QSR 850.1-850.3)
-9. **Hide Voluntary/Forced Removal** - ✅ Implemented and tested (QSR 851.1-851.3)
-10. **Hide Status Effects** - ✅ Implemented and tested (QSR 847.1-847.4)
-11. **Hide Initiative Start** - ✅ Implemented and tested (QSR 849.1-849.2)
-12. **Close Combat Bonus Actions** - ✅ Verified (BA.1-BA.5, Diamond-Star, Arrow)
-13. **Range Combat Modifiers** - ✅ Verified (SM.8 Leaning, SM.9 Blind, SM.10 Hard Cover)
-14. **Charge Qualifications** - ✅ Verified (CB.2-CB.6, all 5 conditions)
-15. **Multiple Weapons** - ✅ Verified (MW.1-MW.6, all 6 clauses)
-16. **Intervening Cover** - ✅ Verified (SM.5, -1m penalty)
-17. **Obscured** - ✅ Verified (SM.6, -1m per 1/2/5/10 models in LOF)
-18. **High Ground** - ✅ Verified (Close Combat +1m)
-19. **Elevation** - ✅ Verified (Range Combat +1m per 1"/1")
-20. **Outnumber** - ✅ Verified (Close Combat +1w per 1/2/5/10 more Friendly)
-21. **Cornered** - ✅ Verified (Close Combat -1m if Engaged + terrain)
-22. **Flanked** - ✅ Verified (Close Combat -1m if Engaged to 2 Opposing)
-23. **Point-blank** - ✅ Verified (Range Combat +1m at half OR)
-24. **Size (Range)** - ✅ Verified (Range Combat +1m per 3 SIZ)
-25. **Distance** - ✅ Verified (Range Combat -1m per ORM)
-26. **Multiple Weapons (Ranged)** - ✅ Verified (MW.1, +1m per additional)
-27. **Wait + Delay Interaction** - ✅ Verified (859.4)
-28. **Hidden Status Effects** - ✅ Verified (847.1-847.4)
-29. **Initiative Hidden Reposition** - ✅ Verified (849.1-849.2)
-30. **Concentrated AR Reduction** - ✅ Verified (AR.3-AR.4)
-31. **Elimination VP Scoring** - ✅ Verified (KV.1-KV.6)
-32. **AI Architecture** - ✅ Complete (Behavior Trees, HFSM, GOAP, Utility, Stratagems)
-33. **P0 Non-AI Rules: 100% COMPLETE** - All 130 clauses verified!
-34. **P1 Rules: 100% COMPLETE** - All 106 clauses verified! 🎉
-35. **Morale Forfeit Logic (MR.5)** - ✅ VERIFIED - AI forfeit decision logic tested
+- Reclassified secondary guidance source statuses from `⚪ Not Audited` to `⚠️ Partially Audited` for:
+  - `src/guides/docs/rules-actions.md` (Wait/Focus/React sections cross-checked)
+  - `src/guides/docs/rules-bonus-actions.md` (React/passive-option sections cross-checked)
+  - `src/guides/docs/rules-friendly-fire-los.md` (LOF/friendly-fire rules cross-checked)
+- Flagged a remaining source/runtime drift for follow-up:
+  - Obscured threshold interpretation differs across guidance text, verification expectations, and runtime penalty accumulation (`ranged-combat.ts` / `indirect-ranged-combat.ts`).
 
 ---
 
-## What's In Progress ⚠️
+## Remaining Priority 1 Clause Gaps
 
-### P1 Rules Tracking (COMPLETE ✅)
+Open **P1-labeled** partial clause IDs: **None**
 
-| Task | Status | Priority |
-|------|--------|----------|
-| Visibility verification | ✅ Complete (24 tests) | P1 |
-| Cover verification | ✅ Complete (21 tests) | P1 |
-| Initiative & Activation verification | ✅ Complete (28 tests) | P1 |
-| Movement verification | ✅ Complete (30 tests) | P1 |
-| Morale verification | ✅ Complete (44 tests) | P1 |
-| **P1 Total** | **✅ 106/106 (100%)** | **147 tests** |
-
-### AI Decision Rules (Remaining Work)
-
-| Task | Status | Priority |
-|------|--------|----------|
-| Focus + Concentrate + Detect | ✅ IMPLEMENTED | Done |
-| Morale forfeit logic | ✅ VERIFIED | Done |
-| Tactical valuation improvements | ⚠️ Partial | Medium |
-| Other AI decision rules | ⚠️ Partial | Medium |
-
-### Critical Gaps Requiring Attention
-
-| Gap | Rule | Impact | Effort | Status |
-|-----|------|--------|--------|--------|
-| AI tactical valuation | AI Decision | Medium | Medium | ⚠️ Partial |
-| Charge bonus AI check | AI Decision | Low | Low | ⚠️ Partial |
-| Multiple Weapons AI | AI Decision | Low | Low | ⚠️ Partial |
+Counts:
+- P1-labeled rows in core files: **33**
+- Verified/Complete: **33**
+- Partial: **0**
+- Missing: **0**
 
 ---
 
-## Key Files to Reference
+## Current Source of Truth
 
-### Primary Sources
-```
-docs/canonical/MEST.Tactics.QSR.txt       # Core rules (lines 1-1702)
-docs/canonical/MEST.Tactics.Missions.txt  # Mission rules
-src/guides/docs/rules-overrides.md        # Overrides (VERY_SMALL, etc.)
-src/guides/docs/rules-ai.md               # AI guidance
-```
-
-### Tracking Files
-```
-docs/qsr/00-index.md                      # Master index
-docs/qsr/99-rule-template.md              # Template
-docs/qsr/03-actions/03.06-wait.md         # Wait (done)
-docs/qsr/03-actions/03.04-hide.md         # Hide (done)
-docs/qsr/03-actions/03.05-detect.md       # Detect (done)
-docs/qsr/03-actions/03.07-focus.md        # Focus (done)
-docs/qsr/04-combat/04.01-close-combat.md  # Close Combat (done)
-docs/qsr/04-combat/04.02-range-combat.md  # Range Combat (done)
-docs/qsr/04-combat/04.03-damage.md        # Damage (done)
-docs/qsr/05-missions/05.01-elimination.md # Elimination (done)
-docs/qsr/06-ai/06.01-decision-rules.md    # AI Decision (done)
-docs/qsr/REDUNDANCY_REPORT.md             # Redundancy report (done)
-docs/qsr/TEST_MAPPING.md                  # Test mapping (done)
-```
-
-### Implementation Files
-```
-src/lib/mest-tactics/ai/tactical/ReactsQSR.ts      # Focus, React
-src/lib/mest-tactics/ai/tactical/focus-detect-combo.test.ts  # Focus + Detect tests
-src/lib/mest-tactics/ai/executor/AIActionExecutor.ts  # Execute Detect, Focus
-src/lib/mest-tactics/status/concealment.ts         # Hide, Detect mechanics
-src/lib/mest-tactics/subroutines/dice-roller.ts    # Focus +1w bonus
-```
-
-### Overrides Status (rules-overrides.md)
-
-| Override | Topic | Status | Implementation |
-|----------|-------|--------|----------------|
-| **OVR-001** | Wait Action (Revised) | ✅ Implemented | `activation.ts:beginActivation()` |
-| **OVR-002** | Game Size Configurations | ✅ Implemented | `game_sizes.json`, `assembly-builder.ts` |
-| **OVR-003** | Terrain Height Data (2D) | ✅ Implemented | `TerrainElement.ts`, `agility.ts` |
+- Master index: `docs/qsr/00-index.md`
+- P1 runtime tracker: `docs/qsr/P1_RULES_STATUS.md`
+- Redundancy tracker: `docs/qsr/REDUNDANCY_REPORT.md`
 
 ---
 
-## Next Steps (Prioritized)
+## Known Non-Blocking Warnings
 
-### ⚠️ PRIORITY SHIFT: Non-AI Rules First
-
-**Decision:** Complete core QSR rule implementations BEFORE AI enhancements.
-
-**Rationale:** AI behavior depends on correct core mechanics. Implementing AI decision-making for incomplete rules creates technical debt.
-
----
-
-### Immediate (Stage 3: Core Rules Completion)
-
-1. **Close Combat Bonus Actions (6 clauses)**
-   - Push-back (BA.3) - Reposition target away
-   - Pull-back (BA.4) - Reposition self, then base-contact
-   - Reversal (BA.5) - Switch positions with target
-   - Additional Clause: Diamond-Star (◆✷) - +1 cascade unless base-contact
-   - Additional Clause: Arrow (➔) - +1 cascade per Physicality difference
-
-2. **Range Combat Modifiers (3 clauses)**
-   - Blind modifier (SM.9) - -1w for Blind Indirect Attack
-   - Hard Cover modifier (SM.10) - -1w to Damage Test
-   - Leaning modifier (SM.8) - -1b if self or target leaning
-
-3. **Verify Charge Qualifications (5 clauses)**
-   - CB.2: Move action cost ≥1 AP
-   - CB.3: Start Free, ≥1 base-diameter away
-   - CB.4: Direct movement, no direction changes
-   - CB.5: Target not Hidden, within LOS, ≤Visibility×3
-   - CB.6: Over Clear terrain
-
-4. **Verify Multiple Weapons (6 clauses)**
-   - MW.1: All hands must be same type (Melee/Ranged)
-   - MW.2: +1m per additional Melee weapon
-   - MW.3: Improvised weapons don't count
-   - MW.4: Conceal/Discrete exempt from sculpt requirement
-   - MW.5: -1m penalty for same weapon consecutive Actions
-   - MW.6: Interrupted must use same weapon for defense
+- `src/lib/mest-tactics/ai/core/UtilityScorer.ts`
+  - constant reassignment warning
+  - duplicate class member warnings
+- `src/lib/mest-tactics/ai/stratagems/AIStratagems.ts`
+  - duplicate key warning
 
 ---
 
-### Deferred (Stage 4: AI Enhancements)
+## Next Recommended Actions
 
-5. **AI Decision Rules (12 clauses - DEFERRED)**
-   - Focus + Concentrate + Detect (FC.5)
-   - Morale forfeit logic (MR.5)
-   - Tactical valuation improvements
-   - Combo prioritization
-
----
-
-### Long-Term (Stage 5: P1 Rules)
-
-6. **Create P1 rule tracking files**
-   - Initiative (~15 clauses)
-   - Activation (~12 clauses)
-   - Movement (~20 clauses)
-   - Morale (~15 clauses)
-   - Visibility (~12 clauses)
-   - Cover (~10 clauses)
-
----
-
-## Confidence Levels
-
-| Benefit | Confidence | Evidence |
-|---------|------------|----------|
-| QSR Adherence | 95% | 173 clauses tracked, gaps visible |
-| Test Coverage | 90% | 57% clause-to-test mapping complete |
-| Implementation Anchor | 95% | Code references QSR lines |
-| Redundancy Discovery | 95% | 7 docs archived, 1 report created |
-| AI Debug Narrowing | 95% | Traceability chain established |
-| AI Combo Awareness | 95% | Focus + Detect implemented |
-
-**Overall: 95% HIGH CONFIDENCE**
-
----
-
-## Notes for Next Session
-
-1. **Stage 2 In Progress** - 3 clauses verified, 23 implemented, 57% test coverage
-2. **Focus + Detect combo** - ✅ AI prioritization IMPLEMENTED (ReactsQSR.ts)
-3. **Wait maintenance (OVR-001)** - ✅ Verified and tested
-4. **Hide Visibility×3 rule** - ✅ Implemented and tested
-5. **Documentation consolidated** - 7 redundant files archived
-6. **Test mapping created** - `docs/qsr/TEST_MAPPING.md` tracks coverage
-7. **Next priority** - Verify 56 partial implementations, implement 23 missing clauses
-8. **Template exists** - Use `docs/qsr/99-rule-template.md` for new rules
-9. **Index is living** - Update `docs/qsr/00-index.md` as you go
-
----
-
-## Quick Start Commands
-
-```bash
-# Run Focus + Detect combo tests
-npm test -- --run src/lib/mest-tactics/ai/tactical/focus-detect-combo.test.ts
-
-# Run Hide Visibility×3 tests
-npm test -- --run src/lib/mest-tactics/status/concealment-visibility3.test.ts
-
-# Run Wait maintenance tests
-npm test -- --run src/lib/mest-tactics/actions/wait-maintenance.test.ts
-
-# Run concealment tests
-npm test -- --run src/lib/mest-tactics/status/concealment.test.ts
-
-# Run pathfinding tests
-npm test -- --run src/lib/mest-tactics/battlefield/pathfinding
-
-# Run AI tests
-npm test -- --run src/lib/mest-tactics/ai
-
-# Run all tests
-npm test -- --run
-
-# Run AI battle (debug)
-npm run ai-battle -- VERY_SMALL
-
-# Run AI battle with audit
-npm run ai-battle:audit -- VERY_SMALL
-```
-
----
-
-**Stage 3 COMPLETE!** All Non-AI P0 Rules verification finished.
-
-**Close Combat:** 25/25 clauses complete (100%) - ✅ FULLY VERIFIED
-
-**Range Combat:** 21/21 clauses complete (100%) - ✅ FULLY VERIFIED
-
-**Damage:** 21/21 clauses complete (100%) - ✅ FULLY VERIFIED
-
-**Elimination:** 17/17 clauses complete (100%) - ✅ FULLY VERIFIED
-
-**Wait:** 11/11 clauses complete (100%) - ✅ FULLY VERIFIED
-
-**Hide:** 21/21 clauses complete (100%) - ✅ FULLY VERIFIED
-
-**Stage 3 Summary:**
-- ✅ Close Combat Bonus Actions (6 clauses)
-- ✅ Range Combat Modifiers (10 clauses - Point-blank, Elevation, Size, Distance, Leaning, Blind, Hard Cover, Intervening Cover, Obscured, Multiple Weapons)
-- ✅ Charge Qualifications (5 clauses)
-- ✅ Multiple Weapons (6 clauses)
-- ✅ Situational Modifiers (5 clauses - High Ground, Outnumber, Cornered, Flanked)
-- ✅ Wait + Delay Interaction (1 clause)
-- ✅ Hidden Status Effects (4 clauses)
-- ✅ Initiative Hidden Reposition (2 clauses)
-- ✅ Concentrated AR Reduction (2 clauses)
-- ✅ Elimination VP Scoring (6 clauses)
-- **Total:** 47 clauses verified, 242 tests added
-
-**P0 Non-AI Rules: 130/130 (100%) - ALL COMPLETE!** 🎉🎉🎉
-
-**Next Steps:**
-1. **AI Decision Rules Enhancements** (Optional - 5 clauses remaining)
-   - Tactical valuation improvements (WT.7, MV.1-MV.5)
-   - Charge bonus AI check (AS.3)
-   - Multiple Weapons AI consideration (AS.5)
-2. **P2 Rules Tracking** (Optional - Advanced/Edge rules)
-   - Advanced Traits (~50 clauses)
-   - Indirect Combat (~20 clauses)
-   - Edge Cases (~30 clauses)
-
-**AI Work:** Core AI mechanics complete. Remaining work is tactical improvements only.
+1. Publish module-level coverage metrics for P1 rule modules once coverage provider is enabled (currently blocked in this environment: `ENOTFOUND registry.npmjs.org` while installing `@vitest/coverage-v8`).
+2. Continue tightening `Not Started`/`Not Audited` inventories as each source audit completes.
+3. Expand source-audit coverage outside the current P1 core-file set.
+4. Reconcile Obscured-threshold interpretation drift across guidance docs, runtime logic, and verification tests.

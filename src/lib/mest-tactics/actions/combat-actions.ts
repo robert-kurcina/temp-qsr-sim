@@ -284,6 +284,11 @@ function applyHandRequirementPenalty(
   return { failed: false };
 }
 
+function getAgilityForLos(character: Character): number {
+  const mov = character.finalAttributes.mov ?? character.attributes.mov ?? 0;
+  return Math.ceil(mov) / 2;
+}
+
 export function executeRangedAttack(
   deps: CombatActionDeps,
   attacker: Character,
@@ -299,6 +304,7 @@ export function executeRangedAttack(
   if (!attackerPos || !defenderPos) {
     throw new Error('Missing attacker or defender position.');
   }
+  const agilityMu = getAgilityForLos(attacker);
 
   let spatial: ActionContextInput = {
     battlefield: deps.battlefield,
@@ -318,6 +324,7 @@ export function executeRangedAttack(
     orm: options.orm,
     attackerEngagedOverride: options.attackerEngagedOverride,
     isLeaning: options.isLeaning,
+    agilityMu: options.isLeaning ? agilityMu : undefined,
     isTargetLeaning: options.isTargetLeaning,
     lofWidthMu: options.lofWidthMu,
   };
@@ -702,6 +709,7 @@ export function executeIndirectAttack(
   if (!attackerPos || !options.target?.position) {
     throw new Error('Missing attacker or target position.');
   }
+  const agilityMu = getAgilityForLos(attacker);
   const spatial: ActionContextInput = {
     battlefield: deps.battlefield,
     attacker: {
@@ -715,6 +723,7 @@ export function executeIndirectAttack(
     orm,
     attackerEngagedOverride: options.attackerEngagedOverride,
     isLeaning: options.isLeaning,
+    agilityMu: options.isLeaning ? agilityMu : undefined,
     isTargetLeaning: options.isTargetLeaning,
     lofWidthMu: options.lofWidthMu,
   };

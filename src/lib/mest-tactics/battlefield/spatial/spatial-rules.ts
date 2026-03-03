@@ -21,6 +21,7 @@ export interface SpatialModel extends LOFModel {
   position: Position;
   baseDiameter: number;
   siz?: number;
+  isPanicked?: boolean;
 }
 
 export interface SpatialAttackContext {
@@ -33,6 +34,8 @@ export interface CoverResult {
   hasLOS: boolean;
   hasDirectCover: boolean;
   hasInterveningCover: boolean;
+  visibleAreaObscuredFraction: number;
+  isHalfVisibleAreaObscured: boolean;
   directCoverFeatures: TerrainFeature[];
   interveningCoverFeatures: TerrainFeature[];
   blockingFeature?: TerrainFeature;
@@ -43,9 +46,15 @@ export interface CoverResult {
 
 const DISTANCE_EPSILON = 1e-6;
 const COVER_EXTENSION_MU = 0.5;
+const VISIBLE_AREA_THRESHOLD = 0.4;
+const VISIBLE_AREA_HEIGHT_SAMPLES = 5;
 
 export class SpatialRules {
   static isEngaged(a: SpatialModel, b: SpatialModel): boolean {
+    // QSR PN.5: Panicked characters never cause opposing models to be Engaged.
+    if (a.isPanicked || b.isPanicked) {
+      return false;
+    }
     return LOFOperations.isBaseContact(a, b);
   }
 
@@ -72,14 +81,23 @@ export class SpatialRules {
     const coverFeatures = battlefield.terrain.filter(feature => SpatialRules.isCoverFeature(feature));
     const sourceDirectCover = coverFeatures.filter(feature =>
       SpatialRules.modelOverlapsFeature(source, feature, SpatialRules.coverExtension(feature))
+      && SpatialRules.passesCoverDistanceGate(feature, source, target)
     );
     const targetDirectCover = coverFeatures.filter(feature =>
       SpatialRules.modelOverlapsFeature(target, feature, SpatialRules.coverExtension(feature))
+      && SpatialRules.passesCoverDistanceGate(feature, source, target)
     );
+    const visibleAreaObscuredFraction = SpatialRules.estimateVisibleAreaObscuredFraction(
+      source,
+      target,
+      coverFeatures
+    );
+    const isHalfVisibleAreaObscured = visibleAreaObscuredFraction >= VISIBLE_AREA_THRESHOLD;
 
     let hasDirectCover = targetDirectCover.length > 0;
     const interveningCoverFeatures = coverFeatures.filter(feature => {
       if (targetDirectCover.includes(feature)) return false;
+      if (!SpatialRules.passesCoverDistanceGate(feature, source, target)) return false;
       return SpatialRules.segmentIntersectsFeature(
         source.position,
         target.position,
@@ -91,6 +109,11 @@ export class SpatialRules {
     let hasInterveningCover = interveningCoverFeatures.length > 0;
 
     if (sourceDirectCover.length > 0) {
+      hasInterveningCover = true;
+    }
+
+    // QSR CV.1: explicit ~half visible-area obscuration baseline.
+    if (!hasDirectCover && !hasInterveningCover && isHalfVisibleAreaObscured) {
       hasInterveningCover = true;
     }
 
@@ -107,6 +130,8 @@ export class SpatialRules {
         hasLOS: false,
         hasDirectCover: false,
         hasInterveningCover: false,
+        visibleAreaObscuredFraction,
+        isHalfVisibleAreaObscured,
         directCoverFeatures: [],
         interveningCoverFeatures: [],
         blockingFeature: overlapBlocker,
@@ -121,6 +146,8 @@ export class SpatialRules {
         hasLOS: false,
         hasDirectCover: false,
         hasInterveningCover: false,
+        visibleAreaObscuredFraction,
+        isHalfVisibleAreaObscured,
         directCoverFeatures: [],
         interveningCoverFeatures: [],
         blockingModelId: modelBlocker.id,
@@ -135,6 +162,8 @@ export class SpatialRules {
         hasLOS: false,
         hasDirectCover: false,
         hasInterveningCover: false,
+        visibleAreaObscuredFraction,
+        isHalfVisibleAreaObscured,
         directCoverFeatures: [],
         interveningCoverFeatures: [],
         blockingFeature: losResult.blockedBy,
@@ -147,6 +176,8 @@ export class SpatialRules {
       hasLOS: true,
       hasDirectCover,
       hasInterveningCover,
+      visibleAreaObscuredFraction,
+      isHalfVisibleAreaObscured,
       directCoverFeatures: targetDirectCover,
       interveningCoverFeatures: [
         ...interveningCoverFeatures,
@@ -183,6 +214,20 @@ export class SpatialRules {
     return 0;
   }
 
+  private static passesCoverDistanceGate(
+    feature: TerrainFeature,
+    source: SpatialModel,
+    target: SpatialModel
+  ): boolean {
+    // QSR CV.5: Base-height-only cover must be closer to target than attacker.
+    if (LOSOperations.isLosBlockingForSizes(feature, source.siz, target.siz)) {
+      return true;
+    }
+    const sourceDistance = closestDistanceToPolygon(source.position, feature.vertices);
+    const targetDistance = closestDistanceToPolygon(target.position, feature.vertices);
+    return targetDistance <= sourceDistance + DISTANCE_EPSILON;
+  }
+
   private static findBlockingModel(
     battlefield: Battlefield,
     source: SpatialModel,
@@ -214,19 +259,122 @@ export class SpatialRules {
     const blockers = battlefield.getModelBlockers([source.id, target.id]);
     const targetSiz = target.siz ?? 0;
     for (const blocker of blockers) {
-      if (!blocker.isKOd) continue;
-      if (targetSiz > blocker.siz - 3) continue;
       const radius = blocker.baseDiameter / 2;
       const distance = LOFOperations.distancePointToSegment(
         blocker.position,
         source.position,
         target.position
       );
+
+      // QSR CV.6: LOF crossing a Distracted model always causes Intervening Cover.
+      if (blocker.isDistracted && distance <= radius + DISTANCE_EPSILON) {
+        return blocker.id;
+      }
+
+      if (!blocker.isKOd) continue;
+      if (targetSiz > blocker.siz - 3) continue;
       if (distance <= radius + DISTANCE_EPSILON) {
         return blocker.id;
       }
     }
     return null;
+  }
+
+  private static estimateVisibleAreaObscuredFraction(
+    source: SpatialModel,
+    target: SpatialModel,
+    coverFeatures: TerrainFeature[]
+  ): number {
+    if (coverFeatures.length === 0) {
+      return 0;
+    }
+
+    const sourcePoints = LOSOperations.buildCircularPerimeterPoints(source.position, source.baseDiameter);
+    sourcePoints.push(source.position);
+    const targetPoints = LOSOperations.buildCircularPerimeterPoints(target.position, target.baseDiameter);
+    targetPoints.push(target.position);
+
+    const sourceHeights = SpatialRules.buildVisibleAreaHeightSamples(source.baseDiameter);
+    const targetHeights = SpatialRules.buildVisibleAreaHeightSamples(target.baseDiameter);
+
+    let obscuredSamples = 0;
+    let totalSamples = 0;
+
+    for (const targetPoint of targetPoints) {
+      for (const targetHeight of targetHeights) {
+        totalSamples++;
+        let visible = false;
+
+        for (const sourcePoint of sourcePoints) {
+          for (const sourceHeight of sourceHeights) {
+            if (!SpatialRules.segmentObscuredByCoverFeatures(
+              sourcePoint,
+              targetPoint,
+              Math.min(sourceHeight, targetHeight),
+              source,
+              target,
+              coverFeatures
+            )) {
+              visible = true;
+              break;
+            }
+          }
+          if (visible) {
+            break;
+          }
+        }
+
+        if (!visible) {
+          obscuredSamples++;
+        }
+      }
+    }
+
+    if (totalSamples <= 0) {
+      return 0;
+    }
+    return obscuredSamples / totalSamples;
+  }
+
+  private static segmentObscuredByCoverFeatures(
+    start: Position,
+    end: Position,
+    sampleHeightMu: number,
+    source: SpatialModel,
+    target: SpatialModel,
+    features: TerrainFeature[]
+  ): boolean {
+    for (const feature of features) {
+      if (!SpatialRules.passesCoverDistanceGate(feature, source, target)) {
+        continue;
+      }
+      if (!SpatialRules.segmentIntersectsFeature(start, end, feature, 0, SpatialRules.coverExtension(feature))) {
+        continue;
+      }
+
+      if (LOSOperations.isLosBlockingForSizes(feature, source.siz, target.siz)) {
+        return true;
+      }
+
+      const terrainHeight = LOSOperations.getTerrainHeightMu(feature);
+      if (terrainHeight > sampleHeightMu + DISTANCE_EPSILON) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static buildVisibleAreaHeightSamples(baseDiameter: number): number[] {
+    if (!Number.isFinite(baseDiameter) || baseDiameter <= 0) {
+      return [0];
+    }
+
+    const samples: number[] = [];
+    const denominator = VISIBLE_AREA_HEIGHT_SAMPLES + 1;
+    for (let i = 1; i <= VISIBLE_AREA_HEIGHT_SAMPLES; i++) {
+      samples.push((baseDiameter * i) / denominator);
+    }
+    return samples;
   }
 
   private static modelOverlapsFeature(

@@ -10,6 +10,8 @@ export interface ReactActionDeps {
   battlefield: Battlefield | null;
   reactingNow: Set<string>;
   reactedThisTurn: Set<string>;
+  getActiveCharacterId: () => string | null;
+  setActiveCharacterId: (characterId: string | null) => void;
   getCharacterPosition: (character: Character) => import('../battlefield/Position').Position | undefined;
   applyInterruptCost: (character: Character) => { removedWait: boolean; delayAdded: boolean };
   executeRangedAttack: (
@@ -76,17 +78,23 @@ export function executeStandardReact(
   deps.reactingNow.add(reactor.id);
   deps.applyInterruptCost(reactor);
   deps.reactedThisTurn.add(reactor.id);
+  const previousActiveCharacterId = deps.getActiveCharacterId();
+  deps.setActiveCharacterId(reactor.id);
 
-  const resolved = resolveDeclaredWeapon(reactor, weapon);
-  const result = deps.executeRangedAttack(reactor, target, resolved.weapon, {
-    attacker: reactorModel,
-    target: targetModel,
-    context: options.context,
-    weaponIndex: resolved.weaponIndex,
-  });
+  try {
+    const resolved = resolveDeclaredWeapon(reactor, weapon);
+    const result = deps.executeRangedAttack(reactor, target, resolved.weapon, {
+      attacker: reactorModel,
+      target: targetModel,
+      context: options.context,
+      weaponIndex: resolved.weaponIndex,
+    });
 
-  deps.reactingNow.delete(reactor.id);
-  return { executed: true, result };
+    return { executed: true, result };
+  } finally {
+    deps.setActiveCharacterId(previousActiveCharacterId);
+    deps.reactingNow.delete(reactor.id);
+  }
 }
 
 export function executeReactAction(
@@ -107,10 +115,16 @@ export function executeReactAction(
   deps.reactingNow.add(reactor.id);
   deps.applyInterruptCost(reactor);
   deps.reactedThisTurn.add(reactor.id);
+  const previousActiveCharacterId = deps.getActiveCharacterId();
+  deps.setActiveCharacterId(reactor.id);
 
-  const result = action();
-  deps.reactingNow.delete(reactor.id);
-  return { executed: true, result };
+  try {
+    const result = action();
+    return { executed: true, result };
+  } finally {
+    deps.setActiveCharacterId(previousActiveCharacterId);
+    deps.reactingNow.delete(reactor.id);
+  }
 }
 
 export interface ReactEvent {

@@ -49,7 +49,8 @@ function makeSide(id: string, count: number, bp = 0): MissionSide {
 
 describe('mission-flow', () => {
   it('should initialize mission flow state from sides', () => {
-    const state = initMissionFlow([makeSide('A', 4, 300), makeSide('B', 5, 400)]);
+    // Canonical MEDIUM benchmark in mission-flow uses per-side max values.
+    const state = initMissionFlow([makeSide('A', 6, 100), makeSide('B', 6, 100)]);
     expect(state.gameSize).toBe('MEDIUM');
     expect(state.turn).toBe(1);
   });

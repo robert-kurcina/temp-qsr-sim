@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Character } from '../core/Character';
-import { computeBreakpointState, resolveBottleForSide } from './bottle-tests';
+import { computeBreakpointState, resolveBottleForSide, resolveBottleTest } from './bottle-tests';
 import type { Profile } from '../core/Profile';
 
 function makeCharacter(name: string): Character {
@@ -37,11 +37,45 @@ describe('bottle-tests', () => {
     expect(state.isAtDoubleBreakpoint).toBe(false);
   });
 
+  it('should detect double breakpoint when one-quarter or fewer remain', () => {
+    const chars = [makeCharacter('a'), makeCharacter('b'), makeCharacter('c'), makeCharacter('d')];
+    chars[0].state.isKOd = true;
+    chars[1].state.isEliminated = true;
+    chars[2].state.isKOd = true;
+    const state = computeBreakpointState(chars);
+    expect(state.remainingCount).toBe(1);
+    expect(state.isAtDoubleBreakpoint).toBe(true);
+  });
+
   it('should fail bottle test when at breakpoint and roll is low', () => {
     const chars = [makeCharacter('a'), makeCharacter('b')];
     chars[0].state.isKOd = true;
     chars[1].finalAttributes.pow = 1;
     const result = resolveBottleForSide(chars, chars[1], 4, [1, 1]);
+    expect(result.bottledOut).toBe(true);
+  });
+
+  it('should apply DR for double breakpoint and 2:1 outnumbered state', () => {
+    const chars = [makeCharacter('a'), makeCharacter('b'), makeCharacter('c'), makeCharacter('d')];
+    chars[0].state.isKOd = true;
+    chars[1].state.isKOd = true;
+    chars[2].state.isEliminated = true;
+    chars[3].finalAttributes.pow = 4;
+
+    const result = resolveBottleForSide(chars, chars[3], 2, [6, 6]);
+    expect(result.drApplied).toBe(2);
+  });
+
+  it('should auto-fail bottle test when there is no ordered character', () => {
+    const result = resolveBottleTest(null);
+    expect(result.pass).toBe(false);
+    expect(result.bottledOut).toBe(true);
+  });
+
+  it('should allow explicit bottle-test forfeit', () => {
+    const leader = makeCharacter('leader');
+    const result = resolveBottleTest(leader, { forfeit: true });
+    expect(result.pass).toBe(false);
     expect(result.bottledOut).toBe(true);
   });
 });

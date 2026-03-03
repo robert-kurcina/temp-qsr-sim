@@ -141,6 +141,30 @@ export class Battlefield {
     return false;
   }
 
+  isWithinBounds(position: Position, baseDiameter = 0): boolean {
+    const radius = baseDiameter / 2;
+    return (
+      position.x - radius >= 0 &&
+      position.x + radius <= this.width &&
+      position.y - radius >= 0 &&
+      position.y + radius <= this.height
+    );
+  }
+
+  removeCharacter(character: Character): boolean {
+    const from = this.characterPositions.get(character.id);
+    if (!from) return false;
+
+    const fromCell = this.grid.getCell(from);
+    if (fromCell && fromCell.occupant?.id === character.id) {
+      fromCell.occupant = null;
+    }
+
+    this.characterPositions.delete(character.id);
+    this.characterRegistry.delete(character.id);
+    return true;
+  }
+
   getCharacterPosition(character: Character): Position | undefined {
     return this.characterPositions.get(character.id);
   }
@@ -272,9 +296,9 @@ export class Battlefield {
     return inside;
   }
 
-  getModelBlockers(excludeIds: string[] = []): { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] {
+  getModelBlockers(excludeIds: string[] = []): { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean; isDistracted: boolean; isPanicked: boolean }[] {
     const excluded = new Set(excludeIds);
-    const blockers: { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean }[] = [];
+    const blockers: { id: string; position: Position; baseDiameter: number; siz: number; isKOd: boolean; isDistracted: boolean; isPanicked: boolean }[] = [];
     for (const [id, character] of this.characterRegistry.entries()) {
       if (excluded.has(id)) continue;
       const position = this.characterPositions.get(id);
@@ -286,6 +310,8 @@ export class Battlefield {
         baseDiameter: getBaseDiameterFromSiz(siz),
         siz,
         isKOd: character.state?.isKOd ?? false,
+        isDistracted: character.state?.isDistracted ?? false,
+        isPanicked: character.state?.isPanicked ?? false,
       });
     }
     return blockers;

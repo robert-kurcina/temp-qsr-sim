@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { Battlefield } from '../Battlefield';
 import { TerrainElement } from '../terrain/TerrainElement';
-import { buildRangedActionContext, resolveChargeSnapPosition } from './action-context';
+import { TerrainType } from '../terrain/Terrain';
+import { buildLOSResultContext, buildRangedActionContext, resolveChargeSnapPosition } from './action-context';
 
 describe('buildRangedActionContext', () => {
   it('should set point-blank when within half OR and not engaged', () => {
@@ -91,6 +92,69 @@ describe('buildRangedActionContext', () => {
 
     expect(context.isLeaning).toBe(true);
     expect(context.isTargetLeaning).toBe(true);
+  });
+
+  it('should allow leaning with agility to establish LOS around a blocker (AG.2)', () => {
+    const battlefield = new Battlefield(8, 8);
+    battlefield.addTerrain({
+      id: 'corner-blocker',
+      type: TerrainType.Obstacle,
+      vertices: [
+        { x: 2, y: 0.5 },
+        { x: 2.4, y: 0.5 },
+        { x: 2.4, y: 1.5 },
+        { x: 2, y: 1.5 },
+      ],
+      meta: {
+        category: 'wall',
+        los: 'Blocking',
+        movement: 'Impassable',
+      },
+    });
+
+    const base = buildLOSResultContext({
+      battlefield,
+      attacker: { id: 'a', position: { x: 1, y: 1 }, baseDiameter: 1, siz: 3 },
+      target: { id: 'b', position: { x: 5, y: 1 }, baseDiameter: 1, siz: 3 },
+    });
+    expect(base.hasLOS).toBe(false);
+
+    const leaned = buildLOSResultContext({
+      battlefield,
+      attacker: { id: 'a', position: { x: 1, y: 1 }, baseDiameter: 1, siz: 3 },
+      target: { id: 'b', position: { x: 5, y: 1 }, baseDiameter: 1, siz: 3 },
+      isLeaning: true,
+      agilityMu: 1,
+    });
+    expect(leaned.hasLOS).toBe(true);
+  });
+
+  it('should not establish leaned LOS when agility is insufficient (AG.2)', () => {
+    const battlefield = new Battlefield(8, 8);
+    battlefield.addTerrain({
+      id: 'corner-blocker',
+      type: TerrainType.Obstacle,
+      vertices: [
+        { x: 2, y: 0.5 },
+        { x: 2.4, y: 0.5 },
+        { x: 2.4, y: 1.5 },
+        { x: 2, y: 1.5 },
+      ],
+      meta: {
+        category: 'wall',
+        los: 'Blocking',
+        movement: 'Impassable',
+      },
+    });
+
+    const leaned = buildLOSResultContext({
+      battlefield,
+      attacker: { id: 'a', position: { x: 1, y: 1 }, baseDiameter: 1, siz: 3 },
+      target: { id: 'b', position: { x: 5, y: 1 }, baseDiameter: 1, siz: 3 },
+      isLeaning: true,
+      agilityMu: 0,
+    });
+    expect(leaned.hasLOS).toBe(false);
   });
 
   it('should not snap into base contact when beyond threshold', () => {

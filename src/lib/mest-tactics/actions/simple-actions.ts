@@ -2,16 +2,22 @@ import { Character } from '../core/Character';
 import { TestContext } from '../utils/TestContext';
 import { resolveTest } from '../subroutines/dice-roller';
 import { CharacterStatus } from '../core/types';
-import { hasReload, getReloadActionsRequired, isWeaponLoaded, setWeaponLoaded } from '../traits/combat-traits';
+import { hasReload, getReloadActionsRequired, isWeaponLoaded, setWeaponLoaded, getThreatRange } from '../traits/combat-traits';
 import { validateFiddleAction, hasUsingOneLessHandPenalty, clearUsingOneLessHand, getAvailableHands, getItemHandRequirement } from './hand-requirements';
 import { getLeaderRallyBonus } from '../core/leader-identification';
 import { MissionSide } from '../mission/MissionSide';
 import { Item } from '../core/Item';
+import { Battlefield } from '../battlefield/Battlefield';
+import { Position } from '../battlefield/Position';
+import { SpatialRules } from '../battlefield/spatial/spatial-rules';
+import { buildSpatialModel as runBuildSpatialModel } from '../battlefield/spatial-helpers';
 
 export interface SimpleActionDeps {
   spendAp: (character: Character, cost: number) => boolean;
   setWaiting: (character: Character) => void;
   isOutnumberedForWait?: (character: Character) => boolean;
+  getCharacterPosition?: (character: Character) => Position | undefined;
+  getTwoApMovementRange?: (character: Character) => number;
   setCharacterStatus: (characterId: string, status: CharacterStatus) => void;
   markRallyUsed: (characterId: string) => void;
   markReviveUsed: (characterId: string) => void;
@@ -19,6 +25,22 @@ export interface SimpleActionDeps {
   hasRallyUsed: (characterId: string) => boolean;
   hasReviveUsed: (characterId: string) => boolean;
   hasFiddleUsed: (characterId: string) => boolean;
+}
+
+const RALLY_DISTANCE_EPSILON = 1e-6;
+
+function resolveRallyCohesionRange(options: { cohesionRangeMu?: number; visibilityOrMu?: number }): number {
+  if (options.cohesionRangeMu !== undefined) {
+    return Math.max(0, options.cohesionRangeMu);
+  }
+  const visibilityOrMu = options.visibilityOrMu ?? 16;
+  return Math.min(8, Math.floor(visibilityOrMu / 2));
+}
+
+function getDistance(a: Position, b: Position): number {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.hypot(dx, dy);
 }
 
 export function executeRallyAction(
@@ -29,10 +51,40 @@ export function executeRallyAction(
     context?: TestContext; 
     rolls?: number[];
     side?: MissionSide;
+    battlefield?: Battlefield | null;
+    allies?: Character[];
+    opponents?: Character[];
+    cohesionRangeMu?: number;
+    visibilityOrMu?: number;
   } = {}
 ) {
+  if (actor.state.isEngaged) {
+    return { success: false, reason: 'Rally requires actor to be Free.' };
+  }
+  if (target.state.isEngaged) {
+    return { success: false, reason: 'Rally target must be Free.' };
+  }
   if (deps.hasRallyUsed(target.id)) {
     return { success: false, reason: 'Target already rallied this turn.' };
+  }
+  const cohesionRange = resolveRallyCohesionRange(options);
+  if (target.id !== actor.id) {
+    const allyIds = new Set((options.allies ?? []).map(character => character.id));
+    if (!allyIds.has(target.id)) {
+      return { success: false, reason: 'Rally target must be a Friendly model.' };
+    }
+    const actorPos = deps.getCharacterPosition?.(actor);
+    const targetPos = deps.getCharacterPosition?.(target);
+    if (!actorPos || !targetPos) {
+      return { success: false, reason: 'Rally target must be within Cohesion.' };
+    }
+    const distanceToTarget = getDistance(actorPos, targetPos);
+    if (distanceToTarget > cohesionRange + RALLY_DISTANCE_EPSILON) {
+      return { success: false, reason: 'Rally target must be within Cohesion.' };
+    }
+  }
+  if (!deps.spendAp(actor, 1)) {
+    return { success: false, reason: 'Not enough AP.' };
   }
   
   // Get leader rally bonus if side provided
@@ -40,27 +92,109 @@ export function executeRallyAction(
   if (options.side) {
     rallyBonus = getLeaderRallyBonus(actor, options.side);
   }
+
+  // QSR RL.7: +1m when at least one Attentive+Ordered Friendly model is in Cohesion.
+  let friendlyBonus = 0;
+  const targetPos = deps.getCharacterPosition?.(target);
+  if (targetPos) {
+    const friendlyPool = new Map<string, Character>();
+    for (const candidate of options.allies ?? []) {
+      friendlyPool.set(candidate.id, candidate);
+    }
+    friendlyPool.set(actor.id, actor);
+
+    for (const friendly of friendlyPool.values()) {
+      if (friendly.id === target.id) continue;
+      if (!friendly.state.isAttentive || !friendly.state.isOrdered) continue;
+      const friendlyPos = deps.getCharacterPosition?.(friendly);
+      if (!friendlyPos) continue;
+      const distance = getDistance(targetPos, friendlyPos);
+      if (distance <= cohesionRange + RALLY_DISTANCE_EPSILON) {
+        friendlyBonus = 1;
+        break;
+      }
+    }
+  }
+
+  // QSR RL.8: +1w when in Safety:
+  // behind Cover or out of LOS, and not within 2 AP Movement of opposing models.
+  let safetyBonus = 0;
+  if (options.battlefield && options.opponents && options.opponents.length > 0) {
+    const getPosition = deps.getCharacterPosition ?? (() => undefined);
+    const targetModel = runBuildSpatialModel(options.battlefield, getPosition, target);
+    if (targetModel) {
+      let protectedFromOpposition = true;
+      let outsideThreatRange = true;
+
+      for (const opponent of options.opponents) {
+        if (opponent.id === target.id || opponent.state.isEliminated || opponent.state.isKOd) continue;
+
+        const opponentModel = runBuildSpatialModel(options.battlefield, getPosition, opponent);
+        if (!opponentModel) {
+          protectedFromOpposition = false;
+          outsideThreatRange = false;
+          break;
+        }
+
+        const cover = SpatialRules.getCoverResult(options.battlefield, opponentModel, targetModel);
+        const hasCoverOrNoLos = !cover.hasLOS || cover.hasDirectCover || cover.hasInterveningCover;
+        if (!hasCoverOrNoLos) {
+          protectedFromOpposition = false;
+        }
+
+        const twoApMovementRange = deps.getTwoApMovementRange?.(opponent) ?? (getThreatRange(opponent) * 2);
+        const edgeDistance = SpatialRules.distanceEdgeToEdge(opponentModel, targetModel);
+        if (edgeDistance <= twoApMovementRange + RALLY_DISTANCE_EPSILON) {
+          outsideThreatRange = false;
+        }
+
+        if (!protectedFromOpposition || !outsideThreatRange) {
+          break;
+        }
+      }
+
+      if (protectedFromOpposition && outsideThreatRange) {
+        safetyBonus = 1;
+      }
+    }
+  }
+
+  const totalModifierBonus = rallyBonus + friendlyBonus;
+  const totalWildBonus = (options.context?.isFocusing ? 1 : 0) + safetyBonus;
   
   const result = resolveTest(
     { 
       character: target, 
       attribute: 'pow', 
       bonusDice: {
-        ...(options.context?.isFocusing ? { wild: 1 } : {}),
-        ...(rallyBonus > 0 ? { modifier: rallyBonus } : {}),
+        ...(totalWildBonus > 0 ? { wild: totalWildBonus } : {}),
+        ...(totalModifierBonus > 0 ? { modifier: totalModifierBonus } : {}),
       }
     },
     { isSystemPlayer: true },
     options.rolls ?? null
   );
   if (!result.pass) {
-    return { success: false, result, leaderBonusApplied: rallyBonus };
+    return {
+      success: false,
+      result,
+      leaderBonusApplied: rallyBonus,
+      friendlyBonusApplied: friendlyBonus > 0,
+      safetyBonusApplied: safetyBonus > 0,
+    };
   }
   const cascades = result.cascades ?? 0;
   target.state.fearTokens = Math.max(0, target.state.fearTokens - cascades);
   target.refreshStatusFlags();
   deps.markRallyUsed(target.id);
-  return { success: true, result, fearRemoved: cascades, leaderBonusApplied: rallyBonus };
+  return {
+    success: true,
+    result,
+    fearRemoved: cascades,
+    leaderBonusApplied: rallyBonus,
+    friendlyBonusApplied: friendlyBonus > 0,
+    safetyBonusApplied: safetyBonus > 0,
+  };
 }
 
 export function executeReviveAction(

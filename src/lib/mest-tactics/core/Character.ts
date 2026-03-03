@@ -43,7 +43,9 @@ export class Character {
     reloadProgress: number; // Progress toward reloading (for Reload trait)
     gritWoundIgnored: boolean;
     gritFearReducedThisTurn: boolean;
+    fearTestsThisTurn?: number; // QSR: max 1 required Fear Test per Turn
     activeWeaponIndex?: number; // Weapon index currently declared for this Initiative
+    swapsThisInitiative?: number; // QSR: track first free Swap and additional AP-costed swaps
   };
 
   constructor(profile: Profile) {
@@ -114,7 +116,9 @@ export class Character {
       initiativePoints: 0,
       gritWoundIgnored: false,
       gritFearReducedThisTurn: false,
+      fearTestsThisTurn: 0,
       activeWeaponIndex: undefined,
+      swapsThisInitiative: 0,
     };
     // Initialize loaded weapons for items that have Reload trait
     const equipment = this.profile?.equipment ?? this.profile?.items ?? [];
@@ -158,6 +162,7 @@ export class Character {
     this.state.activeWeaponIndex = undefined;
     this.state.hasDetectedThisActivation = false; // QSR Line 855: Reset for new activation
     this.state.hasFocus = false; // QSR Line 859: Reset Focus bonus
+    this.state.swapsThisInitiative = 0;
   }
 
   private applyLadenEffects(): void {

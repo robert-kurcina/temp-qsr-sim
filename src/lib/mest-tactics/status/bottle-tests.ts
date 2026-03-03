@@ -17,6 +17,7 @@ export interface BottleTestOptions {
   additionalDr?: number;
   rolls?: number[];
   leaderMoraleBonus?: number; // Bonus from designated leader's Leadership trait
+  forfeit?: boolean;
 }
 
 export interface BottleTestResult {
@@ -48,6 +49,9 @@ export function resolveBottleTest(
   options: BottleTestOptions = {}
 ): BottleTestResult {
   if (!orderedCharacter) {
+    return { pass: false, bottledOut: true, drApplied: 0, leaderBonusApplied: 0 };
+  }
+  if (options.forfeit) {
     return { pass: false, bottledOut: true, drApplied: 0, leaderBonusApplied: 0 };
   }
 

@@ -69,12 +69,38 @@ export class TerrainElement {
     this.isLarge = isLarge;
   }
 
+  private resolveHeightDataKey(): string {
+    const normalized = this.name.toLowerCase().trim();
+
+    if (normalized.includes('building')) {
+      return this.isLarge || normalized.includes('large') ? 'building-large' : 'building';
+    }
+    if (normalized.includes('wall')) {
+      return this.isLarge || normalized.includes('large') ? 'wall-large' : 'wall';
+    }
+    if (normalized.includes('rock')) {
+      return 'rocky';
+    }
+    if (normalized.includes('shrub') || normalized.includes('bush')) {
+      return 'shrub';
+    }
+    if (normalized.includes('tree')) {
+      return 'tree';
+    }
+
+    return normalized;
+  }
+
+  private getHeightData(): TerrainHeightData | undefined {
+    return TERRAIN_HEIGHTS[this.resolveHeightDataKey()];
+  }
+
   /**
    * Get terrain height per OVR-003 (2D placeholder)
    * QSR Reference: rules-overrides.md OVR-003
    */
   getHeight(): number {
-    const heightData = TERRAIN_HEIGHTS[this.name.toLowerCase()];
+    const heightData = this.getHeightData();
     if (!heightData) return 0;
     
     // Use large height if this is a large terrain element
@@ -90,7 +116,7 @@ export class TerrainElement {
    * QSR Reference: rules-overrides.md OVR-003
    */
   getClimbHandRequirement(goingUp: boolean): number {
-    const heightData = TERRAIN_HEIGHTS[this.name.toLowerCase()];
+    const heightData = this.getHeightData();
     if (!heightData || !heightData.climbHandsRequired) return 0;
     
     if (goingUp && heightData.climbHandsRequired === '2H') return 2;
@@ -106,7 +132,7 @@ export class TerrainElement {
    * QSR Reference: rules-overrides.md OVR-003
    */
   canStandAtop(): boolean {
-    const heightData = TERRAIN_HEIGHTS[this.name.toLowerCase()];
+    const heightData = this.getHeightData();
     return heightData?.canStandAtop ?? false;
   }
 
@@ -115,7 +141,7 @@ export class TerrainElement {
    * QSR Reference: rules-overrides.md OVR-003
    */
   canJumpDown(): boolean {
-    const heightData = TERRAIN_HEIGHTS[this.name.toLowerCase()];
+    const heightData = this.getHeightData();
     if (!heightData?.canJumpDown) return false;
     
     // Minimum 1.0 MU height required for jump down
@@ -127,7 +153,7 @@ export class TerrainElement {
    * QSR Reference: rules-overrides.md OVR-003
    */
   isEnterable(): boolean {
-    const heightData = TERRAIN_HEIGHTS[this.name.toLowerCase()];
+    const heightData = this.getHeightData();
     return heightData?.isEnterable ?? true;
   }
 

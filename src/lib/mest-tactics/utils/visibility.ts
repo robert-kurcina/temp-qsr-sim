@@ -2,7 +2,7 @@ import { Character } from '../core/Character';
 import { Item } from '../core/Item';
 import { parseOptimalRange } from '../subroutines/optimal-range-parser';
 
-export type LightingCondition = 'Day, Clear' | 'Twilight, Overcast';
+export type LightingCondition = 'Day, Clear' | 'Day, Rain/Fog' | 'Twilight, Overcast' | 'Night';
 
 export interface VisibilityConfig {
   visibilityOrMu: number;
@@ -21,7 +21,9 @@ export interface RangeCheckResult {
 
 const LIGHTING_TO_VISIBILITY_OR: Record<LightingCondition, number> = {
   'Day, Clear': 16,
+  'Day, Rain/Fog': 8,
   'Twilight, Overcast': 8,
+  Night: 4,
 };
 
 export function getVisibilityOrForLighting(lighting: LightingCondition): number {

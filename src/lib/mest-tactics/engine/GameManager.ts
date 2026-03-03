@@ -2,7 +2,7 @@ import { Character } from '../core/Character';
 import { CharacterStatus, TurnPhase } from '../core/types';
 import { Battlefield } from '../battlefield/Battlefield';
 import { Position } from '../battlefield/Position';
-import { getTacticsInitiativeBonus, getTacticsSituationalAwarenessExemption, resetMultipleAttackTracking } from '../traits/combat-traits';
+import { getTacticsInitiativeBonus, getTacticsSituationalAwarenessExemption, resetMultipleAttackTracking, getThreatRange } from '../traits/combat-traits';
 import { Item } from '../core/Item';
 import { TestContext } from '../utils/TestContext';
 import { ActionContextInput, CloseCombatContextInput } from '../battlefield/action-context';
@@ -34,6 +34,7 @@ import { BonusActionSelection } from '../actions/bonus-actions';
 import { ReactEvent, ReactOption } from '../actions/react-actions';
 import { GroupAction } from './group-actions';
 import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction, executeStowItem, executeUnstowItem, executeSwapItem } from '../actions/simple-actions';
+import { performPushing } from '../actions/pushing-and-maneuvers';
 import { getActiveToggleOptions, getBonusActionOptions, getPassiveOptions, getReactOptions, getReactOptionsSorted } from '../actions/option-builders';
 import { executeMoveAction } from '../actions/move-action';
 import { createGroupAction } from '../actions/group-actions';
@@ -76,6 +77,7 @@ import { MissionRuntimeAdapter } from '../missions/mission-runtime-adapter';
 import { SideCoordinatorManager } from '../ai/core/SideAICoordinator';
 import { AuditService, ModelStateAudit, AuditVector, ModelEffectAudit } from '../audit/AuditService';
 import { Side } from '../core/Side';
+import { identifyDesignatedLeader } from '../core/leader-identification';
 
 export interface CounterStrikeResult {
   executed: boolean;
@@ -163,6 +165,32 @@ export class GameManager {
     this.initializeCharacterStatus();
   }
 
+  private selectInitiativeLeader(
+    side: MissionSide,
+    visibilityOrMu: number
+  ): Character | null {
+    const eligibleMembers = side.members.filter(member =>
+      !member.character.state.isKOd
+      && !member.character.state.isEliminated
+      && member.character.state.isOrdered
+    );
+    if (eligibleMembers.length === 0) {
+      return null;
+    }
+
+    const eligibleSide = {
+      ...side,
+      members: eligibleMembers,
+    } as MissionSide;
+
+    return identifyDesignatedLeader(
+      eligibleSide,
+      'initiative',
+      this.battlefield,
+      visibilityOrMu
+    ) ?? eligibleMembers[0].character;
+  }
+
   private initializeCharacterStatus(): void {
     for (const character of this.characters) {
       if (character.state.isEliminated || character.state.isKOd) {
@@ -170,6 +198,7 @@ export class GameManager {
       } else {
         this.characterStatus.set(character.id, CharacterStatus.Ready);
       }
+      character.state.fearTestsThisTurn = 0;
       this.apRemaining.set(character.id, this.apPerActivation);
     }
   }
@@ -191,6 +220,22 @@ export class GameManager {
    * @returns Initiative test results for logging
    */
   public rollInitiative(roller: () => number = Math.random, sides?: MissionSide[]): {
+    rolls: { sideId: string; dice: number[]; successes: number; pips: number }[];
+    winner: string | null;
+    ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[];
+  } {
+    return this.rollInitiativeWithOptions(roller, sides);
+  }
+
+  public rollInitiativeWithOptions(
+    roller: () => number = Math.random,
+    sides?: MissionSide[],
+    options?: {
+      missionAttackerSideId?: string;
+      missionAttackerWinsTie?: boolean;
+      visibilityOrMu?: number;
+    }
+  ): {
     rolls: { sideId: string; dice: number[]; successes: number; pips: number }[];
     winner: string | null;
     ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[];
@@ -274,67 +319,99 @@ export class GameManager {
     const ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[] = [];
     
     if (sides && initiativeResults.length > 0) {
-      // Find winner (highest initiative)
-      const winner = initiativeResults[0];
-      this.lastInitiativeWinnerSideId = winner.side?.id ?? null;
-      const lowestScore = initiativeResults[initiativeResults.length - 1].initiative;
+      const visibilityOrMu = options?.visibilityOrMu ?? 16;
+      const resultByCharacterId = new Map(
+        initiativeResults.map(result => [result.character.id, result] as const)
+      );
+      const sideInitiativeResults = sides.map(side => {
+        const leader = this.selectInitiativeLeader(side, visibilityOrMu);
+        const leaderResult = leader ? resultByCharacterId.get(leader.id) : undefined;
+        const dice = leaderResult?.dice ?? [];
+        return {
+          side,
+          leader,
+          initiative: leaderResult?.initiative ?? 0,
+          dice,
+          baseDice: dice.slice(0, 2),
+          dicePips: leaderResult?.dicePips ?? 0,
+        };
+      });
 
-      // Group results by side
-      const sideResults = new Map<MissionSide, Array<typeof winner>>();
-      for (const result of initiativeResults) {
-        if (result.side) {
-          const existing = sideResults.get(result.side) || [];
-          existing.push(result);
-          sideResults.set(result.side, existing);
+      const highestInitiative = Math.max(...sideInitiativeResults.map(result => result.initiative));
+      let tieCandidates = sideInitiativeResults.filter(result => result.initiative === highestInitiative);
+
+      const highestPips = Math.max(...tieCandidates.map(result => result.dicePips));
+      tieCandidates = tieCandidates.filter(result => result.dicePips === highestPips);
+
+      const missionAttackerTieWinner = options?.missionAttackerWinsTie && options.missionAttackerSideId
+        ? tieCandidates.find(result => result.side.id === options.missionAttackerSideId)
+        : undefined;
+      const winnerGetsZeroIpFromTie = tieCandidates.length > 1 && !!missionAttackerTieWinner;
+
+      let winnerResult = missionAttackerTieWinner ?? tieCandidates[0];
+      if (tieCandidates.length > 1 && !missionAttackerTieWinner) {
+        let unresolved = [...tieCandidates];
+        while (unresolved.length > 1) {
+          const rerolls = unresolved.map(result => ({
+            result,
+            roll: Math.floor(roller() * 6) + 1,
+          }));
+          const topRoll = Math.max(...rerolls.map(entry => entry.roll));
+          unresolved = rerolls
+            .filter(entry => entry.roll === topRoll)
+            .map(entry => entry.result);
+        }
+        winnerResult = unresolved[0];
+      }
+
+      this.lastInitiativeWinnerSideId = winnerResult.side.id;
+      const lowestScore = Math.min(...sideInitiativeResults.map(result => result.initiative));
+
+      if (winnerGetsZeroIpFromTie) {
+        ipAwarded.push({
+          sideId: winnerResult.side.id,
+          amount: 0,
+          reason: 'tie_break',
+        });
+      } else {
+        const winnerIp = winnerResult.initiative - lowestScore;
+        if (winnerIp > 0) {
+          awardInitiativePoints(winnerResult.side, winnerIp);
+          ipAwarded.push({
+            sideId: winnerResult.side.id,
+            amount: winnerIp,
+            reason: 'highest_initiative',
+          });
         }
       }
 
-      // Award IP to each side
-      for (const [side, results] of sideResults.entries()) {
-        const sideInitiative = Math.max(...results.map(r => r.initiative));
-
-        if (sideInitiative === winner.initiative && side === winner.side) {
-          // Winner: IP = difference between winner and lowest score (QSR Lines 691-692)
-          const ipAmount = winner.initiative - lowestScore;
-          if (ipAmount > 0) {
-            awardInitiativePoints(side, ipAmount);
-            ipAwarded.push({
-              sideId: side.id,
-              amount: ipAmount,
-              reason: 'highest_initiative',
-            });
-          }
-        } else {
-          // All other sides: 1 IP per Base die that scored a carry-over (rolled 6)
-          // QSR Lines 691-692: "All Players, except the winner, acquire an IP for each of their Base dice which have a carry-over."
-          let carryOverCount = 0;
-          for (const result of results) {
-            // Count Base dice carry-over from p1Result and p2Result
-            // carryOverDice.base contains the count of Base dice that rolled 6
-            const p1CarryOver = result.p1Result?.carryOverDice?.base || 0;
-            const p2CarryOver = result.p2Result?.carryOverDice?.base || 0;
-            carryOverCount += p1CarryOver + p2CarryOver;
-          }
-          if (carryOverCount > 0) {
-            awardInitiativePoints(side, carryOverCount);
-            ipAwarded.push({
-              sideId: side.id,
-              amount: carryOverCount,
-              reason: 'carry_over',
-            });
-          }
+      for (const sideResult of sideInitiativeResults) {
+        if (sideResult.side.id === winnerResult.side.id) continue;
+        const carryOverCount = sideResult.baseDice.filter(die => die === 6).length;
+        if (carryOverCount > 0) {
+          awardInitiativePoints(sideResult.side, carryOverCount);
+          ipAwarded.push({
+            sideId: sideResult.side.id,
+            amount: carryOverCount,
+            reason: 'carry_over',
+          });
         }
       }
     }
 
     // Build rolls data for logging
     const rolls = sides?.map(side => {
-      const sideMembers = initiativeResults.filter(r => r.side === side);
+      const leader = this.selectInitiativeLeader(side, options?.visibilityOrMu ?? 16);
+      const leaderResult = leader
+        ? initiativeResults.find(result => result.character.id === leader.id)
+        : undefined;
       return {
         sideId: side.id,
-        dice: sideMembers.flatMap(r => r.dice),
-        successes: sideMembers.reduce((sum, r) => sum + r.initiative - (r.character.attributes.int || 0), 0),
-        pips: sideMembers.reduce((sum, r) => sum + r.dicePips, 0),
+        dice: leaderResult?.dice ?? [],
+        successes: leaderResult
+          ? leaderResult.initiative - (leader?.attributes.int || 0)
+          : 0,
+        pips: leaderResult?.dicePips ?? 0,
       };
     }) || [];
 
@@ -624,8 +701,16 @@ export class GameManager {
     return runGetApRemaining(this.activationDeps(), character);
   }
 
+  public getActiveCharacterId(): string | null {
+    return this.activeCharacterId;
+  }
+
   public spendAp(character: Character, amount: number): boolean {
     return runSpendAp(this.activationDeps(), character, amount);
+  }
+
+  public executePushing(character: Character) {
+    return performPushing(this.activationDeps(), character);
   }
 
   public nextRound(): void {
@@ -643,6 +728,32 @@ export class GameManager {
 
   public endTurn(sides?: MissionSide[]): void {
     this.phase = TurnPhase.TurnEnd;
+
+    if (sides && sides.length > 0) {
+      const bottleSides = sides.map(side => {
+        const sideCharacters = side.members.map(member => member.character);
+        const orderedCandidate = sideCharacters.find(character =>
+          character.state.isOrdered
+          && !character.state.isKOd
+          && !character.state.isEliminated
+        ) ?? null;
+        const opposingCount = sides
+          .filter(opposingSide => opposingSide.id !== side.id)
+          .reduce((total, opposingSide) =>
+            total + opposingSide.members.filter(member =>
+              !member.character.state.isKOd && !member.character.state.isEliminated
+            ).length,
+          0);
+        return {
+          id: side.id,
+          characters: sideCharacters,
+          orderedCandidate,
+          opposingCount,
+          side,
+        };
+      });
+      this.resolveBottleTests(bottleSides, this.battlefield);
+    }
 
     // End turn audit
     if (this.auditService && sides) {
@@ -716,7 +827,7 @@ export class GameManager {
           return this.phase;
         }
         if (this.currentRound >= roundsPerTurn) {
-          this.endTurn();
+          this.endTurn(sides);
           return this.phase;
         }
         this.endRound();
@@ -868,21 +979,108 @@ export class GameManager {
   public executeMove(
     mover: Character,
     destination: Position,
-    options: { opponents?: Character[]; allowOpportunityAttack?: boolean; opportunityWeapon?: Item } = {}
+    options: {
+      opponents?: Character[];
+      allowOpportunityAttack?: boolean;
+      opportunityWeapon?: Item;
+      isMovingStraight?: boolean;
+      isAtStartOrEndOfMovement?: boolean;
+      path?: Position[];
+      swapTarget?: Character;
+      isFriendlyToMover?: (candidate: Character) => boolean;
+    } = {}
   ) {
     if (!this.battlefield) {
       throw new Error('Battlefield not set.');
     }
+    const missionSides = this.missionSides ?? [];
+    const moverSide = missionSides.find((side: MissionSide) =>
+      side.members.some(member => member.character.id === mover.id)
+    );
+    const derivedFriendlyChecker = moverSide
+      ? (candidate: Character) => moverSide.members.some(member => member.character.id === candidate.id)
+      : undefined;
+    const isFriendlyToMover = options.isFriendlyToMover ?? derivedFriendlyChecker;
+    const effectiveOpponents = options.opponents
+      ?? (isFriendlyToMover
+        ? this.characters.filter(candidate =>
+          candidate.id !== mover.id
+          && !isFriendlyToMover(candidate)
+          && !candidate.state.isEliminated
+          && !candidate.state.isKOd
+        )
+        : []);
+
+    if (effectiveOpponents.length > 0) {
+      const moverModel = this.buildSpatialModel(mover);
+      if (moverModel) {
+        const engagedToOpposing = effectiveOpponents.some(opponent => {
+          const opponentModel = this.buildSpatialModel(opponent);
+          return opponentModel ? SpatialRules.isEngaged(moverModel, opponentModel) : false;
+        });
+        if (engagedToOpposing) {
+          return {
+            moved: false,
+            reason: 'Engaged models must Disengage before moving',
+          };
+        }
+      }
+    }
+
     return executeMoveAction(
       {
         getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
         moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
+        swapCharacters: (first: Character, second: Character) => {
+          const firstPosition = this.getCharacterPosition(first);
+          const secondPosition = this.getCharacterPosition(second);
+          if (!firstPosition || !secondPosition) {
+            return false;
+          }
+
+          const removedFirst = this.battlefield!.removeCharacter(first);
+          const removedSecond = this.battlefield!.removeCharacter(second);
+          if (!removedFirst || !removedSecond) {
+            if (removedFirst) {
+              this.battlefield!.placeCharacter(first, firstPosition);
+            }
+            if (removedSecond) {
+              this.battlefield!.placeCharacter(second, secondPosition);
+            }
+            return false;
+          }
+
+          const placedFirst = this.battlefield!.placeCharacter(first, secondPosition);
+          const placedSecond = this.battlefield!.placeCharacter(second, firstPosition);
+          if (placedFirst && placedSecond) {
+            return true;
+          }
+
+          if (placedFirst) {
+            this.battlefield!.removeCharacter(first);
+          }
+          if (placedSecond) {
+            this.battlefield!.removeCharacter(second);
+          }
+          this.battlefield!.placeCharacter(first, firstPosition);
+          this.battlefield!.placeCharacter(second, secondPosition);
+          return false;
+        },
+        spendApForSwap: (character: Character, amount: number) => this.spendAp(character, amount),
         getTerrainAt: (position: Position) => {
           const terrain = this.battlefield!.getTerrainAt(position).type;
           if (terrain === BattlefieldTerrainType.Obstacle) {
             return 'Impassable';
           }
           return terrain as 'Clear' | 'Rough' | 'Difficult' | 'Impassable';
+        },
+        isWithinBounds: (position: Position, baseDiameter: number) => this.battlefield!.isWithinBounds(position, baseDiameter),
+        eliminateOnFearExit: (character: Character) => {
+          character.state.isEliminated = true;
+          character.state.eliminatedByFear = true;
+          character.refreshStatusFlags();
+          this.setCharacterStatus(character.id, CharacterStatus.Done);
+          this.battlefield?.removeCharacter(character);
         },
         canOccupy: (position: Position, baseDiameter: number) => this.battlefield!.canOccupy(position, baseDiameter),
         executeCloseCombatAttack: (attacker: Character, defender: Character, weapon: Item, actionOptions) =>
@@ -923,16 +1121,47 @@ export class GameManager {
       },
       mover,
       destination,
-      options
+      {
+        ...options,
+        opponents: effectiveOpponents,
+        isFriendlyToMover,
+      }
     );
   }
 
   public executeRally(
     actor: Character,
     target: Character,
-    options: { context?: TestContext; rolls?: number[]; side?: MissionSide } = {}
+    options: {
+      context?: TestContext;
+      rolls?: number[];
+      side?: MissionSide;
+      allies?: Character[];
+      opponents?: Character[];
+      cohesionRangeMu?: number;
+      visibilityOrMu?: number;
+    } = {}
   ) {
-    return executeRallyAction(this.simpleActionDeps(), actor, target, options);
+    const missionSides = this.missionSides ?? [];
+    const side = options.side ?? missionSides.find((candidate: MissionSide) =>
+      candidate.members.some(member => member.character.id === actor.id)
+    );
+    const sideAllies = side?.members
+      ?.map(member => member.character)
+      .filter(character => !character.state.isEliminated && !character.state.isKOd) ?? [];
+    const allies = options.allies ?? (sideAllies.length > 0 ? sideAllies : [actor]);
+    const allyIds = new Set(allies.map(character => character.id));
+    const opponents = options.opponents ?? this.characters.filter(character =>
+      !allyIds.has(character.id) && !character.state.isEliminated && !character.state.isKOd
+    );
+
+    return executeRallyAction(this.simpleActionDeps(), actor, target, {
+      ...options,
+      side,
+      battlefield: this.battlefield,
+      allies,
+      opponents,
+    });
   }
 
   public executeRevive(
@@ -1437,6 +1666,8 @@ export class GameManager {
       spendAp: (character: Character, cost: number) => this.spendAp(character, cost),
       setWaiting: (character: Character) => this.setWaiting(character),
       isOutnumberedForWait: (character: Character) => this.isOutnumberedForWait(character),
+      getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
+      getTwoApMovementRange: (character: Character) => getThreatRange(character) * 2,
       setCharacterStatus: (characterId: string, status: CharacterStatus) => this.setCharacterStatus(characterId, status),
       markRallyUsed: (characterId: string) => { this.rallyUsed.add(characterId); },
       markReviveUsed: (characterId: string) => { this.reviveUsed.add(characterId); },
@@ -1465,6 +1696,8 @@ export class GameManager {
       battlefield: this.battlefield,
       reactingNow: this.reactingNow,
       reactedThisTurn: this.reactedThisTurn,
+      getActiveCharacterId: () => this.activeCharacterId,
+      setActiveCharacterId: (characterId: string | null) => { this.activeCharacterId = characterId; },
       getCharacterPosition: (character: Character) => this.getCharacterPosition(character),
       applyInterruptCost: (character: Character) => this.applyInterruptCost(character),
       executeRangedAttack: (

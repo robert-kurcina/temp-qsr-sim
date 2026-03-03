@@ -6,6 +6,8 @@ import { SpatialModel, SpatialRules } from '../spatial/spatial-rules';
 import { ModelRegistry, MeasurementUtils } from '../spatial/model-registry';
 import { EngagementManager } from '../spatial/engagement-manager';
 import { LOSValidator } from '../los/los-validator';
+import { getBaseDiameterFromSiz } from '../spatial/size-utils';
+import { resolveApertureTraversalTerrain } from './aperture-rules';
 
 /**
  * Movement validation result
@@ -81,8 +83,12 @@ export class MoveValidator {
       threatModels: [],
     };
 
+    const modelBaseDiameter = getBaseDiameterFromSiz(
+      character.finalAttributes?.siz ?? character.attributes?.siz ?? 3
+    );
+
     // Check terrain blocking
-    const terrainBlock = this.checkTerrainBlocking(from, to);
+    const terrainBlock = this.checkTerrainBlocking(from, to, modelBaseDiameter);
     if (terrainBlock.blocked) {
       result.valid = false;
       result.blocked = true;
@@ -164,7 +170,11 @@ export class MoveValidator {
   /**
    * Check if terrain blocks movement between two points
    */
-  private checkTerrainBlocking(from: Position, to: Position): { blocked: boolean; blockedBy?: string } {
+  private checkTerrainBlocking(
+    from: Position,
+    to: Position,
+    modelBaseDiameter: number
+  ): { blocked: boolean; blockedBy?: string } {
     // Check if endpoints are in bounds (continuous space, not grid)
     if (!this.isInBounds(from) || !this.isInBounds(to)) {
       return { blocked: true, blockedBy: 'out_of_bounds' };
@@ -177,7 +187,11 @@ export class MoveValidator {
       // Check terrain at this point
       for (const feature of this.battlefield.terrain) {
         if (this.pointInFeature(point, feature)) {
-          if (feature.type === TerrainType.Impassable || feature.type === TerrainType.Obstacle) {
+          const apertureTerrain = resolveApertureTraversalTerrain(feature, modelBaseDiameter);
+          if (apertureTerrain === TerrainType.Impassable || apertureTerrain === TerrainType.Obstacle) {
+            return { blocked: true, blockedBy: feature.id };
+          }
+          if (!apertureTerrain && (feature.type === TerrainType.Impassable || feature.type === TerrainType.Obstacle)) {
             return { blocked: true, blockedBy: feature.id };
           }
         }

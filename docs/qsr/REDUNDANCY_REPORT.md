@@ -1,7 +1,7 @@
 # Documentation Redundancy Report
 
 **Date:** 2026-03-03
-**Status:** ✅ **COMPLETE**
+**Status:** ✅ **UPDATED (P1 redundancy actions applied)**
 
 ---
 
@@ -12,7 +12,27 @@
 **Findings:**
 - **7 files archived** (prefixed with `ARCHIVE_`)
 - **0 code duplications** found
-- **Test files differentiated** (feature-scoped, not redundant)
+- **5 low-signal P1 verification test files removed** (replaced by runtime-backed suites)
+
+### Addendum - Priority 1 Resume (2026-03-03)
+
+New redundancy/quality finding from P1 audit:
+
+| File | Finding | Action |
+|------|---------|--------|
+| `src/lib/mest-tactics/actions/p1-visibility-verification.test.ts` | High count of tautological constant assertions | ✅ Removed; runtime visibility/spatial tests retained |
+| `src/lib/mest-tactics/actions/p1-cover-verification.test.ts` | Mixed quality; many constant-only checks duplicate rule text | ✅ Removed; runtime cover/spatial tests retained |
+| `src/lib/mest-tactics/actions/p1-initiative-verification.test.ts` | Clause labeling present, behavioral evidence partial | ✅ Removed; `initiative-points` + `activation-rules` retained |
+| `src/lib/mest-tactics/actions/p1-movement-verification.test.ts` | Significant overlap with rule prose, limited engine-path validation | ✅ Removed; `move-action-rules` retained |
+| `src/lib/mest-tactics/actions/p1-morale-verification.test.ts` | Broad clause tags but many non-executable assertions | ✅ Removed; replaced by runtime-backed morale tests |
+| `docs/qsr/00-index.md`, `docs/qsr/P1_RULES_STATUS.md`, `docs/qsr/SESSION_HANDOFF.md` | Conflicting state narratives ("complete" vs "in progress") and duplicated historical snapshots | ✅ Consolidated to a single in-progress narrative with aligned counts and closed tracked P1 partials |
+| `docs/qsr/00-index.md`, `docs/qsr/01-basics/01.03-visibility.md`, `docs/qsr/01-basics/01.04-cover.md`, `docs/qsr/03-actions/03.04-hide.md`, `docs/qsr/04-combat/04.02-range-combat.md` | References to non-existent guide files (`rules-los.md`, `rules-cover.md`, `rules-lof.md`) caused stale source pointers | ✅ Corrected to `rules-movement-and-terrain.md` / `rules-friendly-fire-los.md` |
+| `docs/qsr/00-index.md`, `docs/qsr/03-actions/03.06-wait.md`, `docs/qsr/03-actions/03.07-focus.md` | References to non-existent `src/guides/docs/rules-react.md` caused stale React source pointers | ✅ Corrected to `rules-actions.md` / `rules-bonus-actions.md` |
+| `docs/qsr/01-basics/01.03-visibility.md` + `docs/qsr/01-basics/01.04-cover.md` | Split/overlapping CV clause namespaces across two files can drift unless synchronized | ⚠️ Flagged; maintain cross-file sync discipline or consolidate CV ownership |
+| `src/guides/docs/rules-friendly-fire-los.md`, `src/lib/mest-tactics/combat/ranged-combat.ts`, `src/lib/mest-tactics/actions/ranged-combat-cover-verification.test.ts` | Obscured-threshold interpretation drift (`1/2/5/10` guidance/examples vs runtime cumulative-threshold implementation/test expectations) creates duplicated-but-inconsistent rule encodings | ⚠️ Flagged for rule-source reconciliation before further coverage claims |
+| `src/lib/mest-tactics/battlefield/terrain/TerrainElement.ts` | Generic OVR-003 keys (`building`, `wall`, `rocky`) duplicated semantic mapping with canonical terrain names (`Small Building`, `Short Wall`, `Small Rocks`) and caused lookup drift | ✅ Resolved with canonical-name normalization mapping + `TerrainElement.test.ts` |
+
+These files are useful as clause catalogs but should not be treated as full behavioral coverage proof without runtime-backed assertions.
 
 ---
 

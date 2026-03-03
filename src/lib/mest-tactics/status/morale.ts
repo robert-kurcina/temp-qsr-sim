@@ -43,6 +43,21 @@ export function applyFearFromWounds(
     return { pass: true, fearAdded: 0 };
   }
 
+  const isDisordered = character.state.isDisordered || character.state.fearTokens >= 2;
+  if (isDisordered) {
+    return { pass: true, fearAdded: 0 };
+  }
+
+  const isDistracted = character.state.isDistracted || character.state.delayTokens > 0;
+  if (character.state.isEngaged && !isDistracted) {
+    return { pass: true, fearAdded: 0 };
+  }
+
+  const fearTestsThisTurn = character.state.fearTestsThisTurn ?? 0;
+  if (fearTestsThisTurn >= 1) {
+    return { pass: true, fearAdded: 0 };
+  }
+
   if (isImmuneToFear(character)) {
     return { pass: true, fearAdded: 0 };
   }
@@ -53,14 +68,17 @@ export function applyFearFromWounds(
     return { pass: true, fearAdded: 0 };
   }
   
-  const result = resolveMoraleTest(character, character.state.fearTokens, {}, rolls ?? null);
+  character.state.fearTestsThisTurn = fearTestsThisTurn + 1;
+
+  const currentFear = character.state.fearTokens;
+  const result = resolveMoraleTest(character, currentFear, {}, rolls ?? null);
   if (result.pass) {
     return { pass: true, fearAdded: 0 };
   }
 
-  // RAW: failed test yields 1 Fear, or more if failed with multiple cascades.
-  // We approximate cascades for failed tests using the negative score difference.
-  let fearAdded = Math.max(1, Math.abs(result.score || 0));
+  const cascades = Math.max(1, Math.abs(result.score || 0));
+  const targetFear = cascades > currentFear ? cascades : currentFear + 1;
+  let fearAdded = Math.max(0, targetFear - currentFear);
   
   // Coward trait: additional Fear tokens on failed Morale
   if (hasCoward(character)) {
@@ -99,6 +117,9 @@ export function applyFearFromAllyKO(
   for (const ally of allies) {
     if (ally.id === fallen.id) continue;
     if (ally.state.isKOd || ally.state.isEliminated) continue;
+    const allyIsDistracted = ally.state.isDistracted || ally.state.delayTokens > 0;
+    const allyIsFree = !ally.state.isEngaged;
+    if (!allyIsFree && !allyIsDistracted) continue;
     const allySpatial = buildSpatialModel(battlefield, ally);
     if (!allySpatial) continue;
     const distance = distanceBetween(allySpatial.position, fallenSpatial.position);

@@ -19,6 +19,12 @@ export interface ActivationDeps {
   isFreeFromEngagement: (character: Character) => boolean;
 }
 
+function getCompulsoryApCost(character: Character): number {
+  if (character.state.fearTokens >= 3) return 2;
+  if (character.state.fearTokens >= 2) return 1;
+  return 0;
+}
+
 export function beginActivation(deps: ActivationDeps, character: Character): number {
   const status = deps.getCharacterStatus(character.id);
   if (status !== CharacterStatus.Ready) {
@@ -53,6 +59,18 @@ export function beginActivation(deps: ActivationDeps, character: Character): num
         character.state.isWaiting = false;
       }
     }
+  }
+
+  const compulsoryApCost = getCompulsoryApCost(character);
+  const needsPushForCompulsory = compulsoryApCost > 0
+    && apAvailable < compulsoryApCost
+    && character.state.delayTokens === 0
+    && !character.state.hasPushedThisInitiative;
+
+  if (needsPushForCompulsory) {
+    apAvailable += 1;
+    character.state.delayTokens += 1;
+    character.state.hasPushedThisInitiative = true;
   }
 
   character.refreshStatusFlags();

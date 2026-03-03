@@ -22,11 +22,29 @@ export interface LOSModelFootprint {
 }
 
 export class LOSOperations {
-  // TODO: Replace size-gated 2D LOS blocking with 3D height-based logic when height is modeled.
-  private static readonly COVER_SIZE_BY_CATEGORY: Record<string, number> = {
-    shrub: 2,
-    rocks: 4,
-    tree: 12,
+  private static readonly SIZE_EPSILON = 1e-6;
+  private static readonly VISIBLE_HEIGHT_SAMPLES = 5;
+  private static readonly TERRAIN_HEIGHT_BY_CATEGORY: Record<string, number> = {
+    shrub: 0.5,
+    rocks: 0.5,
+    tree: 6,
+    wall: 1,
+    building: 3,
+    area: 0,
+  };
+
+  private static readonly TERRAIN_HEIGHT_BY_NAME: Record<string, number> = {
+    shrub: 0.5,
+    tree: 6,
+    'small rocks': 0.5,
+    'medium rocks': 0.5,
+    'large rocks': 0.5,
+    'short wall': 1,
+    'medium wall': 1,
+    'large wall': 1.5,
+    'small building': 3,
+    'medium building': 3,
+    'large building': 4,
   };
 
   // TODO: Review LOS blocker classification for higher-fidelity RAW (Soft/Hard may not always fully block LOS).
@@ -36,18 +54,43 @@ export class LOSOperations {
     return los === 'Blocking';
   }
 
+  static getTerrainHeightMu(feature: TerrainFeature): number {
+    if (LOSOperations.isLosBlocking(feature)) {
+      return Number.POSITIVE_INFINITY;
+    }
+
+    const named = feature.meta?.name?.toLowerCase?.() ?? '';
+    if (named && named in LOSOperations.TERRAIN_HEIGHT_BY_NAME) {
+      return LOSOperations.TERRAIN_HEIGHT_BY_NAME[named];
+    }
+
+    const category = feature.meta?.category?.toLowerCase?.() ?? '';
+    if (category && category in LOSOperations.TERRAIN_HEIGHT_BY_CATEGORY) {
+      return LOSOperations.TERRAIN_HEIGHT_BY_CATEGORY[category];
+    }
+
+    const los = feature.meta?.los ?? 'Clear';
+    if (los === 'Hard' || los === 'Soft') {
+      return 0.5;
+    }
+    return 0;
+  }
+
   static isLosBlockingForSizes(
     feature: TerrainFeature,
     sourceSiz?: number,
     targetSiz?: number
   ): boolean {
     if (LOSOperations.isLosBlocking(feature)) return true;
-    const category = feature.meta?.category?.toLowerCase?.() ?? '';
-    const coverSize = LOSOperations.COVER_SIZE_BY_CATEGORY[category];
-    if (!coverSize) return false;
-    const maxSiz = Math.max(sourceSiz ?? 0, targetSiz ?? 0);
-    if (maxSiz <= 0) return false;
-    return maxSiz <= coverSize;
+    const sourceHeight = LOSOperations.resolveBaseHeightFromSiz(sourceSiz);
+    const targetHeight = LOSOperations.resolveBaseHeightFromSiz(targetSiz);
+    const smallestBaseHeight = Math.min(sourceHeight, targetHeight);
+    if (smallestBaseHeight <= 0) return false;
+
+    // QSR LOS.5: terrain larger than half base-height blocks LOS.
+    const halfBaseHeight = smallestBaseHeight / 2;
+    const terrainHeight = LOSOperations.getTerrainHeightMu(feature);
+    return terrainHeight > halfBaseHeight + LOSOperations.SIZE_EPSILON;
   }
 
   static checkLOSBetweenPoints(battlefield: Battlefield, start: Position, end: Position): LOSResult {
@@ -80,23 +123,27 @@ export class LOSOperations {
     target: Position
   ): LOSResult {
     const perimeter = LOSOperations.buildCircularPerimeterPoints(model.position, model.baseDiameter);
+    const sourceHeights = LOSOperations.buildVisibleAreaHeightSamples(model);
     let nearestBlocked: { feature: TerrainFeature; distance: number } | null = null;
     const blockers = battlefield.terrain.filter(feature =>
       LOSOperations.isLosBlockingForSizes(feature, model.siz, model.siz)
     );
 
     for (const point of perimeter) {
-      const hit = LOSOperations.findNearestBlockingElement(
-        point,
-        target,
-        blockers
-      );
-      if (!hit) {
-        return { clear: true };
-      }
-      const distance = LOSOperations.distance(point, target);
-      if (!nearestBlocked || distance < nearestBlocked.distance) {
-        nearestBlocked = { feature: hit, distance };
+      for (const sourceHeight of sourceHeights) {
+        const hit = LOSOperations.findNearestBlockingElementWithHeight(
+          point,
+          target,
+          blockers,
+          sourceHeight
+        );
+        if (!hit) {
+          return { clear: true };
+        }
+        const distance = LOSOperations.distance(point, target);
+        if (!nearestBlocked || distance < nearestBlocked.distance) {
+          nearestBlocked = { feature: hit, distance };
+        }
       }
     }
 
@@ -109,23 +156,27 @@ export class LOSOperations {
     targetModel: LOSModelFootprint
   ): LOSResult {
     const perimeter = LOSOperations.buildCircularPerimeterPoints(targetModel.position, targetModel.baseDiameter);
+    const targetHeights = LOSOperations.buildVisibleAreaHeightSamples(targetModel);
     let nearestBlocked: { feature: TerrainFeature; distance: number } | null = null;
     const blockers = battlefield.terrain.filter(feature =>
       LOSOperations.isLosBlockingForSizes(feature, targetModel.siz, targetModel.siz)
     );
 
     for (const point of perimeter) {
-      const hit = LOSOperations.findNearestBlockingElement(
-        start,
-        point,
-        blockers
-      );
-      if (!hit) {
-        return { clear: true };
-      }
-      const distance = LOSOperations.distance(start, point);
-      if (!nearestBlocked || distance < nearestBlocked.distance) {
-        nearestBlocked = { feature: hit, distance };
+      for (const targetHeight of targetHeights) {
+        const hit = LOSOperations.findNearestBlockingElementWithHeight(
+          start,
+          point,
+          blockers,
+          targetHeight
+        );
+        if (!hit) {
+          return { clear: true };
+        }
+        const distance = LOSOperations.distance(start, point);
+        if (!nearestBlocked || distance < nearestBlocked.distance) {
+          nearestBlocked = { feature: hit, distance };
+        }
       }
     }
 
@@ -139,7 +190,9 @@ export class LOSOperations {
   ): LOSResult {
     const sourcePerimeter = LOSOperations.buildCircularPerimeterPoints(source.position, source.baseDiameter);
     const targetPerimeter = LOSOperations.buildCircularPerimeterPoints(target.position, target.baseDiameter);
-    const requiredVisiblePoints = 1; // 0.5 MU at 2 pts per MU => at least 1 point
+    const sourceHeights = LOSOperations.buildVisibleAreaHeightSamples(source);
+    const targetHeights = LOSOperations.buildVisibleAreaHeightSamples(target);
+    const requiredVisibleSamples = 1;
 
     let visibleCount = 0;
     let nearestBlocked: { feature: TerrainFeature; distance: number } | null = null;
@@ -148,26 +201,43 @@ export class LOSOperations {
     );
 
     for (const targetPoint of targetPerimeter) {
-      let targetVisible = false;
-      for (const sourcePoint of sourcePerimeter) {
-        const hit = LOSOperations.findNearestBlockingElement(sourcePoint, targetPoint, blockers);
-        if (!hit) {
-          targetVisible = true;
-          break;
+      for (const targetHeight of targetHeights) {
+        let targetVisible = false;
+        for (const sourcePoint of sourcePerimeter) {
+          for (const sourceHeight of sourceHeights) {
+            const hit = LOSOperations.findNearestBlockingElementWithHeight(
+              sourcePoint,
+              targetPoint,
+              blockers,
+              Math.min(sourceHeight, targetHeight)
+            );
+            if (!hit) {
+              targetVisible = true;
+              break;
+            }
+          }
+          if (targetVisible) {
+            break;
+          }
         }
-      }
 
-      if (targetVisible) {
-        visibleCount++;
-        if (visibleCount >= requiredVisiblePoints) {
-          return { clear: true };
-        }
-      } else {
-        const distance = LOSOperations.distance(source.position, targetPoint);
-        const hit = LOSOperations.findNearestBlockingElement(source.position, targetPoint, blockers);
-        if (hit) {
-          if (!nearestBlocked || distance < nearestBlocked.distance) {
-            nearestBlocked = { feature: hit, distance };
+        if (targetVisible) {
+          visibleCount++;
+          if (visibleCount >= requiredVisibleSamples) {
+            return { clear: true };
+          }
+        } else {
+          const distance = LOSOperations.distance(source.position, targetPoint);
+          const hit = LOSOperations.findNearestBlockingElementWithHeight(
+            source.position,
+            targetPoint,
+            blockers,
+            targetHeight
+          );
+          if (hit) {
+            if (!nearestBlocked || distance < nearestBlocked.distance) {
+              nearestBlocked = { feature: hit, distance };
+            }
           }
         }
       }
@@ -249,6 +319,28 @@ export class LOSOperations {
     return nearest ? nearest.feature : null;
   }
 
+  static findNearestBlockingElementWithHeight(
+    start: Position,
+    end: Position,
+    blockers: TerrainFeature[],
+    sampleHeightMu: number
+  ): TerrainFeature | null {
+    let nearest: { feature: TerrainFeature; distance: number } | null = null;
+
+    for (const feature of blockers) {
+      if (!LOSOperations.blocksAtHeight(feature, sampleHeightMu)) {
+        continue;
+      }
+      const hit = LOSOperations.findNearestIntersectionOnFeature(start, end, feature);
+      if (!hit) continue;
+      if (!nearest || hit.distance < nearest.distance) {
+        nearest = { feature, distance: hit.distance };
+      }
+    }
+
+    return nearest ? nearest.feature : null;
+  }
+
   private static segmentIntersectsFeature(
     start: Position,
     end: Position,
@@ -279,6 +371,42 @@ export class LOSOperations {
       }
     }
     return Number.isFinite(nearestDistance) ? { distance: nearestDistance } : null;
+  }
+
+  private static blocksAtHeight(feature: TerrainFeature, sampleHeightMu: number): boolean {
+    if (LOSOperations.isLosBlocking(feature)) {
+      return true;
+    }
+    const terrainHeight = LOSOperations.getTerrainHeightMu(feature);
+    return terrainHeight > sampleHeightMu + LOSOperations.SIZE_EPSILON;
+  }
+
+  private static buildVisibleAreaHeightSamples(model: LOSModelFootprint): number[] {
+    const baseHeight = LOSOperations.resolveVisibleAreaHeight(model);
+    if (baseHeight <= 0) {
+      return [0];
+    }
+
+    const samples: number[] = [];
+    const denominator = LOSOperations.VISIBLE_HEIGHT_SAMPLES + 1;
+    for (let i = 1; i <= LOSOperations.VISIBLE_HEIGHT_SAMPLES; i++) {
+      samples.push((baseHeight * i) / denominator);
+    }
+    return samples;
+  }
+
+  private static resolveVisibleAreaHeight(model: LOSModelFootprint): number {
+    if (Number.isFinite(model.baseDiameter) && model.baseDiameter > 0) {
+      return model.baseDiameter;
+    }
+    return LOSOperations.resolveBaseHeightFromSiz(model.siz);
+  }
+
+  private static resolveBaseHeightFromSiz(siz?: number): number {
+    if (!Number.isFinite(siz) || siz === undefined || siz <= 0) {
+      return 0;
+    }
+    return siz;
   }
 
   static segmentIntersection(

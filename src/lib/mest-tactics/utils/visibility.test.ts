@@ -24,7 +24,9 @@ function makeCharacter(str = 3): Character {
 describe('visibility helpers', () => {
   it('maps lighting presets to visibility OR', () => {
     expect(getVisibilityOrForLighting('Day, Clear')).toBe(16);
+    expect(getVisibilityOrForLighting('Day, Rain/Fog')).toBe(8);
     expect(getVisibilityOrForLighting('Twilight, Overcast')).toBe(8);
+    expect(getVisibilityOrForLighting('Night')).toBe(4);
   });
 
   it('enforces max ORM under normal range checks', () => {

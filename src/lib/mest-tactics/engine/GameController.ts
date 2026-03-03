@@ -616,10 +616,12 @@ export class GameController {
   }
 
   private buildActionInput(attacker: Character, target: Character, attackerPos: Position, targetPos: Position): ActionContextInput {
+    const attackerMov = attacker.finalAttributes.mov ?? attacker.attributes.mov ?? 0;
     return {
       battlefield: this.battlefield,
       attacker: this.buildSpatialModel(attacker, attackerPos),
       target: this.buildSpatialModel(target, targetPos),
+      agilityMu: Math.ceil(attackerMov) / 2,
     };
   }
 
