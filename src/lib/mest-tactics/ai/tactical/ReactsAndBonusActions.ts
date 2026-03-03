@@ -647,6 +647,7 @@ export interface BonusActionDecision {
 export class StealthEvaluator {
   /**
    * Evaluate whether character should Hide
+   * Decision based on Keys to Victory cost-benefit analysis
    */
   evaluateHide(context: AIContext): HideDecision {
     const character = context.character;
@@ -663,84 +664,66 @@ export class StealthEvaluator {
     }
 
     // QSR Line 855: First Detect is FREE - defer Hide if Detect is available
-    // If there are Hidden enemies and we haven't Detected yet, Detect first
     const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
     const hiddenEnemies = context.enemies.filter(e =>
       !e.state.isEliminated &&
       isAttackableEnemy(context.character, e, context.config) &&
       e.state.isHidden
     );
-    
+
     if (!hasDetectedThisActivation && hiddenEnemies.length > 0 && context.apRemaining >= 0) {
       // First Detect is FREE, should Detect before Hiding
       return { shouldHide: false, reason: 'Should Detect first (first is free)' };
     }
 
-    // === VP URGENCY CHECK (VP_PLANNING_FIX_SUMMARY.md) ===
-    // Reduce Hide priority when VP urgency is high
+    // === Keys to Victory Cost-Benefit Analysis ===
+    // Base priority for Hide action
+    let priority = 2.2;
+
+    // Tactical factors
+    if (visibleToEnemy) {
+      priority += 1.1; // Hiding while visible is valuable
+    }
+
+    const siz = character.finalAttributes.siz ?? 3;
+    if (character.state.wounds >= siz - 1) {
+      priority += 1.5; // Low health = hide to survive
+    }
+
+    const enemyCount = context.enemies.filter(e => isAttackableEnemy(context.character, e, context.config)).length;
+    const allyCount = context.allies.filter(a => !a.state.isEliminated && !a.state.isKOd).length + 1;
+    if (enemyCount > allyCount) {
+      priority += 1.0; // Outnumbered = hide to regroup
+    }
+
+    // VP/RP pressure from Keys to Victory
     const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
     const enemyVP = Object.entries(context.vpBySide ?? {})
       .filter(([sid]) => sid !== context.sideId)
       .reduce((max, [, vp]) => Math.max(max, vp), 0);
+    const vpDeficit = enemyVP - myVP;
     const currentTurn = context.currentTurn ?? 1;
     const maxTurns = context.maxTurns ?? 6;
-    const vpDeficit = enemyVP - myVP;
+    const turnsRemaining = maxTurns - currentTurn + 1;
 
-    // Calculate VP urgency level
-    let vpUrgency: 'low' | 'medium' | 'high' | 'desperate' = 'low';
-    if (myVP === 0 && currentTurn >= 6) {
-      vpUrgency = 'desperate';
-    } else if (vpDeficit >= 4 || (myVP === 0 && currentTurn >= 5)) {
-      vpUrgency = 'desperate';
-    } else if (vpDeficit >= 2 || currentTurn >= 5) {
-      vpUrgency = 'high';
-    } else if (vpDeficit > 0 || currentTurn >= 3) {
-      vpUrgency = 'medium';
+    // Behind on VP - hiding is lower priority (need to score)
+    if (vpDeficit > 0) {
+      priority -= Math.min(1.5, vpDeficit * 0.3);
     }
 
-    // Apply VP urgency penalty to Hide priority
-    let vpPenalty = 0;
-    if (myVP === 0) {
-      switch (vpUrgency) {
-        case 'desperate':
-          vpPenalty = -3.0; // Strongly discourage Hide when desperate
-          break;
-        case 'high':
-          vpPenalty = -2.0; // Discourage Hide when behind
-          break;
-        case 'medium':
-          vpPenalty = -1.0; // Slight penalty
-          break;
-      }
-    }
-    // === END VP URGENCY CHECK ===
-
-    // Evaluate benefit of hiding
-    let priority = 2.2;
-    if (visibleToEnemy) {
-      // Hiding while visible is still valuable when cover exists (costs AP in rules).
-      priority += 1.1;
+    // Late game with VP lead - hiding is valuable (protect lead)
+    if (myVP > enemyVP && turnsRemaining <= 3) {
+      priority += 0.8; // Protect the lead
     }
 
-    // Higher priority if low health
-    const siz = character.finalAttributes.siz ?? 3;
-    if (character.state.wounds >= siz - 1) {
-      priority += 1.5;
+    // Scoring context from Side AI
+    if (context.scoringContext && context.scoringContext.amILeading) {
+      priority += 0.5; // Leading = more defensive
     }
-
-    // Higher priority if outnumbered
-    const enemyCount = context.enemies.filter(e => isAttackableEnemy(context.character, e, context.config)).length;
-    const allyCount = context.allies.filter(a => !a.state.isEliminated && !a.state.isKOd).length + 1;
-    if (enemyCount > allyCount) {
-      priority += 1.0;
-    }
-
-    // Apply VP urgency penalty
-    priority += vpPenalty;
 
     return {
       shouldHide: priority >= 3.0,
-      reason: `Hide behind cover (priority: ${priority.toFixed(1)}, VP penalty: ${vpPenalty})`,
+      reason: `Hide (VP: ${myVP}-${enemyVP}, priority: ${priority.toFixed(1)})`,
       priority,
     };
   }
@@ -748,6 +731,7 @@ export class StealthEvaluator {
   /**
    * Evaluate whether character should Detect hidden enemies
    * QSR Line 855: First Detect costs 0 AP, subsequent cost 1 AP
+   * Decision based on Keys to Victory cost-benefit analysis
    */
   evaluateDetect(context: AIContext): DetectDecision {
     const character = context.character;
@@ -764,53 +748,16 @@ export class StealthEvaluator {
     }
 
     // QSR Line 855: First Detect is FREE (0 AP)
-    // Only check AP if character has already Detected this activation
     const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
     const apCost = hasDetectedThisActivation ? 1 : 0;
-    
+
     if (context.apRemaining < apCost) {
       return { shouldDetect: false, targets: [], reason: `Not enough AP (need ${apCost})` };
     }
 
-    // === VP URGENCY CHECK (VP_PLANNING_FIX_SUMMARY.md) ===
-    // Increase Detect priority when VP urgency is high (need to reveal enemies for combat)
-    const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
-    const enemyVP = Object.entries(context.vpBySide ?? {})
-      .filter(([sid]) => sid !== context.sideId)
-      .reduce((max, [, vp]) => Math.max(max, vp), 0);
-    const currentTurn = context.currentTurn ?? 1;
-    const vpDeficit = enemyVP - myVP;
-
-    let vpUrgency: 'low' | 'medium' | 'high' | 'desperate' = 'low';
-    if (myVP === 0 && currentTurn >= 6) {
-      vpUrgency = 'desperate';
-    } else if (vpDeficit >= 4 || (myVP === 0 && currentTurn >= 5)) {
-      vpUrgency = 'desperate';
-    } else if (vpDeficit >= 2 || currentTurn >= 5) {
-      vpUrgency = 'high';
-    } else if (vpDeficit > 0 || currentTurn >= 3) {
-      vpUrgency = 'medium';
-    }
-
-    // Apply VP urgency bonus to Detect priority (revealing enemies enables combat)
-    // First Detect is FREE, so strongly encourage it when VP=0
-    let vpBonus = 0;
-    if (myVP === 0) {
-      switch (vpUrgency) {
-        case 'desperate':
-          vpBonus = 2.0; // Strongly encourage Detect when desperate
-          break;
-        case 'high':
-          vpBonus = 1.5; // Encourage Detect when behind
-          break;
-        case 'medium':
-          vpBonus = 1.0; // Moderate bonus (VP=0, should Detect)
-          break;
-      }
-    }
-    // === END VP URGENCY CHECK ===
-
-    // Evaluate priority based on threat and practical detect opportunity.
+    // === Keys to Victory Cost-Benefit Analysis ===
+    // Base priority for Detect action
+    let priority = 2.2;
     const charPos = context.battlefield.getCharacterPosition(character);
     const nearbyHiddenCount = charPos
       ? hiddenEnemies.filter(enemy => {
@@ -821,30 +768,58 @@ export class StealthEvaluator {
         }).length
       : 0;
 
-    let priority = 2.2;
+    // Tactical factors
     if (hiddenEnemies.length >= 2) {
-      priority += 0.6;
+      priority += 0.6; // Multiple targets = higher value
     }
     if (nearbyHiddenCount > 0) {
-      priority += 0.5;
+      priority += 0.5; // Nearby targets = easier to reveal
     }
     if (character.state.isInCover) {
-      priority += 0.2;
+      priority += 0.2; // Safe to Detect
     }
 
-    // Apply VP urgency bonus
-    priority += vpBonus;
+    // VP/RP pressure from Keys to Victory
+    const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
+    const enemyVP = Object.entries(context.vpBySide ?? {})
+      .filter(([sid]) => sid !== context.sideId)
+      .reduce((max, [, vp]) => Math.max(max, vp), 0);
+    const vpDeficit = enemyVP - myVP;
+    const currentTurn = context.currentTurn ?? 1;
+    const maxTurns = context.maxTurns ?? 6;
+    const turnsRemaining = maxTurns - currentTurn + 1;
 
-    // First Detect is FREE - strongly encourage when no VP
-    if (!hasDetectedThisActivation && myVP === 0) {
-      priority += 1.0; // Extra bonus for free Detect
+    // Elimination Key: Revealing enemies enables VP from eliminations
+    if (vpDeficit > 0) {
+      // Behind on VP - Detect to enable combat
+      priority += Math.min(2.0, vpDeficit * 0.5);
+    }
+
+    // Late game pressure: Need VP soon
+    if (turnsRemaining <= 2 && myVP === 0) {
+      priority += 1.5; // Desperate for VP
+    } else if (turnsRemaining <= 3 && myVP === 0) {
+      priority += 0.8; // Need to start scoring
+    }
+
+    // First Detect is FREE - always valuable when enemies Hidden
+    if (!hasDetectedThisActivation) {
+      priority += 1.0; // Free action to reveal enemies
+    }
+
+    // Scoring context from Side AI (Keys to Victory priorities)
+    if (context.scoringContext) {
+      const losingKeys = context.scoringContext.losingKeys || [];
+      if (losingKeys.includes('elimination') || losingKeys.includes('first_blood')) {
+        priority += 1.0; // Behind on elimination keys
+      }
     }
 
     return {
       shouldDetect: priority >= 2.4,
       targets: hiddenEnemies,
       priority,
-      reason: `Detect ${hiddenEnemies.length} hidden enemy(ies) (VP bonus: ${vpBonus}, AP cost: ${apCost})`,
+      reason: `Detect ${hiddenEnemies.length} hidden (VP: ${myVP}-${enemyVP}, AP: ${apCost}, priority: ${priority.toFixed(1)})`,
     };
   }
 

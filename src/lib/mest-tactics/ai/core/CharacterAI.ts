@@ -255,36 +255,8 @@ export class CharacterAI implements IAIController {
     }
 
     // Phase 2: Check for stealth opportunities (Hide/Detect)
-    // === VP URGENCY CHECK (VP_PLANNING_FIX_SUMMARY.md) ===
-    // Skip Hide/Detect when VP urgency is high to encourage combat-seeking behavior
-    const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
-    const enemyVP = Object.entries(context.vpBySide ?? {})
-      .filter(([sid]) => sid !== context.sideId)
-      .reduce((max, [, vp]) => Math.max(max, vp), 0);
-    const currentTurn = context.currentTurn ?? 1;
-    const maxTurns = context.maxTurns ?? 6;
-    const vpDeficit = enemyVP - myVP;
-    const turnsRemaining = maxTurns - currentTurn + 1;
-    
-    // AGGRESSIVE urgency calculation - start at medium from turn 1
-    // This forces AI to seek combat from the start, not passive Hide/Detect
-    let vpUrgency: 'low' | 'medium' | 'high' | 'desperate' = 'medium'; // Default to medium
-    if (myVP === 0 && currentTurn >= 5) {
-      vpUrgency = 'desperate';
-    } else if (vpDeficit >= 4 || (myVP === 0 && currentTurn >= 4)) {
-      vpUrgency = 'desperate';
-    } else if (vpDeficit >= 3 || (myVP === 0 && currentTurn >= 3)) {
-      vpUrgency = 'high';
-    } else if (vpDeficit >= 1) {
-      vpUrgency = 'high'; // Behind on VP = high urgency
-    }
-    // else: medium (default)
-    
-    // Skip Hide evaluation when VP urgency is high/desperate
-    const skipHide = vpUrgency === 'high' || vpUrgency === 'desperate';
-    
-    // Only evaluate Hide when VP urgency is low/medium
-    const hideDecision = skipHide ? { shouldHide: false, reason: 'VP urgency too high' } : this.evaluateHide(context);
+    // StealthEvaluator uses Keys to Victory cost-benefit analysis
+    const hideDecision = this.evaluateHide(context);
     if (hideDecision.shouldHide) {
       return {
         decision: {
@@ -305,9 +277,7 @@ export class CharacterAI implements IAIController {
       };
     }
 
-    // Skip Detect evaluation when VP urgency is desperate (prefer movement/combat)
-    const skipDetect = vpUrgency === 'desperate';
-    const detectDecision = skipDetect ? { shouldDetect: false, targets: [] as Character[], reason: 'VP urgency desperate' } : this.evaluateDetect(context);
+    const detectDecision = this.evaluateDetect(context);
     if (detectDecision.shouldDetect) {
       return {
         decision: {
@@ -328,38 +298,35 @@ export class CharacterAI implements IAIController {
         },
       };
     }
-    // === END VP URGENCY CHECK ===
 
-    // === FORCE MOVEMENT WHEN NO VISIBLE ENEMIES (VP_PLANNING_FIX_SUMMARY.md) ===
-    // When all enemies are Hidden and VP urgency is medium+, force movement
-    // toward enemy deployment zone instead of passive actions
+    // === FORCE MOVEMENT WHEN NO VISIBLE ENEMIES ===
+    // When all enemies are Hidden, force movement toward enemy zone
     const visibleEnemies = context.enemies.filter(e => !e.state.isHidden);
     const allEnemiesHidden = visibleEnemies.length === 0 && context.enemies.length > 0;
-    
-    // Force movement when enemies are Hidden and VP urgency is not low
-    if (allEnemiesHidden && vpUrgency !== 'low') {
+
+    if (allEnemiesHidden) {
       const charPos = context.battlefield.getCharacterPosition(context.character);
       if (charPos) {
         const battlefieldWidth = context.battlefield.width ?? 24;
         const battlefieldHeight = context.battlefield.height ?? 24;
         const isLeftDeployment = charPos.x < battlefieldWidth / 2;
         const enemyZoneX = isLeftDeployment ? battlefieldWidth - 2 : 2;
-        
+
         const dx = enemyZoneX - charPos.x;
         const dy = (battlefieldHeight / 2) - charPos.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        
+
         if (dist > 1.0) {
           const moveDist = Math.min(2, dist);
           const targetX = charPos.x + (dx / dist) * moveDist;
           const targetY = charPos.y + (dy / dist) * moveDist;
-          
+
           return {
             decision: {
               type: 'move',
               position: { x: targetX, y: targetY },
-              reason: `Move toward enemy (Hidden, urgency: ${vpUrgency})`,
-              planning: { source: 'vp_urgency' },
+              reason: 'Move toward enemy zone (all enemies Hidden)',
+              planning: { source: 'tactical' },
               priority: 3.5,
               requiresAP: true,
             },
@@ -367,7 +334,7 @@ export class CharacterAI implements IAIController {
               consideredActions: ['move'],
               scores: { move: 3.5 },
               actionAvailability: { move: 1 },
-              reasoning: `Forced movement: enemies Hidden, urgency ${vpUrgency}`,
+              reasoning: 'Forced movement: all enemies Hidden',
             },
           };
         }

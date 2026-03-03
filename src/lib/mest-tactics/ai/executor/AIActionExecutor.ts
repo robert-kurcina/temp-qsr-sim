@@ -785,7 +785,9 @@ export class AIActionExecutor {
       // QSR Line 855: First Detect per activation is FREE (0 AP)
       const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
       const apCost = hasDetectedThisActivation ? 1 : 0;
-      
+
+      // QSR Line 855: First Detect is FREE (0 AP), but still counts as an action
+      // Only spend AP for subsequent Detects
       if (apCost > 0 && !this.manager.spendAp(character, apCost)) {
         return this.createFailure(
           { type: 'detect', target, reason: 'Detect', priority: 2, requiresAP: true },
@@ -793,10 +795,10 @@ export class AIActionExecutor {
           'Not enough AP'
         );
       }
-      
+
       // Mark that this character has Detected this activation
       character.state.hasDetectedThisActivation = true;
-      
+
       const result = attemptDetect(
         this.manager.battlefield,
         character,
@@ -823,6 +825,43 @@ export class AIActionExecutor {
         error instanceof Error ? error.message : 'Detect failed'
       );
     }
+  }
+
+  /**
+   * Execute Focus option (QSR Line 859)
+   * Focus: Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React.
+   * This is called during enemy's action as an alternative to Reacting.
+   */
+  executeFocus(character: Character): ExecutionResult {
+    // Check if character has Wait status
+    if (!character.state.isWaiting) {
+      return this.createFailure(
+        { type: 'focus', reason: 'Focus', priority: 2, requiresAP: false },
+        character,
+        'Not in Wait status'
+      );
+    }
+
+    // Check if character is Attentive
+    if (!character.state.isAttentive) {
+      return this.createFailure(
+        { type: 'focus', reason: 'Focus', priority: 2, requiresAP: false },
+        character,
+        'Not Attentive (must be Attentive to Focus)'
+      );
+    }
+
+    // Remove Wait status
+    character.state.isWaiting = false;
+
+    // Grant Focus bonus (+1w for next Test)
+    character.state.hasFocus = true;
+
+    return this.createSuccess(
+      { type: 'focus', reason: 'Focus for +1w', priority: 2, requiresAP: false },
+      character,
+      'Removed Wait status, gain +1 Wild die for next Test'
+    );
   }
 
   /**

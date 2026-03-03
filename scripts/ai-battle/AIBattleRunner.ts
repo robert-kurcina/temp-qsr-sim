@@ -2232,15 +2232,12 @@ export class AIBattleRunner {
           this.applyMissionRuntimeUpdate(turnStartUpdate);
         }
 
-        // === R1.5: Update scoring context with ACTUAL VP/RP (not just predictions) ===
-        // DISABLED: Performance overhead too high (~2 min vs ~11s)
-        // VP/RP values are passed directly to AI context for tactical decision-making
-        /*
+        // === R1.5: Update scoring context with ACTUAL VP/RP for Keys to Victory ===
+        // VP/RP values passed to AI context for tactical decision-making
         const coordinatorManager = gameManager.getSideCoordinatorManager();
         if (coordinatorManager) {
           const sideKeyScores = new Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>();
           for (const side of sides) {
-            // Build key scores from ACTUAL VP/RP + predictions
             const actualVp = this.missionVpBySide[side.id] ?? 0;
             const actualRp = this.missionRpBySide[side.id] ?? 0;
 
@@ -2255,11 +2252,11 @@ export class AIBattleRunner {
               .map(([, rp]) => rp);
             const maxEnemyRp = enemyRpValues.length > 0 ? Math.max(...enemyRpValues) : 0;
 
-            // For Elimination mission, key scores are based on actual eliminations
+            // Elimination mission key scores based on actual eliminations
             sideKeyScores.set(side.id, {
               elimination: {
-                current: actualVp,  // Actual VP from eliminations
-                predicted: actualVp + 0.5,  // Predicted additional VP
+                current: actualVp,
+                predicted: actualVp + 0.5,
                 confidence: 0.7,
                 leadMargin: actualVp - maxEnemyVp,
               },
@@ -2270,7 +2267,7 @@ export class AIBattleRunner {
                 leadMargin: 0,
               },
               first_blood: {
-                current: actualRp > 0 ? 1 : 0,  // First blood gives RP
+                current: actualRp > 0 ? 1 : 0,
                 predicted: actualRp > 0 ? 1 : 0.5,
                 confidence: actualRp > 0 ? 1.0 : 0.5,
                 leadMargin: actualRp - maxEnemyRp,
@@ -2286,7 +2283,6 @@ export class AIBattleRunner {
           };
           coordinatorManager.updateAllScoringContexts(sideKeyScores, turn, missionConfig);
         }
-        */
         const turnAudit: TurnAudit = {
           turn,
           activations: [],
@@ -2771,10 +2767,10 @@ export class AIBattleRunner {
           objectiveMarkers: this.buildAiObjectiveMarkerSnapshot(gameManager),
           knowledge: emptyKnowledge(turn),
           config: aiController.getConfig(),
-          // VP/RP for tactical decision-making - DISABLED (causes hanging)
-          // vpBySide: { ...this.missionVpBySide },
-          // rpBySide: { ...this.missionRpBySide },
-          // maxTurns: config.maxTurns,
+          // VP/RP for tactical decision-making (Keys to Victory)
+          vpBySide: { ...this.missionVpBySide },
+          rpBySide: { ...this.missionRpBySide },
+          maxTurns: config.maxTurns,
         };
         context.knowledge = aiController.updateKnowledge(context);
 
