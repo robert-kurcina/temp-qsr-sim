@@ -60,11 +60,11 @@ interface SideConfig {
 }
 
 const GAME_SIZE_CONFIG: Record<GameSize, { battlefieldWidth: number; battlefieldHeight: number; maxTurns: number; bpPerSide: number[]; modelsPerSide: number[] }> = {
-  [GameSize.VERY_SMALL]: { battlefieldWidth: 18, battlefieldHeight: 24, maxTurns: 6, bpPerSide: [250, 300, 350], modelsPerSide: [3, 4, 5] },
-  [GameSize.SMALL]: { battlefieldWidth: 24, battlefieldHeight: 24, maxTurns: 8, bpPerSide: [400, 450, 500], modelsPerSide: [4, 5, 6] },
-  [GameSize.MEDIUM]: { battlefieldWidth: 36, battlefieldHeight: 36, maxTurns: 10, bpPerSide: [600, 700, 800], modelsPerSide: [6, 7, 8] },
-  [GameSize.LARGE]: { battlefieldWidth: 48, battlefieldHeight: 48, maxTurns: 12, bpPerSide: [900, 1000, 1100], modelsPerSide: [8, 9, 10] },
-  [GameSize.VERY_LARGE]: { battlefieldWidth: 72, battlefieldHeight: 48, maxTurns: 15, bpPerSide: [1400, 1500, 1600], modelsPerSide: [16, 17, 18] },
+  [GameSize.VERY_SMALL]: { battlefieldWidth: 18, battlefieldHeight: 24, maxTurns: 6, bpPerSide: [125, 200, 250], modelsPerSide: [2, 3, 4] },
+  [GameSize.SMALL]: { battlefieldWidth: 24, battlefieldHeight: 24, maxTurns: 8, bpPerSide: [250, 375, 500], modelsPerSide: [4, 6, 8] },
+  [GameSize.MEDIUM]: { battlefieldWidth: 36, battlefieldHeight: 36, maxTurns: 10, bpPerSide: [500, 625, 750], modelsPerSide: [6, 9, 12] },
+  [GameSize.LARGE]: { battlefieldWidth: 48, battlefieldHeight: 48, maxTurns: 12, bpPerSide: [750, 875, 1000], modelsPerSide: [8, 10, 12] },
+  [GameSize.VERY_LARGE]: { battlefieldWidth: 72, battlefieldHeight: 48, maxTurns: 15, bpPerSide: [1000, 1125, 1250], modelsPerSide: [10, 15, 20] },
 };
 
 // ============================================================================

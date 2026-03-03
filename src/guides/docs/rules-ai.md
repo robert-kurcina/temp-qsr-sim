@@ -454,11 +454,11 @@ interface CharacterAIConfig {
 
 | Game Size | Models | Turn Time | Memory |
 |-----------|--------|-----------|--------|
-| **Very Small** | 4-8 | <10ms | ~5MB |
-| **Small** | 8-16 | <25ms | ~10MB |
-| **Medium** | 12-24 | <50ms | ~20MB |
-| **Large** | 16-32 | <100ms | ~40MB |
-| **Very Large** | 32-64 | <250ms | ~80MB |
+| **Very Small** | 2-4 | <10ms | ~5MB |
+| **Small** | 4-8 | <25ms | ~10MB |
+| **Medium** | 6-12 | <50ms | ~20MB |
+| **Large** | 8-12 | <100ms | ~40MB |
+| **Very Large** | 10-20 | <250ms | ~80MB |
 
 ---
 

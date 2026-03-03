@@ -61,9 +61,11 @@
 
 | Models per Side | BP per Side | Game Size | Play Area                 | Play Time  |
 | :-------------- | :---------- | :-------- | :------------------------ | :--------- |
-| 4 to 8          | 250 to 500  | Small     | 24" × 24" to 36" × 36"   | 30-60 min  |
-| 9 to 16         | 500 to 1000 | Medium    | 36" × 36" to 48" × 48"   | 60-120 min |
-| 17 to 32        | 1000 to 2000| Large     | 48" × 48" to 72" × 48"   | 120-240 min|
+| 2 to 4          | 125 to 250  | Very Small| 18" × 24"                | 15-30 min  |
+| 4 to 8          | 250 to 500  | Small     | 24" × 24"                | 30-60 min  |
+| 6 to 12         | 500 to 750  | Medium    | 36" × 36"                | 60-120 min |
+| 8 to 12         | 750 to 1000 | Large     | 48" × 48"                | 90-180 min |
+| 10 to 20        | 1000 to 1250| Very Large| 72" × 48"                | 120-240 min|
 
 ## Basic Weapons
 

@@ -28,12 +28,13 @@ import { TacticalDoctrine } from '../ai/stratagems';
 
 const CONFIG = {
   gameSize: GameSize.VERY_LARGE,
-  battlefieldSize: 60,
+  battlefieldWidth: 72,
+  battlefieldHeight: 48,
   maxTurns: 10,
   endGameTriggerTurn: 10,
   terrainDensity: 0.50, // 50% density
-  modelsPerSide: { min: 16, max: 32 },
-  bpPerSide: { min: 1000, max: 2000 },
+  modelsPerSide: { min: 10, max: 20 },
+  bpPerSide: { min: 1000, max: 1250 },
   sideAName: 'Juggernauts',
   sideBName: 'Snipers',
   sideADoctrine: TacticalDoctrine.Juggernaut,
@@ -185,17 +186,17 @@ class BattleRunner {
     return roster;
   }
 
-  createBattlefield(size: number, density: number): Battlefield {
-    const battlefield = new Battlefield(size, size);
+  createBattlefield(width: number, height: number, density: number): Battlefield {
+    const battlefield = new Battlefield(width, height);
 
     // Add terrain based on density
     const terrainTypes = ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks'];
-    const terrainCount = Math.floor(size * density);
+    const terrainCount = Math.floor(Math.max(width, height) * density);
 
     for (let i = 0; i < terrainCount; i++) {
       const terrainName = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-      const x = Math.floor(4 + Math.random() * (size - 8));
-      const y = Math.floor(4 + Math.random() * (size - 8));
+      const x = Math.floor(4 + Math.random() * (width - 8));
+      const y = Math.floor(4 + Math.random() * (height - 8));
       const rotation = Math.floor(Math.random() * 360);
       battlefield.addTerrainElement(new TerrainElement(terrainName, { x, y }, rotation));
     }
@@ -432,7 +433,7 @@ class BattleRunner {
     this.log('='.repeat(80));
     this.log(`\n📋 Configuration:`);
     this.log(`   Game Size: ${CONFIG.gameSize}`);
-    this.log(`   Battlefield: ${CONFIG.battlefieldSize}×${CONFIG.battlefieldSize} MU`);
+    this.log(`   Battlefield: ${CONFIG.battlefieldWidth}×${CONFIG.battlefieldHeight} MU`);
     this.log(`   Terrain Density: ${Math.round(CONFIG.terrainDensity * 100)}%`);
     this.log(`   Max Turns: ${CONFIG.maxTurns}`);
     this.log(`   Mission: QAI_11 - Elimination`);
@@ -441,7 +442,7 @@ class BattleRunner {
     this.log(`   ${CONFIG.sideBName}: ${CONFIG.sideBDoctrine} (Ranged-Centric, Defensive)`);
 
     // Create assemblies
-    const modelCount = 24; // Middle of 16-32 range
+    const modelCount = 15; // Middle of 10-20 range
     const sideAAssembly = this.createAssembly(CONFIG.sideAName, modelCount, 'Veteran');
     const sideBAssembly = this.createAssembly(CONFIG.sideBName, modelCount, 'Veteran');
 
@@ -466,7 +467,7 @@ class BattleRunner {
     });
 
     // Create battlefield
-    const battlefield = this.createBattlefield(CONFIG.battlefieldSize, CONFIG.terrainDensity);
+    const battlefield = this.createBattlefield(CONFIG.battlefieldWidth, CONFIG.battlefieldHeight, CONFIG.terrainDensity);
 
     // Deploy models from sides (not assemblies)
     this.log(`\n📦 Deploying Sides:`);
@@ -478,7 +479,7 @@ class BattleRunner {
     });
     sideB.members.forEach((member: any, i: number) => {
       const x = 2 + (i % 6) * 4;
-      const y = CONFIG.battlefieldSize - 3 - Math.floor(i / 6) * 4;
+      const y = CONFIG.battlefieldHeight - 3 - Math.floor(i / 6) * 4;
       battlefield.placeCharacter(member.character, { x, y });
       if (i < 3) this.log(`   ${member.character.name} -> (${x}, ${y})`);
     });
@@ -597,8 +598,8 @@ class BattleRunner {
     const configuration = {
       gameSize: CONFIG.gameSize,
       battlefield: {
-        width: CONFIG.battlefieldSize,
-        height: CONFIG.battlefieldSize,
+        width: CONFIG.battlefieldWidth,
+        height: CONFIG.battlefieldHeight,
         terrainCount: battlefield.terrain.length,
       },
       maxTurns: CONFIG.maxTurns,

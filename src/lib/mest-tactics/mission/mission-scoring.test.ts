@@ -55,6 +55,8 @@ describe('mission-scoring', () => {
   it('should determine game size with model bias', () => {
     expect(determineGameSize(700, 5)).toBe('SMALL');
     expect(determineGameSize(700, 9)).toBe('LARGE');
+    expect(determineGameSize(1200, 15)).toBe('VERY_LARGE');
+    expect(determineGameSize(1050, 9)).toBe('LARGE');
   });
 
   it('should resolve end-game die additions and endings', () => {

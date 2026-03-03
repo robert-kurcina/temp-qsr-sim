@@ -44,12 +44,12 @@ export interface BattlefieldGenerationResult {
   error?: string;
 }
 
-const GAME_SIZE_DIMENSIONS: Record<string, number> = {
-  VERY_SMALL: 24,
-  SMALL: 36,
-  MEDIUM: 48,
-  LARGE: 60,
-  VERY_LARGE: 72,
+const GAME_SIZE_DIMENSIONS: Record<string, { width: number; height: number }> = {
+  VERY_SMALL: { width: 18, height: 24 },
+  SMALL: { width: 24, height: 24 },
+  MEDIUM: { width: 36, height: 36 },
+  LARGE: { width: 48, height: 48 },
+  VERY_LARGE: { width: 72, height: 48 },
 };
 
 const OUTPUT_DIR = join(process.cwd(), 'generated', 'battlefields');
@@ -67,7 +67,7 @@ export async function generateBattlefield(
     mkdirSync(OUTPUT_DIR, { recursive: true });
 
     // Get battlefield dimensions
-    const size = GAME_SIZE_DIMENSIONS[config.gameSize] || 48;
+    const dimensions = GAME_SIZE_DIMENSIONS[config.gameSize] || { width: 24, height: 24 };
 
     // Convert terrain densities to BattlefieldFactory weights
     // Densities are 0-100, weights are relative importance
@@ -95,7 +95,7 @@ export async function generateBattlefield(
     const effectiveAreaDensity = config.terrainDensities.area > 0 ? Math.max(10, Math.min(100, config.terrainDensities.area)) : 0;
 
     // Create battlefield using factory
-    const battlefield = BattlefieldFactory.create(size, size, {
+    const battlefield = BattlefieldFactory.create(dimensions.width, dimensions.height, {
       terrain: terrainWeights,
       densityRatio: effectiveDensity,
       areaDensityRatio: effectiveAreaDensity,

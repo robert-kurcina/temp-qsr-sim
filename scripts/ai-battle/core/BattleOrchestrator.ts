@@ -151,7 +151,7 @@ export class BattleOrchestrator {
       battlefieldWidth,
       battlefieldHeight,
       maxTurns,
-      endGameTurn: maxTurns - 2,
+      endGameTurn: this.getEndGameTriggerTurn(this.config.gameSize),
       sides: [
         {
           name: 'Alpha',
@@ -216,24 +216,35 @@ export class BattleOrchestrator {
 
   private getBPPerSide(gameSize: GameSize): number[] {
     const bp: Record<GameSize, number[]> = {
-      VERY_SMALL: [250, 300, 350],
-      SMALL: [400, 450, 500],
-      MEDIUM: [600, 700, 800],
-      LARGE: [900, 1000, 1100],
-      VERY_LARGE: [1400, 1500, 1600],
+      VERY_SMALL: [125, 200, 250],
+      SMALL: [250, 375, 500],
+      MEDIUM: [500, 625, 750],
+      LARGE: [750, 875, 1000],
+      VERY_LARGE: [1000, 1125, 1250],
     };
-    return bp[gameSize] || [250, 300, 350];
+    return bp[gameSize] || [125, 200, 250];
   }
 
   private getModelCount(gameSize: GameSize): number[] {
     const counts: Record<GameSize, number[]> = {
-      VERY_SMALL: [3, 4, 5],
-      SMALL: [4, 5, 6],
-      MEDIUM: [6, 7, 8],
-      LARGE: [8, 9, 10],
-      VERY_LARGE: [16, 17, 18],
+      VERY_SMALL: [2, 3, 4],
+      SMALL: [4, 6, 8],
+      MEDIUM: [6, 9, 12],
+      LARGE: [8, 10, 12],
+      VERY_LARGE: [10, 15, 20],
     };
-    return counts[gameSize] || [3, 4, 5];
+    return counts[gameSize] || [2, 3, 4];
+  }
+
+  private getEndGameTriggerTurn(gameSize: GameSize): number {
+    const triggers: Record<GameSize, number> = {
+      VERY_SMALL: 3,
+      SMALL: 4,
+      MEDIUM: 6,
+      LARGE: 8,
+      VERY_LARGE: 10,
+    };
+    return triggers[gameSize] || 4;
   }
 
   private getMissionName(missionId: string): string {

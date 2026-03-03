@@ -8,8 +8,8 @@
  * - VERY_SMALL (2-4 models, 125-250 BP): Turn 3
  * - SMALL (4-8 models, 250-500 BP): Turn 4
  * - MEDIUM (6-12 models, 500-750 BP): Turn 6
- * - LARGE (8-16 models, 750-1000 BP): Turn 8
- * - VERY_LARGE (16+ models, 1000+ BP): Turn 10
+ * - LARGE (8-12 models, 750-1000 BP): Turn 8
+ * - VERY_LARGE (10-20 models, 1000-1250 BP): Turn 10
  *
  * Source: MEST.Tactics.QSR.txt Line 744-750
  */
@@ -46,9 +46,9 @@ export function getEndGameTriggerTurn(gameSize: GameSize): number {
     case GameSize.MEDIUM:
       return 6;  // 6-12 models, 500-750 BP
     case GameSize.LARGE:
-      return 8;  // 8-16 models, 750-1000 BP
+      return 8;  // 8-12 models, 750-1000 BP
     case GameSize.VERY_LARGE:
-      return 10; // 16+ models, 1000+ BP
+      return 10; // 10-20 models, 1000-1250 BP
     default:
       return 4;  // Default to SMALL
   }

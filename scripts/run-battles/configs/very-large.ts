@@ -1,9 +1,9 @@
 /**
  * VERY_LARGE Battle Configuration
  *
- * QSR Standard: 16-24 models per side
- * End-Game Trigger: Turn 7
- * Battlefield: 72"×72"
+ * Canonical (src/data/game_sizes.json): 10-20 models per side
+ * End-Game Trigger: Turn 10
+ * Battlefield: 72×48 MU
  */
 
 import { GameSize } from '../../../src/lib/mest-tactics/mission/assembly-builder';

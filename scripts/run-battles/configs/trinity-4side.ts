@@ -3,7 +3,7 @@
  *
  * QAI_17 Trinity Mission - Supports up to 4 sides
  * LARGE game size for epic battles
- * Battlefield: 60"×60"
+ * Battlefield: 48×48 MU
  */
 
 import { GameSize } from '../../../src/lib/mest-tactics/mission/assembly-builder';

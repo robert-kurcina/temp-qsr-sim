@@ -18,9 +18,10 @@ import { resolveDamageTest, DamageTestContext } from '../src/lib/mest-tactics/su
 // VERY_LARGE game configuration
 const VERY_LARGE_CONFIG = {
   name: 'Very Large',
-  modelsPerSide: [16, 32],
-  bpPerSide: [1000, 2000],
-  battlefieldSize: 60,
+  modelsPerSide: [10, 20],
+  bpPerSide: [1000, 1250],
+  battlefieldWidth: 72,
+  battlefieldHeight: 48,
   maxTurns: 10,
   endGameTurn: 10,
 };
@@ -177,7 +178,7 @@ class VeryLargeGameRunner {
 
   async runGame(): Promise<{ winner: string; log: GameLogEntry[]; stats: GameStats }> {
     console.log(`\n⚔️  Starting ${VERY_LARGE_CONFIG.name} Game\n`);
-    console.log(`Battlefield: ${VERY_LARGE_CONFIG.battlefieldSize}×${VERY_LARGE_CONFIG.battlefieldSize} MU`);
+    console.log(`Battlefield: ${VERY_LARGE_CONFIG.battlefieldWidth}×${VERY_LARGE_CONFIG.battlefieldHeight} MU`);
     console.log(`Max Turns: ${VERY_LARGE_CONFIG.maxTurns}`);
     console.log(`Models per Side: ${VERY_LARGE_CONFIG.modelsPerSide[0]} to ${VERY_LARGE_CONFIG.modelsPerSide[1]}`);
     console.log(`BP per Side: ${VERY_LARGE_CONFIG.bpPerSide[0]} to ${VERY_LARGE_CONFIG.bpPerSide[1]}\n`);
@@ -190,11 +191,11 @@ class VeryLargeGameRunner {
     console.log(`Bravo: ${sideB.characters.length} models, ${sideB.totalBP} BP\n`);
 
     // Create battlefield with densityRatio 100
-    const battlefield = this.createBattlefield(VERY_LARGE_CONFIG.battlefieldSize, 100);
+    const battlefield = this.createBattlefield(VERY_LARGE_CONFIG.battlefieldWidth, VERY_LARGE_CONFIG.battlefieldHeight, 100);
 
     // Deploy models
-    this.deployModels(sideA, battlefield, 0, VERY_LARGE_CONFIG.battlefieldSize);
-    this.deployModels(sideB, battlefield, 1, VERY_LARGE_CONFIG.battlefieldSize);
+    this.deployModels(sideA, battlefield, 0, VERY_LARGE_CONFIG.battlefieldWidth, VERY_LARGE_CONFIG.battlefieldHeight);
+    this.deployModels(sideB, battlefield, 1, VERY_LARGE_CONFIG.battlefieldWidth, VERY_LARGE_CONFIG.battlefieldHeight);
 
     console.log('Models deployed.\n');
     console.log('─'.repeat(80) + '\n');
@@ -317,17 +318,17 @@ class VeryLargeGameRunner {
     return buildAssembly(name, profiles);
   }
 
-  private createBattlefield(size: number, densityRatio: number): Battlefield {
-    const battlefield = new Battlefield(size, size);
+  private createBattlefield(width: number, height: number, densityRatio: number): Battlefield {
+    const battlefield = new Battlefield(width, height);
 
     // Add terrain (20% coverage * densityRatio/100)
     const terrainTypes = ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks'];
-    const terrainCount = Math.floor(size * 0.2 * (densityRatio / 100));
+    const terrainCount = Math.floor(Math.max(width, height) * 0.2 * (densityRatio / 100));
 
     for (let i = 0; i < terrainCount; i++) {
       const terrainName = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-      const x = Math.floor(4 + Math.random() * (size - 8));
-      const y = Math.floor(4 + Math.random() * (size - 8));
+      const x = Math.floor(4 + Math.random() * (width - 8));
+      const y = Math.floor(4 + Math.random() * (height - 8));
       const rotation = Math.floor(Math.random() * 360);
 
       battlefield.addTerrainElement(new TerrainElement(terrainName, { x, y }, rotation));
@@ -336,7 +337,7 @@ class VeryLargeGameRunner {
     return battlefield;
   }
 
-  private deployModels(assembly: any, battlefield: Battlefield, sideIndex: number, size: number) {
+  private deployModels(assembly: any, battlefield: Battlefield, sideIndex: number, width: number, height: number) {
     const edgeMargin = 2;
     const modelsPerRow = 8;
     
@@ -350,10 +351,10 @@ class VeryLargeGameRunner {
         y = edgeMargin + row * 6;
       } else {
         x = edgeMargin + col * 6;
-        y = size - edgeMargin - 1 - row * 6;
+        y = height - edgeMargin - 1 - row * 6;
       }
-      x = Math.max(0, Math.min(size - 1, x));
-      y = Math.max(0, Math.min(size - 1, y));
+      x = Math.max(0, Math.min(width - 1, x));
+      y = Math.max(0, Math.min(height - 1, y));
       battlefield.placeCharacter(char, { x, y });
     });
   }

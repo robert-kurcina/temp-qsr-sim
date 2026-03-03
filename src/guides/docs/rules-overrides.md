@@ -159,7 +159,7 @@ For Quick Start Rules (QSR) games, the default Game Size is **SMALL**:
 - 4-8 models per side
 - 250-500 BP per side
 - Turn 4 End-Game Trigger
-- 36"×36" battlefield
+- 24"×24" battlefield
 
 ### Implementation Notes
 
@@ -176,8 +176,8 @@ const defaults = {
   [GameSize.VERY_SMALL]: { bpLimitMin: 125, bpLimitMax: 250, models: 2-4 },
   [GameSize.SMALL]: { bpLimitMin: 250, bpLimitMax: 500, models: 4-8 },
   [GameSize.MEDIUM]: { bpLimitMin: 500, bpLimitMax: 750, models: 6-12 },
-  [GameSize.LARGE]: { bpLimitMin: 750, bpLimitMax: 1000, models: 8-16 },
-  [GameSize.VERY_LARGE]: { bpLimitMin: 1000, bpLimitMax: 1250, models: 16-24 },
+  [GameSize.LARGE]: { bpLimitMin: 750, bpLimitMax: 1000, models: 8-12 },
+  [GameSize.VERY_LARGE]: { bpLimitMin: 1000, bpLimitMax: 1250, models: 10-20 },
 };
 ```
 

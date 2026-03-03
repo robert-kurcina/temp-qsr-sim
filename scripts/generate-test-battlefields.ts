@@ -17,11 +17,11 @@ import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/Terr
 import { exportBattlefield } from '../src/lib/mest-tactics/battlefield/BattlefieldExporter';
 
 const GAME_SIZES = [
-  { name: 'VERY_SMALL', size: 24 },
-  { name: 'SMALL', size: 36 },
-  { name: 'MEDIUM', size: 48 },
-  { name: 'LARGE', size: 60 },
-  { name: 'VERY_LARGE', size: 72 },
+  { name: 'VERY_SMALL', width: 18, height: 24 },
+  { name: 'SMALL', width: 24, height: 24 },
+  { name: 'MEDIUM', width: 36, height: 36 },
+  { name: 'LARGE', width: 48, height: 48 },
+  { name: 'VERY_LARGE', width: 72, height: 48 },
 ];
 
 const DENSITIES = [50];  // Just test 50% density
@@ -41,19 +41,19 @@ for (const gameSize of GAME_SIZES) {
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
       const battleId = `${gameSize.name}-${density}-${battle}`;
 
-      console.log(`Generating: ${battleId} (${gameSize.size}×${gameSize.size} MU, ${density}% density)`);
+      console.log(`Generating: ${battleId} (${gameSize.width}×${gameSize.height} MU, ${density}% density)`);
 
       // Generate terrain with layered placement
       const terrainResult = placeTerrain({
         mode: 'balanced',
         density: density,
-        battlefieldSize: gameSize.size,
+        battlefieldSize: Math.max(gameSize.width, gameSize.height),
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks', 'Small Rough Patch', 'Medium Rough Patch', 'Large Rough Patch'],
         seed: Math.floor(Math.random() * 1000000),
       });
 
       // Create battlefield
-      const battlefield = new Battlefield(gameSize.size, gameSize.size);
+      const battlefield = new Battlefield(gameSize.width, gameSize.height);
       for (const terrainFeature of terrainResult.terrain) {
         const centroid = getCentroid(terrainFeature.vertices);
         const typeLower = (terrainFeature.id || terrainFeature.type || 'Tree').toLowerCase();
@@ -91,8 +91,8 @@ for (const gameSize of GAME_SIZES) {
 
       // Export SVG
       const svg = SvgRenderer.render(battlefield, {
-        width: gameSize.size,
-        height: gameSize.size,
+        width: gameSize.width,
+        height: gameSize.height,
         gridResolution: 0.5,
         title: `${gameSize.name} - ${density}% Density`,
         layers: [

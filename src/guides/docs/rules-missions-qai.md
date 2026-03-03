@@ -16,7 +16,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -50,7 +50,7 @@ Use the standard rules. There can be 2 to 4 mutually Opposing Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -92,7 +92,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, Att 375 / Def 250 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, Att 750 / Def 500 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, Att 1000 / Def 750 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, Att 1000 / Def 750 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -140,7 +140,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -182,7 +182,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -232,7 +232,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -290,7 +290,7 @@ Use the standard rules. There are 3 mutually Opposing Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -340,7 +340,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.
@@ -398,7 +398,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, Def 250 / Horde 375 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, Def 500 / Horde 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, Def 750 / Horde 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, Def 750 / Horde 1000 BP, 48 x 48 MU, Turn 8
 
 **Archetype Restrictions**
 - Defenders must purchase **Veteran or higher** archetypes only.
@@ -463,7 +463,7 @@ Use the standard rules. There are just 2 Sides.
 **Models per Side / BP / Battlefield / End-game**
 - Small: 4 to 8, 250 to 500 BP, 24 x 24 MU, Turn 4
 - Medium: 6 to 12, 500 to 750 BP, 36 x 36 MU, Turn 6
-- Large: 8 to 16, 750 to 1000 BP, 48 x 48 MU, Turn 8
+- Large: 8 to 12, 750 to 1000 BP, 48 x 48 MU, Turn 8
 
 **Battlefield**
 - Terrain.

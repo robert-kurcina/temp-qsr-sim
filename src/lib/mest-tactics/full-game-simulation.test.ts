@@ -27,17 +27,18 @@ interface GameSizeConfig {
   name: string;
   modelsPerSide: [number, number];
   bpPerSide: [number, number];
-  battlefieldSize: number;
+  battlefieldWidth: number;
+  battlefieldHeight: number;
   maxTurns: number;
   endGameTurn: number;
 }
 
 const GAME_SIZES: Record<string, GameSizeConfig> = {
-  VERY_SMALL: { name: 'Very Small', modelsPerSide: [2, 4], bpPerSide: [125, 250], battlefieldSize: 18, maxTurns: 10, endGameTurn: 10 },
-  SMALL: { name: 'Small', modelsPerSide: [4, 8], bpPerSide: [250, 500], battlefieldSize: 24, maxTurns: 10, endGameTurn: 10 },
-  MEDIUM: { name: 'Medium', modelsPerSide: [6, 12], bpPerSide: [500, 750], battlefieldSize: 36, maxTurns: 10, endGameTurn: 10 },
-  LARGE: { name: 'Large', modelsPerSide: [8, 16], bpPerSide: [750, 1000], battlefieldSize: 48, maxTurns: 10, endGameTurn: 10 },
-  VERY_LARGE: { name: 'Very Large', modelsPerSide: [16, 32], bpPerSide: [1000, 2000], battlefieldSize: 60, maxTurns: 10, endGameTurn: 10 },
+  VERY_SMALL: { name: 'Very Small', modelsPerSide: [2, 4], bpPerSide: [125, 250], battlefieldWidth: 18, battlefieldHeight: 24, maxTurns: 10, endGameTurn: 3 },
+  SMALL: { name: 'Small', modelsPerSide: [4, 8], bpPerSide: [250, 500], battlefieldWidth: 24, battlefieldHeight: 24, maxTurns: 10, endGameTurn: 4 },
+  MEDIUM: { name: 'Medium', modelsPerSide: [6, 12], bpPerSide: [500, 750], battlefieldWidth: 36, battlefieldHeight: 36, maxTurns: 10, endGameTurn: 6 },
+  LARGE: { name: 'Large', modelsPerSide: [8, 12], bpPerSide: [750, 1000], battlefieldWidth: 48, battlefieldHeight: 48, maxTurns: 10, endGameTurn: 8 },
+  VERY_LARGE: { name: 'Very Large', modelsPerSide: [10, 20], bpPerSide: [1000, 1250], battlefieldWidth: 72, battlefieldHeight: 48, maxTurns: 10, endGameTurn: 10 },
 };
 
 interface GameLogEntry {
@@ -226,7 +227,7 @@ class FullGameRunner {
   ): Promise<{ winner: string; log: GameLogEntry[]; stats: GameStats }> {
     if (verbose) {
       console.log(`\n⚔️  Starting ${sizeConfig.name} Game\n`);
-      console.log(`Battlefield: ${sizeConfig.battlefieldSize}×${sizeConfig.battlefieldSize} MU`);
+      console.log(`Battlefield: ${sizeConfig.battlefieldWidth}×${sizeConfig.battlefieldHeight} MU`);
       console.log(`Max Turns: ${sizeConfig.maxTurns}\n`);
     }
 
@@ -240,11 +241,11 @@ class FullGameRunner {
     }
 
     // Create battlefield
-    const battlefield = this.createBattlefield(sizeConfig.battlefieldSize);
+    const battlefield = this.createBattlefield(sizeConfig.battlefieldWidth, sizeConfig.battlefieldHeight);
     
     // Deploy models
-    this.deployModels(sideA, battlefield, 0, sizeConfig.battlefieldSize);
-    this.deployModels(sideB, battlefield, 1, sizeConfig.battlefieldSize);
+    this.deployModels(sideA, battlefield, 0, sizeConfig.battlefieldWidth, sizeConfig.battlefieldHeight);
+    this.deployModels(sideB, battlefield, 1, sizeConfig.battlefieldWidth, sizeConfig.battlefieldHeight);
 
     if (verbose) {
       console.log('Models deployed.\n');
@@ -364,17 +365,17 @@ class FullGameRunner {
     return buildAssembly(name, profiles);
   }
 
-  private createBattlefield(size: number): Battlefield {
-    const battlefield = new Battlefield(size, size);
+  private createBattlefield(width: number, height: number): Battlefield {
+    const battlefield = new Battlefield(width, height);
     
     // Add terrain (20% coverage) using valid terrain element names
     const terrainTypes = ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks'];
-    const terrainCount = Math.floor(size * 0.2);
+    const terrainCount = Math.floor(Math.max(width, height) * 0.2);
     
     for (let i = 0; i < terrainCount; i++) {
       const terrainName = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-      const x = Math.floor(4 + Math.random() * (size - 8));
-      const y = Math.floor(4 + Math.random() * (size - 8));
+      const x = Math.floor(4 + Math.random() * (width - 8));
+      const y = Math.floor(4 + Math.random() * (height - 8));
       const rotation = Math.floor(Math.random() * 360);
       
       battlefield.addTerrainElement(new TerrainElement(terrainName, { x, y }, rotation));
@@ -383,7 +384,7 @@ class FullGameRunner {
     return battlefield;
   }
 
-  private deployModels(assembly: any, battlefield: Battlefield, sideIndex: number, size: number) {
+  private deployModels(assembly: any, battlefield: Battlefield, sideIndex: number, width: number, height: number) {
     const edgeMargin = 2;
     assembly.characters.forEach((char: any, i: number) => {
       let x, y;
@@ -392,10 +393,10 @@ class FullGameRunner {
         y = edgeMargin + Math.floor(i / 4) * 4;
       } else {
         x = edgeMargin + (i % 4) * 4;
-        y = size - edgeMargin - 1 - Math.floor(i / 4) * 4;
+        y = height - edgeMargin - 1 - Math.floor(i / 4) * 4;
       }
-      x = Math.max(0, Math.min(size - 1, x));
-      y = Math.max(0, Math.min(size - 1, y));
+      x = Math.max(0, Math.min(width - 1, x));
+      y = Math.max(0, Math.min(height - 1, y));
       battlefield.placeCharacter(char, { x, y });
     });
   }
@@ -645,7 +646,7 @@ describe('Full End-to-End AI vs AI Game Simulation', () => {
     expect(result.stats.totalActions).toBeGreaterThan(0);
   });
 
-  it('should run a complete LARGE game (8-16 models)', async () => {
+  it('should run a complete LARGE game (8-12 models)', async () => {
     const result = await runner.runGame(GAME_SIZES.LARGE, 'Army A', 'Army B', true);
     expect(result.winner).toBeDefined();
     expect(result.stats.totalActions).toBeGreaterThan(0);
