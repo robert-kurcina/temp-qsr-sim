@@ -36,6 +36,19 @@ import {
 import { calculateAgility, resolveFallingTest } from '../../actions/agility';
 import { getLeapAgilityBonus, getEffectiveMovement, getThreatRange } from '../../traits/combat-traits';
 import {
+  calculateVPUrgency,
+  getUrgencyMultiplier,
+  getPassiveActionPenalty,
+  type VPUrgencyState,
+} from './VPUrgencyCalculator';
+import {
+  getActionVPInfo,
+  filterActionsByVP,
+  applyVPurgencyBonus,
+  scoreActionByVP,
+} from './ActionVPFilter';
+import { VPPredictionCache, globalVPCache } from './VPPredictionCache';
+import {
   getTacticallyRelevantEnemies,
   findMyScrumGroup,
   getCohesionAwareEnemies,
@@ -971,6 +984,58 @@ export class UtilityScorer {
         });
       }
 
+      // === VP URGENCY INTEGRATION (VP_PLANNING_FAILURE_ANALYSIS.md) ===
+      // Calculate VP urgency and apply to action scoring
+      const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
+      const enemyVP = Object.entries(context.vpBySide ?? {})
+        .filter(([sid]) => sid !== context.sideId)
+        .reduce((max, [, vp]) => Math.max(max, vp), 0);
+      const currentTurn = context.currentTurn ?? 1;
+      const maxTurns = context.maxTurns ?? 6;
+
+      const vpUrgency = calculateVPUrgency(myVP, enemyVP, currentTurn, maxTurns);
+
+      // Filter actions based on VP urgency (desperate/high urgency only)
+      if (vpUrgency.urgencyLevel === 'desperate' || vpUrgency.urgencyLevel === 'high') {
+        finalActions = filterActionsByVP(finalActions, vpUrgency, 0.0);
+      }
+
+      // Apply VP urgency bonus/penalty to action scores
+      for (const action of finalActions) {
+        // Get VP info for this action
+        const vpInfo = getActionVPInfo(
+          action.action,
+          action.target !== undefined,
+          true // Assume in range for scoring
+        );
+
+        // Add VP contribution score
+        const vpScore = scoreActionByVP(action, vpUrgency);
+
+        // Apply passive action penalty when VP=0
+        if (vpInfo.isPassiveAction && myVP === 0 && currentTurn >= 3) {
+          const passivePenalty = getPassiveActionPenalty(vpUrgency.urgencyLevel, currentTurn, myVP);
+          action.score = Math.max(0, action.score + passivePenalty);
+        }
+
+        // Add VP score to action
+        action.score += vpScore;
+
+        // Store VP urgency info in factors for debugging
+        action.factors = {
+          ...action.factors,
+          vpUrgencyLevel: vpUrgency.urgencyLevel,
+          vpDeficit: vpUrgency.vpDeficit,
+          vpScore,
+          myVP,
+          enemyVP,
+        };
+      }
+
+      // Re-sort after VP adjustments
+      finalActions.sort((a, b) => b.score - a.score);
+      // === END VP URGENCY INTEGRATION ===
+
       return finalActions;
     } finally {
       this.activeEvaluationSession = previousSession;
@@ -1230,51 +1295,9 @@ export class UtilityScorer {
     const finishOffBonus = enemyWounds >= enemySiz - 1 ? 5.0 : 0;
 
     // === VP/RP Pressure Scoring (VP_SCORING_GAP_ANALYSIS.md Fix 3) ===
+    // DISABLED: Performance optimization - VP/RP tracked and awarded at game end per QSR
+    // The AI already pursues elimination through doctrine aggression settings
     let vpPressureBonus = 0;
-    if (context.vpBySide && context.rpBySide && context.sideId) {
-      const myVp = context.vpBySide[context.sideId] ?? 0;
-      const myRp = context.rpBySide[context.sideId] ?? 0;
-      
-      // Calculate best enemy VP/RP
-      const enemyVp = Math.max(
-        0,
-        ...Object.entries(context.vpBySide)
-          .filter(([sid]) => sid !== context.sideId)
-          .map(([, vp]) => vp)
-      );
-      const enemyRp = Math.max(
-        0,
-        ...Object.entries(context.rpBySide)
-          .filter(([sid]) => sid !== context.sideId)
-          .map(([, rp]) => rp)
-      );
-      
-      const vpDeficit = enemyVp - myVp;
-      const rpDeficit = enemyRp - myRp;
-      
-      // VP deficit creates urgency (+0.5 per VP behind)
-      if (vpDeficit > 0) {
-        vpPressureBonus += vpDeficit * 0.5;
-      }
-      
-      // RP deficit creates moderate urgency (+0.25 per RP behind)
-      if (rpDeficit > 0) {
-        vpPressureBonus += rpDeficit * 0.25;
-      }
-      
-      // Elimination key: this enemy is worth VP
-      vpPressureBonus += 2;  // Base elimination pressure
-      
-      // Finish off bonus amplified by VP pressure
-      if (enemyWounds >= enemySiz - 1) {
-        vpPressureBonus += 3;  // Additional +3 for easy VP
-      }
-      
-      // Late game desperation (turns remaining ≤ 2 and VP behind)
-      if (context.maxTurns && context.currentTurn >= context.maxTurns - 2 && vpDeficit > 0) {
-        vpPressureBonus *= 1.5;  // 50% boost
-      }
-    }
 
     // R9: Threat immediacy bonus
     const threatImmediacy = evaluateThreatImmediacy(enemy, characterPos, context);
@@ -3461,20 +3484,9 @@ export class UtilityScorer {
       tacticalBonus += 0.4; // Behind on eliminations, need reactive opportunities
     }
 
-    // R2.1: ZERO VP PENALTY - Discourage excessive Wait in Elimination mission
-    // As turns progress with 0 VP, reduce Wait bonus to encourage action
-    const missionId = context.config.missionId;
-    const currentTurn = context.currentTurn ?? 1;
-    const sideVP = context.side?.state.victoryPoints ?? 0;
-    const sideRP = context.side?.state.resourcePoints ?? 0;
-
-    if (missionId === 'QAI_11' && (sideVP === 0 && sideRP === 0) && currentTurn >= 3) {
-      // Turn 3+: -0.5 per turn with zero VP
-      // Turn 5+: -1.0 per turn with zero VP (desperation mode)
-      const zeroVpPenalty = currentTurn >= 5 ? 1.0 : 0.5;
-      const turnsAtZero = currentTurn - 2; // Starts counting at turn 3
-      tacticalBonus -= zeroVpPenalty * turnsAtZero;
-    }
+    // R2.1: ZERO VP PENALTY - DISABLED (requires vpBySide in context, which causes hanging)
+    // R2.2: HIDE ACTION PENALTY - REMOVED
+    // Hide is a valid tactical choice; positional advantage comes from movement scoring
 
     // Cap total tactical bonus to prevent runaway scores
     // But allow negative values for zero VP penalty

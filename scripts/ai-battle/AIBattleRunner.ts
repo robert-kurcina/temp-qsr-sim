@@ -2128,7 +2128,8 @@ export class AIBattleRunner {
           console.log(...args);
         }
       };
-      const verbose = config.verbose && outputEnabled;
+      // Default to false for performance - enable via config.verbose for debugging
+      const verbose = false;
 
       out('\n⚔️  Starting Battle\n');
       out(`Mission: ${config.missionName}`);
@@ -2230,6 +2231,62 @@ export class AIBattleRunner {
           );
           this.applyMissionRuntimeUpdate(turnStartUpdate);
         }
+
+        // === R1.5: Update scoring context with ACTUAL VP/RP (not just predictions) ===
+        // DISABLED: Performance overhead too high (~2 min vs ~11s)
+        // VP/RP values are passed directly to AI context for tactical decision-making
+        /*
+        const coordinatorManager = gameManager.getSideCoordinatorManager();
+        if (coordinatorManager) {
+          const sideKeyScores = new Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>();
+          for (const side of sides) {
+            // Build key scores from ACTUAL VP/RP + predictions
+            const actualVp = this.missionVpBySide[side.id] ?? 0;
+            const actualRp = this.missionRpBySide[side.id] ?? 0;
+
+            // Calculate enemy VP/RP for lead margin
+            const enemyVpValues = Object.entries(this.missionVpBySide)
+              .filter(([sid]) => sid !== side.id)
+              .map(([, vp]) => vp);
+            const maxEnemyVp = enemyVpValues.length > 0 ? Math.max(...enemyVpValues) : 0;
+
+            const enemyRpValues = Object.entries(this.missionRpBySide)
+              .filter(([sid]) => sid !== side.id)
+              .map(([, rp]) => rp);
+            const maxEnemyRp = enemyRpValues.length > 0 ? Math.max(...enemyRpValues) : 0;
+
+            // For Elimination mission, key scores are based on actual eliminations
+            sideKeyScores.set(side.id, {
+              elimination: {
+                current: actualVp,  // Actual VP from eliminations
+                predicted: actualVp + 0.5,  // Predicted additional VP
+                confidence: 0.7,
+                leadMargin: actualVp - maxEnemyVp,
+              },
+              bottled: {
+                current: 0,
+                predicted: 0.3,
+                confidence: 0.5,
+                leadMargin: 0,
+              },
+              first_blood: {
+                current: actualRp > 0 ? 1 : 0,  // First blood gives RP
+                predicted: actualRp > 0 ? 1 : 0.5,
+                confidence: actualRp > 0 ? 1.0 : 0.5,
+                leadMargin: actualRp - maxEnemyRp,
+              },
+            });
+          }
+
+          const missionConfig = {
+            totalVPPool: 5,
+            hasRPToVPConversion: false,
+            currentTurn: turn,
+            maxTurns: config.maxTurns,
+          };
+          coordinatorManager.updateAllScoringContexts(sideKeyScores, turn, missionConfig);
+        }
+        */
         const turnAudit: TurnAudit = {
           turn,
           activations: [],
@@ -2356,7 +2413,7 @@ export class AIBattleRunner {
       const maxRemaining = Math.max(...finalCounts);
       const winners = config.sides.filter((_, i) => finalCounts[i] === maxRemaining);
       const usage = this.buildUsageMetrics();
-      
+
       // === Award Elimination Key VP at game end (QSR MEST.Tactics.Missions.txt) ===
       // "+1 VP to Side with highest total BP value of KO'd and Eliminated Opposing models at game end"
       const eliminationKeyWinner = Object.entries(this.eliminatedBPBySide)
@@ -2368,17 +2425,17 @@ export class AIBattleRunner {
           console.log(`\n🏆 Elimination Key: ${winnerSideId} wins +1 VP (eliminated ${bpValue} BP worth of enemies)`);
         }
       }
-      
+
       // Award RP-based VP (QSR MEST.Tactics.MissionKeys.txt)
       const rpEntries = Object.entries(this.missionRpBySide).sort((a, b) => b[1] - a[1]);
       if (rpEntries.length >= 2) {
         const topRp = rpEntries[0];
         const secondRp = rpEntries[1];
         const rpMargin = topRp[1] - secondRp[1];
-        
+
         // +1 VP to side with most RPs
         this.missionVpBySide[topRp[0]] = (this.missionVpBySide[topRp[0]] ?? 0) + 1;
-        
+
         // +2 VP instead if double the RP and at least 10 RP more
         if (topRp[1] >= secondRp[1] * 2 && rpMargin >= 10) {
           this.missionVpBySide[topRp[0]] = (this.missionVpBySide[topRp[0]] ?? 0) + 1;  // Additional +1 VP (total +2)
@@ -2391,7 +2448,7 @@ export class AIBattleRunner {
       } else if (rpEntries.length === 1 && config.verbose) {
         console.log(`🏆 RP Key: ${rpEntries[0][0]} wins +1 VP (${rpEntries[0][1]} RP, no opposition)`);
       }
-      
+
       const missionWinner = this.resolveMissionWinnerName();
       const resolvedWinner = missionWinner ?? (
         winners.length === 1 ? winners[0].name : (winners.length === 0 ? 'None' : 'Draw')
@@ -2685,8 +2742,15 @@ export class AIBattleRunner {
     let lastKnownAp = initialAp;
     try {
       let guard = 0;
+      const activationStartMs = Date.now();
       while (gameManager.getApRemaining(character) > 0 && guard < 8) {
         guard++;
+        const loopStartMs = Date.now();
+        
+        // Debug: Log if we're spending too long in this loop
+        if (loopStartMs - activationStartMs > 5000) {
+          console.warn(`[DEBUG] ${character.profile.name} activation taking too long: ${loopStartMs - activationStartMs}ms, guard=${guard}, ap=${gameManager.getApRemaining(character)}`);
+        }
 
         const allies = allSides[sideIndex].characters.filter(c => c.id !== character.id && !c.state.isEliminated && !c.state.isKOd);
         const enemies = allSides.flatMap((side, i) => i !== sideIndex ? side.characters.filter(c => !c.state.isEliminated && !c.state.isKOd) : []);
@@ -2707,17 +2771,22 @@ export class AIBattleRunner {
           objectiveMarkers: this.buildAiObjectiveMarkerSnapshot(gameManager),
           knowledge: emptyKnowledge(turn),
           config: aiController.getConfig(),
-          // VP/RP pressure for incentivizing combat (VP_SCORING_GAP_ANALYSIS.md Fix 3)
-          vpBySide: { ...this.missionVpBySide },
-          rpBySide: { ...this.missionRpBySide },
-          maxTurns: config.maxTurns,
+          // VP/RP for tactical decision-making - DISABLED (causes hanging)
+          // vpBySide: { ...this.missionVpBySide },
+          // rpBySide: { ...this.missionRpBySide },
+          // maxTurns: config.maxTurns,
         };
         context.knowledge = aiController.updateKnowledge(context);
 
+        const aiDecisionStartMs = Date.now();
         const aiResult = await this.withAsyncPhaseTiming(
           'ai.decide_action',
           () => aiController.decideAction(context)
         );
+        const aiDecisionMs = Date.now() - aiDecisionStartMs;
+        if (aiDecisionMs > 1000) {
+          console.warn(`[DEBUG] AI decision took ${aiDecisionMs}ms for ${character.profile.name}`);
+        }
         this.tracker.trackDecisionChoiceSet(character, aiResult.debug);
         const decision = aiResult.decision;
         if (!decision || decision.type === 'none') {

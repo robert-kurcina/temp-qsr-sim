@@ -149,6 +149,16 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   p2Pool.modifier = (p2Pool.modifier || 0) + (p2Bonuses.modifier || 0);
   p2Pool.wild = (p2Pool.wild || 0) + (p2Bonuses.wild || 0);
 
+  // QSR Line 859: Focus bonus - +1w if character has Focus
+  if (p1.character?.state.hasFocus) {
+    p1Pool.wild = (p1Pool.wild || 0) + 1;
+    p1.character.state.hasFocus = false; // Consume Focus bonus
+  }
+  if (p2.character?.state.hasFocus) {
+    p2Pool.wild = (p2Pool.wild || 0) + 1;
+    p2.character.state.hasFocus = false; // Consume Focus bonus
+  }
+
   // Only cancel dice above the base minimum of 2 for base dice
   const basePart1 = Math.max(0, (p1Pool.base || 0) - 2);
   const basePart2 = Math.max(0, (p2Pool.base || 0) - 2);

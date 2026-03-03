@@ -33,6 +33,8 @@ export class Character {
     isEliminated: boolean;
     eliminatedByFear: boolean; // QSR: Track if eliminated by Fear tokens (vs combat)
     isOverreach: boolean; // QSR: -1 REF penalty when Overreach declared
+    hasDetectedThisActivation: boolean; // QSR Line 855: First Detect is free
+    hasFocus: boolean; // QSR Line 859: Focus bonus (+1w for next Test)
     statusEffects: string[];
     statusTokens: Record<string, number>;
     statusPendingTokens: Record<string, number>;
@@ -94,6 +96,8 @@ export class Character {
       isEliminated: false,
       eliminatedByFear: false, // QSR: Track if eliminated by Fear tokens
       isOverreach: false, // QSR: -1 REF penalty when Overreach declared
+      hasDetectedThisActivation: false, // QSR Line 855: First Detect is free
+      hasFocus: false, // QSR Line 859: Focus bonus (+1w for next Test)
       hasPushedThisInitiative: false,
       statusEffects: [],
       statusTokens: {},
@@ -152,6 +156,8 @@ export class Character {
     this.state.hasPushedThisInitiative = false;
     this.state.gritFearReducedThisTurn = false;
     this.state.activeWeaponIndex = undefined;
+    this.state.hasDetectedThisActivation = false; // QSR Line 855: Reset for new activation
+    this.state.hasFocus = false; // QSR Line 859: Reset Focus bonus
   }
 
   private applyLadenEffects(): void {

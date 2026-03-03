@@ -641,7 +641,7 @@ export interface BonusActionDecision {
 
 /**
  * Stealth Evaluator
- * 
+ *
  * Handles Hide and Detect actions.
  */
 export class StealthEvaluator {
@@ -661,6 +661,45 @@ export class StealthEvaluator {
     if (character.state.isHidden) {
       return { shouldHide: false, reason: 'Already hidden' };
     }
+
+    // === VP URGENCY CHECK (VP_PLANNING_FIX_SUMMARY.md) ===
+    // Reduce Hide priority when VP urgency is high
+    const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
+    const enemyVP = Object.entries(context.vpBySide ?? {})
+      .filter(([sid]) => sid !== context.sideId)
+      .reduce((max, [, vp]) => Math.max(max, vp), 0);
+    const currentTurn = context.currentTurn ?? 1;
+    const maxTurns = context.maxTurns ?? 6;
+    const vpDeficit = enemyVP - myVP;
+    
+    // Calculate VP urgency level
+    let vpUrgency: 'low' | 'medium' | 'high' | 'desperate' = 'low';
+    if (myVP === 0 && currentTurn >= 6) {
+      vpUrgency = 'desperate';
+    } else if (vpDeficit >= 4 || (myVP === 0 && currentTurn >= 5)) {
+      vpUrgency = 'desperate';
+    } else if (vpDeficit >= 2 || currentTurn >= 5) {
+      vpUrgency = 'high';
+    } else if (vpDeficit > 0 || currentTurn >= 3) {
+      vpUrgency = 'medium';
+    }
+    
+    // Apply VP urgency penalty to Hide priority
+    let vpPenalty = 0;
+    if (myVP === 0) {
+      switch (vpUrgency) {
+        case 'desperate':
+          vpPenalty = -3.0; // Strongly discourage Hide when desperate
+          break;
+        case 'high':
+          vpPenalty = -2.0; // Discourage Hide when behind
+          break;
+        case 'medium':
+          vpPenalty = -1.0; // Slight penalty
+          break;
+      }
+    }
+    // === END VP URGENCY CHECK ===
 
     // Evaluate benefit of hiding
     let priority = 2.2;
@@ -682,9 +721,12 @@ export class StealthEvaluator {
       priority += 1.0;
     }
 
+    // Apply VP urgency penalty
+    priority += vpPenalty;
+
     return {
       shouldHide: priority >= 3.0,
-      reason: `Hide behind cover (priority: ${priority.toFixed(1)})`,
+      reason: `Hide behind cover (priority: ${priority.toFixed(1)}, VP penalty: ${vpPenalty})`,
       priority,
     };
   }
@@ -696,8 +738,8 @@ export class StealthEvaluator {
     const character = context.character;
 
     // Check if there are hidden enemies
-    const hiddenEnemies = context.enemies.filter(e => 
-      !e.state.isEliminated && 
+    const hiddenEnemies = context.enemies.filter(e =>
+      !e.state.isEliminated &&
       isAttackableEnemy(context.character, e, context.config) &&
       e.state.isHidden
     );
@@ -710,6 +752,43 @@ export class StealthEvaluator {
     if (context.apRemaining < 1) {
       return { shouldDetect: false, targets: [], reason: 'Not enough AP' };
     }
+
+    // === VP URGENCY CHECK (VP_PLANNING_FIX_SUMMARY.md) ===
+    // Increase Detect priority when VP urgency is high (need to reveal enemies for combat)
+    const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
+    const enemyVP = Object.entries(context.vpBySide ?? {})
+      .filter(([sid]) => sid !== context.sideId)
+      .reduce((max, [, vp]) => Math.max(max, vp), 0);
+    const currentTurn = context.currentTurn ?? 1;
+    const vpDeficit = enemyVP - myVP;
+    
+    let vpUrgency: 'low' | 'medium' | 'high' | 'desperate' = 'low';
+    if (myVP === 0 && currentTurn >= 6) {
+      vpUrgency = 'desperate';
+    } else if (vpDeficit >= 4 || (myVP === 0 && currentTurn >= 5)) {
+      vpUrgency = 'desperate';
+    } else if (vpDeficit >= 2 || currentTurn >= 5) {
+      vpUrgency = 'high';
+    } else if (vpDeficit > 0 || currentTurn >= 3) {
+      vpUrgency = 'medium';
+    }
+    
+    // Apply VP urgency bonus to Detect priority (revealing enemies enables combat)
+    let vpBonus = 0;
+    if (myVP === 0) {
+      switch (vpUrgency) {
+        case 'desperate':
+          vpBonus = 1.5; // Strongly encourage Detect when desperate
+          break;
+        case 'high':
+          vpBonus = 1.0; // Encourage Detect when behind
+          break;
+        case 'medium':
+          vpBonus = 0.5; // Slight bonus
+          break;
+      }
+    }
+    // === END VP URGENCY CHECK ===
 
     // Evaluate priority based on threat and practical detect opportunity.
     const charPos = context.battlefield.getCharacterPosition(character);
@@ -733,11 +812,14 @@ export class StealthEvaluator {
       priority += 0.2;
     }
 
+    // Apply VP urgency bonus
+    priority += vpBonus;
+
     return {
       shouldDetect: priority >= 2.4,
       targets: hiddenEnemies,
       priority,
-      reason: `Detect ${hiddenEnemies.length} hidden enemy(ies)`,
+      reason: `Detect ${hiddenEnemies.length} hidden enemy(ies) (VP bonus: ${vpBonus})`,
     };
   }
 

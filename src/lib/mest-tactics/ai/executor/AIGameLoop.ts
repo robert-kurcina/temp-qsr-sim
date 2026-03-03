@@ -725,6 +725,9 @@ export class AIGameLoop {
     // R1.5: Get scoring context from Side Coordinator
     const sideId = this.findCharacterSide(character);
     let scoringContext: any = undefined;
+    let vpBySide: Record<string, number> | undefined = undefined;
+    let rpBySide: Record<string, number> | undefined = undefined;
+    let maxTurns: number | undefined = undefined;
     if (sideId) {
       const coordinatorManager = this.manager.getSideCoordinatorManager();
       if (coordinatorManager) {
@@ -741,6 +744,20 @@ export class AIGameLoop {
           };
         }
       }
+      
+      // Get VP/RP by side for VP urgency calculations
+      const side = this.manager.sides.find(s => s.id === sideId);
+      if (side) {
+        vpBySide = {};
+        rpBySide = {};
+        for (const s of this.manager.sides) {
+          vpBySide[s.id] = s.state.victoryPoints ?? 0;
+          rpBySide[s.id] = s.state.resourcePoints ?? 0;
+        }
+      }
+      
+      // Get max turns from mission config
+      maxTurns = this.manager.maxTurns ?? 6;
     }
 
     return {
@@ -762,6 +779,9 @@ export class AIGameLoop {
       },
       config: aiConfig,
       scoringContext,
+      vpBySide,
+      rpBySide,
+      maxTurns,
     };
   }
 

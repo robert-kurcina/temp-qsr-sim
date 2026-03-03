@@ -770,6 +770,7 @@ export class AIActionExecutor {
 
   /**
    * Execute Detect action
+   * QSR Line 855: "The first Detect costs zero AP. Otherwise 1 AP."
    */
   private executeDetect(
     character: Character,
@@ -781,13 +782,21 @@ export class AIActionExecutor {
     }
 
     try {
-      if (!this.manager.spendAp(character, 1)) {
+      // QSR Line 855: First Detect per activation is FREE (0 AP)
+      const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
+      const apCost = hasDetectedThisActivation ? 1 : 0;
+      
+      if (apCost > 0 && !this.manager.spendAp(character, apCost)) {
         return this.createFailure(
           { type: 'detect', target, reason: 'Detect', priority: 2, requiresAP: true },
           character,
           'Not enough AP'
         );
       }
+      
+      // Mark that this character has Detected this activation
+      character.state.hasDetectedThisActivation = true;
+      
       const result = attemptDetect(
         this.manager.battlefield,
         character,
@@ -803,9 +812,9 @@ export class AIActionExecutor {
       }
 
       return this.createSuccess(
-        { type: 'detect', target, reason: 'Detect hidden enemy', priority: 2, requiresAP: true },
+        { type: 'detect', target, reason: `Detect hidden enemy (${apCost === 0 ? 'FREE' : '1 AP'})`, priority: 2, requiresAP: apCost > 0 },
         character,
-        'Detect successful'
+        `Detect successful (${apCost === 0 ? 'first is free!' : 'subsequent Detect'})`
       );
     } catch (error) {
       return this.createFailure(

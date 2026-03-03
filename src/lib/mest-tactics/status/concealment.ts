@@ -6,6 +6,7 @@ import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { TerrainType } from '../battlefield/terrain/Terrain';
 import { resolveTest, ResolveTestResult, TestParticipant } from '../subroutines/dice-roller';
 import { pointInPolygon } from '../battlefield/terrain/BattlefieldUtils';
+import { getSneakyLevel } from '../traits/combat-traits';
 
 export interface HideCheckResult {
   canHide: boolean;
@@ -88,11 +89,16 @@ export function evaluateHide(
   }
 
   if (!hasOpposingLOS) {
+    // QSR Line 846: If not in LOS, Hide is zero AP
     return { canHide: true, apCost: 0, hasOpposingLOS, hasCoverAgainstLOS };
   }
 
   if (hasCoverAgainstLOS) {
-    return { canHide: true, apCost: 1, hasOpposingLOS, hasCoverAgainstLOS };
+    // QSR Line 846: If in LOS but behind Cover, Hide costs 1 AP
+    // QSR Line 19989 / Sneaky X: Sneaky X models Hide at no cost
+    const sneakyLevel = getSneakyLevel(character);
+    const apCost = sneakyLevel > 0 ? 0 : 1;
+    return { canHide: true, apCost, hasOpposingLOS, hasCoverAgainstLOS };
   }
 
   return {

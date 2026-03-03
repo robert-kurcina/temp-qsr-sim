@@ -722,14 +722,14 @@ export class InstrumentationLogger {
    * Log an action
    */
   logAction(action: LoggedAction): void {
-    if (!this.battleLog || this.config.grade === InstrumentationGrade.NONE) {
+    if (!this.battleLog || this.config.grade === InstrumentationGrade.NONE || !action) {
       return;
     }
 
     // Filter detail based on grade
     const filteredAction = this.filterActionByGrade(action);
     this.actionBuffer.push(filteredAction);
-    
+
     // Sync to battle log for immediate access
     this.battleLog.actions = [...this.actionBuffer];
 
@@ -746,6 +746,8 @@ export class InstrumentationLogger {
    * Filter action details based on instrumentation grade
    */
   private filterActionByGrade(action: LoggedAction): LoggedAction {
+    if (!action) return action;
+    
     if (this.config.grade < InstrumentationGrade.BY_ACTION_WITH_TESTS) {
       // Remove test results for grade 1-2
       delete action.testResults;
@@ -834,6 +836,12 @@ export class InstrumentationLogger {
 
     const grade = this.config.grade;
     const indent = '  ';
+
+    // Guard against undefined/null actions
+    if (!action) {
+      console.log(`${indent}[ERROR: Undefined action logged]`);
+      return;
+    }
 
     // Grade 1: Summary
     if (grade >= InstrumentationGrade.SUMMARY) {

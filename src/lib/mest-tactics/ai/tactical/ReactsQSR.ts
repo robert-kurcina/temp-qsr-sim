@@ -59,16 +59,20 @@ export interface ReactResult {
  * 
  * Note: The QSR doesn't name specific React types for basic Reacts.
  * It simply says "perform a React action" against Move or non-Move actions.
- * 
+ *
  * Counter-strike!, Counter-fire!, Counter-action! are Passive Player Options
  * (Advanced Game, p.1250), not basic React actions.
+ *
+ * Focus (QSR Line 859): Remove Wait status while Attentive to receive +1 Wild die
+ * for any Test instead of performing a React.
  */
-export type ReactActionType = 
+export type ReactActionType =
   | 'none'
   | 'react-move'        // React to Move action (attack moving target)
   | 'react-abrupt'      // React to Abrupt action (attack or move to engage)
   | 'counter_strike'    // Passive Player Option (Advanced, p.1250)
-  | 'counter_fire';     // Passive Player Option (Advanced, p.1250)
+  | 'counter_fire'      // Passive Player Option (Advanced, p.1250)
+  | 'focus';            // QSR Line 859: Remove Wait, gain +1w instead of React
 
 /**
  * React State - Tracks react limitations per initiative
@@ -293,14 +297,17 @@ export class ReactEvaluator {
     }
 
     // Determine trigger type and evaluate
+    let reactResult: ReactResult;
     switch (opportunity.trigger) {
       case 'move-only':
-        return this.evaluateMoveOnlyReact(character, opportunity, context);
+        reactResult = this.evaluateMoveOnlyReact(character, opportunity, context);
+        break;
       case 'abrupt-move':
       case 'abrupt-non-move':
-        return this.evaluateAbruptReact(character, opportunity, context, isReactingToReact);
+        reactResult = this.evaluateAbruptReact(character, opportunity, context, isReactingToReact);
+        break;
       default:
-        return {
+        reactResult = {
           shouldReact: false,
           reactType: 'none',
           priority: 0,
@@ -308,6 +315,58 @@ export class ReactEvaluator {
           reason: 'Unknown trigger type',
         };
     }
+
+    // Compare React vs Focus - choose the better option
+    // Focus is only an alternative when React is allowed
+    const focusResult = this.evaluateFocus(character, context);
+    if (focusResult.shouldReact && focusResult.priority > reactResult.priority) {
+      return focusResult;
+    }
+
+    return reactResult;
+  }
+
+  /**
+   * Evaluate Focus option (QSR Line 859)
+   * Focus: Remove Wait status while Attentive to receive +1 Wild die for any Test instead of performing a React.
+   */
+  private evaluateFocus(
+    character: Character,
+    context: AIContext
+  ): ReactResult {
+    // Focus requires Wait status and Attentive
+    if (!character.state.isWaiting || !character.state.isAttentive) {
+      return {
+        shouldReact: false,
+        reactType: 'none',
+        priority: 0,
+        meetsREFRequirement: true,
+        reason: 'No Wait status or not Attentive',
+      };
+    }
+
+    // Focus priority based on value of +1w for future tests
+    // Higher priority if character has important attacks planned
+    let priority = 1.5; // Base Focus priority
+
+    // Higher priority if character is a key attacker (Elite, Veteran)
+    const archetype = character.profile?.archetype;
+    if (archetype === 'Elite') {
+      priority += 1.0;
+    } else if (archetype === 'Veteran') {
+      priority += 0.5;
+    }
+
+    // Higher priority if no good React target available
+    // (Focus is better than a poor React)
+
+    return {
+      shouldReact: true,
+      reactType: 'focus',
+      priority,
+      meetsREFRequirement: true,
+      reason: 'Focus: Remove Wait, gain +1w for next Test',
+    };
   }
 
   /**
