@@ -662,6 +662,20 @@ export class StealthEvaluator {
       return { shouldHide: false, reason: 'Already hidden' };
     }
 
+    // QSR Line 855: First Detect is FREE - defer Hide if Detect is available
+    // If there are Hidden enemies and we haven't Detected yet, Detect first
+    const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
+    const hiddenEnemies = context.enemies.filter(e =>
+      !e.state.isEliminated &&
+      isAttackableEnemy(context.character, e, context.config) &&
+      e.state.isHidden
+    );
+    
+    if (!hasDetectedThisActivation && hiddenEnemies.length > 0 && context.apRemaining >= 0) {
+      // First Detect is FREE, should Detect before Hiding
+      return { shouldHide: false, reason: 'Should Detect first (first is free)' };
+    }
+
     // === VP URGENCY CHECK (VP_PLANNING_FIX_SUMMARY.md) ===
     // Reduce Hide priority when VP urgency is high
     const myVP = context.vpBySide?.[context.sideId ?? ''] ?? 0;
@@ -671,7 +685,7 @@ export class StealthEvaluator {
     const currentTurn = context.currentTurn ?? 1;
     const maxTurns = context.maxTurns ?? 6;
     const vpDeficit = enemyVP - myVP;
-    
+
     // Calculate VP urgency level
     let vpUrgency: 'low' | 'medium' | 'high' | 'desperate' = 'low';
     if (myVP === 0 && currentTurn >= 6) {
@@ -683,7 +697,7 @@ export class StealthEvaluator {
     } else if (vpDeficit > 0 || currentTurn >= 3) {
       vpUrgency = 'medium';
     }
-    
+
     // Apply VP urgency penalty to Hide priority
     let vpPenalty = 0;
     if (myVP === 0) {
@@ -733,6 +747,7 @@ export class StealthEvaluator {
 
   /**
    * Evaluate whether character should Detect hidden enemies
+   * QSR Line 855: First Detect costs 0 AP, subsequent cost 1 AP
    */
   evaluateDetect(context: AIContext): DetectDecision {
     const character = context.character;
@@ -748,9 +763,13 @@ export class StealthEvaluator {
       return { shouldDetect: false, targets: [] };
     }
 
-    // Check if character has AP available
-    if (context.apRemaining < 1) {
-      return { shouldDetect: false, targets: [], reason: 'Not enough AP' };
+    // QSR Line 855: First Detect is FREE (0 AP)
+    // Only check AP if character has already Detected this activation
+    const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
+    const apCost = hasDetectedThisActivation ? 1 : 0;
+    
+    if (context.apRemaining < apCost) {
+      return { shouldDetect: false, targets: [], reason: `Not enough AP (need ${apCost})` };
     }
 
     // === VP URGENCY CHECK (VP_PLANNING_FIX_SUMMARY.md) ===
@@ -761,7 +780,7 @@ export class StealthEvaluator {
       .reduce((max, [, vp]) => Math.max(max, vp), 0);
     const currentTurn = context.currentTurn ?? 1;
     const vpDeficit = enemyVP - myVP;
-    
+
     let vpUrgency: 'low' | 'medium' | 'high' | 'desperate' = 'low';
     if (myVP === 0 && currentTurn >= 6) {
       vpUrgency = 'desperate';
@@ -772,19 +791,20 @@ export class StealthEvaluator {
     } else if (vpDeficit > 0 || currentTurn >= 3) {
       vpUrgency = 'medium';
     }
-    
+
     // Apply VP urgency bonus to Detect priority (revealing enemies enables combat)
+    // First Detect is FREE, so strongly encourage it when VP=0
     let vpBonus = 0;
     if (myVP === 0) {
       switch (vpUrgency) {
         case 'desperate':
-          vpBonus = 1.5; // Strongly encourage Detect when desperate
+          vpBonus = 2.0; // Strongly encourage Detect when desperate
           break;
         case 'high':
-          vpBonus = 1.0; // Encourage Detect when behind
+          vpBonus = 1.5; // Encourage Detect when behind
           break;
         case 'medium':
-          vpBonus = 0.5; // Slight bonus
+          vpBonus = 1.0; // Moderate bonus (VP=0, should Detect)
           break;
       }
     }
@@ -815,11 +835,16 @@ export class StealthEvaluator {
     // Apply VP urgency bonus
     priority += vpBonus;
 
+    // First Detect is FREE - strongly encourage when no VP
+    if (!hasDetectedThisActivation && myVP === 0) {
+      priority += 1.0; // Extra bonus for free Detect
+    }
+
     return {
       shouldDetect: priority >= 2.4,
       targets: hiddenEnemies,
       priority,
-      reason: `Detect ${hiddenEnemies.length} hidden enemy(ies) (VP bonus: ${vpBonus})`,
+      reason: `Detect ${hiddenEnemies.length} hidden enemy(ies) (VP bonus: ${vpBonus}, AP cost: ${apCost})`,
     };
   }
 
