@@ -126,6 +126,225 @@ export function attemptHide(
   return check;
 }
 
+/**
+ * QSR Line 851: Voluntary Hide Removal
+ * "The Active model may voluntarily remove Hidden status at the start or end of its Action."
+ */
+export function voluntarilyRemoveHidden(character: Character, reason: 'start_of_action' | 'end_of_action'): void {
+  character.state.isHidden = false;
+}
+
+/**
+ * QSR Line 851.2-851.3: Forced Hide Removal (Out of Cover)
+ * "It must remove Hidden status when it is out of Cover. It will not reposition."
+ */
+export interface ForcedHideRemovalResult {
+  removed: boolean;
+  reason?: string;
+}
+
+export function forceRemoveHiddenIfExposed(
+  battlefield: Battlefield,
+  character: Character,
+  opponents: Character[]
+): ForcedHideRemovalResult {
+  if (!character.state.isHidden) {
+    return { removed: false, reason: 'Not Hidden' };
+  }
+
+  const characterSpatial = buildSpatialModel(battlefield, character);
+  if (!characterSpatial) {
+    return { removed: false, reason: 'No position' };
+  }
+
+  // Check if character is without Cover from any opponent
+  for (const opponent of opponents) {
+    if (opponent.state.isHidden || opponent.state.isKOd || opponent.state.isEliminated) continue;
+    const opponentSpatial = buildSpatialModel(battlefield, opponent);
+    if (!opponentSpatial) continue;
+
+    const cover = SpatialRules.getCoverResult(battlefield, opponentSpatial, characterSpatial);
+    if (!cover.hasLOS) continue;
+
+    const inCover = cover.hasDirectCover || cover.hasInterveningCover;
+    if (!inCover) {
+      // QSR 851.2: Must remove Hidden when out of Cover
+      // QSR 851.3: No reposition allowed
+      character.state.isHidden = false;
+      return { removed: true, reason: 'Out of Cover from opponent' };
+    }
+  }
+
+  return { removed: false, reason: 'Still in Cover' };
+}
+
+/**
+ * QSR Line 849: Active Model Loses Hidden at Initiative Start
+ * "If the Active model is without Cover at the start of its Initiative,
+ *  it loses its Hidden status. Allow it to reposition."
+ */
+export interface InitiativeHiddenCheckOptions {
+  allowReposition?: boolean;
+  revealReposition?: (options: RevealRepositionOptions) => PositionResult | null;
+}
+
+export interface InitiativeHiddenCheckResult {
+  mustReveal: boolean;
+  canReposition: boolean;
+  repositioned?: boolean;
+  position?: { x: number; y: number };
+  reason?: string;
+}
+
+export function checkHiddenAtInitiativeStart(
+  battlefield: Battlefield,
+  character: Character,
+  opponents: Character[],
+  options: InitiativeHiddenCheckOptions = {}
+): InitiativeHiddenCheckResult {
+  if (!character.state.isHidden) {
+    return { mustReveal: false, canReposition: false, reason: 'Not Hidden' };
+  }
+
+  const characterSpatial = buildSpatialModel(battlefield, character);
+  if (!characterSpatial) {
+    return { mustReveal: false, canReposition: false, reason: 'No position' };
+  }
+
+  // Check if character is without Cover from any opponent
+  let isWithoutCover = false;
+
+  for (const opponent of opponents) {
+    if (opponent.state.isHidden || opponent.state.isKOd || opponent.state.isEliminated) continue;
+    const opponentSpatial = buildSpatialModel(battlefield, opponent);
+    if (!opponentSpatial) continue;
+
+    const cover = SpatialRules.getCoverResult(battlefield, opponentSpatial, characterSpatial);
+    if (!cover.hasLOS) continue;
+
+    const inCover = cover.hasDirectCover || cover.hasInterveningCover;
+    if (!inCover) {
+      isWithoutCover = true;
+      break;
+    }
+  }
+
+  if (!isWithoutCover) {
+    return { mustReveal: false, canReposition: false, reason: 'Still in Cover' };
+  }
+
+  // QSR 849: Active model loses Hidden at Initiative start if without Cover
+  // Allow it to reposition
+  character.state.isHidden = false;
+
+  if (options.allowReposition !== false && options.revealReposition) {
+    const reposition = options.revealReposition({
+      battlefield,
+      character,
+      opponents,
+    });
+    if (reposition) {
+      const success = battlefield.moveCharacter(character, reposition.position);
+      if (success) {
+        return {
+          mustReveal: true,
+          canReposition: true,
+          repositioned: true,
+          position: reposition.position,
+          reason: 'Lost Hidden at Initiative start, repositioned to Cover',
+        };
+      }
+    }
+  }
+
+  return {
+    mustReveal: true,
+    canReposition: options.allowReposition !== false,
+    reason: 'Lost Hidden at Initiative start (without Cover)',
+  };
+}
+
+/**
+ * QSR Lines 847.1-847.4: Hidden Status Effects
+ * "When Hidden; Visibility and Cohesion distance are halved unless not within Opposing LOS,
+ *  and all Terrain is degraded except for that crossed using Agility.
+ *  Ignore this rule if the entire path of movement is out of LOS from all Revealed Opposing models."
+ */
+export interface HiddenEffectsOptions {
+  visibilityOrMu?: number;
+  cohesionBase?: number;
+  isEntirePathOutOfLOS?: boolean;
+}
+
+export interface HiddenEffectsResult {
+  effectiveVisibility: number;
+  effectiveCohesion: number;
+  terrainDegraded: boolean;
+  reason?: string;
+}
+
+export function getHiddenEffects(
+  character: Character,
+  opponents: Character[],
+  battlefield: Battlefield,
+  options: HiddenEffectsOptions = {}
+): HiddenEffectsResult {
+  if (!character.state.isHidden) {
+    return {
+      effectiveVisibility: options.visibilityOrMu ?? 16,
+      effectiveCohesion: options.cohesionBase ?? 8,
+      terrainDegraded: false,
+      reason: 'Not Hidden',
+    };
+  }
+
+  const visibilityOrMu = options.visibilityOrMu ?? 16;
+  const cohesionBase = options.cohesionBase ?? 8;
+  const isEntirePathOutOfLOS = options.isEntirePathOutOfLOS ?? false;
+
+  // QSR 847.4: Exception - entire path out of LOS = no effects
+  if (isEntirePathOutOfLOS) {
+    return {
+      effectiveVisibility: visibilityOrMu,
+      effectiveCohesion: cohesionBase,
+      terrainDegraded: false,
+      reason: 'Entire path out of LOS - no Hidden effects',
+    };
+  }
+
+  // QSR 847.1: Check if within Opposing LOS
+  let isInOpposingLOS = false;
+  const characterSpatial = buildSpatialModel(battlefield, character);
+
+  if (characterSpatial) {
+    for (const opponent of opponents) {
+      if (opponent.state.isHidden || opponent.state.isKOd || opponent.state.isEliminated) continue;
+      const opponentSpatial = buildSpatialModel(battlefield, opponent);
+      if (!opponentSpatial) continue;
+
+      const cover = SpatialRules.getCoverResult(battlefield, opponentSpatial, characterSpatial);
+      if (cover.hasLOS) {
+        isInOpposingLOS = true;
+        break;
+      }
+    }
+  }
+
+  // QSR 847.1: Visibility and Cohesion halved UNLESS not within Opposing LOS
+  const effectiveVisibility = isInOpposingLOS ? Math.floor(visibilityOrMu / 2) : visibilityOrMu;
+  const effectiveCohesion = isInOpposingLOS ? Math.floor(cohesionBase / 2) : cohesionBase;
+
+  // QSR 847.3: Terrain degraded (except Agility) when Hidden and in Opposing LOS
+  const terrainDegraded = isInOpposingLOS;
+
+  return {
+    effectiveVisibility,
+    effectiveCohesion,
+    terrainDegraded,
+    reason: isInOpposingLOS ? 'Hidden effects active (in Opposing LOS)' : 'Not in Opposing LOS - reduced effects',
+  };
+}
+
 export function attemptDetect(
   battlefield: Battlefield,
   attacker: Character,
@@ -184,10 +403,23 @@ export function resolveHiddenExposure(
   const characterSpatial = buildSpatialModel(battlefield, character);
   if (!characterSpatial) return { revealed: false };
 
+  // QSR Line 852.1: Models further than Visibility × 3 do not automatically lose Hidden
+  // unless within LOS of Opposing models in Wait status.
+  const visibilityOrMu = options.visibilityOrMu ?? 16;
+  const longRangeThreshold = visibilityOrMu * 3;
+
   for (const opponent of opponents) {
     if (opponent.state.isHidden) continue;
     const opponentSpatial = buildSpatialModel(battlefield, opponent);
     if (!opponentSpatial) continue;
+
+    const distance = SpatialRules.distanceEdgeToEdge(characterSpatial, opponentSpatial);
+
+    // QSR 852.1: Beyond Visibility×3, only Wait models can reveal
+    if (distance > longRangeThreshold && !opponent.state.isWaiting) {
+      continue;
+    }
+
     const cover = SpatialRules.getCoverResult(battlefield, opponentSpatial, characterSpatial);
     if (!cover.hasLOS) continue;
     const inCover = cover.hasDirectCover || cover.hasInterveningCover;
@@ -202,6 +434,104 @@ export function resolveHiddenExposure(
   }
 
   return { revealed: false };
+}
+
+/**
+ * QSR Line 850: Mutual Exposure Rules
+ * "If the Active model and one or more Passive models become without Cover from each other,
+ *  allow the Passive models to first reposition. All models must lose their Hidden status,
+ *  but the Active model may not reposition."
+ */
+export interface MutualExposureOptions {
+  isActiveModel: boolean;
+  allowReposition?: boolean;
+  revealReposition?: (options: RevealRepositionOptions) => PositionResult | null;
+  visibilityOrMu?: number;
+}
+
+export interface MutualExposureResult {
+  mustReveal: boolean;
+  canReposition: boolean;
+  repositioned?: boolean;
+  position?: { x: number; y: number };
+  reason?: string;
+}
+
+export function resolveMutualHiddenExposure(
+  battlefield: Battlefield,
+  character: Character,
+  opponents: Character[],
+  options: MutualExposureOptions = {}
+): MutualExposureResult {
+  if (!character.state.isHidden) return { mustReveal: false, canReposition: false };
+
+  const characterSpatial = buildSpatialModel(battlefield, character);
+  if (!characterSpatial) return { mustReveal: false, canReposition: false, reason: 'No position' };
+
+  const isActiveModel = options.isActiveModel ?? false;
+  let mutualExposureFound = false;
+
+  for (const opponent of opponents) {
+    if (opponent.state.isHidden) continue;
+    const opponentSpatial = buildSpatialModel(battlefield, opponent);
+    if (!opponentSpatial) continue;
+
+    const cover = SpatialRules.getCoverResult(battlefield, opponentSpatial, characterSpatial);
+    if (!cover.hasLOS) continue;
+
+    // Check if both are without Cover from each other
+    const characterInCover = cover.hasDirectCover || cover.hasInterveningCover;
+    if (!characterInCover) {
+      mutualExposureFound = true;
+      break;
+    }
+  }
+
+  if (!mutualExposureFound) {
+    return { mustReveal: false, canReposition: false };
+  }
+
+  // QSR 850: Mutual exposure - all lose Hidden
+  // Active model may NOT reposition, Passive models may reposition first
+  if (isActiveModel) {
+    // Active model: must lose Hidden, may NOT reposition
+    character.state.isHidden = false;
+    return {
+      mustReveal: true,
+      canReposition: false,
+      reason: 'Mutual exposure: Active model loses Hidden, no reposition',
+    };
+  } else {
+    // Passive model: may reposition first, then lose Hidden if still exposed
+    if (options.allowReposition !== false && options.revealReposition) {
+      const reposition = options.revealReposition({
+        battlefield,
+        character,
+        opponents,
+      });
+      if (reposition) {
+        const success = battlefield.moveCharacter(character, reposition.position);
+        if (success) {
+          // Check if still in mutual exposure after reposition
+          // For now, assume reposition found cover
+          return {
+            mustReveal: false,
+            canReposition: true,
+            repositioned: true,
+            position: reposition.position,
+            reason: 'Passive model repositioned to avoid mutual exposure',
+          };
+        }
+      }
+    }
+    // Couldn't reposition or reposition not allowed - lose Hidden
+    character.state.isHidden = false;
+    return {
+      mustReveal: true,
+      canReposition: options.allowReposition !== false,
+      reason: 'Mutual exposure: Passive model loses Hidden',
+    };
+  }
 }
 
 export function resolveWaitReveal(

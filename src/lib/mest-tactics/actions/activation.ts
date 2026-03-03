@@ -36,16 +36,20 @@ export function beginActivation(deps: ActivationDeps, character: Character): num
   character.state.delayTokens = remainingDelay;
 
   if (waitingAtStart) {
-    // Revised Wait override:
-    // - Delay upkeep is paid first (1 AP per Delay token).
-    // - Wait upkeep is then resolved:
-    //   - if Free => maintain at 0 AP,
-    //   - if not Free => may pay 1 AP to maintain, otherwise remove Wait.
+    // OVR-001: Wait maintenance (overrides QSR Line 858)
+    // "If character is Free, Wait is maintained at 0 AP.
+    //  If character is not Free, may pay 1 AP to maintain."
     const isFree = deps.isFreeFromEngagement(character);
-    if (!isFree) {
+    if (isFree) {
+      // Free: Wait maintained at 0 AP (no cost)
+      // Wait status maintained automatically
+    } else {
+      // Not Free: May pay 1 AP to maintain Wait
       if (apAvailable >= 1) {
         apAvailable -= 1;
+        // Wait status maintained
       } else {
+        // Not enough AP, must remove Wait
         character.state.isWaiting = false;
       }
     }

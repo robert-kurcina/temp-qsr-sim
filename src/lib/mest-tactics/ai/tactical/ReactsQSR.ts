@@ -349,6 +349,19 @@ export class ReactEvaluator {
     // Higher priority if character has important attacks planned
     let priority = 1.5; // Base Focus priority
 
+    // CRITICAL: Higher priority if enemies are Hidden (Focus + Detect combo)
+    // QSR 855: First Detect is FREE (0 AP)
+    // QSR 859: Focus gives +1w for Detect Test
+    // This combo allows 0 AP Detect with +1w bonus
+    const hasDetectedThisActivation = character.state.hasDetectedThisActivation ?? false;
+    const hiddenEnemies = context.enemies.filter(e => e.state.isHidden && !e.state.isEliminated && !e.state.isKOd);
+    
+    if (hiddenEnemies.length > 0 && !hasDetectedThisActivation) {
+      // Focus + Detect combo: 0 AP, +1w Detect
+      // This is extremely valuable - prioritize over most Reacts
+      priority += 3.0;
+    }
+
     // Higher priority if character is a key attacker (Elite, Veteran)
     const archetype = character.profile?.archetype;
     if (archetype === 'Elite') {
@@ -365,7 +378,9 @@ export class ReactEvaluator {
       reactType: 'focus',
       priority,
       meetsREFRequirement: true,
-      reason: 'Focus: Remove Wait, gain +1w for next Test',
+      reason: hiddenEnemies.length > 0 && !hasDetectedThisActivation
+        ? 'Focus: Remove Wait, gain +1w for Detect (Hidden enemies)'
+        : 'Focus: Remove Wait, gain +1w for next Test',
     };
   }
 
