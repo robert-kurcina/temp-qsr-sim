@@ -54,12 +54,13 @@ describe('TerrainPlacement', () => {
     });
 
     it('should respect density setting', () => {
+      // Use rough patch terrain types which are controlled by the main density parameter
       const lowDensity = placeTerrain({
         mode: 'balanced',
         density: 25,
         battlefieldSize: 24,
         seed: 12345,
-        terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
+        terrainTypes: ['Small Rough Patch', 'Medium Rough Patch', 'Large Rough Patch'],
       });
 
       const highDensity = placeTerrain({
@@ -67,7 +68,7 @@ describe('TerrainPlacement', () => {
         density: 75,
         battlefieldSize: 24,
         seed: 12345,
-        terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
+        terrainTypes: ['Small Rough Patch', 'Medium Rough Patch', 'Large Rough Patch'],
       });
 
       expect(highDensity.terrain.length).toBeGreaterThan(lowDensity.terrain.length);

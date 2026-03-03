@@ -212,18 +212,18 @@ describe('ReactEvaluator QSR', () => {
   it('should check REF requirement for abrupt actions (QSR p.1117)', () => {
     const evaluator = new ReactEvaluator();
     const context = makeTestContext();
-    
+
     // Actor has REF 4, reactor has REF 2
     const actor = makeTestCharacter('actor', 4, 4);
     const reactor = makeTestCharacter('reactor', 2, 4);
     reactor.state.isWaiting = true;
-    
+
     const battlefield = new Battlefield(24, 24);
     battlefield.placeCharacter(reactor, { x: 12, y: 12 });
     battlefield.placeCharacter(actor, { x: 13, y: 12 }); // In melee
-    
+
     const opportunity = makeTestOpportunity('abrupt-non-move', actor, { x: 13, y: 12 });
-    
+
     const result = evaluator.evaluateReacts(
       reactor,
       opportunity,
@@ -239,7 +239,7 @@ describe('ReactEvaluator QSR', () => {
         config: {} as any,
       }
     );
-    
+
     // REF 2 (reactor) < REF 4 (actor), should fail
     expect(result.meetsREFRequirement).toBe(false);
     expect(result.reason).toContain('REF');

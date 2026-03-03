@@ -317,9 +317,9 @@ export class ReactEvaluator {
     }
 
     // Compare React vs Focus - choose the better option
-    // Focus is only an alternative when React is allowed
+    // Focus is only an alternative when React is allowed (REF requirement met)
     const focusResult = this.evaluateFocus(character, context);
-    if (focusResult.shouldReact && focusResult.priority > reactResult.priority) {
+    if (focusResult.shouldReact && reactResult.meetsREFRequirement && focusResult.priority > reactResult.priority) {
       return focusResult;
     }
 
