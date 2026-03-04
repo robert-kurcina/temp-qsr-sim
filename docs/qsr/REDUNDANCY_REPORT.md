@@ -61,6 +61,10 @@ New redundancy/quality finding from P1 audit:
 | `src/guides/docs/rules-general-terms.md` | Canonical General Terms coverage omitted `Scrum`, `Outnumbers`, `Agility`, `Core Damage`, and `Melee Range` linkage, creating index-level terminology drift against QSR lines 496-531 | ✅ Resolved by adding missing term rows and canonical-linked ownership mappings |
 | `src/lib/mest-tactics/mission/mission-engine.ts`, `src/lib/mest-tactics/missions/mission-runtime.ts`, `src/lib/mest-tactics/missions/mission-registry.ts` | Legacy compatibility layers duplicated mission-runtime-adapter responsibility and were not used by active runtime paths | ✅ Resolved by removing legacy modules and legacy-only tests; mission runtime authority remains `mission-runtime-adapter.ts` |
 | `scripts/run-battles/battle-runner.ts` | Imported non-existent/unused `missions/mission-engine` path, preserving stale compatibility assumption | ✅ Resolved by removing dead import |
+| `src/lib/mest-tactics/traits/advanced-traits-stubs.ts` vs `src/lib/mest-tactics/traits/combat-traits.ts` | Unreferenced stub module duplicated part of ROF/Jam trait surface with TODO placeholders and could drift from active trait logic | ✅ Resolved by deleting `advanced-traits-stubs.ts` (runtime authority remains `combat-traits.ts` / `rof-suppression-spatial.ts`) |
+| `src/lib/mest-tactics/traits/advanced-traits.test.ts` | Previous suite contained many clause-restatement/logic-only assertions not traversing authoritative runtime paths | ✅ Resolved by replacing with a runtime-backed suite focused on live helper/status behavior (`ROF`, `Suppressive Fire`, `Burn/Acid/Poison`, `Leadership`, `Surefooted`) |
+| `src/guides/docs/rules-advanced-loa.md` vs canonical `docs/canonical/MEST.Tactics.Advanced-LoA.txt` and `src/guides/docs/rules-advanced-champions.md` | `rules-advanced-loa.md` had drifted to “Lines of Action” semantics while canonical `Advanced-LoA` defines Level-of-Absurdity, creating mapping drift and duplicate maintenance surface | ✅ Resolved by converting `rules-advanced-loa.md` into a canonical LoA ownership index and updating `rules-advanced-game.md` references |
+| `src/guides/docs/rules-advanced-*.md` | Mixed `Source` pointer prefixes (`docs/MEST...` and `docs/canonical/...`) created weak canonical traceability and duplicated path conventions | ✅ Resolved by normalizing all Advanced guide `Source` pointers to `docs/canonical/...` and adding `advanced-guide-integrity.test.ts` guardrails |
 
 These files are useful as clause catalogs but should not be treated as full behavioral coverage proof without runtime-backed assertions.
 
@@ -162,7 +166,7 @@ These files are useful as clause catalogs but should not be treated as full beha
 
 ## Test Redundancy Assessment
 
-**Total:** 148 test files, 2,381 tests (100% pass)
+**Total:** 149 test files, 2,297 tests (100% pass)
 
 **Assessment:** No overlapping test coverage identified. Test files are:
 - **Feature-scoped** (e.g., `UtilityScorer.R3.test.ts`, `UtilityScorer.ROF.test.ts`)
@@ -217,8 +221,8 @@ docs/
 
 ## Current Baseline
 
-- Test suite baseline: `npx vitest run` → **148 files, 2381 tests passing**.
-- Coverage baseline: `npx vitest run --coverage` → **148 files, 2381 tests passing**.
+- Test suite baseline: `npx vitest run` → **149 files, 2297 tests passing**.
+- Coverage baseline: `npx vitest run --coverage` → **149 files, 2297 tests passing**.
 - Master status source: `docs/qsr/00-index.md`.
 - P1 runtime tracker: `docs/qsr/P1_RULES_STATUS.md`.
 
@@ -226,7 +230,7 @@ docs/
 
 ## Open Redundancy Flags
 
-No high-confidence code-level redundancy flags are currently open.
+None currently tracked.
 
 ---
 

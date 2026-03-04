@@ -139,4 +139,4 @@ If a Puff marker is to be **reduced from size 1 and removed**:
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Gas.Fume.Puffs.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Gas.Fume.Puffs.txt`

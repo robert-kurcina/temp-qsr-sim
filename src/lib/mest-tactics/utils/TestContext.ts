@@ -49,6 +49,7 @@ export interface TestContext {
   reactPenaltyBase?: number;
   multipleAttackPenalty?: number; // For the -1m Multiple Attack penalty
   burstBonusBase?: number;  // For the +1b [Burst] trait bonus
+  rofBonusWild?: number;    // For +Xw ROF marker bonus on ranged hit tests
   handPenaltyBase?: number; // For -1b penalty when using one less hand
 
   // --- Test Overrides ---

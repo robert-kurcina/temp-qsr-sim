@@ -25,6 +25,7 @@ function _calculateModifiers(
         woundTokens: attacker.state.wounds,
         fearTokens: attacker.state.fearTokens,
         delayTokens: attacker.state.delayTokens,
+        statusTokens: attacker.state.statusTokens,
     });
     if (hindrance > 0) {
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + hindrance;

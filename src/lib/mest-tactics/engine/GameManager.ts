@@ -32,12 +32,11 @@ import { PassiveEvent, ActiveToggleOption, PassiveOption } from '../status/passi
 import { DamageResolution } from '../subroutines/damage-test';
 import { BonusActionSelection } from '../actions/bonus-actions';
 import { ReactEvent, ReactOption } from '../actions/react-actions';
-import { GroupAction } from './group-actions';
 import { executeFiddleAction, executeRallyAction, executeReviveAction, executeWaitAction, executeStowItem, executeUnstowItem, executeSwapItem } from '../actions/simple-actions';
 import { performPushing } from '../actions/pushing-and-maneuvers';
 import { getActiveToggleOptions, getBonusActionOptions, getPassiveOptions, getReactOptions, getReactOptionsSorted } from '../actions/option-builders';
 import { executeMoveAction } from '../actions/move-action';
-import { createGroupAction } from '../actions/group-actions';
+import { createGroupAction, type GroupAction } from '../actions/group-actions';
 import { resolveDeclaredWeapon } from '../actions/declared-weapon';
 import { hasItemTrait, hasItemTraitOnWeapon } from '../traits/item-traits';
 import {
@@ -45,6 +44,13 @@ import {
   executeIndirectAttack as runIndirectAttack,
   executeRangedAttack as runRangedAttack,
 } from '../actions/combat-actions';
+import {
+  calculateROFMarkerPositions,
+  getEffectiveROFLevel,
+  getROFDiceBonus,
+  ROFMarker,
+  SuppressionMarker,
+} from '../traits/rof-suppression-spatial';
 import { executeStandardReact as runStandardReact, executeReactAction as runReactAction } from '../actions/react-actions';
 import { executeDisengageAction } from '../actions/disengage-action';
 import { executeCombinedAction as runCombinedAction } from '../actions/combined-action';
@@ -149,6 +155,10 @@ export class GameManager {
   private sideCoordinatorManager: SideCoordinatorManager | null = null;
   private auditService: AuditService | null = null;
   private sides: Side[] = [];
+  private rofMarkers: ROFMarker[] = [];
+  private suppressionMarkers: SuppressionMarker[] = [];
+  private rofMarkerSequence = 0;
+  private suppressionMarkerSequence = 0;
 
   constructor(
     characters: Character[],
@@ -216,6 +226,253 @@ export class GameManager {
     }
     const memberIds = new Set(side.members.map(member => member.character.id));
     return (candidate: Character) => memberIds.has(candidate.id);
+  }
+
+  private getROFTraitLevel(weapon: Item): number {
+    for (const trait of weapon.traits ?? []) {
+      const match = trait.match(/ROF\s*(\d+)/i);
+      if (match) {
+        return Math.max(0, parseInt(match[1], 10));
+      }
+    }
+    return 0;
+  }
+
+  private getSuppressTraitLevel(weapon: Item): number {
+    for (const trait of weapon.traits ?? []) {
+      const match = trait.match(/Suppress\s*(\d+)/i);
+      if (match) {
+        return Math.max(0, parseInt(match[1], 10));
+      }
+    }
+    return 0;
+  }
+
+  private nextROFMarkerId(creatorId: string): string {
+    this.rofMarkerSequence += 1;
+    return `rof:${creatorId}:${this.currentTurn}:${this.currentRound}:${this.rofMarkerSequence}`;
+  }
+
+  private nextSuppressionMarkerId(creatorId: string): string {
+    this.suppressionMarkerSequence += 1;
+    return `sup:${creatorId}:${this.currentTurn}:${this.currentRound}:${this.suppressionMarkerSequence}`;
+  }
+
+  private getInPlayCharacters(): Character[] {
+    return this.characters.filter(character => !character.state.isKOd && !character.state.isEliminated);
+  }
+
+  private getMarkerRangeOccupants(position: Position, rangeMu: number): Character[] {
+    return this.getInPlayCharacters().filter(character => {
+      const modelPos = this.getCharacterPosition(character);
+      if (!modelPos) return false;
+      const distance = Math.hypot(modelPos.x - position.x, modelPos.y - position.y);
+      return distance <= rangeMu;
+    });
+  }
+
+  private shouldSkipFlipForDoneRange(position: Position, rangeMu: number): boolean {
+    const occupants = this.getMarkerRangeOccupants(position, rangeMu);
+    if (occupants.length === 0) {
+      return false;
+    }
+    return occupants.every(character => this.getCharacterStatus(character.id) === CharacterStatus.Done);
+  }
+
+  private prepareROFMarkersForAttack(attacker: Character, defender: Character, weapon: Item): {
+    placedMarkers: ROFMarker[];
+    rofBonusWild: number;
+    effectiveROF: number;
+  } {
+    if (!this.battlefield) {
+      return { placedMarkers: [], rofBonusWild: 0, effectiveROF: 0 };
+    }
+
+    const baseROF = this.getROFTraitLevel(weapon);
+    if (baseROF <= 0) {
+      return { placedMarkers: [], rofBonusWild: 0, effectiveROF: 0 };
+    }
+
+    const priorUses = Number(attacker.state.statusTokens['rofUsesThisInitiative'] ?? 0);
+    const effectiveROF = getEffectiveROFLevel(baseROF, priorUses);
+    attacker.state.statusTokens['rofUsesThisInitiative'] = priorUses + 1;
+
+    if (effectiveROF <= 0) {
+      return { placedMarkers: [], rofBonusWild: 0, effectiveROF };
+    }
+
+    const markerPositions = calculateROFMarkerPositions(
+      attacker,
+      this.battlefield,
+      effectiveROF,
+      defender,
+      4,
+      this.characters
+    );
+
+    const placedMarkers: ROFMarker[] = markerPositions.map(position => ({
+      id: this.nextROFMarkerId(attacker.id),
+      position: { ...position },
+      creatorId: attacker.id,
+      initiativeCreated: this.currentRound,
+      isSuppression: false,
+    }));
+    this.rofMarkers.push(...placedMarkers);
+
+    const rofBonusWild = getROFDiceBonus(defender, this.battlefield, placedMarkers);
+    return {
+      placedMarkers,
+      rofBonusWild,
+      effectiveROF,
+    };
+  }
+
+  private placeAdditionalROFMarkersForSuppression(
+    attacker: Character,
+    baseMarkers: ROFMarker[],
+    additionalCount: number
+  ): ROFMarker[] {
+    if (!this.battlefield || additionalCount <= 0) {
+      return [];
+    }
+
+    const attackerPos = this.getCharacterPosition(attacker);
+    if (!attackerPos) {
+      return [];
+    }
+
+    const seedPositions = baseMarkers.length > 0
+      ? baseMarkers.map(marker => marker.position)
+      : [attackerPos];
+
+    const created: ROFMarker[] = [];
+    for (let index = 0; index < additionalCount; index += 1) {
+      const seed = seedPositions[index % seedPositions.length];
+      const angle = (index * 60) * (Math.PI / 180);
+      const candidate: Position = {
+        x: seed.x + Math.cos(angle) * 0.75,
+        y: seed.y + Math.sin(angle) * 0.75,
+      };
+      const position = this.battlefield.isWithinBounds(candidate, 0) ? candidate : { ...seed };
+      const marker: ROFMarker = {
+        id: this.nextROFMarkerId(attacker.id),
+        position,
+        creatorId: attacker.id,
+        initiativeCreated: this.currentRound,
+        isSuppression: false,
+      };
+      created.push(marker);
+      this.rofMarkers.push(marker);
+      seedPositions.push(position);
+    }
+
+    return created;
+  }
+
+  private finalizeROFMarkersAfterAttack(attacker: Character, attackMarkers: ROFMarker[]): {
+    removedNearAttacker: number;
+    flippedToSuppression: number;
+    retainedAsROF: number;
+  } {
+    if (!this.battlefield || attackMarkers.length === 0) {
+      return { removedNearAttacker: 0, flippedToSuppression: 0, retainedAsROF: 0 };
+    }
+
+    const attackerPos = this.getCharacterPosition(attacker);
+    const attackIds = new Set(attackMarkers.map(marker => marker.id));
+    let removedNearAttacker = 0;
+    let flippedToSuppression = 0;
+    let retainedAsROF = 0;
+
+    const remainingRofMarkers: ROFMarker[] = [];
+    for (const marker of this.rofMarkers) {
+      if (!attackIds.has(marker.id)) {
+        remainingRofMarkers.push(marker);
+        continue;
+      }
+
+      if (attackerPos) {
+        const distanceToAttacker = Math.hypot(marker.position.x - attackerPos.x, marker.position.y - attackerPos.y);
+        if (distanceToAttacker <= 1) {
+          removedNearAttacker += 1;
+          continue;
+        }
+      }
+
+      if (this.shouldSkipFlipForDoneRange(marker.position, 1)) {
+        retainedAsROF += 1;
+        remainingRofMarkers.push(marker);
+        continue;
+      }
+
+      this.suppressionMarkers.push({
+        id: this.nextSuppressionMarkerId(marker.creatorId),
+        position: { ...marker.position },
+        range: 1,
+        creatorId: marker.creatorId,
+      });
+      flippedToSuppression += 1;
+    }
+
+    this.rofMarkers = remainingRofMarkers;
+    return { removedNearAttacker, flippedToSuppression, retainedAsROF };
+  }
+
+  private placeExplosionSuppressionFromHit(
+    attacker: Character,
+    defender: Character,
+    weapon: Item,
+    attackHit: boolean
+  ): number {
+    if (!this.battlefield || !attackHit || !hasItemTraitOnWeapon(weapon, 'Explosion')) {
+      return 0;
+    }
+
+    const attackerModel = this.buildSpatialModel(attacker);
+    const defenderModel = this.buildSpatialModel(defender);
+    if (!attackerModel || !defenderModel) {
+      return 0;
+    }
+
+    if (!SpatialRules.hasLineOfSight(this.battlefield, attackerModel, defenderModel)) {
+      return 0;
+    }
+
+    this.suppressionMarkers.push({
+      id: this.nextSuppressionMarkerId(attacker.id),
+      position: { ...defenderModel.position },
+      range: 1,
+      creatorId: attacker.id,
+    });
+    return 1;
+  }
+
+  private flipAllROFMarkersToSuppression(): number {
+    if (this.rofMarkers.length === 0) {
+      return 0;
+    }
+
+    for (const marker of this.rofMarkers) {
+      this.suppressionMarkers.push({
+        id: this.nextSuppressionMarkerId(marker.creatorId),
+        position: { ...marker.position },
+        range: 1,
+        creatorId: marker.creatorId,
+      });
+    }
+    const flipped = this.rofMarkers.length;
+    this.rofMarkers = [];
+    return flipped;
+  }
+
+  private cullSuppressionMarkers(): void {
+    if (!this.battlefield || this.suppressionMarkers.length === 0) {
+      return;
+    }
+
+    this.suppressionMarkers = this.suppressionMarkers.filter(marker =>
+      this.getMarkerRangeOccupants(marker.position, marker.range).length > 0
+    );
   }
 
   public getCharacterStatus(characterId: string): CharacterStatus | undefined {
@@ -632,6 +889,8 @@ export class GameManager {
   ): void {
     this.currentRound = 1;
     this.initializeCharacterStatus();
+    this.flipAllROFMarkersToSuppression();
+    this.cullSuppressionMarkers();
 
     // Initialize audit service on turn 1
     if (this.currentTurn === 1 && this.auditService && options) {
@@ -693,7 +952,10 @@ export class GameManager {
       character.resetInitiativeState();
       // Reset Multiple Attack Penalty tracking at start of each round (new Initiative)
       resetMultipleAttackTracking(character);
+      delete character.state.statusTokens['rofUsesThisInitiative'];
+      delete character.state.statusTokens['indirectAttacksThisInitiative'];
     }
+    this.cullSuppressionMarkers();
     this.phase = TurnPhase.Activation;
   }
 
@@ -703,6 +965,7 @@ export class GameManager {
 
   public endActivation(character: Character): void {
     runEndActivation(this.activationDeps(), character);
+    this.cullSuppressionMarkers();
   }
 
   public setWaiting(character: Character): void {
@@ -887,7 +1150,15 @@ export class GameManager {
       bonusActionOpponents?: Character[];
     } = {}
   ) {
-    return runRangedAttack(this.combatActionDeps(), attacker, defender, weapon, {
+    const rofPrep = this.prepareROFMarkersForAttack(attacker, defender, weapon);
+    const contextWithRof = rofPrep.rofBonusWild > 0
+      ? {
+        ...(options.context ?? {}),
+        rofBonusWild: (options.context?.rofBonusWild ?? 0) + rofPrep.rofBonusWild,
+      }
+      : options.context;
+
+    const outcome = runRangedAttack(this.combatActionDeps(), attacker, defender, weapon, {
       allowKOdAttacks: this.allowKOdAttacks,
       kodRules: {
         enabled: this.allowKOdAttacks,
@@ -895,7 +1166,174 @@ export class GameManager {
         coordinatorTraits: this.kodCoordinatorTraitsByCharacterId?.[attacker.id],
       },
       ...options,
+      context: contextWithRof,
     });
+
+    const suppressTraitExtra = this.getSuppressTraitLevel(weapon);
+    const suppressTraitMarkers = this.placeAdditionalROFMarkersForSuppression(
+      attacker,
+      rofPrep.placedMarkers,
+      suppressTraitExtra
+    );
+    const rofFinalize = this.finalizeROFMarkersAfterAttack(
+      attacker,
+      [...rofPrep.placedMarkers, ...suppressTraitMarkers]
+    );
+    const explosionSuppressionPlaced = this.placeExplosionSuppressionFromHit(
+      attacker,
+      defender,
+      weapon,
+      outcome.result.hit
+    );
+    this.cullSuppressionMarkers();
+
+    return {
+      ...outcome,
+      rof: {
+        effectiveROF: rofPrep.effectiveROF,
+        rofBonusWild: rofPrep.rofBonusWild,
+        baseMarkersPlaced: rofPrep.placedMarkers.length,
+        suppressTraitMarkersPlaced: suppressTraitMarkers.length,
+        removedNearAttacker: rofFinalize.removedNearAttacker,
+        flippedToSuppression: rofFinalize.flippedToSuppression,
+        retainedAsROF: rofFinalize.retainedAsROF,
+      },
+      suppression: {
+        explosionMarkersPlaced: explosionSuppressionPlaced,
+        activeSuppressionMarkers: this.suppressionMarkers.length,
+      },
+    };
+  }
+
+  public executeSuppressAction(
+    attacker: Character,
+    defender: Character,
+    weapon: Item,
+    options: Partial<ActionContextInput> & {
+      optimalRangeMu?: number;
+      orm?: number;
+      context?: TestContext;
+      moraleAllies?: Character[];
+      moraleOptions?: MoraleOptions;
+      allowTakeCover?: boolean;
+      takeCoverPosition?: Position;
+      defend?: boolean;
+      allowBonusActions?: boolean;
+      bonusAction?: BonusActionSelection;
+      bonusActionOpponents?: Character[];
+      costMode?: 'two_ap' | 'one_ap_plus_delay';
+    } = {}
+  ): {
+    executed: boolean;
+    reason?: string;
+    apSpent: number;
+    delayAdded: number;
+    baseMarkersPlaced: number;
+    bonusMarkersPlaced: number;
+    rofBonusWild: number;
+    attack?: ReturnType<GameManager['executeRangedAttack']>;
+  } {
+    const baseROF = this.getROFTraitLevel(weapon);
+    if (baseROF <= 0) {
+      return {
+        executed: false,
+        reason: 'Suppression Attack requires a weapon with ROF X.',
+        apSpent: 0,
+        delayAdded: 0,
+        baseMarkersPlaced: 0,
+        bonusMarkersPlaced: 0,
+        rofBonusWild: 0,
+      };
+    }
+
+    const costMode = options.costMode ?? 'two_ap';
+    const apCost = costMode === 'one_ap_plus_delay' ? 1 : 2;
+    if (!this.spendAp(attacker, apCost)) {
+      return {
+        executed: false,
+        reason: `Not enough AP for Suppression Attack (${apCost} AP required).`,
+        apSpent: 0,
+        delayAdded: 0,
+        baseMarkersPlaced: 0,
+        bonusMarkersPlaced: 0,
+        rofBonusWild: 0,
+      };
+    }
+
+    let delayAdded = 0;
+    if (costMode === 'one_ap_plus_delay') {
+      attacker.state.delayTokens += 1;
+      attacker.refreshStatusFlags();
+      delayAdded = 1;
+    }
+
+    const rofPrep = this.prepareROFMarkersForAttack(attacker, defender, weapon);
+    const contextWithRof = rofPrep.rofBonusWild > 0
+      ? {
+        ...(options.context ?? {}),
+        rofBonusWild: (options.context?.rofBonusWild ?? 0) + rofPrep.rofBonusWild,
+      }
+      : options.context;
+
+    const attackOutcome = runRangedAttack(this.combatActionDeps(), attacker, defender, weapon, {
+      allowKOdAttacks: this.allowKOdAttacks,
+      kodRules: {
+        enabled: this.allowKOdAttacks,
+        controllerTraits: this.kodControllerTraitsByCharacterId?.[attacker.id],
+        coordinatorTraits: this.kodCoordinatorTraitsByCharacterId?.[attacker.id],
+      },
+      ...options,
+      context: contextWithRof,
+    });
+
+    const suppressTraitExtra = this.getSuppressTraitLevel(weapon);
+    const suppressActionBonus = 1 + Math.floor(rofPrep.placedMarkers.length / 2);
+    const bonusMarkers = this.placeAdditionalROFMarkersForSuppression(
+      attacker,
+      rofPrep.placedMarkers,
+      suppressActionBonus + suppressTraitExtra
+    );
+    this.finalizeROFMarkersAfterAttack(attacker, [...rofPrep.placedMarkers, ...bonusMarkers]);
+    this.placeExplosionSuppressionFromHit(attacker, defender, weapon, attackOutcome.result.hit);
+    this.cullSuppressionMarkers();
+
+    return {
+      executed: true,
+      apSpent: apCost,
+      delayAdded,
+      baseMarkersPlaced: rofPrep.placedMarkers.length,
+      bonusMarkersPlaced: bonusMarkers.length,
+      rofBonusWild: rofPrep.rofBonusWild,
+      attack: {
+        ...attackOutcome,
+        rof: {
+          effectiveROF: rofPrep.effectiveROF,
+          rofBonusWild: rofPrep.rofBonusWild,
+          baseMarkersPlaced: rofPrep.placedMarkers.length,
+          suppressTraitMarkersPlaced: suppressTraitExtra,
+          suppressActionBonusMarkersPlaced: bonusMarkers.length,
+        },
+      } as ReturnType<GameManager['executeRangedAttack']>,
+    };
+  }
+
+  public getROFMarkers(): ROFMarker[] {
+    return this.rofMarkers.map(marker => ({
+      ...marker,
+      position: { ...marker.position },
+    }));
+  }
+
+  public getSuppressionMarkers(): SuppressionMarker[] {
+    return this.suppressionMarkers.map(marker => ({
+      ...marker,
+      position: { ...marker.position },
+    }));
+  }
+
+  public clearAdvancedMarkerState(): void {
+    this.rofMarkers = [];
+    this.suppressionMarkers = [];
   }
 
   public getPassiveOptions(event: PassiveEvent): PassiveOption[] {

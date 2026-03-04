@@ -129,4 +129,4 @@ A **Free Attentive Ordered Loader** may acquire a **Delay token** at any time to
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Firelane.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Firelane.txt`

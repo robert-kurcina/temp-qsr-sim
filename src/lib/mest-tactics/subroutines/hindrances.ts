@@ -1,10 +1,31 @@
 
-import { TestDice, DiceType } from '../dice-roller';
-
 export interface HindranceSources {
-  woundTokens: number;
-  fearTokens: number;
-  delayTokens: number;
+  woundTokens?: number;
+  wounds?: number;
+  fearTokens?: number;
+  delayTokens?: number;
+  statusTokens?: Record<string, number>;
+}
+
+const ADVANCED_HINDRANCE_STATUS_KEYS = new Set([
+  'acid',
+  'blinded',
+  'burn',
+  'burned',
+  'confused',
+  'entangled',
+  'held',
+  'poison',
+  'poisoned',
+  'transfixed',
+]);
+
+function hasAnyToken(value: number | undefined): boolean {
+  return (value ?? 0) > 0;
+}
+
+function isAdvancedHindranceStatus(statusName: string): boolean {
+  return ADVANCED_HINDRANCE_STATUS_KEYS.has(statusName.trim().toLowerCase());
 }
 
 /**
@@ -13,19 +34,18 @@ export interface HindranceSources {
  * @returns The total number of active hindrance types.
  */
 export function calculateHindrancePenalty(sources: HindranceSources): number {
-  let totalHindranceTypes = 0;
-  
-  if (sources.woundTokens > 0) {
-    totalHindranceTypes++;
-  }
-  if (sources.fearTokens > 0) {
-    totalHindranceTypes++;
-  }
-  if (sources.delayTokens > 0) {
-    totalHindranceTypes++;
+  const hindranceTypes = new Set<string>();
+
+  const woundTokens = sources.woundTokens ?? sources.wounds ?? 0;
+  if (hasAnyToken(woundTokens)) hindranceTypes.add('wounds');
+  if (hasAnyToken(sources.fearTokens)) hindranceTypes.add('fear');
+  if (hasAnyToken(sources.delayTokens)) hindranceTypes.add('delay');
+
+  for (const [statusName, count] of Object.entries(sources.statusTokens ?? {})) {
+    if (!hasAnyToken(count)) continue;
+    if (!isAdvancedHindranceStatus(statusName)) continue;
+    hindranceTypes.add(statusName.trim().toLowerCase());
   }
 
-  // Future hindrances can be added here by checking new properties on the HindranceSources interface.
-
-  return totalHindranceTypes;
+  return hindranceTypes.size;
 }

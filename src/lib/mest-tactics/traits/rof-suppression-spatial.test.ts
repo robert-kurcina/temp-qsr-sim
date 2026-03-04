@@ -181,6 +181,36 @@ describe('ROF Spatial Geometry - ROF Markers', () => {
         expect(pos.x).toBeLessThan(4);
       });
     });
+
+    it('should not place markers within 1" of allies when side metadata is present', () => {
+      const battlefield = new Battlefield(12, 12);
+      const attacker = createTestCharacter('Average');
+      const target = createTestCharacter('Average');
+      const ally = createTestCharacter('Average');
+
+      (attacker as unknown as { sideId: string }).sideId = 'SideA';
+      (ally as unknown as { sideId: string }).sideId = 'SideA';
+      (target as unknown as { sideId: string }).sideId = 'SideB';
+
+      battlefield.placeCharacter(attacker, { x: 0, y: 0 });
+      battlefield.placeCharacter(target, { x: 8, y: 0 });
+      battlefield.placeCharacter(ally, { x: 2, y: 0 });
+
+      const positions = calculateROFMarkerPositions(
+        attacker,
+        battlefield,
+        4,
+        target,
+        1
+      );
+
+      positions.forEach((pos) => {
+        const dx = pos.x - 2;
+        const dy = pos.y - 0;
+        const distanceToAlly = Math.sqrt(dx * dx + dy * dy);
+        expect(distanceToAlly).toBeGreaterThanOrEqual(1);
+      });
+    });
   });
 
   describe('getROFDiceBonus', () => {

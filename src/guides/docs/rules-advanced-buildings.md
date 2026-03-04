@@ -76,4 +76,4 @@ Gates, doors, windows, and locks have an **initial state**.
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Buildings.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Buildings.txt`

@@ -2415,18 +2415,19 @@ export function upgradeTerrain(terrain: TerrainType, surefootedLevel: number): T
     return terrain;
   }
 
+  if (terrain === 'Difficult') {
+    // Level 3: Difficult -> Clear (must be checked before level 2)
+    if (surefootedLevel >= 3) {
+      return 'Clear';
+    }
+    // Level 2: Difficult -> Rough
+    if (surefootedLevel >= 2) {
+      return 'Rough';
+    }
+  }
+
   // Level 1: Rough → Clear
   if (surefootedLevel >= 1 && terrain === 'Rough') {
-    return 'Clear';
-  }
-
-  // Level 2: Difficult → Rough
-  if (surefootedLevel >= 2 && terrain === 'Difficult') {
-    return 'Rough';
-  }
-
-  // Level 3: Difficult → Clear (direct upgrade)
-  if (surefootedLevel >= 3 && terrain === 'Difficult') {
     return 'Clear';
   }
 

@@ -263,4 +263,4 @@ Apply the rules for **Choose Followers** with these additions:
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Go.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Go.txt`

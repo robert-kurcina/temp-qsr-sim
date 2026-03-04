@@ -70,10 +70,20 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
     const weaponIndex = getWeaponIndexForCharacter(attacker, weapon);
 
     // 1. Hindrance Penalties
-    const attackerHindrance = calculateHindrancePenalty({ woundTokens: attacker.state.wounds, fearTokens: attacker.state.fearTokens, delayTokens: attacker.state.delayTokens });
+    const attackerHindrance = calculateHindrancePenalty({
+        woundTokens: attacker.state.wounds,
+        fearTokens: attacker.state.fearTokens,
+        delayTokens: attacker.state.delayTokens,
+        statusTokens: attacker.state.statusTokens,
+    });
     if (attackerHindrance > 0) attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + attackerHindrance;
 
-    const defenderHindrance = calculateHindrancePenalty({ woundTokens: defender.state.wounds, fearTokens: defender.state.fearTokens, delayTokens: defender.state.delayTokens });
+    const defenderHindrance = calculateHindrancePenalty({
+        woundTokens: defender.state.wounds,
+        fearTokens: defender.state.fearTokens,
+        delayTokens: defender.state.delayTokens,
+        statusTokens: defender.state.statusTokens,
+    });
     if (defenderHindrance > 0) defenderPenalty[DiceType.Modifier] = (defenderPenalty[DiceType.Modifier] || 0) + defenderHindrance;
 
     // 2. Multiple Weapons Bonus (+1m per additional weapon of same classification)

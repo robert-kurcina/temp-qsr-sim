@@ -1,12 +1,12 @@
 ---
 title: Advanced Rules Index
 description: Index of all Advanced Rules (▲) for MEST Tactics. These are optional rules for experienced players.
-status: "DEFERRED - Requires QSR implementation first"
+status: "PARTIAL - Source audit expanded; runtime implementation remains mostly deferred"
 ---
 
 # Advanced Rules Index
 
-**Status:** ⚠️ **DEFERRED** - These advanced rules require the core QSR rules to be fully implemented first. Additionally, many require updates to `traits_descriptions.json` for new trait support.
+**Status:** ⚠️ **PARTIAL** - Source mappings are being audited, but most advanced modules still require dedicated runtime ownership.
 
 ---
 
@@ -34,7 +34,7 @@ Advanced Rules (marked with **▲**) are optional rules for experienced players 
 | [Advanced Gas/Fume/Puffs](./rules-advanced-gas-fume-puffs) | Gas markers, Blacksmoke, Steam | ⏳ DEFERRED | Gas traits, Fire interaction |
 | [Advanced Go](./rules-advanced-go) | [GO] trait and related mechanics | ⏳ DEFERRED | GO trait |
 | [Advanced Champions](./rules-advanced-champions) | Champion system, character progression | ⏳ DEFERRED | Phase 5 feature (non-QSR) |
-| [Advanced LoA](./rules-advanced-loa) | Lines of Action | ⏳ DEFERRED | Command system |
+| [Advanced LoA](./rules-advanced-loa) | Level-of-Absurdity semantics | ⚠️ PARTIAL | Champions + technology age filters |
 | [Advanced Technology](./rules-advanced-technology) | Tech level rules, equipment restrictions | ⏳ DEFERRED | Tech level system |
 | [Advanced Terrain](./rules-advanced-terrain) | Advanced terrain features and effects | ⏳ DEFERRED | Core terrain system |
 | [Advanced Buildings](./rules-advanced-buildings) | Building interior navigation, multi-level combat | ⏳ DEFERRED | 3D terrain, LOS |
@@ -59,7 +59,7 @@ Advanced Rules (marked with **▲**) are optional rules for experienced players 
 7. **Lighting** - Visibility enhancements
 8. **Webbing** - Specialized weapon effects
 9. **Go** - Command mechanics
-10. **LoA** - Lines of Action
+10. **LoA** - Level-of-Absurdity campaign semantics
 
 ### Phase 5: Campaign Features (Non-QSR)
 11. **Champions** - Character progression system
@@ -112,22 +112,22 @@ Advanced rules require physical or digital markers:
 ## Source References
 
 **Primary Sources:**
-- `docs/MEST.Tactics.Advanced-Fire.txt`
-- `docs/MEST.Tactics.Advanced-ROF.txt`
-- `docs/MEST.Tactics.Advanced-Suppression.txt`
-- `docs/MEST.Tactics.Advanced-Firelane.txt`
-- `docs/MEST.Tactics.Advanced-Effects.txt`
-- `docs/MEST.Tactics.Advanced-Gas.Fume.Puffs.txt`
-- `docs/MEST.Tactics.Advanced-Go.txt`
-- `docs/MEST.Tactics.Advanced-Champions.txt`
-- `docs/MEST.Tactics.Advanced-LoA.txt`
-- `docs/MEST.Tactics.Advanced-Technology.txt`
-- `docs/MEST.Tactics.Advanced-Terrain.txt`
-- `docs/MEST.Tactics.Advanced-Buildings.txt`
-- `docs/MEST.Tactics.Advanced-Lighting.txt`
-- `docs/MEST.Tactics.Advanced-Webbing.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Fire.txt`
+- `docs/canonical/MEST.Tactics.Advanced-ROF.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Suppression.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Firelane.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Effects.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Gas.Fume.Puffs.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Go.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Champions.txt`
+- `docs/canonical/MEST.Tactics.Advanced-LoA.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Technology.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Terrain.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Buildings.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Lighting.txt`
+- `docs/canonical/MEST.Tactics.Advanced-Webbing.txt`
 
 ---
 
-**Last Updated:** February 25, 2026  
-**Status:** All modules DEFERRED pending QSR completion and trait system expansion
+**Last Updated:** March 4, 2026  
+**Status:** Source-audit mappings expanded; runtime implementation remains mostly deferred

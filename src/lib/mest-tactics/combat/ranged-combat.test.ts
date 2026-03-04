@@ -104,6 +104,19 @@ describe('makeRangedCombatAttack', () => {
     expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
   });
 
+  it('should include advanced status hindrances in ranged hit penalties', () => {
+    const rolls: number[][] = [[1, 1], [1, 1]];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    setRoller(statefulRoller);
+
+    attacker.state.statusTokens.Burn = 1;
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {});
+
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const hitEventData = diceEvents[0].data as any;
+    expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
+  });
+
   it('should miss when LOS is blocked by spatial context', () => {
     const battlefield = new Battlefield(12, 12);
     const tree = new TerrainElement('Tree', { x: 6, y: 6 });

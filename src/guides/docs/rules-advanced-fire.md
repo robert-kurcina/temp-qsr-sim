@@ -164,4 +164,4 @@ If a portion of a **Building** is affected by a **size 4 (3 MU) Fire marker**:
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Fire.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Fire.txt`

@@ -332,6 +332,107 @@ describe('GameManager', () => {
     expect(outcome.result.hit).toBe(false);
   });
 
+  it('should place and flip ROF markers into suppression during ranged attacks', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const attacker = characters[0];
+    const defender = characters[1];
+
+    gameManager.placeCharacter(attacker, { x: 0, y: 0 });
+    gameManager.placeCharacter(defender, { x: 6, y: 0 });
+
+    const weapon = {
+      name: 'Test SMG',
+      class: 'Range',
+      classification: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      or: 8,
+      accuracy: '-',
+      impact: 0,
+      dmg: '1',
+      traits: ['ROF 2'],
+    };
+
+    const outcome = gameManager.executeRangedAttack(attacker, defender, weapon as any);
+
+    expect(outcome.rof.baseMarkersPlaced).toBeGreaterThan(0);
+    expect(outcome.rof.flippedToSuppression).toBeGreaterThanOrEqual(0);
+    expect(gameManager.getSuppressionMarkers().length).toBeGreaterThan(0);
+    expect(gameManager.getROFMarkers().length).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should execute Suppression Attack with AP/delay costs and bonus marker placement', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const attacker = characters[0];
+    const defender = characters[1];
+
+    gameManager.placeCharacter(attacker, { x: 0, y: 0 });
+    gameManager.placeCharacter(defender, { x: 6, y: 0 });
+
+    const weapon = {
+      name: 'Suppressive Carbine',
+      class: 'Range',
+      classification: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      or: 8,
+      accuracy: '-',
+      impact: 0,
+      dmg: '1',
+      traits: ['ROF 3'],
+    };
+
+    const result = gameManager.executeSuppressAction(attacker, defender, weapon as any, {
+      costMode: 'one_ap_plus_delay',
+    });
+
+    expect(result.executed).toBe(true);
+    expect(result.apSpent).toBe(1);
+    expect(result.delayAdded).toBe(1);
+    expect(result.baseMarkersPlaced).toBeGreaterThan(0);
+    expect(result.bonusMarkersPlaced).toBeGreaterThanOrEqual(1);
+    expect(gameManager.getSuppressionMarkers().length).toBeGreaterThan(0);
+  });
+
+  it('should cull suppression markers with no in-play models in range on round start', () => {
+    const battlefield = new Battlefield(12, 12);
+    gameManager.setBattlefield(battlefield);
+
+    const attacker = characters[0];
+    const defender = characters[1];
+
+    gameManager.placeCharacter(attacker, { x: 0, y: 0 });
+    gameManager.placeCharacter(defender, { x: 6, y: 0 });
+
+    const weapon = {
+      name: 'Test Rifle',
+      class: 'Range',
+      classification: 'Range',
+      type: 'Ranged',
+      bp: 0,
+      or: 8,
+      accuracy: '-',
+      impact: 0,
+      dmg: '1',
+      traits: ['ROF 2'],
+    };
+
+    gameManager.executeRangedAttack(attacker, defender, weapon as any);
+    expect(gameManager.getSuppressionMarkers().length).toBeGreaterThan(0);
+
+    attacker.state.isKOd = true;
+    defender.state.isKOd = true;
+    attacker.refreshStatusFlags();
+    defender.refreshStatusFlags();
+
+    gameManager.startRound();
+    expect(gameManager.getSuppressionMarkers().length).toBe(0);
+  });
+
   it('should apply ongoing status tokens as wounds at activation start', () => {
     const character = characters[0];
     character.state.statusPendingTokens.Poison = 2;

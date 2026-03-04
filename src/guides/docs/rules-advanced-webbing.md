@@ -88,4 +88,4 @@ Strand markers in **base-contact with Fire markers**, or has the **Fire trait**,
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Webbing.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Webbing.txt`

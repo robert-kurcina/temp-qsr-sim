@@ -127,7 +127,8 @@ export function calculateROFMarkerPositions(
   battlefield: Battlefield,
   rofLevel: number,
   primaryTarget: Character,
-  cohesion: number = 4
+  cohesion: number = 4,
+  allCharacters?: Character[]
 ): Position[] {
   const attackerPos = battlefield.getCharacterPosition(attacker);
   const targetPos = battlefield.getCharacterPosition(primaryTarget);
@@ -171,7 +172,9 @@ export function calculateROFMarkerPositions(
     }
 
     // Check not within 1" of Friendly models
-    const friendlyModels = battlefield.getAllCharacters().filter(c => 
+    const battlefieldCharacters = allCharacters
+      ?? ((battlefield as unknown as { getAllCharacters?: () => Character[] }).getAllCharacters?.() ?? []);
+    const friendlyModels = battlefieldCharacters.filter(c =>
       c.id !== attacker.id && areAllies(attacker, c)
     );
     
@@ -205,9 +208,54 @@ export function calculateROFMarkerPositions(
  * Check if models are allies
  */
 function areAllies(char1: Character, char2: Character): boolean {
-  // TODO: Implement proper faction/assembly checking
-  // For now, use simple ID-based heuristic
-  return false; // Assume all are opponents for safety
+  if (char1.id === char2.id) {
+    return true;
+  }
+
+  const side1 = getCharacterSideToken(char1);
+  const side2 = getCharacterSideToken(char2);
+
+  if (!side1 || !side2) {
+    return false;
+  }
+
+  return side1 === side2;
+}
+
+/**
+ * Resolve side/team token from common runtime metadata slots.
+ * Keeps this helper decoupled from GameManager mission-side registries.
+ */
+function getCharacterSideToken(character: Character): string | null {
+  const state = character.state as unknown as Record<string, unknown>;
+  const profile = character.profile as unknown as Record<string, unknown>;
+  const runtimeCharacter = character as unknown as Record<string, unknown>;
+
+  const candidates = [
+    runtimeCharacter.sideId,
+    runtimeCharacter.side,
+    runtimeCharacter.teamId,
+    runtimeCharacter.team,
+    runtimeCharacter.factionId,
+    runtimeCharacter.faction,
+    state?.sideId,
+    state?.teamId,
+    state?.factionId,
+    profile?.sideId,
+    profile?.side,
+    profile?.teamId,
+    profile?.team,
+    profile?.factionId,
+    profile?.faction,
+  ];
+
+  for (const candidate of candidates) {
+    if (typeof candidate === 'string' && candidate.trim().length > 0) {
+      return candidate.trim();
+    }
+  }
+
+  return null;
 }
 
 /**

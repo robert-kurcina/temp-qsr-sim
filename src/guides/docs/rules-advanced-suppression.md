@@ -165,4 +165,4 @@ If **Core Damage < Core Defense**:
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Suppression.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Suppression.txt`

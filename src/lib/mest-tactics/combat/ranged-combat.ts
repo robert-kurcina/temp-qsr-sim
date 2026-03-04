@@ -80,7 +80,12 @@ export function buildRangedHitTestModifiers(attacker: Character, defender: Chara
     const isBow = weaponClass.includes('bow');
 
     // 1. Hindrance Penalties (applies to most tests)
-    const attackerHindrance = calculateHindrancePenalty({ woundTokens: attacker.state.wounds, fearTokens: attacker.state.fearTokens, delayTokens: attacker.state.delayTokens });
+    const attackerHindrance = calculateHindrancePenalty({
+        woundTokens: attacker.state.wounds,
+        fearTokens: attacker.state.fearTokens,
+        delayTokens: attacker.state.delayTokens,
+        statusTokens: attacker.state.statusTokens,
+    });
     if (attackerHindrance > 0) attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + attackerHindrance;
 
     // Note: Defender hindrance doesn't apply to the REF roll for being hit.
@@ -102,6 +107,9 @@ export function buildRangedHitTestModifiers(attacker: Character, defender: Chara
     // 4. [Burst] trait bonus (+1b to Hit Test) - handled via context.burstBonusBase
     if (context.burstBonusBase) {
         attackerBonus[DiceType.Base] = (attackerBonus[DiceType.Base] || 0) + context.burstBonusBase;
+    }
+    if (context.rofBonusWild) {
+        attackerBonus[DiceType.Wild] = (attackerBonus[DiceType.Wild] || 0) + context.rofBonusWild;
     }
 
     // 4. Ranged-Specific Contextual Modifiers

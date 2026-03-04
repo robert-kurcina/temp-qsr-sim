@@ -45,4 +45,36 @@ describe('calculateHindrancePenalty', () => {
     expect(calculateHindrancePenalty(sources)).toBe(2);
   });
 
+  it('should accept character-state wound shape (wounds) used by action pipelines', () => {
+    const sources: HindranceSources = { wounds: 1, fearTokens: 0, delayTokens: 0 };
+    expect(calculateHindrancePenalty(sources)).toBe(1);
+  });
+
+  it('should count advanced status hindrance types and ignore non-hindrance markers', () => {
+    const sources: HindranceSources = {
+      woundTokens: 0,
+      fearTokens: 0,
+      delayTokens: 0,
+      statusTokens: {
+        Burn: 1,
+        Poison: 2,
+        rofUsesThisInitiative: 3,
+      },
+    };
+    expect(calculateHindrancePenalty(sources)).toBe(2);
+  });
+
+  it('should stack core and advanced hindrance types together', () => {
+    const sources: HindranceSources = {
+      woundTokens: 1,
+      fearTokens: 1,
+      delayTokens: 0,
+      statusTokens: {
+        Confused: 1,
+        Held: 1,
+      },
+    };
+    expect(calculateHindrancePenalty(sources)).toBe(4);
+  });
+
 });

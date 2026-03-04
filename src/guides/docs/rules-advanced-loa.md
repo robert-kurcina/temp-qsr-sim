@@ -1,46 +1,61 @@
 ---
-title: "Advanced Rules: LoA (Lines of Action)"
-description: Lines of Action command system.
-status: "DEFERRED - Requires QSR implementation first"
+title: "Advanced Rules - Level of Absurdity (LoA)"
+description: Canonical LoA ownership and mapping index.
+status: "PARTIAL - Canonical mapped; runtime ownership remains partial"
 ---
 
-# Advanced Rules: LoA (▲)
+# Advanced Rules - Level of Absurdity (LoA)
 
-**Status:** ⏳ **DEFERRED** - Requires core QSR implementation plus command system.
+**Status:** ⚠️ **PARTIAL** - Canonical LoA text is mapped; full runtime campaign mechanics are not yet implemented.
 
 ---
 
 ## Overview
 
-**Lines of Action (LoA)** represents command and control structures for coordinated military operations.
+Canonical `MEST.Tactics.Advanced-LoA.txt` defines **Level-of-Absurdity (LoA)**, not "Lines of Action."
+
+This file is intentionally maintained as a **thin ownership index** to avoid duplication with:
+- `rules-advanced-champions.md` (primary guide narrative for LoA semantics)
+- `rules-advanced-technology.md` (age/Kardeshev framing overlap)
+- `docs/qsr/08-advanced/08.01-traits.md` (clause-status tracker)
 
 ---
 
-## LoA Markers
+## Canonical Scope
 
-### Types
-
-| Type | Description |
-|------|-------------|
-| **Command LoA** | From command units |
-| **Support LoA** | From support units |
-
----
-
-## Implementation Requirements
-
-### Traits Needed
-- **Command X** — Command radius
-- **Coordinate** — Coordination ability
+The canonical LoA source covers:
+- LoA scale and Kardeshev mapping
+- Leakage and synonym-based LoA adjustments
+- Champion/codon-barrier narrative implications
+- Trait-level LoA gating and reputation interactions
+- High-skill-level LoA escalation limits
 
 ---
 
-## Related Rules
+## Runtime Touchpoints (Current)
 
-- [[rules-ai|Rules: AI]]
-- [[rules-actions|Rules: Actions]]
+- `src/lib/mest-tactics/utils/canonical-metadata.ts`
+- `src/lib/mest-tactics/utils/tech-level-filter.ts`
+- `src/lib/mest-tactics/mission/assembly-builder.ts`
+
+These currently provide **partial adjacent support** (tech-age filtering), not full LoA campaign mechanics.
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-LoA.txt`  
-**Status:** ⏳ **DEFERRED**
+## Guide Ownership
+
+- **Primary guide owner:** `rules-advanced-champions.md`
+- **Canonical source:** `docs/canonical/MEST.Tactics.Advanced-LoA.txt`
+- **Clause tracker:** `docs/qsr/08-advanced/08.01-traits.md` (`ALO.*` rows)
+
+---
+
+## Related Files
+
+- [[rules-advanced-champions|Advanced Rules - Champions]]
+- [[rules-advanced-technology|Advanced Rules - Technology]]
+- [[rules-item-tech-windows|Rules: Item Tech Windows]]
+
+---
+
+**Source:** `docs/canonical/MEST.Tactics.Advanced-LoA.txt`

@@ -111,4 +111,16 @@ describe('makeCloseCombatAttack', () => {
     const hitEventData = diceEvents[0].data as any;
     expect(hitEventData.finalPools.p2FinalPenalty[DiceType.Base] || 0).toBe(1);
   });
+
+  it('should include advanced status hindrances for both attacker and defender', () => {
+    attacker.state.statusTokens.Confused = 1;
+    defender.state.statusTokens.Held = 1;
+
+    resolveCloseCombatHitTest(attacker, defender, attackerWeapon, {});
+
+    const diceEvents = metricsService.getEventsByName('diceTestResolved');
+    const hitEventData = diceEvents[0].data as any;
+    expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);
+    expect(hitEventData.finalPools.p2FinalPenalty[DiceType.Modifier] || 0).toBe(1);
+  });
 });

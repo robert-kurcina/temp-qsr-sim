@@ -148,4 +148,4 @@ It would be **absurd**, but entirely possible within the in-game universe that i
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Technology.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Technology.txt`

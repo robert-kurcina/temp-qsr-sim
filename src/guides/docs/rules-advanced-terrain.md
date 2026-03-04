@@ -157,4 +157,4 @@ Combine with any other Area terrain.
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Terrain.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Terrain.txt`

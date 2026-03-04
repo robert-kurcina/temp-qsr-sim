@@ -153,4 +153,4 @@ Set the **LOF from the Light source to the target**, and use the **Scatter Diagr
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Lighting.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Lighting.txt`

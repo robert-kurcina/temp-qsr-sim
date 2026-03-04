@@ -253,4 +253,4 @@ The very first Champion of each Side which has escaped for any Mission awards it
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Champions.txt`, `docs/MEST.Tactics.Advanced-LoA.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Champions.txt`, `docs/canonical/MEST.Tactics.Advanced-LoA.txt`

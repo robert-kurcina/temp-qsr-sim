@@ -115,4 +115,4 @@ To keep things simple, both **[Feed]** and **[Jam]** should be ignored when firs
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-ROF.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-ROF.txt`

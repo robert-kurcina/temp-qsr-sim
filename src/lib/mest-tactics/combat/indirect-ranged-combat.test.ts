@@ -55,15 +55,16 @@ describe('makeIndirectRangedAttack', () => {
     expect(eventData.finalPools.p1FinalPenalty[DiceType.Base] || 0).toBe(2);
   });
 
-  it('should apply a hindrance penalty', () => {
+  it('should apply core and advanced hindrance penalties', () => {
     const rolls = [1,1];
     attacker.state.wounds = 1;
     attacker.state.fearTokens = 1;
     attacker.state.delayTokens = 1;
+    attacker.state.statusTokens.Burn = 1;
     makeIndirectRangedAttack(attacker, weapon, 0, {}, rolls);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const eventData = diceEvents[0].data as any;
-    expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(3);
+    expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(4);
   });
 
   it('should apply a point-blank bonus', () => {
@@ -95,6 +96,7 @@ describe('makeIndirectRangedAttack', () => {
     attacker.state.wounds = 1;
     attacker.state.fearTokens = 1;
     attacker.state.delayTokens = 1;
+    attacker.state.statusTokens.Burn = 1;
 
     makeIndirectRangedAttack(attacker, weapon, 2, {
       isPointBlank: true,
@@ -106,7 +108,7 @@ describe('makeIndirectRangedAttack', () => {
 
     expect(eventData.finalPools.p1FinalBonus[DiceType.Modifier] || 0).toBe(1);
     expect(eventData.finalPools.p1FinalPenalty[DiceType.Base] || 0).toBe(3); // ORM(2) + Direct Cover(1)
-    expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(4); // Hindrance(3) + Intervening Cover(1)
+    expect(eventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(5); // Hindrance(4) + Intervening Cover(1)
   });
 
   it('should apply a weapon accuracy bonus', () => {

@@ -11,7 +11,7 @@
 - Clause catalogs for core P1 files are in place.
 - Runtime hardening replaced low-signal verification suites with behavior-backed tests.
 - Current P1 file snapshot: **107 clause rows total**, **107 verified**, **0 partial**, **0 missing**, **0 not-audited**.
-- Full test baseline: **148 test files, 2381 tests passing**.
+- Full test baseline: **149 test files, 2297 tests passing**.
 
 ---
 
@@ -183,13 +183,16 @@
   - removed duplicate lookup layer `src/lib/mest-tactics/missions/mission-registry.ts`
   - removed legacy-only tests `mission-engine.test.ts` and `mission-runtime.test.ts`
   - retained `mission-runtime-adapter.ts` as the single active runtime integration path
+- Resolved Advanced-LoA guide drift/duplication:
+  - converted `src/guides/docs/rules-advanced-loa.md` into a canonical Level-of-Absurdity ownership index (instead of non-canonical “Lines of Action” content)
+  - updated `src/guides/docs/rules-advanced-game.md` LoA module references/status wording to match canonical scope
 
 ### Source Audit Inventory Progress
 
 - Reclassified primary canonical source status from `⚪ Not Started` to `⚠️ Partially Audited` for:
   - `docs/canonical/MEST.Tactics.Objectives.txt` (objective marker types/actions/concerns cross-checked)
   - `docs/canonical/MEST.Tactics.Indirect.txt` (full indirect clause map cross-checked against indirect attack/scatter runtime and tests)
-  - `docs/canonical/MEST.Tactics.Advanced-*.txt` (initial `Advanced-Effects` clause extraction/audit started in `docs/qsr/08-advanced/08.01-traits.md`)
+  - `docs/canonical/MEST.Tactics.Advanced-*.txt` (initial clause extraction/audit now includes `Advanced-Effects`, `Advanced-Buildings`, `Advanced-Champions`, `Advanced-Fire`, `Advanced-Firelane`, `Advanced-Gas.Fume.Puffs`, `Advanced-Go`, `Advanced-Lighting`, `Advanced-LoA`, `Advanced-ROF`, `Advanced-Suppression`, `Advanced-Technology`, `Advanced-Terrain`, and `Advanced-Webbing` in `docs/qsr/08-advanced/08.01-traits.md`)
 - Added indirect combat clause-tracking artifact:
   - `docs/qsr/04-combat/04.04-indirect.md` (32 clauses with runtime/test traceability and explicit gap flags)
 - Reclassified secondary guidance source statuses from `⚪ Not Audited` to `⚠️ Partially Audited` for:
@@ -232,6 +235,12 @@
 - Resolved stale Priority-2 file-path references by adding placeholder trackers:
   - `docs/qsr/08-advanced/08.01-traits.md`
   - `docs/qsr/09-edge-cases/09.01-index.md`
+- Normalized Advanced guide source pointers:
+  - updated `src/guides/docs/rules-advanced-*.md` `Source` blocks to canonical `docs/canonical/MEST.Tactics.Advanced-*.txt` paths
+  - added `src/lib/mest-tactics/utils/advanced-guide-integrity.test.ts` to enforce canonical source-pointer and advanced wiki-link integrity
+- Reduced advanced trait redundancy surface:
+  - deleted unreferenced `src/lib/mest-tactics/traits/advanced-traits-stubs.ts`
+  - replaced logic-only `src/lib/mest-tactics/traits/advanced-traits.test.ts` with a runtime-backed helper/status suite
 
 ---
 
