@@ -34,7 +34,7 @@ import {
 import { resolveFriendlyFire, FriendlyFireOptions } from './friendly-fire';
 import { Battlefield } from '../battlefield/Battlefield';
 import { Position } from '../battlefield/Position';
-import { 
+import {
   hasBurst, 
   getBurstBonus,
   hasFeed, 
@@ -48,6 +48,7 @@ import {
   isMultipleAttackExempt,
   getMultipleWeaponsBonus,
 } from '../traits/combat-traits';
+import { calculateObscuredPenalty } from './obscured';
 
 // --- Main Attack Result Interface ---
 
@@ -128,11 +129,7 @@ export function buildRangedHitTestModifiers(attacker: Character, defender: Chara
     }
 
     if (context.obscuringModels && context.obscuringModels > 0) {
-        const thresholds = [1, 2, 5, 10];
-        let obscuredPenalty = 0;
-        for (const threshold of thresholds) {
-            if (context.obscuringModels >= threshold) obscuredPenalty += 1;
-        }
+        const obscuredPenalty = calculateObscuredPenalty(context.obscuringModels);
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + obscuredPenalty;
     }
 

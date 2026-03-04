@@ -1,5 +1,6 @@
 
 import { Trait } from '../core/Trait';
+import { canonicalizeKeywordToken } from '../utils/canonical-metadata';
 
 // A set of traits that can be leveled up by summing their levels.
 const stackableTraits = new Set([
@@ -34,10 +35,12 @@ export function parseTrait(source: string): Trait {
         if ((typePart.startsWith('{') && typePart.endsWith('}')) || (typePart.startsWith('[') && typePart.endsWith(']'))) {
             // It's a list
             const listContent = typePart.substring(1, typePart.length - 1).trim();
-            trait.list = listContent.split(',').map(item => item.trim());
+            trait.list = listContent
+                .split(',')
+                .map(item => canonicalizeKeywordToken(item));
         } else {
             // It's a type
-            trait.type = typePart;
+            trait.type = canonicalizeKeywordToken(typePart);
         }
     }
 

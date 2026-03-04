@@ -58,14 +58,14 @@ If the original attack was a **Concentrated Attack**:
 
 ### Obscured Modifier
 
-**Obscured** applies a **-1m penalty** to Attacker Hit or Detect Tests:
+**Obscured** applies cumulative threshold penalties to Attacker Hit or Detect Tests:
 
 | Models in LOF | Penalty |
 |---------------|---------|
-| 1 model | -1m |
-| 2 models | -1m |
-| 5 models | -1m |
-| 10 models | -1m |
+| 1 | -1m |
+| 2-4 | -2m |
+| 5-9 | -3m |
+| 10+ | -4m |
 
 **Count:**
 - Models **within LOF** to the target
@@ -83,22 +83,21 @@ If the original attack was a **Concentrated Attack**:
 
 ### Obscured Rules
 
-**Obscured** penalizes **-1m** to:
+**Obscured** penalizes Hit/Detect Tests by cumulative thresholds (1, 2, 5, 10):
 - **Attacker Hit Tests**
 - **Detect Tests**
 
 **Sources of Obscured:**
-1. **Models within LOF** to target (1, 2, 5, or 10 models = -1m each)
-2. **Non-Opposing models beyond target** but within 1 MU of LOF (-1m each)
+1. **Models within LOF** to target (thresholds 1, 2, 5, 10 each contribute -1m)
+2. **Non-Opposing models beyond target** but within 1 MU of LOF (also counted toward those thresholds)
 
 **Example:**
 ```
 Attacker → Model A → Model B → Target
            (Friendly) (Neutral)
            
-Model A: Within LOF = -1m
-Model B: Beyond target, within 1 MU of LOF = -1m
-Total: -2m to Attacker Hit Test
+Model A + Model B: 2 obscuring models total
+Total: -2m to Attacker Hit Test (thresholds 1 and 2)
 ```
 
 ---
@@ -169,7 +168,7 @@ Direct Range Attack misses?
 |-----------|----------|
 | **Concentrated Attack** | No AR reduction |
 | **Friendly in base-contact with attacker** | Immune (safe) |
-| **Obscured (per model)** | -1m to Hit Test |
+| **Obscured** | -1m at each threshold (1, 2, 5, 10 models) |
 
 ---
 

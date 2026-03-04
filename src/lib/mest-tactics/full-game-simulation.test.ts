@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { buildAssembly, buildProfile } from './mission/assembly-builder';
+import { buildAssembly, buildProfile, gameSizeDefaults } from './mission/assembly-builder';
 import { buildMissionSide } from './mission/MissionSideBuilder';
 import { Battlefield } from './battlefield/Battlefield';
 import { TerrainElement } from './battlefield/terrain/TerrainElement';
@@ -7,8 +7,7 @@ import { GameManager } from './engine/GameManager';
 import { getBaseDiameterFromSiz } from './battlefield/spatial/size-utils';
 import { SpatialRules } from './battlefield/spatial/spatial-rules';
 import { performTest, TestDice, DiceType } from './subroutines/dice-roller';
-import { resolveHitTest, HitTestContext } from './subroutines/hit-test';
-import { resolveDamageTest, DamageTestContext } from './subroutines/damage';
+import { CANONICAL_GAME_SIZE_ORDER, CANONICAL_GAME_SIZES, type CanonicalGameSize } from './mission/game-size-canonical';
 
 /**
  * Full End-to-End AI vs AI Game Simulator
@@ -33,12 +32,25 @@ interface GameSizeConfig {
   endGameTurn: number;
 }
 
-const GAME_SIZES: Record<string, GameSizeConfig> = {
-  VERY_SMALL: { name: 'Very Small', modelsPerSide: [2, 4], bpPerSide: [125, 250], battlefieldWidth: 18, battlefieldHeight: 24, maxTurns: 10, endGameTurn: 3 },
-  SMALL: { name: 'Small', modelsPerSide: [4, 8], bpPerSide: [250, 500], battlefieldWidth: 24, battlefieldHeight: 24, maxTurns: 10, endGameTurn: 4 },
-  MEDIUM: { name: 'Medium', modelsPerSide: [6, 12], bpPerSide: [500, 750], battlefieldWidth: 36, battlefieldHeight: 36, maxTurns: 10, endGameTurn: 6 },
-  LARGE: { name: 'Large', modelsPerSide: [8, 12], bpPerSide: [750, 1000], battlefieldWidth: 48, battlefieldHeight: 48, maxTurns: 10, endGameTurn: 8 },
-  VERY_LARGE: { name: 'Very Large', modelsPerSide: [10, 20], bpPerSide: [1000, 1250], battlefieldWidth: 72, battlefieldHeight: 48, maxTurns: 10, endGameTurn: 10 },
+const DEFAULT_SIM_MAX_TURNS = 10;
+
+const GAME_SIZES: Record<CanonicalGameSize, GameSizeConfig> = {
+  ...Object.fromEntries(
+    CANONICAL_GAME_SIZE_ORDER.map((size) => {
+      const defaults = gameSizeDefaults[size];
+      const canonical = CANONICAL_GAME_SIZES[size];
+      const config: GameSizeConfig = {
+        name: canonical.name,
+        modelsPerSide: [defaults.characterLimitMin, defaults.characterLimitMax],
+        bpPerSide: [defaults.bpLimitMin, defaults.bpLimitMax],
+        battlefieldWidth: canonical.battlefieldWidthMU,
+        battlefieldHeight: canonical.battlefieldHeightMU,
+        maxTurns: DEFAULT_SIM_MAX_TURNS,
+        endGameTurn: canonical.endGameTrigger,
+      };
+      return [size, config];
+    })
+  ),
 };
 
 interface GameLogEntry {

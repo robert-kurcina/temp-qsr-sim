@@ -53,6 +53,7 @@ import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
 import { TacticalDoctrine } from '../src/lib/mest-tactics/ai/stratagems';
 import { configureInstrumentation, InstrumentationGrade, getInstrumentationLogger } from '../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
 import { getEndGameTriggerTurn } from '../src/lib/mest-tactics/engine/end-game-trigger';
+import { GAME_SIZE_CONFIG } from './ai-battle/AIBattleConfig';
 
 // ============================================================================
 // Configuration
@@ -97,10 +98,10 @@ const LIGHTING_PRESETS: Record<string, LightingPreset> = {
 
 const DEFAULT_CONFIG: BattleConfig = {
   gameSize: GameSize.VERY_SMALL,
-  battlefieldWidth: 18,
-  battlefieldHeight: 24,
-  maxTurns: 10,
-  endGameTriggerTurn: 3, // VERY_SMALL = Turn 3
+  battlefieldWidth: GAME_SIZE_CONFIG[GameSize.VERY_SMALL].battlefieldWidth,
+  battlefieldHeight: GAME_SIZE_CONFIG[GameSize.VERY_SMALL].battlefieldHeight,
+  maxTurns: GAME_SIZE_CONFIG[GameSize.VERY_SMALL].maxTurns,
+  endGameTriggerTurn: GAME_SIZE_CONFIG[GameSize.VERY_SMALL].endGameTurn,
   terrainDensity: 0.50,
   lighting: LIGHTING_PRESETS['Day, Clear'],
   instrumentationGrade: InstrumentationGrade.BY_ACTION_WITH_TESTS,
@@ -272,15 +273,8 @@ async function runBattle(userConfig: Partial<BattleConfig> = {}): Promise<any> {
   config.endGameTriggerTurn = getEndGameTriggerTurn(config.gameSize);
 
   // Update battlefield size based on game size
-  const sizeDefaults: Record<GameSize, { battlefieldWidth: number; battlefieldHeight: number }> = {
-    [GameSize.VERY_SMALL]: { battlefieldWidth: 18, battlefieldHeight: 24 },
-    [GameSize.SMALL]: { battlefieldWidth: 24, battlefieldHeight: 24 },
-    [GameSize.MEDIUM]: { battlefieldWidth: 36, battlefieldHeight: 36 },
-    [GameSize.LARGE]: { battlefieldWidth: 48, battlefieldHeight: 48 },
-    [GameSize.VERY_LARGE]: { battlefieldWidth: 72, battlefieldHeight: 48 },
-  };
-  config.battlefieldWidth = sizeDefaults[config.gameSize].battlefieldWidth;
-  config.battlefieldHeight = sizeDefaults[config.gameSize].battlefieldHeight;
+  config.battlefieldWidth = GAME_SIZE_CONFIG[config.gameSize].battlefieldWidth;
+  config.battlefieldHeight = GAME_SIZE_CONFIG[config.gameSize].battlefieldHeight;
 
   console.log('⚔️  AI vs AI BATTLE GENERATOR');
   console.log('═══════════════════════════════════════');

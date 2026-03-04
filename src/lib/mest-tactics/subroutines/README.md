@@ -7,8 +7,8 @@ This directory contains low-level game subroutines and dice mechanics.
 - **`dice-roller.ts`** - Dice rolling mechanics and success calculation
 - **`hit-test.ts`** - Hit test resolution (Close and Ranged)
 - **`ranged-hit-test.ts`** - Ranged-specific hit test
-- **`damage.ts`** - Damage resolution and wound application
-- **`damage-test.ts`** - Damage test subroutine
+- **`damage-test.ts`** - Canonical damage resolution and wound application
+- **`damage.ts`** - Legacy compatibility wrapper (`resolveDamageTest`)
 - **`morale-test.ts`** - Morale test resolution
 - **`accuracy-parser.ts`** - Accuracy string parsing
 - **`hindrances.ts`** - Hindrance calculation
@@ -99,7 +99,7 @@ interface MoraleTestResult {
 ```typescript
 import { performTest, TestDice } from './subroutines/dice-roller';
 import { resolveHitTest } from './subroutines/hit-test';
-import { resolveDamageTest } from './subroutines/damage';
+import { resolveDamage } from './subroutines/damage-test';
 
 // Dice roll
 const dice: TestDice = { base: 3, modifier: 1, wild: 1 };
@@ -114,12 +114,13 @@ const hitResult = await resolveHitTest({
 });
 
 // Damage test
-const damageResult = await resolveDamageTest({
+const damageResult = resolveDamage(
   attacker,
   defender,
-  damageValue,
-  context,
-});
+  weapon,
+  hitResult,
+  context
+);
 ```
 
 ## Testing Dice

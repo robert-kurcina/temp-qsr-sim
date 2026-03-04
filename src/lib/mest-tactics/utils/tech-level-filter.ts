@@ -7,6 +7,7 @@
  */
 
 import { gameData } from '../../data';
+import { getCanonicalTechLevelForAge } from './canonical-metadata';
 
 // ============================================================================
 // TYPES
@@ -83,25 +84,30 @@ export interface TechLevelConfig {
  * - Extended QSR: Tech 1-5 (Ancient to Medieval)
  * - Default battle: Medieval (Tech 5, Archaic period)
  */
+function canonicalTechLevel(age: Exclude<TechnologicalAge, 'ANY'>, fallback: number): number {
+  const level = getCanonicalTechLevelForAge(age);
+  return typeof level === 'number' ? level : fallback;
+}
+
 export const AGE_TO_TECH_LEVEL: Record<TechnologicalAge, number> = {
-  'Stone': 1,
-  'Bronze': 2,
-  'Iron': 3,
-  'Medieval': 5,
-  'Renaissance': 6,
-  'Colonial': 7,
-  'Sail': 8,
-  'Industrial': 9,
-  'Machine': 10,
-  'Modern': 11,
-  'Atomic': 12,
-  'Information': 13,
-  'Robotics': 14,
-  'Fusion': 15,
-  'Quantum': 16,
-  'Energy': 17,
-  'Gravity': 18,
-  'Symbolic': 19,
+  'Stone': canonicalTechLevel('Stone', 1),
+  'Bronze': canonicalTechLevel('Bronze', 2),
+  'Iron': canonicalTechLevel('Iron', 3),
+  'Medieval': canonicalTechLevel('Medieval', 5),
+  'Renaissance': canonicalTechLevel('Renaissance', 6),
+  'Colonial': canonicalTechLevel('Colonial', 7),
+  'Sail': canonicalTechLevel('Sail', 8),
+  'Industrial': canonicalTechLevel('Industrial', 9),
+  'Machine': canonicalTechLevel('Machine', 10),
+  'Modern': canonicalTechLevel('Modern', 11),
+  'Atomic': canonicalTechLevel('Atomic', 12),
+  'Information': canonicalTechLevel('Information', 13),
+  'Robotics': canonicalTechLevel('Robotics', 14),
+  'Fusion': canonicalTechLevel('Fusion', 15),
+  'Quantum': canonicalTechLevel('Quantum', 16),
+  'Energy': canonicalTechLevel('Energy', 17),
+  'Gravity': canonicalTechLevel('Gravity', 18),
+  'Symbolic': canonicalTechLevel('Symbolic', 19),
   'ANY': null as any,
 };
 

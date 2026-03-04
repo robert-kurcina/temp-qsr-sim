@@ -73,6 +73,24 @@ export class SpatialRules {
     return !SpatialRules.findBlockingModel(battlefield, source, target);
   }
 
+  static hasLineOfFire(battlefield: Battlefield, source: SpatialModel, target: SpatialModel): boolean {
+    const points = [source.position, target.position];
+    for (const point of points) {
+      if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) {
+        return false;
+      }
+    }
+
+    if (!battlefield.isWithinBounds(source.position, source.baseDiameter)) {
+      return false;
+    }
+    if (!battlefield.isWithinBounds(target.position, target.baseDiameter)) {
+      return false;
+    }
+
+    return true;
+  }
+
   static getCoverResult(
     battlefield: Battlefield,
     source: SpatialModel,

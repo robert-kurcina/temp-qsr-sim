@@ -15,9 +15,10 @@ import { parseStatusTrait, applyStatusTraitOnHit } from '../status/status-system
 import { parseTrait } from '../traits/trait-parser';
 import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
 import { makeIndirectRangedAttack } from '../combat/indirect-ranged-combat';
-import { resolveScatter, type ScatterResult } from '../combat/scatter';
+import { calculateLOFAngle, resolveScatter, isValidIndirectArc, type ScatterResult } from '../combat/scatter';
 import { LOSOperations } from '../battlefield/los/LOSOperations';
 import { hasItemTrait, hasItemTraitOnWeapon } from '../traits/item-traits';
+import { evaluateWeaponOrExpressionMu, parseWeaponOptimalRangeMu } from '../utils/visibility';
 import {
   getFightBonusActions,
   checkBonusActionEligibility,
@@ -76,9 +77,12 @@ function resolveScrambleMoves(options: {
   characters: Character[];
   getCharacterPosition: (character: Character) => Position | undefined;
   moveCharacter: (character: Character, position: Position) => boolean;
+  applyPassiveOptionCost: (character: Character) => { removedWait: boolean; delayAdded: boolean };
   targetPosition: Position;
   allowScramble: boolean;
   scrambleMoves?: Record<string, Position>;
+  canUseScrambleReact?: (character: Character) => boolean;
+  markScrambleReactUsed?: (character: Character) => void;
 }): {
   eligibleIds: string[];
   movedIds: string[];
@@ -87,13 +91,20 @@ function resolveScrambleMoves(options: {
     return { eligibleIds: [], movedIds: [] };
   }
   const eligible = findTargetsInBaseContact(options.targetPosition, options.characters, options.getCharacterPosition);
-  const eligibleIds = eligible.map(entry => entry.character.id);
+  const reactEligible = eligible.filter(entry =>
+    !entry.character.state.isKOd
+    && !entry.character.state.isEliminated
+    && entry.character.state.isAttentive
+    && entry.character.state.isOrdered
+    && (options.canUseScrambleReact ? options.canUseScrambleReact(entry.character) : true)
+  );
+  const eligibleIds = reactEligible.map(entry => entry.character.id);
   const movedIds: string[] = [];
   if (!options.scrambleMoves) {
     return { eligibleIds, movedIds };
   }
 
-  for (const entry of eligible) {
+  for (const entry of reactEligible) {
     const character = entry.character;
     const target = options.scrambleMoves[character.id];
     if (!target) continue;
@@ -102,7 +113,11 @@ function resolveScrambleMoves(options: {
     const distance = Math.hypot(target.x - current.x, target.y - current.y);
     if (distance <= maxDistance) {
       const moved = options.moveCharacter(character, target);
-      if (moved) movedIds.push(character.id);
+      if (moved) {
+        options.applyPassiveOptionCost(character);
+        options.markScrambleReactUsed?.(character);
+        movedIds.push(character.id);
+      }
     }
   }
   return { eligibleIds, movedIds };
@@ -114,6 +129,19 @@ interface BlindIndirectContext {
   usedSpotter: boolean;
   usedKnown: boolean;
   reason?: string;
+}
+
+function isNaturalWeaponClassification(weapon: Item): boolean {
+  const classification = String(weapon.classification ?? weapon.class ?? '').toLowerCase();
+  return classification.includes('natural');
+}
+
+function isIndirectWeaponEligible(weapon: Item): boolean {
+  const classification = String(weapon.classification ?? weapon.class ?? '').toLowerCase();
+  const isThrown = classification.includes('thrown');
+  const hasThrowable = hasItemTraitOnWeapon(weapon, 'Throwable');
+  const hasArc = hasItemTraitOnWeapon(weapon, '[Arc]') || hasItemTraitOnWeapon(weapon, 'Arc');
+  return isThrown || hasThrowable || hasArc;
 }
 
 function rollD6(rng: () => number = Math.random): number {
@@ -134,6 +162,8 @@ function resolveBlindIndirectContext(options: {
   hasLOS: boolean;
   knownAtInitiativeStart?: boolean;
   spotters?: Character[];
+  isFriendlySpotter?: (spotter: Character) => boolean;
+  isSpotterFree?: (spotter: Character) => boolean;
   cohesionRangeMu?: number;
   visibilityOrMu?: number; // QSR: Spotter cohesion = visibilityOR / 4
 }): BlindIndirectContext {
@@ -155,8 +185,12 @@ function resolveBlindIndirectContext(options: {
   let usedSpotter = false;
   for (const spotter of options.spotters ?? []) {
     if (spotter.id === options.attacker.id) continue;
+    const isFriendly = options.isFriendlySpotter ? options.isFriendlySpotter(spotter) : false;
+    if (!isFriendly) continue;
     if (spotter.state.isEliminated || spotter.state.isKOd) continue;
     if (!spotter.state.isAttentive || !spotter.state.isOrdered) continue;
+    const isFree = options.isSpotterFree ? options.isSpotterFree(spotter) : !spotter.state.isEngaged;
+    if (!isFree) continue;
 
     const spotterPos = options.deps.getCharacterPosition(spotter);
     if (!spotterPos) continue;
@@ -176,23 +210,6 @@ function resolveBlindIndirectContext(options: {
     const cohesionDistance = SpatialRules.distanceEdgeToEdge(spotterModel, attackerModel);
     if (cohesionDistance > cohesionRange) continue;
     if (!SpatialRules.hasLineOfSight(options.deps.battlefield!, spotterModel, targetModel)) continue;
-
-    // Approximation of "Free": no base-contact with other in-play models.
-    const engagedWithAny = options.deps.characters.some(other => {
-      if (other.id === spotter.id || other.state.isKOd || other.state.isEliminated) {
-        return false;
-      }
-      const otherPos = options.deps.getCharacterPosition(other);
-      if (!otherPos) return false;
-      const otherModel: SpatialModel = {
-        id: other.id,
-        position: otherPos,
-        baseDiameter: getBaseDiameterFromSiz(other.finalAttributes.siz ?? other.attributes.siz ?? 3),
-        siz: other.finalAttributes.siz ?? other.attributes.siz ?? 3,
-      };
-      return SpatialRules.isEngaged(spotterModel, otherModel);
-    });
-    if (engagedWithAny) continue;
 
     usedSpotter = true;
     break;
@@ -223,6 +240,8 @@ export interface CombatActionDeps {
   moveCharacter: (character: Character, position: Position) => boolean;
   buildSpatialModel: (character: Character) => SpatialModel | null;
   applyPassiveOptionCost: (character: Character) => { removedWait: boolean; delayAdded: boolean };
+  canUsePassiveReact?: (character: Character) => boolean;
+  markPassiveReactUsed?: (character: Character) => void;
   applyRefresh: (character: Character) => boolean;
   applyKOCleanup: (character: Character) => void;
 }
@@ -690,13 +709,17 @@ export function executeIndirectAttack(
     directionRoll?: number;
     scatterBias?: 'biased' | 'unbiased';
     scatterWeights?: number[];
+    scatterDesiredDirection?: Position;
     scrambleMoves?: Record<string, Position>;
     allowScramble?: boolean;
     knownAtInitiativeStart?: boolean;
     spotters?: Character[];
+    isFriendlySpotter?: (spotter: Character) => boolean;
+    isSpotterFree?: (spotter: Character) => boolean;
     spotterCohesionRangeMu?: number;
     blindScatterDistanceRoll?: number;
     blindScatterDistanceRng?: () => number;
+    enforceArcValidation?: boolean;
     weaponIndex?: number;
     allowKOdAttacks?: boolean;
     kodRules?: KOdAttackRulesConfig;
@@ -709,18 +732,84 @@ export function executeIndirectAttack(
   if (!attackerPos || !options.target?.position) {
     throw new Error('Missing attacker or target position.');
   }
+  const failedHitTest: ResolveTestResult = {
+    pass: false,
+    score: -99,
+    p1FinalScore: 0,
+    p2FinalScore: 99,
+    cascades: 0,
+    p1Result: { score: 0, carryOverDice: {} },
+    p2Result: { score: 99, carryOverDice: {} },
+  };
+  const buildIndirectFailure = (
+    reason: string,
+    blind: BlindIndirectContext = { isBlind: false, allowed: false, usedSpotter: false, usedKnown: false, reason }
+  ) => ({
+    hitTestResult: failedHitTest,
+    scatterResult: undefined,
+    finalPosition: options.target?.position,
+    damageResults: [],
+    scramble: { eligibleIds: [], movedIds: [] },
+    blind,
+    handRequirementFailed: true,
+    handRequirementReason: reason,
+  });
+  const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
+  const attackerBaseDiameter = getBaseDiameterFromSiz(attackerSiz);
+  if (!deps.battlefield.isWithinBounds(attackerPos, attackerBaseDiameter)) {
+    return buildIndirectFailure('Attacker location must be within battlefield bounds.');
+  }
+  if (!deps.battlefield.isWithinBounds(options.target.position, options.target.baseDiameter)) {
+    return buildIndirectFailure('Target location must be within battlefield bounds.');
+  }
+  const attackerModel: SpatialModel = {
+    id: attacker.id,
+    position: attackerPos,
+    baseDiameter: attackerBaseDiameter,
+    siz: attackerSiz,
+  };
+  const targetModel: SpatialModel = {
+    id: options.target.id,
+    position: options.target.position,
+    baseDiameter: options.target.baseDiameter,
+    siz: options.target.siz,
+  };
+  if (!SpatialRules.hasLineOfFire(deps.battlefield, attackerModel, targetModel)) {
+    return buildIndirectFailure('Target location must be within LOF.');
+  }
+  if (!isIndirectWeaponEligible(weapon)) {
+    return buildIndirectFailure('Indirect attack requires Thrown, Throwable, or [Arc] weapon.');
+  }
+
+  const explicitOrMu = evaluateWeaponOrExpressionMu(attacker, weapon.or);
+  if (explicitOrMu !== null && explicitOrMu < 0) {
+    return buildIndirectFailure('Weapon OR cannot be negative for indirect attacks.');
+  }
+
+  let optimalRangeMu = options.optimalRangeMu ?? parseWeaponOptimalRangeMu(attacker, weapon);
+  if (explicitOrMu !== null) {
+    optimalRangeMu = explicitOrMu === 0 ? 0.5 : explicitOrMu;
+  }
+  if (optimalRangeMu <= 0) {
+    return buildIndirectFailure('Indirect attack requires a valid OR value.');
+  }
+
+  const enforceArcValidation = options.enforceArcValidation ?? true;
+  if (enforceArcValidation) {
+    const arc = isValidIndirectArc(attackerPos, options.target.position, deps.battlefield);
+    if (!arc.valid) {
+      return buildIndirectFailure(arc.reason ?? 'Invalid indirect arc.');
+    }
+  }
+
+  const resolvedOrm = Number.isFinite(orm) ? Math.max(0, Math.floor(orm)) : 0;
   const agilityMu = getAgilityForLos(attacker);
   const spatial: ActionContextInput = {
     battlefield: deps.battlefield,
-    attacker: {
-      id: attacker.id,
-      position: attackerPos,
-      baseDiameter: getBaseDiameterFromSiz(attacker.finalAttributes.siz),
-      siz: attacker.finalAttributes.siz,
-    },
+    attacker: attackerModel,
     target: options.target,
-    optimalRangeMu: options.optimalRangeMu,
-    orm,
+    optimalRangeMu,
+    orm: resolvedOrm,
     attackerEngagedOverride: options.attackerEngagedOverride,
     isLeaning: options.isLeaning,
     agilityMu: options.isLeaning ? agilityMu : undefined,
@@ -740,39 +829,45 @@ export function executeIndirectAttack(
     hasLOS: losContext.hasLOS,
     knownAtInitiativeStart: options.knownAtInitiativeStart,
     spotters: options.spotters,
+    isFriendlySpotter: options.isFriendlySpotter,
+    isSpotterFree: options.isSpotterFree,
     cohesionRangeMu: options.spotterCohesionRangeMu,
   });
   if (!blind.allowed) {
-    return {
-      hitTestResult: { pass: false, score: -99, p1FinalScore: 0, p2FinalScore: 99, cascades: 0, p1Result: { score: 0, carryOverDice: {} }, p2Result: { score: 99, carryOverDice: {} } },
-      scatterResult: undefined,
-      finalPosition: options.target?.position,
-      damageResults: [],
-      scramble: { eligibleIds: [], movedIds: [] },
-      blind,
-      handRequirementFailed: true,
-      handRequirementReason: blind.reason,
-    };
+    return buildIndirectFailure(blind.reason ?? 'Blind indirect attack is not allowed.', blind);
   }
   if (blind.isBlind) {
     mergedContext.isBlindAttack = true;
   }
   const handCheck = applyHandRequirementPenalty(attacker, weapon, mergedContext);
   if (handCheck.failed) {
-    return {
-      hitTestResult: { pass: false, score: -99, p1FinalScore: 0, p2FinalScore: 99, cascades: 0, p1Result: { score: 0, carryOverDice: {} }, p2Result: { score: 99, carryOverDice: {} } },
-      scatterResult: undefined,
-      finalPosition: options.target?.position,
-      damageResults: [],
-      scramble: { eligibleIds: [], movedIds: [] },
-      blind,
-      handRequirementFailed: true,
-      handRequirementReason: handCheck.reason,
-    };
+    return buildIndirectFailure(handCheck.reason ?? 'Hand requirement failed.', blind);
   }
-  const hitTestResult = makeIndirectRangedAttack(attacker, weapon, orm, mergedContext, null, spatial, options.targetCharacter);
+  const priorIndirectAttacks = Number(attacker.state.statusTokens['indirectAttacksThisInitiative'] ?? 0);
+  if (!isNaturalWeaponClassification(weapon) && priorIndirectAttacks >= 1) {
+    attacker.state.delayTokens += 1;
+    attacker.refreshStatusFlags();
+  }
+  attacker.state.statusTokens['indirectAttacksThisInitiative'] = priorIndirectAttacks + 1;
+
+  const usesAoE = hasItemTraitOnWeapon(weapon, 'AoE') || hasItemTraitOnWeapon(weapon, 'Frag');
+  const hasFrag = hasItemTraitOnWeapon(weapon, 'Frag');
+
+  const hitTestResult = makeIndirectRangedAttack(
+    attacker,
+    weapon,
+    resolvedOrm,
+    mergedContext,
+    null,
+    spatial,
+    options.targetCharacter,
+    { applyOnHitTraits: !usesAoE }
+  );
   const weaponIndex = options.weaponIndex ?? getWeaponIndexForCharacter(attacker, weapon);
   attacker.state.activeWeaponIndex = weaponIndex;
+  if (hasItemTraitOnWeapon(weapon, '[Reveal]') && losContext.hasLOS) {
+    attacker.state.isHidden = false;
+  }
 
   const misses = hitTestResult.pass ? 0 : Math.max(1, Math.ceil(Math.abs(hitTestResult.score)));
   const usesScatter = hasItemTraitOnWeapon(weapon, 'Scatter');
@@ -794,24 +889,36 @@ export function executeIndirectAttack(
         directionRoll: options.directionRoll,
         bias: blindScatterUsesUnbiased ? 'unbiased' : options.scatterBias,
         weights: options.scatterWeights,
+        desiredDirectionAngle: options.scatterDesiredDirection
+          ? calculateLOFAngle(options.target!.position, options.scatterDesiredDirection)
+          : undefined,
       });
 
   const finalPosition = scatterResult?.finalPosition ?? options.target!.position;
+  const targetMarker = {
+    placed: true,
+    removed: true,
+    placedPosition: { ...options.target!.position },
+    removedPosition: { ...finalPosition },
+  };
 
   const scramble = resolveScrambleMoves({
     characters: deps.characters,
     getCharacterPosition: deps.getCharacterPosition,
     moveCharacter: deps.moveCharacter,
+    applyPassiveOptionCost: deps.applyPassiveOptionCost,
     targetPosition: options.target!.position,
-    allowScramble: options.allowScramble ?? false,
+    allowScramble: options.allowScramble ?? true,
     scrambleMoves: options.scrambleMoves,
+    canUseScrambleReact: deps.canUsePassiveReact,
+    markScrambleReactUsed: deps.markPassiveReactUsed,
   });
 
   const blastTargets = findTargetsInBaseContact(finalPosition, deps.characters, deps.getCharacterPosition);
-  const usesAoE = hasItemTraitOnWeapon(weapon, 'AoE') || hasItemTraitOnWeapon(weapon, 'Frag');
-  const hasFrag = hasItemTraitOnWeapon(weapon, 'Frag');
 
   const damageResults: Array<{ targetId: string; damageResolution: DamageResolution }> = [];
+  const aoeStatusTargets: Character[] = [];
+  // WT.1: Resolve AoE/Frag trait flow before non-AoE fallback targeting.
   if (usesAoE) {
     for (const entry of blastTargets) {
       const target = entry.character;
@@ -824,15 +931,11 @@ export function executeIndirectAttack(
           continue;
         }
       }
+      let targetHitResult: ResolveTestResult = hitTestResult;
       if (hasFrag) {
         const fragSpatial: ActionContextInput = {
           battlefield: deps.battlefield,
-          attacker: {
-            id: attacker.id,
-            position: attackerPos,
-            baseDiameter: getBaseDiameterFromSiz(attacker.finalAttributes.siz),
-            siz: attacker.finalAttributes.siz,
-          },
+          attacker: attackerModel,
           target: {
             id: target.id,
             position: entry.position,
@@ -845,20 +948,19 @@ export function executeIndirectAttack(
           attacker,
           target,
           weapon,
-          orm,
+          resolvedOrm,
           fragContext,
           fragSpatial
         );
         if (fragHit.hitTestResult.pass) {
           continue;
         }
+        targetHitResult = fragHit.hitTestResult as ResolveTestResult;
       }
-      if (hasFrag && hitTestResult.pass) {
-        continue;
-      }
-      const damageResolution = resolveKOdDamageIfNeeded(attacker, target, weapon, hitTestResult, mergedContext, {
+      const damageResolution = resolveKOdDamageIfNeeded(attacker, target, weapon, targetHitResult, mergedContext, {
         allowKOdAttacks: options.allowKOdAttacks ?? false,
         kodRules: options.kodRules,
+        unopposedDamage: !hasFrag,
       });
       if (!damageResolution) {
         continue;
@@ -868,7 +970,9 @@ export function executeIndirectAttack(
       target.state.isKOd = damageResolution.defenderState.isKOd;
       target.state.isEliminated = damageResolution.defenderState.isEliminated;
       damageResults.push({ targetId: target.id, damageResolution });
+      aoeStatusTargets.push(target);
     }
+    applyIndirectStatusTraitsOnHit(weapon, hitTestResult, aoeStatusTargets);
   } else if (options.targetCharacter) {
     const damageResolution = resolveKOdDamageIfNeeded(attacker, options.targetCharacter, weapon, hitTestResult, mergedContext, {
       allowKOdAttacks: options.allowKOdAttacks ?? false,
@@ -884,6 +988,7 @@ export function executeIndirectAttack(
         blind,
         blindScatterDistanceBonus,
         blindScatterDistanceRoll,
+        targetMarker,
       };
     }
     options.targetCharacter.state.wounds = damageResolution.defenderState.wounds;
@@ -902,6 +1007,7 @@ export function executeIndirectAttack(
     blind,
     blindScatterDistanceBonus,
     blindScatterDistanceRoll,
+    targetMarker,
   };
 }
 
@@ -911,10 +1017,12 @@ function resolveKOdDamageIfNeeded(
   weapon: Item,
   hitTestResult: ResolveTestResult,
   context: TestContext,
-  options: { allowKOdAttacks: boolean; kodRules?: KOdAttackRulesConfig; damageBonus?: number }
+  options: { allowKOdAttacks: boolean; kodRules?: KOdAttackRulesConfig; damageBonus?: number; unopposedDamage?: boolean }
 ): DamageResolution | null {
   if (!defender.state.isKOd) {
-    return resolveDamage(attacker, defender, weapon, hitTestResult, context);
+    return resolveDamage(attacker, defender, weapon, hitTestResult, context, 0, {
+      unopposed: options.unopposedDamage ?? false,
+    });
   }
 
   const allow = canAttackKOdTarget(attacker, defender, {
@@ -941,7 +1049,9 @@ function resolveKOdDamageIfNeeded(
     dmg: `${weapon.dmg ?? ''}+${damageBonus}`,
   } : weapon;
 
-  const damageResolution = resolveDamage(attacker, defender, adjustedWeapon, hitTestResult, context);
+  const damageResolution = resolveDamage(attacker, defender, adjustedWeapon, hitTestResult, context, 0, {
+    unopposed: options.unopposedDamage ?? false,
+  });
 
   const threshold = getKOdEliminationThreshold(defender);
   if (damageResolution.woundsAdded >= threshold) {
@@ -971,6 +1081,31 @@ function resolveKOdDamageIfNeeded(
 
   defender.state.armor.total = originalState.armorTotal;
   return damageResolution;
+}
+
+function applyIndirectStatusTraitsOnHit(
+  weapon: Item,
+  hitTestResult: ResolveTestResult,
+  targets: Character[]
+): void {
+  if (!hitTestResult.pass || !weapon.traits?.length || targets.length === 0) {
+    return;
+  }
+  const cascades = hitTestResult.cascades ?? 0;
+  const appliedTo = new Set<string>();
+  for (const target of targets) {
+    if (appliedTo.has(target.id)) continue;
+    appliedTo.add(target.id);
+    for (const trait of weapon.traits) {
+      const parsed = parseStatusTrait(trait);
+      if (!parsed) continue;
+      applyStatusTraitOnHit(target, parsed.traitName, {
+        cascades,
+        rating: parsed.rating,
+        impact: weapon.impact ?? 0,
+      });
+    }
+  }
 }
 
 function buildAutoHitResult(): ResolveTestResult {

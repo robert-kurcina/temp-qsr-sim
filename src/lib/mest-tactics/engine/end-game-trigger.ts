@@ -15,6 +15,7 @@
  */
 
 import { GameSize } from '../mission/assembly-builder';
+import { getCanonicalEndGameTriggerTurn } from '../mission/game-size-canonical';
 
 export interface EndGameTriggerState {
   endDice: number; // Number of end-game dice to roll
@@ -38,26 +39,13 @@ export interface EndGameTriggerResult {
  * to determine after which Turn the End-game Triggers are to be placed."
  */
 export function getEndGameTriggerTurn(gameSize: GameSize): number {
-  switch (gameSize) {
-    case GameSize.VERY_SMALL:
-      return 3;  // 2-4 models, 125-250 BP
-    case GameSize.SMALL:
-      return 4;  // 4-8 models, 250-500 BP
-    case GameSize.MEDIUM:
-      return 6;  // 6-12 models, 500-750 BP
-    case GameSize.LARGE:
-      return 8;  // 8-12 models, 750-1000 BP
-    case GameSize.VERY_LARGE:
-      return 10; // 10-20 models, 1000-1250 BP
-    default:
-      return 4;  // Default to SMALL
-  }
+  return getCanonicalEndGameTriggerTurn(gameSize);
 }
 
 /**
  * Default end-game trigger turn for standard games (SMALL)
  */
-export const DEFAULT_END_GAME_TRIGGER_TURN = 4;
+export const DEFAULT_END_GAME_TRIGGER_TURN = getCanonicalEndGameTriggerTurn(GameSize.SMALL);
 
 /**
  * Create initial end-game trigger state

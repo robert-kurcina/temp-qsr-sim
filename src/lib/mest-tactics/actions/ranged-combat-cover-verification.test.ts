@@ -19,6 +19,7 @@ import { Character } from '../core/Character';
 import { Profile } from '../core/Profile';
 import { Battlefield } from '../battlefield/Battlefield';
 import { TerrainType } from '../battlefield/terrain/Terrain';
+import { calculateObscuredPenalty } from '../combat/obscured';
 
 function makeTestProfile(name: string): Profile {
   return {
@@ -210,45 +211,14 @@ describe('Range Combat: Obscured (QSR Lines 477, 1205)', () => {
   });
 
   describe('SM.6: Obscured Modifier (-1m per threshold)', () => {
-    it('should apply -1m for 1-2 models within LOF (QSR 1205)', () => {
+    it('should apply cumulative threshold penalties for obscuring models (QSR 1205)', () => {
       // QSR: "Obscured — Penalize Attacker Hit or Detect Tests for 1, 2, 5, or 10 other
       //       models within LOF to the target... Each is -1 Modifier die."
-      const modelsInLOF = 2;
-      let penalty = 0;
-
-      if (modelsInLOF >= 1) penalty = -1;
-      if (modelsInLOF >= 2) penalty = -1; // Still -1m (threshold-based, not per-model)
-      if (modelsInLOF >= 5) penalty = -2;
-      if (modelsInLOF >= 10) penalty = -3;
-
-      expect(penalty).toBe(-1);
+      expect(calculateObscuredPenalty(1)).toBe(1);
+      expect(calculateObscuredPenalty(2)).toBe(2);
+      expect(calculateObscuredPenalty(5)).toBe(3);
+      expect(calculateObscuredPenalty(10)).toBe(4);
       // Applied via context.modifierDice in combat-actions.ts
-    });
-
-    it('should apply -2m for 5-9 models within LOF (QSR 1205)', () => {
-      // QSR: Thresholds are 1, 2, 5, or 10 models
-      const modelsInLOF = 5;
-      let penalty = 0;
-
-      if (modelsInLOF >= 10) penalty = -3;
-      else if (modelsInLOF >= 5) penalty = -2;
-      else if (modelsInLOF >= 2) penalty = -1;
-      else if (modelsInLOF >= 1) penalty = -1;
-
-      expect(penalty).toBe(-2);
-    });
-
-    it('should apply -3m for 10+ models within LOF (QSR 1205)', () => {
-      // QSR: Maximum penalty at 10 models
-      const modelsInLOF = 10;
-      let penalty = 0;
-
-      if (modelsInLOF >= 10) penalty = -3;
-      else if (modelsInLOF >= 5) penalty = -2;
-      else if (modelsInLOF >= 2) penalty = -1;
-      else if (modelsInLOF >= 1) penalty = -1;
-
-      expect(penalty).toBe(-3);
     });
 
     it('should count models within LOF to target (QSR 1205)', () => {
@@ -257,7 +227,7 @@ describe('Range Combat: Obscured (QSR Lines 477, 1205)', () => {
       const modelsInLOF = 3; // Would be counted by SpatialRules.countModelsInLOF()
 
       expect(modelsInLOF).toBeGreaterThanOrEqual(1);
-      // Penalty: -1m (1-4 models threshold)
+      expect(calculateObscuredPenalty(modelsInLOF)).toBe(2);
     });
 
     it('should include non-Opposing models beyond but within 1 MU of LOF (QSR 1205)', () => {
@@ -267,12 +237,12 @@ describe('Range Combat: Obscured (QSR Lines 477, 1205)', () => {
       const totalModels = opposingModelsInLOF + nonOpposingModelsNearLOF;
 
       expect(totalModels).toBe(3);
-      // Penalty: -1m (1-4 models threshold)
+      expect(calculateObscuredPenalty(totalModels)).toBe(2);
     });
 
     it('should NOT apply penalty if no models within LOF (QSR 1205)', () => {
       const modelsInLOF = 0;
-      const penalty = modelsInLOF >= 1 ? -1 : 0;
+      const penalty = calculateObscuredPenalty(modelsInLOF);
 
       expect(penalty).toBe(0);
       // No Obscured penalty
@@ -316,19 +286,17 @@ describe('Range Combat: Obscured (QSR Lines 477, 1205)', () => {
       const thresholds = [
         { models: 0, penalty: 0 },
         { models: 1, penalty: -1 },
-        { models: 2, penalty: -1 },
-        { models: 4, penalty: -1 },
-        { models: 5, penalty: -2 },
-        { models: 9, penalty: -2 },
-        { models: 10, penalty: -3 },
-        { models: 15, penalty: -3 },
+        { models: 2, penalty: -2 },
+        { models: 4, penalty: -2 },
+        { models: 5, penalty: -3 },
+        { models: 9, penalty: -3 },
+        { models: 10, penalty: -4 },
+        { models: 15, penalty: -4 },
       ];
 
       for (const { models, penalty } of thresholds) {
-        let calculatedPenalty = 0;
-        if (models >= 10) calculatedPenalty = -3;
-        else if (models >= 5) calculatedPenalty = -2;
-        else if (models >= 1) calculatedPenalty = -1;
+        const obscuredPenalty = calculateObscuredPenalty(models);
+        const calculatedPenalty = obscuredPenalty > 0 ? -obscuredPenalty : 0;
 
         expect(calculatedPenalty).toBe(penalty);
       }
@@ -344,16 +312,13 @@ describe('Range Combat: Obscured (QSR Lines 477, 1205)', () => {
       let interveningPenalty = 0;
       if (hasInterveningCover) interveningPenalty = -1;
 
-      let obscuredPenalty = 0;
-      if (modelsInLOF >= 10) obscuredPenalty = -3;
-      else if (modelsInLOF >= 5) obscuredPenalty = -2;
-      else if (modelsInLOF >= 1) obscuredPenalty = -1;
+      const obscuredPenalty = -calculateObscuredPenalty(modelsInLOF);
 
       const totalPenalty = interveningPenalty + obscuredPenalty;
 
       expect(interveningPenalty).toBe(-1);
-      expect(obscuredPenalty).toBe(-2);
-      expect(totalPenalty).toBe(-3);
+      expect(obscuredPenalty).toBe(-3);
+      expect(totalPenalty).toBe(-4);
       // Both penalties stack (both are modifier dice)
     });
 
@@ -361,12 +326,12 @@ describe('Range Combat: Obscured (QSR Lines 477, 1205)', () => {
       // Both penalties are -1m type, applied to Hit/Detect Test
       const penalties = {
         interveningCover: -1,
-        obscured: -2,
+        obscured: -3,
       };
 
       const totalModifierPenalty = penalties.interveningCover + penalties.obscured;
 
-      expect(totalModifierPenalty).toBe(-3);
+      expect(totalModifierPenalty).toBe(-4);
       // Applied to context.modifierDice
     });
   });

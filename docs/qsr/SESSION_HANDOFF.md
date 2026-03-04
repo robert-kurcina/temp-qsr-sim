@@ -1,6 +1,6 @@
 # QSR Compliance Project - Session Handoff
 
-**Date:** 2026-03-03
+**Date:** 2026-03-04
 **Session:** Priority 1 Runtime Coverage Hardening
 **Status:** ⚠️ **IN PROGRESS (tracked P1 rows fully verified; broader source audits remain)**
 
@@ -11,7 +11,7 @@
 - Clause catalogs for core P1 files are in place.
 - Runtime hardening replaced low-signal verification suites with behavior-backed tests.
 - Current P1 file snapshot: **107 clause rows total**, **107 verified**, **0 partial**, **0 missing**, **0 not-audited**.
-- Full test baseline: **147 test files, 2364 tests passing**.
+- Full test baseline: **148 test files, 2381 tests passing**.
 
 ---
 
@@ -58,6 +58,35 @@
   - `RL.4` in `src/lib/mest-tactics/actions/simple-actions.ts` with dedicated rally runtime tests
 - Closed bottle-test scheduling path:
   - `BT.1` via `GameManager.endTurn()` and activation-to-turn-end phase flow tests
+- Tightened indirect spatial gates:
+  - `IC.1` via explicit LOF gate (`SpatialRules.hasLineOfFire`) in `executeIndirectAttack`
+  - `IC.9` via default-on midpoint arc validation (`isValidIndirectArc`) in `executeIndirectAttack`
+- Closed additional indirect clause gaps:
+  - `IC.8` via target-marker lifecycle output (`targetMarker`) in indirect attack results
+  - `WT.3` via per-target Frag fail-gating and damage routing in `executeIndirectAttack`
+  - `IC.12` via canonical hindrance-token sourcing (Wounds/Fear/Delay) and explicit die-type regression coverage for Distance/Point-blank/Direct Cover/Intervening Cover
+  - `SC.9` by wiring scramble eligibility through passive React-availability state (`reactedThisTurn` / `reactingNow`), plus marking successful scramble use as React-consumed for turn lifecycle enforcement
+  - `WT.1` by making indirect AoE/Frag flow explicitly resolve before single-target fallback and adding regression coverage including `targetCharacter` override + post-AoE status-trait application
+- Closed additional indirect spatial-direction gap:
+  - `SD.2` via desired-direction-aware biased scatter axis support in `scatter.ts` and indirect attack wiring
+- Closed additional indirect OR-expression gap:
+  - `IC.5` via indirect-entry evaluation of thrown `STR` / `STR+X` OR expressions with negative-result rejection coverage
+- Closed additional indirect gravity roll-down gaps:
+  - `SC.5` via target-to-final roll-down displacement wiring in `resolveScatter`
+  - `SC.7` via chained slope accumulation coverage in `scatter.test.ts`
+  - `SC.8` via explicit obstacle-stop validation along roll-down displacement paths
+- Closed additional indirect AoE damage-flow gap:
+  - `WT.2` via explicit unopposed non-Frag blast damage resolution in `damage-test.ts` and indirect attack routing
+- Closed additional indirect spotter-qualification gap:
+  - `BL.2` via explicit Friendly qualification requirements (side-derived or callback) plus Free/Attentive/Ordered + Cohesion + LOS gates
+- Integrated canonical metadata tables directly into runtime logic:
+  - added `src/lib/mest-tactics/utils/canonical-metadata.ts`
+  - wired `item_classifications.json` usage into `utils/profile-generator.ts`
+  - wired `keyword_descriptions.json` usage into `traits/trait-parser.ts`
+  - wired `tech_level.json` usage into `utils/tech-level-filter.ts`
+- Removed active AI warning sources in core modules:
+  - fixed mutable wait tactical bonus handling and removed duplicate weapon-classifier members in `ai/core/UtilityScorer.ts`
+  - eliminated duplicate `balanced` description key by type-scoping in `ai/stratagems/AIStratagems.ts`
 
 ### Tests
 
@@ -76,6 +105,7 @@
   - `terrain/TerrainElement.test.ts`
   - `terrain/aperture-rules.test.ts`
   - `terrain/move-validator.test.ts`
+  - `canonical-data-integrity.test.ts`
 
 ### Redundancy Reduction
 
@@ -89,15 +119,119 @@
   - `docs/qsr/00-index.md`
   - `docs/qsr/03-actions/03.06-wait.md`
   - `docs/qsr/03-actions/03.07-focus.md`
+- Consolidated duplicated OR-expression parsing:
+  - centralized parser into `src/lib/mest-tactics/utils/visibility.ts:evaluateWeaponOrExpressionMu()`
+  - removed duplicated indirect-runtime parsing logic from `src/lib/mest-tactics/actions/combat-actions.ts`
+- Consolidated duplicated indirect pre-check failure payloads:
+  - `src/lib/mest-tactics/actions/combat-actions.ts:executeIndirectAttack` now uses shared `buildIndirectFailure(...)` helper
+- Consolidated duplicated mission-side friendliness derivation in `GameManager`:
+  - centralized side lookup and friendly-check creation via shared helpers used by Move/Rally/Indirect paths
+- Consolidated duplicated damage resolution logic:
+  - converted `src/lib/mest-tactics/subroutines/damage.ts` into a legacy compatibility wrapper that delegates to `src/lib/mest-tactics/subroutines/damage-test.ts`
+  - retained `resolveDamageTest(...)` surface for compatibility while removing duplicate damage algorithm implementation
+- Removed duplicate backup guidance file:
+  - deleted `src/guides/docs/rules-characters-and-attributes.md.bak` after dependency scan confirmed no references
+- Reduced indirect documentation status duplication:
+  - removed guide-level implementation-status table from `src/guides/docs/rules-indirect.md`
+  - `docs/qsr/04-combat/04.04-indirect.md` remains the single authoritative clause-status tracker
+- Reduced CV namespace duplication across Visibility/Cover trackers:
+  - designated `docs/qsr/01-basics/01.04-cover.md` as canonical owner of `CV.*` clauses
+  - converted `docs/qsr/01-basics/01.03-visibility.md` cover rows to delegated references
+- Added executable data-bundle drift enforcement:
+  - `src/lib/mest-tactics/utils/canonical-data-integrity.test.ts` now validates bundled `src/lib/data.ts` against canonical `src/data/*.json` transforms
+- Removed bundler/test transform duplication:
+  - `scripts/bundle-data.cjs` now exports `loadBundledDataFromJson(...)` and runs in write mode only when executed directly
+  - `canonical-data-integrity.test.ts` now reuses that exported bundler transform instead of re-implementing it
+- Reduced core game-size duplication:
+  - added canonical helper `src/lib/mest-tactics/mission/game-size-canonical.ts`
+  - wired `assembly-builder.ts`, `engine/end-game-trigger.ts`, and `missions/mission-scoring.ts` to canonical `src/data/game_sizes.json` via shared helper
+- Resolved script-level game-size duplication:
+  - centralized script game-size config through `scripts/ai-battle/AIBattleConfig.ts` (fed from canonical game-size helpers)
+  - wired `scripts/battle.ts`, `scripts/ai-battle/core/BattleOrchestrator.ts`, `scripts/battle-generator.ts` to shared `GAME_SIZE_CONFIG`
+  - wired `scripts/battlefield-generator.ts`, `scripts/generate-test-battlefields.ts`, and `scripts/run-battles/battle-runner.ts` to canonical game-size dimensions (`game-size-canonical.ts`)
+  - updated `scripts/ai-battle/interactive-setup.ts` game-size prompt text to render from live `GAME_SIZE_CONFIG` values instead of hardcoded dimensions
+- Resolved script import-path drift:
+  - corrected `scripts/ai-battle/core/BattleOrchestrator.ts` relative imports and verified module load with `node --import tsx`
+- Reduced glossary duplication risk:
+  - added explicit derived-reference synchronization policy to `src/guides/docs/rules-general-terms.md`
+- Resolved glossary duplication flag:
+  - refactored `src/guides/docs/rules-general-terms.md` into a non-authoritative term-ownership index
+  - removed duplicated thresholds/mechanics matrices to keep rule behavior authoritative in domain guides only
+- Corrected glossary owner-source mapping:
+  - `Physicality` / `Durability` now point to canonical `MEST.Tactics.QSR.txt` Common Terminology (lines 496-507); trait docs are treated as secondary usage references
+- Audited canonical General Terms mapping coverage:
+  - reconciled `rules-general-terms.md` against `MEST.Tactics.QSR.txt` lines 496-531
+  - added missing term ownership rows for `Scrum`, `Outnumbers`, `Agility`, `Core Damage`, and linked `Melee Range` under Standard Conditions
+- Fixed combat-traits attribute-resolution bug:
+  - `calculateStunEffect`, `checkAwkwardChargeDelay`, and `getEffectiveStr` now read `Character.finalAttributes`/`attributes` (lowercase keys) instead of invalid `profile.finalAttributes` uppercase-key paths
+- Reduced script game-size config duplication:
+  - `scripts/ai-battle/AIBattleConfig.ts` now builds `GAME_SIZE_CONFIG` from a single size-order + shared row builder instead of repeated per-size blocks
+- Reduced run-battles preset boilerplate:
+  - added `scripts/run-battles/configs/shared.ts:createSymmetricEliminationConfig(...)`
+  - refactored `very-small.ts`, `small.ts`, `medium.ts`, `large.ts`, and `very-large.ts` to knob-only config definitions
+- Reduced multi-side run-battles preset duplication:
+  - extended `scripts/run-battles/configs/shared.ts` with generic `createPresetBattleConfig(...)` and `PresetSideTemplate[]`
+  - refactored `convergence-3side.ts`, `trinity.ts`, `trinity-4side.ts`, and `ai-stress-test.ts` to declarative side templates
+- Reduced simulation-table drift:
+  - `src/lib/mest-tactics/full-game-simulation.test.ts` now derives game-size matrix values from canonical game-size + assembly defaults
+  - `scripts/run-very-large-game.ts` now sources VERY_LARGE dimensions/limits/trigger from canonical helpers
+- Resolved viewer game-size classification drift:
+  - `src/lib/mest-tactics/viewer/battle-report-viewer.html` now maps exact canonical battlefield dimensions (18×24, 24×24, 36×36, 48×48, 72×48) instead of max-dimension heuristics
+- Resolved mission compatibility-layer redundancy:
+  - removed legacy `src/lib/mest-tactics/mission/mission-engine.ts`
+  - removed legacy `src/lib/mest-tactics/missions/mission-runtime.ts`
+  - removed duplicate lookup layer `src/lib/mest-tactics/missions/mission-registry.ts`
+  - removed legacy-only tests `mission-engine.test.ts` and `mission-runtime.test.ts`
+  - retained `mission-runtime-adapter.ts` as the single active runtime integration path
 
 ### Source Audit Inventory Progress
 
+- Reclassified primary canonical source status from `⚪ Not Started` to `⚠️ Partially Audited` for:
+  - `docs/canonical/MEST.Tactics.Objectives.txt` (objective marker types/actions/concerns cross-checked)
+  - `docs/canonical/MEST.Tactics.Indirect.txt` (full indirect clause map cross-checked against indirect attack/scatter runtime and tests)
+  - `docs/canonical/MEST.Tactics.Advanced-*.txt` (initial `Advanced-Effects` clause extraction/audit started in `docs/qsr/08-advanced/08.01-traits.md`)
+- Added indirect combat clause-tracking artifact:
+  - `docs/qsr/04-combat/04.04-indirect.md` (32 clauses with runtime/test traceability and explicit gap flags)
 - Reclassified secondary guidance source statuses from `⚪ Not Audited` to `⚠️ Partially Audited` for:
+  - `src/guides/docs/rules.md` (precedence rules + module link integrity cross-checked)
   - `src/guides/docs/rules-actions.md` (Wait/Focus/React sections cross-checked)
   - `src/guides/docs/rules-bonus-actions.md` (React/passive-option sections cross-checked)
+  - `src/guides/docs/rules-characters-and-attributes.md` (attribute and model-size guidance cross-checked)
+  - `src/guides/docs/rules-combat.md` (close/range/disengage sections cross-checked)
+  - `src/guides/docs/rule-direct-range-combat.md` (direct range sections cross-checked)
   - `src/guides/docs/rules-friendly-fire-los.md` (LOF/friendly-fire rules cross-checked)
-- Flagged a remaining source/runtime drift for follow-up:
-  - Obscured threshold interpretation differs across guidance text, verification expectations, and runtime penalty accumulation (`ranged-combat.ts` / `indirect-ranged-combat.ts`).
+  - `src/guides/docs/rules-general-terms.md` (glossary term usage sampled against runtime behavior)
+  - `src/guides/docs/rule-disengage.md` (engagement-exit and disengage sections cross-checked)
+  - `src/guides/docs/rules-status.md` (morale/compulsory/concealment/status-system sections cross-checked)
+  - `src/guides/docs/rules-kod.md` (KO attack and elimination sections cross-checked)
+  - `src/guides/docs/rules-indirect.md` (indirect combat section cross-checked against executeIndirectAttack/scatter behavior)
+  - `src/guides/docs/rules-traits.md` (trait semantics and leveled-trait behavior cross-checked)
+  - `src/guides/docs/rules-tests-and-checks.md` (dice/test-resolution sections cross-checked)
+- Reclassified canonical data source statuses from `⚪ Not Audited` to `⚠️ Partially Audited` for:
+  - `src/data/archetypes.json` (profile and assembly construction paths cross-checked)
+  - `src/data/armors.json` (armor trait aggregation and defensive-resolution paths cross-checked)
+  - `src/data/bow_weapons.json` (bow reload/range and passive-option behavior paths cross-checked)
+  - `src/data/equipment.json` (item trait and tech-window filtering paths cross-checked)
+  - `src/data/grenade_weapons.json` (profile generation + weapon-pool integration paths cross-checked)
+  - `src/data/item_classifications.json` (class-label coverage integrity cross-checked)
+  - `src/data/item_tech_window.json` (tech-level window lookup/filtering paths cross-checked)
+  - `src/data/keyword_descriptions.json` (keyword-table integrity and core classifier presence cross-checked)
+  - `src/data/melee_weapons.json` (close-combat and hit-test paths cross-checked)
+  - `src/data/ranged_weapons.json` (range-combat and hit-test paths cross-checked)
+  - `src/data/support_weapons.json` (profile generation + weapon-pool integration paths cross-checked)
+  - `src/data/tech_level.json` (age-to-tech mapping consistency cross-checked)
+- Corrected stale source pointers:
+  - `item_classification.json` → `item_classifications.json`
+  - `rules-morale.md` → `rules-damage-and-morale.md`
+  - `rules-dice.md` → `rules-tests-and-checks.md`
+- Resolved Obscured-threshold source/runtime drift:
+  - introduced shared cumulative-threshold helper (`combat/obscured.ts`) used by direct and indirect ranged combat modules
+  - aligned guidance text and verification expectations to the same threshold interpretation
+- Resolved metadata source/runtime scope gap:
+  - metadata tables (`item_classifications.json`, `keyword_descriptions.json`, `tech_level.json`) are now consumed by runtime helpers and covered by dedicated metadata tests.
+- Resolved stale Priority-2 file-path references by adding placeholder trackers:
+  - `docs/qsr/08-advanced/08.01-traits.md`
+  - `docs/qsr/09-edge-cases/09.01-index.md`
 
 ---
 
@@ -123,17 +257,13 @@ Counts:
 
 ## Known Non-Blocking Warnings
 
-- `src/lib/mest-tactics/ai/core/UtilityScorer.ts`
-  - constant reassignment warning
-  - duplicate class member warnings
-- `src/lib/mest-tactics/ai/stratagems/AIStratagems.ts`
-  - duplicate key warning
+- None currently tracked from the latest targeted AI test pass (`ai.test.ts`, `stratagems.test.ts`).
 
 ---
 
 ## Next Recommended Actions
 
-1. Publish module-level coverage metrics for P1 rule modules once coverage provider is enabled (currently blocked in this environment: `ENOTFOUND registry.npmjs.org` while installing `@vitest/coverage-v8`).
-2. Continue tightening `Not Started`/`Not Audited` inventories as each source audit completes.
-3. Expand source-audit coverage outside the current P1 core-file set.
-4. Reconcile Obscured-threshold interpretation drift across guidance docs, runtime logic, and verification tests.
+1. Continue tightening `Not Started`/`Not Audited` inventories as each source audit completes.
+2. Expand source-audit coverage outside the current P1 core-file set.
+3. Continue redundancy reduction in stale tracker-history sections while preserving traceability.
+4. Raise targeted coverage in lower-coverage P1 support modules (`GameManager.ts`, `LOSOperations.ts`, `move-validator.ts`) with behavior-backed tests.

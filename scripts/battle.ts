@@ -30,6 +30,7 @@ import { TacticalDoctrine } from '../src/lib/mest-tactics/ai/stratagems/AIStrata
 import { getEndGameTriggerTurn } from '../src/lib/mest-tactics/engine/end-game-trigger';
 import { LightingCondition, getVisibilityOrForLighting } from '../src/lib/mest-tactics/utils/visibility';
 import { ActionStepAudit, AuditVector, ModelEffectAudit, OpposedTestAudit } from '../src/lib/mest-tactics/audit/BattleAuditExporter';
+import { GAME_SIZE_CONFIG } from './ai-battle/AIBattleConfig';
 
 // ============================================================================
 // Configuration
@@ -58,14 +59,6 @@ interface SideConfig {
   tacticalDoctrine: TacticalDoctrine;
   assemblyName: string;
 }
-
-const GAME_SIZE_CONFIG: Record<GameSize, { battlefieldWidth: number; battlefieldHeight: number; maxTurns: number; bpPerSide: number[]; modelsPerSide: number[] }> = {
-  [GameSize.VERY_SMALL]: { battlefieldWidth: 18, battlefieldHeight: 24, maxTurns: 6, bpPerSide: [125, 200, 250], modelsPerSide: [2, 3, 4] },
-  [GameSize.SMALL]: { battlefieldWidth: 24, battlefieldHeight: 24, maxTurns: 8, bpPerSide: [250, 375, 500], modelsPerSide: [4, 6, 8] },
-  [GameSize.MEDIUM]: { battlefieldWidth: 36, battlefieldHeight: 36, maxTurns: 10, bpPerSide: [500, 625, 750], modelsPerSide: [6, 9, 12] },
-  [GameSize.LARGE]: { battlefieldWidth: 48, battlefieldHeight: 48, maxTurns: 12, bpPerSide: [750, 875, 1000], modelsPerSide: [8, 10, 12] },
-  [GameSize.VERY_LARGE]: { battlefieldWidth: 72, battlefieldHeight: 48, maxTurns: 15, bpPerSide: [1000, 1125, 1250], modelsPerSide: [10, 15, 20] },
-};
 
 // ============================================================================
 // Main Battle Runner

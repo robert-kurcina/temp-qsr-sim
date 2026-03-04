@@ -7,7 +7,9 @@
  * and src/lib/data.ts (exported as data["game_sizes"]).
  */
 
-import { GameSize } from '../../src/lib/mest-tactics/mission/assembly-builder';
+import { GameSize, gameSizeDefaults } from '../../src/lib/mest-tactics/mission/assembly-builder';
+import { CANONICAL_GAME_SIZES } from '../../src/lib/mest-tactics/mission/game-size-canonical';
+import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-game-trigger';
 import { TacticalDoctrine } from '../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { LightingCondition } from '../../src/lib/mest-tactics/utils/visibility';
 
@@ -56,11 +58,60 @@ export interface SideConfig {
  * For rectangular battlefields, width >= height for display purposes.
  */
 export interface GameSizeConfig {
+  name: string;
   battlefieldWidth: number;
   battlefieldHeight: number;
   maxTurns: number;
+  endGameTurn: number;
   bpPerSide: number[];
   modelsPerSide: number[];
+}
+
+const MAX_TURNS_BY_SIZE: Record<GameSize, number> = {
+  [GameSize.VERY_SMALL]: 6,
+  [GameSize.SMALL]: 8,
+  [GameSize.MEDIUM]: 10,
+  [GameSize.LARGE]: 12,
+  [GameSize.VERY_LARGE]: 15,
+};
+
+const CANONICAL_GAME_SIZE_ORDER: GameSize[] = [
+  GameSize.VERY_SMALL,
+  GameSize.SMALL,
+  GameSize.MEDIUM,
+  GameSize.LARGE,
+  GameSize.VERY_LARGE,
+];
+
+function roundBpMidpoint(minBp: number, maxBp: number): number {
+  return Math.round(((minBp + maxBp) / 2) / 25) * 25;
+}
+
+function buildGameSizeConfig(size: GameSize): GameSizeConfig {
+  const canonical = CANONICAL_GAME_SIZES[size];
+  const defaults = gameSizeDefaults[size];
+  const minBP = defaults.bpLimitMin;
+  const maxBP = defaults.bpLimitMax;
+  const minModels = defaults.characterLimitMin;
+  const maxModels = defaults.characterLimitMax;
+
+  return {
+    name: canonical.name,
+    battlefieldWidth: canonical.battlefieldWidthMU,
+    battlefieldHeight: canonical.battlefieldHeightMU,
+    maxTurns: MAX_TURNS_BY_SIZE[size],
+    endGameTurn: getEndGameTriggerTurn(size),
+    bpPerSide: [
+      minBP,
+      roundBpMidpoint(minBP, maxBP),
+      maxBP,
+    ],
+    modelsPerSide: [
+      minModels,
+      Math.round((minModels + maxModels) / 2),
+      maxModels,
+    ],
+  };
 }
 
 /**
@@ -68,12 +119,8 @@ export interface GameSizeConfig {
  * Source: src/data/game_sizes.json (canonical)
  */
 export const GAME_SIZE_CONFIG: Record<GameSize, GameSizeConfig> = {
-  [GameSize.VERY_SMALL]: { battlefieldWidth: 18, battlefieldHeight: 24, maxTurns: 6, bpPerSide: [125, 200, 250], modelsPerSide: [2, 3, 4] },
-  [GameSize.SMALL]: { battlefieldWidth: 24, battlefieldHeight: 24, maxTurns: 8, bpPerSide: [250, 375, 500], modelsPerSide: [4, 6, 8] },
-  [GameSize.MEDIUM]: { battlefieldWidth: 36, battlefieldHeight: 36, maxTurns: 10, bpPerSide: [500, 625, 750], modelsPerSide: [6, 9, 12] },
-  [GameSize.LARGE]: { battlefieldWidth: 48, battlefieldHeight: 48, maxTurns: 12, bpPerSide: [750, 875, 1000], modelsPerSide: [8, 10, 12] },
-  [GameSize.VERY_LARGE]: { battlefieldWidth: 72, battlefieldHeight: 48, maxTurns: 15, bpPerSide: [1000, 1125, 1250], modelsPerSide: [10, 15, 20] },
-};
+  ...Object.fromEntries(CANONICAL_GAME_SIZE_ORDER.map(size => [size, buildGameSizeConfig(size)])),
+} as Record<GameSize, GameSizeConfig>;
 
 /**
  * Validate game configuration
@@ -119,13 +166,6 @@ export function createDefaultGameConfig(
   missionId: string = 'QAI_11'
 ): GameConfig {
   const sizeConfig = GAME_SIZE_CONFIG[gameSize];
-  const endGameTriggerBySize: Record<GameSize, number> = {
-    [GameSize.VERY_SMALL]: 3,
-    [GameSize.SMALL]: 4,
-    [GameSize.MEDIUM]: 6,
-    [GameSize.LARGE]: 8,
-    [GameSize.VERY_LARGE]: 10,
-  };
 
   // Select doctrine based on mission type to ensure VP/RP incentivization
   // Reference: docs/audit/VP_SCORING_GAP_ANALYSIS.md
@@ -163,7 +203,7 @@ export function createDefaultGameConfig(
     battlefieldWidth: sizeConfig.battlefieldWidth,
     battlefieldHeight: sizeConfig.battlefieldHeight,
     maxTurns: sizeConfig.maxTurns,
-    endGameTurn: endGameTriggerBySize[gameSize],
+    endGameTurn: sizeConfig.endGameTurn,
     sides: [
       {
         name: 'Alpha',

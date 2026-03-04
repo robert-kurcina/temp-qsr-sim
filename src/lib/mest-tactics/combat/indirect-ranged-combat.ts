@@ -10,6 +10,7 @@ import { metricsService } from '../engine/MetricsService';
 import { SpatialAttackContext, SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { applyStatusTraitOnHit, parseStatusTrait, getCharacterTraitLevel } from '../status/status-system';
 import { getArcheryBonus, getShootPenaltyReduction, getShootMaxORMBonus } from '../traits/combat-traits';
+import { calculateObscuredPenalty } from './obscured';
 
 function _calculateModifiers(
     attacker: Character, 
@@ -20,14 +21,13 @@ function _calculateModifiers(
     const attackerBonus: TestDice = {};
     const attackerPenalty: TestDice = {};
 
-    const hindrance = calculateHindrancePenalty(attacker.state);
+    const hindrance = calculateHindrancePenalty({
+        woundTokens: attacker.state.wounds,
+        fearTokens: attacker.state.fearTokens,
+        delayTokens: attacker.state.delayTokens,
+    });
     if (hindrance > 0) {
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + hindrance;
-    }
-
-    // Context-based hindrance penalty
-    if (context.hasHindrance) {
-        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + 1;
     }
 
     if (context.isLeaning) attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + 1;
@@ -56,16 +56,13 @@ function _calculateModifiers(
     }
 
     if (context.obscuringModels && context.obscuringModels > 0) {
-        const thresholds = [1, 2, 5, 10];
-        let obscuredPenalty = 0;
-        for (const threshold of thresholds) {
-            if (context.obscuringModels >= threshold) obscuredPenalty += 1;
-        }
+        const obscuredPenalty = calculateObscuredPenalty(context.obscuringModels);
         attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + obscuredPenalty;
     }
     
     if (orm > 0) {
-        attackerPenalty[DiceType.Modifier] = (attackerPenalty[DiceType.Modifier] || 0) + orm;
+        // IC.10 + IC.12 (Distance): indirect hit tests apply ORM as Base-die penalties.
+        attackerPenalty[DiceType.Base] = (attackerPenalty[DiceType.Base] || 0) + orm;
     }
 
     // Archery X: +Xm Bow Hit Tests
@@ -94,9 +91,10 @@ export function makeIndirectRangedAttack(
     context: TestContext = {},
     p1Rolls: number[] | null = null,
     spatial?: SpatialAttackContext,
-    target?: Character
+    target?: Character,
+    options: { applyOnHitTraits?: boolean } = {}
 ): ResolveTestResult {
-    const attackerAttribute = weapon.classification === 'Thrown' ? attacker.finalAttributes.cca : attacker.finalAttributes.rca;
+    const attackerAttribute = attacker.finalAttributes.rca;
 
     const shootOrmBonus = getShootMaxORMBonus(attacker);
     const effectiveOrm = Math.max(0, orm - shootOrmBonus);
@@ -137,7 +135,8 @@ export function makeIndirectRangedAttack(
     const result = resolveTest(attackerParticipant, systemParticipant, p1Rolls);
     metricsService.logEvent('diceTestResolved', { finalPools: { p1FinalBonus: attackerParticipant.bonusDice, p1FinalPenalty: attackerParticipant.penaltyDice, p2FinalBonus: systemParticipant.bonusDice, p2FinalPenalty: systemParticipant.penaltyDice }, result: result });
 
-    if (result.pass && target && weapon.traits?.length) {
+    const applyOnHitTraits = options.applyOnHitTraits ?? true;
+    if (applyOnHitTraits && result.pass && target && weapon.traits?.length) {
         const cascades = result.cascades ?? 0;
         for (const trait of weapon.traits) {
             const parsed = parseStatusTrait(trait);

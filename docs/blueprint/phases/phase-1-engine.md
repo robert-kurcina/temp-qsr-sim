@@ -27,7 +27,7 @@
 **Files:**
 - `scripts/run-battles/battle-runner.ts` (consolidated)
 - `src/lib/mest-tactics/engine/GameController.ts` (verified complete)
-- `src/lib/mest-tactics/missions/mission-runtime.ts` (verified complete)
+- `src/lib/mest-tactics/missions/mission-runtime-adapter.ts` (verified complete)
 
 **Exit Criteria:** ✅ MET
 - ✅ One battle runner supports all game sizes (VERY_SMALL → VERY_LARGE)

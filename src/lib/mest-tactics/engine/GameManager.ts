@@ -203,6 +203,21 @@ export class GameManager {
     }
   }
 
+  private getMissionSideForCharacter(character: Character): MissionSide | undefined {
+    return this.missionSides?.find(side =>
+      side.members.some(member => member.character.id === character.id)
+    );
+  }
+
+  private getFriendlySideChecker(character: Character): ((candidate: Character) => boolean) | undefined {
+    const side = this.getMissionSideForCharacter(character);
+    if (!side) {
+      return undefined;
+    }
+    const memberIds = new Set(side.members.map(member => member.character.id));
+    return (candidate: Character) => memberIds.has(candidate.id);
+  }
+
   public getCharacterStatus(characterId: string): CharacterStatus | undefined {
     return this.characterStatus.get(characterId);
   }
@@ -486,10 +501,7 @@ export class GameManager {
    * QSR: Spending Initiative Points - Refresh costs 1 IP
    */
   public refreshForCharacter(character: Character): boolean {
-    // Find the side this character belongs to
-    const side = this.missionSides?.find(s => 
-      s.members.some(m => m.character.id === character.id)
-    );
+    const side = this.getMissionSideForCharacter(character);
     
     if (!side) {
       return false;
@@ -993,13 +1005,7 @@ export class GameManager {
     if (!this.battlefield) {
       throw new Error('Battlefield not set.');
     }
-    const missionSides = this.missionSides ?? [];
-    const moverSide = missionSides.find((side: MissionSide) =>
-      side.members.some(member => member.character.id === mover.id)
-    );
-    const derivedFriendlyChecker = moverSide
-      ? (candidate: Character) => moverSide.members.some(member => member.character.id === candidate.id)
-      : undefined;
+    const derivedFriendlyChecker = this.getFriendlySideChecker(mover);
     const isFriendlyToMover = options.isFriendlyToMover ?? derivedFriendlyChecker;
     const effectiveOpponents = options.opponents
       ?? (isFriendlyToMover
@@ -1142,10 +1148,7 @@ export class GameManager {
       visibilityOrMu?: number;
     } = {}
   ) {
-    const missionSides = this.missionSides ?? [];
-    const side = options.side ?? missionSides.find((candidate: MissionSide) =>
-      candidate.members.some(member => member.character.id === actor.id)
-    );
+    const side = options.side ?? this.getMissionSideForCharacter(actor);
     const sideAllies = side?.members
       ?.map(member => member.character)
       .filter(character => !character.state.isEliminated && !character.state.isKOd) ?? [];
@@ -1412,13 +1415,23 @@ export class GameManager {
     options: Partial<ActionContextInput> & {
       context?: TestContext;
       targetCharacter?: Character;
+      directionRoll?: number;
+      scatterBias?: 'biased' | 'unbiased';
+      scatterWeights?: number[];
+      scatterDesiredDirection?: Position;
+      scrambleMoves?: Record<string, Position>;
+      allowScramble?: boolean;
       knownAtInitiativeStart?: boolean;
       spotters?: Character[];
+      isFriendlySpotter?: (spotter: Character) => boolean;
+      isSpotterFree?: (spotter: Character) => boolean;
       spotterCohesionRangeMu?: number;
       blindScatterDistanceRoll?: number;
       blindScatterDistanceRng?: () => number;
+      enforceArcValidation?: boolean;
     } = {}
   ) {
+    const derivedFriendlySpotter = this.getFriendlySideChecker(attacker);
     return runIndirectAttack(this.combatActionDeps(), attacker, weapon, orm, {
       allowKOdAttacks: this.allowKOdAttacks,
       kodRules: {
@@ -1427,6 +1440,8 @@ export class GameManager {
         coordinatorTraits: this.kodCoordinatorTraitsByCharacterId?.[attacker.id],
       },
       ...options,
+      isFriendlySpotter: options.isFriendlySpotter ?? derivedFriendlySpotter,
+      isSpotterFree: options.isSpotterFree ?? ((spotter: Character) => this.isFreeFromEngagement(spotter)),
     });
   }
 
@@ -1686,6 +1701,9 @@ export class GameManager {
       moveCharacter: (character: Character, position: Position) => this.moveCharacter(character, position),
       buildSpatialModel: (character: Character) => this.buildSpatialModel(character),
       applyPassiveOptionCost: (character: Character) => this.applyPassiveOptionCost(character),
+      canUsePassiveReact: (character: Character) =>
+        !this.reactingNow.has(character.id) && !this.reactedThisTurn.has(character.id),
+      markPassiveReactUsed: (character: Character) => { this.reactedThisTurn.add(character.id); },
       applyRefresh: (character: Character) => this.applyRefresh(character),
       applyKOCleanup: (character: Character) => this.applyKOCleanup(character),
     };

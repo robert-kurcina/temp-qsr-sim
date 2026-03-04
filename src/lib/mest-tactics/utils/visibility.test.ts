@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { Character } from '../core/Character';
-import { getVisibilityOrForLighting, evaluateRangeWithVisibility, parseWeaponOptimalRangeMu } from './visibility';
+import { evaluateRangeWithVisibility, evaluateWeaponOrExpressionMu, getVisibilityOrForLighting, parseWeaponOptimalRangeMu } from './visibility';
 
 function makeCharacter(str = 3): Character {
   return new Character({
@@ -95,5 +95,13 @@ describe('visibility helpers', () => {
       traits: [],
     } as any);
     expect(expressionOr).toBe(6);
+  });
+
+  it('evaluates explicit OR expressions including negative results', () => {
+    const attacker = makeCharacter(3);
+    expect(evaluateWeaponOrExpressionMu(attacker, 'STR+2')).toBe(5);
+    expect(evaluateWeaponOrExpressionMu(attacker, 'STR-5')).toBe(-2);
+    expect(evaluateWeaponOrExpressionMu(attacker, 'OR(STR+1)')).toBe(4);
+    expect(evaluateWeaponOrExpressionMu(attacker, '-')).toBeNull();
   });
 });

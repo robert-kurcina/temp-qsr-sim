@@ -213,4 +213,4 @@ Having one or more Transfixed tokens will cause a penalty of **-1 Modifier die f
 
 ---
 
-**Source:** `docs/MEST.Tactics.Advanced-Effects.txt`
+**Source:** `docs/canonical/MEST.Tactics.Advanced-Effects.txt`

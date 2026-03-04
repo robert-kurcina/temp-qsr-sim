@@ -558,7 +558,7 @@ export class UtilityScorer {
 
         // R2: Tactical Condition Weighting for Wait Uptake
         // Add multipliers when specific tactical conditions favor Wait
-        const waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions) + waitCoordinationBonus;
+        let waitTacticalBonus = this.evaluateWaitTacticalConditions(context, waitForecast, attackActions) + waitCoordinationBonus;
 
         // R2.1: Elimination Mission Wait Penalty
         // Reduce Wait baseline for Elimination mission to encourage combat
@@ -1464,21 +1464,6 @@ export class UtilityScorer {
   private isWeapon(item: Item): boolean {
     const classifications = ['Melee', 'Firearm', 'Bow', 'Range', 'Thrown', 'Support', 'Ordnance'];
     return item.classification ? classifications.includes(item.classification) : false;
-  }
-
-  /**
-   * Check if item is a ranged weapon
-   */
-  private isRangedWeapon(item: Item): boolean {
-    const classifications = ['Firearm', 'Bow', 'Range', 'Thrown', 'Support', 'Ordnance'];
-    return item.classification ? classifications.includes(item.classification) : false;
-  }
-
-  /**
-   * Check if item is a melee weapon
-   */
-  private isMeleeWeapon(item: Item): boolean {
-    return item.classification === 'Melee';
   }
 
   /**

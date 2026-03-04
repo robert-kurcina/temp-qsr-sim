@@ -1,85 +1,29 @@
-# Mission System
+# Mission Domain Core
 
-This directory contains the mission engine and supporting systems.
+This directory contains shared mission-domain primitives used by the active mission runtime adapter stack.
 
-## Files
+## Primary Domain Modules
 
-### Core Engine
-- **`MissionSide.ts`** - Side representation with member tracking and status
-- **`MissionSideBuilder.ts`** - Builder for creating mission sides from assemblies
-- **`assembly-builder.ts`** - Build assemblies from profiles and archetypes
-- **`mission-engine.ts`** - Core mission state machine and event processing
-- **`mission-flow.ts`** - Mission flow orchestration
-- **`mission-scoring.ts`** - Victory point calculation and scoring
-- **`mission-runtime.ts`** - Runtime mission state and special rules
-- **`mission-config.ts`** - Mission configuration and setup
+- `MissionSide.ts` - Side/member state model and score projection helpers
+- `MissionSideBuilder.ts` - Builder utilities for side construction
+- `assembly-builder.ts` - Profile/assembly construction and game-size defaults
+- `objective-markers.ts` - Objective-marker lifecycle and OM interaction primitives
+- `deployment-system.ts` - Mission deployment zones and placement utilities
+- `special-rules.ts` - Special-rule handlers used by mission flows and tests
+- `scoring-rules.ts` - Scoring rule evaluators
+- `victory-conditions.ts` - Victory-condition evaluators
+- `balance-validator.ts` - Mission/balance checks
+- `zone-factory.ts` - POI/zone construction helpers
+- `side-spatial-binding.ts` - Side/member spatial binding helpers
 
-### Mission Features
-- **`objective-markers.ts`** - OM system (Switch, Lock, Key, Physical, Idea)
-- **`poi-zone-control.ts`** - Point of Interest and zone control
-- **`vip-system.ts`** - VIP protection and extraction
-- **`reinforcements-system.ts`** - Reinforcement waves and arrival
-- **`special-rules.ts`** - Mission-specific special rules
-- **`victory-conditions.ts`** - Victory condition definitions
-- **`scoring-rules.ts`** - Scoring rule definitions
-- **`balance-validator.ts`** - Assembly balance validation
-- **`heuristic-scorer.ts`** - AI heuristic scoring
-- **`zone-factory.ts`** - Zone creation utilities
-- **`side-spatial-binding.ts`** - Side-to-spatial binding
+## Runtime Authority
 
-## Mission Types
+- Active runtime integration is `src/lib/mest-tactics/missions/mission-runtime-adapter.ts`.
+- Core mission orchestration entry points are in:
+  - `src/lib/mest-tactics/engine/GameController.ts`
+  - `src/lib/mest-tactics/engine/GameManager.ts`
 
-| ID | Name | Sides | Description |
-|----|------|-------|-------------|
-| QAI_11 | Elimination | 2 | Destroy enemy forces |
-| QAI_12 | Convergence | 2-4 | Multi-sided objective control |
-| QAI_13 | Assault | 2 | Attacker vs Defender sabotage |
-| QAI_14 | Dominion | 2 | Beacon zone control |
-| QAI_15 | Recovery | 2 | Intelligence cache extraction |
-| QAI_16 | Escort | 2 | VIP extraction |
-| QAI_17 | Triumvirate | 3 | Three-way power struggle |
-| QAI_18 | Stealth | 2 | Infiltration mission |
-| QAI_19 | Defiance | 2 | Last stand defense |
-| QAI_20 | Breach | 2 | Switch-based objective |
+## Notes
 
-## Keys to Victory
-
-- **Elimination** - Most BP eliminated
-- **Dominance** - Zone control per turn
-- **Courier** - Edge contact/delivery
-- **Sanctuary** - Reserve force maintenance
-- **POI** - Point of Interest control
-- **Collection** - Objective Marker acquisition
-- **Catalyst** - Battlefield condition trigger
-- **First Blood** - First wound/KO
-- **Bottled** - Enemy bottle test failure
-- **Targeted** - Specific model elimination
-- **VIP** - VIP protection/elimination
-- **Harvest** - Resource acquisition
-- **Acquisition** - OM extraction
-
-## Usage
-
-```typescript
-import { buildMissionSide } from './mission/MissionSideBuilder';
-import { MissionSide } from './mission/MissionSide';
-
-const side = buildMissionSide({
-  id: 'side-a',
-  name: 'Attacker',
-  roster: assemblyRoster,
-  mergeAssemblies: true,
-});
-
-// Access members
-side.members.forEach(member => {
-  console.log(member.character.name);
-  console.log(member.status); // Ready, Done, Waiting, KO, Eliminated
-});
-```
-
-## Dependencies
-
-- `core/` - Character, Assembly, Profile
-- `battlefield/` - Spatial binding, positioning
-- `mission/missions/` - Individual mission implementations
+- This folder intentionally focuses on reusable mission-domain building blocks.
+- Mission-specific managers and mission configuration loading live under `src/lib/mest-tactics/missions/`.

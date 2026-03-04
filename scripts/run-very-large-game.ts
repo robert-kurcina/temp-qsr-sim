@@ -4,7 +4,7 @@
  * Run with: npx tsx scripts/run-very-large-game.ts
  */
 
-import { buildAssembly, buildProfile } from '../src/lib/mest-tactics/mission/assembly-builder';
+import { buildAssembly, buildProfile, GameSize, gameSizeDefaults } from '../src/lib/mest-tactics/mission/assembly-builder';
 import { buildMissionSide } from '../src/lib/mest-tactics/mission/MissionSideBuilder';
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
@@ -14,16 +14,20 @@ import { SpatialRules } from '../src/lib/mest-tactics/battlefield/spatial/spatia
 import { performTest, TestDice, DiceType } from '../src/lib/mest-tactics/subroutines/dice-roller';
 import { resolveHitTest, HitTestContext } from '../src/lib/mest-tactics/subroutines/hit-test';
 import { resolveDamageTest, DamageTestContext } from '../src/lib/mest-tactics/subroutines/damage';
+import { CANONICAL_GAME_SIZES } from '../src/lib/mest-tactics/mission/game-size-canonical';
+import { getEndGameTriggerTurn } from '../src/lib/mest-tactics/engine/end-game-trigger';
 
 // VERY_LARGE game configuration
+const veryLargeDefaults = gameSizeDefaults[GameSize.VERY_LARGE];
+const veryLargeCanonical = CANONICAL_GAME_SIZES[GameSize.VERY_LARGE];
 const VERY_LARGE_CONFIG = {
-  name: 'Very Large',
-  modelsPerSide: [10, 20],
-  bpPerSide: [1000, 1250],
-  battlefieldWidth: 72,
-  battlefieldHeight: 48,
+  name: veryLargeCanonical.name,
+  modelsPerSide: [veryLargeDefaults.characterLimitMin, veryLargeDefaults.characterLimitMax] as [number, number],
+  bpPerSide: [veryLargeDefaults.bpLimitMin, veryLargeDefaults.bpLimitMax] as [number, number],
+  battlefieldWidth: veryLargeCanonical.battlefieldWidthMU,
+  battlefieldHeight: veryLargeCanonical.battlefieldHeightMU,
   maxTurns: 10,
-  endGameTurn: 10,
+  endGameTurn: getEndGameTriggerTurn(GameSize.VERY_LARGE),
 };
 
 interface GameLogEntry {
@@ -200,9 +204,9 @@ class VeryLargeGameRunner {
     console.log('Models deployed.\n');
     console.log('─'.repeat(80) + '\n');
 
-    // Create game manager with end-game trigger at turn 10
+    // Create game manager with canonical end-game trigger for VERY_LARGE
     const allCharacters = [...sideA.characters, ...sideB.characters];
-    const gameManager = new GameManager(allCharacters, battlefield, 10);
+    const gameManager = new GameManager(allCharacters, battlefield, VERY_LARGE_CONFIG.endGameTurn);
 
     // Create AI controllers
     const aiA = new AIController(0.6, 0.4); // More aggressive

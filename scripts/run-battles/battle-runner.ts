@@ -12,6 +12,7 @@
  */
 
 import { buildAssembly, buildProfile, GameSize, gameSizeDefaults } from '../../src/lib/mest-tactics/mission/assembly-builder';
+import { CANONICAL_GAME_SIZES } from '../../src/lib/mest-tactics/mission/game-size-canonical';
 import { buildMissionSide } from '../../src/lib/mest-tactics/mission/MissionSideBuilder';
 import { Battlefield } from '../../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
@@ -21,7 +22,6 @@ import { GameManager } from '../../src/lib/mest-tactics/engine/GameManager';
 import { CharacterAI } from '../../src/lib/mest-tactics/ai/core/CharacterAI';
 import { TacticalDoctrine } from '../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { MissionLoader } from '../../src/lib/mest-tactics/missions/mission-loader';
-import { MissionEngine } from '../../src/lib/mest-tactics/missions/mission-engine';
 import { MissionRuntimeAdapter } from '../../src/lib/mest-tactics/missions/mission-runtime-adapter';
 import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-game-trigger';
 import { InstrumentationLogger, InstrumentationGrade, StartOfGameReport, InitiativeTestReport, TurnActionReport, TurnEndReport, GameEndReport } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
@@ -393,28 +393,16 @@ export class BattleRunner {
    * Get battlefield width for game size
    */
   private getBattlefieldWidth(): number {
-    const sizeMap: Record<GameSize, number> = {
-      [GameSize.VERY_SMALL]: 18,
-      [GameSize.SMALL]: 24,
-      [GameSize.MEDIUM]: 36,
-      [GameSize.LARGE]: 48,
-      [GameSize.VERY_LARGE]: 72,
-    };
-    return sizeMap[this.config.gameSize] || 24;
+    return CANONICAL_GAME_SIZES[this.config.gameSize]?.battlefieldWidthMU
+      ?? CANONICAL_GAME_SIZES.SMALL.battlefieldWidthMU;
   }
 
   /**
    * Get battlefield height for game size
    */
   private getBattlefieldHeight(): number {
-    const sizeMap: Record<GameSize, number> = {
-      [GameSize.VERY_SMALL]: 24,
-      [GameSize.SMALL]: 24,
-      [GameSize.MEDIUM]: 36,
-      [GameSize.LARGE]: 48,
-      [GameSize.VERY_LARGE]: 48,
-    };
-    return sizeMap[this.config.gameSize] || 24;
+    return CANONICAL_GAME_SIZES[this.config.gameSize]?.battlefieldHeightMU
+      ?? CANONICAL_GAME_SIZES.SMALL.battlefieldHeightMU;
   }
 
   /**

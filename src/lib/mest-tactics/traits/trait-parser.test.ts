@@ -45,6 +45,20 @@ describe('parseTrait', () => {
     expect(trait.source).toBe(source);
   });
 
+  it('should canonicalize known keyword tokens in lists', () => {
+    const source = 'Augment 1 > [ movement, psychology ]';
+    const trait = parseTrait(source);
+
+    expect(trait.list).toEqual(['Movement', 'Psychology']);
+  });
+
+  it('should canonicalize known keyword type tokens', () => {
+    const source = 'Damper 1 > skill';
+    const trait = parseTrait(source);
+
+    expect(trait.type).toBe('Skill');
+  });
+
   it('should handle extra whitespace gracefully', () => {
     const source = '  STR   5  ';
     const trait = parseTrait(source);

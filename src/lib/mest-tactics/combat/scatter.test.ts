@@ -98,13 +98,19 @@ describe('Scatter System - Direction', () => {
   });
 
   describe('rollScatterDirection', () => {
-    it('should bias toward forward when biased', () => {
+    it('should keep unbiased rolls uniform', () => {
       const rng = () => 0.2;
       const unbiased = rollScatterDirection({ rng, bias: 'unbiased' });
+      expect(unbiased).toBe(2);
+    });
+
+    it('should apply canonical biased reroll flow', () => {
+      const sequence = [0.4, 0.6, 0.99]; // 3 -> reroll 4 -> reroll 6
+      let i = 0;
+      const rng = () => sequence[Math.min(i++, sequence.length - 1)];
       const biased = rollScatterDirection({ rng, bias: 'biased' });
 
-      expect(unbiased).toBe(2);
-      expect(biased).toBe(1);
+      expect(biased).toBe(6);
     });
 
     it('should respect custom weights', () => {
@@ -280,6 +286,115 @@ describe('Scatter System - Full Resolution', () => {
 
       // Forward from 90° LOF should scatter north (y increases)
       expect(result.finalPosition.y).toBeGreaterThan(target2.y);
+    });
+
+    it('uses desired direction as the biased scatter "1" axis', () => {
+      const result = resolveScatter({
+        attackerPosition: { x: 0, y: 0 },
+        targetPosition: { x: 10, y: 0 },
+        misses: 2,
+        battlefield,
+        directionRoll: 1,
+        bias: 'biased',
+        desiredDirectionAngle: 90,
+      });
+
+      expect(result.finalPosition.x).toBeCloseTo(10, 5);
+      expect(result.finalPosition.y).toBeGreaterThan(0);
+    });
+
+    it('keeps LOF axis for unbiased scatter even when desired direction is provided', () => {
+      const result = resolveScatter({
+        attackerPosition: { x: 0, y: 0 },
+        targetPosition: { x: 10, y: 0 },
+        misses: 2,
+        battlefield,
+        directionRoll: 1,
+        bias: 'unbiased',
+        desiredDirectionAngle: 90,
+      });
+
+      expect(result.finalPosition.x).toBeGreaterThan(10);
+      expect(result.finalPosition.y).toBeCloseTo(0, 5);
+    });
+
+    it('reflects off a wall and continues with remaining distance', () => {
+      const battlefieldWithWall = createTestBattlefield(24, 24, [
+        { bounds: { x: 7, y: 4, width: 1, height: 2 }, type: 'Blocking' },
+      ]);
+
+      const result = resolveScatter({
+        attackerPosition: { x: 0, y: 5 },
+        targetPosition: { x: 5, y: 5 },
+        misses: 5,
+        battlefield: battlefieldWithWall,
+        directionRoll: 1, // Forward, into wall
+      });
+
+      expect(result.blocked).toBe(true);
+      expect(result.finalPosition.x).toBeLessThan(7);
+    });
+
+    it('stops at second barrier after wall reflection', () => {
+      const battlefieldWithWalls = createTestBattlefield(24, 24, [
+        { bounds: { x: 7, y: 4, width: 1, height: 2 }, type: 'Blocking' }, // first wall
+        { bounds: { x: 5, y: 4, width: 0.5, height: 2 }, type: 'Blocking' }, // second wall after reflection
+      ]);
+
+      const result = resolveScatter({
+        attackerPosition: { x: 0, y: 5 },
+        targetPosition: { x: 5, y: 5 },
+        misses: 5,
+        battlefield: battlefieldWithWalls,
+        directionRoll: 1,
+      });
+
+      expect(result.blocked).toBe(true);
+      expect(result.finalPosition.x).toBeGreaterThanOrEqual(5);
+      expect(result.finalPosition.x).toBeLessThanOrEqual(7);
+    });
+
+    it('chains roll-down distance across successive slope drops', () => {
+      const slopedBattlefield = createTestBattlefield(40, 12, [
+        { bounds: { x: 0, y: 0, width: 12, height: 12 }, type: 'Clear', elevation: 8 },
+        { bounds: { x: 12, y: 0, width: 8, height: 12 }, type: 'Clear', elevation: 4 },
+        { bounds: { x: 20, y: 0, width: 20, height: 12 }, type: 'Clear', elevation: 0 },
+      ]);
+
+      const result = resolveScatter({
+        attackerPosition: { x: 0, y: 6 },
+        targetPosition: { x: 11, y: 6 },
+        misses: 6,
+        battlefield: slopedBattlefield,
+        directionRoll: 1, // Forward
+      });
+
+      expect(result.rollDownOccurred).toBe(true);
+      expect(result.rollDownDistance).toBe(16);
+      expect(result.finalPosition.x).toBeCloseTo(33, 5);
+    });
+
+    it('stops roll-down displacement when an obstacle is encountered', () => {
+      const slopedBattlefield = createTestBattlefield(40, 12, [
+        { bounds: { x: 0, y: 0, width: 12, height: 12 }, type: 'Clear', elevation: 8 },
+        { bounds: { x: 12, y: 0, width: 8, height: 12 }, type: 'Clear', elevation: 4 },
+        { bounds: { x: 20, y: 0, width: 20, height: 12 }, type: 'Clear', elevation: 0 },
+        { bounds: { x: 26, y: 5, width: 1, height: 2 }, type: 'Rough' },
+      ]);
+
+      const result = resolveScatter({
+        attackerPosition: { x: 0, y: 6 },
+        targetPosition: { x: 11, y: 6 },
+        misses: 6,
+        battlefield: slopedBattlefield,
+        directionRoll: 1, // Forward
+      });
+
+      expect(result.rollDownOccurred).toBe(true);
+      expect(result.blocked).toBe(true);
+      expect(result.blockingBarrier?.type).toBe('obstacle');
+      expect(result.finalPosition.x).toBeGreaterThanOrEqual(26);
+      expect(result.finalPosition.x).toBeLessThanOrEqual(27);
     });
   });
 });

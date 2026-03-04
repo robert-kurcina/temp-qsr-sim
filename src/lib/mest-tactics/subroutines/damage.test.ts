@@ -6,11 +6,15 @@ import { resolveDamageTest } from './damage';
 import * as diceRoller from '../subroutines/dice-roller';
 
 // Mock the dice-roller module to control the outcome of resolveTest
-vi.mock('../subroutines/dice-roller', () => ({
-  resolveTest: vi.fn().mockReturnValue({ pass: false, cascades: 0 }), // Default mock
-}));
+vi.mock('../subroutines/dice-roller', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../subroutines/dice-roller')>();
+  return {
+    ...actual,
+    resolveTest: vi.fn().mockReturnValue({ pass: false, cascades: 0 }),
+  };
+});
 
-describe('resolveDamageTest', () => {
+describe('resolveDamageTest (legacy compatibility wrapper)', () => {
   let attacker: Character;
   let defender: Character;
   let weapon: Item;
@@ -61,34 +65,27 @@ describe('resolveDamageTest', () => {
   });
 
   it('should correctly parse and use dice modifiers in the damage formula', () => {
-    // Arrange: Corrected to use a valid dice specifier 'b' instead of 'd'
     weapon.dmg = 'STR+2b'; // Damage includes 2 bonus base dice
     attacker.finalAttributes.str = 4;
 
-    // Act
     resolveDamageTest(attacker, defender, weapon, 0);
 
-    // Assert
     expect(diceRoller.resolveTest).toHaveBeenCalledWith(
       expect.objectContaining({
         attributeValue: 4,
-        bonusDice: { base: 2, modifier: 0, wild: 0 },
+        bonusDice: expect.objectContaining({ base: 2 }),
       }),
       expect.any(Object)
     );
   });
 
-  it('should add hit cascades to the damage roll dice pool', () => {
-    // Arrange
-    const hitCascades = 3; // 3 cascades from the preceding Hit Test
-
-    // Act
+  it('should add hit cascades to the damage roll bonus pool', () => {
+    const hitCascades = 3;
     resolveDamageTest(attacker, defender, weapon, hitCascades);
 
-    // Assert: Check that hit cascades are passed as carry-over dice
     expect(diceRoller.resolveTest).toHaveBeenCalledWith(
       expect.objectContaining({
-        carryOverDice: { base: 3, modifier: 0, wild: 0 },
+        bonusDice: expect.objectContaining({ base: 3 }),
       }),
       expect.any(Object)
     );

@@ -143,30 +143,9 @@ Indirect Range Attacks can target battlefield locations that an attacking model 
 
 ---
 
-## Implementation Notes
+## Implementation Status
 
-### Required Components
-
-| Component | Status | Description |
-|-----------|--------|-------------|
-| **Indirect Hit Test** | ✅ Partial | Unopposed RCA test with −1b per ORM |
-| **Scatter System** | ✅ Partial | Distance/direction reposition (bias configurable) |
-| **Scatter Diagram** | ✅ Partial | Biased/unbiased direction supported |
-| **Collision Detection** | ✅ Partial | Wall/barrier collision handling |
-| **Roll-down/Gravity** | ❌ Missing | Slope and precipice handling |
-| **Scrambling React** | ✅ Partial | React allowed; full react-system wiring TBD |
-| **AoE Resolution** | ✅ Implemented | Base-contact target resolution |
-| **Frag Trait** | ✅ Implemented | Fragmentation damage rules |
-| **Blind Attacks** | ✅ Partial | Spotter/Known gating, blind hit-test penalty, and blind [Scatter] unbiased distance handling wired; arc/height fidelity remains pending |
-
-### QSR Rule References
-
-- **Indirect Range Attack**: Battlefield location target within LOF
-- **Weapon Requirements**: Thrown, Throwable, or [Arc] trait
-- **Midpoint Rule**: LOS arc requirement
-- **Hit Test**: Unopposed RCA with −1b per ORM
-- **Scatter**: misses × 1" (minimum 1 MU)
-- **Roll-down**: 0.5 MU per 1 MU dropped + 1 MU per miss
+Implementation status is tracked only in `docs/qsr/04-combat/04.04-indirect.md` to avoid drift between guidance and clause-verification records.
 
 ---
 

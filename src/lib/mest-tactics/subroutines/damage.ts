@@ -1,8 +1,13 @@
-
 import type { Character } from '../core/Character';
 import type { Item } from '../core/Item';
-import { resolveTest } from '../subroutines/dice-roller';
-import { parseDamage } from './damage-parser';
+import type { TestResult } from '../subroutines/dice-roller';
+import { resolveDamage } from './damage-test';
+
+export interface DamageTestContext {
+  hasHardCover?: boolean;
+  isConcentrating?: boolean;
+  isCloseCombat?: boolean;
+}
 
 export interface DamageResult {
   wounds: number; // Represents the number of wounds *added* in this single resolution
@@ -24,48 +29,39 @@ export function resolveDamageTest(
   weapon: Item,
   hitCascades: number
 ): DamageResult {
-  const damageResult: DamageResult = { wounds: 0, stun: 0, effects: [] };
+  const carryOverDice =
+    hitCascades > 0 ? { base: hitCascades as number } : {};
+  const simulatedHitResult: TestResult = {
+    pass: true,
+    score: hitCascades,
+    participant1Score: hitCascades,
+    participant2Score: 0,
+    cascades: hitCascades,
+    carryOverDice,
+    p1Rolls: [],
+    p2Rolls: [],
+    finalPools: {
+      p1FinalBonus: {},
+      p1FinalPenalty: {},
+      p2FinalBonus: {},
+      p2FinalPenalty: {},
+    },
+  };
 
-  // 1. Determine Damage Rating from weapon
-  const damageSpec = weapon.dmg ?? (weapon as unknown as { damage?: string }).damage ?? '';
-  const { value: damageValue, dice: damageDice } = parseDamage(damageSpec, attacker.finalAttributes);
+  // Legacy compatibility wrapper: the canonical damage flow now lives in damage-test.ts.
+  const resolution = resolveDamage(attacker, defender, weapon, simulatedHitResult);
+  defender.state.wounds = resolution.defenderState.wounds;
+  defender.state.delayTokens = resolution.defenderState.delayTokens;
+  defender.state.isKOd = resolution.defenderState.isKOd;
+  defender.state.isEliminated = resolution.defenderState.isEliminated;
 
-  // 2. Calculate effective Armor Rating (AR)
-  const totalAR = defender.state.armor?.total || 0;
-  const weaponImpact = weapon.impact || 0;
-  const effectiveAR = Math.max(0, totalAR - weaponImpact);
+  const effects: string[] = [];
+  if (resolution.defenderState.isKOd) effects.push('KOd');
+  if (resolution.defenderState.isEliminated) effects.push('Eliminated');
 
-  // 3. Perform the Opposed Damage Test
-  const damageTestResult = resolveTest({
-    attributeValue: damageValue,
-    bonusDice: damageDice,
-    carryOverDice: { base: hitCascades, modifier: 0, wild: 0 } // Use hit cascades as carry-over
-  }, {
-    attributeValue: defender.finalAttributes.for,
-  });
-
-  // 4. Calculate and apply wounds if the test passes
-  if (damageTestResult.pass) {
-    // Per the rules, Wounds = cascades from the Damage Test, reduced by effective AR.
-    const cascades = damageTestResult.cascades || 0;
-    const woundsToApply = Math.max(0, cascades - effectiveAR);
-
-    if (woundsToApply > 0) {
-        defender.state.wounds += woundsToApply;
-        damageResult.wounds = woundsToApply;
-    }
-  }
-
-  // 5. Update KO and Elimination status based on the new total wounds
-  const size = defender.finalAttributes.siz;
-  if (defender.state.wounds >= size) {
-    defender.state.isKOd = true;
-    damageResult.effects.push('KOd');
-  }
-  if (defender.state.wounds >= size + 3) {
-    defender.state.isEliminated = true;
-    damageResult.effects.push('Eliminated');
-  }
-
-  return damageResult;
+  return {
+    wounds: resolution.woundsAdded,
+    stun: resolution.stunWoundsAdded,
+    effects,
+  };
 }

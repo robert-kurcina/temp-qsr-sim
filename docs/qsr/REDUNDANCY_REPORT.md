@@ -1,6 +1,6 @@
 # Documentation Redundancy Report
 
-**Date:** 2026-03-03
+**Date:** 2026-03-04
 **Status:** ✅ **UPDATED (P1 redundancy actions applied)**
 
 ---
@@ -11,10 +11,11 @@
 
 **Findings:**
 - **7 files archived** (prefixed with `ARCHIVE_`)
-- **0 code duplications** found
+- **0 unresolved high-confidence code duplications**
 - **5 low-signal P1 verification test files removed** (replaced by runtime-backed suites)
+- **2 legacy compatibility mission test files removed** (redundant with active mission runtime path)
 
-### Addendum - Priority 1 Resume (2026-03-03)
+### Addendum - Priority 1 Resume (2026-03-04)
 
 New redundancy/quality finding from P1 audit:
 
@@ -26,11 +27,40 @@ New redundancy/quality finding from P1 audit:
 | `src/lib/mest-tactics/actions/p1-movement-verification.test.ts` | Significant overlap with rule prose, limited engine-path validation | ✅ Removed; `move-action-rules` retained |
 | `src/lib/mest-tactics/actions/p1-morale-verification.test.ts` | Broad clause tags but many non-executable assertions | ✅ Removed; replaced by runtime-backed morale tests |
 | `docs/qsr/00-index.md`, `docs/qsr/P1_RULES_STATUS.md`, `docs/qsr/SESSION_HANDOFF.md` | Conflicting state narratives ("complete" vs "in progress") and duplicated historical snapshots | ✅ Consolidated to a single in-progress narrative with aligned counts and closed tracked P1 partials |
-| `docs/qsr/00-index.md`, `docs/qsr/01-basics/01.03-visibility.md`, `docs/qsr/01-basics/01.04-cover.md`, `docs/qsr/03-actions/03.04-hide.md`, `docs/qsr/04-combat/04.02-range-combat.md` | References to non-existent guide files (`rules-los.md`, `rules-cover.md`, `rules-lof.md`) caused stale source pointers | ✅ Corrected to `rules-movement-and-terrain.md` / `rules-friendly-fire-los.md` |
+| `docs/qsr/00-index.md`, `docs/qsr/01-basics/01.03-visibility.md`, `docs/qsr/01-basics/01.04-cover.md`, `docs/qsr/03-actions/03.04-hide.md`, `docs/qsr/04-combat/04.01-close-combat.md`, `docs/qsr/04-combat/04.02-range-combat.md`, `docs/qsr/07-morale/07.01-morale.md` | References to non-existent guide files (`rules-los.md`, `rules-cover.md`, `rules-lof.md`, `rules-range.md`, `rules-engagement.md`, `rules-dice.md`, `rules-morale.md`) caused stale source pointers | ✅ Corrected to `rules-movement-and-terrain.md` / `rules-friendly-fire-los.md` / `rule-direct-range-combat.md` / `rule-disengage.md` / `rules-tests-and-checks.md` / `rules-damage-and-morale.md` |
 | `docs/qsr/00-index.md`, `docs/qsr/03-actions/03.06-wait.md`, `docs/qsr/03-actions/03.07-focus.md` | References to non-existent `src/guides/docs/rules-react.md` caused stale React source pointers | ✅ Corrected to `rules-actions.md` / `rules-bonus-actions.md` |
-| `docs/qsr/01-basics/01.03-visibility.md` + `docs/qsr/01-basics/01.04-cover.md` | Split/overlapping CV clause namespaces across two files can drift unless synchronized | ⚠️ Flagged; maintain cross-file sync discipline or consolidate CV ownership |
-| `src/guides/docs/rules-friendly-fire-los.md`, `src/lib/mest-tactics/combat/ranged-combat.ts`, `src/lib/mest-tactics/actions/ranged-combat-cover-verification.test.ts` | Obscured-threshold interpretation drift (`1/2/5/10` guidance/examples vs runtime cumulative-threshold implementation/test expectations) creates duplicated-but-inconsistent rule encodings | ⚠️ Flagged for rule-source reconciliation before further coverage claims |
+| `docs/qsr/00-index.md` | Secondary guidance inventory omitted existing `src/guides/docs/rules-indirect.md`, creating source-audit drift for indirect rule work | ✅ Corrected by adding `rules-indirect.md` to tracked guidance sources |
+| `docs/qsr/00-index.md` | Priority-2 rows referenced non-existent files (`docs/qsr/04-combat/04.04-indirect.md`, `docs/qsr/08-advanced/08.01-traits.md`, `docs/qsr/09-edge-cases/09.01-index.md`) | ✅ Resolved by creating all three missing tracker files (Indirect clause map + Advanced/Edge placeholders) |
+| `docs/qsr/00-index.md` | Canonical data pointer referenced non-existent `src/data/item_classification.json` (singular) instead of on-disk `item_classifications.json` | ✅ Corrected to `src/data/item_classifications.json` |
+| `docs/qsr/01-basics/01.03-visibility.md` + `docs/qsr/01-basics/01.04-cover.md` | Split/overlapping CV clause namespaces across two files could drift | ✅ Resolved by declaring `01.04-cover.md` as canonical `CV.*` owner and converting `01.03-visibility.md` CV rows to delegated references |
+| `src/guides/docs/rules-friendly-fire-los.md`, `src/lib/mest-tactics/combat/ranged-combat.ts`, `src/lib/mest-tactics/combat/indirect-ranged-combat.ts`, `src/lib/mest-tactics/actions/ranged-combat-cover-verification.test.ts` | Obscured-threshold interpretation drift (`1/2/5/10`) created inconsistent guidance/runtime/test encodings | ✅ Resolved by codifying shared `combat/obscured.ts` cumulative-threshold logic and aligning guide + verification docs/tests to the same interpretation |
+| `src/lib/mest-tactics/subroutines/damage.ts` vs `src/lib/mest-tactics/subroutines/damage-test.ts` | Parallel damage-resolution modules overlapped in domain scope while runtime combat paths used `damage-test.ts` | ✅ Resolved by converting `damage.ts` to a compatibility wrapper over `damage-test.ts` and removing duplicated damage logic |
+| `src/guides/docs/rules-characters-and-attributes.md.bak` | Backup copy duplicated active character/attribute guidance and could silently drift from the maintained source | ✅ Removed after dependency check (no live references found) |
+| `src/guides/docs/rules-general-terms.md` vs domain guides (`rules-status.md`, `rules-combat.md`, `rules-movement*.md`, `rules-tests-and-checks.md`) | Aggregated glossary restated distributed rule clauses, creating a duplicate maintenance surface for thresholds/definitions | ✅ Resolved by reducing glossary content to a non-authoritative term-ownership index with rule-owner pointers only |
+| `src/data/*.json` vs generated `src/lib/data.ts` | Canonical data is duplicated into a bundled TypeScript artifact; edits can drift if regeneration is skipped | ✅ Resolved by adding executable sync enforcement in `canonical-data-integrity.test.ts` (bundled artifact must match source JSON transforms) |
+| `scripts/bundle-data.cjs` vs `canonical-data-integrity.test.ts` | Canonical JSON transform logic was duplicated in the bundler and in test code | ✅ Resolved by exporting `loadBundledDataFromJson(...)` from `bundle-data.cjs` and reusing it directly in `canonical-data-integrity.test.ts` |
+| `src/lib/mest-tactics/mission/assembly-builder.ts`, `engine/end-game-trigger.ts`, `missions/mission-scoring.ts` | Game-size thresholds/defaults were hardcoded in multiple core modules | ✅ Reduced by centralizing canonical game-size reads in `mission/game-size-canonical.ts` and wiring these consumers to it |
+| `scripts/battle.ts`, `scripts/ai-battle/core/BattleOrchestrator.ts`, `scripts/battle-generator.ts`, `scripts/battlefield-generator.ts`, `scripts/generate-test-battlefields.ts`, `scripts/run-battles/battle-runner.ts` | Script-level game-size numeric tables were duplicated outside the core canonical helper path | ✅ Resolved by centralizing script game-size values through `scripts/ai-battle/AIBattleConfig.ts` + canonical `game-size-canonical.ts` (dynamic prompts, canonical dimensions, shared `GAME_SIZE_CONFIG`) |
+| `scripts/ai-battle/AIBattleConfig.ts` | `GAME_SIZE_CONFIG` had repeated per-size blocks for canonical reads, midpoints, and ranges | ✅ Resolved by generating config rows from a single ordered size list + shared builder (`buildGameSizeConfig`) |
+| `scripts/run-battles/configs/very-small.ts`, `small.ts`, `medium.ts`, `large.ts`, `very-large.ts` | Symmetric two-side elimination presets repeated near-identical side/assembly/AI boilerplate | ✅ Resolved by introducing `configs/shared.ts:createSymmetricEliminationConfig(...)` and reducing per-file definitions to size/count knobs |
+| `src/lib/mest-tactics/full-game-simulation.test.ts` | Test-local `GAME_SIZES` matrix duplicated canonical game-size dimensions/BP/model limits | ✅ Resolved by deriving simulation configs from `game-size-canonical.ts` + `gameSizeDefaults` |
+| `scripts/run-very-large-game.ts` | VERY_LARGE constants duplicated canonical dimensions/limits/trigger values | ✅ Resolved by sourcing config from `CANONICAL_GAME_SIZES`, `gameSizeDefaults`, and `getEndGameTriggerTurn(...)` |
+| `src/lib/mest-tactics/viewer/battle-report-viewer.html` | Battlefield max-dimension heuristic could misclassify canonical 24×24 `SMALL` reports as `VERY_SMALL` | ✅ Resolved by exact canonical dimension-key mapping (`18x24`, `24x24`, `36x36`, `48x48`, `48x72`) |
+| `scripts/run-battles/configs/ai-stress-test.ts`, `convergence-3side.ts`, `trinity.ts`, `trinity-4side.ts` | Multi-side presets repeated substantial side-assembly boilerplate patterns | ✅ Resolved via generic preset builder in `configs/shared.ts:createPresetBattleConfig(...)` + `PresetSideTemplate[]` side descriptors (including `aiCount` and instrumentation-grade overrides) |
+| `scripts/ai-battle/core/BattleOrchestrator.ts` import graph | Relative imports had drifted (`scripts/src/...` resolution), leaving the orchestrator module non-loadable | ✅ Resolved by correcting import paths and verifying module importability via `node --import tsx` |
+| `src/data/item_classifications.json` vs item pools (`equipment.json` etc.) | Class dictionary missed `Vehicle` while equipment used class `Vehicle`, creating canonical classification drift | ✅ Resolved by adding `Vehicle` mapping and re-bundling `src/lib/data.ts` |
+| `src/data/item_classifications.json`, `src/data/keyword_descriptions.json`, `src/data/tech_level.json` | Metadata tables had been integrity-tested but not consumed in runtime decision paths, creating a docs/test-only maintenance surface | ✅ Resolved by introducing `utils/canonical-metadata.ts` and wiring canonical reads into `profile-generator.ts`, `trait-parser.ts`, and `tech-level-filter.ts` |
 | `src/lib/mest-tactics/battlefield/terrain/TerrainElement.ts` | Generic OVR-003 keys (`building`, `wall`, `rocky`) duplicated semantic mapping with canonical terrain names (`Small Building`, `Short Wall`, `Small Rocks`) and caused lookup drift | ✅ Resolved with canonical-name normalization mapping + `TerrainElement.test.ts` |
+| `src/lib/mest-tactics/actions/combat-actions.ts` (`executeIndirectAttack`) | Multiple pre-check branches returned near-identical failure payload structures, creating a duplicated maintenance surface for indirect validation reasons | ✅ Resolved by consolidating to a shared `buildIndirectFailure(...)` helper |
+| `docs/qsr/04-combat/04.04-indirect.md` vs `src/guides/docs/rules-indirect.md` | Parallel implementation-status summaries duplicated indirect state and could drift when only one file was updated | ✅ Reduced by removing the guide-level implementation status table and deferring status truth to `docs/qsr/04-combat/04.04-indirect.md` |
+| `src/lib/mest-tactics/engine/GameManager.ts` (`executeMove`, `executeRally`, `executeIndirectAttack`, `refreshForCharacter`) | Mission-side membership lookup and friendly-side checker derivation were duplicated across action-entry paths | ✅ Resolved by centralizing into `getMissionSideForCharacter()` and `getFriendlySideChecker()` helpers |
+| `src/lib/mest-tactics/ai/core/UtilityScorer.ts` | Duplicate `isRangedWeapon`/`isMeleeWeapon` class members and invalid const reassignment created warning noise and duplicated logic surfaces | ✅ Resolved by removing duplicate members and making `waitTacticalBonus` mutable where adjusted |
+| `src/lib/mest-tactics/ai/stratagems/AIStratagems.ts` | `getStratagemDescription` used duplicate `balanced` keys for different dimensions, causing overwrite ambiguity | ✅ Resolved with type-scoped description maps (`tactical`/`strategic`/`aggression`) |
+| `src/lib/mest-tactics/traits/combat-traits.ts` | Trait helpers read invalid `profile.finalAttributes` uppercase-key paths (`SIZ`, `FOR`, `STR`), duplicating attribute source assumptions and risking zeroed calculations | ✅ Resolved by normalizing to `Character.finalAttributes`/`attributes` lowercase reads in Stun/Awkward/Brawn helpers |
+| `src/guides/docs/rules-general-terms.md` | `Physicality`/`Durability` owner pointers included `rules-characters-and-attributes.md`, which does not define those derived terms | ✅ Resolved by assigning owner pointers to canonical `MEST.Tactics.QSR.txt` Common Terminology (lines 496-507); trait docs remain secondary references |
+| `src/guides/docs/rules-general-terms.md` | Canonical General Terms coverage omitted `Scrum`, `Outnumbers`, `Agility`, `Core Damage`, and `Melee Range` linkage, creating index-level terminology drift against QSR lines 496-531 | ✅ Resolved by adding missing term rows and canonical-linked ownership mappings |
+| `src/lib/mest-tactics/mission/mission-engine.ts`, `src/lib/mest-tactics/missions/mission-runtime.ts`, `src/lib/mest-tactics/missions/mission-registry.ts` | Legacy compatibility layers duplicated mission-runtime-adapter responsibility and were not used by active runtime paths | ✅ Resolved by removing legacy modules and legacy-only tests; mission runtime authority remains `mission-runtime-adapter.ts` |
+| `scripts/run-battles/battle-runner.ts` | Imported non-existent/unused `missions/mission-engine` path, preserving stale compatibility assumption | ✅ Resolved by removing dead import |
 
 These files are useful as clause catalogs but should not be treated as full behavioral coverage proof without runtime-backed assertions.
 
@@ -118,20 +148,21 @@ These files are useful as clause catalogs but should not be treated as full beha
 
 **Assessment:** No code duplication. Test files are feature-scoped suites for different capabilities (Movement/Cover-Seeking vs. ROF/Suppression/Firelane).
 
-### Legacy Modules (Identified, Not Removed)
+### Legacy Modules (Removed)
 
-| Module | Status | Notes |
-|--------|--------|-------|
-| `mission-engine/` | On disk | Mentioned in traceability.md as compatibility layer |
-| `mission-runtime/` | On disk | Mentioned in traceability.md as compatibility layer |
-
-**Recommendation:** Review for removal after QSR validation complete.
+| Module/File | Status | Notes |
+|-------------|--------|-------|
+| `src/lib/mest-tactics/mission/mission-engine.ts` | ✅ Removed | Legacy compatibility layer, unused by active runtime |
+| `src/lib/mest-tactics/missions/mission-runtime.ts` | ✅ Removed | Legacy runtime wrapper, unused by active runtime |
+| `src/lib/mest-tactics/missions/mission-registry.ts` | ✅ Removed | Duplicate mission lookup APIs; unused internally |
+| `src/lib/mest-tactics/mission/mission-engine.test.ts` | ✅ Removed | Legacy-only test for removed compatibility layer |
+| `src/lib/mest-tactics/mission/mission-runtime.test.ts` | ✅ Removed | Legacy-only test for removed compatibility layer |
 
 ---
 
 ## Test Redundancy Assessment
 
-**Total:** 121 test files, 1,324 tests (100% pass)
+**Total:** 148 test files, 2,381 tests (100% pass)
 
 **Assessment:** No overlapping test coverage identified. Test files are:
 - **Feature-scoped** (e.g., `UtilityScorer.R3.test.ts`, `UtilityScorer.ROF.test.ts`)
@@ -178,207 +209,27 @@ docs/
 
 ## Next Steps
 
-### Immediate (P0 Clause Tracking)
-
-1. **Create tracking files for remaining P0 rules:**
-   - `docs/qsr/04-combat/04.01-close-combat.md` (~25 clauses)
-   - `docs/qsr/04-combat/04.02-range-combat.md` (~25 clauses)
-   - `docs/qsr/04-combat/04.03-damage.md` (~20 clauses)
-   - `docs/qsr/05-missions/05.01-elimination.md` (~15 clauses)
-   - `docs/qsr/06-ai/06.01-decision-rules.md` (~20 clauses)
-
-2. **Map code-to-clause implementation** for all tracked rules
-
-3. **Map tests-to-clauses** for verification coverage
-
-### Short-Term (Stage 2)
-
-4. **Audit canonical JSON files** (14 files) against QSR definitions
-
-5. **Begin redundancy consolidation** in codebase (legacy modules)
-
-6. **Update AI to leverage combos** (Focus + Detect, etc.)
+1. Continue tightening `Not Started`/`Not Audited` source inventories as audits complete.
+2. Continue reducing duplicated tracker-history prose while keeping single-source status ownership.
+3. Raise targeted coverage in lower-coverage P1 support modules (`GameManager.ts`, `LOSOperations.ts`, `move-validator.ts`) with behavior-backed tests.
 
 ---
 
-## Metrics
+## Current Baseline
 
-| Metric | Before | After (Stage 1) | Change |
-|--------|--------|-----------------|--------|
-| Implementation docs | 6 | 3 | -50% |
-| Audit docs | 20 | 16 | -20% |
-| QSR clause tracking | 4 files (46 clauses) | 9 files (173 clauses) | +276% |
-| Total .md files | 60 | 53 | -12% |
-| Test coverage mapped | 0% | 52% | +52% |
-| New test files | 0 | 1 (focus-detect-combo) | +1 |
+- Test suite baseline: `npx vitest run` → **148 files, 2381 tests passing**.
+- Coverage baseline: `npx vitest run --coverage` → **148 files, 2381 tests passing**.
+- Master status source: `docs/qsr/00-index.md`.
+- P1 runtime tracker: `docs/qsr/P1_RULES_STATUS.md`.
 
 ---
 
-## Stage 1 Status (Complete 2026-03-03)
+## Open Redundancy Flags
 
-**All P0 clause tracking complete:**
-- ✅ 9 rules tracked (173 clauses)
-- ✅ 7 redundant docs archived
-- ✅ Test-to-clause mapping created (52% coverage)
-- ✅ Focus + Detect combo tests added (5 passing)
-
-**See:** `STAGE_1_COMPLETION_REPORT.md` for full details.
+No high-confidence code-level redundancy flags are currently open.
 
 ---
 
-## Stage 2 Status (Complete)
+## Historical Notes
 
-**Verification Phase:**
-- ✅ Wait maintenance verified (OVR-001) - 6 tests added
-- ✅ Hide Visibility×3 rule verified (QSR 852.1) - 5 tests added
-- ✅ Hide Mutual Exposure verified (QSR 850.1-850.3) - 6 tests added
-- ✅ Hide Voluntary/Forced Removal verified (QSR 851.1-851.3) - 12 tests added
-- ✅ Hide Status Effects verified (QSR 847.1-847.4) - 16 tests added
-- ✅ Hide Initiative Start verified (QSR 849.1-849.2) - 15 tests added
-- ✅ Focus + Detect AI prioritization implemented - 1 test added
-
-**Test Suite:** 2,012 of 2,014 passing (2 pre-existing failures)
-
----
-
-## Stage 3: Core Rules Completion (COMPLETE ✅)
-
-**Priority Decision:** Complete non-AI QSR rules BEFORE AI enhancements.
-
-**Rationale:** AI behavior depends on correct core mechanics. Implementing AI decision-making for incomplete rules creates technical debt.
-
-### Stage 3 Tasks - ALL COMPLETE
-
-1. **Close Combat Bonus Actions (6 clauses) - ✅ COMPLETE**
-   - ✅ Push-back - Implemented and verified
-   - ✅ Pull-back - Implemented and verified
-   - ✅ Reversal - Implemented and verified
-   - ✅ Diamond-Star (◆✷) - +1 cascade unless base-contact - VERIFIED
-   - ✅ Arrow (➔) - +1 cascade per Physicality difference - VERIFIED
-   - Tests: `bonus-actions-verification.test.ts` (14 tests passing)
-
-2. **Range Combat Modifiers (6 clauses) - ✅ COMPLETE**
-   - ✅ Leaning modifier (SM.8) - -1b if self or target leaning - VERIFIED
-   - ✅ Blind modifier (SM.9) - -1w for Blind Indirect Attack - VERIFIED
-   - ✅ Hard Cover modifier (SM.10) - -1w to Damage Test - VERIFIED
-   - ✅ Intervening Cover (SM.5) - -1m if target has Intervening Cover - VERIFIED
-   - ✅ Obscured (SM.6) - -1m per 1/2/5/10 models in LOF - VERIFIED
-   - Tests: `ranged-combat-modifiers.test.ts` (15 tests), `ranged-combat-cover-verification.test.ts` (21 tests)
-
-3. **Charge Qualifications (5 clauses) - ✅ COMPLETE**
-   - ✅ CB.2: Move action cost ≥1 AP - VERIFIED
-   - ✅ CB.3: Start Free, ≥1 base-diameter away - VERIFIED
-   - ✅ CB.4: Direct movement, no direction changes - VERIFIED
-   - ✅ CB.5: Target not Hidden, within LOS, ≤Visibility×3 - VERIFIED
-   - ✅ CB.6: Over Clear terrain - VERIFIED
-   - Tests: `charge-verification.test.ts` (21 tests passing)
-
-4. **Multiple Weapons (6 clauses) - ✅ COMPLETE**
-   - ✅ MW.1: All hands must be same type (Melee/Ranged) - VERIFIED
-   - ✅ MW.2: +1m per additional Melee weapon - VERIFIED
-   - ✅ MW.3: Improvised weapons don't count - VERIFIED
-   - ✅ MW.4: Conceal/Discrete exempt from sculpt requirement - VERIFIED
-   - ✅ MW.5: -1m penalty for same weapon consecutive Actions - VERIFIED
-   - ✅ MW.6: Interrupted must use same weapon for defense - VERIFIED
-   - Tests: `multiple-weapons-verification.test.ts` (26 tests passing)
-
-**Total:** 20 clauses verified, 77 tests added
-
----
-
-## Stage 4: Remaining Work
-
-- **Non-AI P0 Rules:** None (100% complete!) 🎉
-- **P1 Rules:** None (100% complete!) 🎉
-- **AI Decision Rules:** 5 clauses remaining (all tactical improvements)
-- **P2 Rules:** Optional (Advanced/Edge rules - not started)
-
-**Total:** 5 AI tactical clauses + ~100 P2 clauses remaining
-
-### P0 Non-AI Rules Achievement
-
-**130/130 clauses (100%) - ALL VERIFIED!**
-
-| Category | Complete | Partial | Missing | Status |
-|----------|----------|---------|---------|--------|
-| Focus | 4 | 0 | 0 | ✅ |
-| Detect | 10 | 0 | 0 | ✅ |
-| Wait | 11 | 0 | 0 | ✅ |
-| Hide | 21 | 0 | 0 | ✅ |
-| Close Combat | 25 | 0 | 0 | ✅ |
-| Range Combat | 21 | 0 | 0 | ✅ |
-| Damage | 21 | 0 | 0 | ✅ |
-| Elimination | 17 | 0 | 0 | ✅ |
-| **Non-AI Total** | **130** | **0** | **0** | **✅ 100%** |
-
-### P0 AI Decision Rules Status
-
-**24/43 clauses (56%) - Core mechanics complete**
-
-| Category | Complete | Partial | Missing | Status |
-|----------|----------|---------|---------|--------|
-| AI Decision Rules | 24 | 13 | 0 | ⚠️ 56% |
-
-**Recent Implementation:**
-- ✅ **FC.5: Focus + Concentrate + Detect** - AI now prioritizes this combo when AP available
-- ✅ **MR.5: Morale Forfeit Logic** - AI forfeit decision logic documented and tested
-
-### P1 Rules Tracking - COMPLETE! 🎉
-
-**5 files created, 106 clauses identified, 106 verified:**
-
-| Category | Clauses | Status | Tests |
-|----------|---------|--------|-------|
-| Visibility | 14 | ✅ Verified | 24 |
-| Cover | 16 | ✅ Verified | 21 |
-| Initiative & Activation | 21 | ✅ Verified | 28 |
-| Movement | 18 | ✅ Verified | 30 |
-| Morale | 37 | ✅ Verified | 44 |
-| **P1 Total** | **106** | **106 Verified (100%)** | **147** |
-
-**🎉 P1 RULES 100% COMPLETE! 🎉**
-
-All P1 Core Gameplay rules have been verified with comprehensive tests!
-
-### AI Architecture Status
-
-The AI system **architecture** documented in `rules-ai.md` is **COMPLETE**:
-
-| Component | File | Status |
-|-----------|------|--------|
-| **Behavior Trees** | `ai/core/BehaviorTree.ts` | ✅ |
-| **HFSM** | `ai/core/HierarchicalFSM.ts` | ✅ |
-| **GOAP** | `ai/tactical/GOAP.ts` | ✅ |
-| **Utility Scoring** | `ai/core/UtilityScorer.ts` | ✅ |
-| **Tactical Patterns** | `ai/tactical/TacticalPatterns.ts` | ✅ |
-| **Stratagems (27 combos)** | `ai/stratagems/AIStratagems.ts` | ✅ |
-| **SideAI (Strategic)** | `ai/strategic/SideAI.ts` | ✅ |
-| **AssemblyAI (Tactical)** | `ai/strategic/AssemblyAI.ts` | ✅ |
-| **CharacterAI** | `ai/core/CharacterAI.ts` | ✅ |
-
-**Note:** While the AI *architecture* is complete, specific QSR rule-based AI decision rules are 51% complete (22/43 clauses).
-
----
-
-## Stage 5: AI Enhancements (Deferred)
-
-- Focus + Concentrate + Detect planning
-- Morale forfeit logic
-- Tactical valuation improvements
-- Combo prioritization
-
----
-
-**Report Updated:** 2026-03-03 (P0 Non-AI 100% Complete, P1 100% Complete, AI Core 56% Complete) 🎉🎉🎉
-
-**Overall Project Status:**
-- **P0 Non-AI Rules:** 130/130 (100%) ✅
-- **P1 Rules:** 106/106 (100%) ✅
-- **P0 AI Decision Rules:** 24/43 (56%) ⚠️
-- **Total Complete:** 260/~283 (92%) ✅
-
-**Core Mechanics: COMPLETE!** 🎉
-- All Non-AI P0 rules: 100% verified
-- All P1 Core Gameplay rules: 100% verified
-- AI core mechanics: Complete (Focus + Detect, Focus + Concentrate + Detect, Morale Forfeit)
-- Remaining: AI tactical improvements only (5 clauses)
+Detailed Stage 1-5 historical narratives were removed from this file to prevent stale status duplication. Historical progress remains available in git history and archived reports.

@@ -238,17 +238,22 @@
         const sides = new Set(frames.map(f => f.side));
         const models = new Set(frames.map(f => f.model));
         
-        // Determine game size from battlefield
-        const bfSize = auditData.battlefield?.widthMu || 24;
-        let gameSize = 'CUSTOM';
-        if (bfSize <= 24) gameSize = 'VERY_SMALL';
-        else if (bfSize <= 36) gameSize = 'SMALL';
-        else if (bfSize <= 48) gameSize = 'MEDIUM';
-        else if (bfSize <= 60) gameSize = 'LARGE';
-        else gameSize = 'VERY_LARGE';
+        // Determine canonical game size from exact battlefield dimensions.
+        // Width/height may be swapped by export orientation, so normalize by min/max.
+        const bfWidth = Math.round(auditData.battlefield?.widthMu || 24);
+        const bfHeight = Math.round(auditData.battlefield?.heightMu || bfWidth);
+        const dimKey = `${Math.min(bfWidth, bfHeight)}x${Math.max(bfWidth, bfHeight)}`;
+        const gameSizeByDimensions = {
+          '18x24': 'VERY_SMALL',
+          '24x24': 'SMALL',
+          '36x36': 'MEDIUM',
+          '48x48': 'LARGE',
+          '48x72': 'VERY_LARGE',
+        };
+        const gameSize = gameSizeByDimensions[dimKey] || 'CUSTOM';
         
         document.getElementById('stats').innerHTML = `
-          <span>📏 <strong>${bfSize}×${auditData.battlefield?.heightMu || bfSize} MU</strong></span>
+          <span>📏 <strong>${bfWidth}×${bfHeight} MU</strong></span>
           <span>🎮 <strong>${gameSize}</strong></span>
           <span>👥 <strong>${sides.size} sides</strong></span>
           <span>♟️ <strong>${models.size} models</strong></span>

@@ -38,6 +38,7 @@
     "@types/d3-delaunay": "^6.0.4",
     "@types/pathfinding": "^0.1.0",
     "@types/three": "^0.182.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.19",

@@ -596,20 +596,23 @@ export function getStratagemDescription(
   type: 'tactical' | 'strategic' | 'aggression',
   value: string
 ): string {
-  const descriptions: Record<string, string> = {
-    // Tactical Doctrine
-    melee_centric: 'Prefers close combat. Closes distance aggressively to engage in melee.',
-    ranged_centric: 'Prefers ranged attacks. Maintains optimal distance from enemies.',
-    combined_arms: 'Balanced approach. Adapts combat style to the situation.',
-    // Strategic Priority
-    mission_focus: 'Prioritizes mission objectives over enemy eliminations.',
-    annihilation: 'Prioritizes eliminating enemy models above all else.',
-    balanced: 'Balances mission objectives with enemy elimination.',
-    // Aggression Level
-    defensive: 'Cautious and defensive. Values survival and waits for opportunities.',
-    balanced: 'Moderate risk-taking. Balanced approach to aggression.',
-    aggressive: 'High risk-taking. Pushes advantages and sacrifices safety for victory.',
+  const descriptionsByType: Record<'tactical' | 'strategic' | 'aggression', Record<string, string>> = {
+    tactical: {
+      melee_centric: 'Prefers close combat. Closes distance aggressively to engage in melee.',
+      ranged_centric: 'Prefers ranged attacks. Maintains optimal distance from enemies.',
+      combined_arms: 'Balanced approach. Adapts combat style to the situation.',
+    },
+    strategic: {
+      mission_focus: 'Prioritizes mission objectives over enemy eliminations.',
+      annihilation: 'Prioritizes eliminating enemy models above all else.',
+      balanced: 'Balances mission objectives with enemy elimination.',
+    },
+    aggression: {
+      defensive: 'Cautious and defensive. Values survival and waits for opportunities.',
+      balanced: 'Moderate risk-taking. Balanced approach to aggression.',
+      aggressive: 'High risk-taking. Pushes advantages and sacrifices safety for victory.',
+    },
   };
 
-  return descriptions[value] || '';
+  return descriptionsByType[type]?.[value] || '';
 }

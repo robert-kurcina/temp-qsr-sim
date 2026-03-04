@@ -2,7 +2,7 @@
 
 **Purpose:** Track executable coverage progress for Priority 1 core rules files (Visibility, Cover, Initiative/Activation, Movement, Morale).
 
-**Last Updated:** 2026-03-03
+**Last Updated:** 2026-03-04
 **Status:** ⚠️ **IN PROGRESS (P1 runtime partials closed; source audits still ongoing)**
 
 ---
@@ -98,16 +98,32 @@ Open P1-labeled partial clause IDs:
 
 ## Validation Baseline
 
-- Full suite passes locally: **147 files, 2364 tests passing** (`npx vitest run`).
-- Known pre-existing non-blocking warnings remain in AI files:
-  - `UtilityScorer.ts` constant reassignment warning (`waitTacticalBonus`)
-  - `UtilityScorer.ts` duplicate member warnings
-  - `AIStratagems.ts` duplicate object key warning
+- Full suite passes locally: **148 files, 2381 tests passing** (`npx vitest run`).
+- Full suite with coverage passes locally: **148 files, 2381 tests passing** (`npx vitest run --coverage`).
+- Previously observed AI-module warning sources were removed:
+  - `UtilityScorer.ts` (`waitTacticalBonus` reassignment + duplicate weapon-classifier members)
+  - `AIStratagems.ts` (duplicate `balanced` description key)
+
+---
+
+## P1 Module Coverage Snapshot (Vitest V8)
+
+| Module | Stmts | Branch | Funcs | Lines |
+|--------|-------|--------|-------|-------|
+| `src/lib/mest-tactics/utils/visibility.ts` | 79.22 | 55.28 | 100.00 | 81.82 |
+| `src/lib/mest-tactics/battlefield/los/LOSOperations.ts` | 64.17 | 53.28 | 84.00 | 65.29 |
+| `src/lib/mest-tactics/battlefield/spatial/spatial-rules.ts` | 92.81 | 89.08 | 96.00 | 92.99 |
+| `src/lib/mest-tactics/actions/activation.ts` | 96.15 | 84.85 | 85.71 | 97.96 |
+| `src/lib/mest-tactics/actions/move-action.ts` | 84.54 | 74.25 | 100.00 | 85.56 |
+| `src/lib/mest-tactics/status/morale.ts` | 81.90 | 72.16 | 88.89 | 89.01 |
+| `src/lib/mest-tactics/engine/GameManager.ts` | 58.31 | 48.97 | 61.09 | 60.36 |
+| `src/lib/mest-tactics/battlefield/terrain/move-validator.ts` | 65.13 | 60.95 | 64.29 | 67.65 |
+| `src/lib/mest-tactics/battlefield/validation/action-context.ts` | 79.20 | 74.75 | 78.57 | 85.59 |
 
 ---
 
 ## Next Priority 1 Steps
 
-1. Install/enable Vitest coverage provider and publish module-level line/branch/function metrics for P1 rule modules (currently blocked in this environment: `ENOTFOUND registry.npmjs.org` while installing `@vitest/coverage-v8`).
-2. Continue tightening `Not Started`/`Not Audited` inventories as source audits advance.
-3. Expand source-audit coverage outside the 5 tracked P1 files.
+1. Continue tightening `Not Started`/`Not Audited` inventories as source audits advance.
+2. Expand source-audit coverage outside the 5 tracked P1 files.
+3. Raise targeted coverage in lower-coverage P1 support modules (`GameManager.ts`, `LOSOperations.ts`, `move-validator.ts`) with behavior-backed tests.

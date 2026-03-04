@@ -38,51 +38,54 @@ export function resolveVisibilityConfig(input: Partial<VisibilityConfig> = {}): 
   };
 }
 
+export function evaluateWeaponOrExpressionMu(attacker: Character, rawOr: Item['or']): number | null {
+  if (rawOr === undefined || rawOr === null) return null;
+  if (typeof rawOr === 'number' && Number.isFinite(rawOr)) return rawOr;
+  if (typeof rawOr !== 'string') return null;
+
+  const trimmed = rawOr.trim();
+  if (!trimmed || trimmed === '-') return null;
+
+  if (/^OR\(/i.test(trimmed)) {
+    const parsed = parseOptimalRange(trimmed, attacker.finalAttributes);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+
+  const compact = trimmed.replace(/\s+/g, '');
+  if (/^[+\-]?\d+(\.\d+)?$/.test(compact)) {
+    return Number(compact);
+  }
+
+  const expressionMatch = compact.match(/[A-Za-z]+|\d+(?:\.\d+)?|[+\-]/g);
+  if (!expressionMatch) return null;
+
+  let total = 0;
+  let op: '+' | '-' = '+';
+  for (const token of expressionMatch) {
+    if (token === '+' || token === '-') {
+      op = token;
+      continue;
+    }
+    const lower = token.toLowerCase();
+    let value = Number.NaN;
+    if (/^\d+(\.\d+)?$/.test(token)) {
+      value = Number(token);
+    } else {
+      value = resolveAttributeToken(attacker, lower);
+    }
+    if (!Number.isFinite(value)) continue;
+    total = op === '+' ? total + value : total - value;
+  }
+  return total;
+}
+
 export function parseWeaponOptimalRangeMu(attacker: Character, weapon?: Item): number {
   if (!weapon) return 0;
   const rawOr = weapon.or;
 
-  if (typeof rawOr === 'number' && Number.isFinite(rawOr)) {
-    return Math.max(0, rawOr);
-  }
-
-  if (typeof rawOr === 'string') {
-    const trimmed = rawOr.trim();
-    if (!trimmed || trimmed === '-') {
-      return inferThrownRange(attacker, weapon);
-    }
-
-    if (/^OR\(/i.test(trimmed)) {
-      const parsed = parseOptimalRange(trimmed, attacker.finalAttributes);
-      if (parsed > 0) return parsed;
-    }
-
-    const compact = trimmed.replace(/\s+/g, '');
-    if (/^[+\-]?\d+(\.\d+)?$/.test(compact)) {
-      return Math.max(0, Number(compact));
-    }
-
-    const expressionMatch = compact.match(/[A-Za-z]+|\d+(?:\.\d+)?|[+\-]/g);
-    if (expressionMatch) {
-      let total = 0;
-      let op: '+' | '-' = '+';
-      for (const token of expressionMatch) {
-        if (token === '+' || token === '-') {
-          op = token;
-          continue;
-        }
-        const lower = token.toLowerCase();
-        let value = Number.NaN;
-        if (/^\d+(\.\d+)?$/.test(token)) {
-          value = Number(token);
-        } else {
-          value = resolveAttributeToken(attacker, lower);
-        }
-        if (!Number.isFinite(value)) continue;
-        total = op === '+' ? total + value : total - value;
-      }
-      if (total > 0) return total;
-    }
+  const explicitOrMu = evaluateWeaponOrExpressionMu(attacker, rawOr);
+  if (explicitOrMu !== null && explicitOrMu > 0) {
+    return explicitOrMu;
   }
 
   return inferThrownRange(attacker, weapon);

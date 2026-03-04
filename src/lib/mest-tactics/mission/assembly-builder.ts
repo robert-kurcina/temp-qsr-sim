@@ -3,6 +3,7 @@ import { Assembly } from '../core/Assembly';
 import { Character } from '../core/Character';
 import { Profile } from '../core/Profile';
 import { createProfiles } from '../utils/profile-generator';
+import { CANONICAL_GAME_SIZE_ORDER, CANONICAL_GAME_SIZES } from './game-size-canonical';
 import {
   filterItemsByTechLevel,
   TechLevelConfig,
@@ -52,44 +53,20 @@ export interface BuildProfileOptions {
   techLevelConfig?: TechLevelConfig;
 }
 
-// Game size defaults (QSR standard)
-export const gameSizeDefaults: Record<GameSize, Required<AssemblyConfig>> = {
-  [GameSize.VERY_SMALL]: {
-    bpLimitMin: 125,
-    bpLimitMax: 250,
-    characterLimitMin: 2,
-    characterLimitMax: 4,
-    gameSize: GameSize.VERY_SMALL,
-  },
-  [GameSize.SMALL]: {
-    bpLimitMin: 250,
-    bpLimitMax: 500,
-    characterLimitMin: 4,
-    characterLimitMax: 8,
-    gameSize: GameSize.SMALL,
-  },
-  [GameSize.MEDIUM]: {
-    bpLimitMin: 500,
-    bpLimitMax: 750,
-    characterLimitMin: 6,
-    characterLimitMax: 12,
-    gameSize: GameSize.MEDIUM,
-  },
-  [GameSize.LARGE]: {
-    bpLimitMin: 750,
-    bpLimitMax: 1000,
-    characterLimitMin: 8,
-    characterLimitMax: 12,
-    gameSize: GameSize.LARGE,
-  },
-  [GameSize.VERY_LARGE]: {
-    bpLimitMin: 1000,
-    bpLimitMax: 1250,
-    characterLimitMin: 10,
-    characterLimitMax: 20,
-    gameSize: GameSize.VERY_LARGE,
-  },
-};
+// Game size defaults (canonical: src/data/game_sizes.json)
+export const gameSizeDefaults: Record<GameSize, Required<AssemblyConfig>> = CANONICAL_GAME_SIZE_ORDER
+  .reduce((defaults, gameSizeKey) => {
+    const row = CANONICAL_GAME_SIZES[gameSizeKey];
+    const gameSize = gameSizeKey as GameSize;
+    defaults[gameSize] = {
+      bpLimitMin: row.minBP,
+      bpLimitMax: row.maxBP,
+      characterLimitMin: row.minModels,
+      characterLimitMax: row.maxModels,
+      gameSize,
+    };
+    return defaults;
+  }, {} as Record<GameSize, Required<AssemblyConfig>>);
 
 function resolveAssemblyConfig(config: AssemblyConfig): Required<AssemblyConfig> {
   const requestedConfig = config;

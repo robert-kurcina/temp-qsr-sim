@@ -1757,8 +1757,8 @@ export function calculateStunEffect(
 
   // Target's Durability is higher of SIZ or FOR
   const defenderDurability = Math.max(
-    defender.profile?.finalAttributes?.SIZ ?? 0,
-    defender.profile?.finalAttributes?.FOR ?? 0
+    defender.finalAttributes.siz ?? defender.attributes.siz ?? 0,
+    defender.finalAttributes.for ?? defender.attributes.for ?? 0
   );
 
   // Stun Test passes if stunSuccesses > durability
@@ -1895,8 +1895,8 @@ export function checkAwkwardChargeDelay(
 
   // Defender acquires Delay token if attacker receives Charge bonus
   // and defender is no smaller than (attacker SIZ - 3)
-  const defenderSiz = defender.profile?.finalAttributes?.SIZ ?? 0;
-  const attackerSiz = attacker.profile?.finalAttributes?.SIZ ?? 0;
+  const defenderSiz = defender.finalAttributes.siz ?? defender.attributes.siz ?? 0;
+  const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 0;
   const sizThreshold = attackerSiz - 3;
 
   if (defenderSiz >= sizThreshold) {
@@ -2067,7 +2067,7 @@ export function getBrawnStrBonus(character: Character, isCloseCombatDamageTest: 
 }
 
 export function getEffectiveStr(character: Character, isCloseCombatDamageTest: boolean): number {
-  const baseStr = character.profile?.finalAttributes?.STR ?? 0;
+  const baseStr = character.finalAttributes.str ?? character.attributes.str ?? 0;
   const brawnBonus = getBrawnStrBonus(character, isCloseCombatDamageTest);
   return baseStr + brawnBonus;
 }

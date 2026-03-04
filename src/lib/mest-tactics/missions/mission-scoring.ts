@@ -1,10 +1,12 @@
 import { Character } from '../core/Character';
 import { MissionSide } from '../mission/MissionSide';
 import { getEndGameTriggerTurn } from '../engine/end-game-trigger';
+import {
+  determineCanonicalGameSize,
+  type CanonicalGameSize
+} from '../mission/game-size-canonical';
 
-export type GameSize = 'VERY_SMALL' | 'SMALL' | 'MEDIUM' | 'LARGE' | 'VERY_LARGE';
-
-const GAME_SIZE_ORDER: GameSize[] = ['VERY_SMALL', 'SMALL', 'MEDIUM', 'LARGE', 'VERY_LARGE'];
+export type GameSize = CanonicalGameSize;
 
 export interface MissionSideStatus {
   sideId: string;
@@ -118,15 +120,7 @@ export function buildMissionSideStatus(side: MissionSide): MissionSideStatus {
 }
 
 export function determineGameSize(bpPerSide: number, modelsPerSide: number): GameSize {
-  const bpSize = bpPerSide >= 1000 ? 'VERY_LARGE' : bpPerSide >= 750 ? 'LARGE' : bpPerSide >= 500 ? 'MEDIUM' : bpPerSide >= 250 ? 'SMALL' : 'VERY_SMALL';
-  const modelSize = modelsPerSide >= 10 ? 'VERY_LARGE' : modelsPerSide >= 8 ? 'LARGE' : modelsPerSide >= 6 ? 'MEDIUM' : modelsPerSide >= 4 ? 'SMALL' : 'VERY_SMALL';
-  if (bpSize === modelSize) return bpSize;
-  const bpIndex = GAME_SIZE_ORDER.indexOf(bpSize);
-  const modelIndex = GAME_SIZE_ORDER.indexOf(modelSize);
-  if (modelIndex > bpIndex) {
-    return GAME_SIZE_ORDER[Math.min(GAME_SIZE_ORDER.length - 1, bpIndex + 1)];
-  }
-  return GAME_SIZE_ORDER[Math.max(0, bpIndex - 1)];
+  return determineCanonicalGameSize(bpPerSide, modelsPerSide);
 }
 
 export function resolveEndGameState(input: EndGameStateInput): EndGameStateResult {

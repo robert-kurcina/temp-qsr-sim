@@ -5,6 +5,7 @@ import { Item } from '../core/Item';
 import { Profile } from '../core/Profile';
 import { processTraits, formatTrait } from '../traits/trait-parser';
 import { isItemAvailableAtTechLevel, filterItemsByTechLevel } from './tech-level-filter';
+import { getCanonicalItemClassification } from './canonical-metadata';
 
 const itemDataMapping: {
     [key: string]: keyof typeof gameData | null
@@ -155,6 +156,12 @@ export function createProfiles(
             const dataKey = itemDataMapping[key] as keyof typeof gameData;
             if (dataKey && dataKey in gameData && itemName in gameData[dataKey]) {
                 const item = { name: itemName, ...gameData[dataKey][itemName] } as Item;
+                const canonicalClass = getCanonicalItemClassification(item.class);
+                if (canonicalClass) {
+                    item.classification = item.classification || canonicalClass.itemClass;
+                    item.type = item.type || canonicalClass.itemType || '';
+                }
+                const itemClassification = item.classification || '';
                 items.push(item);
                 itemTraits.push(...(item.traits || []));
                 totalBp += item.bp;
@@ -186,11 +193,11 @@ export function createProfiles(
                     if (handTrait.includes('2H')) totalHands += 2;
                 }
 
-                if (item.classification === 'Melee') {
+                if (itemClassification === 'Melee') {
                     meleeBp.push(item.bp);
-                } else if (item.classification === 'Firearm' || item.classification === 'Ordnance') {
+                } else if (itemClassification === 'Firearm' || itemClassification === 'Ordnance') {
                     rangedBp.push(item.bp);
-                } else if (item.classification === 'Equipment' || (item.classification && item.classification.includes('Shield'))) {
+                } else if (itemClassification === 'Equipment' || itemClassification.includes('Shield')) {
                     equipmentBp.push(item.bp);
                 }
 
@@ -224,7 +231,7 @@ export function createProfiles(
 
     const adjustedItemBp = [...adjustedMeleeBp, ...adjustedRangedBp, ...adjustedEquipmentBp].reduce((a, b) => a + b, 0);
     const nonDiscountedItemBp = items
-        .filter(i => i.classification !== 'Melee' && i.classification !== 'Firearm' && i.classification !== 'Ordnance' && i.classification !== 'Equipment' && !(i.classification && i.classification.includes('Shield')))
+        .filter(i => i.classification !== 'Melee' && i.classification !== 'Firearm' && i.classification !== 'Ordnance' && i.classification !== 'Equipment' && !i.classification.includes('Shield'))
         .reduce((acc, item) => acc + item.bp, 0);
 
     const adjustedBp = primaryArchetypeData.bp + nonDiscountedItemBp + adjustedItemBp;

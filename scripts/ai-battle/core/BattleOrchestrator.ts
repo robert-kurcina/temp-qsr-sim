@@ -9,15 +9,16 @@
  *   const report = await orchestrator.runBattle();
  */
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { Battlefield } from '../../src/lib/mest-tactics/battlefield/Battlefield';
-import { placeTerrain } from '../../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
-import { SvgRenderer } from '../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
-import { AIBattleRunner } from './AIBattleRunner';
-import { writeBattlefieldSvg } from './reporting/BattleReportWriter';
-import type { GameConfig, BattleReport } from '../shared/BattleReportTypes';
-import type { GameSize } from '../../src/lib/mest-tactics/mission/assembly-builder';
+import { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
+import { placeTerrain } from '../../../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { SvgRenderer } from '../../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
+import { AIBattleRunner } from '../AIBattleRunner';
+import { writeBattlefieldSvg } from '../reporting/BattleReportWriter';
+import type { GameConfig, BattleReport } from '../../shared/BattleReportTypes';
+import type { GameSize } from '../../../src/lib/mest-tactics/mission/assembly-builder';
+import { GAME_SIZE_CONFIG } from '../AIBattleConfig';
 
 export interface BattleOrchestratorConfig {
   missionId: string;
@@ -64,8 +65,9 @@ export class BattleOrchestrator {
     svgPath: string;
   }> {
     const { gameSize, densityRatio } = this.config;
-    const battlefieldWidth = this.getBattlefieldWidth(gameSize);
-    const battlefieldHeight = this.getBattlefieldHeight(gameSize);
+    const sizeConfig = GAME_SIZE_CONFIG[gameSize];
+    const battlefieldWidth = sizeConfig.battlefieldWidth;
+    const battlefieldHeight = sizeConfig.battlefieldHeight;
     const terrainSize = Math.max(battlefieldWidth, battlefieldHeight);
 
     // Generate terrain
@@ -138,32 +140,28 @@ export class BattleOrchestrator {
   }
 
   private buildGameConfig(): GameConfig {
-    const battlefieldWidth = this.getBattlefieldWidth(this.config.gameSize);
-    const battlefieldHeight = this.getBattlefieldHeight(this.config.gameSize);
-    const maxTurns = this.getMaxTurns(this.config.gameSize);
-    const bpPerSide = this.getBPPerSide(this.config.gameSize);
-    const modelCount = this.getModelCount(this.config.gameSize);
+    const sizeConfig = GAME_SIZE_CONFIG[this.config.gameSize];
 
     return {
       missionId: this.config.missionId,
       missionName: this.getMissionName(this.config.missionId),
       gameSize: this.config.gameSize,
-      battlefieldWidth,
-      battlefieldHeight,
-      maxTurns,
-      endGameTurn: this.getEndGameTriggerTurn(this.config.gameSize),
+      battlefieldWidth: sizeConfig.battlefieldWidth,
+      battlefieldHeight: sizeConfig.battlefieldHeight,
+      maxTurns: sizeConfig.maxTurns,
+      endGameTurn: sizeConfig.endGameTurn,
       sides: [
         {
           name: 'Alpha',
-          bp: bpPerSide[1],
-          modelCount: modelCount[1],
+          bp: sizeConfig.bpPerSide[1],
+          modelCount: sizeConfig.modelsPerSide[1],
           tacticalDoctrine: 'Operative' as any,
           assemblyName: 'Alpha Assembly',
         },
         {
           name: 'Bravo',
-          bp: bpPerSide[1],
-          modelCount: modelCount[1],
+          bp: sizeConfig.bpPerSide[1],
+          modelCount: sizeConfig.modelsPerSide[1],
           tacticalDoctrine: 'Operative' as any,
           assemblyName: 'Bravo Assembly',
         },
@@ -179,72 +177,6 @@ export class BattleOrchestrator {
       audit: this.config.audit,
       viewer: this.config.viewer,
     };
-  }
-
-  private getBattlefieldWidth(gameSize: GameSize): number {
-    const sizes: Record<GameSize, number> = {
-      VERY_SMALL: 18,
-      SMALL: 24,
-      MEDIUM: 36,
-      LARGE: 48,
-      VERY_LARGE: 72,
-    };
-    return sizes[gameSize] || 24;
-  }
-
-  private getBattlefieldHeight(gameSize: GameSize): number {
-    const sizes: Record<GameSize, number> = {
-      VERY_SMALL: 24,
-      SMALL: 24,
-      MEDIUM: 36,
-      LARGE: 48,
-      VERY_LARGE: 48,
-    };
-    return sizes[gameSize] || 24;
-  }
-
-  private getMaxTurns(gameSize: GameSize): number {
-    const turns: Record<GameSize, number> = {
-      VERY_SMALL: 6,
-      SMALL: 8,
-      MEDIUM: 10,
-      LARGE: 12,
-      VERY_LARGE: 15,
-    };
-    return turns[gameSize] || 6;
-  }
-
-  private getBPPerSide(gameSize: GameSize): number[] {
-    const bp: Record<GameSize, number[]> = {
-      VERY_SMALL: [125, 200, 250],
-      SMALL: [250, 375, 500],
-      MEDIUM: [500, 625, 750],
-      LARGE: [750, 875, 1000],
-      VERY_LARGE: [1000, 1125, 1250],
-    };
-    return bp[gameSize] || [125, 200, 250];
-  }
-
-  private getModelCount(gameSize: GameSize): number[] {
-    const counts: Record<GameSize, number[]> = {
-      VERY_SMALL: [2, 3, 4],
-      SMALL: [4, 6, 8],
-      MEDIUM: [6, 9, 12],
-      LARGE: [8, 10, 12],
-      VERY_LARGE: [10, 15, 20],
-    };
-    return counts[gameSize] || [2, 3, 4];
-  }
-
-  private getEndGameTriggerTurn(gameSize: GameSize): number {
-    const triggers: Record<GameSize, number> = {
-      VERY_SMALL: 3,
-      SMALL: 4,
-      MEDIUM: 6,
-      LARGE: 8,
-      VERY_LARGE: 10,
-    };
-    return triggers[gameSize] || 4;
   }
 
   private getMissionName(missionId: string): string {

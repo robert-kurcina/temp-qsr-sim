@@ -15,14 +15,13 @@ import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/rendering/SvgRe
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { exportBattlefield } from '../src/lib/mest-tactics/battlefield/BattlefieldExporter';
+import { CANONICAL_GAME_SIZE_ORDER, CANONICAL_GAME_SIZES } from '../src/lib/mest-tactics/mission/game-size-canonical';
 
-const GAME_SIZES = [
-  { name: 'VERY_SMALL', width: 18, height: 24 },
-  { name: 'SMALL', width: 24, height: 24 },
-  { name: 'MEDIUM', width: 36, height: 36 },
-  { name: 'LARGE', width: 48, height: 48 },
-  { name: 'VERY_LARGE', width: 72, height: 48 },
-];
+const GAME_SIZES = CANONICAL_GAME_SIZE_ORDER.map((name) => ({
+  name,
+  width: CANONICAL_GAME_SIZES[name].battlefieldWidthMU,
+  height: CANONICAL_GAME_SIZES[name].battlefieldHeightMU,
+}));
 
 const DENSITIES = [50];  // Just test 50% density
 const BATTLES_PER_CONFIG = 1;

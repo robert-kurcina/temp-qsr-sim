@@ -78,21 +78,30 @@ export class AIBattleSetup {
 
   private async selectGameSize(): Promise<GameSize> {
     console.log('\n📏 Select Game Size:\n');
-    console.log('  1. VERY_SMALL  (2-4 models/side, 125-250 BP, 18×24 MU)');
-    console.log('  2. SMALL       (4-8 models/side, 250-500 BP, 24×24 MU)');
-    console.log('  3. MEDIUM      (6-12 models/side, 500-750 BP, 36×36 MU)');
-    console.log('  4. LARGE       (8-12 models/side, 750-1000 BP, 48×48 MU)');
-    console.log('  5. VERY_LARGE  (10-20 models/side, 1000-1250 BP, 72×48 MU)');
+    const orderedSizes: GameSize[] = [
+      GameSize.VERY_SMALL,
+      GameSize.SMALL,
+      GameSize.MEDIUM,
+      GameSize.LARGE,
+      GameSize.VERY_LARGE,
+    ];
+
+    orderedSizes.forEach((size, index) => {
+      const config = GAME_SIZE_CONFIG[size];
+      const modelMin = config.modelsPerSide[0];
+      const modelMax = config.modelsPerSide[2];
+      const bpMin = config.bpPerSide[0];
+      const bpMax = config.bpPerSide[2];
+      console.log(
+        `  ${index + 1}. ${size.padEnd(11)} (${modelMin}-${modelMax} models/side, ${bpMin}-${bpMax} BP, ${config.battlefieldWidth}×${config.battlefieldHeight} MU)`
+      );
+    });
 
     const choice = await this.question('\nGame size [1-5] (default: 5): ');
 
-    const sizes: Record<string, GameSize> = {
-      '1': GameSize.VERY_SMALL,
-      '2': GameSize.SMALL,
-      '3': GameSize.MEDIUM,
-      '4': GameSize.LARGE,
-      '5': GameSize.VERY_LARGE,
-    };
+    const sizes: Record<string, GameSize> = Object.fromEntries(
+      orderedSizes.map((size, index) => [String(index + 1), size])
+    );
 
     return sizes[choice] || GameSize.VERY_LARGE;
   }

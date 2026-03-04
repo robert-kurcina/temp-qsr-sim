@@ -1,5 +1,5 @@
 import { Character } from '../core/Character';
-import { resolveTest, TestParticipant, TestDice, DiceType, TestResult } from '../subroutines/dice-roller';
+import { resolveTest, TestParticipant, TestDice, DiceType, TestResult, mergeTestDice } from '../subroutines/dice-roller';
 import { Item } from '../core/Item';
 import { TestContext } from '../utils/TestContext';
 import { getCoverageBonus, getStunLevel, calculateStunEffect, hasCharge, hasImpale, getImpalePenalty, hasGrit, applyProtective } from '../traits/combat-traits';
@@ -63,6 +63,7 @@ export function resolveDamage(
     hitTestResult: TestResult, // Assumes a successful hit
     context: TestContext = {},
     cleaveExtraWounds: number = 0, // Extra wounds from Cleave 2+ trait
+    options: { unopposed?: boolean } = {}
 ): DamageResolution {
 
     let woundsFromStun = 0;
@@ -141,9 +142,19 @@ export function resolveDamage(
             attributeValue: defender.finalAttributes.for,
             bonusDice: context.hasHardCover ? { [DiceType.Wild]: 1 } : undefined,
         };
+
+        if (options.unopposed) {
+            // QSR Indirect AoE (non-Frag): unopposed damage test.
+            if (context.hasHardCover) {
+                damageTestAttacker.penaltyDice = mergeTestDice(
+                    damageTestAttacker.penaltyDice,
+                    { [DiceType.Wild]: 1 }
+                );
+            }
+        }
         
         // Impale: Distracted targets are penalized -1 Base die Defender Damage Test plus 1 per 3 Impact remaining
-        if (hasImpale(attacker) && defender.state.isDistracted) {
+        if (!options.unopposed && hasImpale(attacker) && defender.state.isDistracted) {
             const impalePenalty = getImpalePenalty(defender, true, totalImpact);
             if (impalePenalty > 0) {
                 damageTestDefender.penaltyDice = { 
@@ -153,7 +164,10 @@ export function resolveDamage(
             }
         }
 
-        damageTestResult = resolveTest(damageTestAttacker, damageTestDefender);
+        const opposingParticipant: TestParticipant = options.unopposed
+            ? { attributeValue: 0, bonusDice: {}, penaltyDice: {}, isSystemPlayer: true }
+            : damageTestDefender;
+        damageTestResult = resolveTest(damageTestAttacker, opposingParticipant);
 
         // 3. Calculate Wounds from the roll (if it passed)
         if (damageTestResult.pass) {

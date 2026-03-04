@@ -6586,6 +6586,11 @@ export const gameData = {
       "wae_class": "Equipment",
       "item_type": "Grenade",
       "item_class": "Thrown"
+    },
+    "Vehicle": {
+      "wae_class": "Equipment",
+      "item_type": "Vehicle",
+      "item_class": "Vehicle"
     }
   },
   "item_tech_window": [

@@ -27,6 +27,7 @@ export interface ScatterResult {
   blockingBarrier?: {
     type: 'wall' | 'obstacle' | 'building' | 'vehicle';
     position: Position;
+    normal?: { x: number; y: number };
   };
   /** Whether roll-down occurred */
   rollDownOccurred: boolean;
@@ -53,6 +54,8 @@ export interface ScatterOptions {
   bias?: 'biased' | 'unbiased';
   /** Optional weights for directions 1-6 */
   weights?: number[];
+  /** Optional desired heading angle for biased scatter "1" axis (degrees) */
+  desiredDirectionAngle?: number;
 }
 
 /**
@@ -108,18 +111,37 @@ export function rollScatterDirection(
 ): number {
   const rng = options.rng ?? Math.random;
   const bias = options.bias ?? 'unbiased';
-  const weights = options.weights ?? (bias === 'biased' ? [2, 1, 1, 1, 1, 1] : [1, 1, 1, 1, 1, 1]);
-  const normalized = weights.length === 6 ? weights : [1, 1, 1, 1, 1, 1];
-  const total = normalized.reduce((sum, value) => sum + Math.max(0, value), 0);
-  if (total <= 0) {
-    return Math.floor(rng() * 6) + 1;
+  const explicitWeights = options.weights;
+
+  // Preserve custom weighted behavior when callers provide explicit weights.
+  if (explicitWeights && explicitWeights.length === 6) {
+    const total = explicitWeights.reduce((sum, value) => sum + Math.max(0, value), 0);
+    if (total > 0) {
+      let weightedRoll = rng() * total;
+      for (let i = 0; i < 6; i++) {
+        weightedRoll -= Math.max(0, explicitWeights[i]);
+        if (weightedRoll <= 0) return i + 1;
+      }
+      return 6;
+    }
   }
-  let roll = rng() * total;
-  for (let i = 0; i < 6; i++) {
-    roll -= Math.max(0, normalized[i]);
-    if (roll <= 0) return i + 1;
+
+  const rollD6 = (): number => Math.floor(rng() * 6) + 1;
+
+  if (bias === 'biased') {
+    // Canonical biased scatter reroll flow:
+    // re-roll the first 3/4/5, then re-roll the next 4.
+    let roll = rollD6();
+    if (roll === 3 || roll === 4 || roll === 5) {
+      roll = rollD6();
+      if (roll === 4) {
+        roll = rollD6();
+      }
+    }
+    return roll;
   }
-  return 6;
+
+  return rollD6();
 }
 
 /**
@@ -181,6 +203,7 @@ export function checkBarrierCollision(
   barrier?: {
     type: 'wall' | 'obstacle' | 'building' | 'vehicle';
     position: Position;
+    normal?: { x: number; y: number };
   };
 } {
   // Simple line tracing for collision
@@ -212,11 +235,25 @@ export function checkBarrierCollision(
     });
     
     if (isBlocking) {
+      const blockingFeature = battlefield.terrain.find(feature => {
+        if (!feature.bounds) return false;
+        const bounds = feature.bounds;
+        return (
+          checkPos.x >= bounds.x &&
+          checkPos.x <= bounds.x + bounds.width &&
+          checkPos.y >= bounds.y &&
+          checkPos.y <= bounds.y + bounds.height &&
+          (feature.type === 'Blocking' || feature.type === 'Impassable')
+        );
+      });
       return {
         collided: true,
         barrier: {
           type: 'wall',
           position: checkPos,
+          normal: blockingFeature?.bounds
+            ? inferBarrierNormal(blockingFeature.bounds, checkPos, startPosition, endPosition)
+            : undefined,
         },
       };
     }
@@ -235,17 +272,55 @@ export function checkBarrierCollision(
     });
     
     if (isObstacle) {
+      const obstacleFeature = battlefield.terrain.find(feature => {
+        if (!feature.bounds) return false;
+        const bounds = feature.bounds;
+        return (
+          checkPos.x >= bounds.x &&
+          checkPos.x <= bounds.x + bounds.width &&
+          checkPos.y >= bounds.y &&
+          checkPos.y <= bounds.y + bounds.height &&
+          (feature.type === 'Rough' || feature.type === 'Difficult')
+        );
+      });
       return {
         collided: true,
         barrier: {
           type: 'obstacle',
           position: checkPos,
+          normal: obstacleFeature?.bounds
+            ? inferBarrierNormal(obstacleFeature.bounds, checkPos, startPosition, endPosition)
+            : undefined,
         },
       };
     }
   }
 
   return { collided: false };
+}
+
+function inferBarrierNormal(
+  bounds: { x: number; y: number; width: number; height: number },
+  contact: Position,
+  start: Position,
+  end: Position
+): { x: number; y: number } {
+  const distances = [
+    { value: Math.abs(contact.x - bounds.x), normal: { x: -1, y: 0 } }, // left
+    { value: Math.abs(bounds.x + bounds.width - contact.x), normal: { x: 1, y: 0 } }, // right
+    { value: Math.abs(contact.y - bounds.y), normal: { x: 0, y: -1 } }, // top
+    { value: Math.abs(bounds.y + bounds.height - contact.y), normal: { x: 0, y: 1 } }, // bottom
+  ];
+  distances.sort((a, b) => a.value - b.value);
+  if (distances.length > 1 && Math.abs(distances[0].value - distances[1].value) < 1e-6) {
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      return { x: dx >= 0 ? -1 : 1, y: 0 };
+    }
+    return { x: 0, y: dy >= 0 ? -1 : 1 };
+  }
+  return distances[0].normal;
 }
 
 /**
@@ -385,6 +460,7 @@ export function resolveScatter(options: ScatterOptions): ScatterResult {
     rng,
     bias,
     weights,
+    desiredDirectionAngle,
   } = options;
 
   // Calculate scatter distance (minimum 1 MU)
@@ -392,13 +468,19 @@ export function resolveScatter(options: ScatterOptions): ScatterResult {
 
   // Calculate LOF angle from attacker to target
   const lofAngle = calculateLOFAngle(attackerPosition, targetPosition);
+  const resolvedBias = bias ?? 'unbiased';
+  const hasDesiredDirection = Number.isFinite(desiredDirectionAngle);
+  const referenceAngle =
+    resolvedBias === 'biased' && hasDesiredDirection
+      ? ((desiredDirectionAngle! % 360) + 360) % 360
+      : lofAngle;
 
   // Determine scatter direction from d6 roll
   const roll = directionRoll ?? rollScatterDirection({ rng, bias, weights });
   const directionInfo = determineScatterDirectionFromRoll(roll);
   
   // Calculate final scatter angle (LOF angle + scatter direction offset)
-  let scatterAngle = lofAngle + directionInfo.angleDegrees;
+  let scatterAngle = referenceAngle + directionInfo.angleDegrees;
   scatterAngle = ((scatterAngle % 360) + 360) % 360; // Normalize to 0-360
 
   // Calculate initial scattered position
@@ -408,24 +490,57 @@ export function resolveScatter(options: ScatterOptions): ScatterResult {
   const collision = checkBarrierCollision(targetPosition, scatteredPosition, battlefield);
 
   let blocked = false;
+  let stoppedByBarrier = false;
   let blockingBarrier: ScatterResult['blockingBarrier'] = undefined;
   let finalPosition = scatteredPosition;
 
   if (collision.collided && collision.barrier) {
     blocked = true;
     blockingBarrier = collision.barrier;
-    finalPosition = collision.barrier.position;
+
+    if (collision.barrier.type === 'wall' && collision.barrier.normal) {
+      const distanceToCollision = Math.hypot(
+        collision.barrier.position.x - targetPosition.x,
+        collision.barrier.position.y - targetPosition.y
+      );
+      const remainingDistance = Math.max(0, scatterDistance - distanceToCollision);
+
+      if (remainingDistance > 0) {
+        const reflectedPosition = reflectOffWall(
+          targetPosition,
+          collision.barrier.position,
+          collision.barrier.normal,
+          remainingDistance
+        );
+        const secondCollision = checkBarrierCollision(collision.barrier.position, reflectedPosition, battlefield);
+        if (secondCollision.collided && secondCollision.barrier) {
+          finalPosition = secondCollision.barrier.position;
+          blockingBarrier = secondCollision.barrier;
+          stoppedByBarrier = true;
+        } else {
+          finalPosition = reflectedPosition;
+        }
+      } else {
+        finalPosition = collision.barrier.position;
+        stoppedByBarrier = true;
+      }
+    } else {
+      finalPosition = collision.barrier.position;
+      stoppedByBarrier = true;
+    }
   }
 
   // Check for roll-down (gravity)
-  const rollDown = calculateRollDown(scatteredPosition, finalPosition, battlefield, misses);
+  const rollDown = calculateChainedRollDown(targetPosition, finalPosition, battlefield, misses);
   
-  if (rollDown.occurred && !blocked) {
+  if (rollDown.occurred && !stoppedByBarrier) {
     // Check for barrier after roll-down
     const rollDownCollision = checkBarrierCollision(finalPosition, rollDown.finalPosition, battlefield);
     
     if (rollDownCollision.collided && rollDownCollision.barrier) {
       finalPosition = rollDownCollision.barrier.position;
+      blocked = true;
+      blockingBarrier = rollDownCollision.barrier;
     } else {
       finalPosition = rollDown.finalPosition;
     }
@@ -450,6 +565,46 @@ export function resolveScatter(options: ScatterOptions): ScatterResult {
     rollDownOccurred: rollDown.occurred,
     rollDownDistance: rollDown.rollDownDistance,
     misses,
+  };
+}
+
+function calculateChainedRollDown(
+  startPosition: Position,
+  endPosition: Position,
+  battlefield: Battlefield,
+  misses: number,
+  maxIterations = 6
+): {
+  rollDownDistance: number;
+  finalPosition: Position;
+  occurred: boolean;
+} {
+  let currentStart = startPosition;
+  let currentEnd = endPosition;
+  let totalRollDownDistance = 0;
+  let occurred = false;
+
+  for (let i = 0; i < maxIterations; i++) {
+    const step = calculateRollDown(currentStart, currentEnd, battlefield, misses);
+    if (!step.occurred || step.rollDownDistance <= 0) {
+      break;
+    }
+    occurred = true;
+    totalRollDownDistance += step.rollDownDistance;
+
+    const delta = Math.hypot(step.finalPosition.x - currentEnd.x, step.finalPosition.y - currentEnd.y);
+    if (delta <= 1e-6) {
+      break;
+    }
+
+    currentStart = currentEnd;
+    currentEnd = step.finalPosition;
+  }
+
+  return {
+    rollDownDistance: totalRollDownDistance,
+    finalPosition: currentEnd,
+    occurred,
   };
 }
 

@@ -10,6 +10,7 @@ import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/rendering/SvgRe
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
 import { exportBattlefield as exportBattlefieldToJson } from '../src/lib/mest-tactics/battlefield/BattlefieldExporter';
 import { TerrainPlacementResult } from '../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { CANONICAL_GAME_SIZES, type CanonicalGameSize } from '../src/lib/mest-tactics/mission/game-size-canonical';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -23,7 +24,7 @@ export interface TerrainDensities {
 }
 
 export interface BattlefieldGenerationConfig {
-  gameSize: 'VERY_SMALL' | 'SMALL' | 'MEDIUM' | 'LARGE' | 'VERY_LARGE';
+  gameSize: CanonicalGameSize;
   terrainDensities: TerrainDensities;
   seed?: number;
 }
@@ -44,14 +45,6 @@ export interface BattlefieldGenerationResult {
   error?: string;
 }
 
-const GAME_SIZE_DIMENSIONS: Record<string, { width: number; height: number }> = {
-  VERY_SMALL: { width: 18, height: 24 },
-  SMALL: { width: 24, height: 24 },
-  MEDIUM: { width: 36, height: 36 },
-  LARGE: { width: 48, height: 48 },
-  VERY_LARGE: { width: 72, height: 48 },
-};
-
 const OUTPUT_DIR = join(process.cwd(), 'generated', 'battlefields');
 
 /**
@@ -67,7 +60,11 @@ export async function generateBattlefield(
     mkdirSync(OUTPUT_DIR, { recursive: true });
 
     // Get battlefield dimensions
-    const dimensions = GAME_SIZE_DIMENSIONS[config.gameSize] || { width: 24, height: 24 };
+    const canonicalSize = CANONICAL_GAME_SIZES[config.gameSize] ?? CANONICAL_GAME_SIZES.SMALL;
+    const dimensions = {
+      width: canonicalSize.battlefieldWidthMU,
+      height: canonicalSize.battlefieldHeightMU,
+    };
 
     // Convert terrain densities to BattlefieldFactory weights
     // Densities are 0-100, weights are relative importance

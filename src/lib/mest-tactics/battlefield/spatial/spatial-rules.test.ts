@@ -25,6 +25,26 @@ describe('SpatialRules', () => {
     expect(SpatialRules.isEngaged(panicked, calm)).toBe(false);
   });
 
+  it('should provide LOF for in-bounds targets even when LOS is blocked', () => {
+    const battlefield = new Battlefield(12, 12);
+    const wall = new TerrainElement('Medium Wall', { x: 6, y: 6 });
+    battlefield.addTerrain(wall.toFeature());
+
+    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 3 };
+    const defender = { id: 'defender', position: { x: 10, y: 6 }, baseDiameter: 2, siz: 3 };
+
+    expect(SpatialRules.hasLineOfFire(battlefield, attacker, defender)).toBe(true);
+    expect(SpatialRules.hasLineOfSight(battlefield, attacker, defender)).toBe(false);
+  });
+
+  it('should reject LOF when target location is out of battlefield bounds', () => {
+    const battlefield = new Battlefield(12, 12);
+    const attacker = { id: 'attacker', position: { x: 2, y: 6 }, baseDiameter: 2, siz: 3 };
+    const defender = { id: 'defender', position: { x: 13, y: 6 }, baseDiameter: 2, siz: 3 };
+
+    expect(SpatialRules.hasLineOfFire(battlefield, attacker, defender)).toBe(false);
+  });
+
   it('should block LOS when defender overlaps cover terrain for smaller models', () => {
     const battlefield = new Battlefield(12, 12);
     const tree = new TerrainElement('Tree', { x: 6, y: 6 });

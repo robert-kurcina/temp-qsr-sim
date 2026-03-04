@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { BattlefieldFactory } from './BattlefieldFactory';
 import { gameData } from '../../../data';
 
+const COVERAGE_HEAVY_TIMEOUT_MS = 30000;
+
 describe('BattlefieldFactory coverage', () => {
   let originalRandom: () => number;
 
@@ -45,7 +47,7 @@ describe('BattlefieldFactory coverage', () => {
     const targetArea = width * height * 0.5;
 
     expect(coveredArea).toBeGreaterThanOrEqual(targetArea);
-  });
+  }, COVERAGE_HEAVY_TIMEOUT_MS);
 
   it('should compute openness stats for multiple density ratios', () => {
     const width = 24;
@@ -82,5 +84,5 @@ describe('BattlefieldFactory coverage', () => {
       expect(stats?.longLosPairRatio).toBeGreaterThanOrEqual(0);
       expect(stats?.longLosPairRatio).toBeLessThanOrEqual(1);
     }
-  });
+  }, COVERAGE_HEAVY_TIMEOUT_MS);
 });
