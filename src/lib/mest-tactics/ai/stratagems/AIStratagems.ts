@@ -144,7 +144,7 @@ export function getDoctrineComponents(doctrine: TacticalDoctrine): {
     planning: keysDoctrines.includes(doctrine)
       ? PlanningPriority.KeysToVictory
       : aggressionDoctrines.includes(doctrine)
-        ? PlanningPriority.Aggressive
+        ? PlanningPriority.Aggression
         : PlanningPriority.Balanced,
     aggression: aggressiveDoctrines.includes(doctrine)
       ? AggressionLevel.Aggressive
@@ -250,7 +250,7 @@ export function calculateStratagemModifiers(doctrine: TacticalDoctrine): Stratag
       modifiers.objectiveValue = 1.5;
       modifiers.eliminationValue = 0.8;
       break;
-    case PlanningPriority.Aggressive:
+    case PlanningPriority.Aggression:
       modifiers.objectiveValue = 0.7;
       modifiers.eliminationValue = 1.5;
       modifiers.pushAdvantage = true;
@@ -313,7 +313,7 @@ export function deriveDoctrineAIPressure(
     caution += 0.08;
   }
 
-  if (components.planning === PlanningPriority.Aggressive) {
+  if (components.planning === PlanningPriority.Aggression) {
     aggression += 0.08;
     caution -= 0.05;
   } else if (components.planning === PlanningPriority.KeysToVictory) {
@@ -542,7 +542,7 @@ export function validateStratagems(stratagems: AIStratagems): {
 
   if (
     components.engagement === EngagementStyle.Ranged &&
-    components.planning === PlanningPriority.Aggressive &&
+    components.planning === PlanningPriority.Aggression &&
     components.aggression === AggressionLevel.Aggressive
   ) {
     warnings.push('Aggressive Ranged Annihilation may overextend');

@@ -373,11 +373,11 @@ generated/
 ```bash
 # Game sizes (Width × Height in MU)
 # Note: Rectangular battlefields display with longer dimension left-to-right
-VERY_SMALL   # 18×24 MU, 3-5 models, 250-350 BP (rectangular)
-SMALL        # 24×24 MU, 4-6 models, 400-500 BP (square)
-MEDIUM       # 36×36 MU, 6-8 models, 600-800 BP (square)
-LARGE        # 48×48 MU, 8-10 models, 900-1100 BP (square)
-VERY_LARGE   # 72×48 MU, 16-18 models, 1400-1600 BP (rectangular)
+VERY_SMALL   # 18×24 MU, 2-4 models, 125-250 BP (rectangular)
+SMALL        # 24×24 MU, 4-8 models, 250-500 BP (square)
+MEDIUM       # 36×36 MU, 6-12 models, 500-750 BP (square)
+LARGE        # 48×48 MU, 8-16 models, 750-1000 BP (square)
+VERY_LARGE   # 72×48 MU, 10-20 models, 1000-1250 BP (rectangular)
 
 # Density (0-100%)
 0    # No terrain
