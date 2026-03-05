@@ -1,17 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { MoveValidator, createMoveValidator } from './move-validator';
-import { Battlefield } from '../Battlefield';
+import { Battlefield } from '../';
 import { ModelRegistry } from '../spatial/model-registry';
 import { EngagementManager } from '../spatial/engagement-manager';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Position } from './Position';
+import { Character, Profile } from '../../core';
+import { Position } from '../Position';
 import { TerrainType } from './Terrain';
 
 const createCharacter = (id: string, siz: number = 3): Character => {
   const profile: Profile = {
     name: id,
-    archetype: 'Average',
+    archetype: 'Average' as any,
     attributes: {
       cca: 2, rca: 2, ref: 2, int: 2, pow: 2,
       str: 2, for: 2, mov: 2, siz,

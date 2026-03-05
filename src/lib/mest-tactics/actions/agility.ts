@@ -451,7 +451,7 @@ export function leaning(
   }
 
   // Check for cover in base-contact (simplified check)
-  const nearbyTerrain = battlefield.getTerrainElements().filter(t => {
+  const nearbyTerrain = (battlefield as any).terrain?.filter((t: any) => {
     const dist = Math.sqrt(
       Math.pow(t.position.x - position_.x, 2) +
       Math.pow(t.position.y - position_.y, 2)
@@ -459,10 +459,10 @@ export function leaning(
     return dist <= 0.5; // Within base-contact
   });
 
-  const hasCover = nearbyTerrain.some(t =>
+  const hasCover = nearbyTerrain?.some((t: any) =>
     t.terrainType === 'Wall' ||
     t.terrainType === 'Obstacle' ||
-    t.name.includes('Cover')
+    t.name?.includes('Cover')
   );
 
   if (!hasCover) {

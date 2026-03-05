@@ -21,8 +21,8 @@ describe('makeCloseCombatAttack', () => {
     attackerWeapon = { name: "Sword, Broad", ...melee_weapons["Sword, Broad"] };
     const defenderArmor = { name: "Armor, Medium Mail", ...armors["Armor, Medium Mail"] };
 
-    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] };
-    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderArmor] };
+    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] } as any;
+    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderArmor] } as any;
 
     attacker = new Character(attackerProfile);
     attacker.finalAttributes = attacker.attributes;
@@ -33,15 +33,15 @@ describe('makeCloseCombatAttack', () => {
 
   it('should force a successful hit and create a damage resolution', () => {
     const context = { forceHit: true };
-    const attackerHitRolls: number[] = [1,1];
-    const defenderHitRolls: number[] = [1,1];
+    const attackerHitRolls: any[] = [1,1];
+    const defenderHitRolls: any[] = [1,1];
     const attackerDamageRolls = [5, 5];
     const defenderDamageRolls = [1, 1];
 
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context, attackerHitRolls, defenderHitRolls, attackerDamageRolls, defenderDamageRolls);
     expect(result.hit).toBe(true);
     expect(result.damageResolution).toBeDefined();
-    expect(result.damageResolution.woundsAdded).toBeGreaterThanOrEqual(0);
+    expect(result.damageResolution?.woundsAdded ?? 0).toBeGreaterThanOrEqual(0);
   });
 
   it('should pass the hit test and create a damage resolution', () => {
@@ -61,8 +61,8 @@ describe('makeCloseCombatAttack', () => {
     const context = {};
     const attackerHitRolls = [1, 1];
     const defenderHitRolls = [6, 6];
-    const attackerDamageRolls: number[] = [];
-    const defenderDamageRolls: number[] = [];
+    const attackerDamageRolls: any[] = [];
+    const defenderDamageRolls: any[] = [];
 
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context, attackerHitRolls, defenderHitRolls, attackerDamageRolls, defenderDamageRolls);
     expect(result.hit).toBe(false);
@@ -74,8 +74,8 @@ describe('makeCloseCombatAttack', () => {
     const context = { isCharge: true };
     const attackerHitRolls = [1, 1, 1];
     const defenderHitRolls = [1, 1];
-    const attackerDamageRolls: number[] = [];
-    const defenderDamageRolls: number[] = [];
+    const attackerDamageRolls: any[] = [];
+    const defenderDamageRolls: any[] = [];
 
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context, attackerHitRolls, defenderHitRolls, attackerDamageRolls, defenderDamageRolls);
     expect(result.hitTestResult.p1Result.carryOverDice[DiceType.Modifier] || 0).toBe(0);
@@ -85,8 +85,8 @@ describe('makeCloseCombatAttack', () => {
     const context = { isDefending: true };
     const attackerHitRolls = [1, 1];
     const defenderHitRolls = [1, 1, 1];
-    const attackerDamageRolls: number[] = [];
-    const defenderDamageRolls: number[] = [];
+    const attackerDamageRolls: any[] = [];
+    const defenderDamageRolls: any[] = [];
 
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context, attackerHitRolls, defenderHitRolls, attackerDamageRolls, defenderDamageRolls);
     expect(result.hitTestResult.p2Result.carryOverDice[DiceType.Base] || 0).toBe(0);
@@ -94,13 +94,13 @@ describe('makeCloseCombatAttack', () => {
 
   it('should correctly apply impact modifier from assisting models', () => {
     const context = { forceHit: true, assistingModels: 2 };
-    const attackerHitRolls: number[] = [1,1];
-    const defenderHitRolls: number[] = [1,1];
+    const attackerHitRolls: any[] = [1,1];
+    const defenderHitRolls: any[] = [1,1];
     const attackerDamageRolls = [1, 1, 1, 1];
     const defenderDamageRolls = [1, 1];
 
     const result = makeCloseCombatAttack(attacker, defender, attackerWeapon, context, attackerHitRolls, defenderHitRolls, attackerDamageRolls, defenderDamageRolls);
-    expect(result.damageResolution.impact).toBe(3);
+    expect(result.damageResolution?.impact).toBe(3);
   });
 
   it('should apply Lumbering penalty as base dice when cornered', () => {
@@ -116,7 +116,7 @@ describe('makeCloseCombatAttack', () => {
     attacker.state.statusTokens.Confused = 1;
     defender.state.statusTokens.Held = 1;
 
-    resolveCloseCombatHitTest(attacker, defender, attackerWeapon, {});
+    resolveCloseCombatHitTest(attacker, defender, attackerWeapon, {} as any);
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const hitEventData = diceEvents[0].data as any;

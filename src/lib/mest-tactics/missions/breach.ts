@@ -1,4 +1,4 @@
-import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from '../mission-definitions';
+import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from './mission-definitions';
 
 /**
  * QAI Mission 20: Breach
@@ -111,7 +111,7 @@ export const BreachMission: MissionDefinition = {
       markerCount: 4,
       switchTurns: [4, 8],
     },
-  },
+  } as any,
 };
 
 /**

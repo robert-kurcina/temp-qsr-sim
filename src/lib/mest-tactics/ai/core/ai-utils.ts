@@ -1,4 +1,4 @@
-import { Character } from '../core/Character';
+import { Character } from '../../core/Character';
 import { AIControllerConfig } from './AIController';
 import { canAttackKOdTarget } from '../../status/kod-rules';
 

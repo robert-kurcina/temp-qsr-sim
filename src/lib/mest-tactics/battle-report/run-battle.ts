@@ -167,9 +167,9 @@ class BattleRunner {
   createAssembly(name: string, count: number, archetypeName: string): any {
     const profiles = [];
     for (let i = 0; i < count; i++) {
-      const profile = buildProfile(archetypeName, [], {
+      const profile = buildProfile(archetypeName, {
         name: `${name}-${i + 1}`,
-      });
+      } as any);
       profiles.push(profile);
     }
     const roster = buildAssembly(name, profiles);

@@ -9,9 +9,8 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
+import { Character, Profile } from '../../core';
+import { Battlefield } from '../../battlefield';
 import { ReactEvaluator } from '../tactical/ReactsQSR';
 import { attemptDetect } from '../../status/concealment';
 import { setRoller, resetRoller } from '../../subroutines/dice-roller';
@@ -44,7 +43,7 @@ function makeTestProfile(name: string, ref: number = 3): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,

@@ -3,6 +3,7 @@ import { PointOfInterest, POIType, POIManager, createPOI } from '../mission/poi-
 import { Position } from '../battlefield/Position';
 import {
   calculateZoneControlFractionalVP,
+  calculateAggressionFractionalVP,
   calculateEliminationFractionalVP,
   calculateBottledFractionalVP,
 } from './FractionalScoringUtils';
@@ -30,6 +31,8 @@ export interface TriumvirateMissionState {
   winner?: string;
   /** Reason for ending */
   endReason?: string;
+  /** Commander eliminated tracking (backward compatibility) */
+  commanderEliminated?: Map<string, boolean>;
 }
 
 /**
@@ -471,19 +474,21 @@ export class TriumvirateMissionManager {
 
     // Commander Elimination: +2 VP for eliminating enemy commander
     // Check if any side's commander was eliminated
-    for (const [sideId, eliminated] of this.state.commanderEliminated.entries()) {
-      if (eliminated) {
-        // Find enemy sides and award VP
-        for (const enemyId of this.state.sideIds) {
-          if (enemyId !== sideId) {
-            const current = sideScores[enemyId].keyScores['commander_elimination']?.current ?? 0;
-            sideScores[enemyId].keyScores['commander_elimination'] = {
-              current: current + 2,
-              predicted: current + 2,
-              confidence: 1.0,
-              leadMargin: 2,
-            };
-            sideScores[enemyId].predictedVp += 2;
+    if (this.state.commanderEliminated) {
+      for (const [sideId, eliminated] of this.state.commanderEliminated.entries()) {
+        if (eliminated) {
+          // Find enemy sides and award VP
+          for (const enemyId of this.state.sideIds) {
+            if (enemyId !== sideId) {
+              const current = sideScores[enemyId].keyScores['commander_elimination']?.current ?? 0;
+              sideScores[enemyId].keyScores['commander_elimination'] = {
+                current: current + 2,
+                predicted: current + 2,
+                confidence: 1.0,
+                leadMargin: 2,
+              };
+              sideScores[enemyId].predictedVp += 2;
+            }
           }
         }
       }
@@ -517,7 +522,7 @@ export class TriumvirateMissionManager {
 
     // Encroachment: Fractional VP based on crossing progress
     for (const side of sideStatuses) {
-      const crossed = this.state.encroachment.crossedBySide?.[side.sideId] ?? 0;
+      const crossed = (this.state.encroachment.crossedBySide as any)?.[side.sideId] ?? 0;
       const threshold = Math.ceil(side.startingCount / 2);
       const score = calculateAggressionFractionalVP(side.sideId, crossed, threshold);
 

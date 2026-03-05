@@ -8,16 +8,15 @@ import {
   BonusActionEvaluator,
   StealthEvaluator,
 } from '../tactical/ReactsAndBonusActions';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
+import { Character, Profile } from '../../core';
+import { Battlefield } from '../../battlefield';
 
 function makeTestProfile(name: string): Profile {
   return {
     name,
     archetype: { attributes: { cca: 2, rca: 3, ref: 2, int: 2, pow: 2, str: 2, for: 2, mov: 4, siz: 3 } },
     items: [
-      { name: 'Bow', classification: 'Bow', dmg: 'STR', impact: 0, accuracy: '', traits: [], range: 12 },
+      { name: 'Bow', classification: 'Bow', dmg: 'STR', impact: 0, accuracy: '', traits: [], range: 12 } as any,  // Fixed below
     ],
     totalBp: 30,
     adjustedBp: 0,
@@ -32,7 +31,7 @@ function makeTestProfile(name: string): Profile {
     totalAR: 0,
     finalTraits: [],
     allTraits: [],
-  };
+  } as any;
 }
 
 function makeTestCharacter(name: string): Character {
@@ -81,12 +80,12 @@ describe('ReactEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const result = evaluator.evaluateReacts(
       context.character,
       context.enemies[0],
-      'move',
+      'move' as any,
       aiContext
     );
 
@@ -125,12 +124,12 @@ describe('ReactEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const result = evaluator.evaluateReacts(
       context.character,
       context.enemies[0],
-      'attack',
+      'attack' as any,
       aiContext
     );
     
@@ -166,12 +165,12 @@ describe('ReactEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const result = evaluator.evaluateReacts(
       context.character,
       context.enemies[0],
-      'move',
+      'move' as any,
       aiContext
     );
     
@@ -206,7 +205,7 @@ describe('BonusActionEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     // Test with 2 cascades
     const decision = evaluator.evaluateBonusActions(
@@ -247,7 +246,7 @@ describe('BonusActionEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     // Test with 1 cascade (should be reduced to 0 when distracted)
     const decision = evaluator.evaluateBonusActions(
@@ -292,7 +291,7 @@ describe('StealthEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const decision = evaluator.evaluateHide(aiContext);
     
@@ -329,7 +328,7 @@ describe('StealthEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const decision = evaluator.evaluateHide(aiContext);
     
@@ -366,7 +365,7 @@ describe('StealthEvaluator', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const decision = evaluator.evaluateDetect(aiContext);
     

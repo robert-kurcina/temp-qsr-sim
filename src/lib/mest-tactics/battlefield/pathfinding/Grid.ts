@@ -1,6 +1,6 @@
 import { Cell } from './Cell';
-import { Position } from './Position';
-import { Character } from '../character/Character';
+import { Position } from '../Position';
+import { Character } from '../../core/Character';
 
 export class Grid {
   private cells: Cell[][] = [];

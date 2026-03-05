@@ -1,7 +1,7 @@
 import { Character } from '../core/Character';
 import { Battlefield } from './Battlefield';
 import { Position } from './Position';
-import { SpatialModel } from './spatial-rules';
+import { SpatialModel } from './spatial/spatial-rules';
 import { LOSOperations } from './los/LOSOperations';
 import { getBaseDiameterFromSiz } from './spatial/size-utils';
 

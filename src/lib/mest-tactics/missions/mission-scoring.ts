@@ -28,6 +28,8 @@ export interface AggressionState {
 
 export interface EncroachmentState {
   firstCrossedSideId?: string;
+  // Backward compatibility properties
+  crossedBySide?: string;
 }
 
 export interface MissionScoreInput {
@@ -47,6 +49,16 @@ export interface MissionScoreBreakdown {
   resourceVp: number;
   extraVp: number;
   rp: number;
+  // Backward compatibility: mission-specific VP types
+  assaultVP?: number;
+  markerVP?: number;
+  firstControlVP?: number;
+  dominanceVP?: number;
+  sanctuaryVP?: number;
+  courierVP?: number;
+  collectionVP?: number;
+  poiVP?: number;
+  [key: string]: number | undefined;
 }
 
 export interface MissionScoreResult {
@@ -59,6 +71,8 @@ export interface MissionScoreResult {
   winnerReason: 'vp' | 'rp' | 'initiative-card' | 'mission-immediate' | 'tie';
   tieBreakMethod: 'none' | 'rp' | 'initiative-card';
   suddenDeathApplied?: boolean;
+  // Backward compatibility properties
+  keysToVictory?: Record<string, number>;
 }
 
 export interface EndGameStateInput {
@@ -127,7 +141,7 @@ export function resolveEndGameState(input: EndGameStateInput): EndGameStateResul
   const endDice = input.endDice ?? 0;
   const rollResults = input.rollResults ?? [];
   // QSR-correct: Use game-size-aware trigger turn
-  const thresholdTurn = getEndGameTriggerTurn(input.gameSize);
+  const thresholdTurn = getEndGameTriggerTurn(input.gameSize as any);
 
   let ended = false;
   if (endDice > 0 && rollResults.length > 0) {

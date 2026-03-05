@@ -103,30 +103,30 @@ export function detectGapAlongLine(
     const pos = { x, y };
     
     const terrain = battlefield.getTerrainAt(pos);
-    const isWalkable = isWalkableTerrain(terrain);
+    const isWalkable = isWalkableTerrain(terrain as any);
     
     if (!inGap && !isWalkable) {
       // Entering gap
       inGap = true;
-      gapStart = i > 0 
+      gapStart = i > 0
         ? { x: from.x + stepX * (i - 1), y: from.y + stepY * (i - 1) }
         : from;
       startTerrain = i > 0
-        ? battlefield.getTerrainAt({ x: from.x + stepX * (i - 1), y: from.y + stepY * (i - 1) }).name
+        ? (battlefield.getTerrainAt({ x: from.x + stepX * (i - 1), y: from.y + stepY * (i - 1) }) as any).name
         : 'start';
     } else if (inGap && isWalkable) {
       // Exiting gap
       inGap = false;
       gapEnd = pos;
-      endTerrain = terrain.name;
+      endTerrain = (terrain as any).name;
       break;
     }
   }
-  
+
   // If we ended in a gap, the end position is the target
   if (inGap && gapStart) {
     gapEnd = to;
-    endTerrain = battlefield.getTerrainAt(to).name;
+    endTerrain = (battlefield.getTerrainAt(to) as any).name;
   }
   
   if (!gapStart || !gapEnd) return null;
@@ -166,7 +166,7 @@ function isWalkableTerrain(terrain: TerrainElement | null): boolean {
   // Blocking LOS terrain may create gaps (walls, buildings)
   if (terrain.info.los === 'Blocking') {
     // But some blocking terrain can be stood upon (walls, rocky)
-    const height = getTerrainHeight(terrain.name);
+    const height = getTerrainHeight(terrain.name as any);
     return height > 0; // Can stand on top
   }
   

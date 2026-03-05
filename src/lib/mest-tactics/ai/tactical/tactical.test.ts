@@ -21,9 +21,8 @@ import {
   rolloutWaitReactBranches,
   validateAction,
 } from '../tactical/GOAP';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
+import { Character, Profile } from '../../core';
+import { Battlefield } from '../../battlefield';
 
 function makeTestProfile(name: string): Profile {
   return {
@@ -37,7 +36,7 @@ function makeTestProfile(name: string): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -62,7 +61,7 @@ function makeTestContext(): { character: Character; allies: Character[]; enemies
   battlefield.placeCharacter(ally, { x: 10, y: 12 });
   battlefield.placeCharacter(enemy, { x: 16, y: 12 });
   
-  return { character, allies: [ally], enemies: [enemy], battlefield };
+  return {  character, allies: [ally], enemies: [enemy], battlefield  } as any;
 }
 
 describe('TacticalPatterns', () => {
@@ -106,7 +105,7 @@ describe('TacticalPatterns', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const matches = recognizer.recognize(aiContext);
     const focusFireMatch = matches.find(m => m.pattern.id === 'focus_fire');
@@ -225,7 +224,7 @@ describe('GOAP', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     const plan = planner.plan(StandardGoals.EliminateEnemies, aiContext);
     
@@ -270,7 +269,7 @@ describe('GOAP', () => {
         godMode: true,
         visibilityOrMu: 16,
       },
-    };
+    } as any;
 
     const forecast = forecastWaitReact(aiContext);
     expect(forecast.potentialReactTargets).toBeGreaterThan(0);
@@ -308,7 +307,7 @@ describe('GOAP', () => {
         godMode: true,
         visibilityOrMu: 16,
       },
-    };
+    } as any;
 
     const rollout = rolloutWaitReactBranches(aiContext, {
       immediateScore: 1.4,
@@ -372,7 +371,7 @@ describe('GOAP', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
     
     // Access private method via any cast for testing
     const probability = (planner as any).estimateSuccessProbability([], aiContext);
@@ -418,7 +417,7 @@ describe('GOAP', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
 
     // Valid move action
     const validResult = validateAction(moveAction, aiContext, undefined, { x: 14, y: 12 });
@@ -457,7 +456,7 @@ describe('GOAP', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
 
     // Not engaged - should fail
     const result = validateAction(ccAction, aiContext, context.enemies[0]);
@@ -492,7 +491,7 @@ describe('GOAP', () => {
         accuracyModifier: 0,
         godMode: true,
       },
-    };
+    } as any;
 
     // Ally has no fear - should fail
     const result = validateAction(rallyAction, aiContext, context.allies[0]);

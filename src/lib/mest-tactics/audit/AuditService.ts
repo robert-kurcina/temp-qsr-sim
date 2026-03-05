@@ -9,7 +9,7 @@
 
 import { Position } from '../battlefield/Position';
 import { Character } from '../core/Character';
-import { Side } from '../core/Side';
+import { MissionSide } from '../mission/MissionSide';
 
 // ============================================================================
 // Audit Interfaces
@@ -28,6 +28,8 @@ export interface ModelStateAudit {
   isWaiting: boolean;
   isAttentive: boolean;
   isOrdered: boolean;
+  // Optional position for backward compatibility
+  position?: { x: number; y: number };
 }
 
 /**
@@ -556,17 +558,17 @@ export class AuditService {
   /**
    * Get model state snapshot for all characters
    */
-  getModelState(characters: Character[], sides: Side[]): ModelFrameState[] {
+  getModelState(characters: Character[], sides: any[]): ModelFrameState[] {
     const modelStates: ModelFrameState[] = [];
 
     for (const character of characters) {
-      const side = sides.find(s => s.id === character.sideId);
+      const side = sides.find((s: any) => s.id === (character as any).sideId);
       const state = this.captureModelState(character);
-      
+
       modelStates.push({
         modelId: character.id,
         sideId: side?.name || 'unknown',
-        position: { x: character.position.x, y: character.position.y },
+        position: { x: (character.position as any)?.x || 0, y: (character.position as any)?.y || 0 },
         state,
         tokens: this.ModelStateToTokens(state),
       });
@@ -580,15 +582,15 @@ export class AuditService {
    */
   private captureModelState(character: Character): ModelStateAudit {
     return {
-      wounds: character.wounds || 0,
-      delayTokens: character.delayTokens || 0,
-      fearTokens: character.fearTokens || 0,
-      isKOd: character.isKOd || false,
-      isEliminated: character.isEliminated || false,
-      isHidden: character.isHidden || false,
-      isWaiting: character.isWaiting || false,
-      isAttentive: character.isAttentive || false,
-      isOrdered: character.isOrdered || false,
+      wounds: character.state.wounds || 0,
+      delayTokens: character.state.delayTokens || 0,
+      fearTokens: character.state.fearTokens || 0,
+      isKOd: character.state.isKOd || false,
+      isEliminated: character.state.isEliminated || false,
+      isHidden: character.state.isHidden || false,
+      isWaiting: character.state.isWaiting || false,
+      isAttentive: character.state.isAttentive || false,
+      isOrdered: character.state.isOrdered || false,
     };
   }
 

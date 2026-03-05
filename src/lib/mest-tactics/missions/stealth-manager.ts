@@ -49,6 +49,10 @@ export interface StealthMissionState {
   winner?: string;
   /** Reason for ending */
   endReason?: string;
+  /** Alarm level (backward compatibility) */
+  alarmLevel?: number;
+  /** Lockdown threshold (backward compatibility) */
+  lockdownThreshold?: number;
 }
 
 /**
@@ -252,7 +256,7 @@ export class StealthMissionManager {
   /**
    * Update extraction zone control
    */
-  private updateExtractionZoneControl(models: Array<{ id: string; position: Position }>): void {
+  public updateExtractionZoneControl(models: Array<{ id: string; position: Position }>): void {
     const zones = this.poiManager.getAllPOIs();
     const extractionZone = zones.find(z => z.id === 'extraction-zone');
     if (!extractionZone) return;

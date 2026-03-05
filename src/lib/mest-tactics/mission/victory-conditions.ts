@@ -1,4 +1,4 @@
-import { VictoryConditionConfig, VictoryResult, MissionState } from '../mission-config';
+import { VictoryConditionConfig, VictoryResult, MissionState } from '../missions/mission-config';
 
 /**
  * Victory Condition Type
@@ -293,18 +293,18 @@ export function createVictoryCondition(config: VictoryConditionConfig): VictoryC
         throw new Error('Survival victory requires threshold');
       }
       return new SurvivalVictory(config as VictoryConditionConfig & { threshold: number });
-    case 'first_to_vp':
+    case 'first_to_vp' as any:
       if (!config.threshold) {
         throw new Error('FirstToVP victory requires threshold');
       }
       return new FirstToVPVictory(config as VictoryConditionConfig & { threshold: number });
-    case 'control_all':
+    case 'control_all' as any:
       return new ControlAllVictory(config);
     case 'courier':
     case 'extraction':
     case 'rupture':
     case 'harvest':
-    case 'threshold_reached':
+    case 'threshold_reached' as any:
       // These require mission-specific state checks
       return new CustomVictory(config);
     default:

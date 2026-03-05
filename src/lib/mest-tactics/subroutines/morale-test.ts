@@ -23,18 +23,18 @@ export function resolveMoraleTest(
     penaltyDice[DiceType.Modifier] = fearTokens;
   }
 
-  if (context.hasAdvantage) {
+  if ((context as any).hasAdvantage) {
     bonusDice[DiceType.Wild] = 1;
   }
 
-  if (context.isDisadvantaged) {
+  if ((context as any).isDisadvantaged) {
     penaltyDice[DiceType.Wild] = 1;
   }
 
   // Leadership X: +X Base dice for Morale Tests from nearby leader
   // (Caller must set context.leadershipBonus if applicable)
-  if (context.leadershipBonus) {
-    bonusDice[DiceType.Base] = (bonusDice[DiceType.Base] || 0) + context.leadershipBonus;
+  if ((context as any).leadershipBonus) {
+    bonusDice[DiceType.Base] = (bonusDice[DiceType.Base] || 0) + (context as any).leadershipBonus;
   }
 
   const participant: TestParticipant = {

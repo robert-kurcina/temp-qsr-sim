@@ -23,7 +23,7 @@ import { createObjectiveMarker, ObjectiveMarkerKind } from '../mission/objective
 
 describe('mission-keys', () => {
   it('computes zone control for dominance', () => {
-    const zones: MissionZone[] = [{ id: 'z1', center: { x: 0, y: 0 }, radius: 4 }];
+    const zones: any[] = [{ id: 'z1', center: { x: 0, y: 0 }, radius: 4 }];
     const control = computeZoneControl([
       { id: 'a', sideId: 'A', position: { x: 1, y: 1 } },
       { id: 'b', sideId: 'B', position: { x: 10, y: 10 } },
@@ -41,7 +41,7 @@ describe('mission-keys', () => {
 
   it('awards sanctuary VP based on BP threshold', () => {
     const state: SanctuaryState = { vpBySide: {} };
-    const zones: MissionZone[] = [{ id: 's1', center: { x: 0, y: 0 }, radius: 4 }];
+    const zones: any[] = [{ id: 's1', center: { x: 0, y: 0 }, radius: 4 }];
     const delta = applySanctuaryTurn(state, [
       { id: 'a', sideId: 'A', position: { x: 1, y: 1 }, bp: 50 },
       { id: 'b', sideId: 'A', position: { x: 10, y: 10 }, bp: 20 },
@@ -111,6 +111,6 @@ describe('mission-keys', () => {
 
   it('returns empty delta helper', () => {
     const delta = createEmptyDelta();
-    expect(delta.vpBySide).toEqual({});
+    expect(delta.vpBySide).toEqual({} as any);
   });
 });

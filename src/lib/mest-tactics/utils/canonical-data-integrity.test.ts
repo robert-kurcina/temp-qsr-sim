@@ -42,7 +42,7 @@ describe('Canonical Data Integrity', () => {
     const itemName = 'Mortar, Light';
     const profile = buildSingleItemProfile(itemName);
 
-    expect(profile.items.map(i => i.name)).toContain(itemName);
+    expect((profile.items ?? []).map((i: any) => i.name)).toContain(itemName);
     expect(profile.totalBp).toBe(veteranArchetypeData.bp + gameData.support_weapons[itemName].bp);
   });
 
@@ -50,7 +50,7 @@ describe('Canonical Data Integrity', () => {
     const itemName = 'Grenade, Flash';
     const profile = buildSingleItemProfile(itemName);
 
-    expect(profile.items.map(i => i.name)).toContain(itemName);
+    expect((profile.items ?? []).map((i: any) => i.name)).toContain(itemName);
     expect(profile.totalBp).toBe(veteranArchetypeData.bp + gameData.grenade_weapons[itemName].bp);
   });
 

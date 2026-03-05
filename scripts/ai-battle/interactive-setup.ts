@@ -16,35 +16,24 @@ import { GAME_SIZE_CONFIG } from './AIBattleConfig';
  */
 function doctrineToAIConfig(doctrine: TacticalDoctrine): { aggression: number; caution: number } {
   // Simple mapping - in full implementation this would use deriveDoctrineAIPressure
-  const config: Record<TacticalDoctrine, { aggression: number; caution: number }> = {
-    [TacticalDoctrine.Aggressive]: { aggression: 0.8, caution: 0.3 },
-    [TacticalDoctrine.Defensive]: { aggression: 0.3, caution: 0.8 },
-    [TacticalDoctrine.Balanced]: { aggression: 0.5, caution: 0.5 },
-    [TacticalDoctrine.Operative]: { aggression: 0.5, caution: 0.5 },
-    [TacticalDoctrine.Juggernaut]: { aggression: 0.9, caution: 0.2 },
-    [TacticalDoctrine.Watchman]: { aggression: 0.2, caution: 0.9 },
-    [TacticalDoctrine.Ranger]: { aggression: 0.6, caution: 0.5 },
-    [TacticalDoctrine.Sentinel]: { aggression: 0.4, caution: 0.7 },
-    [TacticalDoctrine.Striker]: { aggression: 0.7, caution: 0.4 },
-    [TacticalDoctrine.Guardian]: { aggression: 0.3, caution: 0.8 },
-    [TacticalDoctrine.Shadow]: { aggression: 0.6, caution: 0.6 },
-    [TacticalDoctrine.Vanguard]: { aggression: 0.7, caution: 0.5 },
-    [TacticalDoctrine.Recon]: { aggression: 0.5, caution: 0.6 },
-    [TacticalDoctrine.Assault]: { aggression: 0.8, caution: 0.3 },
-    [TacticalDoctrine.Support]: { aggression: 0.4, caution: 0.7 },
-    [TacticalDoctrine.Flank]: { aggression: 0.7, caution: 0.4 },
-    [TacticalDoctrine.Hold]: { aggression: 0.2, caution: 0.9 },
-    [TacticalDoctrine.Rush]: { aggression: 0.9, caution: 0.2 },
-    [TacticalDoctrine.Sniper]: { aggression: 0.4, caution: 0.7 },
-    [TacticalDoctrine.Brawler]: { aggression: 0.8, caution: 0.3 },
-    [TacticalDoctrine.Tactician]: { aggression: 0.5, caution: 0.6 },
-    [TacticalDoctrine.Commando]: { aggression: 0.7, caution: 0.4 },
-    [TacticalDoctrine.Marksman]: { aggression: 0.5, caution: 0.6 },
-    [TacticalDoctrine.Berserker]: { aggression: 0.95, caution: 0.1 },
-    [TacticalDoctrine.Pacifist]: { aggression: 0.1, caution: 0.95 },
-    [TacticalDoctrine.Opportunistic]: { aggression: 0.6, caution: 0.5 },
-  };
-  return config[doctrine] ?? { aggression: 0.5, caution: 0.5 };
+  const config = new Map<TacticalDoctrine, { aggression: number; caution: number }>([
+    [TacticalDoctrine.Juggernaut, { aggression: 0.9, caution: 0.2 }],
+    [TacticalDoctrine.Berserker, { aggression: 0.95, caution: 0.1 }],
+    [TacticalDoctrine.Guardian, { aggression: 0.3, caution: 0.8 }],
+    [TacticalDoctrine.Sentinel, { aggression: 0.4, caution: 0.7 }],
+    [TacticalDoctrine.Vanguard, { aggression: 0.7, caution: 0.5 }],
+    [TacticalDoctrine.Assault, { aggression: 0.8, caution: 0.3 }],
+    [TacticalDoctrine.Support, { aggression: 0.4, caution: 0.7 }],
+    [TacticalDoctrine.Hold, { aggression: 0.2, caution: 0.9 }],
+    [TacticalDoctrine.Rush, { aggression: 0.9, caution: 0.2 }],
+    [TacticalDoctrine.Sniper, { aggression: 0.4, caution: 0.7 }],
+    [TacticalDoctrine.Tactician, { aggression: 0.5, caution: 0.6 }],
+    [TacticalDoctrine.Commander, { aggression: 0.5, caution: 0.6 }],
+    [TacticalDoctrine.Marksman, { aggression: 0.5, caution: 0.6 }],
+    [TacticalDoctrine.Pacifist, { aggression: 0.1, caution: 0.95 }],
+    [TacticalDoctrine.Operative, { aggression: 0.5, caution: 0.5 }],
+  ]);
+  return config.get(doctrine) ?? { aggression: 0.5, caution: 0.5 };
 }
 
 /**

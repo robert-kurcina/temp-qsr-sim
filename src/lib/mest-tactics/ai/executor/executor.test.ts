@@ -5,12 +5,11 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
-import { GameManager } from '../../engine/GameManager';
-import { createMissionSide } from '../../mission/MissionSide';
-import { buildAssembly } from '../../mission/assembly-builder';
+import { Character, Profile } from '../../core';
+import { Battlefield } from '../../battlefield';
+import { GameManager } from '../../engine';
+import { createMissionSide } from '../../mission';
+import { buildAssembly } from '../../mission';
 import { createAIExecutor, AIActionExecutor } from './AIActionExecutor';
 import { createAIGameLoop, AIGameLoop } from './AIGameLoop';
 import { ActionDecision } from '../core/AIController';
@@ -42,7 +41,7 @@ function makeTestProfile(name: string): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -62,8 +61,8 @@ function makeTestSides(
   sideAName: string = 'SideA',
   sideBName: string = 'SideB'
 ): { sideA: any; sideB: any; charactersA: Character[]; charactersB: Character[] } {
-  const charactersA: Character[] = [];
-  const charactersB: Character[] = [];
+  const charactersA: any[] = [];
+  const charactersB: any[] = [];
 
   for (let i = 0; i < 3; i++) {
     const charA = makeTestCharacter(`${sideAName}-${i}`);
@@ -75,13 +74,13 @@ function makeTestSides(
     battlefield.placeCharacter(charB, { x: 18 - i * 2, y: 12 });
   }
 
-  const rosterA = buildAssembly(`${sideAName} Assembly`, charactersA.map(c => c.profile));
-  const rosterB = buildAssembly(`${sideBName} Assembly`, charactersB.map(c => c.profile));
+  const rosterA = buildAssembly(`${sideAName} Assembly`, charactersA.map((c: any) => c.profile));
+  const rosterB = buildAssembly(`${sideBName} Assembly`, charactersB.map((c: any) => c.profile));
 
   const sideA = createMissionSide(sideAName, [rosterA], { startingIndex: 0 });
   const sideB = createMissionSide(sideBName, [rosterB], { startingIndex: 3 });
 
-  return { sideA, sideB, charactersA, charactersB };
+  return {  sideA, sideB, charactersA, charactersB  } as any;
 }
 
 describe('AIActionExecutor', () => {

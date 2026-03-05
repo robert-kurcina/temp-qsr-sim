@@ -196,8 +196,8 @@ describe('Stratagem Integration', () => {
 
       const actions = applyStratagemModifiersToActions(
         [
-          { action: 'close_combat', score: 5, target: null },
-          { action: 'ranged_combat', score: 5, target: null },
+          { action: 'close_combat', score: 5, target: null as any, factors: {} as any },
+          { action: 'ranged_combat', score: 5, target: null as any, factors: {} as any },
         ],
         modifiers
       );
@@ -210,8 +210,8 @@ describe('Stratagem Integration', () => {
 
       const actions = applyStratagemModifiersToActions(
         [
-          { action: 'close_combat', score: 5, target: null },
-          { action: 'ranged_combat', score: 5, target: null },
+          { action: 'close_combat', score: 5, target: null as any, factors: {} as any },
+          { action: 'ranged_combat', score: 5, target: null as any, factors: {} as any },
         ],
         modifiers
       );
@@ -263,21 +263,21 @@ describe('Stratagem Integration', () => {
     it('should charge for Juggernaut', () => {
       const components = getDoctrineComponents(TacticalDoctrine.Juggernaut);
 
-      const should = shouldCharge(3, 4, {}, 1, 0, components.engagement, components.aggression);
+      const should = shouldCharge(3, 4, {} as any, 1, 0, components.engagement as any, components.aggression as any);
       expect(should).toBe(true);
     });
 
     it('should charge for Assault', () => {
       const components = getDoctrineComponents(TacticalDoctrine.Assault);
 
-      const should = shouldCharge(3, 4, {}, 1, 0, components.engagement, components.aggression);
+      const should = shouldCharge(3, 4, {} as any, 1, 0, components.engagement as any, components.aggression as any);
       expect(should).toBe(true);
     });
 
     it('should not charge if out of range', () => {
       const components = getDoctrineComponents(DEFAULT_TACTICAL_DOCTRINE);
 
-      const should = shouldCharge(10, 4, {}, 1, 0, components.engagement, components.aggression);
+      const should = shouldCharge(10, 4, {} as any, 1, 0, components.engagement as any, components.aggression as any);
       expect(should).toBe(false);
     });
 
@@ -285,11 +285,11 @@ describe('Stratagem Integration', () => {
       const components = getDoctrineComponents(TacticalDoctrine.Watchman);
 
       // No advantage
-      const shouldNot = shouldCharge(3, 4, {}, 1, 0, components.engagement, components.aggression);
+      const shouldNot = shouldCharge(3, 4, {} as any, 1, 0, components.engagement as any, components.aggression as any);
       expect(shouldNot).toBe(false);
 
       // With advantage (enemy wounded)
-      const should = shouldCharge(3, 4, {}, 0.3, 0, components.engagement, components.aggression);
+      const should = shouldCharge(3, 4, {} as any, 0.3, 0, components.engagement as any, components.aggression as any);
       expect(should).toBe(true);
     });
   });

@@ -1,21 +1,21 @@
 /**
  * AI Integration Tests
- * 
+ *
  * End-to-end tests for the complete AI pipeline:
  * SideAI → AssemblyAI → CharacterAI → AIActionExecutor → GameManager
- * 
+ *
  * These tests verify that the AI system actually works in practice,
  * not just in isolated unit tests.
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Character } from '../core/Character';
-import { Battlefield } from '../battlefield/Battlefield';
-import { GameManager } from '../engine/GameManager';
-import { buildAssembly, buildProfile } from '../mission/assembly-builder';
-import { buildMissionSide } from '../mission/MissionSideBuilder';
+import { Character } from '../core';
+import { Battlefield } from '../battlefield';
+import { GameManager } from '../engine';
+import { buildAssembly, buildProfile } from '../mission';
+import { buildMissionSide } from '../mission';
 import { createAIGameLoop, AIGameLoop } from './executor/AIGameLoop';
-import { MissionSide } from '../mission/MissionSide';
+import { MissionSide } from '../mission';
 
 /**
  * Create a test assembly with specified composition
@@ -57,7 +57,7 @@ function createOpposingSides(): { sideA: MissionSide; sideB: MissionSide } {
   // Side A: Balanced force
   const rosterA = createTestAssembly('Alpha', [
     { archetype: 'Veteran', count: 2, items: ['Sword, Broad', 'Armor, Light'] },
-    { archetype: 'Average', count: 3, items: ['Sword, Broad'] },
+    { archetype: 'Average' as any, count: 3, items: ['Sword, Broad'] },
     { archetype: 'Militia', count: 2, items: ['Spear, Medium'] },
   ]);
   
@@ -65,14 +65,14 @@ function createOpposingSides(): { sideA: MissionSide; sideB: MissionSide } {
   const rosterB = createTestAssembly('Bravo', [
     { archetype: 'Elite', count: 1, items: ['Sword, Broad', 'Armor, Medium'] },
     { archetype: 'Veteran', count: 2, items: ['Sword, Broad'] },
-    { archetype: 'Average', count: 4, items: ['Spear, Medium'] },
+    { archetype: 'Average' as any, count: 4, items: ['Spear, Medium'] },
   ]);
   
   // Use buildMissionSide which properly sets character names via portrait system
   const sideA = buildMissionSide('Alpha', [rosterA], { startingIndex: 0 });
   const sideB = buildMissionSide('Bravo', [rosterB], { startingIndex: rosterA.characters.length });
   
-  return { sideA, sideB };
+  return {  sideA, sideB  } as any;
 }
 
 /**
@@ -88,13 +88,13 @@ function deploySides(
   
   // Ensure all characters have names (safety check)
   let charIdx = 0;
-  sideA.members.forEach(m => {
+  sideA.members.forEach((m: any) => {
     if (!m.character.name) m.character.name = `${sideA.id}-${charIdx}`;
     if (!m.character.id) m.character.id = `${sideA.id}-${charIdx}`;
     charIdx++;
   });
   charIdx = 0;
-  sideB.members.forEach(m => {
+  sideB.members.forEach((m: any) => {
     if (!m.character.name) m.character.name = `${sideB.id}-${charIdx}`;
     if (!m.character.id) m.character.id = `${sideB.id}-${charIdx}`;
     charIdx++;
@@ -131,8 +131,8 @@ describe('AI Integration', () => {
     deploySides(sideA, sideB, battlefield, 24);
     
     const allCharacters = [
-      ...sideA.members.map(m => m.character),
-      ...sideB.members.map(m => m.character),
+      ...sideA.members.map((m: any) => m.character),
+      ...sideB.members.map((m: any) => m.character),
     ];
     manager = new GameManager(allCharacters, battlefield);
     
@@ -167,8 +167,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -188,8 +188,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -213,8 +213,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -233,8 +233,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
 
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -270,8 +270,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -292,8 +292,8 @@ describe('AI Integration', () => {
       battlefield2.placeCharacter(sides.sideB.members[0].character, { x: 10.5, y: 12 });
 
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -309,10 +309,10 @@ describe('AI Integration', () => {
       
       // Create a force with ranged weapons
       const rosterA = createTestAssembly('Alpha', [
-        { archetype: 'Average', count: 3, items: ['Bow, Medium'] },
+        { archetype: 'Average' as any, count: 3, items: ['Bow, Medium'] },
       ]);
       const rosterB = createTestAssembly('Bravo', [
-        { archetype: 'Average', count: 3, items: ['Sword, Broad'] },
+        { archetype: 'Average' as any, count: 3, items: ['Sword, Broad'] },
       ]);
 
       const sideA2 = buildMissionSide('Alpha', [rosterA], { startingIndex: 0 });
@@ -327,8 +327,8 @@ describe('AI Integration', () => {
       });
 
       const allCharacters = [
-        ...sideA2.members.map(m => m.character),
-        ...sideB2.members.map(m => m.character),
+        ...sideA2.members.map((m: any) => m.character),
+        ...sideB2.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sideA2, sideB2]);
@@ -347,8 +347,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       
@@ -370,8 +370,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       
@@ -393,8 +393,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       
@@ -416,8 +416,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       
@@ -451,8 +451,8 @@ describe('AI Integration', () => {
       battlefield2.placeCharacter(sideB2.members[0].character, { x: 14, y: 12 });
       
       const allCharacters = [
-        ...sideA2.members.map(m => m.character),
-        ...sideB2.members.map(m => m.character),
+        ...sideA2.members.map((m: any) => m.character),
+        ...sideB2.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sideA2, sideB2]);
@@ -469,13 +469,13 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       // KO all Side B models
-      sides.sideB.members.forEach(m => {
+      sides.sideB.members.forEach((m: any) => {
         m.character.state.isKOd = true;
       });
 
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -490,11 +490,11 @@ describe('AI Integration', () => {
 
       const rosterA = createTestAssembly('Alpha', [
         { archetype: 'Militia', count: 15 },
-        { archetype: 'Average', count: 10 },
+        { archetype: 'Average' as any, count: 10 },
       ]);
       const rosterB = createTestAssembly('Bravo', [
         { archetype: 'Militia', count: 15 },
-        { archetype: 'Average', count: 10 },
+        { archetype: 'Average' as any, count: 10 },
       ]);
 
       const sideA2 = buildMissionSide('Alpha', [rosterA], { startingIndex: 0 });
@@ -502,13 +502,13 @@ describe('AI Integration', () => {
 
       // Ensure all characters have names (safety check)
       let charIdx = 0;
-      sideA2.members.forEach(m => {
+      sideA2.members.forEach((m: any) => {
         if (!m.character.name) m.character.name = `Alpha-${charIdx}`;
         if (!m.character.id) m.character.id = `Alpha-${charIdx}`;
         charIdx++;
       });
       charIdx = 0;
-      sideB2.members.forEach(m => {
+      sideB2.members.forEach((m: any) => {
         if (!m.character.name) m.character.name = `Bravo-${charIdx}`;
         if (!m.character.id) m.character.id = `Bravo-${charIdx}`;
         charIdx++;
@@ -528,8 +528,8 @@ describe('AI Integration', () => {
       });
 
       const allCharacters = [
-        ...sideA2.members.map(m => m.character),
-        ...sideB2.members.map(m => m.character),
+        ...sideA2.members.map((m: any) => m.character),
+        ...sideB2.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sideA2, sideB2], {
@@ -549,8 +549,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);
@@ -570,8 +570,8 @@ describe('AI Integration', () => {
       deploySides(sides.sideA, sides.sideB, battlefield2, 24);
       
       const allCharacters = [
-        ...sides.sideA.members.map(m => m.character),
-        ...sides.sideB.members.map(m => m.character),
+        ...sides.sideA.members.map((m: any) => m.character),
+        ...sides.sideB.members.map((m: any) => m.character),
       ];
       const manager2 = new GameManager(allCharacters, battlefield2);
       const aiLoop2 = createAIGameLoop(manager2, battlefield2, [sides.sideA, sides.sideB]);

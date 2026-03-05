@@ -33,7 +33,7 @@ export interface MissionConfig {
   /** End game die roll starts at turn */
   endGameDieStart: number;
   /** Size-specific configuration */
-  sizeConfig?: Record<GameSize, SizeSpecificConfig>;
+  sizeConfig?: Partial<Record<GameSize, SizeSpecificConfig>>;
   /** Balance hints (ignored by engine) */
   _balance?: BalanceHints;
 }
@@ -73,11 +73,11 @@ export enum DeploymentType {
  */
 export interface ZoneConfig {
   /** Zone type */
-  type: ZoneType;
+  type: ZoneType | `${ZoneType}`;
   /** Number of zones */
   count: number;
   /** Formation pattern */
-  formation?: FormationType;
+  formation?: FormationType | `${FormationType}`;
   /** Spacing between zones (MU) */
   spacing?: number;
   /** Zone radius (MU) */
@@ -262,13 +262,18 @@ export interface ZoneInstance {
   /** Zone ID */
   id: string;
   /** Zone type */
-  type: ZoneType;
+  type: ZoneType | `${ZoneType}`;
   /** Zone position */
   position: Position;
+  /** Zone center (alias for position) */
+  center?: Position;
   /** Zone radius */
   radius: number;
   /** Controlling side ID */
   controller?: string;
   /** Zone state */
   state: Record<string, unknown>;
+  // Backward compatibility properties
+  controlledBy?: string;
+  contested?: boolean;
 }

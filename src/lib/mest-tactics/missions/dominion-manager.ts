@@ -1,7 +1,7 @@
 import { MissionSide } from '../mission/MissionSide';
 import { PointOfInterest, POIType, POIManager, createPOI } from '../mission/poi-zone-control';
 import { Position } from '../battlefield/Position';
-import { SpatialModel } from '../battlefield/spatial-rules';
+import { SpatialModel } from '../battlefield/spatial/spatial-rules';
 import { EncroachmentState, computeAggressionScores, computeBottledScores, computeEliminationScores } from './mission-scoring';
 import {
   calculateZoneControlFractionalVP,
@@ -66,7 +66,7 @@ export class DominionMissionManager {
     }
 
     // Create dominion zones
-    this.setupDominionZones(zonePositions);
+    this.setupDominionZones(zonePositions ?? []);
   }
 
   /**
@@ -511,7 +511,7 @@ export class DominionMissionManager {
 
     // Encroachment: Fractional VP based on crossing progress
     for (const side of sideStatuses) {
-      const crossed = this.state.encroachment.crossedBySide?.[side.sideId] ?? 0;
+      const crossed = (this.state.encroachment.crossedBySide as any)?.[side.sideId] ?? 0;
       const threshold = Math.ceil(side.startingCount / 2);
       const score = calculateAggressionFractionalVP(side.sideId, crossed, threshold);
 

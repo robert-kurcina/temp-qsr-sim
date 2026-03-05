@@ -3,7 +3,6 @@ import { ActivationDeps, spendAp } from './activation';
 import { Battlefield } from '../battlefield/Battlefield';
 import { TerrainElement, TERRAIN_HEIGHTS } from '../battlefield/terrain/TerrainElement';
 import { resolveFallingTest } from './agility';
-import { CombatManeuverResult, CombatManeuverType } from './combat-actions';
 import { getLeapAgilityBonus } from '../traits/combat-traits';
 import { calculateAgility } from './agility';
 
@@ -85,7 +84,7 @@ export enum CombatManeuverType {
  */
 export interface CombatManeuverResult {
   success: boolean;
-  maneuverType: CombatManeuverType;
+  maneuverType?: CombatManeuverType;
   cascadesSpent: number;
   targetRepositioned?: { x: number; y: number };
   activeRepositioned?: { x: number; y: number };

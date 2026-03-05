@@ -2,6 +2,7 @@ import { gameData } from '../../data';
 import { Assembly } from '../core/Assembly';
 import { Character } from '../core/Character';
 import { Profile } from '../core/Profile';
+import type { Attributes } from '../core/Attributes';
 import { createProfiles } from '../utils/profile-generator';
 import { CANONICAL_GAME_SIZE_ORDER, CANONICAL_GAME_SIZES } from './game-size-canonical';
 import {
@@ -37,6 +38,10 @@ export interface AssemblyConfig {
 export interface BuildProfileOptions {
   secondaryArchetypeNames?: string[];
   itemNames?: string[];
+  /** Backward compatibility options accepted by older tests */
+  traits?: string[];
+  /** Backward compatibility options accepted by older tests */
+  attributes?: Partial<Attributes>;
   /**
    * Technological age for item filtering
    * Default: 'Medieval' (Tech Level 5)
@@ -90,12 +95,26 @@ function hasConfigOverrides(config: AssemblyConfig): boolean {
 
 export function buildProfile(
   primaryArchetypeName: string,
-  options: BuildProfileOptions = {}
+  options?: BuildProfileOptions
+): Profile;
+export function buildProfile(
+  primaryArchetypeName: string,
+  secondaryArchetypeNames: string[],
+  options?: Omit<BuildProfileOptions, 'secondaryArchetypeNames'>
+): Profile;
+export function buildProfile(
+  primaryArchetypeName: string,
+  optionsOrSecondary: BuildProfileOptions | string[] = {},
+  legacyOptions: Omit<BuildProfileOptions, 'secondaryArchetypeNames'> = {}
 ): Profile {
-  const primaryArchetypeData = gameData.archetypes[primaryArchetypeName];
+  const primaryArchetypeData = (gameData.archetypes as any)[primaryArchetypeName];
   if (!primaryArchetypeData) {
     throw new Error(`Unknown archetype: ${primaryArchetypeName}`);
   }
+
+  const options: BuildProfileOptions = Array.isArray(optionsOrSecondary)
+    ? { ...legacyOptions, secondaryArchetypeNames: optionsOrSecondary }
+    : optionsOrSecondary;
 
   // Determine tech level config
   const age = options.technologicalAge ?? 'Medieval';

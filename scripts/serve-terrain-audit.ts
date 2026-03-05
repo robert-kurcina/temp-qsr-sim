@@ -89,16 +89,16 @@ function getBattleIndex(filters?: { mission?: string; gameSize?: string; date?: 
       
       // Apply filters
       if (filters?.mission) {
-        battles = battles.filter(b => b.missionId === filters.mission);
+        battles = battles.filter((b: any) => b.missionId === filters.mission);
       }
       if (filters?.gameSize) {
-        battles = battles.filter(b => b.gameSize === filters.gameSize);
+        battles = battles.filter((b: any) => b.gameSize === filters.gameSize);
       }
       if (filters?.date) {
-        battles = battles.filter(b => b.date === filters.date);
+        battles = battles.filter((b: any) => b.date === filters.date);
       }
       if (filters?.winner) {
-        battles = battles.filter(b => b.winner === filters.winner);
+        battles = battles.filter((b: any) => b.winner === filters.winner);
       }
       
       return battles;
@@ -265,7 +265,8 @@ function analyzePathForAgility(
       }
       
       // Climb up/down: Height changes
-      const height = feature.meta?.height || 0;
+      const meta = feature.meta as any;
+      const height = meta?.height || 0;
       if (height > 0) {
         if (height <= character.baseDiameter) {
           const handsRequired = 2; // Simplified
@@ -492,7 +493,7 @@ const server = http.createServer((req, res) => {
         if (result.success) {
           // Regenerate battle index to include new battlefield
           try {
-            await import('./generate-battle-index.js').then(m => m.generateBattleIndex?.());
+            await import('./generate-battle-index.js').then(m => (m as any).generateBattleIndex?.());
           } catch (e) {
             // Index regeneration is optional
           }
@@ -552,13 +553,10 @@ const server = http.createServer((req, res) => {
         }
 
         // Create pathfinding engine
-        const pathfinder = new PathfindingEngine(battlefield, {
-          gridResolution: 0.5,
-          footprintDiameter: config.footprintDiameter || 1.0,
-        });
+        const pathfinder = new PathfindingEngine(battlefield);
 
         // Calculate path
-        const pathResult = pathfinder.findPathLimited(
+        const pathResult = (pathfinder as any).findPathLimited(
           config.start,
           config.end,
           config.movementAllowance || 6

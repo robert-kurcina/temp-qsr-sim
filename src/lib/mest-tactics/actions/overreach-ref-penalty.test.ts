@@ -19,7 +19,7 @@ import { Item } from '../core/Item';
 function createTestCharacter(name: string, ref: number = 2, mov: number = 4): Character {
   const profile: Profile = {
     name,
-    archetype: 'Average',
+    archetype: 'Average' as any,
     attributes: {
       cca: 2, rca: 2, ref, int: 2, pow: 2, str: 2, for: 2, mov, siz: 3,
     },

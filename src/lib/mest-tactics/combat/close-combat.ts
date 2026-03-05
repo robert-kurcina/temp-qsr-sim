@@ -130,7 +130,7 @@ function _calculateModifiers(attacker: Character, defender: Character, weapon: I
 
     // Knife-fighter X: +Xb +X Impact when Attentive, in base-contact, using [Stub] weapon
     const isAttentive = attacker.state.isAttentive;
-    const isInBaseContact = context.isNowInBaseContact ?? false;
+    const isInBaseContact = (context as any).isNowInBaseContact ?? false;
     const isUsingStubWeapon = weapon.traits?.some(t => t.includes('[Stub]')) ?? false;
     const knifeFighterBonus = getKnifeFighterBonus(attacker, isAttentive, isInBaseContact, isUsingStubWeapon);
     if (knifeFighterBonus.bonusBaseDice > 0) {

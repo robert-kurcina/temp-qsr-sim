@@ -15,7 +15,7 @@ describe('resolveMoraleTest', () => {
 
   beforeEach(async () => {
     const archetype = { name: "Militia", ...archetypes["Militia"] };
-    const profile: Profile = { name: 'Test Character', archetype, equipment: [] };
+    const profile: Profile = { name: 'Test Character', archetype, equipment: [] } as any;
     character = await createCharacter(profile);
     metricsService.clearEvents();
     resetRoller();

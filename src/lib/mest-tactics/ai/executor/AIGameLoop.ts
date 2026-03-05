@@ -7,11 +7,11 @@
  * This is the main entry point for AI-controlled game sessions.
  */
 
-import { Character } from '../core/Character';
-import { Battlefield } from '../battlefield/Battlefield';
-import { GameManager } from '../engine/GameManager';
+import { Character } from '../../core/Character';
+import { Battlefield } from '../../battlefield/Battlefield';
+import { GameManager } from '../../engine/GameManager';
 import { TurnPhase } from '../../core/types';
-import { MissionSide } from '../mission/MissionSide';
+import { MissionSide } from '../../mission/MissionSide';
 import { createAIExecutor, AIActionExecutor, AIExecutionContext } from './AIActionExecutor';
 import { createSideAI, SideAI } from '../strategic/SideAI';
 import { createSideAssemblyAIs, AssemblyAI } from '../strategic/AssemblyAI';
@@ -144,7 +144,7 @@ export class AIGameLoop {
       validateActions: this.config.enableValidation,
       enableReplanning: this.config.enableReplanning,
       verboseLogging: this.config.verboseLogging,
-    }, this.logger);
+    }, this.logger ?? undefined);
 
     // Initialize AI layers
     this.initializeAILayers(sides);
@@ -304,8 +304,8 @@ export class AIGameLoop {
           modelName: character.name || character.id,
           initiative: character.initiative || 0,
           apStart: ap,
-          waitAtStart: character.isWaiting || false,
-          delayTokensAtStart: character.delayTokens || 0,
+          waitAtStart: character.state.isWaiting || false,
+          delayTokensAtStart: character.state.delayTokens || 0,
         });
       }
 
@@ -331,9 +331,9 @@ export class AIGameLoop {
         const apRemaining = this.manager.getApRemaining(character);
         this.auditService.endActivation(
           apRemaining,
-          character.isWaiting || false,
+          character.state.isWaiting || false,
           false, // waitUpkeepPaid - would need tracking
-          character.delayTokens || 0
+          character.state.delayTokens || 0
         );
       }
 
@@ -487,7 +487,7 @@ export class AIGameLoop {
           details: {
             replanningRecommended: execResult.replanningRecommended,
           },
-        });
+        } as any);
       }
 
       result.totalActions++;
@@ -525,9 +525,9 @@ export class AIGameLoop {
    */
   private captureModelState(character: Character): ModelStateAudit {
     return {
-      wounds: character.wounds || 0,
-      delayTokens: character.delayTokens || 0,
-      fearTokens: character.fearTokens || 0,
+      wounds: character.state.wounds || 0,
+      delayTokens: character.state.delayTokens || 0,
+      fearTokens: character.state.fearTokens || 0,
       isKOd: character.state.isKOd || false,
       isEliminated: character.state.isEliminated || false,
       isHidden: character.state.isHidden || false,
@@ -744,13 +744,13 @@ export class AIGameLoop {
           };
         }
       }
-      
+
       // Get VP/RP by side for VP urgency calculations
-      const side = this.manager.sides.find(s => s.id === sideId);
+      const side = this.manager.missionSides.find(s => s.id === sideId);
       if (side) {
         vpBySide = {};
         rpBySide = {};
-        for (const s of this.manager.sides) {
+        for (const s of this.manager.missionSides) {
           vpBySide[s.id] = s.state.victoryPoints ?? 0;
           rpBySide[s.id] = s.state.resourcePoints ?? 0;
         }
@@ -971,31 +971,31 @@ export class AIGameLoop {
     if (readySquadMembers.length === 0) return result;
 
     // Log the IP spending for instrumentation
-    if (this.logger && this.logger['config'].grade >= InstrumentationGrade.BY_ACTION) {
-      this.logger.log({
+    const firstSquadMember = readySquadMembers[0];
+    if (this.logger && (this.logger as any)['config'].grade >= InstrumentationGrade.BY_ACTION) {
+      (this.logger as any).log({
         type: 'squad_ip_coordination',
         turn,
         characterId: character.id,
-        squadMemberId: squadMember.id,
+        squadMemberId: firstSquadMember.id,
         ipSpent: 1,
         reason: 'Squad formation coordination',
-      });
+      } as any);
     }
 
     // Actually spend IP and activate squad member
     // Note: This requires the manager to support Maintain Initiative action
     // For now, we simulate by running the squad member's turn immediately
-    const ap = this.manager.beginActivation(squadMember);
-    if (ap > 0 && !squadMember.state.isEliminated && !squadMember.state.isKOd) {
-      const squadResult = this.runCharacterTurn(squadMember, turn);
+    const ap = this.manager.beginActivation(firstSquadMember);
+    if (ap > 0 && !firstSquadMember.state.isEliminated && !firstSquadMember.state.isKOd) {
+      const squadResult = this.runCharacterTurn(firstSquadMember, turn);
       result.totalActions += squadResult.totalActions;
       result.successfulActions += squadResult.successfulActions;
       result.failedActions += squadResult.failedActions;
-      result.replannedActions += squadResult.replannedActions;
       result.success = true;
     }
-    
-    this.manager.endActivation(squadMember);
+
+    this.manager.endActivation(firstSquadMember);
 
     return result;
   }

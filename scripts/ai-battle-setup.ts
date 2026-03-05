@@ -16,7 +16,7 @@ import { readFileSync } from 'node:fs';
 import { GameSize } from '../src/lib/mest-tactics/mission/assembly-builder';
 import { TacticalDoctrine } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { LightingCondition } from '../src/lib/mest-tactics/utils/visibility';
-import type { BattleReport } from '../shared/BattleReportTypes';
+import type { BattleReport } from './shared/BattleReportTypes';
 import type { ValidationAggregateReport } from './ai-battle/validation/ValidationMetrics';
 import { AIBattleRunner } from './ai-battle/AIBattleRunner';
 import { AIBattleSetup } from './ai-battle/interactive-setup';

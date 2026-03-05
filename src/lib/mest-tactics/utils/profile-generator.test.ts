@@ -26,10 +26,10 @@ describe('createProfiles', () => {
     expect(profile.name).toBe('veteran-sword-broad-loadout');
     
     expect(profile.archetype).toHaveProperty(veteranArchetypeName);
-    expect(profile.archetype[veteranArchetypeName]).toEqual(veteranArchetypeData);
+    expect((profile.archetype as any)[veteranArchetypeName]).toEqual(veteranArchetypeData);
 
     expect(profile.items).toHaveLength(1);
-    expect(profile.items[0].name).toBe('Sword, Broad');
+    expect(profile.items?.[0]?.name).toBe('Sword, Broad');
 
     const swordData = gameData.melee_weapons['Sword, Broad'];
     expect(profile.totalBp).toBe(veteranArchetypeData.bp + swordData.bp);
@@ -58,8 +58,8 @@ describe('createProfiles', () => {
     expect(profile.adjDurability).toBe(3);
 
     // Burden
-    expect(profile.burden.totalLaden).toBe(3); // Armor(2) + Shield(1)
-    expect(profile.burden.totalBurden).toBe(0); // 3 (Laden) - 3 (adjPhysicality)
+    expect(profile.burden?.totalLaden).toBe(3); // Armor(2) + Shield(1)
+    expect(profile.burden?.totalBurden).toBe(0); // 3 (Laden) - 3 (adjPhysicality)
 
     // Final Traits - check for combined/leveled traits
     expect(profile.finalTraits).toEqual(expect.arrayContaining([
@@ -111,7 +111,7 @@ describe('createProfiles', () => {
 
     expect(profile.inHandItems?.length).toBe(1);
     expect(profile.inHandItems?.[0].name).toBe('Rifle, Medium, Semi/A');
-    expect(profile.stowedItems?.map(item => item.name)).toEqual(expect.arrayContaining([
+    expect(profile.stowedItems?.map((item: any) => item.name)).toEqual(expect.arrayContaining([
       'Pistol, Medium, Auto',
       'Shield, Medium',
       equipmentName
@@ -128,11 +128,11 @@ describe('createProfiles', () => {
     const profile = profiles[0];
 
     expect(profile.inHandItems?.length).toBe(2);
-    expect(profile.inHandItems?.map(item => item.name)).toEqual([
+    expect(profile.inHandItems?.map((item: any) => item.name)).toEqual([
       'Pistol, Medium, Auto',
       'Sword, Broad'
     ]);
-    expect(profile.stowedItems?.map(item => item.name)).toEqual(expect.arrayContaining([
+    expect(profile.stowedItems?.map((item: any) => item.name)).toEqual(expect.arrayContaining([
       'Shield, Medium'
     ]));
   });

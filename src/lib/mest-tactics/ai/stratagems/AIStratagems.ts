@@ -42,7 +42,7 @@ export enum TacticalDoctrine {
   Duelist = 'duelist',              // Melee + Balanced + Aggressive
   Veteran = 'veteran_melee',        // Melee + Balanced + Balanced
   Defender = 'defender',            // Melee + Balanced + Defensive
-  
+
   // Ranged-Centric combinations (9)
   Bombard = 'bombard',              // Ranged + Aggression + Aggressive
   Hunter = 'hunter',                // Ranged + Aggression + Balanced
@@ -53,7 +53,7 @@ export enum TacticalDoctrine {
   Sharpshooter = 'sharpshooter',    // Ranged + Balanced + Aggressive
   Marksman = 'marksman',            // Ranged + Balanced + Balanced
   Watchman = 'watchman',            // Ranged + Balanced + Defensive
-  
+
   // Balanced combinations (9)
   Assault = 'assault',              // Balanced + Aggression + Aggressive
   Soldier = 'soldier',              // Balanced + Aggression + Balanced
@@ -64,6 +64,24 @@ export enum TacticalDoctrine {
   Skirmisher = 'skirmisher',        // Balanced + Balanced + Aggressive
   Operative = 'operative',          // Balanced + Balanced + Balanced
   Warden = 'warden',                // Balanced + Balanced + Defensive
+
+  // Legacy aliases for backward compatibility
+  Aggressive = 'assault',           // Alias: Assault
+  Balanced = 'operative',           // Alias: Operative
+  Defensive = 'warden',             // Alias: Warden
+  Objective = 'commander',          // Alias: Commander (Keys to Victory focused)
+  Shadow = 'scout',                 // Alias: Scout (stealthy approach)
+  Ranger = 'hunter',                // Alias: Hunter (ranged balanced)
+  Striker = 'juggernaut',           // Alias: Juggernaut (melee aggressive)
+  Vanguard = 'crusader',            // Alias: Crusader (melee keys)
+  Recon = 'sniper',                 // Alias: Sniper (ranged defensive)
+  Support = 'strategist',           // Alias: Strategist (balanced keys defensive)
+  Flank = 'raider',                 // Alias: Raider (melee aggressive defensive)
+  Hold = 'defender',                // Alias: Defender (melee balanced defensive)
+  Rush = 'berserker',               // Alias: Berserker (melee aggressive balanced)
+  Brawler = 'veteran',              // Alias: Veteran (melee balanced)
+  Pacifist = 'warden',              // Alias: Warden (defensive)
+  Opportunistic = 'operative',      // Alias: Operative (balanced)
 }
 
 // ============================================================================
@@ -83,6 +101,8 @@ export enum PlanningPriority {
   Aggression = 'aggression',
   KeysToVictory = 'keys_to_victory',
   Balanced = 'balanced',
+  // Legacy alias for backward compatibility
+  Aggressive = 'aggression',  // Alias: Aggression
 }
 
 export enum AggressionLevel {
@@ -98,43 +118,55 @@ export function getDoctrineComponents(doctrine: TacticalDoctrine): {
   engagement: EngagementStyle;
   planning: PlanningPriority;
   aggression: AggressionLevel;
+  objectiveRush: number;
+  coverPriority: number;
 } {
   const meleeDoctrines: TacticalDoctrine[] = [
     TacticalDoctrine.Juggernaut, TacticalDoctrine.Berserker, TacticalDoctrine.Raider,
     TacticalDoctrine.Crusader, TacticalDoctrine.Warrior, TacticalDoctrine.Guardian,
     TacticalDoctrine.Duelist, TacticalDoctrine.Veteran, TacticalDoctrine.Defender,
   ];
-  
+
   const rangedDoctrines: TacticalDoctrine[] = [
     TacticalDoctrine.Bombard, TacticalDoctrine.Hunter, TacticalDoctrine.Sniper,
     TacticalDoctrine.Archer, TacticalDoctrine.Gunner, TacticalDoctrine.Sentinel,
     TacticalDoctrine.Sharpshooter, TacticalDoctrine.Marksman, TacticalDoctrine.Watchman,
   ];
-  
+
   const aggressionDoctrines: TacticalDoctrine[] = [
     TacticalDoctrine.Juggernaut, TacticalDoctrine.Berserker, TacticalDoctrine.Raider,
     TacticalDoctrine.Bombard, TacticalDoctrine.Hunter, TacticalDoctrine.Sniper,
     TacticalDoctrine.Assault, TacticalDoctrine.Soldier, TacticalDoctrine.Scout,
   ];
-  
+
   const keysDoctrines: TacticalDoctrine[] = [
     TacticalDoctrine.Crusader, TacticalDoctrine.Warrior, TacticalDoctrine.Guardian,
     TacticalDoctrine.Archer, TacticalDoctrine.Gunner, TacticalDoctrine.Sentinel,
     TacticalDoctrine.Tactician, TacticalDoctrine.Commander, TacticalDoctrine.Strategist,
   ];
-  
+
   const aggressiveDoctrines: TacticalDoctrine[] = [
     TacticalDoctrine.Juggernaut, TacticalDoctrine.Crusader, TacticalDoctrine.Duelist,
     TacticalDoctrine.Bombard, TacticalDoctrine.Archer, TacticalDoctrine.Sharpshooter,
     TacticalDoctrine.Assault, TacticalDoctrine.Tactician, TacticalDoctrine.Skirmisher,
   ];
-  
+
   const defensiveDoctrines: TacticalDoctrine[] = [
     TacticalDoctrine.Raider, TacticalDoctrine.Guardian, TacticalDoctrine.Defender,
     TacticalDoctrine.Sniper, TacticalDoctrine.Sentinel, TacticalDoctrine.Watchman,
     TacticalDoctrine.Scout, TacticalDoctrine.Strategist, TacticalDoctrine.Warden,
   ];
-  
+
+  const objectiveRushDoctrines: TacticalDoctrine[] = [
+    TacticalDoctrine.Crusader, TacticalDoctrine.Raider, TacticalDoctrine.Scout,
+    TacticalDoctrine.Skirmisher, TacticalDoctrine.Assault,
+  ];
+
+  const coverPriorityDoctrines: TacticalDoctrine[] = [
+    TacticalDoctrine.Guardian, TacticalDoctrine.Defender, TacticalDoctrine.Watchman,
+    TacticalDoctrine.Sentinel, TacticalDoctrine.Strategist, TacticalDoctrine.Warden,
+  ];
+
   return {
     engagement: meleeDoctrines.includes(doctrine)
       ? EngagementStyle.Melee
@@ -151,6 +183,8 @@ export function getDoctrineComponents(doctrine: TacticalDoctrine): {
       : defensiveDoctrines.includes(doctrine)
         ? AggressionLevel.Defensive
         : AggressionLevel.Balanced,
+    objectiveRush: objectiveRushDoctrines.includes(doctrine) ? 8 : 3,
+    coverPriority: coverPriorityDoctrines.includes(doctrine) ? 8 : 3,
   };
 }
 
@@ -193,6 +227,7 @@ export interface StratagemModifiers {
   chargeBonus: number;           // Bonus to charge actions
   retreatThreshold: number;      // Health threshold for retreat
   concentratePreference: number; // Preference for Concentrate action
+  aggressionLevel: AggressionLevel; // Overall aggression level
 }
 
 export interface LoadoutProfile {
@@ -222,6 +257,7 @@ export function calculateStratagemModifiers(doctrine: TacticalDoctrine): Stratag
     chargeBonus: 0,
     retreatThreshold: 0.5,
     concentratePreference: 1.0,
+    aggressionLevel: components.aggression,
   };
 
   // Apply Engagement modifiers
@@ -492,6 +528,11 @@ export const TACTICAL_DOCTRINE_INFO: Record<TacticalDoctrine, {
     name: 'Warden',
     description: 'Cautious guardian. Defensive and balanced.',
     icon: '🏛️',
+  },
+  [TacticalDoctrine.Brawler]: {
+    name: 'Brawler',
+    description: 'Versatile melee fighter. Balanced close combat.',
+    icon: '🥊',
   },
 };
 

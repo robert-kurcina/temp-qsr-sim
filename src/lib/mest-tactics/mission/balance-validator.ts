@@ -1,4 +1,4 @@
-import { MissionConfig, GameSize } from '../mission-config';
+import { MissionConfig, GameSize } from '../missions/mission-config';
 
 /**
  * Balance validation result

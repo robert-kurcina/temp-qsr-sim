@@ -1,5 +1,5 @@
-import { Position } from './battlefield/Position';
-import { SpatialModel } from './battlefield/spatial/spatial-rules';
+import { Position } from '../battlefield/Position';
+import { SpatialModel } from '../battlefield/spatial/spatial-rules';
 
 /**
  * Types of points of interest / control zones

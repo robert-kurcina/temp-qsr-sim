@@ -1,9 +1,9 @@
 /**
  * Battle Audit Exporter
- * 
+ *
  * Exports battle audit data for visualization and analysis.
  * Wraps AuditService to provide complete battle audit export.
- * 
+ *
  * @module mest-tactics/audit
  */
 
@@ -12,6 +12,15 @@ import { Battlefield } from '../battlefield/Battlefield';
 import { TerrainFeature } from '../battlefield/terrain/Terrain';
 import { MissionSide } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
+
+// Re-export audit types for convenience
+export type {
+  ActionStepAudit,
+  AuditVector,
+  ModelEffectAudit,
+  OpposedTestAudit,
+  ModelStateAudit,
+} from './AuditService';
 
 /**
  * Battle audit export data

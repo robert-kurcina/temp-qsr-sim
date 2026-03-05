@@ -1,5 +1,5 @@
-import { Attributes } from '../Attributes';
-import { Trait } from '../Trait';
+import { Attributes } from '../core/Attributes';
+import { Trait } from '../core/Trait';
 
 // A type guard to ensure we are only dealing with valid attribute keys.
 // This prevents a trait like "Sword 2" from trying to modify a non-existent attribute.

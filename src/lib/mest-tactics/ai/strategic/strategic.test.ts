@@ -18,12 +18,11 @@ import {
   CharacterRole,
   createSideAssemblyAIs,
 } from './AssemblyAI';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
+import { Character, Profile } from '../../core';
+import { Battlefield } from '../../battlefield';
 import { createMissionSide } from '../../mission/MissionSide';
 import { buildAssembly } from '../../mission/assembly-builder';
-import { archetypes, melee_weapons } from '../../data';
+import { archetypes, melee_weapons } from '../../../data';
 
 function makeTestProfile(name: string): Profile {
   return {
@@ -52,7 +51,7 @@ function makeTestProfile(name: string): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -73,8 +72,8 @@ function makeTestSide(
   battlefield: Battlefield,
   startX: number = 0
 ): { side: any; characters: Character[] } {
-  const characters: Character[] = [];
-  const profiles: Profile[] = [];
+  const characters: any[] = [];
+  const profiles: any[] = [];
   
   for (let i = 0; i < characterCount; i++) {
     const profile = makeTestProfile(`${name}-${i}`);
@@ -88,7 +87,7 @@ function makeTestSide(
   const roster = buildAssembly(`${name} Assembly`, profiles);
   const side = createMissionSide(name, [roster], { startingIndex: 0 });
 
-  return { side, characters };
+  return {  side, characters  } as any;
 }
 
 describe('SideAI', () => {
@@ -248,7 +247,7 @@ describe('AssemblyAI', () => {
     const characters = assemblyAI.getActiveCharacters();
     const enemies = [makeTestCharacter('enemy-1'), makeTestCharacter('enemy-2')];
     
-    enemies.forEach(e => battlefield.placeCharacter(e, { x: 18, y: 12 }));
+    enemies.forEach((e: any) => battlefield.placeCharacter(e, { x: 18, y: 12 }));
     
     const assignments = assemblyAI.coordinateTargets(characters, enemies);
     
@@ -260,7 +259,7 @@ describe('AssemblyAI', () => {
   it('should generate coordinated actions', () => {
     const characters = assemblyAI.getActiveCharacters();
     const enemies = [makeTestCharacter('enemy-1')];
-    enemies.forEach(e => battlefield.placeCharacter(e, { x: 18, y: 12 }));
+    enemies.forEach((e: any) => battlefield.placeCharacter(e, { x: 18, y: 12 }));
     
     const targetAssignments = assemblyAI.coordinateTargets(characters, enemies);
     const decisions = assemblyAI.generateCoordinatedActions(

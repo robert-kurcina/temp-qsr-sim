@@ -12,7 +12,7 @@ import { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefie
 import { GameManager } from '../../../src/lib/mest-tactics/engine/GameManager';
 import { buildAssembly, buildProfile } from '../../../src/lib/mest-tactics/mission/assembly-builder';
 import { LOFOperations } from '../../../src/lib/mest-tactics/battlefield/los/LOFOperations';
-import type { GameConfig } from '../shared/BattleReportTypes';
+import type { GameConfig } from '../../shared/BattleReportTypes';
 import { GAME_SIZE_CONFIG } from '../AIBattleConfig';
 import { AIBattleRunner } from '../AIBattleRunner';
 import type { ValidationAggregateReport, ValidationCoverage, BattleStats, AdvancedRuleMetrics } from './ValidationMetrics';
@@ -167,9 +167,8 @@ export function runMechanicProbes(): Partial<ValidationCoverage> {
     const meleeWeapon = (defender.profile.equipment || defender.profile.items || [])[0];
     if (meleeWeapon) {
       const close = manager.executeCloseCombatAttack(attacker, defender, meleeWeapon, {
-        isDefending: false,
         isCharge: false,
-      });
+      } as any);
       coverage.closeCombat = Boolean(close.result);
     }
 
@@ -289,7 +288,13 @@ export async function runValidationBatch(
         totalPathLength: report.usage?.totalPathLength ?? 0,
         averagePathLengthPerMovedModel: report.usage?.averagePathLengthPerMovedModel ?? 0,
         averagePathLengthPerModel: report.usage?.averagePathLengthPerModel ?? 0,
-        topPathModels: report.usage?.topPathModels ?? [],
+        topPathModels: (report.usage?.topPathModels ?? []).map((m: any) => ({
+          modelId: m.modelId,
+          modelName: m.modelName ?? '',
+          side: m.side ?? '',
+          pathLength: m.pathLength,
+          moveActions: m.moveActions ?? 0,
+        })),
       },
       missionRuntime: report.missionRuntime,
       nestedSections: report.nestedSections,
@@ -361,7 +366,7 @@ export async function runValidationBatch(
   console.log(`    Alpha: ${doctrineAlpha}`);
   console.log(`    Bravo: ${doctrineBravo}`);
   console.log(`  Loadout Profile: ${loadoutProfile}`);
-  if (performanceGates.enabled) {
+  if (performanceGates && performanceGates.enabled) {
     console.log(
       `  Gate Profile: mission=${performanceGates.profile.missionId}, size=${performanceGates.profile.gameSize}, density=${performanceGates.profile.densityRatio}% (bucket ${performanceGates.profile.densityBucket})`
     );
@@ -389,6 +394,7 @@ export async function runValidationBatch(
   console.log(`  Report: ${outputPath}`);
   if (
     process.env.AI_BATTLE_ENFORCE_GATES === '1' &&
+    performanceGates &&
     performanceGates.pass.overall === false
   ) {
     process.exitCode = 1;

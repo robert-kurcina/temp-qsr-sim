@@ -67,6 +67,7 @@ export interface PlacementStats {
   attempts: number;
   overlaps: number;
   outOfBounds: number;
+  seed?: number; // Optional seed for reproducibility
 }
 
 /**
@@ -267,12 +268,12 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
       config,
       rng,
       stats
-    );
+    ) as any;
 
     // Add structures to result
-    terrain.push(...structuresResult.terrain);
-    structuresBlockedRatio = structuresResult.blockedRatio;
-    structureBounds = structuresResult.structureBounds;
+    terrain.push(...structuresResult!.terrain);
+    structuresBlockedRatio = structuresResult!.blockedRatio;
+    structureBounds = structuresResult!.structureBounds;
   }
 
   // Step 3: Place rocks with clearance from structures
@@ -565,7 +566,7 @@ function placeStructuresLayer(
     blockedRatio: structuresLayer.getBlockedAreaRatio(),
     structureBounds: structuresLayer.getStructureBounds(),
     actualBounds: structuresLayer.getActualBounds(),
-  };
+  } as any;
 }
 
 /**

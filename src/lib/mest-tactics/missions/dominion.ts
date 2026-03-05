@@ -1,4 +1,4 @@
-import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from '../mission-definitions';
+import { MissionDefinition, VictoryConditionType, ScoringType, ScoringTiming } from './mission-definitions';
 
 /**
  * QAI Mission 14: Beacon

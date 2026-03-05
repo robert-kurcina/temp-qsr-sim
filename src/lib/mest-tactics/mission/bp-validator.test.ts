@@ -53,8 +53,8 @@ function createTestAssembly(
 ): Assembly {
   return {
     name,
-    characters: profiles.map(p => p.name),
-    totalBP: profiles.reduce((sum, p) => sum + p.totalBp, 0),
+    characters: profiles.map((p: any) => p.name),
+    totalBP: profiles.reduce((sum, p) => sum + (p.totalBp ?? 0), 0),
     totalCharacters: profiles.length,
     config: config || {
       bpLimitMin: 250,

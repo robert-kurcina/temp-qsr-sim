@@ -1,4 +1,4 @@
-/**
+      /**
  * AI Battle Configuration
  *
  * Configuration interfaces and validation for AI battle setup.
@@ -35,6 +35,8 @@ export interface GameConfig {
   seed?: number;
   audit?: boolean;
   viewer?: boolean;
+  // Backward compatibility property
+  battlefieldSize?: number;
 }
 
 /**
@@ -49,6 +51,8 @@ export interface SideConfig {
   assemblyName: string;
   aggression?: number;
   caution?: number;
+  // Backward compatibility property
+  models?: any[];
 }
 
 /**
@@ -221,7 +225,7 @@ export function createDefaultGameConfig(
       },
     ],
     densityRatio: 50,
-    lighting: { name: 'Day, Clear', visibilityOR: 16 },
+    lighting: 'Day, Clear',
     visibilityOrMu: 16,
     maxOrm: 3,
     allowConcentrateRangeExtension: true,

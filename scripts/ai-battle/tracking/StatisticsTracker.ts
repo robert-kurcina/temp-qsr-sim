@@ -5,20 +5,20 @@
  * Handles all stats collection, aggregation, and reporting.
  */
 
-import type { Character } from '../../src/lib/mest-tactics/core/Character';
-import type { BonusActionOption, BonusActionOutcome } from '../../src/lib/mest-tactics/actions/bonus-actions';
-import type { PassiveOption, PassiveOptionType, PassiveEvent } from '../../src/lib/mest-tactics/status/passive-options';
-import type { TestContext } from '../../src/lib/mest-tactics/utils/TestContext';
-import type { AIResult } from '../../src/lib/mest-tactics/ai/core/AIController';
-import type { 
-  BattleStats, 
-  AdvancedRuleMetrics, 
+import type { Character } from '../../../src/lib/mest-tactics/core/Character';
+import type { BonusActionOption, BonusActionOutcome } from '../../../src/lib/mest-tactics/actions/bonus-actions';
+import type { PassiveOption, PassiveOptionType, PassiveEvent } from '../../../src/lib/mest-tactics/status/passive-options';
+import type { TestContext } from '../../../src/lib/mest-tactics/utils/TestContext';
+import type { AIResult } from '../../../src/lib/mest-tactics/ai/core/AIController';
+import type {
+  BattleStats,
+  AdvancedRuleMetrics,
   RuleTypeBreakdown,
-  ModelUsageStats 
-} from '../shared/BattleReportTypes';
+  ModelUsageStats
+} from '../../shared/BattleReportTypes';
 import { CONTEXT_MODIFIER_KEYS } from '../validation/ValidationMetrics';
-import type { GameManager } from '../../src/lib/mest-tactics/engine/GameManager';
-import type { Battlefield } from '../../src/lib/mest-tactics/battlefield/Battlefield';
+import type { GameManager } from '../../../src/lib/mest-tactics/engine/GameManager';
+import type { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
 
 export interface TrackSituationalParams {
   context?: TestContext | Record<string, unknown>;

@@ -37,8 +37,8 @@ export function writeBattlefieldSvg(
 
   const svgPath = join(outputDir, `battlefield-${timestamp}.svg`);
   const svg = SvgRenderer.render(battlefield, {
-    width: config.battlefieldSize,
-    height: config.battlefieldSize,
+    width: config.battlefieldSize || 48,
+    height: config.battlefieldSize || 48,
     gridResolution: 0.5,
     title: `${config.missionId} - ${config.gameSize}`,
     layers: [
@@ -67,13 +67,13 @@ export function writeVisualAuditReport(report: BattleReport): string {
   mkdirSync(battleDir, { recursive: true });
 
   // Extract or create audit data
-  const auditData: BattleAuditTrace = report.audit || {
+  const auditData: BattleAuditTrace = (report.audit || {
     version: '1.0',
     session: {
       missionId: report.config.missionId,
       missionName: report.config.missionName,
       seed: report.seed,
-      lighting: report.config.lighting,
+      lighting: report.config.lighting as any,
       visibilityOrMu: report.config.visibilityOrMu,
       maxOrm: report.config.maxOrm,
       allowConcentrateRangeExtension: report.config.allowConcentrateRangeExtension,
@@ -86,7 +86,7 @@ export function writeVisualAuditReport(report: BattleReport): string {
       lofWidthMu: 0.5,
     },
     turns: [],
-  };
+  }) as any;
 
   // Add terrain from battlefield if available
   const reportAny = report as any;
@@ -145,21 +145,20 @@ export function writeBattleReportViewer(report: BattleReport): string {
         missionId: report.config.missionId,
         missionName: report.config.missionName,
         seed: report.seed,
-        lighting: report.config.lighting,
+        lighting: report.config.lighting as any,
         visibilityOrMu: report.config.visibilityOrMu,
         maxOrm: report.config.maxOrm,
         allowConcentrateRangeExtension: report.config.allowConcentrateRangeExtension,
         perCharacterFovLos: report.config.perCharacterFovLos,
       },
       battlefield: {
-        widthMu: report.config.battlefieldSize,
-        heightMu: report.config.battlefieldSize,
+        widthMu: report.config.battlefieldSize || 48,
+        heightMu: report.config.battlefieldSize || 48,
         movementSampleStepMu: 0.5,
         lofWidthMu: 0.5,
       },
       turns: [],
-      frames: [],
-    };
+    } as any;
     writeFileSync(auditPath, JSON.stringify(auditData, null, 2), 'utf-8');
   }
 

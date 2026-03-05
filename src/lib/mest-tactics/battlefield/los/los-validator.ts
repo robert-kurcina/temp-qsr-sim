@@ -1,8 +1,8 @@
-import { Battlefield } from './Battlefield';
-import { Position } from './Position';
+import { Battlefield } from '../';
+import { Position } from '../';
 import { LOSOperations, LOSModelFootprint, LOSResult } from './LOSOperations';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
-import { SpatialModel } from './spatial-rules';
+import { SpatialModel } from '../spatial/spatial-rules';
 import { LOFOperations, LOFModel } from './LOFOperations';
 
 /**
@@ -500,7 +500,7 @@ export class LOFValidator {
       const distance = LOFOperations.distance(attacker.position, target.position);
       if (distance > maxRange) return false;
 
-      const lofResult = this.checkLOF(battlefield, attacker, target, { lofWidth, checkFriendlyFire: false });
+      const lofResult = this.checkLOF(battlefield, attacker, target, { lofWidthMu: lofWidth, checkFriendlyFire: false });
       return lofResult.clear;
     });
 

@@ -119,8 +119,12 @@ export async function generateBattlefield(
       stats: {
         placed: battlefield.terrain.length,
         seed: config.seed ?? Math.floor(Math.random() * 1000000),
+        rejected: 0,
+        attempts: battlefield.terrain.length,
+        overlaps: 0,
+        outOfBounds: 0,
       },
-      fitness: undefined,
+      fitness: {} as any,
     };
 
     const battlefieldJson = exportBattlefieldToJson(

@@ -31,6 +31,7 @@ export interface PassiveOption {
 export type PassiveEvent =
   | {
       kind: 'RangedAttackDeclared';
+      type?: 'RangedAttackDeclared'; // Backward compatibility
       attacker: Character;
       defender: Character;
       battlefield: Battlefield;
@@ -38,6 +39,7 @@ export type PassiveEvent =
     }
   | {
       kind: 'CloseCombatAttackDeclared';
+      type?: 'CloseCombatAttackDeclared'; // Backward compatibility
       attacker: Character;
       defender: Character;
       battlefield: Battlefield;
@@ -45,6 +47,7 @@ export type PassiveEvent =
     }
   | {
       kind: 'HitTestFailed';
+      type?: 'HitTestFailed'; // Backward compatibility
       attacker: Character;
       defender: Character;
       battlefield?: Battlefield;
@@ -54,6 +57,7 @@ export type PassiveEvent =
     }
   | {
       kind: 'MoveConcluded';
+      type?: 'MoveConcluded'; // Backward compatibility
       mover: Character;
       observers: Character[];
       battlefield?: Battlefield;
@@ -62,12 +66,14 @@ export type PassiveEvent =
     }
   | {
       kind: 'EngagementBroken';
+      type?: 'EngagementBroken'; // Backward compatibility
       mover: Character;
       opponents: Character[];
       battlefield?: Battlefield;
     }
   | {
       kind: 'HiddenExposure';
+      type?: 'HiddenExposure'; // Backward compatibility
       character: Character;
     };
 

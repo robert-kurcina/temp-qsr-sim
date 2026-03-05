@@ -24,8 +24,8 @@ describe('makeRangedCombatAttack', () => {
     attackerWeapon = { name: "Rifle, Light, Semi/A", ...ranged_weapons["Rifle, Light, Semi/A"] };
     const defenderArmor = { name: "Armor, Medium Mail", ...armors["Armor, Medium Mail"] };
 
-    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] };
-    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderArmor] };
+    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [attackerWeapon] } as any;
+    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderArmor] } as any;
 
     attacker = await createCharacter(attackerProfile);
     defender = await createCharacter(defenderProfile);
@@ -43,7 +43,7 @@ describe('makeRangedCombatAttack', () => {
     const result = makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { forceHit: true });
     expect(result.hit).toBe(true);
     expect(result.damageResolution).toBeDefined();
-    expect(result.damageResolution.woundsAdded).toBe(2);
+    expect(result.damageResolution?.woundsAdded).toBe(2);
   });
 
   it('should force a miss and not create a damage resolution', async () => {
@@ -96,7 +96,7 @@ describe('makeRangedCombatAttack', () => {
     const statefulRoller: Roller = () => rolls.shift() || [1, 1];
     setRoller(statefulRoller);
 
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, 1, {});
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 1, {} as any);
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     expect(diceEvents.length).toBeGreaterThanOrEqual(1);
@@ -110,7 +110,7 @@ describe('makeRangedCombatAttack', () => {
     setRoller(statefulRoller);
 
     attacker.state.statusTokens.Burn = 1;
-    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {});
+    makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {} as any);
 
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const hitEventData = diceEvents[0].data as any;
@@ -151,7 +151,7 @@ describe('makeRangedCombatAttack', () => {
     attacker.allTraits = [];
     const bowWeapon = { ...attackerWeapon, classification: 'Bow', class: 'Bow' };
     setRoller(() => [6, 6]);
-    const result = makeRangedCombatAttack(attacker, defender, bowWeapon, 0, {});
+    const result = makeRangedCombatAttack(attacker, defender, bowWeapon, 0, {} as any);
     expect(result.hit).toBe(false);
   });
 
@@ -164,7 +164,7 @@ describe('makeRangedCombatAttack', () => {
     const statefulRoller: Roller = () => rolls.shift() || [1, 1];
     setRoller(statefulRoller);
 
-    makeRangedCombatAttack(attacker, defender, thrownWeapon, 0, {});
+    makeRangedCombatAttack(attacker, defender, thrownWeapon, 0, {} as any);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
     const hitEventData = diceEvents[0].data as any;
     expect(hitEventData.finalPools.p1FinalPenalty[DiceType.Modifier] || 0).toBe(1);

@@ -250,3 +250,9 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
 
   return options;
 }
+
+// Backward compatibility aliases for older tests/callers
+export const getReactOptions = buildReactOptions;
+export function getReactOptionsSorted(event: ReactEvent): ReactOption[] {
+  return sortReactOptions(buildReactOptions(event));
+}

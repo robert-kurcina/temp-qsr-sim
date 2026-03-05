@@ -15,6 +15,11 @@ export interface Trait {
   level?: number;
 
   /**
+   * Backward compatibility alias for legacy tests/parsers.
+   */
+  value?: number;
+
+  /**
    * The specific type or target of the trait, e.g., "Fear" for "Damper 4 > Fear".
    */
   type?: string;
@@ -27,6 +32,12 @@ export interface Trait {
   /**
    * The original string representation of the trait, e.g., "Damper 4 > Fear".
    * Useful for display and debugging.
+   * Made optional for backward compatibility with test code.
    */
-  source: string;
+  source?: string;
+
+  /**
+   * Whether this trait is a disability (enclosed in brackets).
+   */
+  isDisability?: boolean;
 }

@@ -34,19 +34,13 @@ export function resolveDamageTest(
   const simulatedHitResult: TestResult = {
     pass: true,
     score: hitCascades,
-    participant1Score: hitCascades,
-    participant2Score: 0,
+    p1FinalScore: hitCascades,
+    p2FinalScore: 0,
     cascades: hitCascades,
     carryOverDice,
     p1Rolls: [],
     p2Rolls: [],
-    finalPools: {
-      p1FinalBonus: {},
-      p1FinalPenalty: {},
-      p2FinalBonus: {},
-      p2FinalPenalty: {},
-    },
-  };
+  } as any;
 
   // Legacy compatibility wrapper: the canonical damage flow now lives in damage-test.ts.
   const resolution = resolveDamage(attacker, defender, weapon, simulatedHitResult);

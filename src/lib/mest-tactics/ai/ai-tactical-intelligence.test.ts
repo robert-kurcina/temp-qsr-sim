@@ -9,9 +9,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Character } from '../core/Character';
-import { Profile } from '../core/Profile';
-import { Battlefield } from '../battlefield/Battlefield';
+import { Character, Profile } from '../core';
+import { Battlefield } from '../battlefield';
 import { UtilityScorer } from './core/UtilityScorer';
 import { AIContext, AIControllerConfig } from './core/AIController';
 
@@ -19,7 +18,7 @@ import { AIContext, AIControllerConfig } from './core/AIController';
 function createTestCharacter(name: string, mov: number = 4, wounds: number = 0): Character {
   const profile: Profile = {
     name,
-    archetype: 'Average',
+    archetype: 'Average' as any,
     attributes: {
       cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 2, mov, siz: 3,
     },

@@ -242,9 +242,9 @@ export function makeRangedCombatAttack(
     // 2. Perform the Ranged Hit Test (RCA vs REF).
     let hitTestResult: TestResult;
     if (fullContext.forceHit) {
-        hitTestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+        hitTestResult = { pass: true, score: 99, p1FinalScore: 99, p2FinalScore: 0, p1Rolls: [], p2Rolls: [] } as any;
     } else if (fullContext.forceMiss) {
-        hitTestResult = { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+        hitTestResult = { pass: false, score: -99, p1FinalScore: 0, p2FinalScore: 99, p1Rolls: [], p2Rolls: [] } as any;
     } else {
         hitTestResult = resolveRangedHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
     }
@@ -336,9 +336,9 @@ export function resolveRangedCombatHitTest(
 
     let hitTestResult: TestResult;
     if (fullContext.forceHit) {
-        hitTestResult = { pass: true, score: 99, participant1Score: 99, participant2Score: 0, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+        hitTestResult = { pass: true, score: 99, p1FinalScore: 99, p2FinalScore: 0, p1Rolls: [], p2Rolls: [] } as any;
     } else if (fullContext.forceMiss) {
-        hitTestResult = { pass: false, score: -99, participant1Score: 0, participant2Score: 99, p1Rolls: [], p2Rolls: [], finalPools: { p1FinalBonus: {}, p1FinalPenalty: {}, p2FinalBonus: {}, p2FinalPenalty: {} } };
+        hitTestResult = { pass: false, score: -99, p1FinalScore: 0, p2FinalScore: 99, p1Rolls: [], p2Rolls: [] } as any;
     } else {
         hitTestResult = resolveRangedHitTest(attacker, defender, weapon, attackerBonus, attackerPenalty, defenderBonus, defenderPenalty);
     }

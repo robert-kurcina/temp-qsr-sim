@@ -461,7 +461,7 @@ export function resolveMutualHiddenExposure(
   battlefield: Battlefield,
   character: Character,
   opponents: Character[],
-  options: MutualExposureOptions = {}
+  options: MutualExposureOptions = { isActiveModel: false }
 ): MutualExposureResult {
   if (!character.state.isHidden) return { mustReveal: false, canReposition: false };
 

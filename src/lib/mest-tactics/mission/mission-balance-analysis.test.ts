@@ -286,9 +286,9 @@ describe('Mission Balance Analysis - LARGE Game Size', () => {
 
     // Statistics
     const avgScore = Math.round(results.reduce((sum, r) => sum + r.score, 0) / results.length);
-    const passedCount = results.filter(r => r.passed).length;
-    const highestScore = Math.max(...results.map(r => r.score));
-    const lowestScore = Math.min(...results.map(r => r.score));
+    const passedCount = results.filter((r: any) => r.passed).length;
+    const highestScore = Math.max(...results.map((r: any) => r.score));
+    const lowestScore = Math.min(...results.map((r: any) => r.score));
 
     console.log('');
     console.log('STATISTICS');
@@ -304,7 +304,7 @@ describe('Mission Balance Analysis - LARGE Game Size', () => {
     expect(results.length).toBe(10);
     
     // All missions should pass balance check (60+)
-    const failedMissions = results.filter(r => !r.passed);
+    const failedMissions = results.filter((r: any) => !r.passed);
     
     // Average should be at least 60
     expect(avgScore).toBeGreaterThanOrEqual(60);

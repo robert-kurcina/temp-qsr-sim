@@ -51,6 +51,12 @@ export interface TestContext {
   burstBonusBase?: number;  // For the +1b [Burst] trait bonus
   rofBonusWild?: number;    // For +Xw ROF marker bonus on ranged hit tests
   handPenaltyBase?: number; // For -1b penalty when using one less hand
+  // Backward compatibility properties
+  suddennessBonus?: number;
+  unarmedPenalty?: number;
+  acrobaticBonus?: number;
+  hasAdvantage?: boolean; // Backward compatibility alias used by legacy tests
+  isDisadvantaged?: boolean; // Backward compatibility alias used by legacy tests
 
   // --- Test Overrides ---
   isAutoPass?: boolean;

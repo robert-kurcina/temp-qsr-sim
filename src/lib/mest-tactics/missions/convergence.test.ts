@@ -3,7 +3,7 @@ import { createConvergenceMission, ConvergenceMissionManager } from './convergen
 import { buildOpposingSides } from '../mission/MissionSideBuilder';
 import { ModelSlotStatus } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
-import { SpatialModel } from '../battlefield/spatial-rules';
+import { SpatialModel } from '../battlefield/spatial/spatial-rules';
 
 describe('Convergence Mission', () => {
   let manager: ConvergenceMissionManager;
@@ -27,7 +27,7 @@ describe('Convergence Mission', () => {
     sideA = result.sideA;
     sideB = result.sideB;
 
-    const zonePositions: Position[] = [
+    const zonePositions: any[] = [
       { x: 6, y: 6 },
       { x: 18, y: 6 },
       { x: 12, y: 12 },
@@ -58,7 +58,7 @@ describe('Convergence Mission', () => {
     it('should control zone with single side present', () => {
       sideA.members[0].position = { x: 6, y: 6 }; // In zone 1
 
-      const models: SpatialModel[] = [toSpatialModel(sideA.members[0])];
+      const models: any[] = [toSpatialModel(sideA.members[0])];
       manager.updateZoneControl(models);
 
       expect(manager.getZoneController('zone-1')).toBe(sideA.id);
@@ -68,7 +68,7 @@ describe('Convergence Mission', () => {
       sideA.members[0].position = { x: 6, y: 6 };
       sideB.members[0].position = { x: 6, y: 6 };
 
-      const models: SpatialModel[] = [
+      const models: any[] = [
         toSpatialModel(sideA.members[0]),
         toSpatialModel(sideB.members[0]),
       ];
@@ -81,7 +81,7 @@ describe('Convergence Mission', () => {
     it('should uncontrol zone with no models', () => {
       sideA.members[0].position = { x: 20, y: 20 }; // Outside all zones
 
-      const models: SpatialModel[] = [toSpatialModel(sideA.members[0])];
+      const models: any[] = [toSpatialModel(sideA.members[0])];
       manager.updateZoneControl(models);
 
       expect(manager.getZoneController('zone-1')).toBeNull();
@@ -90,7 +90,7 @@ describe('Convergence Mission', () => {
     it('should track first control', () => {
       sideA.members[0].position = { x: 6, y: 6 };
 
-      const models: SpatialModel[] = [toSpatialModel(sideA.members[0])];
+      const models: any[] = [toSpatialModel(sideA.members[0])];
       manager.updateZoneControl(models);
 
       expect(manager.getFirstController('zone-1')).toBe(sideA.id);
@@ -286,7 +286,7 @@ describe('Convergence Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 3 }]
       );
 
-      const zonePositions: Position[] = [
+      const zonePositions: any[] = [
         { x: 6, y: 6 },
         { x: 18, y: 6 },
         { x: 12, y: 12 },
@@ -321,7 +321,7 @@ describe('Convergence Mission - Edge Cases', () => {
         [{ archetypeName: 'Militia', count: 1 }]
       );
 
-      const zonePositions: Position[] = [
+      const zonePositions: any[] = [
         { x: 6, y: 6 },
         { x: 18, y: 6 },
         { x: 12, y: 12 },
@@ -335,7 +335,7 @@ describe('Convergence Mission - Edge Cases', () => {
       expect(zones.length).toBe(5);
 
       // Control all 5 zones
-      const models: SpatialModel[] = [];
+      const models: any[] = [];
       for (let i = 0; i < 5; i++) {
         result.sideA.members[i].position = zonePositions[i];
         models.push(toSpatialModel(result.sideA.members[i]));

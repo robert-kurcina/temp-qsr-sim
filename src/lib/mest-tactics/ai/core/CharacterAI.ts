@@ -14,8 +14,6 @@ import {
   AIContext,
   AIResult,
   ActionDecision,
-  ReactOpportunity,
-  ReactResult,
   CharacterKnowledge,
   AIControllerConfig,
   DEFAULT_AI_CONFIG,
@@ -49,11 +47,10 @@ import {
 import { evaluateRangeWithVisibility, parseWeaponOptimalRangeMu } from '../../utils/visibility';
 import {
   ReactEvaluator as ReactEvaluatorQSR,
-  ReactOpportunity,
-  ReactResult,
   ReactConfig,
   DEFAULT_REACT_CONFIG,
 } from '../tactical/ReactsQSR';
+import type { ReactOpportunity, ReactResult } from '../tactical/ReactsQSR';
 
 /**
  * Character AI configuration
@@ -397,15 +394,15 @@ export class CharacterAI implements IAIController {
    */
   evaluateReact(
     context: AIContext,
-    opportunity: ReactOpportunity
-  ): ReactResult {
+    opportunity: import('./AIController').ReactOpportunity
+  ): import('./AIController').ReactResult {
     // Use QSR-compliant ReactEvaluator
     return this.reactEvaluator.evaluateReacts(
       context.character,
-      opportunity,
+      opportunity as any,
       context,
       false // isReactingToReact
-    );
+    ) as any;
   }
 
   /**

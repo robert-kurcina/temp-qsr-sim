@@ -1,5 +1,5 @@
 
-import { createProfiles } from '../src/lib/mest-tactics/profile-generator';
+import { createProfiles } from '../src/lib/mest-tactics/utils/profile-generator';
 import { gameData } from '../src/lib/data';
 
 const archetypeName = 'Veteran, Fighter';

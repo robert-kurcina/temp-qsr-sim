@@ -126,6 +126,7 @@ export class AuditCaptureService {
     success: boolean;
     apBefore: number;
     apAfter: number;
+    apSpent: number;
     actorPositionBefore?: Position;
     actorPositionAfter?: Position;
     actorStateBefore: ModelStateAudit;
@@ -137,7 +138,7 @@ export class AuditCaptureService {
     opposedTest?: any;
     details?: Record<string, any>;
   }): void {
-    this.auditService.recordAction(action);
+    this.auditService.recordAction(action as any);
   }
 
   /**

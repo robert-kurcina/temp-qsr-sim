@@ -1,6 +1,6 @@
 
-import type { TestDice } from '../dice-roller';
-import type { Attributes } from '../Attributes';
+import type { TestDice } from './dice-roller';
+import type { Attributes } from '../core/Attributes';
 
 /**
  * Parses a damage string (e.g., "STR+1", "POW+2b", "int-1m") into a numeric value and a dice pool.

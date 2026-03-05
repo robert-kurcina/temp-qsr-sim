@@ -408,8 +408,8 @@ function generateProfileReport(profile: Profile): ProfileReport {
   return {
     name: profile.name,
     archetypeName: typeof profile.archetype === 'string' ? profile.archetype : profile.archetype?.name || 'Unknown',
-    totalBP: profile.totalBp,
-    adjustedBP: profile.adjustedBp,
+    totalBP: profile.totalBp ?? 0,
+    adjustedBP: profile.adjustedBp ?? 0,
     items: (profile.items || []).map(item => item.name),
     traits: profile.allTraits || profile.finalTraits || [],
     attributes: {
@@ -437,7 +437,7 @@ function generateMissionReport(
     missionId: missionState.missionId || 'unknown',
     missionName: missionState.missionName || 'Unknown Mission',
     description: '',
-    keysToVictory: (scoreResult.keysToVictory || []).map(key => ({
+    keysToVictory: ((scoreResult as any).keysToVictory || []).map((key: any) => ({
       key: key.key,
       vpAwarded: key.vpAwarded,
       sideId: key.sideId,

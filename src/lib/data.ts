@@ -20178,3 +20178,7 @@ export const gameData = {
     }
   }
 };
+
+// Backward compatibility exports
+export const archetypes = gameData.archetypes;
+export const melee_weapons = gameData.melee_weapons;

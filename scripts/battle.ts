@@ -99,7 +99,10 @@ class UnifiedBattle {
     console.log(`Battlefield: ${this.config.battlefieldWidth}×${this.config.battlefieldHeight} MU`);
     console.log(`Sides: ${this.config.sides.length}`);
     console.log(`Terrain Density: ${Math.round(this.config.density * 100)}%`);
-    console.log(`Lighting: ${this.config.lighting.name} (Visibility OR ${this.config.lighting.visibilityOR} MU)`);
+    const lightingConfig = this.config.lighting as any;
+    const lightingName = typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig);
+    const visibilityOR = typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16);
+    console.log(`Lighting: ${lightingName} (Visibility OR ${visibilityOR} MU)`);
     console.log('═══════════════════════════════════════\n');
 
     // 1. Place terrain
@@ -155,11 +158,12 @@ class UnifiedBattle {
 
     // 5. Initialize audit
     if (this.auditService) {
+      const lightingConfig = this.config.lighting as any;
       this.auditService.initialize({
         missionId: this.config.missionId,
         missionName: 'Elimination',
-        lighting: this.config.lighting.name,
-        visibilityOrMu: this.config.lighting.visibilityOR,
+        lighting: (typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig)) as any,
+        visibilityOrMu: typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16),
         maxOrm: 3,
         allowConcentrateRangeExtension: true,
         perCharacterFovLos: false,
@@ -180,12 +184,13 @@ class UnifiedBattle {
     // 8. Export audit with full data
     if (this.auditService) {
       const auditPath = join(this.outputDir, 'audit.json');
+      const lightingConfig = this.config.lighting as any;
       const auditExport = exportBattleAudit(this.auditService, {
         missionId: this.config.missionId,
         missionName: 'Elimination',
         seed: this.config.seed,
-        lighting: this.config.lighting.name,
-        visibilityOrMu: this.config.lighting.visibilityOR,
+        lighting: (typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig)) as any,
+        visibilityOrMu: typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16),
         maxOrm: 3,
         allowConcentrateRangeExtension: true,
         perCharacterFovLos: false,
@@ -324,6 +329,7 @@ class UnifiedBattle {
   }
 
   private async runGameLoop(gameManager: GameManager, battlefield: Battlefield, sides: any[]): Promise<any> {
+    const lightingConfig = this.config.lighting as any;
     const aiGameLoop = new AIGameLoop(gameManager, battlefield, sides, {
       enableStrategic: true,
       enableTactical: true,
@@ -332,14 +338,14 @@ class UnifiedBattle {
       enableReplanning: true,
       verboseLogging: false,
       maxActionsPerTurn: 3,
-      visibilityOrMu: this.config.lighting.visibilityOR,
+      visibilityOrMu: typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16),
       maxOrm: 3,
       allowConcentrateRangeExtension: true,
       perCharacterFovLos: false,
       auditService: this.auditService || undefined,
       missionId: this.config.missionId,
       missionName: 'Elimination',
-      lighting: this.config.lighting.name,
+      lighting: (typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig)) as any,
     }, this.logger);
 
     const result = aiGameLoop.runGame(this.config.maxTurns);
@@ -461,7 +467,7 @@ async function main() {
       { name: 'Bravo', bp: sizeConfig.bpPerSide[1], modelCount: sizeConfig.modelsPerSide[1], tacticalDoctrine: TacticalDoctrine.Balanced, assemblyName: 'Bravo Assembly' },
     ],
     density: userConfig.density ?? 0.5,
-    lighting: { name: 'Day, Clear', visibilityOR: 16 },
+    lighting: { name: 'Day, Clear', visibilityOR: 16 } as any,
     seed: userConfig.seed,
     audit: userConfig.audit ?? false,
     viewer: userConfig.viewer ?? false,

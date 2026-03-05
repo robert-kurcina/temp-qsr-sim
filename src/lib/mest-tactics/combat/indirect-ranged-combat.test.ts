@@ -21,7 +21,7 @@ describe('makeIndirectRangedAttack', () => {
     const attackerArchetype = { name: "Veteran, Fighter", ...archetypes["Veteran, Fighter"] };
     weapon = { name: "Rifle, Light, Semi/A", ...ranged_weapons["Rifle, Light, Semi/A"] };
 
-    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [weapon] };
+    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [weapon] } as any;
 
     attacker = await createCharacter(attackerProfile);
     attacker.finalAttributes = attacker.profile.archetype.attributes;
@@ -140,7 +140,7 @@ describe('makeIndirectRangedAttack', () => {
 
   it('should apply status traits when a target character is provided', async () => {
     const targetArchetype = { name: "Militia", ...archetypes["Militia"] };
-    const targetProfile: Profile = { name: 'Target Profile', archetype: targetArchetype, equipment: [] };
+    const targetProfile: Profile = { name: 'Target Profile', archetype: targetArchetype, equipment: [] } as any;
     const target = await createCharacter(targetProfile);
     target.finalAttributes = target.profile.archetype.attributes;
 

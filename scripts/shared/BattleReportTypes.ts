@@ -11,8 +11,12 @@ import { LightingCondition } from '../../src/lib/mest-tactics/utils/visibility';
 import { BattlefieldLosCacheStats } from '../../src/lib/mest-tactics/battlefield/Battlefield';
 import { PathfindingCacheStats } from '../../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
 import type { GameConfig, SideConfig } from '../ai-battle/AIBattleConfig';
+import type { ModelStateAudit, OpposedTestAudit, AuditVector, ModelEffectAudit, ActionStepAudit as CoreActionStepAudit } from '../../src/lib/mest-tactics/audit/AuditService';
 
 export type { GameConfig, SideConfig } from '../ai-battle/AIBattleConfig';
+
+// Re-export audit types for scripts that need them
+export type { ModelStateAudit, OpposedTestAudit, AuditVector, ModelEffectAudit };
 
 // ============================================================================
 // Battle Report Structure
@@ -100,6 +104,40 @@ export interface UsageMetrics {
   totalTokens: number;
   tokensPerActivation: number;
   decisionLatencyMs: number;
+  // Backward compatibility properties
+  modelCount?: number;
+  modelsMoved?: number;
+  modelsUsedWait?: number;
+  modelsUsedDetect?: number;
+  modelsUsedHide?: number;
+  modelsUsedReact?: number;
+  // Path tracking properties
+  totalPathLength?: number;
+  averagePathLengthPerMovedModel?: number;
+  averagePathLengthPerModel?: number;
+  topPathModels?: Array<{ modelId: string; pathLength: number }>;
+}
+
+/**
+ * Per-model usage statistics tracking
+ */
+export interface ModelUsageStats {
+  modelId: string;
+  modelName: string;
+  side?: string;
+  pathLength: number;
+  moveActions: number;
+  waitChoicesGiven: number;
+  waitAttempts: number;
+  waitSuccesses: number;
+  detectAttempts: number;
+  detectSuccesses: number;
+  hideAttempts: number;
+  hideSuccesses: number;
+  reactChoiceWindows: number;
+  reactChoicesGiven: number;
+  reactAttempts: number;
+  reactSuccesses: number;
 }
 
 export interface NestedSections {
@@ -205,21 +243,8 @@ export interface ActivationAudit {
   skippedReason?: string;
 }
 
-export interface ActionStepAudit {
-  actionType: string;
-  apSpent: number;
-  characterId: string;
-  characterName: string;
-  vectors?: Array<{
-    kind: string;
-    from: { x: number; y: number };
-    to: { x: number; y: number };
-  }>;
-  affectedModels?: string[];
-  interactions?: string[];
-  statusTokens?: string[];
-  details?: Record<string, unknown>;
-}
+// Use the core ActionStepAudit from AuditService for full compatibility
+export type ActionStepAudit = CoreActionStepAudit;
 
 // ============================================================================
 // Performance Metrics
@@ -264,6 +289,8 @@ export interface SlowActivationSummary {
   modelName: string;
   elapsedMs: number;
   steps: number;
+  // Backward compatibility property
+  durationMs?: number;
 }
 
 // ============================================================================

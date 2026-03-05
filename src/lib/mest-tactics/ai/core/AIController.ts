@@ -4,10 +4,10 @@
  * All AI controllers implement this interface for consistent integration.
  */
 
-import { Character } from '../core/Character';
-import { Battlefield } from '../battlefield/Battlefield';
-import { Position } from '../battlefield/Position';
-import { Item } from '../core/Item';
+import { Character } from '../../core/Character';
+import { Battlefield } from '../../battlefield/Battlefield';
+import { Position } from '../../battlefield/Position';
+import { Item } from '../../core/Item';
 
 export type DoctrineEngagement = 'melee' | 'ranged' | 'balanced';
 export type DoctrinePlanning = 'aggression' | 'keys_to_victory' | 'balanced';
@@ -20,9 +20,9 @@ export interface AIControllerConfig {
   /** Caution level 0-1 (higher = more defensive positioning) */
   caution: number;
   /** Accuracy modifier -1 to 1 (negative = worse aim, positive = better) */
-  accuracyModifier: number;
+  accuracyModifier?: number;
   /** God mode - perfect battlefield knowledge */
-  godMode: boolean;
+  godMode?: boolean;
   /** Personality seed for variation */
   personalitySeed?: number;
   /** Allow attacks against KO'd targets (default false) */
@@ -51,6 +51,10 @@ export interface AIControllerConfig {
   doctrineAggression?: DoctrineAggression;
   /** Tactical Doctrine (encapsulates engagement, planning, aggression) */
   tacticalDoctrine?: import('../stratagems/AIStratagems').TacticalDoctrine;
+  // Backward compatibility properties
+  objectiveRush?: number;
+  coverPriority?: number;
+  gameSize?: string;
 }
 
 export interface ActionDecision {
@@ -72,7 +76,7 @@ export interface ActionDecision {
   reason: string;
   /** Optional planning metadata for audit/report attribution */
   planning?: {
-    source: 'pattern' | 'goap_plan' | 'goap_forecast' | 'utility' | 'behavior_tree';
+    source: 'pattern' | 'goap_plan' | 'goap_forecast' | 'utility' | 'behavior_tree' | 'tactical';
     waitExpectedTriggerCount?: number;
     waitExpectedReactValue?: number;
     waitGoapBranchScore?: number;
@@ -83,11 +87,16 @@ export interface ActionDecision {
   priority: number;
   /** Whether this action requires AP */
   requiresAP: boolean;
+  /** Backward compatibility: sub-action for fiddle/reload */
+  subAction?: string;
+  /** Backward compatibility: item name for fiddle/reload */
+  itemName?: string;
 }
 
 export type ActionType =
   | 'none'           // No action
   | 'hold'           // Hold position
+  | 'focus'          // Focus action (QSR)
   | 'move'           // Move to position
   | 'charge'         // Charge into melee
   | 'close_combat'   // Attack in melee
@@ -120,13 +129,18 @@ export interface ReactOpportunity {
   isZeroAPAction?: boolean;
   /** Whether this is a reposition (react disallowed unless base-contact) */
   isReposition?: boolean;
+  /** Backward compatibility for legacy tests */
+  usedAgility?: boolean;
+  /** Backward compatibility for legacy tests */
+  isLeaning?: boolean;
 }
 
 export type ReactActionType =
   | 'none'
   | 'react-move'     // React to Move action (QSR p.1115)
   | 'counter_strike' // Passive Player Option (Advanced, p.1250)
-  | 'counter_fire';  // Passive Player Option (Advanced, p.1250)
+  | 'counter_fire'   // Passive Player Option (Advanced, p.1250)
+  | 'counter_charge'; // Passive Player Option (Advanced, p.1250)
 
 export interface CharacterKnowledge {
   /** Known enemy positions (god-mode: all, fog-of-war: only visible) */
@@ -189,9 +203,13 @@ export interface AIContext {
   /** Objective marker snapshot available to this decision frame */
   objectiveMarkers?: AIObjectiveMarkerInfo[];
   /** Character's current knowledge */
-  knowledge: CharacterKnowledge;
+  knowledge?: CharacterKnowledge;
   /** AI configuration */
   config: AIControllerConfig;
+  /** Side reference for mission-aware objective action gating */
+  side?: any;
+  /** Objectives for mission AI (backward compatibility) */
+  objectives?: any[];
   /** Predicted scoring context for strategic decision-making (R1.5) */
   scoringContext?: {
     /** My side's predicted key scores */
@@ -249,6 +267,8 @@ export interface ReactResult {
   reactType: ReactActionType;
   /** Priority score */
   priority: number;
+  /** Reason for decision (backward compatibility) */
+  reason?: string;
 }
 
 /**
@@ -310,7 +330,7 @@ export function validateAIConfig(config: AIControllerConfig): AIControllerConfig
   return {
     aggression: Math.max(0, Math.min(1, config.aggression)),
     caution: Math.max(0, Math.min(1, config.caution)),
-    accuracyModifier: Math.max(-1, Math.min(1, config.accuracyModifier)),
+    accuracyModifier: Math.max(-1, Math.min(1, config.accuracyModifier ?? 0)),
     godMode: config.godMode ?? true,
     personalitySeed: config.personalitySeed,
     allowKOdAttacks: config.allowKOdAttacks ?? false,

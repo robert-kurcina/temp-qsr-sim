@@ -46,7 +46,7 @@ import {
 // Test Helpers
 // ============================================================================
 
-function createTestCharacter(archetype: string, itemNames: string[] = []): Character {
+function createTestCharacter(archetype: string, itemNames: any[] = []): Character {
   const profile = buildProfile(archetype, { itemNames });
   return new Character(profile);
 }
@@ -60,7 +60,7 @@ function createMockROFWeapon(rofLevel: number) {
     accuracy: '',
     traits: [`ROF ${rofLevel}`],
     range: 16,
-  };
+  } as any;
 }
 
 function addSquareTerrain(
@@ -99,13 +99,16 @@ describe('ROF Spatial Geometry - ROF Markers', () => {
       const character = createTestCharacter('Average', ['Sword']);
       character.profile.equipment = [{
         name: 'Sword',
+        class: 'Melee',
         classification: 'Melee',
+        type: 'Melee',
+        bp: 0,
         dmg: 'STR',
         impact: 0,
         accuracy: '',
         traits: [],
         range: 0,
-      }];
+      }] as any;
       
       const rofLevel = getROFLevel(character);
       expect(rofLevel).toBe(0);
@@ -151,7 +154,7 @@ describe('ROF Spatial Geometry - ROF Markers', () => {
       );
       
       // All markers should be between attacker and target
-      positions.forEach(pos => {
+      positions.forEach((pos: any) => {
         expect(pos.x).toBeGreaterThanOrEqual(0);
         expect(pos.x).toBeLessThanOrEqual(4);
       });
@@ -177,7 +180,7 @@ describe('ROF Spatial Geometry - ROF Markers', () => {
       );
       
       // Markers should only be placed before blocking terrain
-      positions.forEach(pos => {
+      positions.forEach((pos: any) => {
         expect(pos.x).toBeLessThan(4);
       });
     });
@@ -219,7 +222,7 @@ describe('ROF Spatial Geometry - ROF Markers', () => {
       const target = createTestCharacter('Average');
       battlefield.placeCharacter(target, { x: 5, y: 5 });
       
-      const markers: ROFMarker[] = [
+      const markers: any[] = [
         { id: 'rof1', position: { x: 5.5, y: 5 }, creatorId: 'attacker', initiativeCreated: 1, isSuppression: false },
         { id: 'rof2', position: { x: 5, y: 5.5 }, creatorId: 'attacker', initiativeCreated: 1, isSuppression: false },
         { id: 'rof3', position: { x: 10, y: 10 }, creatorId: 'attacker', initiativeCreated: 1, isSuppression: false }, // Out of range
@@ -234,7 +237,7 @@ describe('ROF Spatial Geometry - ROF Markers', () => {
       const target = createTestCharacter('Average');
       battlefield.placeCharacter(target, { x: 5, y: 5 });
       
-      const markers: ROFMarker[] = [
+      const markers: any[] = [
         { id: 'rof1', position: { x: 5.9, y: 5 }, creatorId: 'attacker', initiativeCreated: 1, isSuppression: false }, // In range
         { id: 'rof2', position: { x: 6.1, y: 5 }, creatorId: 'attacker', initiativeCreated: 1, isSuppression: false }, // Out of range
       ];
@@ -266,7 +269,7 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
         { id: 'sup2', position: { x: 5, y: 5.5 }, range: 1, creatorId: 'attacker' },
         { id: 'sup3', position: { x: 10, y: 10 }, range: 1, creatorId: 'attacker' }, // Out of range
@@ -282,13 +285,13 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
       // Test DR 1
-      const markers1: SuppressionMarker[] = [
+      const markers1: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
       expect(calculateSuppressionEffect(character, battlefield, markers1).dr).toBe(1);
       
       // Test DR 2
-      const markers2: SuppressionMarker[] = [
+      const markers2: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
         { id: 'sup2', position: { x: 5, y: 5.5 }, range: 1, creatorId: 'attacker' },
       ];
@@ -320,9 +323,9 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       
       // Add Hard Cover (Wall) directly between marker and character
       // Wall at x=5.2 blocks LOS from marker at x=5.5 to character at x=5
-      addSquareTerrain(battlefield, 'wall', TerrainType.Wall, { x: 5.2, y: 5 });
+      addSquareTerrain(battlefield, 'wall', TerrainType.Obstacle, { x: 5.2, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
       
@@ -340,7 +343,7 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
       
@@ -362,7 +365,7 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
       
@@ -382,7 +385,7 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
       
@@ -401,7 +404,7 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
       
@@ -443,7 +446,7 @@ describe('ROF Spatial Geometry - Core Damage vs Core Defense', () => {
     it('should calculate Core Defense as AR - Impact - Concentrate - markers', () => {
       const attacker = createTestCharacter('Average');
       const target = createTestCharacter('Average');
-      target.state.armor = { total: 5, source: 'Medium Armor' };
+      target.state.armor = { total: 5, suit: 0, gear: 0, shield: 0, helm: 0 };
       
       // AR 5 - Impact 1 - Concentrate 3 - 2 markers = -1 → 0
       const result = calculateCoreDamageDefense(
@@ -461,7 +464,7 @@ describe('ROF Spatial Geometry - Core Damage vs Core Defense', () => {
     it('should ignore Suppression when Core Damage < Core Defense', () => {
       const attacker = createTestCharacter('Average');
       const target = createTestCharacter('Average');
-      target.state.armor = { total: 10, source: 'Heavy Armor' };
+      target.state.armor = { total: 10, suit: 0, gear: 0, shield: 0, helm: 0 };
       
       // Damage 4 vs Defense 10 - 0 - 0 - 1 = 9
       // 4 < 9, so ignores Suppression
@@ -480,7 +483,7 @@ describe('ROF Spatial Geometry - Core Damage vs Core Defense', () => {
     it('should not ignore Suppression when Core Damage >= Core Defense', () => {
       const attacker = createTestCharacter('Average');
       const target = createTestCharacter('Average');
-      target.state.armor = { total: 2, source: 'Light Armor' };
+      target.state.armor = { total: 2, suit: 0, gear: 0, shield: 0, helm: 0 };
       
       // Damage 4 vs Defense 2 - 0 - 0 - 1 = 1
       // 4 >= 1, so does not ignore Suppression
@@ -652,7 +655,7 @@ describe('ROF Spatial Geometry - Firelane Field-of-Fire', () => {
 describe('ROF Spatial Geometry - UI Rendering API', () => {
   describe('getROFMarkerVisualization', () => {
     it('should convert ROF markers to visualization data', () => {
-      const markers: ROFMarker[] = [
+      const markers: any[] = [
         { id: 'rof1', position: { x: 5, y: 5 }, creatorId: 'attacker1', initiativeCreated: 1, isSuppression: false },
         { id: 'rof2', position: { x: 6, y: 6 }, creatorId: 'attacker1', initiativeCreated: 1, isSuppression: false },
       ];
@@ -667,7 +670,7 @@ describe('ROF Spatial Geometry - UI Rendering API', () => {
     });
 
     it('should mark suppression markers correctly', () => {
-      const markers: ROFMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5, y: 5 }, creatorId: 'attacker1', initiativeCreated: 1, isSuppression: true },
       ];
       
@@ -680,7 +683,7 @@ describe('ROF Spatial Geometry - UI Rendering API', () => {
   describe('getSuppressionMarkerVisualization', () => {
     it('should group markers by position and calculate DR', () => {
       const battlefield = new Battlefield(12, 12);
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5, y: 5 }, range: 1, creatorId: 'attacker1' },
         { id: 'sup2', position: { x: 5, y: 5 }, range: 1, creatorId: 'attacker1' },
         { id: 'sup3', position: { x: 5, y: 5 }, range: 1, creatorId: 'attacker1' },
@@ -697,7 +700,7 @@ describe('ROF Spatial Geometry - UI Rendering API', () => {
       const battlefield = new Battlefield(12, 12);
       
       // DR 1 (1 marker)
-      const markers1: SuppressionMarker[] = [
+      const markers1: any[] = [
         { id: 'sup1', position: { x: 5, y: 5 }, range: 1, creatorId: 'attacker1' },
       ];
       expect(getSuppressionMarkerVisualization(markers1, battlefield)[0].dr).toBe(1);
@@ -757,7 +760,7 @@ describe('ROF Spatial Geometry - UI Rendering API', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker1' },
       ];
       
@@ -773,7 +776,7 @@ describe('ROF Spatial Geometry - UI Rendering API', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 10, y: 10 }, range: 1, creatorId: 'attacker1' },
       ];
       
@@ -789,15 +792,15 @@ describe('ROF Spatial Geometry - UI Rendering API', () => {
       const character = createTestCharacter('Average');
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const rofMarkers: ROFMarker[] = [
+      const rofMarkers: any[] = [
         { id: 'rof1', position: { x: 4, y: 5 }, creatorId: 'attacker1', initiativeCreated: 1, isSuppression: false },
       ];
       
-      const suppressionMarkers: SuppressionMarker[] = [
+      const suppressionMarkers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker1' },
       ];
       
-      const firelanes: FieldOfFire[] = [
+      const firelanes: any[] = [
         { center: { x: 0, y: 0 }, facing: 0, arcWidth: 90, maxRange: 16 },
       ];
       

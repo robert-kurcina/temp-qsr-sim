@@ -4,7 +4,7 @@ import type { Profile } from '../core/Profile';
 import type { Position } from '../battlefield/Position';
 import { executeMoveAction, type MoveActionDeps } from './move-action';
 
-function makeCharacter(name: string, mov = 4, traits: string[] = []): Character {
+function makeCharacter(name: string, mov = 4, traits: any[] = []): Character {
   const profile: Profile = {
     name,
     archetype: {
@@ -31,7 +31,7 @@ function makeCharacter(name: string, mov = 4, traits: string[] = []): Character 
     adjPhysicality: 0,
     durability: 0,
     adjDurability: 0,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 0,
     totalDeflect: 0,
     totalAR: 0,
@@ -87,11 +87,11 @@ function makeDeps(
     executeCloseCombatAttack,
     findPathCost:
       options.pathCost !== undefined
-        ? () => options.pathCost
+        ? (_start: Position, _end: Position) => options.pathCost ?? null
         : undefined,
   };
 
-  return { deps, executeCloseCombatAttack, eliminateOnFearExit, spendApForSwap };
+  return {  deps, executeCloseCombatAttack, eliminateOnFearExit, spendApForSwap  } as any;
 }
 
 describe('move action rules', () => {
@@ -300,7 +300,9 @@ describe('move action rules', () => {
 
     expect(result.moved).toBe(true);
     expect(result.opportunityAttack).toBeTruthy();
-    expect(result.opportunityAttack?.attacker.id).toBe(opponent.id);
+    expect(result.opportunityAttack && typeof result.opportunityAttack !== 'boolean'
+      ? result.opportunityAttack.attacker.id
+      : undefined).toBe(opponent.id);
     expect(executeCloseCombatAttack).toHaveBeenCalledTimes(1);
   });
 

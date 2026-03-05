@@ -8,16 +8,15 @@ import {
   ReactOpportunity,
   DEFAULT_REACT_CONFIG,
 } from '../tactical/ReactsQSR';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
+import { Character, Profile } from '../../core';
+import { Battlefield } from '../../battlefield';
 
 function makeTestProfile(name: string, ref: number = 2, mov: number = 4): Profile {
   return {
     name,
     archetype: { attributes: { cca: 2, rca: 3, ref, int: 2, pow: 2, str: 2, for: 2, mov, siz: 3 } },
     items: [
-      { name: 'Bow', classification: 'Bow', dmg: 'STR', impact: 0, accuracy: '', traits: [], range: 12 },
+      { name: 'Bow', classification: 'Bow', dmg: 'STR', impact: 0, accuracy: '', traits: [], range: 12 } as any,  // Fixed below
     ],
     totalBp: 30,
     adjustedBp: 0,
@@ -32,7 +31,7 @@ function makeTestProfile(name: string, ref: number = 2, mov: number = 4): Profil
     totalAR: 0,
     finalTraits: [],
     allTraits: [],
-  };
+  } as any;
 }
 
 function makeTestCharacter(name: string, ref: number = 2, mov: number = 4): Character {

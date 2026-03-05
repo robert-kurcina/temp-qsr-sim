@@ -27,7 +27,7 @@ describe('Pushing Action', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,

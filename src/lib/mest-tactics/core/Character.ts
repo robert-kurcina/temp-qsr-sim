@@ -1,7 +1,9 @@
 import { Profile } from './Profile';
 import { Trait } from './Trait';
+import { Item } from './Item';
 import { ArmorState } from './types';
 import { Attributes, FinalAttributes } from './Attributes';
+import type { Position } from '../battlefield/Position';
 
 export class Character {
   id: string;
@@ -11,6 +13,16 @@ export class Character {
   finalAttributes: FinalAttributes;
   allTraits: Trait[];
   initiative: number;
+
+  // Optional position for backward compatibility (typically managed by MissionSide)
+  position?: Position;
+  // Starting position for mission deployment
+  startingPosition?: Position;
+
+  // Backward compatibility getter for items
+  get items(): Item[] {
+    return this.profile?.items ?? this.profile?.equipment ?? [];
+  }
 
   state: {
     wounds: number;
@@ -35,6 +47,7 @@ export class Character {
     isOverreach: boolean; // QSR: -1 REF penalty when Overreach declared
     hasDetectedThisActivation: boolean; // QSR Line 855: First Detect is free
     hasFocus: boolean; // QSR Line 859: Focus bonus (+1w for next Test)
+    isReady: boolean; // Backward compatibility
     statusEffects: string[];
     statusTokens: Record<string, number>;
     statusPendingTokens: Record<string, number>;
@@ -46,11 +59,24 @@ export class Character {
     fearTestsThisTurn?: number; // QSR: max 1 required Fear Test per Turn
     activeWeaponIndex?: number; // Weapon index currently declared for this Initiative
     swapsThisInitiative?: number; // QSR: track first free Swap and additional AP-costed swaps
+    hasPushedThisInitiative?: boolean; // Backward compatibility for pushing
+    // Backward compatibility properties
+    usingOneLessHand?: boolean;
+    isFree?: boolean;
+    isLeaning?: boolean;
+    handsInUse?: number;
   };
 
-  constructor(profile: Profile) {
-    this.id = profile.name; // For simplicity, using name as ID for now
-    this.name = profile.name;
+  constructor(profile: Profile);
+  constructor(id: string, name: string, profile: Profile);
+  constructor(profileOrId: Profile | string, maybeName?: string, maybeProfile?: Profile) {
+    const profile = typeof profileOrId === 'string' ? maybeProfile : profileOrId;
+    if (!profile) {
+      throw new Error('Character constructor requires a Profile.');
+    }
+
+    this.id = typeof profileOrId === 'string' ? profileOrId : profile.name;
+    this.name = typeof profileOrId === 'string' ? (maybeName ?? profile.name) : profile.name;
     this.profile = profile;
     
     // Extract attributes from profile or archetype
@@ -100,6 +126,7 @@ export class Character {
       isOverreach: false, // QSR: -1 REF penalty when Overreach declared
       hasDetectedThisActivation: false, // QSR Line 855: First Detect is free
       hasFocus: false, // QSR Line 859: Focus bonus (+1w for next Test)
+      isReady: true,
       hasPushedThisInitiative: false,
       statusEffects: [],
       statusTokens: {},
@@ -113,7 +140,6 @@ export class Character {
       },
       loadedWeapons: [],
       reloadProgress: 0,
-      initiativePoints: 0,
       gritWoundIgnored: false,
       gritFearReducedThisTurn: false,
       fearTestsThisTurn: 0,
@@ -185,5 +211,25 @@ export class Character {
 
   set wounds(value: number) {
     this.state.wounds = value;
+  }
+
+  /**
+   * Get base diameter in MU based on SIZ attribute
+   * QSR: SIZ 3 = 1 MU base diameter (standard humanoid)
+   */
+  get baseDiameter(): number {
+    const siz = this.attributes?.siz ?? this.profile?.siz ?? 3;
+    // Standard formula: SIZ 1-2 = 0.5 MU, SIZ 3-4 = 1 MU, SIZ 5-6 = 1.5 MU, etc.
+    if (siz <= 2) return 0.5;
+    if (siz <= 4) return 1;
+    if (siz <= 6) return 1.5;
+    return 1 + Math.floor(siz / 4);
+  }
+
+  /**
+   * Move character to new position (backward compatibility method)
+   */
+  move(newPosition: Position): void {
+    this.position = newPosition;
   }
 }

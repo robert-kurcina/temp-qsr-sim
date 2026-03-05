@@ -4,7 +4,7 @@ import type { Profile } from '../core/Profile';
 import { CharacterStatus } from '../core/types';
 import { beginActivation, endActivation, type ActivationDeps } from './activation';
 
-function makeCharacter(name: string, traits: string[] = []): Character {
+function makeCharacter(name: string, traits: any[] = []): Character {
   const profile: Profile = {
     name,
     archetype: {
@@ -31,7 +31,7 @@ function makeCharacter(name: string, traits: string[] = []): Character {
     adjPhysicality: 0,
     durability: 0,
     adjDurability: 0,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 0,
     totalDeflect: 0,
     totalAR: 0,
@@ -80,7 +80,7 @@ function makeDeps(
     isFreeFromEngagement: () => options.isFreeFromEngagement ?? true,
   };
 
-  return { deps, statusById, apById, activeId };
+  return {  deps, statusById, apById, activeId  } as any;
 }
 
 describe('activation rules', () => {

@@ -18,8 +18,8 @@ describe('makeDisengageAction', () => {
         const defenderArchetype = archetypes['Militia'];
         defenderWeapon = { name: 'Sword, Broad', ...melee_weapons['Sword, Broad'] };
 
-        const disengagerProfile: any = { name: 'Disengager Profile', archetype: disengagerArchetype, equipment: [] };
-        const defenderProfile: any = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderWeapon] };
+        const disengagerProfile: any = { name: 'Disengager Profile', archetype: disengagerArchetype, equipment: [] } as any;
+        const defenderProfile: any = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [defenderWeapon] } as any;
 
         disengager = new Character(disengagerProfile);
         disengager.finalAttributes = disengager.attributes;

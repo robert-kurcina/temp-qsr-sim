@@ -26,7 +26,19 @@ function createMockContext(): EventContext & {
     loser?: string;
   };
 } {
-  const state = {
+  const state: {
+    modelsRemaining: Map<string, number>;
+    zonesControlled: Map<string, number>;
+    victoryPoints: Map<string, number>;
+    aliveModels: Set<string>;
+    eliminatedModels: Set<string>;
+    extractedVIPs: Set<string>;
+    eliminatedVIPs: Set<string>;
+    scoredMarkers: Set<string>;
+    ended: boolean;
+    winner?: string;
+    loser?: string;
+  } = {
     modelsRemaining: new Map<string, number>(),
     zonesControlled: new Map<string, number>(),
     victoryPoints: new Map<string, number>(),
@@ -143,7 +155,7 @@ describe('MissionEventManager', () => {
       manager.addHook(hook3);
 
       const hooks = manager.getHooksByTrigger(EventTriggerType.OnTurn);
-      expect(hooks.map(h => h.priority)).toEqual([20, 10, 5]);
+      expect(hooks.map((h: any) => h.priority)).toEqual([20, 10, 5]);
     });
   });
 

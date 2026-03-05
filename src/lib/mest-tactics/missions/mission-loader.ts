@@ -1,4 +1,4 @@
-import { MissionConfig } from '../mission/mission-config';
+import { MissionConfig } from '../missions/mission-config';
 import { BalanceValidator } from '../mission/balance-validator';
 
 /**

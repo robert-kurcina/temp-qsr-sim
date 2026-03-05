@@ -24,7 +24,7 @@ describe('Dice Roller', () => {
 
   describe('performTest', () => {
     it('should perform a test with various dice and return the correct score and carry-over', () => {
-      const dice: TestDice = { base: 2, modifier: 1, wild: 1 };
+      const dice: TestDice = { base: 2, modifier: 1, wild: 1 } as any;
       const rolls = [4, 6, 5, 6]; // Base(4), Base(6), Modifier(5), Wild(6)
       const attributeValue = 0;
 

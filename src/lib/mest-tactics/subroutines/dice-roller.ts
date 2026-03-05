@@ -1,11 +1,15 @@
 import { Character } from '../core/Character';
 import { metricsService } from '../engine/MetricsService';
+import type { DamageResolution } from './damage-test';
 
 export enum DiceType {
   Base = 'base',
   Modifier = 'modifier',
   Wild = 'wild',
 }
+
+// Backward compatibility type alias
+export type TestResult = ResolveTestResult;
 
 export interface RollResult {
   successes: number;
@@ -60,6 +64,8 @@ export interface TestDice {
 export interface PerformTestResult {
   score: number;
   carryOverDice: TestDice;
+  // Backward compatibility property
+  successes?: number;
 }
 
 export function performTest(dice: TestDice, attributeValue: number, rolls: number[]): PerformTestResult {
@@ -120,6 +126,14 @@ export interface ResolveTestResult {
   p1Result: PerformTestResult;
   p2Result: PerformTestResult;
   pass: boolean;
+  // Backward compatibility properties
+  actorWins?: boolean; // Alias for pass
+  margin?: number; // Alias for score
+  hitTestResult?: ResolveTestResult; // For nested test results
+  damageResult?: DamageResolution | null; // For damage resolution
+  p1Rolls?: number[]; // Original rolls for participant 1
+  p2Rolls?: number[]; // Original rolls for participant 2
+  carryOverDice?: TestDice; // Backward compatibility alias
 }
 
 export function mergeTestDice(...pools: (TestDice | undefined)[]): TestDice {

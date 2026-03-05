@@ -20,8 +20,8 @@ describe('resolveHitTest', () => {
     const defenderArchetype = { name: "Militia", ...archetypes["Militia"] };
     weapon = { name: "Sword, Broad", ...melee_weapons["Sword, Broad"] };
 
-    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [weapon] };
-    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [] };
+    const attackerProfile: Profile = { name: 'Attacker Profile', archetype: attackerArchetype, equipment: [weapon] } as any;
+    const defenderProfile: Profile = { name: 'Defender Profile', archetype: defenderArchetype, equipment: [] } as any;
 
     attacker = await createCharacter(attackerProfile);
     defender = await createCharacter(defenderProfile);
@@ -52,7 +52,7 @@ describe('resolveHitTest', () => {
   });
 
   it('should apply external bonus dice to the attacker', () => {
-    const attackerBonus: TestDice = { [DiceType.Base]: 1 };
+    const attackerBonus: TestDice = { [DiceType.Base]: 1 } as any;
     const attackerPenalty: TestDice = {};
     const defenderBonus: TestDice = {};
     const defenderPenalty: TestDice = {};
@@ -79,7 +79,7 @@ describe('resolveHitTest', () => {
     const attackerBonus: TestDice = {};
     const attackerPenalty: TestDice = {};
     const defenderBonus: TestDice = {};
-    const defenderPenalty: TestDice = { [DiceType.Base]: 1 };
+    const defenderPenalty: TestDice = { [DiceType.Base]: 1 } as any;
     const attackerRolls = [6, 1, 1];
     const defenderRolls = [1, 1];
 
@@ -126,7 +126,7 @@ describe('resolveHitTest', () => {
 
   it('should combine external modifiers and accuracy modifiers', () => {
     weapon.accuracy = '+1b';
-    const attackerBonus: TestDice = { [DiceType.Modifier]: 1 };
+    const attackerBonus: TestDice = { [DiceType.Modifier]: 1 } as any;
     const attackerPenalty: TestDice = {};
     const defenderBonus: TestDice = {};
     const defenderPenalty: TestDice = {};

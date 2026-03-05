@@ -11,7 +11,7 @@
  */
 
 import { TerrainFeature, TerrainType } from './Terrain';
-import { Position } from './Position';
+import { Position } from '../Position';
 import {
   calculateBounds,
   calculateCentroid,

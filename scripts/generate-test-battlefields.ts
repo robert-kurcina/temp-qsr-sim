@@ -126,7 +126,7 @@ console.log('  - battlefield-*.json  (terrain + mesh data)');
 console.log('  - battlefield-*.svg   (visualization)');
 console.log('═══════════════════════════════════════════════════════════');
 
-function getCentroid(vertices) {
+function getCentroid(vertices: any[]) {
   if (!vertices || vertices.length === 0) return { x: 0, y: 0 };
   let x = 0, y = 0;
   for (const v of vertices) {
@@ -136,23 +136,23 @@ function getCentroid(vertices) {
   return { x: x / vertices.length, y: y / vertices.length };
 }
 
-function exportBattlefieldToFile(battlefield, terrainResult, outputPath, filename) {
+function exportBattlefieldToFile(battlefield: any, terrainResult: any, outputPath: string, filename: string) {
   const filePath = join(outputPath, filename);
   const exportData = buildBattlefieldExport(battlefield, terrainResult);
   writeFileSync(filePath, JSON.stringify(exportData, null, 2), 'utf-8');
   return filePath;
 }
 
-function buildBattlefieldExport(battlefield, terrainResult) {
+function buildBattlefieldExport(battlefield: any, terrainResult: any) {
   const terrainTypes = extractTerrainTypes(terrainResult.terrain);
-  const terrainInstances = terrainResult.terrain.map(feature => ({
+  const terrainInstances = terrainResult.terrain.map((feature: any) => ({
     typeRef: feature.meta?.name || feature.id || 'Unknown',
     position: {
       x: feature.vertices[0]?.x || 0,
       y: feature.vertices[0]?.y || 0,
     },
     rotation: feature.meta?.rotationDegrees || 0,
-    vertices: feature.vertices.map(v => ({ x: v.x, y: v.y })),
+    vertices: feature.vertices.map((v: any) => ({ x: v.x, y: v.y })),
     meta: feature.meta,  // Include meta for layer identification
   }));
 
@@ -181,17 +181,17 @@ function buildBattlefieldExport(battlefield, terrainResult) {
   };
 }
 
-function extractTerrainTypes(terrain) {
-  const types = {};
-  const defaultTypes = {
+function extractTerrainTypes(terrain: any[]) {
+  const types: any = {};
+  const defaultTypes: any = {
     'Tree': { name: 'Tree', los: 'blocking', movement: 'impassable', cover: 'hard', baseSize: 1.5 },
     'Shrub': { name: 'Shrub', los: 'soft', movement: 'difficult', cover: 'soft', baseSize: 1.0 },
     'Small Rocks': { name: 'Small Rocks', los: 'clear', movement: 'difficult', cover: 'soft', baseSize: 1.0 },
     'Medium Rocks': { name: 'Medium Rocks', los: 'clear', movement: 'difficult', cover: 'soft', baseSize: 1.5 },
     'Large Rocks': { name: 'Large Rocks', los: 'clear', movement: 'difficult', cover: 'soft', baseSize: 2.0 },
   };
-  
-  const usedTypes = new Set(terrain.map(f => f.type));
+
+  const usedTypes = new Set(terrain.map((f: any) => f.type));
   for (const typeName of usedTypes) {
     if (defaultTypes[typeName]) {
       types[typeName] = defaultTypes[typeName];
@@ -199,18 +199,18 @@ function extractTerrainTypes(terrain) {
       types[typeName] = { name: typeName, los: 'clear', movement: 'normal', cover: 'none', baseSize: 1.0 };
     }
   }
-  
+
   return types;
 }
 
-function extractDelaunayMesh(battlefield) {
+function extractDelaunayMesh(battlefield: any) {
   const navMesh = battlefield.getNavMesh();
   
   if (!navMesh) {
     return { vertices: [], triangles: [] };
   }
-  
-  const vertices = Array.from(navMesh.points).map(p => ({ x: p.x, y: p.y }));
+
+  const vertices = Array.from(navMesh.points).map((p: any) => ({ x: p.x, y: p.y }));
   const triangles = [];
   const numTriangles = navMesh.triangles.length / 3;
   

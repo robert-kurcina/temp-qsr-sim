@@ -14,19 +14,19 @@ describe('traitLogicRegistry', () => {
   });
 
   it('should contain entries for all primary attributes', () => {
-    expectedAttributes.forEach(attr => {
+    expectedAttributes.forEach((attr: any) => {
       expect(traitLogicRegistry).toHaveProperty(attr);
     });
   });
 
   it('should map all primary attribute keys to the attributeModifier logic module', () => {
-    expectedAttributes.forEach(attr => {
-      expect(traitLogicRegistry[attr]).toBe(attributeModifier);
+    expectedAttributes.forEach((attr: any) => {
+      expect((traitLogicRegistry as any)[attr]).toBe(attributeModifier);
     });
   });
 
   it('should not have entries for other undefined traits', () => {
-    expect(traitLogicRegistry['sturdy']).toBeUndefined();
-    expect(traitLogicRegistry['nonexistent']).toBeUndefined();
+    expect((traitLogicRegistry as any)['sturdy']).toBeUndefined();
+    expect((traitLogicRegistry as any)['nonexistent']).toBeUndefined();
   });
 });

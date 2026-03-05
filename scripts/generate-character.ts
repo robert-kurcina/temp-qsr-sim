@@ -1,6 +1,6 @@
 
-import { createCharacter } from '../src/lib/mest-tactics/character-generator';
-import { createProfiles } from '../src/lib/mest-tactics/profile-generator';
+import { createCharacter } from '../src/lib/mest-tactics/utils/character-generator';
+import { createProfiles } from '../src/lib/mest-tactics/utils/profile-generator';
 import { gameData } from '../src/lib/data';
 
 const archetype = gameData.archetypes.Veteran;

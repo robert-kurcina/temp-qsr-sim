@@ -72,7 +72,7 @@ function findSizeByMinimumThreshold(
   value: number,
   getMin: (size: CanonicalGameSize) => number
 ): CanonicalGameSize {
-  let resolved = CANONICAL_GAME_SIZE_ORDER[0];
+  let resolved: any = CANONICAL_GAME_SIZE_ORDER[0];
   for (const size of CANONICAL_GAME_SIZE_ORDER) {
     if (value >= getMin(size)) {
       resolved = size;

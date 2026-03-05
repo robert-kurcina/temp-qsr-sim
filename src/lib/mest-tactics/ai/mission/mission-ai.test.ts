@@ -5,11 +5,10 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
-import { createMissionSide } from '../../mission/MissionSide';
-import { buildAssembly } from '../../mission/assembly-builder';
+import { Character, Profile } from '../../core';
+import { Battlefield } from '../../battlefield';
+import { createMissionSide } from '../../mission';
+import { buildAssembly } from '../../mission';
 import { MissionAIContext } from './MissionAI';
 import {
   EliminationMissionAI,
@@ -44,7 +43,7 @@ function makeTestProfile(name: string): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -66,8 +65,8 @@ function makeTestSide(
   startX: number = 0,
   vipIndex: number = -1
 ): any {
-  const characters: Character[] = [];
-  const profiles: Profile[] = [];
+  const characters: any[] = [];
+  const profiles: any[] = [];
   
   for (let i = 0; i < characterCount; i++) {
     const profile = makeTestProfile(`${name}-${i}`);
@@ -84,7 +83,7 @@ function makeTestSide(
     vipModelId: vipIndex >= 0 ? characters[vipIndex].id : undefined,
   });
 
-  return { side, characters };
+  return {  side, characters  } as any;
 }
 
 function makeMissionContext(

@@ -1,6 +1,6 @@
 import { Character } from '../../core/Character';
 import { Battlefield } from '../Battlefield';
-import { Position } from '../battlefield/Position';
+import { Position } from '../Position';
 import { TerrainType } from './Terrain';
 import { SpatialModel, SpatialRules } from '../spatial/spatial-rules';
 import { ModelRegistry, MeasurementUtils } from '../spatial/model-registry';

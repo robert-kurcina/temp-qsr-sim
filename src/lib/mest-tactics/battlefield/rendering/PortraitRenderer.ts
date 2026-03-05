@@ -10,8 +10,8 @@
  * - Default: Human Quaggkhir Male (SIZ 3)
  */
 
-import { getClipMetrics, ClipMetrics } from '../portraits/portrait-clip';
-import { getBaseDiameterForProfile } from '../portraits/portrait-sheet-registry';
+import { getClipMetrics, ClipMetrics } from '../../../portraits/portrait-clip';
+import { getBaseDiameterForProfile } from '../../../portraits/portrait-sheet-registry';
 
 export interface PortraitRenderOptions {
   /** Portrait sheet image path (default: human-quaggkhir-male.jpg) */

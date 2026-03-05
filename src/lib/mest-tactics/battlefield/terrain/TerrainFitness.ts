@@ -52,6 +52,8 @@ export interface TerrainFitnessReport {
   overall: number;  // 0-100 fitness score
   issues: FitnessIssue[];
   stats: FitnessStats;
+  // Backward compatibility property
+  score?: number;
 }
 
 /**

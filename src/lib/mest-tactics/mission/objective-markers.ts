@@ -94,6 +94,9 @@ export interface ObjectiveMarker {
   switchState?: SwitchState;
   /** Lock ID this Key belongs to */
   lockId?: string;
+  // Backward compatibility properties
+  heldBy?: string; // Alias for carriedBy
+  kind?: ObjectiveMarkerKind | ObjectiveMarkerType; // Alias for type or first omType
   /** Required key IDs for a Lock */
   keyIds?: string[];
   /** Mission-specific metadata */

@@ -22,10 +22,8 @@ import {
   CharacterAI,
   DEFAULT_AI_CONFIG,
 } from '../core';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Battlefield } from '../../battlefield/Battlefield';
-import { PathfindingEngine } from '../../battlefield/pathfinding/PathfindingEngine';
+import { Character, Profile } from '../../core';
+import { Battlefield, PathfindingEngine } from '../../battlefield';
 
 function makeTestProfile(name: string): Profile {
   return {
@@ -39,7 +37,7 @@ function makeTestProfile(name: string): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -75,7 +73,7 @@ function makeTestContext(): { character: Character; allies: Character[]; enemies
   battlefield.placeCharacter(ally, { x: 10, y: 12 });
   battlefield.placeCharacter(enemy, { x: 16, y: 12 });
   
-  return { character, allies: [ally], enemies: [enemy], battlefield };
+  return {  character, allies: [ally], enemies: [enemy], battlefield  } as any;
 }
 
 describe('BehaviorTree', () => {
@@ -443,7 +441,7 @@ describe('UtilityScorer', () => {
     const character = makeTestCharacter('anchor');
     battlefield.placeCharacter(character, { x: 5, y: 5 });
 
-    const enemies: Character[] = [];
+    const enemies: any[] = [];
     for (let i = 0; i < 20; i++) {
       const enemy = makeTestCharacter(`enemy-${i}`);
       enemies.push(enemy);
@@ -574,7 +572,7 @@ describe('CharacterAI', () => {
         missionId: 'QAI_20',
         doctrinePlanning: 'keys_to_victory' as const,
       },
-    };
+    } as any;
 
     const result = await ai.decideAction(aiContext);
     expect(result.decision.reason).toContain('score:');

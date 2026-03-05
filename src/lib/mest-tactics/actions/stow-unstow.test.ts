@@ -16,7 +16,7 @@ import { executeStowItem, executeUnstowItem, executeSwapItem } from './simple-ac
 function createTestCharacter(name: string, totalHands: number = 2): Character {
   const profile: Profile = {
     name,
-    archetype: 'Average',
+    archetype: 'Average' as any,
     attributes: {
       cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 2, mov: 4, siz: 3,
     },

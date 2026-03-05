@@ -1016,7 +1016,7 @@ export function getTraitSources(character: Character): LoggedTraitSource[] {
       sources.push({
         trait,
         sourceType: 'archetype',
-        sourceName: character.profile.archetypeName || 'Unknown',
+        sourceName: (character.profile.archetype as any)?.name || 'Unknown',
         effect: 'Trait bonus',
       });
     }

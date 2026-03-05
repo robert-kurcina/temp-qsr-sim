@@ -1,6 +1,6 @@
 import { gameData } from '../../../data';
-import { Battlefield, BattlefieldOpennessStats } from '../Battlefield';
-import { Position } from './Position';
+import { Battlefield, BattlefieldOpennessStats } from '../';
+import { Position } from '../Position';
 import { TerrainElement, TerrainElementInfo } from '../terrain/TerrainElement';
 import { LOSOperations } from '../los/LOSOperations';
 import { PathfindingEngine } from '../pathfinding/PathfindingEngine';

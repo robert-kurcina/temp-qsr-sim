@@ -25,7 +25,7 @@ describe('Battlefield Framework', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -43,7 +43,7 @@ describe('Battlefield Framework', () => {
     expect(battlefield.grid.getCell(startPos)?.occupant?.id).toBe(char.id);
 
     expect(battlefield.moveCharacter(char, endPos)).toBe(true);
-    expect(battlefield.grid.getCell(startPos)?.occupant).toBe(null);
+    expect(battlefield.grid.getCell(startPos)?.occupant).toBe(null as any);
     expect(battlefield.grid.getCell(endPos)?.occupant?.id).toBe(char.id);
   });
 

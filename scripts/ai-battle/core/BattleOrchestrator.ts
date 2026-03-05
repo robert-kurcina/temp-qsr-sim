@@ -98,7 +98,7 @@ export class BattleOrchestrator {
         type: terrainName as any,
         position: centroid,
         rotation,
-      });
+      } as any);
     }
 
     // Generate SVG
@@ -167,8 +167,8 @@ export class BattleOrchestrator {
         },
       ],
       densityRatio: this.config.densityRatio,
-      lighting: this.config.lighting,
-      visibilityOrMu: this.config.lighting.visibilityOR,
+      lighting: this.config.lighting as any,
+      visibilityOrMu: (this.config.lighting as any).visibilityOR ?? 16,
       maxOrm: 3,
       allowConcentrateRangeExtension: true,
       perCharacterFovLos: false,

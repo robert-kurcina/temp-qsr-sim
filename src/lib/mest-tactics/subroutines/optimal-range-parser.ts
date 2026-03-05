@@ -42,13 +42,13 @@ export function parseOptimalRange(orString: string | undefined, attributes: Fina
                         value = attributes.str;
                         break;
                     case 'agi':
-                        value = attributes.agi;
+                        value = (attributes as any).agi;
                         break;
                     case 'int':
                         value = attributes.int;
                         break;
                     case 'per':
-                        value = attributes.per;
+                        value = (attributes as any).per;
                         break;
                     case 'mov':
                         value = attributes.mov;

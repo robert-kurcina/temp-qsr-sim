@@ -33,15 +33,13 @@ export async function createAssembly(
   const characters: Character[] = [];
   let totalBP = 0;
 
-  for (const model of sideConfig.models) {
-    const profile = buildProfile(model.profileId);
-    const character = buildAssembly(
-      profile,
-      model.items || [],
-      model.archetypeId
-    );
+  for (const model of sideConfig.models || []) {
+    const profile = buildProfile(model.archetypeId || 'Average', {
+      itemNames: model.items || [],
+    });
+    const character = new Character(profile);
     characters.push(character);
-    totalBP += profile.bp;
+    totalBP += profile.bp || 0;
   }
 
   return { characters, totalBP };

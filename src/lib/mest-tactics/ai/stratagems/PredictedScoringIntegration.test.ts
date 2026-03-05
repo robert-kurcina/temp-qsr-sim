@@ -7,7 +7,7 @@ import {
   type MissionVPConfig,
 } from './PredictedScoringIntegration';
 import { calculateStratagemModifiers, TacticalDoctrine } from './AIStratagems';
-import { createKeyScore } from '../../mission/MissionSide';
+import { createKeyScore } from '../../mission';
 
 // Default mission config for tests (Elimination mission)
 const DEFAULT_MISSION_CONFIG: MissionVPConfig = {

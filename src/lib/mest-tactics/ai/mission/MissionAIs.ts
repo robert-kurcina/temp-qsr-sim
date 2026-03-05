@@ -1,12 +1,14 @@
 /**
  * Mission-Specific AI Implementations
- * 
+ *
  * Phase 5: Mission Specialization
  */
 
 import { MissionAI, MissionAIContext, MissionAIDecision } from './MissionAI';
 import { Character } from '../../core/Character';
 import { VictoryConditionType, ScoringType } from '../../missions/mission-definitions';
+import { Position } from '../../battlefield/Position';
+import { Battlefield } from '../../battlefield/Battlefield';
 
 // ============================================================================
 // Elimination Mission AI (QAI_11)
@@ -185,7 +187,7 @@ export class EliminationMissionAI extends MissionAI {
     // Priority 3: Late game - be more aggressive if behind on VP
     if (currentTurn >= 5 && scoringContext && !scoringContext.amILeading) {
       // Find any enemy and attack
-      const visibleEnemies = context.enemies.filter(e => {
+      const visibleEnemies = (context.enemies ?? []).filter(e => {
         if (e.state.isEliminated || e.state.isKOd) return false;
         const enemyPos = battlefield.getCharacterPosition(e);
         if (!enemyPos) return false;
@@ -369,7 +371,7 @@ export class DominionMissionAI extends MissionAI {
       // Check if character is near a controlled zone
       const nearbyControlled = controlledZones.find(z => {
         const charPos = context.battlefield.getCharacterPosition(character);
-        if (!charPos) return false;
+        if (!charPos || !z.center) return false;
         const dist = Math.hypot(z.center.x - charPos.x, z.center.y - charPos.y);
         return dist <= 6; // Within 6 MU
       });

@@ -1,4 +1,4 @@
-import { Position } from './Position';
+import { Position } from '../Position';
 import { distance, pointToSegmentDistance } from '../terrain/BattlefieldUtils';
 
 export interface LOFModel {

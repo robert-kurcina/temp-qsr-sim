@@ -36,7 +36,7 @@ export interface SideAIState {
 export class SideAICoordinator {
   private state: SideAIState;
 
-  constructor(sideId: string, tacticalDoctrine: TacticalDoctrine = 'operative') {
+  constructor(sideId: string, tacticalDoctrine: TacticalDoctrine = TacticalDoctrine.Operative) {
     this.state = {
       sideId,
       tacticalDoctrine,

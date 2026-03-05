@@ -24,6 +24,10 @@ export interface MissionFlowState {
   extraVpBySide?: Record<string, number>;
   keyVpBySide?: Record<string, number>;
   firstBloodSideId?: string;
+  // Backward compatibility properties
+  endReason?: string;
+  missionId?: string;
+  missionName?: string;
 }
 
 export interface MissionFlowOptions {

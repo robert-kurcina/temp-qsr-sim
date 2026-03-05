@@ -39,7 +39,7 @@ function makeTestProfile(
       traits: [],
       bp: 30,
     },
-    items: items.map(item => ({
+    items: items.map((item: any) => ({
       name: item.name,
       classification: item.classification,
       dmg: item.classification === 'Melee' ? 'STR' : '2+2w',
@@ -47,7 +47,7 @@ function makeTestProfile(
       accuracy: '',
       traits: item.traits ?? [],
       range: item.classification === 'Melee' ? 0 : 12,
-    })),
+    } as any)),
     totalBp: 30,
     adjustedBp: 0,
     adjustedItemCosts: { meleeBp: [], rangedBp: [], equipmentBp: [] },
@@ -55,7 +55,7 @@ function makeTestProfile(
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -87,7 +87,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const weaponCount = character.profile.items.length;
+      const weaponCount = character.profile.items!?.length ?? 0;
       const additionalWeapons = weaponCount - 1; // First weapon is base
       const bonus = additionalWeapons; // +1m per additional
 
@@ -103,7 +103,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const weaponCount = character.profile.items.length;
+      const weaponCount = character.profile.items!?.length ?? 0;
       const additionalWeapons = weaponCount - 1;
       const bonus = additionalWeapons;
 
@@ -120,7 +120,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const weaponCount = character.profile.items.length;
+      const weaponCount = character.profile.items!?.length ?? 0;
       const additionalWeapons = weaponCount - 1;
       const bonus = additionalWeapons;
 
@@ -134,7 +134,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const weaponCount = character.profile.items.length;
+      const weaponCount = character.profile.items!?.length ?? 0;
       const additionalWeapons = weaponCount - 1;
       const bonus = additionalWeapons;
 
@@ -198,7 +198,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const allRanged = character.profile.items.every(
+      const allRanged = character.profile.items!.every(
         item => ['Firearm', 'Bow', 'Thrown', 'Range', 'Energy', 'Beam'].includes(item.classification)
       );
 
@@ -213,8 +213,8 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const hasMelee = character.profile.items.some(item => item.classification === 'Melee');
-      const hasRanged = character.profile.items.some(
+      const hasMelee = character.profile.items!.some(item => item.classification === 'Melee');
+      const hasRanged = character.profile.items!.some(
         item => ['Firearm', 'Bow', 'Thrown', 'Range', 'Energy', 'Beam'].includes(item.classification)
       );
 
@@ -230,7 +230,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
       ]);
 
       // Throwable melee weapons can count as Ranged
-      const allThrowable = character.profile.items.every(
+      const allThrowable = character.profile.items!.every(
         item => item.traits?.includes('Throwable')
       );
 
@@ -245,10 +245,10 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const hasNatural = character.profile.items.some(
+      const hasNatural = character.profile.items!.some(
         item => item.classification === 'Natural'
       );
-      const hasRanged = character.profile.items.some(
+      const hasRanged = character.profile.items!.some(
         item => ['Firearm', 'Bow', 'Thrown', 'Range', 'Energy', 'Beam'].includes(item.classification)
       );
 
@@ -265,7 +265,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Broken Bottle', classification: 'Improvised' },
       ]);
 
-      const validWeapons = character.profile.items.filter(
+      const validWeapons = character.profile.items!.filter(
         item => item.classification !== 'Improvised'
       );
 
@@ -280,7 +280,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Chair Leg', classification: 'Improvised' },
       ]);
 
-      const validWeapons = character.profile.items.filter(
+      const validWeapons = character.profile.items!.filter(
         item => item.classification !== 'Improvised'
       );
       const additionalWeapons = validWeapons.length - 1;
@@ -300,7 +300,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Holdout Pistol', classification: 'Firearm', traits: ['Conceal'] },
       ]);
 
-      const hasConceal = character.profile.items.some(
+      const hasConceal = character.profile.items!.some(
         item => item.traits?.includes('Conceal')
       );
 
@@ -314,7 +314,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Sleeve Gun', classification: 'Firearm', traits: ['Discrete'] },
       ]);
 
-      const hasDiscrete = character.profile.items.some(
+      const hasDiscrete = character.profile.items!.some(
         item => item.traits?.includes('Discrete')
       );
 
@@ -328,7 +328,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const hasExemption = character.profile.items.some(
+      const hasExemption = character.profile.items!.some(
         item => item.traits?.includes('Conceal') || item.traits?.includes('Discrete')
       );
 
@@ -369,7 +369,7 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
     it('should reset penalty on new Initiative (QSR 1233)', () => {
       const currentInitiative = 2;
       const lastWeaponUsedInitiative = 1;
-      const isConsecutive = currentInitiative === lastWeaponUsedInitiative;
+      const isConsecutive = (currentInitiative as number) === (lastWeaponUsedInitiative as number);
 
       expect(isConsecutive).toBe(false);
       // No penalty (new Initiative)
@@ -402,8 +402,8 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
       const declaredWeapon = 'Pistol';
       const weaponType = 'Ranged';
 
-      const canReactMelee = weaponType === 'Melee';
-      const canReactRanged = weaponType === 'Ranged';
+      const canReactMelee = (weaponType as string) === 'Melee';
+      const canReactRanged = (weaponType as string) === 'Ranged';
 
       expect(declaredWeapon).toBe('Pistol');
       expect(canReactMelee).toBe(false);
@@ -414,8 +414,8 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
       const declaredWeapon = 'Pistol';
       const weaponType = 'Ranged';
 
-      const canUseMeleeBonus = weaponType === 'Melee';
-      const canUseRangedBonus = weaponType === 'Ranged';
+      const canUseMeleeBonus = (weaponType as string) === 'Melee';
+      const canUseRangedBonus = (weaponType as string) === 'Ranged';
 
       expect(declaredWeapon).toBe('Pistol');
       expect(canUseMeleeBonus).toBe(false);
@@ -430,11 +430,11 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const weaponCount = character.profile.items.length;
-      const allRanged = character.profile.items.every(
+      const weaponCount = character.profile.items!?.length ?? 0;
+      const allRanged = character.profile.items!.every(
         item => ['Firearm', 'Bow', 'Thrown', 'Range', 'Energy', 'Beam'].includes(item.classification)
       );
-      const noImprovised = character.profile.items.every(
+      const noImprovised = character.profile.items!.every(
         item => item.classification !== 'Improvised'
       );
 
@@ -451,14 +451,14 @@ describe('Multiple Weapons (Ranged) - MW.1 (QSR Lines 1223-1240)', () => {
         { name: 'Pistol', classification: 'Firearm' },
       ]);
 
-      const allRanged = character.profile.items.every(
+      const allRanged = character.profile.items!.every(
         item => ['Firearm', 'Bow', 'Thrown', 'Range', 'Energy', 'Beam'].includes(item.classification)
       );
-      const allMelee = character.profile.items.every(
+      const allMelee = character.profile.items!.every(
         item => item.classification === 'Melee'
       );
 
-      const isQualified = (allRanged || allMelee) && character.profile.items.length > 1;
+      const isQualified = ((allRanged || allMelee) && character.profile.items!.length) ?? 0 > 1;
 
       expect(isQualified).toBe(false);
       // NOT QUALIFIED (mixed types)

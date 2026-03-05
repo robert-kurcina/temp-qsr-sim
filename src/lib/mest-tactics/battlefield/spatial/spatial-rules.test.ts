@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { Battlefield } from '../Battlefield';
-import { TerrainElement } from '../terrain/TerrainElement';
-import { TerrainType } from '../terrain/Terrain';
-import { SpatialRules } from './spatial-rules';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
+import { Battlefield, TerrainElement, TerrainType, SpatialRules } from '../';
+import { Character, Profile } from '../../core';
 
 describe('SpatialRules', () => {
   it('should detect engagement via base contact', () => {
@@ -14,7 +10,7 @@ describe('SpatialRules', () => {
 
     expect(SpatialRules.isEngaged(a, b)).toBe(true);
     expect(SpatialRules.isEngaged(a, c)).toBe(false);
-    expect(SpatialRules.getEngagedModels(a, [b, c]).map(model => model.id)).toEqual(['b']);
+    expect(SpatialRules.getEngagedModels(a, [b, c]).map((model: any) => model.id)).toEqual(['b']);
   });
 
   it('should never engage when either model is Panicked (PN.5)', () => {
@@ -278,7 +274,7 @@ describe('SpatialRules', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -311,7 +307,7 @@ describe('SpatialRules', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -345,7 +341,7 @@ describe('SpatialRules', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -379,7 +375,7 @@ describe('SpatialRules', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,

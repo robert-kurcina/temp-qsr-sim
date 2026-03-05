@@ -1,16 +1,16 @@
 /**
  * Mission AI - Phase 5 Specialization
- * 
+ *
  * Mission-specific AI behaviors that override or enhance
  * the standard Strategic Layer (SideAI/AssemblyAI) decisions.
  */
 
-import { MissionSide } from '../mission/MissionSide';
-import { Battlefield } from '../battlefield/Battlefield';
-import { Character } from '../core/Character';
-import { Position } from '../battlefield/Position';
+import { MissionSide } from '../../mission/MissionSide';
+import { Battlefield } from '../../battlefield/Battlefield';
+import { Character } from '../../core/Character';
+import { Position } from '../../battlefield/Position';
 import { ActionDecision } from '../core/AIController';
-import { ZoneInstance } from '../missions/mission-config';
+import { ZoneInstance } from '../../missions/mission-config';
 
 /**
  * Mission AI context
@@ -24,10 +24,14 @@ export interface MissionAIContext {
   side: MissionSide;
   /** Enemy sides */
   enemySides: MissionSide[];
+  /** Enemy characters (backward compatibility) */
+  enemies?: Character[];
   /** Battlefield reference */
   battlefield: Battlefield;
   /** Mission-specific state */
   missionState: Record<string, unknown>;
+  /** Scoring context for VP/RP pressure (backward compatibility) */
+  scoringContext?: any;
 }
 
 /**
@@ -125,6 +129,7 @@ export abstract class MissionAI {
     let nearestDist = Infinity;
 
     for (const zone of zones) {
+      if (!zone.center) continue;
       const dist = Math.hypot(
         zone.center.x - charPos.x,
         zone.center.y - charPos.y

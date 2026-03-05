@@ -1,5 +1,5 @@
 import { MissionSide } from '../mission/MissionSide';
-import { MissionDefinition } from '../missions/mission-config';
+import { MissionDefinition, VictoryConditionType } from '../missions/mission-definitions';
 import { MissionEventManager, EventTriggerType, EventEffectType, EventConditionType, EventEffect } from '../missions/mission-event-hooks';
 import { getEliminationMission } from './elimination';
 import {
@@ -41,6 +41,8 @@ export interface EliminationMissionState {
   winner?: string;
   /** Reason for ending */
   endReason?: string;
+  /** Current turn (backward compatibility) */
+  currentTurn?: number;
 }
 
 /**
@@ -52,6 +54,7 @@ export class EliminationMissionManager {
   private sides: Map<string, MissionSide>;
   private eventManager: MissionEventManager;
   private state: EliminationMissionState;
+  public currentTurn: number = 1;
 
   constructor(sides: MissionSide[]) {
     this.mission = getEliminationMission();

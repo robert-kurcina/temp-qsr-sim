@@ -150,8 +150,8 @@ describe('Phase A: Mission Outcome Correctness', () => {
         .filter(([, vp]) => vp === maxVP)
         .map(([sideId]) => sideId);
       
-      const maxRP = Math.max(...topVpSides.map(sideId => rpBySide[sideId]));
-      const topRpSides = topVpSides.filter(sideId => rpBySide[sideId] === maxRP);
+      const maxRP = Math.max(...topVpSides.map(sideId => rpBySide[sideId as keyof typeof rpBySide]));
+      const topRpSides = topVpSides.filter(sideId => rpBySide[sideId as keyof typeof rpBySide] === maxRP);
       
       expect(topRpSides.length).toBe(1);
       expect(topRpSides[0]).toBe('side-a');
@@ -166,8 +166,8 @@ describe('Phase A: Mission Outcome Correctness', () => {
         .filter(([, vp]) => vp === maxVP)
         .map(([sideId]) => sideId);
       
-      const maxRP = Math.max(...topVpSides.map(sideId => rpBySide[sideId]));
-      const topRpSides = topVpSides.filter(sideId => rpBySide[sideId] === maxRP);
+      const maxRP = Math.max(...topVpSides.map(sideId => rpBySide[sideId as keyof typeof rpBySide]));
+      const topRpSides = topVpSides.filter(sideId => rpBySide[sideId as keyof typeof rpBySide] === maxRP);
       
       expect(topRpSides.length).toBe(2);
     });

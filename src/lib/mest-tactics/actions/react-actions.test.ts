@@ -17,7 +17,7 @@ const makeProfile = (name: string, ref = 2, mov = 4): Profile => ({
   adjPhysicality: 0,
   durability: 0,
   adjDurability: 0,
-  burden: { totalLaden: 0, totalBurden: 0 },
+  burden: { totalLaden: 0, totalBurden: 0 } as any,
   totalHands: 0,
   totalDeflect: 0,
   totalAR: 0,
@@ -198,7 +198,7 @@ describe('react-actions', () => {
     battlefield.placeCharacter(active, { x: 6, y: 6 });
     battlefield.placeCharacter(reactor, { x: 2, y: 6 });
 
-    const result = manager.executeStandardReact(reactor, active, fallbackWeapon as any, {});
+    const result = manager.executeStandardReact(reactor, active, fallbackWeapon as any, {} as any);
     expect(result.executed).toBe(true);
     expect(reactor.state.isHidden).toBe(false);
   });

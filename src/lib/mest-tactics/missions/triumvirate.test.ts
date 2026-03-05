@@ -19,7 +19,7 @@ describe('Triumvirate Mission', () => {
     sideA = result.sideA;
     sideB = result.sideB;
 
-    const zonePositions: Position[] = [
+    const zonePositions: any[] = [
       { x: 12, y: 4 },   // Top center
       { x: 4, y: 18 },   // Bottom left
       { x: 20, y: 18 },  // Bottom right
@@ -309,7 +309,7 @@ describe('Triumvirate Mission - Edge Cases', () => {
 
       const manager = createTriumvirateMission([result.sideA, result.sideB]);
 
-      const zonePositions: Position[] = [
+      const zonePositions: any[] = [
         { x: 12, y: 4 },
         { x: 4, y: 18 },
         { x: 20, y: 18 },
@@ -320,7 +320,7 @@ describe('Triumvirate Mission - Edge Cases', () => {
       });
 
       manager.updateZoneControl(
-        result.sideA.members.map(m => ({ id: m.id, position: m.position! }))
+        result.sideA.members.map((m: any) => ({ id: m.id, position: m.position! }))
       );
 
       const controllers = manager.getZoneControllers();

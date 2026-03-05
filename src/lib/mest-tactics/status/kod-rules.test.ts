@@ -3,7 +3,7 @@ import { Character } from '../core/Character';
 import type { Profile } from '../core/Profile';
 import { canAttackKOdTarget, getKOdEliminationThreshold } from './kod-rules';
 
-const makeProfile = (name: string, traits: string[] = [], attrs?: Partial<Profile['archetype']['attributes']>): Profile => ({
+const makeProfile = (name: string, traits: any[] = [], attrs?: Partial<Profile['archetype']['attributes']>): Profile => ({
   name,
   archetype: { attributes: { cca: 1, rca: 1, ref: 1, int: 1, pow: 1, str: 1, for: 1, mov: 3, siz: 3, ...(attrs ?? {}) } },
   items: [],
@@ -14,7 +14,7 @@ const makeProfile = (name: string, traits: string[] = [], attrs?: Partial<Profil
   adjPhysicality: 0,
   durability: 0,
   adjDurability: 0,
-  burden: { totalLaden: 0, totalBurden: 0 },
+  burden: { totalLaden: 0, totalBurden: 0 } as any,
   totalHands: 0,
   totalDeflect: 0,
   totalAR: 0,

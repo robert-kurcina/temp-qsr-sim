@@ -753,6 +753,10 @@ export function executeIndirectAttack(
     blind,
     handRequirementFailed: true,
     handRequirementReason: reason,
+    // Backward compatibility properties
+    blindScatterDistanceBonus: 0,
+    blindScatterDistanceRoll: undefined,
+    targetMarker: undefined,
   });
   const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
   const attackerBaseDiameter = getBaseDiameterFromSiz(attackerSiz);
@@ -825,7 +829,7 @@ export function executeIndirectAttack(
     deps,
     attacker,
     attackerPos,
-    target: options.target,
+    target: { id: options.target.id, position: options.target.position, baseDiameter: options.target.baseDiameter, siz: options.target.siz ?? 3 },
     hasLOS: losContext.hasLOS,
     knownAtInitiativeStart: options.knownAtInitiativeStart,
     spotters: options.spotters,
@@ -1008,6 +1012,9 @@ export function executeIndirectAttack(
     blindScatterDistanceBonus,
     blindScatterDistanceRoll,
     targetMarker,
+    // Backward compatibility properties
+    handRequirementFailed: false,
+    handRequirementReason: '',
   };
 }
 
@@ -1322,7 +1329,6 @@ export function executeCloseCombatAttack(
       isCloseCombat: true,
       isCharge: mergedContext.isCharge,
       engaged,
-      additionalBonusActions: fightBonusActions,
     });
 
     // Allow bonus action even on failed hit if Brawl trait qualifies.

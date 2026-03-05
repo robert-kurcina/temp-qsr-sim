@@ -17,6 +17,7 @@ export interface AttackResult {
   targetEliminated: boolean;
   attackerWoundsTaken: number;
   extras: string[];
+  reason?: string;
 }
 
 export interface WeaponSelection {
@@ -48,14 +49,20 @@ export async function executeCloseCombat(
 
   try {
     // Execute close combat through GameManager
-    const attackResult = await gameManager.executeCloseCombatAttack(
+    if (!weapon) {
+      result.success = false;
+      result.reason = 'No weapon available';
+      return result;
+    }
+
+    const attackResult: any = await gameManager.executeCloseCombatAttack(
       attacker,
       defender,
       weapon,
       {
         overreach: options.overreach,
         declaredAction: options.declaredAction,
-      }
+      } as any
     );
 
     result.success = attackResult?.hitTestResult?.actorWins ?? false;
@@ -100,14 +107,20 @@ export async function executeRangedCombat(
 
   try {
     // Execute ranged combat through GameManager
-    const attackResult = await gameManager.executeRangedAttack(
+    if (!weapon) {
+      result.success = false;
+      result.reason = 'No weapon available';
+      return result;
+    }
+
+    const attackResult: any = await gameManager.executeRangedAttack(
       attacker,
       defender,
       weapon,
       {
         leaning: options.leaning,
         declaredAction: options.declaredAction,
-      }
+      } as any
     );
 
     result.success = attackResult?.hitTestResult?.actorWins ?? false;
@@ -154,19 +167,19 @@ export async function executeDisengage(
   };
 
   try {
-    const disengageResult = await gameManager.executeDisengageAction(character);
+    const disengageResult: any = await (gameManager.executeDisengageAction as any)(character);
 
     result.success = disengageResult?.success ?? false;
     result.moved = disengageResult?.moved ?? false;
     result.woundsTaken = disengageResult?.woundsTaken ?? 0;
 
     if (disengageResult?.testResult?.margin) {
-      result.extras.push(`Test margin: ${disengageResult.testResult.margin}`);
+      (result.extras as any).push(`Test margin: ${disengageResult.testResult.margin}`);
     }
 
   } catch (error) {
     console.error('Disengage execution failed:', error);
-    result.extras.push(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    (result.extras as any).push(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 
   return result;
@@ -190,7 +203,7 @@ export function pickMeleeWeapon(character: Character): WeaponSelection | null {
   if (meleeWeapons.length === 0) {
     // No melee weapons, use natural attacks
     return {
-      weapon: { id: 'natural', name: 'Natural Weapons', classification: 'Natural' } as Item,
+      weapon: { id: 'natural', name: 'Natural Weapons', classification: 'Natural' } as unknown as Item,
       reason: 'No melee weapons equipped, using natural attacks',
     };
   }

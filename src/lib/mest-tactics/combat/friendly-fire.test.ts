@@ -59,9 +59,11 @@ function createTestCharacter(name: string, ref: number = 2): Character {
 function createTestWeapon(): Item {
   return {
     name: 'Test Bow',
+    class: 'Bow',
     classification: 'Bow',
+    type: 'Bow',
     or: 12,
-    acc: 0,
+    accuracy: '0',
     impact: 2,
     dmg: 'STR + 1m',
     traits: [],
@@ -84,20 +86,20 @@ function createPositionLookup(
 describe('Friendly Fire - Distance Checks', () => {
   describe('isInBaseContact', () => {
     it('should detect base-contact for adjacent models', () => {
-      const pos1: Position = { x: 0, y: 0 };
-      const pos2: Position = { x: 1.25, y: 0 }; // SIZ 3 base = 1.25"
+      const pos1: Position = { x: 0, y: 0 } as any;
+      const pos2: Position = { x: 1.25, y: 0 } as any; // SIZ 3 base = 1.25"
       expect(isInBaseContact(pos1, 1.25, pos2, 1.25)).toBe(true);
     });
 
     it('should not detect base-contact for distant models', () => {
-      const pos1: Position = { x: 0, y: 0 };
-      const pos2: Position = { x: 3, y: 0 };
+      const pos1: Position = { x: 0, y: 0 } as any;
+      const pos2: Position = { x: 3, y: 0 } as any;
       expect(isInBaseContact(pos1, 1.25, pos2, 1.25)).toBe(false);
     });
 
     it('should handle different base sizes', () => {
-      const pos1: Position = { x: 0, y: 0 };
-      const pos2: Position = { x: 1.5, y: 0 };
+      const pos1: Position = { x: 0, y: 0 } as any;
+      const pos2: Position = { x: 1.5, y: 0 } as any;
       // SIZ 3 (1.25") and SIZ 5 (2") bases
       expect(isInBaseContact(pos1, 1.25, pos2, 2)).toBe(true);
     });
@@ -105,37 +107,37 @@ describe('Friendly Fire - Distance Checks', () => {
 
   describe('isWithin1Inch', () => {
     it('should detect models within 1"', () => {
-      const pos1: Position = { x: 0, y: 0 };
-      const pos2: Position = { x: 0.5, y: 0.5 };
+      const pos1: Position = { x: 0, y: 0 } as any;
+      const pos2: Position = { x: 0.5, y: 0.5 } as any;
       expect(isWithin1Inch(pos1, pos2)).toBe(true);
     });
 
     it('should not detect models beyond 1"', () => {
-      const pos1: Position = { x: 0, y: 0 };
-      const pos2: Position = { x: 2, y: 0 };
+      const pos1: Position = { x: 0, y: 0 } as any;
+      const pos2: Position = { x: 2, y: 0 } as any;
       expect(isWithin1Inch(pos1, pos2)).toBe(false);
     });
   });
 
   describe('isWithin1InchOfLOF', () => {
     it('should detect points on the line', () => {
-      const lineStart: Position = { x: 0, y: 0 };
-      const lineEnd: Position = { x: 10, y: 0 };
-      const point: Position = { x: 5, y: 0 };
+      const lineStart: Position = { x: 0, y: 0 } as any;
+      const lineEnd: Position = { x: 10, y: 0 } as any;
+      const point: Position = { x: 5, y: 0 } as any;
       expect(isWithin1InchOfLOF(point, lineStart, lineEnd)).toBe(true);
     });
 
     it('should detect points near the line', () => {
-      const lineStart: Position = { x: 0, y: 0 };
-      const lineEnd: Position = { x: 10, y: 0 };
-      const point: Position = { x: 5, y: 0.3 };
+      const lineStart: Position = { x: 0, y: 0 } as any;
+      const lineEnd: Position = { x: 10, y: 0 } as any;
+      const point: Position = { x: 5, y: 0.3 } as any;
       expect(isWithin1InchOfLOF(point, lineStart, lineEnd)).toBe(true);
     });
 
     it('should not detect points far from the line', () => {
-      const lineStart: Position = { x: 0, y: 0 };
-      const lineEnd: Position = { x: 10, y: 0 };
-      const point: Position = { x: 5, y: 2 };
+      const lineStart: Position = { x: 0, y: 0 } as any;
+      const lineEnd: Position = { x: 10, y: 0 } as any;
+      const point: Position = { x: 5, y: 2 } as any;
       expect(isWithin1InchOfLOF(point, lineStart, lineEnd)).toBe(false);
     });
   });
@@ -191,9 +193,9 @@ describe('Friendly Fire - Target Selection', () => {
       
       // Should find friendly1, friendly2, friendly3 (not friendly4, attacker, or target)
       expect(targets.length).toBe(3);
-      expect(targets.map(t => t.character.name)).toContain('Friendly1');
-      expect(targets.map(t => t.character.name)).toContain('Friendly2');
-      expect(targets.map(t => t.character.name)).toContain('Friendly3');
+      expect(targets.map((t: any) => t.character.name)).toContain('Friendly1');
+      expect(targets.map((t: any) => t.character.name)).toContain('Friendly2');
+      expect(targets.map((t: any) => t.character.name)).toContain('Friendly3');
     });
 
     it('should prioritize base-contact targets', () => {
@@ -248,7 +250,7 @@ describe('Friendly Fire - Target Selection', () => {
       const targets = findFriendlyFireTargets(options);
       
       // friendly1 should not be in targets (safe in base-contact with attacker)
-      expect(targets.map(t => t.character.name)).not.toContain('Friendly1');
+      expect(targets.map((t: any) => t.character.name)).not.toContain('Friendly1');
     });
 
     it('should exclude non-Attentive or non-Ordered models', () => {

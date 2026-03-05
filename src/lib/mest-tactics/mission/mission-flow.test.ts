@@ -16,7 +16,7 @@ function makeProfile(name: string, bp = 0): Profile {
     adjPhysicality: 0,
     durability: 0,
     adjDurability: 0,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 0,
     totalDeflect: 0,
     totalAR: 0,
@@ -42,9 +42,9 @@ function makeSide(id: string, count: number, bp = 0): MissionSide {
     id,
     name: id,
     assemblies: [],
-    members,
+    members: members as any,
     totalBP: members.reduce((sum, member) => sum + (member.profile.totalBp ?? 0), 0),
-  };
+  } as any;
 }
 
 describe('mission-flow', () => {

@@ -25,24 +25,24 @@ describe('resolveDamageTest (legacy compatibility wrapper)', () => {
       id: 'attacker', name: 'Attacker', archetype: 'soldier',
       attributes: { str: 3, pow: 3, int: 3, for: 3, siz: 10, cca: 0, rca: 0, ref: 0, mov: 0 },
       finalAttributes: { str: 3, pow: 3, int: 3, for: 3, siz: 10, cca: 0, rca: 0, ref: 0, mov: 0 },
-      state: { wounds: 0, delayTokens: 0, isKOd: false, isEliminated: false, armor: { total: 0 } },
+      state: { wounds: 0, delayTokens: 0, isKOd: false, isEliminated: false, armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 } },
       items: [],
-    };
+    } as any;
     defender = {
       id: 'defender', name: 'Defender', archetype: 'soldier',
       attributes: { str: 3, pow: 3, int: 3, for: 3, siz: 5, cca: 0, rca: 0, ref: 0, mov: 0 },
       finalAttributes: { str: 3, pow: 3, int: 3, for: 3, siz: 5, cca: 0, rca: 0, ref: 0, mov: 0 },
-      state: { wounds: 0, delayTokens: 0, isKOd: false, isEliminated: false, armor: { total: 0 } },
+      state: { wounds: 0, delayTokens: 0, isKOd: false, isEliminated: false, armor: { total: 0, suit: 0, gear: 0, shield: 0, helm: 0 } },
       items: [],
-    };
+    } as any;
     weapon = {
-      id: 'weapon', name: 'Sword', type: 'weapon', dmg: 'STR+1', impact: 1,
+      id: 'weapon', name: 'Sword', class: 'Melee', classification: 'Melee', type: 'weapon', bp: 0, traits: [], dmg: 'STR+1', impact: 1,
     };
   });
 
   it('should calculate wounds based on cascades and effective armor', () => {
     defender.state.armor.total = 2;
-    vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 3, carryOverDice: {} });
+    vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 3, carryOverDice: {} } as any);
     const result = resolveDamageTest(attacker, defender, weapon, 0);
     expect(result.wounds).toBe(2);
     expect(defender.state.wounds).toBe(2);
@@ -51,7 +51,7 @@ describe('resolveDamageTest (legacy compatibility wrapper)', () => {
   it('should apply KO status when total wounds equal SIZ', () => {
     defender.state.wounds = 3;
     defender.finalAttributes.siz = 5;
-    vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 2, carryOverDice: {} });
+    vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 2, carryOverDice: {} } as any);
     resolveDamageTest(attacker, defender, weapon, 0);
     expect(defender.state.isKOd).toBe(true);
   });
@@ -59,7 +59,7 @@ describe('resolveDamageTest (legacy compatibility wrapper)', () => {
   it('should apply Eliminated status when total wounds equal or exceed SIZ + 3', () => {
     defender.state.wounds = 6;
     defender.finalAttributes.siz = 5;
-    vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 2, carryOverDice: {} });
+    vi.mocked(diceRoller.resolveTest).mockReturnValue({ pass: true, cascades: 2, carryOverDice: {} } as any);
     resolveDamageTest(attacker, defender, weapon, 0);
     expect(defender.state.isEliminated).toBe(true);
   });

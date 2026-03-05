@@ -26,7 +26,7 @@ describe('Dominion Mission', () => {
     sideA = result.sideA;
     sideB = result.sideB;
 
-    const zonePositions: Position[] = [
+    const zonePositions: any[] = [
       { x: 12, y: 6 },   // Top center
       { x: 6, y: 12 },   // Left center
       { x: 18, y: 12 },  // Right center
@@ -188,7 +188,7 @@ describe('Dominion Mission', () => {
         [{ archetypeName: 'Militia', count: 1 }]
       );
 
-      const zonePositions: Position[] = [
+      const zonePositions: any[] = [
         { x: 12, y: 6 },
         { x: 6, y: 12 },
         { x: 18, y: 12 },
@@ -282,7 +282,7 @@ describe('Dominion Mission', () => {
       ]);
       manager.awardTurnVP();
 
-      sideA.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideA.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
       manager.endMission(undefined, 'Turn limit');
 
       // Side B should win by default (only active side)
@@ -340,7 +340,7 @@ describe('Dominion Mission - Edge Cases', () => {
         [{ archetypeName: 'Veteran', count: 1 }]
       );
 
-      const zonePositions: Position[] = [
+      const zonePositions: any[] = [
         { x: 12, y: 6 },
         { x: 6, y: 12 },
         { x: 18, y: 12 },
@@ -375,7 +375,7 @@ describe('Dominion Mission - Edge Cases', () => {
         [{ archetypeName: 'Veteran', count: 5 }]
       );
 
-      const zonePositions: Position[] = [
+      const zonePositions: any[] = [
         { x: 12, y: 6 },   // Top center
         { x: 6, y: 12 },   // Left center
         { x: 18, y: 12 },  // Right center
@@ -394,7 +394,7 @@ describe('Dominion Mission - Edge Cases', () => {
       });
 
       // Update all at once
-      const models = result.sideA.members.map(m => ({
+      const models = result.sideA.members.map((m: any) => ({
         id: m.id,
         position: m.position!,
         baseDiameter: 1,

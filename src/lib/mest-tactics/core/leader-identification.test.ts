@@ -7,14 +7,15 @@ import { identifyDesignatedLeader, isDesignatedLeader, getLeaderMoraleBonus, get
 import { buildMissionSide } from '../mission/MissionSideBuilder';
 import { buildAssembly, buildProfile } from '../mission/assembly-builder';
 import { Battlefield } from '../battlefield/Battlefield';
+import { Character } from './Character';
 
 describe('identifyDesignatedLeader', () => {
   it('should prioritize Leadership trait for non-initiative tests', () => {
-    const leaderProfile = buildProfile('Average', {});
+    const leaderProfile = buildProfile('Average', {} as any);
     leaderProfile.finalTraits = ['Leadership 2'];
     leaderProfile.allTraits = ['Leadership 2'];
     
-    const regularProfile = buildProfile('Average', {});
+    const regularProfile = buildProfile('Average', {} as any);
     regularProfile.finalTraits = ['Tactics 1'];
     regularProfile.allTraits = ['Tactics 1'];
     
@@ -29,11 +30,11 @@ describe('identifyDesignatedLeader', () => {
   
   it('should use outcome-based selection for initiative tests', () => {
     // Character with INT 4 but no friendly models in range
-    const highIntProfile = buildProfile('Average', {});
+    const highIntProfile = buildProfile('Average', {} as any);
     highIntProfile.attributes = { ...highIntProfile.attributes!, int: 4 };
     
     // Character with INT 2 + Tactics 2 (better carry-over potential)
-    const tacticsProfile = buildProfile('Average', {});
+    const tacticsProfile = buildProfile('Average', {} as any);
     tacticsProfile.attributes = { ...tacticsProfile.attributes!, int: 2 };
     tacticsProfile.finalTraits = ['Tactics 2'];
     tacticsProfile.allTraits = ['Tactics 2'];
@@ -44,8 +45,8 @@ describe('identifyDesignatedLeader', () => {
     
     // Create battlefield and place models far apart
     const battlefield = new Battlefield(24, 24);
-    battlefield.placeCharacter(highIntProfile, { x: 0, y: 0 });
-    battlefield.placeCharacter(tacticsProfile, { x: 20, y: 20 }); // Out of range
+    battlefield.placeCharacter(new Character(highIntProfile), { x: 0, y: 0 });
+    battlefield.placeCharacter(new Character(tacticsProfile), { x: 20, y: 20 }); // Out of range
     
     // visibilityOR 16 = Day Clear, Awareness range = 16 × 3 = 48 MU
     const leader = identifyDesignatedLeader(side, 'initiative', battlefield, 16);
@@ -57,15 +58,15 @@ describe('identifyDesignatedLeader', () => {
   
   it('should select character with friendly models in range for initiative', () => {
     // Character with INT 4 but isolated (no friends in range)
-    const isolatedProfile = buildProfile('Average', {});
+    const isolatedProfile = buildProfile('Average', {} as any);
     isolatedProfile.attributes = { ...isolatedProfile.attributes!, int: 4 };
     
     // Character with INT 3 but has friendly models in range
-    const connectedProfile = buildProfile('Average', {});
+    const connectedProfile = buildProfile('Average', {} as any);
     connectedProfile.attributes = { ...connectedProfile.attributes!, int: 3 };
     
     // Friend for connected character
-    const friendProfile = buildProfile('Average', {});
+    const friendProfile = buildProfile('Average', {} as any);
     
     const isolatedAssembly = buildAssembly('Isolated', [isolatedProfile]);
     const connectedAssembly = buildAssembly('Connected', [connectedProfile, friendProfile]);
@@ -89,11 +90,11 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should prioritize Tactics trait if no Leadership for non-initiative', () => {
-    const tacticsProfile = buildProfile('Average', {});
+    const tacticsProfile = buildProfile('Average', {} as any);
     tacticsProfile.finalTraits = ['Tactics 2'];
     tacticsProfile.allTraits = ['Tactics 2'];
     
-    const regularProfile = buildProfile('Average', {});
+    const regularProfile = buildProfile('Average', {} as any);
     
     const tacticsAssembly = buildAssembly('Tacticians', [tacticsProfile]);
     const regularAssembly = buildAssembly('Regulars', [regularProfile]);
@@ -105,12 +106,12 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should use INT as tiebreaker for same trait level', () => {
-    const leader1Profile = buildProfile('Average', {});
+    const leader1Profile = buildProfile('Average', {} as any);
     leader1Profile.finalTraits = ['Leadership 1'];
     leader1Profile.allTraits = ['Leadership 1'];
     leader1Profile.attributes = { ...leader1Profile.attributes!, int: 4 };
     
-    const leader2Profile = buildProfile('Average', {});
+    const leader2Profile = buildProfile('Average', {} as any);
     leader2Profile.finalTraits = ['Leadership 1'];
     leader2Profile.allTraits = ['Leadership 1'];
     leader2Profile.attributes = { ...leader2Profile.attributes!, int: 2 };
@@ -123,12 +124,12 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should use POW as secondary tiebreaker', () => {
-    const leader1Profile = buildProfile('Average', {});
+    const leader1Profile = buildProfile('Average', {} as any);
     leader1Profile.finalTraits = ['Leadership 1'];
     leader1Profile.allTraits = ['Leadership 1'];
     leader1Profile.attributes = { ...leader1Profile.attributes!, int: 3, pow: 4 };
     
-    const leader2Profile = buildProfile('Average', {});
+    const leader2Profile = buildProfile('Average', {} as any);
     leader2Profile.finalTraits = ['Leadership 1'];
     leader2Profile.allTraits = ['Leadership 1'];
     leader2Profile.attributes = { ...leader2Profile.attributes!, int: 3, pow: 2 };
@@ -141,12 +142,12 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should use BP as tertiary tiebreaker', () => {
-    const leader1Profile = buildProfile('Veteran', {});
+    const leader1Profile = buildProfile('Veteran', {} as any);
     leader1Profile.finalTraits = ['Leadership 1'];
     leader1Profile.allTraits = ['Leadership 1'];
     leader1Profile.attributes = { ...leader1Profile.attributes!, int: 3, pow: 3 };
     
-    const leader2Profile = buildProfile('Average', {});
+    const leader2Profile = buildProfile('Average', {} as any);
     leader2Profile.finalTraits = ['Leadership 1'];
     leader2Profile.allTraits = ['Leadership 1'];
     leader2Profile.attributes = { ...leader2Profile.attributes!, int: 3, pow: 3 };
@@ -160,11 +161,11 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should exclude KO\'d and Eliminated models', () => {
-    const leaderProfile = buildProfile('Average', {});
+    const leaderProfile = buildProfile('Average', {} as any);
     leaderProfile.finalTraits = ['Leadership 2'];
     leaderProfile.allTraits = ['Leadership 2'];
     
-    const koProfile = buildProfile('Average', {});
+    const koProfile = buildProfile('Average', {} as any);
     koProfile.finalTraits = ['Leadership 1'];
     koProfile.allTraits = ['Leadership 1'];
     
@@ -180,8 +181,8 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should return null if no active models', () => {
-    const koProfile = buildProfile('Average', {});
-    const elimProfile = buildProfile('Average', {});
+    const koProfile = buildProfile('Average', {} as any);
+    const elimProfile = buildProfile('Average', {} as any);
     
     const koAssembly = buildAssembly('KO\'d', [koProfile]);
     const elimAssembly = buildAssembly('Eliminated', [elimProfile]);
@@ -196,11 +197,11 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should re-evaluate leader when models eliminated', () => {
-    const leader1Profile = buildProfile('Average', {});
+    const leader1Profile = buildProfile('Average', {} as any);
     leader1Profile.finalTraits = ['Leadership 2'];
     leader1Profile.allTraits = ['Leadership 2'];
     
-    const leader2Profile = buildProfile('Average', {});
+    const leader2Profile = buildProfile('Average', {} as any);
     leader2Profile.finalTraits = ['Leadership 1'];
     leader2Profile.allTraits = ['Leadership 1'];
     
@@ -221,18 +222,18 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should use Visibility OR × 3 for Awareness range', () => {
-    const leaderProfile = buildProfile('Average', {});
+    const leaderProfile = buildProfile('Average', {} as any);
     leaderProfile.attributes = { ...leaderProfile.attributes!, int: 4 };
     
-    const friendProfile = buildProfile('Average', {});
+    const friendProfile = buildProfile('Average', {} as any);
     
     const leaderAssembly = buildAssembly('Leader', [leaderProfile]);
     const friendAssembly = buildAssembly('Friend', [friendProfile]);
     const side = buildMissionSide('Test Side', [leaderAssembly, friendAssembly]);
     
     const battlefield = new Battlefield(48, 48);
-    battlefield.placeCharacter(leaderProfile, { x: 20, y: 20 });
-    battlefield.placeCharacter(friendProfile, { x: 50, y: 20 }); // 30 MU away
+    battlefield.placeCharacter(new Character(leaderProfile), { x: 20, y: 20 });
+    battlefield.placeCharacter(new Character(friendProfile), { x: 50, y: 20 }); // 30 MU away
     
     // visibilityOR 16 = Day Clear, Awareness range = 16 × 3 = 48 MU
     // Friend is 30 MU away, so should be in range
@@ -243,18 +244,18 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should use Visibility OR × 1 for Distracted leader', () => {
-    const leaderProfile = buildProfile('Average', {});
+    const leaderProfile = buildProfile('Average', {} as any);
     leaderProfile.attributes = { ...leaderProfile.attributes!, int: 4 };
     
-    const friendProfile = buildProfile('Average', {});
+    const friendProfile = buildProfile('Average', {} as any);
     
     const leaderAssembly = buildAssembly('Leader', [leaderProfile]);
     const friendAssembly = buildAssembly('Friend', [friendProfile]);
     const side = buildMissionSide('Test Side', [leaderAssembly, friendAssembly]);
     
     const battlefield = new Battlefield(48, 48);
-    battlefield.placeCharacter(leaderProfile, { x: 20, y: 20 });
-    battlefield.placeCharacter(friendProfile, { x: 30, y: 20 }); // 10 MU away
+    battlefield.placeCharacter(new Character(leaderProfile), { x: 20, y: 20 });
+    battlefield.placeCharacter(new Character(friendProfile), { x: 30, y: 20 }); // 10 MU away
     
     // visibilityOR 16, but Distracted so Awareness range = 16 × 1 = 16 MU
     // Friend is 10 MU away, so should be in range
@@ -265,28 +266,28 @@ describe('identifyDesignatedLeader', () => {
   });
   
   it('should require half of forces in range for SA', () => {
-    const leaderProfile = buildProfile('Average', {});
+    const leaderProfile = buildProfile('Average', {} as any);
     leaderProfile.attributes = { ...leaderProfile.attributes!, int: 4 };
     
     // Create 3 friends, but only 1 in range (need 2 out of 4 = half)
-    const friend1Profile = buildProfile('Average', {});
-    const friend2Profile = buildProfile('Average', {});
-    const friend3Profile = buildProfile('Average', {});
+    const friend1Profile = buildProfile('Average', {} as any);
+    const friend2Profile = buildProfile('Average', {} as any);
+    const friend3Profile = buildProfile('Average', {} as any);
     
     const leaderAssembly = buildAssembly('Leader', [leaderProfile, friend1Profile, friend2Profile, friend3Profile]);
     const side = buildMissionSide('Test Side', [leaderAssembly]);
     
     const battlefield = new Battlefield(48, 48);
-    battlefield.placeCharacter(leaderProfile, { x: 20, y: 20 });
-    battlefield.placeCharacter(friend1Profile, { x: 22, y: 20 }); // In range (2 MU)
-    battlefield.placeCharacter(friend2Profile, { x: 40, y: 20 }); // Out of range
-    battlefield.placeCharacter(friend3Profile, { x: 42, y: 20 }); // Out of range
+    battlefield.placeCharacter(new Character(leaderProfile), { x: 20, y: 20 });
+    battlefield.placeCharacter(new Character(friend1Profile), { x: 22, y: 20 }); // In range (2 MU)
+    battlefield.placeCharacter(new Character(friend2Profile), { x: 40, y: 20 }); // Out of range
+    battlefield.placeCharacter(new Character(friend3Profile), { x: 42, y: 20 }); // Out of range
     
     // visibilityOR 16, Awareness range = 16 × 3 = 48 MU
     // Actually all should be in range with 48 MU... let me adjust
     // Put friends at 50 MU away
-    battlefield.placeCharacter(friend2Profile, { x: 70, y: 20 }); // Out of range (50 MU)
-    battlefield.placeCharacter(friend3Profile, { x: 72, y: 20 }); // Out of range (52 MU)
+    battlefield.placeCharacter(new Character(friend2Profile), { x: 70, y: 20 }); // Out of range (50 MU)
+    battlefield.placeCharacter(new Character(friend3Profile), { x: 72, y: 20 }); // Out of range (52 MU)
     
     const leader = identifyDesignatedLeader(side, 'initiative', battlefield, 16);
     
@@ -330,7 +331,7 @@ describe('isDesignatedLeader', () => {
     const leaderProfile = buildProfile('Average', {
       traits: ['Leadership 1'],
     });
-    const regularProfile = buildProfile('Average', {});
+    const regularProfile = buildProfile('Average', {} as any);
     
     const leaderAssembly = buildAssembly('Leader', [leaderProfile]);
     const regularAssembly = buildAssembly('Regular', [regularProfile]);
@@ -346,7 +347,7 @@ describe('isDesignatedLeader', () => {
 
 describe('getLeaderMoraleBonus', () => {
   it('should return bonus based on Leadership level', () => {
-    const leaderProfile = buildProfile('Average', {});
+    const leaderProfile = buildProfile('Average', {} as any);
     leaderProfile.finalTraits = ['Leadership 2'];
     leaderProfile.allTraits = ['Leadership 2'];
     
@@ -385,11 +386,11 @@ describe('getLeaderRallyBonus', () => {
   });
 
   it('should return 0 if rallying character is not leader', () => {
-    const leaderProfile = buildProfile('Average', {});
+    const leaderProfile = buildProfile('Average', {} as any);
     leaderProfile.finalTraits = ['Leadership 1'];
     leaderProfile.allTraits = ['Leadership 1'];
     
-    const regularProfile = buildProfile('Average', {});
+    const regularProfile = buildProfile('Average', {} as any);
 
     const leaderAssembly = buildAssembly('Leader', [leaderProfile]);
     const regularAssembly = buildAssembly('Regular', [regularProfile]);

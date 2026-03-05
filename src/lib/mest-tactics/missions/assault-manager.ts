@@ -1,6 +1,6 @@
 import { MissionSide } from '../mission/MissionSide';
 import { Position } from '../battlefield/Position';
-import { SpatialModel } from '../battlefield/spatial-rules';
+import { SpatialModel } from '../battlefield/spatial/spatial-rules';
 import { MeasurementUtils } from '../battlefield/spatial/model-registry';
 import {
   calculateEliminationFractionalVP,

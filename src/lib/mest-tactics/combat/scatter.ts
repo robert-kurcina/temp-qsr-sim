@@ -10,7 +10,7 @@
 
 import { Position } from '../battlefield/Position';
 import { Battlefield } from '../battlefield/Battlefield';
-import { TerrainType } from '../battlefield/terrain/terrain-types';
+import { TerrainType } from '../battlefield/terrain/Terrain';
 
 export interface ScatterResult {
   /** Original target location */
@@ -230,10 +230,10 @@ export function checkBarrierCollision(
         checkPos.x <= bounds.x + bounds.width &&
         checkPos.y >= bounds.y &&
         checkPos.y <= bounds.y + bounds.height &&
-        (feature.type === 'Blocking' || feature.type === 'Impassable')
+        (feature.type === TerrainType.Blocking || feature.type === TerrainType.Impassable)
       );
     });
-    
+
     if (isBlocking) {
       const blockingFeature = battlefield.terrain.find(feature => {
         if (!feature.bounds) return false;
@@ -243,7 +243,7 @@ export function checkBarrierCollision(
           checkPos.x <= bounds.x + bounds.width &&
           checkPos.y >= bounds.y &&
           checkPos.y <= bounds.y + bounds.height &&
-          (feature.type === 'Blocking' || feature.type === 'Impassable')
+          (feature.type === TerrainType.Blocking || feature.type === TerrainType.Impassable)
         );
       });
       return {
@@ -649,10 +649,10 @@ export function isValidIndirectArc(
       midpoint.x <= bounds.x + bounds.width &&
       midpoint.y >= bounds.y &&
       midpoint.y <= bounds.y + bounds.height &&
-      (feature.type === 'Blocking' || feature.type === 'Impassable')
+      (feature.type === TerrainType.Blocking || feature.type === TerrainType.Impassable)
     );
   });
-  
+
   if (isMidpointBlocked) {
     return {
       valid: false,

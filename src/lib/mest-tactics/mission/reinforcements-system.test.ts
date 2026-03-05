@@ -199,7 +199,7 @@ describe('ReinforcementsManager', () => {
       const arriving = manager.checkTurnArrivals(3);
 
       expect(arriving.length).toBe(2); // Both groups turn 3
-      expect(arriving.map(g => g.id)).toContain(group.id);
+      expect(arriving.map((g: any) => g.id)).toContain(group.id);
     });
 
     it('should return empty for turns with no arrivals', () => {

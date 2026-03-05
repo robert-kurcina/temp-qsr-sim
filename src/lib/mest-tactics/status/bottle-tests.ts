@@ -26,6 +26,8 @@ export interface BottleTestResult {
   drApplied: number;
   leaderBonusApplied: number;
   testResult?: ResolveTestResult;
+  // Backward compatibility property
+  sideBottled?: string;
 }
 
 export function computeBreakpointState(characters: Character[]): BreakpointState {

@@ -5,6 +5,11 @@ import { Trait } from './Trait';
  */
 export interface Item {
   /**
+   * Optional identifier used in some legacy tests.
+   */
+  id?: string;
+
+  /**
    * The unique name of the item, e.g., "Axe, Battle".
    */
   name: string;
@@ -35,9 +40,20 @@ export interface Item {
   or?: string | number;
 
   /**
+   * Backward compatibility alias for 'or' property.
+   * Used in test code.
+   */
+  range?: number;
+
+  /**
    * The accuracy modifier of the item, e.g., "-", "+1m".
    */
   accuracy?: string;
+
+  /**
+   * Backward compatibility alias for accuracy used in legacy tests.
+   */
+  acc?: number | string;
 
   /**
    * The impact value of the item, which reduces armor.

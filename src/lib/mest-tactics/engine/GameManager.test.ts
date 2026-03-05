@@ -40,6 +40,10 @@ describe('GameManager', () => {
       woundsThisTurn: 0,
       eliminatedModels: [],
       victoryPoints: 0,
+      resourcePoints: 0,
+      predictedVp: 0,
+      predictedRp: 0,
+      keyScores: {},
       initiativePoints: 0,
       missionState: {},
     },
@@ -58,7 +62,7 @@ describe('GameManager', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -89,7 +93,7 @@ describe('GameManager', () => {
   it('should assign each character a single initiative slot per turn', () => {
     gameManager.startTurn(() => 0);
 
-    const orderIds = gameManager.activationOrder.map(character => character.id);
+    const orderIds = gameManager.activationOrder.map((character: any) => character.id);
     expect(orderIds).toHaveLength(characters.length);
     expect(new Set(orderIds).size).toBe(orderIds.length);
   });
@@ -229,7 +233,7 @@ describe('GameManager', () => {
     });
 
     expect(wait.success).toBe(true);
-    expect(wait.revealedCount).toBe(1);
+    expect('revealedCount' in wait ? wait.revealedCount : 0).toBe(1);
     expect(enemy.state.isHidden).toBe(false);
   });
 
@@ -750,7 +754,7 @@ describe('GameManager', () => {
 
     const projected = gameManager
       .getObjectiveMarkers()
-      .filter(marker => marker.id.startsWith('mission:QAI_12:'));
+      .filter((marker: any) => marker.id.startsWith('mission:QAI_12:'));
 
     expect(projected.length).toBeGreaterThan(0);
     expect(projected.every(marker => marker.metadata['projectedFromMissionManager'] === true)).toBe(true);

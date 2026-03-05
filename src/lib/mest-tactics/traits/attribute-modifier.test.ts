@@ -1,8 +1,8 @@
 
 import { describe, it, expect } from 'vitest';
 import { attributeModifier } from './attribute-modifier';
-import type { Attributes } from '../Attributes';
-import type { Trait } from '../Trait';
+import type { Attributes } from '../core/Attributes';
+import type { Trait } from '../core/Trait';
 
 describe('attributeModifier.onAttributeCalculation', () => {
 
@@ -13,7 +13,7 @@ describe('attributeModifier.onAttributeCalculation', () => {
 
   it('should correctly increase the specified attribute', () => {
     const attributes = createBaseAttributes();
-    const trait: Trait = { name: 'STR', level: 3, source: 'STR 3' };
+    const trait: Trait = { name: 'STR', level: 3, source: 'STR 3' } as any;
 
     attributeModifier.onAttributeCalculation(attributes, trait);
 
@@ -22,7 +22,7 @@ describe('attributeModifier.onAttributeCalculation', () => {
 
   it('should be case-insensitive to the trait name', () => {
     const attributes = createBaseAttributes();
-    const trait: Trait = { name: 'pOw', level: 2, source: 'pOw 2' };
+    const trait: Trait = { name: 'pOw', level: 2, source: 'pOw 2' } as any;
 
     attributeModifier.onAttributeCalculation(attributes, trait);
 
@@ -31,7 +31,7 @@ describe('attributeModifier.onAttributeCalculation', () => {
 
   it('should not modify other attributes', () => {
     const attributes = createBaseAttributes();
-    const trait: Trait = { name: 'REF', level: 5, source: 'REF 5' };
+    const trait: Trait = { name: 'REF', level: 5, source: 'REF 5' } as any;
 
     attributeModifier.onAttributeCalculation(attributes, trait);
 
@@ -43,7 +43,7 @@ describe('attributeModifier.onAttributeCalculation', () => {
   it('should do nothing if the trait name is not a valid attribute', () => {
     const attributes = createBaseAttributes();
     const originalAttributes = { ...attributes };
-    const trait: Trait = { name: 'Sturdy', level: 2, source: 'Sturdy 2' };
+    const trait: Trait = { name: 'Sturdy', level: 2, source: 'Sturdy 2' } as any;
 
     attributeModifier.onAttributeCalculation(attributes, trait);
 
@@ -53,7 +53,7 @@ describe('attributeModifier.onAttributeCalculation', () => {
   it('should do nothing if the trait does not have a level', () => {
     const attributes = createBaseAttributes();
     const originalAttributes = { ...attributes };
-    const trait: Trait = { name: 'FOR', source: 'FOR' }; // No level property
+    const trait: Trait = { name: 'FOR', source: 'FOR' } as any; // No level property
 
     attributeModifier.onAttributeCalculation(attributes, trait);
 
@@ -63,7 +63,7 @@ describe('attributeModifier.onAttributeCalculation', () => {
   it('should handle a level of 0 correctly', () => {
     const attributes = createBaseAttributes();
     attributes.mov = 5;
-    const trait: Trait = { name: 'MOV', level: 0, source: 'MOV 0' };
+    const trait: Trait = { name: 'MOV', level: 0, source: 'MOV 0' } as any;
 
     attributeModifier.onAttributeCalculation(attributes, trait);
 

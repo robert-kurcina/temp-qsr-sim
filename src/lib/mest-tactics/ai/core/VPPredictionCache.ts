@@ -78,7 +78,13 @@ export class VPPredictionCache {
     'refresh': 0.10,
     'combined': 0.20,
     'none': 0.0,
-  };
+    'focus': 0.0,
+    'react-move': 0.0,
+    'react_counter_strike': 0.0,
+    'react_counter_fire': 0.0,
+    'react_counter_charge': 0.0,
+    'opportunity_attack': 0.0,
+  } as any;
 
   /**
    * Record actual VP contribution after action resolves

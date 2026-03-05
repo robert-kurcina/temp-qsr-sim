@@ -1,9 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { EngagementManager, createEngagementManager } from './engagement-manager';
 import { ModelRegistry } from './model-registry';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Position } from '../Position';
+import { Character, Profile } from '../../core';
+import { Position } from '../';
 import { SpatialModel } from './spatial-rules';
 
 describe('EngagementManager', () => {
@@ -13,7 +12,7 @@ describe('EngagementManager', () => {
   const createTestCharacter = (name: string, siz: number = 3): Character => {
     const profile: Profile = {
       name,
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: {
         cca: 2, rca: 2, ref: 2, int: 2, pow: 2,
         str: 2, for: 2, mov: 2, siz,
@@ -370,7 +369,7 @@ describe('createEngagementManager', () => {
   it('should create manager with registered characters', () => {
     const char1 = new Character({
       name: 'Test1',
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: {
         cca: 2, rca: 2, ref: 2, int: 2, pow: 2,
         str: 2, for: 2, mov: 2, siz: 3,
@@ -380,7 +379,7 @@ describe('createEngagementManager', () => {
     });
     const char2 = new Character({
       name: 'Test2',
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: {
         cca: 2, rca: 2, ref: 2, int: 2, pow: 2,
         str: 2, for: 2, mov: 2, siz: 3,

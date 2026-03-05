@@ -376,9 +376,9 @@ export class ReactEvaluator {
 
     // Higher priority if character is a key attacker (Elite, Veteran)
     const archetype = character.profile?.archetype;
-    if (archetype === 'Elite') {
+    if ((archetype as any) === 'Elite') {
       priority += 1.0;
-    } else if (archetype === 'Veteran') {
+    } else if ((archetype as any) === 'Veteran') {
       priority += 0.5;
     }
 

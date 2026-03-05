@@ -122,29 +122,29 @@ describe('Scatter System - Direction', () => {
 
   describe('calculateLOFAngle', () => {
     it('should calculate 0° for horizontal LOF (east)', () => {
-      const attacker: Position = { x: 0, y: 0 };
-      const target: Position = { x: 10, y: 0 };
+      const attacker: Position = { x: 0, y: 0 } as any;
+      const target: Position = { x: 10, y: 0 } as any;
       const angle = calculateLOFAngle(attacker, target);
       expect(angle).toBe(0);
     });
 
     it('should calculate 90° for vertical LOF (north)', () => {
-      const attacker: Position = { x: 0, y: 0 };
-      const target: Position = { x: 0, y: 10 };
+      const attacker: Position = { x: 0, y: 0 } as any;
+      const target: Position = { x: 0, y: 10 } as any;
       const angle = calculateLOFAngle(attacker, target);
       expect(angle).toBe(90);
     });
 
     it('should calculate 180° for horizontal LOF (west)', () => {
-      const attacker: Position = { x: 10, y: 0 };
-      const target: Position = { x: 0, y: 0 };
+      const attacker: Position = { x: 10, y: 0 } as any;
+      const target: Position = { x: 0, y: 0 } as any;
       const angle = calculateLOFAngle(attacker, target);
       expect(angle).toBe(180);
     });
 
     it('should calculate 270° for vertical LOF (south)', () => {
-      const attacker: Position = { x: 0, y: 10 };
-      const target: Position = { x: 0, y: 0 };
+      const attacker: Position = { x: 0, y: 10 } as any;
+      const target: Position = { x: 0, y: 0 } as any;
       const angle = calculateLOFAngle(attacker, target);
       expect(angle).toBe(270);
     });
@@ -154,7 +154,7 @@ describe('Scatter System - Direction', () => {
 describe('Scatter System - Position Calculation', () => {
   describe('calculateScatterPosition', () => {
     it('should calculate position at 0° (east)', () => {
-      const start: Position = { x: 0, y: 0 };
+      const start: Position = { x: 0, y: 0 } as any;
       const result = calculateScatterPosition(start, 5, 0);
       
       expect(result.x).toBeCloseTo(5, 5);
@@ -162,7 +162,7 @@ describe('Scatter System - Position Calculation', () => {
     });
 
     it('should calculate position at 90° (south)', () => {
-      const start: Position = { x: 0, y: 0 };
+      const start: Position = { x: 0, y: 0 } as any;
       const result = calculateScatterPosition(start, 5, 90);
       
       expect(result.x).toBeCloseTo(0, 5);
@@ -170,7 +170,7 @@ describe('Scatter System - Position Calculation', () => {
     });
 
     it('should calculate position at 180° (west)', () => {
-      const start: Position = { x: 0, y: 0 };
+      const start: Position = { x: 0, y: 0 } as any;
       const result = calculateScatterPosition(start, 5, 180);
       
       expect(result.x).toBeCloseTo(-5, 5);
@@ -178,7 +178,7 @@ describe('Scatter System - Position Calculation', () => {
     });
 
     it('should calculate position at 270° (north)', () => {
-      const start: Position = { x: 0, y: 0 };
+      const start: Position = { x: 0, y: 0 } as any;
       const result = calculateScatterPosition(start, 5, 270);
       
       expect(result.x).toBeCloseTo(0, 5);
@@ -255,7 +255,7 @@ describe('Scatter System - Full Resolution', () => {
 
     it('should stay within battlefield bounds', () => {
       // Position near edge
-      const targetNearEdge: Position = { x: 23, y: 12 };
+      const targetNearEdge: Position = { x: 23, y: 12 } as any;
 
       const result = resolveScatter({
         attackerPosition: attacker,
@@ -273,8 +273,8 @@ describe('Scatter System - Full Resolution', () => {
 
     it('should use correct LOF angle for scatter direction', () => {
       // LOF is 90° (north)
-      const attacker2: Position = { x: 0, y: 0 };
-      const target2: Position = { x: 0, y: 10 };
+      const attacker2: Position = { x: 0, y: 0 } as any;
+      const target2: Position = { x: 0, y: 10 } as any;
 
       const result = resolveScatter({
         attackerPosition: attacker2,
@@ -403,8 +403,8 @@ describe('Scatter System - Roll-down', () => {
   describe('calculateRollDown', () => {
     it('should not roll down on flat terrain', () => {
       const battlefield = createTestBattlefield(24, 24);
-      const start: Position = { x: 5, y: 5 };
-      const end: Position = { x: 10, y: 5 };
+      const start: Position = { x: 5, y: 5 } as any;
+      const end: Position = { x: 10, y: 5 } as any;
 
       const result = calculateRollDown(start, end, battlefield, 2);
 
@@ -419,8 +419,8 @@ describe('Scatter System - Roll-down', () => {
         { bounds: { x: 12, y: 0, width: 12, height: 24 }, type: 'Clear', elevation: 0 },
       ]);
 
-      const start: Position = { x: 10, y: 10 }; // Elevation 5
-      const end: Position = { x: 14, y: 10 }; // Elevation 0
+      const start: Position = { x: 10, y: 10 } as any; // Elevation 5
+      const end: Position = { x: 14, y: 10 } as any; // Elevation 0
 
       const result = calculateRollDown(start, end, battlefield, 2);
 
@@ -435,8 +435,8 @@ describe('Scatter System - Roll-down', () => {
         { bounds: { x: 12, y: 0, width: 12, height: 24 }, type: 'Clear', elevation: 0 },
       ]);
 
-      const start: Position = { x: 10, y: 10 }; // Elevation 10
-      const end: Position = { x: 14, y: 10 }; // Elevation 0
+      const start: Position = { x: 10, y: 10 } as any; // Elevation 10
+      const end: Position = { x: 14, y: 10 } as any; // Elevation 0
 
       const result = calculateRollDown(start, end, battlefield, 3);
 
@@ -451,8 +451,8 @@ describe('Scatter System - Collision Detection', () => {
   describe('checkBarrierCollision', () => {
     it('should not collide on clear terrain', () => {
       const battlefield = createTestBattlefield(24, 24);
-      const start: Position = { x: 5, y: 5 };
-      const end: Position = { x: 10, y: 5 };
+      const start: Position = { x: 5, y: 5 } as any;
+      const end: Position = { x: 10, y: 5 } as any;
 
       const result = checkBarrierCollision(start, end, battlefield);
 
@@ -464,8 +464,8 @@ describe('Scatter System - Collision Detection', () => {
         { bounds: { x: 7, y: 4, width: 1, height: 2 }, type: 'Blocking' },
       ]);
 
-      const start: Position = { x: 5, y: 5 };
-      const end: Position = { x: 10, y: 5 };
+      const start: Position = { x: 5, y: 5 } as any;
+      const end: Position = { x: 10, y: 5 } as any;
 
       const result = checkBarrierCollision(start, end, battlefield);
 
@@ -533,8 +533,8 @@ describe('Indirect Attack - Arc Validation', () => {
 describe('Scatter System - Edge Cases', () => {
   it('should handle zero distance scatter', () => {
     const battlefield = createTestBattlefield(24, 24);
-    const attacker: Position = { x: 5, y: 5 };
-    const target: Position = { x: 5, y: 5 };
+    const attacker: Position = { x: 5, y: 5 } as any;
+    const target: Position = { x: 5, y: 5 } as any;
 
     const result = resolveScatter({
       attackerPosition: attacker,
@@ -550,8 +550,8 @@ describe('Scatter System - Edge Cases', () => {
 
   it('should handle battlefield boundaries', () => {
     const battlefield = createTestBattlefield(24, 24);
-    const attacker: Position = { x: 0, y: 0 };
-    const target: Position = { x: 0.5, y: 0.5 };
+    const attacker: Position = { x: 0, y: 0 } as any;
+    const target: Position = { x: 0.5, y: 0.5 } as any;
 
     const result = resolveScatter({
       attackerPosition: attacker,
@@ -570,7 +570,7 @@ describe('Scatter System - Edge Cases', () => {
 
   it('should handle same position attacker and target', () => {
     const battlefield = createTestBattlefield(24, 24);
-    const position: Position = { x: 10, y: 10 };
+    const position: Position = { x: 10, y: 10 } as any;
 
     const result = resolveScatter({
       attackerPosition: position,

@@ -10,12 +10,12 @@
  * Phase 3: Strategic Layer
  */
 
-import { Assembly } from '../core/Assembly';
-import { Character } from '../core/Character';
-import { Battlefield } from '../battlefield/Battlefield';
-import { Position } from '../battlefield/Position';
+import { Assembly } from '../../core/Assembly';
+import { Character } from '../../core/Character';
+import { Battlefield } from '../../battlefield/Battlefield';
+import { Position } from '../../battlefield/Position';
 import { ActionDecision } from '../core/AIController';
-import { MissionSide } from '../mission/MissionSide';
+import { MissionSide } from '../../mission/MissionSide';
 
 /**
  * Formation type for squad movement
@@ -570,7 +570,7 @@ export function createSideAssemblyAIs(
   const ais = new Map<string, AssemblyAI>();
 
   for (const assembly of side.assemblies) {
-    ais.set(assembly.id, createAssemblyAI(assembly, battlefield, side, config));
+    ais.set(assembly.name, createAssemblyAI(assembly, battlefield, side, config));
   }
 
   return ais;

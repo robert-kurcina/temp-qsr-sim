@@ -382,7 +382,7 @@ function selectBestPriorityLeader(
   
   // Priority 5: Highest BP (veteran/experienced model)
   const byBP = tiedByPOW.sort((a, b) => 
-    (b.profile?.totalBP || 0) - (a.profile?.totalBP || 0)
+    (b.profile?.totalBp || 0) - (a.profile?.totalBp || 0)
   );
   
   return byBP[0] || null;

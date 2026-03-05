@@ -75,7 +75,7 @@ describe('Elimination Mission', () => {
       manager.processModelElimination('model-2', sideA.id, sideB.id, 50);
 
       // Mark Side B as eliminated (bottled out)
-      sideB.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideB.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
 
       const scoring = manager.calculateEndGameScoring();
 
@@ -87,11 +87,11 @@ describe('Elimination Mission', () => {
 
     it('should award Bottled VP', () => {
       // Side B has no ordered models (bottled out)
-      sideB.members.forEach(m => {
+      sideB.members.forEach((m: any) => {
         m.status = ModelSlotStatus.Eliminated;
         m.character.state.isOrdered = false;
       });
-      sideA.members.forEach(m => m.character.state.isOrdered = true);
+      sideA.members.forEach((m: any) => m.character.state.isOrdered = true);
 
       const scoring = manager.calculateEndGameScoring();
 
@@ -107,8 +107,8 @@ describe('Elimination Mission', () => {
       manager.processModelElimination('model-2', sideA.id, sideB.id, 100);
 
       // Mark equal models as eliminated on both sides
-      sideB.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
-      sideA.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideB.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
+      sideA.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
 
       const scoring = manager.calculateEndGameScoring();
 
@@ -141,7 +141,7 @@ describe('Elimination Mission', () => {
   describe('checkForVictory', () => {
     it('should detect victory when all enemies eliminated', () => {
       // Eliminate all Side B models
-      sideB.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideB.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
 
       manager.checkForVictory();
 
@@ -176,7 +176,7 @@ describe('Elimination Mission', () => {
       const threeSideManager = createEliminationMission([result.sideA, result.sideB, sideC]);
 
       // Eliminate all Side C models
-      sideC.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideC.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
       threeSideManager.checkForVictory();
 
       // Should not end yet - Side A and B still have models
@@ -205,7 +205,7 @@ describe('Elimination Mission', () => {
     it('should only consider active models for VP victory', () => {
       // Side A has more VP but is eliminated
       manager.processModelElimination('model-1', sideB.id, sideA.id);
-      sideA.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideA.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
 
       manager.endMission(undefined, 'Turn limit');
 
@@ -268,8 +268,8 @@ describe('Elimination Mission - Edge Cases', () => {
       const manager = createEliminationMission([result.sideA, result.sideB]);
 
       // Both sides eliminate each other simultaneously (not possible in real game, but test edge case)
-      result.sideA.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
-      result.sideB.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      result.sideA.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
+      result.sideB.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
 
       manager.endMission(undefined, 'Mutual destruction');
 

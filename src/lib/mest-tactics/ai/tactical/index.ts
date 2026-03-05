@@ -4,5 +4,9 @@
 
 export * from './TacticalPatterns';
 export * from './GOAP';
-export * from './ReactsAndBonusActions';
+export {
+  ReactConfig,
+  ReactEvaluator,
+  DEFAULT_REACT_CONFIG,
+} from './ReactsAndBonusActions';
 export * from './ReactsQSR';

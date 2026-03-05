@@ -11,5 +11,6 @@
     "rootDir": "./"
   },
   "include": ["src/**/*.ts", "scripts/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "typescript.tsserver.experimental.enableProjectDiagnostics": true
 }

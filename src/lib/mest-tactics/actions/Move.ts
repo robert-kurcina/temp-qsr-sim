@@ -1,7 +1,7 @@
 import { Action } from './Action';
-import { Character } from '../character/Character';
+import { Character } from '../core/Character';
 import { GameManager } from '../engine/GameManager';
-import { Coordinate } from '../spatial';
+import { Coordinate } from '../battlefield/spatial';
 
 export class Move extends Action {
   constructor(character: Character) {

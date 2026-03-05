@@ -3,7 +3,7 @@ import { LOSOperations } from '../los/LOSOperations';
 import { LOFOperations } from '../los/LOFOperations';
 import { CoverResult, SpatialModel, SpatialRules } from '../spatial/spatial-rules';
 import { TestContext } from '../../utils/TestContext';
-import { Position } from '../battlefield/Position';
+import { Position } from '../Position';
 import { TerrainType } from '../terrain/Terrain';
 import { pointInPolygon } from '../terrain/BattlefieldUtils';
 

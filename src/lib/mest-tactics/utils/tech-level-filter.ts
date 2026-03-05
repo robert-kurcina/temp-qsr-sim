@@ -149,10 +149,10 @@ export function getItemTechWindow(itemName: string): TechWindow | null {
     // Item not found - assume available at all tech levels
     return { early: 1, latest: 20 };
   }
-  
+
   return {
-    early: entry.tech_window.early,
-    latest: entry.tech_window.latest,
+    early: entry.tech_window.early ?? 1,
+    latest: entry.tech_window.latest ?? 5,
   };
 }
 
@@ -295,11 +295,11 @@ export function getAvailableItemsForAge(
   equipment: string[];
 } {
   const config = createTechConfigFromAge(age, extended);
-  
+
   // Get all available items from gameData
-  const allWeapons = Object.keys(gameData.weapons || {});
-  const allArmor = Object.keys(gameData.armors || {});
-  const allEquipment = Object.keys(gameData.equipment || {});
+  const allWeapons = Object.keys((gameData as any).melee_weapons || {});
+  const allArmor = Object.keys((gameData as any).armors || {});
+  const allEquipment = Object.keys((gameData as any).equipment || {});
   
   return {
     weapons: filterWeaponsByTechLevel(allWeapons, config),

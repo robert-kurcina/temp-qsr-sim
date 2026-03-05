@@ -1,5 +1,5 @@
-import { Character } from '../core/Character';
-import { Position } from './Position';
+import { Character } from '../../core';
+import { Position } from '../Position';
 import { SpatialModel } from './spatial-rules';
 import { getBaseDiameterFromSiz } from './size-utils';
 import { LOFOperations } from '../los/LOFOperations';

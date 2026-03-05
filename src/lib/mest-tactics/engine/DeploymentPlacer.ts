@@ -17,7 +17,7 @@ import { Character } from '../core/Character';
 import { Position } from '../battlefield/Position';
 import { Battlefield } from '../battlefield/Battlefield';
 import { DeploymentZone, DeploymentState, initializeDeployment, startDeployment, deployModel } from '../mission/deployment-system';
-import { ObjectiveMarker } from '../mission/ObjectiveMarker';
+import { ObjectiveMarker } from '../mission/objective-markers';
 import { LightingCondition } from '../utils/visibility';
 import {
   evaluateDeploymentPosition,
@@ -56,7 +56,7 @@ export function generateCandidatePositions(
     for (let y = bounds.y; y < bounds.y + bounds.height; y += gridSize) {
       // Check if position is valid (not blocking terrain)
       const terrain = battlefield.getTerrainAt({ x, y });
-      if (terrain.type !== 'blocking' && terrain.type !== 'impassable') {
+      if ((terrain.type as any) !== 'blocking' && (terrain.type as any) !== 'impassable') {
         positions.push({ x, y });
       }
     }
@@ -77,7 +77,7 @@ export function assignDeploymentPositions(
   objectives: ObjectiveMarker[],
   doctrine: DeploymentDoctrine = DEFAULT_DOCTRINES.balanced,
   alreadyDeployed: Map<string, { characterId: string; sideId: string; position: Position }> = new Map(),
-  lighting: LightingCondition = { name: 'Day, Clear', visibilityOR: 16 }
+  lighting: LightingCondition = { name: 'Day, Clear', visibilityOR: 16 } as any
 ): DeploymentAssignment {
   const placements: DeploymentPlacement[] = [];
   const deployedModels = new Map(alreadyDeployed);

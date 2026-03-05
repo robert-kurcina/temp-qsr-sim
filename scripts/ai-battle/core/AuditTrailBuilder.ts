@@ -55,7 +55,7 @@ export function createBattleAuditTrace(
     session: {
       missionId: config.missionId,
       missionName: config.missionName,
-      lighting: config.lighting,
+      lighting: config.lighting as any,
       visibilityOrMu: config.visibilityOrMu,
       maxOrm: config.maxOrm,
       allowConcentrateRangeExtension: config.allowConcentrateRangeExtension,
@@ -80,7 +80,7 @@ export function createTurnAudit(
     turn,
     activations: [],
     initiativeOrder,
-  };
+  } as any;
 }
 
 export function createActivationAudit(
@@ -108,7 +108,7 @@ export function createActivationAudit(
     bonusActions: [],
     reactTriggers: [],
     modelEffects: [],
-  };
+  } as any;
 }
 
 export function createActionStepAudit(
@@ -130,7 +130,7 @@ export function createActionStepAudit(
     success: success ?? true,
     vectors: vectors || [],
     details,
-  };
+  } as any;
 }
 
 export function createModelEffectAudit(
@@ -146,7 +146,7 @@ export function createModelEffectAudit(
     target,
     duration,
     value,
-  };
+  } as any;
 }
 
 export function toOpposedTestAudit(rawResult: any): OpposedTestAudit | undefined {
@@ -163,7 +163,7 @@ export function toOpposedTestAudit(rawResult: any): OpposedTestAudit | undefined
     opponentCarryOver: rawResult.opponentCarryOver,
     margin: rawResult.margin,
     winner: rawResult.winner,
-  };
+  } as any;
 }
 
 export function snapshotModelState(character: Character): ModelStateAudit {
@@ -177,7 +177,7 @@ export function snapshotModelState(character: Character): ModelStateAudit {
     isKOd: character.state.isKOd || false,
     isEliminated: character.state.isEliminated || false,
     position: character.position ? { ...character.position } : undefined,
-  };
+  } as any;
 }
 
 export function diffModelState(
@@ -224,11 +224,10 @@ export function createMovementVector(
   success?: boolean
 ): AuditVector {
   return {
-    kind,
+    kind: kind as any,
     from: { x: from.x, y: from.y },
     to: { x: to.x, y: to.y },
-    success: success ?? true,
-  };
+  } as any;
 }
 
 export function sampleLinePoints(

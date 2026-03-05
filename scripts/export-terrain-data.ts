@@ -76,7 +76,7 @@ const gridData = {
   battlefield: terrainData.battlefield,
   grid: terrainData.grid,
   stats: terrainData.stats,
-};
+} as any;
 writeFileSync(gridOnlyPath, exportTerrainToJSON(gridData), 'utf-8');
 console.log(`✓ Grid data: ${gridOnlyPath}`);
 
@@ -88,7 +88,7 @@ const terrainOnlyData = {
   battlefield: terrainData.battlefield,
   terrain: terrainData.terrain,
   stats: terrainData.stats,
-};
+} as any;
 writeFileSync(terrainOnlyPath, exportTerrainToJSON(terrainOnlyData), 'utf-8');
 console.log(`✓ Terrain footprints: ${terrainOnlyPath}`);
 

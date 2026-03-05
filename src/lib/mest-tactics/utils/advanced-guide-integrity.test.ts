@@ -11,7 +11,7 @@ function getRepoRoot(): string {
 function getAdvancedGuideFiles(guidesDir: string): string[] {
   return fs
     .readdirSync(guidesDir)
-    .filter(name => name.startsWith('rules-advanced-') && name.endsWith('.md'))
+    .filter((name: any) => name.startsWith('rules-advanced-') && name.endsWith('.md'))
     .sort();
 }
 
@@ -20,7 +20,7 @@ function getSourcePaths(markdown: string): string[] {
     .split('\n')
     .find(line => line.trimStart().startsWith('**Source:**'));
   if (!sourceLine) return [];
-  return [...sourceLine.matchAll(/`([^`]+)`/g)].map(match => match[1]);
+  return [...sourceLine.matchAll(/`([^`]+)`/g)].map((match: any) => match[1]);
 }
 
 describe('Advanced Guide Integrity', () => {
@@ -70,7 +70,7 @@ describe('Advanced Guide Integrity', () => {
     for (const guideFile of advancedGuides) {
       const fullPath = path.join(guidesDir, guideFile);
       const markdown = fs.readFileSync(fullPath, 'utf8');
-      const wikiTargets = [...markdown.matchAll(/\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g)].map(match => match[1]);
+      const wikiTargets = [...markdown.matchAll(/\[\[([^|\]]+)(?:\|[^\]]*)?\]\]/g)].map((match: any) => match[1]);
 
       for (const target of wikiTargets) {
         const targetFile = `${target}.md`;

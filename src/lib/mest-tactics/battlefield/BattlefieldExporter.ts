@@ -7,7 +7,7 @@
  * @module mest-tactics/battlefield
  */
 
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Battlefield } from './Battlefield';
 import { TerrainFeature } from './terrain/Terrain';
@@ -273,7 +273,7 @@ function extractDelaunayMesh(battlefield: Battlefield): DelaunayMeshExport {
   }
   
   // Extract vertices
-  const vertices = Array.from(navMesh.points).map(p => ({
+  const vertices = Array.from(navMesh.points as any).map((p: any) => ({
     x: p.x,
     y: p.y
   }));
@@ -321,7 +321,7 @@ function extractGrid(battlefield: Battlefield): GridLayerExport | undefined {
  * @returns Battlefield export data
  */
 export function loadBattlefieldExport(filePath: string): BattlefieldExport {
-  const content = writeFileSync(filePath, 'utf-8');
+  const content = readFileSync(filePath, 'utf-8');
   return JSON.parse(content) as BattlefieldExport;
 }
 

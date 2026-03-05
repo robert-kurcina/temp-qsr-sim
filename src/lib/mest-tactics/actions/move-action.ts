@@ -67,7 +67,7 @@ export function executeMoveAction(
   // Surefooted X: Upgrade terrain effects
   const currentTerrain = deps.getTerrainAt(destination);
   if (currentTerrain === 'Impassable') {
-    return { moved: false, reason: 'Destination is impassable terrain' };
+    return { moved: false, reason: 'Destination is impassable terrain', directionChangesApplied: 0, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus };
   }
   const upgradedTerrain = getSurefootedTerrainBonus(mover, currentTerrain);
 
@@ -143,8 +143,8 @@ export function executeMoveAction(
   }
 
   // Check for impassable terrain at destination
-  if (currentTerrain === 'Impassable') {
-    return { moved: false, reason: 'Destination is impassable terrain' };
+  if ((currentTerrain as any) === 'Impassable') {
+    return { moved: false, reason: 'Destination is impassable terrain', directionChangesApplied: directionChanges, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus, eliminated: false, exitedBattlefield: false, opportunityAttack: false, swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined };
   }
 
   // QSR: Check if model can fit at destination (footprint validation)
@@ -153,12 +153,12 @@ export function executeMoveAction(
     // QSR EL.2: Exiting the battlefield while Disordered/Panicked eliminates the model.
     if ((mover.state.isDisordered || mover.state.isPanicked) && deps.eliminateOnFearExit) {
       deps.eliminateOnFearExit(mover);
-      return { moved: true, eliminated: true, exitedBattlefield: true };
+      return { moved: true, eliminated: true, exitedBattlefield: true, directionChangesApplied: directionChanges, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus, opportunityAttack: false, swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined };
     }
-    return { moved: false, reason: 'Destination is outside battlefield bounds' };
+    return { moved: false, reason: 'Destination is outside battlefield bounds', directionChangesApplied: directionChanges, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus, eliminated: false, exitedBattlefield: false, opportunityAttack: false, swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined };
   }
   if (!deps.canOccupy(finalDestination, moverBase)) {
-    return { moved: false, reason: `Destination too small for model (requires ${moverBase.toFixed(1)} MU clearance)` };
+    return { moved: false, reason: `Destination too small for model (requires ${moverBase.toFixed(1)} MU clearance)`, directionChangesApplied: directionChanges, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus, eliminated: false, exitedBattlefield: false, opportunityAttack: false, swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined };
   }
 
   // Calculate movement cost using pathfinding if available, otherwise use straight-line distance
@@ -168,7 +168,7 @@ export function executeMoveAction(
     if (deps.findPathCost) {
       const segmentCost = deps.findPathCost(segment.from, segment.to);
       if (segmentCost === null) {
-        return { moved: false, reason: 'Path blocked by terrain or obstacles' };
+        return { moved: false, reason: 'Path blocked by terrain or obstacles', directionChangesApplied: directionChanges, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus, eliminated: false, exitedBattlefield: false, opportunityAttack: false, swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined };
       }
       movementCost += segmentCost;
     } else {
@@ -181,12 +181,12 @@ export function executeMoveAction(
   // Allow move if within effective movement allowance
   // Add small epsilon for floating point comparison
   if (movementCost > effectiveMov + 1e-6) {
-    return { moved: false, reason: `Destination out of range: ${movementCost.toFixed(1)} MU exceeds max movement (${effectiveMov} MU)` };
+    return { moved: false, reason: `Destination out of range: ${movementCost.toFixed(1)} MU exceeds max movement (${effectiveMov} MU)`, directionChangesApplied: directionChanges, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus, eliminated: false, exitedBattlefield: false, opportunityAttack: false, swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined };
   }
 
   const moved = deps.moveCharacter(mover, finalDestination);
   if (!moved) {
-    return { moved: false };
+    return { moved: false, directionChangesApplied: directionChanges, sprintBonusApplied: sprintBonus, leapBonusApplied: agilityBonus, eliminated: false, exitedBattlefield: false, opportunityAttack: false, swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined };
   }
 
   let opportunity: { attacker: Character; result: unknown } | null = null;
@@ -243,13 +243,19 @@ export function executeMoveAction(
     }
   }
 
-  return { 
-    moved: true, 
+  return {
+    moved: true,
     opportunityAttack: opportunity,
     sprintBonusApplied: sprintBonus > 0,
     leapBonusApplied: agilityBonus > 0,
     terrainUpgraded: currentTerrain !== upgradedTerrain,
     directionChangesApplied: directionChanges,
+    eliminated: false,
+    exitedBattlefield: false,
+    swapped: false,
+    swapTargetId: undefined,
+    swapApCost: 0,
+    delayAppliedToId: undefined,
   };
 }
 
@@ -271,29 +277,29 @@ function executeSwapDuringMovement(
 ) {
   const swapTarget = options.swapTarget;
   if (!swapTarget) {
-    return { moved: false, reason: 'Swap target is required for swap movement' };
+    return { moved: false, reason: 'Swap target is required for swap movement', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
   }
   if (!deps.swapCharacters) {
-    return { moved: false, reason: 'Swap movement is not supported by current movement context' };
+    return { moved: false, reason: 'Swap movement is not supported by current movement context', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
   }
 
   const targetStart = deps.getCharacterPosition(swapTarget);
   if (!targetStart) {
-    return { moved: false, reason: 'Swap target has no battlefield position' };
+    return { moved: false, reason: 'Swap target has no battlefield position', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
   }
 
   if (options.isFriendlyToMover && !options.isFriendlyToMover(swapTarget)) {
-    return { moved: false, reason: 'Swap target must be a Friendly model' };
+    return { moved: false, reason: 'Swap target must be a Friendly model', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
   }
 
   const moverModel = buildSpatialModel(mover, moverStart);
   const targetModel = buildSpatialModel(swapTarget, targetStart);
   if (!isInBaseContact(moverModel, targetModel)) {
-    return { moved: false, reason: 'Swap requires base-contact with target model' };
+    return { moved: false, reason: 'Swap requires base-contact with target model', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
   }
 
   if (!positionsEqual(destination, targetStart)) {
-    return { moved: false, reason: 'Swap destination must be the target model position' };
+    return { moved: false, reason: 'Swap destination must be the target model position', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
   }
 
   const targetEngagedToAttentiveOrderedOpponent = (options.opponents ?? [])
@@ -308,6 +314,17 @@ function executeSwapDuringMovement(
     return {
       moved: false,
       reason: 'Cannot swap with target engaged to an Attentive Ordered opposing model',
+      swapped: false,
+      swapTargetId: undefined,
+      swapApCost: 0,
+      delayAppliedToId: undefined,
+      directionChangesApplied: 0,
+      sprintBonusApplied: false,
+      leapBonusApplied: false,
+      eliminated: false,
+      exitedBattlefield: false,
+      opportunityAttack: false,
+      terrainUpgraded: false,
     };
   }
 
@@ -318,6 +335,17 @@ function executeSwapDuringMovement(
     return {
       moved: false,
       reason: 'Swap target must be Disordered+Distracted or Attentive Friendly Free',
+      swapped: false,
+      swapTargetId: undefined,
+      swapApCost: 0,
+      delayAppliedToId: undefined,
+      directionChangesApplied: 0,
+      sprintBonusApplied: false,
+      leapBonusApplied: false,
+      eliminated: false,
+      exitedBattlefield: false,
+      opportunityAttack: false,
+      terrainUpgraded: false,
     };
   }
 
@@ -325,16 +353,16 @@ function executeSwapDuringMovement(
   const swapApCost = swapsThisInitiative === 0 ? 0 : 1;
   if (swapApCost > 0) {
     if (!deps.spendApForSwap) {
-      return { moved: false, reason: 'Swap AP cost cannot be resolved in this context' };
+      return { moved: false, reason: 'Swap AP cost cannot be resolved in this context', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
     }
     if (!deps.spendApForSwap(mover, swapApCost)) {
-      return { moved: false, reason: 'Not enough AP for additional Swap this Initiative' };
+      return { moved: false, reason: 'Not enough AP for additional Swap this Initiative', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
     }
   }
 
   const swapped = deps.swapCharacters(mover, swapTarget);
   if (!swapped) {
-    return { moved: false, reason: 'Swap movement failed' };
+    return { moved: false, reason: 'Swap movement failed', swapped: false, swapTargetId: undefined, swapApCost: 0, delayAppliedToId: undefined, directionChangesApplied: 0, sprintBonusApplied: false, leapBonusApplied: false, eliminated: false, exitedBattlefield: false, opportunityAttack: false, terrainUpgraded: false };
   }
 
   const disorderedParticipant = mover.state.isDisordered ? mover : (swapTarget.state.isDisordered ? swapTarget : null);
@@ -351,6 +379,13 @@ function executeSwapDuringMovement(
     swapTargetId: swapTarget.id,
     swapApCost,
     delayAppliedToId: disorderedParticipant?.id,
+    directionChangesApplied: 0,
+    sprintBonusApplied: false,
+    leapBonusApplied: false,
+    eliminated: false,
+    exitedBattlefield: false,
+    opportunityAttack: false,
+    terrainUpgraded: false,
   };
 }
 

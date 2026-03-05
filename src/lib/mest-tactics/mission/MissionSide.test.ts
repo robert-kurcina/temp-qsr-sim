@@ -47,7 +47,7 @@ describe('MissionSide', () => {
     });
 
     it('should assign unique IDs to members', () => {
-      const ids = side.members.map(m => m.id);
+      const ids = side.members.map((m: any) => m.id);
       expect(ids[0]).not.toBe(ids[1]);
     });
 

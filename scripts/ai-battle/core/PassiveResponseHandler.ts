@@ -46,37 +46,37 @@ export function inspectPassiveOptions(
   const options: PassiveOption[] = [];
 
   // Counter charge option
-  if (event.type === 'move' && event.observer && !event.observer.state.isWaiting) {
+  if ((event.kind === 'MoveConcluded' || event.kind === 'EngagementBroken') && !event.mover.state.isWaiting) {
     options.push({
-      type: 'counter_charge',
+      type: 'CounterCharge',
       apCost: 1,
       description: 'Counter charge moving enemy',
-    });
+    } as any);
   }
 
   // Hold option
   options.push({
-    type: 'hold',
+    type: 'Hold',
     apCost: 0,
     description: 'Hold position',
-  });
+  } as any);
 
   // Defend option
-  if (event.type === 'attack') {
+  if (event.kind === 'RangedAttackDeclared' || event.kind === 'CloseCombatAttackDeclared') {
     options.push({
-      type: 'defend',
+      type: 'Defend',
       apCost: 0,
       description: 'Defend against attack',
-    });
+    } as any);
   }
 
   // Take cover option
-  if (event.type === 'attack' && event.target) {
+  if ((event.kind === 'RangedAttackDeclared' || event.kind === 'CloseCombatAttackDeclared') && event.defender) {
     options.push({
-      type: 'take_cover',
+      type: 'TakeCover',
       apCost: 0,
       description: 'Take cover from attack',
-    });
+    } as any);
   }
 
   return options;
@@ -98,7 +98,7 @@ export function inspectMovePassiveOptions(
     }
 
     // Check LOS
-    if (!SpatialRules.hasLineOfSight(
+    if (!gameManager.battlefield || !SpatialRules.hasLineOfSight(
       gameManager.battlefield,
       { id: observer.id, position: observer.position!, baseDiameter: observer.baseDiameter, siz: observer.profile.siz },
       { id: movingCharacter.id, position: movingCharacter.position!, baseDiameter: movingCharacter.baseDiameter, siz: movingCharacter.profile.siz }
@@ -109,11 +109,11 @@ export function inspectMovePassiveOptions(
     // Check if observer can counter charge
     if (!observer.state.isWaiting) {
       options.push({
-        type: 'counter_charge',
+        type: 'CounterCharge',
         apCost: 1,
         characterId: observer.id,
         description: `${observer.name} can counter charge`,
-      });
+      } as any);
     }
   }
 
@@ -140,10 +140,11 @@ export function executeFailedHitPassiveResponse(
 
   // Create passive event
   const event: PassiveEvent = {
-    type: 'attack',
-    source: attacker,
-    target: character,
-    hitSucceeded: false,
+    kind: 'RangedAttackDeclared',
+    type: 'RangedAttackDeclared',
+    attacker,
+    defender: character,
+    battlefield: gameManager.battlefield!,
   };
 
   // Get available options
@@ -159,23 +160,24 @@ export function executeFailedHitPassiveResponse(
   result.optionUsed = option;
 
   // Execute option
-  switch (option.type) {
-    case 'hold':
+  switch (option.type as any) {
+    case 'Hold':
       result.success = true;
       result.extras.push('Holding position');
       break;
 
-    case 'defend':
+    case 'Defend':
       result.success = true;
       result.extras.push('Defending against attack');
       break;
 
-    case 'take_cover':
+    case 'TakeCover':
       result.success = true;
       result.extras.push('Taking cover');
       break;
 
-    case 'counter_attack':
+    case 'CounterStrike':
+    case 'CounterFire':
       // Would execute counter attack here
       result.success = true;
       result.extras.push('Counter attacking');
@@ -215,7 +217,7 @@ export async function executeCounterChargeFromMove(
     return result;
   }
 
-  if (!observer.position || !movingCharacter.position) {
+  if (!observer.position || !movingCharacter.position || !gameManager.battlefield) {
     result.extras.push('Missing position data');
     return result;
   }
@@ -250,9 +252,9 @@ export async function executeCounterChargeFromMove(
 
   if (engagePosition) {
     try {
-      const moveResult = await gameManager.executeMove(observer, engagePosition, {
+      const moveResult: any = await gameManager.executeMove(observer, engagePosition, {
         apCost: 1,
-      });
+      } as any);
 
       result.executed = true;
       result.moved = moveResult?.success ?? false;
@@ -335,7 +337,7 @@ export function countDiceInPool(dice: TestDice | undefined): number {
     return 0;
   }
 
-  return (dice.base?.length ?? 0) + (dice.modifier?.length ?? 0) + (dice.wild?.length ?? 0);
+  return (dice.base ?? 0) + (dice.modifier ?? 0) + (dice.wild ?? 0);
 }
 
 /**

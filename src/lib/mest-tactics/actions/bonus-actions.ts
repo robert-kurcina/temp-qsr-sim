@@ -42,6 +42,9 @@ export interface BonusActionContext {
 
 export interface BonusActionSelection {
   type: BonusActionType;
+  // Backward compatibility properties
+  priority?: number;
+  option?: string;
   extraCascades?: number;
   attackerPosition?: { x: number; y: number };
   targetPosition?: { x: number; y: number };

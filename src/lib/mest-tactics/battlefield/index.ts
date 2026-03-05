@@ -5,7 +5,7 @@
  */
 
 // Core
-export { Battlefield } from './Battlefield';
+export { Battlefield, type BattlefieldOpennessStats } from './Battlefield';
 export { Position } from './Position';
 
 // Spatial
@@ -28,13 +28,13 @@ export { LOSOperations } from './los/LOSOperations';
 export { LOFOperations } from './los/LOFOperations';
 
 // Terrain
-export { Terrain, type TerrainFeature, type TerrainType } from './terrain/Terrain';
+export { TerrainType, type TerrainFeature } from './terrain/Terrain';
 export { TerrainElement } from './terrain/TerrainElement';
 export { MoveValidator, type MovementValidationResult } from './terrain/move-validator';
 
 // Rendering
 export { SvgRenderer } from './rendering/SvgRenderer';
-export { BattlefieldFactory, type BattlefieldConfig } from './rendering/BattlefieldFactory';
+export { BattlefieldFactory, type BattlefieldFactoryConfig, type DeploymentZoneConfig } from './rendering/BattlefieldFactory';
 
 // Validation
 export {
@@ -44,5 +44,4 @@ export {
   resolveChargeSnapPosition,
   type ActionContextInput,
   type CloseCombatContextInput,
-  type SpatialContext,
 } from './validation/action-context';

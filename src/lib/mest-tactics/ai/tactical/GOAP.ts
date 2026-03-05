@@ -897,7 +897,7 @@ export function createStandardActions(): GOAPAction[] {
       effects: [
         { property: 'apRemaining', value: 2, effectType: 'remove' },
         { property: 'isWaiting', value: true, effectType: 'set' },
-        { property: 'visibilityOR', value: 2, effectType: 'multiply' },
+        { property: 'visibilityOR', value: 2, effectType: 'set' as any },
       ],
       cost: 2,
       targetsCharacter: false,
@@ -932,7 +932,7 @@ export function createStandardActions(): GOAPAction[] {
      */
     {
       name: 'Concentrate',
-      type: 'concentrate',
+      type: 'concentrate' as any,
       preconditions: [
         { property: 'status.self', value: 'active', comparison: 'equals' },
         { property: 'apRemaining', value: 0, comparison: 'greater_than' },
@@ -1012,7 +1012,7 @@ export const StandardGoals = {
   EliminateEnemies: {
     name: 'Eliminate Enemies',
     conditions: [
-      { property: 'status.enemy', value: 'eliminated', comparison: 'equals' },
+      { property: 'status.enemy', value: 'eliminated', comparison: 'equals' as const },
     ],
     priority: 5,
     isUrgent: false,
@@ -1027,8 +1027,8 @@ export const StandardGoals = {
   Survive: {
     name: 'Survive',
     conditions: [
-      { property: 'status.self', value: 'eliminated', comparison: 'not_equals' },
-      { property: 'status.self', value: 'ko', comparison: 'not_equals' },
+      { property: 'status.self', value: 'eliminated', comparison: 'not_equals' as const },
+      { property: 'status.self', value: 'ko', comparison: 'not_equals' as const },
     ],
     priority: 10,
     isUrgent: true,
@@ -1042,7 +1042,7 @@ export const StandardGoals = {
   ProtectAlly: {
     name: 'Protect Ally',
     conditions: [
-      { property: 'status.ally', value: 'eliminated', comparison: 'not_equals' },
+      { property: 'status.ally', value: 'eliminated', comparison: 'not_equals' as const },
     ],
     priority: 7,
     isUrgent: false,
@@ -1057,7 +1057,7 @@ export const StandardGoals = {
   DisengageCombat: {
     name: 'Disengage',
     conditions: [
-      { property: 'engaged.self', value: false, comparison: 'equals' },
+      { property: 'engaged.self', value: false, comparison: 'equals' as const },
     ],
     priority: 6,
     isUrgent: true,
@@ -1248,7 +1248,7 @@ function validateMoveAction(
 
   // Check for impassable terrain at destination
   const terrain = context.battlefield.getTerrainAt(position);
-  if (terrain === 'Impassable') {
+  if ((terrain.type as any) === 'Impassable') {
     errors.push('Destination is impassable terrain');
   }
 }

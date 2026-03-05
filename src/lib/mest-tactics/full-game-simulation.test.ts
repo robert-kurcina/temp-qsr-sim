@@ -34,7 +34,7 @@ interface GameSizeConfig {
 
 const DEFAULT_SIM_MAX_TURNS = 10;
 
-const GAME_SIZES: Record<CanonicalGameSize, GameSizeConfig> = {
+const GAME_SIZES: any = {
   ...Object.fromEntries(
     CANONICAL_GAME_SIZE_ORDER.map((size) => {
       const defaults = gameSizeDefaults[size];
@@ -297,8 +297,8 @@ class FullGameRunner {
       }
 
       // Check victory conditions
-      const aRemaining = sideA.characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length;
-      const bRemaining = sideB.characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length;
+      const aRemaining = sideA.characters.filter((c: any) => !c.state.isEliminated && !c.state.isKOd).length;
+      const bRemaining = sideB.characters.filter((c: any) => !c.state.isEliminated && !c.state.isKOd).length;
 
       if (aRemaining === 0 || bRemaining === 0) {
         gameOver = true;
@@ -317,8 +317,8 @@ class FullGameRunner {
     }
 
     // Final results
-    const aRemaining = sideA.characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length;
-    const bRemaining = sideB.characters.filter(c => !c.state.isEliminated && !c.state.isKOd).length;
+    const aRemaining = sideA.characters.filter((c: any) => !c.state.isEliminated && !c.state.isKOd).length;
+    const bRemaining = sideB.characters.filter((c: any) => !c.state.isEliminated && !c.state.isKOd).length;
 
     let winner = 'Draw';
     if (aRemaining > bRemaining) winner = sideAName;
@@ -368,8 +368,8 @@ class FullGameRunner {
       }
       
       // Create a proper profile using buildProfile
-      const profile = buildProfile(selected.archetypeName, [], {
-        name: `${name}-${i+1}`,
+      const profile = buildProfile(selected.archetypeName, {
+        itemNames: [],
       });
       profiles.push(profile);
     }
@@ -520,7 +520,7 @@ class FullGameRunner {
     const attackerResult = performTest(attackerDice, attackerCCA, attackerRolls.slice(0, attackerDice.base));
     const defenderResult = performTest(defenderDice, defenderCCA, defenderRolls.slice(0, defenderDice.base));
 
-    const hit = attackerResult.successes >= defenderResult.successes;
+    const hit = (attackerResult.successes ?? 0 ?? 0) >= (defenderResult.successes ?? 0 ?? 0);
 
     if (hit) {
       // Damage test
@@ -533,7 +533,7 @@ class FullGameRunner {
       const damageResult = performTest(attackerDamageDice, attackerSTR, damageRolls.slice(0, attackerDamageDice.base));
       const armorResult = performTest(defenderArmorDice, defenderFOR, armorRolls.slice(0, defenderArmorDice.base));
 
-      if (damageResult.successes > armorResult.successes) {
+      if ((damageResult.successes ?? 0 ?? 0) > (armorResult.successes ?? 0 ?? 0)) {
         // Wound inflicted
         const wounds = defender.state.wounds || 0;
         const siz = defender.finalAttributes?.siz ?? defender.attributes?.siz ?? 3;
@@ -571,7 +571,7 @@ class FullGameRunner {
     const attackerResult = performTest(attackerDice, attackerRCA, attackerRolls.slice(0, attackerDice.base));
     const defenderResult = performTest(defenderDice, defenderREF, defenderRolls.slice(0, defenderDice.base));
 
-    const hit = attackerResult.successes >= defenderResult.successes;
+    const hit = (attackerResult.successes ?? 0 ?? 0) >= (defenderResult.successes ?? 0 ?? 0);
 
     if (hit) {
       const attackerSTR = attacker.finalAttributes?.str ?? attacker.attributes?.str ?? 2;
@@ -586,7 +586,7 @@ class FullGameRunner {
       const damageResult = performTest(damageDice, attackerSTR, damageRolls.slice(0, damageDice.base));
       const armorResult = performTest(armorDice, defenderFOR, armorRolls.slice(0, armorDice.base));
 
-      if (damageResult.successes > armorResult.successes) {
+      if ((damageResult.successes ?? 0 ?? 0) > (armorResult.successes ?? 0 ?? 0)) {
         const wounds = defender.state.wounds || 0;
         const siz = defender.finalAttributes?.siz ?? defender.attributes?.siz ?? 3;
         

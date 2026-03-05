@@ -95,14 +95,14 @@ function performTestWithRolls(
   
   // Calculate total (attribute + successes)
   const total = successes + attributeValue;
-  
+
   // Build pool string
   const poolParts: string[] = [];
-  if (finalDice.base > 0) poolParts.push(`${finalDice.base}b`);
-  if (finalDice.modifier > 0) poolParts.push(`${finalDice.modifier}m`);
-  if (finalDice.wild > 0) poolParts.push(`${finalDice.wild}w`);
+  if ((finalDice.base ?? 0) > 0) poolParts.push(`${finalDice.base ?? 0}b`);
+  if ((finalDice.modifier ?? 0) > 0) poolParts.push(`${finalDice.modifier ?? 0}m`);
+  if ((finalDice.wild ?? 0) > 0) poolParts.push(`${finalDice.wild ?? 0}w`);
   const pool = poolParts.join(' + ') || '2b';
-  
+
   return { rolls, successes, total, pool };
 }
 

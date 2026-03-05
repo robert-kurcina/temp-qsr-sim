@@ -67,7 +67,7 @@ function createTestAssembly(name: string, profileCount: number = 4): Assembly {
       characterLimitMax: 8,
       gameSize: 'SMALL',
     },
-  };
+  } as any;
 }
 
 // Helper to create a test MissionSide with unique IDs
@@ -79,7 +79,7 @@ function createTestMissionSide(
     createTestProfile(`${id}_Char${i}`, 50)
   );
   const assembly = createTestAssembly(`${id}_Assembly`, memberCount);
-  const characters = profiles.map(p => {
+  const characters = profiles.map((p: any) => {
     const c = new Character(p);
     // Ensure unique IDs
     c.id = `${id}_${p.name}`;

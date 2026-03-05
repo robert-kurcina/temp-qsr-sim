@@ -10,10 +10,10 @@
  * Phase 3: Strategic Layer
  */
 
-import { MissionSide } from '../mission/MissionSide';
-import { Battlefield } from '../battlefield/Battlefield';
-import { Character } from '../core/Character';
-import { Assembly } from '../core/Assembly';
+import { MissionSide } from '../../mission/MissionSide';
+import { Battlefield } from '../../battlefield/Battlefield';
+import { Character } from '../../core/Character';
+import { Assembly } from '../../core/Assembly';
 import { ActionDecision, AIControllerConfig } from '../core/AIController';
 
 /**

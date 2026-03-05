@@ -1,7 +1,7 @@
-import { MissionSide } from './MissionSide';
-import { ObjectiveMarker } from './objective-markers';
-import { PointOfInterest, ZoneControlState } from './poi-zone-control';
-import { VIP } from './vip-system';
+import { MissionSide } from '../mission/MissionSide';
+import { ObjectiveMarker } from '../mission/objective-markers';
+import { PointOfInterest, ZoneControlState } from '../mission/poi-zone-control';
+import { VIP } from '../mission/vip-system';
 
 /**
  * Event trigger types
@@ -135,6 +135,8 @@ export interface EventEffect {
   customId?: string;
   /** Effect metadata */
   metadata?: Record<string, unknown>;
+  /** Instant win trigger (backward compatibility) */
+  instantWin?: boolean;
 }
 
 /**
@@ -201,8 +203,20 @@ export class MissionEventManager {
   /**
    * Add an event hook
    */
-  addHook(hook: MissionEventHook): void {
-    this.hooks.set(hook.id, hook);
+  addHook(hook: MissionEventHook | Partial<MissionEventHook>): void {
+    const normalized: MissionEventHook = {
+      id: hook.id ?? `hook-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name: hook.name ?? 'Event Hook',
+      trigger: hook.trigger ?? EventTriggerType.Immediate,
+      turnNumber: hook.turnNumber,
+      conditions: hook.conditions ?? [],
+      effects: hook.effects ?? [],
+      hasTriggered: hook.hasTriggered ?? false,
+      repeatable: hook.repeatable ?? false,
+      priority: hook.priority ?? 0,
+      metadata: hook.metadata ?? {},
+    };
+    this.hooks.set(normalized.id, normalized);
   }
 
   /**
@@ -608,17 +622,19 @@ export function createTurnEventHook(
     id?: string;
     name?: string;
     conditions?: EventCondition[];
+    effects?: EventEffect[]; // Backward compatibility
     repeatable?: boolean;
     priority?: number;
   } = {}
 ): MissionEventHook {
+  const resolvedEffects = effects.length > 0 ? effects : (options.effects ?? []);
   return {
     id: options.id ?? `turn-${turnNumber}-${Date.now()}`,
     name: options.name ?? `Turn ${turnNumber} Event`,
     trigger: EventTriggerType.OnTurn,
     turnNumber,
     conditions: options.conditions ?? [],
-    effects,
+    effects: resolvedEffects,
     hasTriggered: false,
     repeatable: options.repeatable ?? false,
     priority: options.priority ?? 0,
@@ -635,16 +651,18 @@ export function createEndTurnEventHook(
     id?: string;
     name?: string;
     conditions?: EventCondition[];
+    effects?: EventEffect[]; // Backward compatibility
     repeatable?: boolean;
     priority?: number;
   } = {}
 ): MissionEventHook {
+  const resolvedEffects = effects.length > 0 ? effects : (options.effects ?? []);
   return {
     id: options.id ?? `end-turn-${Date.now()}`,
     name: options.name ?? 'End Turn Event',
     trigger: EventTriggerType.TurnEnd,
     conditions: options.conditions ?? [],
-    effects,
+    effects: resolvedEffects,
     hasTriggered: false,
     repeatable: options.repeatable ?? true,
     priority: options.priority ?? 0,
@@ -662,6 +680,7 @@ export function createVictoryConditionHook(
     id?: string;
     name?: string;
     vpAward?: number;
+    instantWin?: boolean;
   } = {}
 ): MissionEventHook {
   const effects: EventEffect[] = [
@@ -684,3 +703,7 @@ export function createVictoryConditionHook(
     metadata: {},
   };
 }
+
+// Backward compatibility type aliases
+export type MissionEventHooks = MissionEventManager;
+export type MissionEvent = MissionEventHook;

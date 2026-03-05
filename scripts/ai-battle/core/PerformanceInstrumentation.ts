@@ -107,7 +107,7 @@ export function recordSlowActivation(
   maxSamples: number = 20
 ): void {
   state.slowestActivations.push(entry);
-  state.slowestActivations.sort((a, b) => b.durationMs - a.durationMs);
+  state.slowestActivations.sort((a, b) => (b.durationMs ?? 0) - (a.durationMs ?? 0));
   if (state.slowestActivations.length > maxSamples) {
     state.slowestActivations = state.slowestActivations.slice(0, maxSamples);
   }
@@ -136,9 +136,8 @@ export function recordTurnTiming(
 ): void {
   state.turns.push({
     turn,
-    durationMs,
+    elapsedMs: durationMs,
     activations,
-    slowestActivationMs,
   });
 }
 
@@ -152,33 +151,36 @@ export function buildPerformanceSummary(
   }
 
   const totalMs = Date.now() - state.runStartMs;
-  const phaseSummaries: PhaseTimingSummary[] = Object.entries(state.phases).map(
-    ([phase, stats]) => ({
-      phase,
-      count: stats.count,
-      totalMs: stats.totalMs,
-      avgMs: stats.count > 0 ? Math.round(stats.totalMs / stats.count) : 0,
-      maxMs: stats.maxMs,
-    })
+  const phaseSummaries: Record<string, PhaseTimingSummary> = Object.fromEntries(
+    Object.entries(state.phases).map(
+      ([phase, stats]) => [phase, {
+        count: stats.count,
+        totalMs: stats.totalMs,
+        avgMs: stats.count > 0 ? Math.round(stats.totalMs / stats.count) : 0,
+        maxMs: stats.maxMs,
+      }]
+    )
   );
 
   return {
-    totalMs,
+    elapsedMs: totalMs,
     activationsProcessed: state.activationsProcessed,
-    avgActivationMs:
-      state.activationSamplesMs.length > 0
+    heartbeatEveryActivations: config.heartbeatEveryActivations,
+    activationLatency: {
+      avgMs: state.activationSamplesMs.length > 0
         ? Math.round(
             state.activationSamplesMs.reduce((a, b) => a + b, 0) /
               state.activationSamplesMs.length
           )
         : 0,
+      p50Ms: 0,
+      p95Ms: 0,
+      maxMs: Math.max(...state.activationSamplesMs, 0),
+    },
     turns: state.turns,
     phases: phaseSummaries,
     slowestActivations: state.slowestActivations,
-    battlefieldSize: battlefield
-      ? `${battlefield.width}x${battlefield.height}`
-      : 'Unknown',
-  };
+  } as any;
 }
 
 export function shouldLogHeartbeat(

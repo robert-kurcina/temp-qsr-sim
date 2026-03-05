@@ -12,6 +12,7 @@ export interface Attributes {
   for: number; // Fortitude
   mov: number; // Movement
   siz: number; // Size
+  orm?: number; // Optimal Range (backward compatibility)
 }
 
 export type FinalAttributes = {

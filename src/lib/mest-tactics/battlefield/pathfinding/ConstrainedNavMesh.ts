@@ -1,6 +1,6 @@
 import { Delaunay } from 'd3-delaunay';
-import { Battlefield } from './Battlefield';
-import { Position } from './Position';
+import { Battlefield } from '../Battlefield';
+import { Position } from '../Position';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
 
 export interface NavMeshEdge {

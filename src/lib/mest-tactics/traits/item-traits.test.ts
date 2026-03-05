@@ -78,13 +78,13 @@ import {
   getAcrobaticWildDiceBonus,
   checkAcrobaticBonus,
 } from './combat-traits';
-import { buildMissionSide } from '../mission/mission-builder';
+import { buildMissionSide } from '../mission/MissionSideBuilder';
 
 // ============================================================================
 // Test Helpers
 // ============================================================================
 
-function createTestCharacter(archetype: string, itemNames: string[] = []): Character {
+function createTestCharacter(archetype: string, itemNames: any[] = []): Character {
   const profile = buildProfile(archetype, { itemNames });
   return new Character(profile);
 }
@@ -97,10 +97,13 @@ function createMockItem(traits: string[], ladenLevel: number = 0): Item {
   return {
     name: 'Test Item',
     classification: 'Melee',
+    class: 'Melee',
+    type: 'Weapon',
+    bp: 0,
     dmg: 'STR',
     impact: 0,
     accuracy: '',
-    traits: traitString.split(', ').filter(t => t.trim() !== ''),
+    traits: traitString.split(', ').filter((t: any) => t.trim() !== ''),
     range: 0,
   };
 }
@@ -529,7 +532,7 @@ describe('[Discard] - Limited Use Asset', () => {
 
     it('should return null for character without Discard trait', () => {
       const character = createTestCharacter('Average');
-      expect(getDiscardType(character, 0)).toBe(null);
+      expect(getDiscardType(character, 0)).toBe(null as any);
     });
   });
 });
@@ -588,24 +591,24 @@ describe('[Lumbering] - Intrinsic', () => {
     it('should return base die penalty for Flanked', () => {
       const character = createTestCharacter('Average');
       character.allTraits = [{ name: '[Lumbering]', level: 1 }];
-      expect(getLumberingPenaltyType(character, 'Flanked')).toBe('base');
+      expect(getLumberingPenaltyType(character, true, false, false)).toBe('base');
     });
 
     it('should return base die penalty for Cornered', () => {
       const character = createTestCharacter('Average');
       character.allTraits = [{ name: '[Lumbering]', level: 1 }];
-      expect(getLumberingPenaltyType(character, 'Cornered')).toBe('base');
+      expect(getLumberingPenaltyType(character, false, true, false)).toBe('base');
     });
 
     it('should return base die penalty for Confined', () => {
       const character = createTestCharacter('Average');
       character.allTraits = [{ name: '[Lumbering]', level: 1 }];
-      expect(getLumberingPenaltyType(character, 'Confined')).toBe('base');
+      expect(getLumberingPenaltyType(character, false, false, true)).toBe('base');
     });
 
     it('should return modifier die penalty for character without [Lumbering]', () => {
       const character = createTestCharacter('Average');
-      expect(getLumberingPenaltyType(character, 'Flanked')).toBe('modifier');
+      expect(getLumberingPenaltyType(character, true, false, false)).toBe('modifier');
     });
   });
 });
@@ -659,7 +662,7 @@ describe('[Reload X] - Asset', () => {
         accuracy: '',
         traits: ['[Reload]'],
         range: 12,
-      } as Item;
+      } as unknown as Item;
       character.profile.equipment = [bow];
       expect(getReloadActionsRequired(character, 0)).toBe(0);
     });

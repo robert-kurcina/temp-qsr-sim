@@ -50,7 +50,7 @@ function makeTestProfile(name: string): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -412,8 +412,8 @@ describe('Close Combat: Cornered (QSR Lines 466, 1487)', () => {
 
     it('should require terrain on opposite side from Opposing model (QSR 1487)', () => {
       // QSR: "on one side... and in base-contact on the other side"
-      const attackerSide = 'left';
-      const terrainSide = 'right'; // Must be opposite
+      const attackerSide: string = 'left';
+      const terrainSide: string = 'right'; // Must be opposite
 
       const isOnOppositeSide = attackerSide !== terrainSide;
 

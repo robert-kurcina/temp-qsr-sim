@@ -32,7 +32,7 @@ function makeMeleeCharacter(): Character {
 function makeTestContext(
   character: Character,
   battlefield: Battlefield,
-  enemies: Character[] = []
+  enemies: any[] = []
 ): AIContext {
   return {
     character,
@@ -55,7 +55,7 @@ function makeTestContext(
       aggression: 0.5,
       caution: 0.5,
     },
-  };
+  } as any;
 }
 
 describe('R3: Movement + Cover-Seeking Quality', () => {
@@ -65,7 +65,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       // Add terrain that provides cover
       battlefield.addTerrain({
         id: 'cover-1',
-        type: 'Building',
+        type: 'Building' as any,
         vertices: [
           { x: 10, y: 10 },
           { x: 12, y: 10 },
@@ -84,11 +84,11 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
 
       // Position behind cover (should have good cover score)
       const coverPosition = { x: 11, y: 11 }; // Inside building
-      const coverScore = scorer.evaluateCover(coverPosition, context);
+      const coverScore = (scorer as any).evaluateCover(coverPosition, context);
 
       // Exposed position (should have lower cover score)
       const exposedPosition = { x: 15, y: 15 }; // Open ground
-      const exposedScore = scorer.evaluateCover(exposedPosition, context);
+      const exposedScore = (scorer as any).evaluateCover(exposedPosition, context);
 
       expect(coverScore).toBeGreaterThanOrEqual(exposedScore);
     });
@@ -108,8 +108,8 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       const scorer = new UtilityScorer(DEFAULT_WEIGHTS);
 
       const testPosition = { x: 10, y: 10 };
-      const rangedCoverScore = scorer.evaluateCover(testPosition, rangedContext);
-      const meleeCoverScore = scorer.evaluateCover(testPosition, meleeContext);
+      const rangedCoverScore = (scorer as any).evaluateCover(testPosition, rangedContext);
+      const meleeCoverScore = (scorer as any).evaluateCover(testPosition, meleeContext);
 
       // Ranged models should value cover more
       expect(rangedCoverScore).toBeGreaterThanOrEqual(meleeCoverScore);
@@ -122,7 +122,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       // Add terrain for cover
       battlefield.addTerrain({
         id: 'cover-1',
-        type: 'Building',
+        type: 'Building' as any,
         vertices: [
           { x: 10, y: 10 },
           { x: 12, y: 10 },
@@ -141,7 +141,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
 
       // Position near cover edge with LOS to enemy
       const leanPosition = { x: 13, y: 11 }; // Near building, can see enemy
-      const leanScore = scorer.evaluateLeanOpportunity(leanPosition, context);
+      const leanScore = (scorer as any).evaluateLeanOpportunity(leanPosition, context);
 
       expect(leanScore).toBeGreaterThanOrEqual(0);
       expect(leanScore).toBeLessThanOrEqual(1.0);
@@ -158,7 +158,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       const context = makeTestContext(character, battlefield, [enemy]);
       const scorer = new UtilityScorer(DEFAULT_WEIGHTS);
 
-      const leanScore = scorer.evaluateLeanOpportunity({ x: 10, y: 10 }, context);
+      const leanScore = (scorer as any).evaluateLeanOpportunity({ x: 10, y: 10 }, context);
       expect(leanScore).toBe(0);
     });
 
@@ -178,7 +178,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       const scorer = new UtilityScorer(DEFAULT_WEIGHTS);
 
       const leanPosition = { x: 13, y: 10 };
-      const leanScore = scorer.evaluateLeanOpportunity(leanPosition, context);
+      const leanScore = (scorer as any).evaluateLeanOpportunity(leanPosition, context);
       expect(leanScore).toBeGreaterThanOrEqual(0);
     });
   });
@@ -199,7 +199,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
 
       // Test position - exposure should be between 0 and 1
       const testPosition = { x: 15, y: 7 };
-      const exposureScore = scorer.evaluateExposureRisk(testPosition, context);
+      const exposureScore = (scorer as any).evaluateExposureRisk(testPosition, context);
 
       expect(exposureScore).toBeGreaterThanOrEqual(0);
       expect(exposureScore).toBeLessThanOrEqual(1);
@@ -220,7 +220,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
 
       // Exposed position (full LOS from all enemies)
       const exposedPosition = { x: 15, y: 7 };
-      const exposureScore = scorer.evaluateExposureRisk(exposedPosition, context);
+      const exposureScore = (scorer as any).evaluateExposureRisk(exposedPosition, context);
 
       expect(exposureScore).toBeGreaterThan(0.5);
     });
@@ -240,7 +240,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
 
       // Position visible to 1 out of 2 enemies should be ~0.5
       const partialPosition = { x: 15, y: 5 };
-      const exposureScore = scorer.evaluateExposureRisk(partialPosition, context);
+      const exposureScore = (scorer as any).evaluateExposureRisk(partialPosition, context);
 
       expect(exposureScore).toBeGreaterThanOrEqual(0);
       expect(exposureScore).toBeLessThanOrEqual(1);
@@ -254,7 +254,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       const context = makeTestContext(character, battlefield, []);
       const scorer = new UtilityScorer(DEFAULT_WEIGHTS);
 
-      const exposureScore = scorer.evaluateExposureRisk({ x: 10, y: 10 }, context);
+      const exposureScore = (scorer as any).evaluateExposureRisk({ x: 10, y: 10 }, context);
       expect(exposureScore).toBe(0);
     });
   });
@@ -275,8 +275,8 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       const scorer = new UtilityScorer(DEFAULT_WEIGHTS);
 
       const testPosition = { x: 10, y: 10 };
-      const rangedCoverScore = scorer.evaluateCover(testPosition, rangedContext);
-      const meleeCoverScore = scorer.evaluateCover(testPosition, meleeContext);
+      const rangedCoverScore = (scorer as any).evaluateCover(testPosition, rangedContext);
+      const meleeCoverScore = (scorer as any).evaluateCover(testPosition, meleeContext);
 
       // Ranged models should value cover at least as much as melee
       expect(rangedCoverScore).toBeGreaterThanOrEqual(meleeCoverScore * 0.9);
@@ -288,7 +288,7 @@ describe('R3: Movement + Cover-Seeking Quality', () => {
       const battlefield = new Battlefield(24, 24);
       battlefield.addTerrain({
         id: 'cover-1',
-        type: 'Building',
+        type: 'Building' as any,
         vertices: [
           { x: 10, y: 10 },
           { x: 12, y: 10 },

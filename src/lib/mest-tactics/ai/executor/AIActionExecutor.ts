@@ -5,11 +5,11 @@
  * Handles action validation, execution, failure handling, and replanning.
  */
 
-import { Character } from '../core/Character';
-import { Battlefield } from '../battlefield/Battlefield';
-import { Position } from '../battlefield/Position';
-import { Item } from '../core/Item';
-import { GameManager } from '../engine/GameManager';
+import { Character } from '../../core/Character';
+import { Battlefield } from '../../battlefield/Battlefield';
+import { Position } from '../../battlefield/Position';
+import { Item } from '../../core/Item';
+import { GameManager } from '../../engine/GameManager';
 import { ActionDecision, ActionType } from '../core/AIController';
 import { validateAction, ActionValidation } from '../tactical/GOAP';
 import { attemptHide, attemptDetect } from '../../status/concealment';
@@ -381,7 +381,7 @@ export class AIActionExecutor {
         // Find character's side for logging
         const side = this.findCharacterSideForLogging(character);
         if (side) {
-          this.logger.logIpSpending(side, character.id, 'refresh', context.currentTurn);
+          this.logger.logIpSpending(side, character.id, 'push' as any, context.currentTurn);
         }
       }
       
@@ -1087,10 +1087,19 @@ export class AIActionExecutor {
       'revive': LoggedActionType.REVIVE,
       'fiddle': LoggedActionType.FIDDLE,
       'hold': LoggedActionType.OTHER,
+      'focus': LoggedActionType.OTHER,
       'detect': LoggedActionType.OTHER,
       'none': LoggedActionType.OTHER,
-      'pushing': LoggedActionType.OTHER, // Pushing is a special action
-      'refresh': LoggedActionType.OTHER, // Refresh is IP spending
+      'pushing': LoggedActionType.OTHER,
+      'refresh': LoggedActionType.OTHER,
+      'reload': LoggedActionType.OTHER,
+      'charge': LoggedActionType.MOVE,
+      'combined': LoggedActionType.OTHER,
+      'react-move': LoggedActionType.OTHER,
+      'react_counter_strike': LoggedActionType.OTHER,
+      'react_counter_fire': LoggedActionType.OTHER,
+      'compulsory': LoggedActionType.OTHER,
+      'bottle_test': LoggedActionType.OTHER,
     };
     return typeMap[type] || LoggedActionType.OTHER;
   }

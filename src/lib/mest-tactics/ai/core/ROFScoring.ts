@@ -29,6 +29,9 @@ import {
   SuppressionZoneVisualization,
 } from '../../traits/rof-suppression-spatial';
 
+// Re-export types for use by UtilityScorer
+export type { ROFMarker, SuppressionMarker, FieldOfFire, SuppressionZoneVisualization };
+
 // Helper to calculate distance between positions
 function distanceBetween(pos1: Position, pos2: Position): number {
   const dx = pos1.x - pos2.x;

@@ -1,6 +1,6 @@
-import { MissionState } from '../mission-config';
-import { MissionSide } from '../../MissionSide';
-import { Position } from '../../battlefield/Position';
+import { MissionState } from '../missions/mission-config';
+import { MissionSide } from './MissionSide';
+import { Position } from '../battlefield/Position';
 
 /**
  * Special Rule Handler Interface
@@ -169,7 +169,7 @@ export class AlertLevelHandler extends BaseSpecialRuleHandler {
       case 'alert.increase':
         return this.handleAlertIncrease(state, event);
       case 'alert.check':
-        return this.handleAlertCheck(state, event);
+        return this.handleAlertCheck(state);
       default:
         return { handled: false };
     }
@@ -238,7 +238,7 @@ export class ThreatLevelHandler extends BaseSpecialRuleHandler {
       case 'threat.increase':
         return this.handleThreatIncrease(state, event);
       case 'threat.effect':
-        return this.handleThreatEffect(state, event);
+        return this.handleThreatEffect(state);
       default:
         return { handled: false };
     }

@@ -1,17 +1,17 @@
 import pathfinding from 'pathfinding';
-import { Battlefield } from './Battlefield';
-import { Position } from './Position';
+import { Battlefield } from '../Battlefield';
+import { Position } from '../Position';
 import { TerrainType } from '../terrain/Terrain';
 import { pointInPolygon } from '../terrain/BattlefieldUtils';
 
 const { AStarFinder, Grid: PFGrid } = pathfinding as {
-  AStarFinder: new (options: { diagonalMovement: number; heuristic: (dx: number, dy: number) => number }) => AStarFinder;
+  AStarFinder: new (options: { diagonalMovement: number; heuristic: (dx: number, dy: number) => number }) => any;
   Grid: typeof import('pathfinding').Grid;
 };
 
 export class Pathfinder {
   private battlefield: Battlefield;
-  private finder: AStarFinder;
+  private finder: any;
 
   constructor(battlefield: Battlefield) {
     this.battlefield = battlefield;
@@ -55,6 +55,6 @@ export class Pathfinder {
     const path = this.finder.findPath(start.x, start.y, end.x, end.y, gridBackup);
 
     // Convert path from [x, y] arrays to Position objects
-    return path.map(p => ({ x: p[0], y: p[1] }));
+    return path.map((p: any) => ({ x: p[0], y: p[1] }));
   }
 }

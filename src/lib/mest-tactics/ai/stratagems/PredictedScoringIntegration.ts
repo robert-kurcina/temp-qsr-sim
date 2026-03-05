@@ -5,7 +5,7 @@
  * Allows AI to make strategic decisions based on current scoring position.
  */
 
-import { KeyScoresBreakdown, KeyScore } from '../../../mission/MissionSide';
+import { KeyScoresBreakdown, KeyScore } from '../../mission/MissionSide';
 import { StratagemModifiers } from './AIStratagems';
 
 // ============================================================================
@@ -354,7 +354,7 @@ export function calculateScoringModifiers(context: ScoringContext): ScoringModif
         // Additional pressure for Aggression key specifically
         if (key === 'aggression') {
           modifiers.aggressionMultiplier *= 1.1; // Stack to 1.265x total
-          modifiers.meleePreference *= 1.15; // Prefer melee to close distance
+          (modifiers as any).meleePreference *= 1.15; // Prefer melee to close distance
         }
         break;
       case 'firstBlood':

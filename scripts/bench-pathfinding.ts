@@ -1,7 +1,7 @@
 import { performance } from 'node:perf_hooks';
-import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/BattlefieldFactory';
-import { LOSOperations } from '../src/lib/mest-tactics/battlefield/LOSOperations';
-import { PathfindingEngine } from '../src/lib/mest-tactics/battlefield/PathfindingEngine';
+import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory';
+import { LOSOperations } from '../src/lib/mest-tactics/battlefield/los/LOSOperations';
+import { PathfindingEngine } from '../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
 import type { Position } from '../src/lib/mest-tactics/battlefield/Position';
 
 const width = 24;

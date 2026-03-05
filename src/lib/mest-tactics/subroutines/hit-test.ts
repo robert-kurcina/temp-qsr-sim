@@ -4,6 +4,17 @@ import { resolveTest, TestParticipant, TestDice, ResolveTestResult, mergeTestDic
 import { Item } from '../core/Item';
 import { parseAccuracy } from './accuracy-parser';
 
+// Backward compatibility type alias
+export type HitTestContext = {
+  attacker: Character;
+  defender: Character;
+  weapon: Item;
+  attackerBonus?: TestDice;
+  attackerPenalty?: TestDice;
+  defenderBonus?: TestDice;
+  defenderPenalty?: TestDice;
+};
+
 export function resolveHitTest(
     attacker: Character,
     defender: Character,

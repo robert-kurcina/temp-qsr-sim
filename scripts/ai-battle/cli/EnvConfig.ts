@@ -181,7 +181,7 @@ export function buildValidationPerformanceGates(
   }
 
   const turn1Times = runsWithPerf
-    .map(run => run.performance.turns.find(turn => turn.turn === 1)?.elapsedMs)
+    .map(run => run.performance.turns.find((turn: any) => turn.turn === 1)?.elapsedMs)
     .filter((value): value is number => Number.isFinite(value));
   const activationP95 = runsWithPerf.map(run => run.performance.activationLatency.p95Ms);
 

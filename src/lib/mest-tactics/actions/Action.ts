@@ -1,4 +1,4 @@
-import { Character } from '../character/Character';
+import { Character } from '../core/Character';
 import { GameManager } from '../engine/GameManager';
 
 export abstract class Action {

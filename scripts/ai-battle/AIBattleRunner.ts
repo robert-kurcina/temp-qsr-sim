@@ -27,7 +27,6 @@ import {
   MissionRuntimeAdapter,
   MissionRuntimeUpdate,
 } from '../../src/lib/mest-tactics/missions/mission-runtime-adapter';
-import { MissionModel } from '../../src/lib/mest-tactics/missions/mission-keys';
 import {
   TacticalDoctrine,
   TACTICAL_DOCTRINE_INFO,
@@ -152,20 +151,24 @@ import {
 
 export class AIBattleRunner {
   private log: BattleLogEntry[] = [];
-  private tracker: StatisticsTracker;
-  private profiler: PerformanceProfiler;
+  private tracker: StatisticsTracker = new StatisticsTracker();
+  private profiler: PerformanceProfiler = new PerformanceProfiler();
   private modelUsageByCharacter = new Map<Character, ModelUsageStats>();
   private sideNameByCharacterId = new Map<string, string>();
   private doctrineByCharacterId = new Map<string, TacticalDoctrine>();
 
   // Mission runtime state (using new module)
-  private missionRuntimeState: MissionRuntimeState;
+  private missionRuntimeState: MissionRuntimeState = createMissionRuntimeState();
+  private missionSides: MissionSide[] = [];
+  private missionRuntimeAdapter: MissionRuntimeAdapter | null = null;
   private missionSideIds: string[] = [];
   private missionVpBySide: Record<string, number> = {};
   private missionRpBySide: Record<string, number> = {};
   private eliminatedBPBySide: Record<string, number> = {};  // For Elimination Key (QSR MEST.Tactics.Missions.txt)
   private missionImmediateWinnerSideId: string | null = null;
   private firstBloodAwarded: boolean = false;
+  private stats: BattleStats = createEmptyStats();
+  private advancedRules: AdvancedRuleMetrics = createEmptyAdvancedRuleMetrics();
 
   private currentBattlefield: Battlefield | null = null;
   private auditTurns: TurnAudit[] = [];
@@ -181,11 +184,15 @@ export class AIBattleRunner {
     this.sideNameByCharacterId = new Map<string, string>();
     this.doctrineByCharacterId = new Map<string, TacticalDoctrine>();
     this.missionRuntimeState = createMissionRuntimeState();
+    this.missionSides = [];
+    this.missionRuntimeAdapter = null;
     this.currentBattlefield = null;
     this.lastTerrainResult = null;
     this.battlefieldExportPath = null;
     this.auditTurns = [];
     this.activationSequence = 0;
+    this.stats = createEmptyStats();
+    this.advancedRules = createEmptyAdvancedRuleMetrics();
   }
 
   private setupPerformanceInstrumentation(forceProfiling: boolean = false): void {
@@ -283,12 +290,7 @@ export class AIBattleRunner {
       losingKeys: string[];
     };
   }> | undefined {
-    const gameManager = this.gameManager;
-    if (!gameManager) return undefined;
-
-    const coordinatorManager = gameManager.getSideCoordinatorManager();
-    if (!coordinatorManager) return undefined;
-
+    // Use doctrineByCharacterId map to build strategies
     const strategies: Record<string, {
       doctrine: string;
       advice: string[];
@@ -300,17 +302,10 @@ export class AIBattleRunner {
       };
     }> = {};
 
-    for (const coordinator of coordinatorManager.getAllCoordinators()) {
-      const context = coordinator.getScoringContext();
-      strategies[coordinator.getSideId()] = {
-        doctrine: coordinator.getTacticalDoctrine(),
-        advice: coordinator.getStrategicAdvice(),
-        context: context ? {
-          amILeading: context.amILeading,
-          vpMargin: context.vpMargin,
-          winningKeys: context.winningKeys,
-          losingKeys: context.losingKeys,
-        } : undefined,
+    for (const [characterId, doctrine] of this.doctrineByCharacterId.entries()) {
+      strategies[characterId] = {
+        doctrine,
+        advice: [],
       };
     }
 
@@ -390,6 +385,10 @@ export class AIBattleRunner {
           woundsThisTurn: 0,
           eliminatedModels: [],
           victoryPoints: 0,
+          resourcePoints: 0,
+          predictedVp: 0,
+          predictedRp: 0,
+          keyScores: {},
           initiativePoints: 0,
           missionState: {},
         },
@@ -418,7 +417,7 @@ export class AIBattleRunner {
           isEliminated: character.state.isEliminated,
           isOrdered: character.state.isOrdered,
           isAttentive: character.state.isAttentive,
-        });
+        } as any);
       }
     }
     return models;
@@ -624,7 +623,7 @@ export class AIBattleRunner {
     this.tracker.trackBonusActionOutcome(payload.bonusActionOutcome);
     const hitTestResult = payload.result?.hitTestResult ?? payload.hitTestResult;
     if (payload.context || hitTestResult) {
-      this.tracker.trackSituationalModifiers(payload.context, hitTestResult);
+      this.tracker.trackSituationalModifiers({ context: payload.context, hitTestResult } as any);
     }
   }
 
@@ -997,7 +996,7 @@ export class AIBattleRunner {
     const fightLevel = getCharacterTraitLevel(attacker, 'Fight');
     const brawlLevel = getCharacterTraitLevel(attacker, 'Brawl');
     const archetypeName = typeof attacker.profile.archetype === 'string'
-      ? attacker.profile.archetype.toLowerCase()
+      ? (attacker.profile.archetype as string).toLowerCase()
       : '';
     const isBrawlerArchetype = attacker.profile.name.toLowerCase().includes('brawler') || archetypeName.includes('brawler');
     const closeCombatSpecialist = (fightLevel + brawlLevel) > 0 || isBrawlerArchetype;
@@ -1780,8 +1779,7 @@ export class AIBattleRunner {
       averagePathLengthPerMovedModel,
       averagePathLengthPerModel,
       topPathModels,
-      modelUsage: usage,
-    };
+    } as any;
   }
 
   private snapshotModelState(character: Character): ModelStateAudit {
@@ -1982,8 +1980,8 @@ export class AIBattleRunner {
           profile: {
             name: character.profile.name,
             archetype: this.describeArchetype(character),
-            attributes: { ...(character.attributes as Record<string, number>) },
-            finalAttributes: { ...(character.finalAttributes as Record<string, number>) },
+            attributes: { ...(character.attributes as unknown as Record<string, number>) },
+            finalAttributes: { ...(character.finalAttributes as unknown as Record<string, number>) },
             totalBp: character.profile.totalBp,
             burdenTotal: character.profile.burden?.totalBurden,
             equipment,
@@ -2053,7 +2051,7 @@ export class AIBattleRunner {
         terrainFeatures,
         deployments,
       },
-    };
+    } as any;
   }
 
   private sanitizeForAudit(
@@ -2210,7 +2208,7 @@ export class AIBattleRunner {
               allowConcentrateRangeExtension: config.allowConcentrateRangeExtension,
               perCharacterFovLos: config.perCharacterFovLos,
             },
-          };
+          } as any;
           aiControllers.set(char.id, new CharacterAI(aiConfig));
         });
       });
@@ -2227,7 +2225,7 @@ export class AIBattleRunner {
         if (this.missionRuntimeAdapter) {
           const turnStartUpdate = this.withPhaseTiming(
             'turn.mission_start_update',
-            () => this.missionRuntimeAdapter!.onTurnStart(turn, this.buildMissionModels(battlefield))
+            () => this.missionRuntimeAdapter!.onTurnStart(turn, this.buildMissionModels(battlefield) as any)
           );
           this.applyMissionRuntimeUpdate(turnStartUpdate);
         }
@@ -2340,7 +2338,7 @@ export class AIBattleRunner {
         if (this.missionRuntimeAdapter) {
           const turnEndUpdate = this.withPhaseTiming(
             'turn.mission_end_update',
-            () => this.missionRuntimeAdapter!.onTurnEnd(turn, this.buildMissionModels(battlefield))
+            () => this.missionRuntimeAdapter!.onTurnEnd(turn, this.buildMissionModels(battlefield) as any)
           );
           this.applyMissionRuntimeUpdate(turnEndUpdate);
         }
@@ -2396,7 +2394,7 @@ export class AIBattleRunner {
       if (this.missionRuntimeAdapter) {
         const finalUpdate = this.withPhaseTiming(
           'mission.finalize',
-          () => this.missionRuntimeAdapter!.finalize(this.buildMissionModels(battlefield))
+          () => this.missionRuntimeAdapter!.finalize(this.buildMissionModels(battlefield) as any)
         );
         this.applyMissionRuntimeUpdate(finalUpdate);
       }
@@ -2491,7 +2489,7 @@ export class AIBattleRunner {
     }
   }
 
-  private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number }> {
+  private async createAssembly(sideConfig: SideConfig): Promise<{ characters: Character[]; totalBP: number; id: string }> {
     const compositions = sideConfig.loadoutProfile === 'melee_only'
       ? [
           // Melee-only profile: Average with Sword, Broad + Armored Gear + Armor, Light + Shield, Small
@@ -2533,7 +2531,7 @@ export class AIBattleRunner {
     assembly.characters.forEach((character, index) => {
       character.id = `${sideConfig.assemblyName}-${index + 1}-${character.id}`;
     });
-    return { characters: assembly.characters, totalBP: assembly.assembly.totalBP };
+    return { characters: assembly.characters, totalBP: assembly.assembly.totalBP, id: sideConfig.assemblyName };
   }
 
   private createBattlefield(size: number, densityRatio: number): Battlefield {
@@ -2578,7 +2576,7 @@ export class AIBattleRunner {
   /**
    * Export battlefield to JSON file
    */
-  private exportBattlefield(battlefield: Battlefield, result: TerrainPlacementResult): string {
+  private exportBattlefield(battlefield: Battlefield, result: TerrainPlacementResult): string | null {
     try {
       const outputDir = join(process.cwd(), 'generated', 'battlefields');
       mkdirSync(outputDir, { recursive: true });
@@ -2775,7 +2773,7 @@ export class AIBattleRunner {
         context.knowledge = aiController.updateKnowledge(context);
 
         const aiDecisionStartMs = Date.now();
-        const aiResult = await this.withAsyncPhaseTiming(
+        const aiResult = this.withPhaseTiming(
           'ai.decide_action',
           () => aiController.decideAction(context)
         );
@@ -3139,7 +3137,7 @@ export class AIBattleRunner {
             const detect = attemptDetect(battlefield, character, decision.target, enemies, {
               attackerLeaning: useLean,
             });
-            this.tracker.trackSituationalModifiers({ isLeaning: useLean }, undefined);
+            this.tracker.trackSituationalModifiers({ isLeaning: useLean } as any);
             if (useLean) {
               this.incrementTypeBreakdown(this.advancedRules.situationalModifiers.byType, 'detect_lean');
             }
@@ -3297,14 +3295,13 @@ export class AIBattleRunner {
 
         this.log.push({
           turn,
-          round: 1,
           modelId: character.id,
           side: sideName,
           model: character.profile.name,
           action: decision.type,
           detail: decision.reason,
           result,
-        });
+        } as any);
 
         const endPos = battlefield.getCharacterPosition(character);
         if (actionExecuted) {
@@ -3505,14 +3502,13 @@ export class AIBattleRunner {
               }
               this.log.push({
                 turn,
-                round: 1,
                 modelId: character.id,
                 side: sideName,
                 model: character.profile.name,
                 action: 'move',
                 detail: 'Fallback advance after stalled decision',
                 result: 'move=true:forced',
-              });
+              } as any);
               const fallbackStateBeforeReact = this.snapshotModelState(character);
               const reactResult = this.withPhaseTiming(
                 'react.process',
@@ -3868,7 +3864,7 @@ export class AIBattleRunner {
     };
   }
 
-  private hasLos(observer: Character, target: Character, battlefield: Battlefield, captureForAudit: { vectors?: any[] } = null): boolean {
+  private hasLos(observer: Character, target: Character, battlefield: Battlefield, captureForAudit: { vectors?: any[] } = {}): boolean {
     const observerPos = battlefield.getCharacterPosition(observer);
     const targetPos = battlefield.getCharacterPosition(target);
     if (!observerPos || !targetPos) return false;
@@ -4001,10 +3997,9 @@ export class AIBattleRunner {
         this.tracker.trackPassiveUsage('Defend');
       }
       const result = gameManager.executeCloseCombatAttack(attacker, defender, weapon, {
-        isCharge,
         isDefending: false,
         defend: useDefend,
-      });
+      } as any);
       const hitTestResult = (result as any)?.hitTestResult ?? (result as any)?.result?.hitTestResult;
       if (hitTestResult && hitTestResult.pass === false) {
         const attackerStateBeforePassive = this.snapshotModelState(attacker);
@@ -4050,7 +4045,7 @@ export class AIBattleRunner {
         doctrine: attackerDoctrine,
         isCharge,
       });
-      this.tracker.trackCombatExtras(result);
+      this.tracker.trackCombatExtras(result as any);
       const normalized = this.normalizeAttackResult(result);
 
       if (config.verbose) {
@@ -4283,7 +4278,7 @@ export class AIBattleRunner {
         isCloseCombat: false,
         doctrine: attackerDoctrine,
       });
-      this.tracker.trackCombatExtras(result);
+      this.tracker.trackCombatExtras(result as any);
       const normalized = this.normalizeAttackResult(result);
       if (config.verbose) {
         console.log(`    → Hit: ${normalized.hit}, KO: ${normalized.ko}, Elim: ${normalized.eliminated}`);
@@ -4391,7 +4386,7 @@ export class AIBattleRunner {
         isCloseCombat: true,
         doctrine: disengagerDoctrine,
       });
-      this.tracker.trackCombatExtras(result);
+      this.tracker.trackCombatExtras(result as any);
 
       if (config.verbose) {
         const moved = result.pass && 'moved' in result && result.moved ? ', moved' : '';

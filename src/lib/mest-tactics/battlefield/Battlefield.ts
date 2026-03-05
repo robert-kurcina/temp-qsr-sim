@@ -3,7 +3,7 @@ import { Delaunay } from 'd3-delaunay';
 import { Grid } from './pathfinding/Grid';
 import { Position } from './Position';
 import { TerrainFeature, TerrainType } from './terrain/Terrain';
-import { TerrainElement } from './TerrainElement';
+import { TerrainElement } from './terrain/TerrainElement';
 import { ConstrainedNavMesh } from './pathfinding/ConstrainedNavMesh';
 import { AreaTerrainLayer } from './terrain/AreaTerrainLayer';
 import { getBaseDiameterFromSiz } from './spatial/size-utils';
@@ -28,7 +28,7 @@ export class Battlefield {
   private losCacheHits = 0;
   private losCacheMisses = 0;
 
-  constructor(public width: number, public height: number) {
+  constructor(public width: number, public height: number, terrain: TerrainFeature[] = []) {
     this.grid = new Grid(width, height);
     this.areaTerrain = new AreaTerrainLayer({
       width,
@@ -36,6 +36,11 @@ export class Battlefield {
       cellResolution: 0.5,
       maxOverlapRatio: 0.20,
     });
+    if (terrain.length > 0) {
+      this.terrain = [...terrain];
+      this.invalidateTerrainDerivedState();
+      this.finalizeTerrain();
+    }
   }
 
   private invalidateTerrainDerivedState(): void {

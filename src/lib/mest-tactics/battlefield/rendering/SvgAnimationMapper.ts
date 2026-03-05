@@ -5,8 +5,8 @@
  * Generates static SVG battlefield with model positions per frame.
  */
 
-import { AuditFrame, AuditVector, ModelFrameState, StatusTokenState } from '../audit/AuditService';
-import { Position } from '../battlefield/Position';
+import { AuditFrame, AuditVector, ModelFrameState, StatusTokenState } from '../../audit/AuditService';
+import { Position } from '../Position';
 import { renderPortraitsSvg, getModelPortraitData, getPortraitCss, parseCallSign } from './PortraitRenderer';
 
 export interface SvgAnimationOutput {

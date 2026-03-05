@@ -1,5 +1,5 @@
 import { gameData } from '../../../data';
-import { Position } from './Position';
+import { Position } from '../Position';
 import { TerrainFeature, TerrainType } from './Terrain';
 
 export type TerrainShape = 'circle' | 'ellipse' | 'rectangle';

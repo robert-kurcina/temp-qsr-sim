@@ -4,7 +4,7 @@
  * Applies stratagem modifiers to AI action scoring.
  */
 
-import { ScoredAction, ScoredTarget, ScoredPosition } from '../core/AIController';
+import { ScoredAction, ScoredTarget, ScoredPosition } from '../core/UtilityScorer';
 import { StratagemModifiers, TacticalDoctrine, AggressionLevel } from './AIStratagems';
 import { ScoringModifiers, combineModifiers } from './PredictedScoringIntegration';
 
@@ -23,7 +23,7 @@ export function applyStratagemModifiersToActions(
     let modifiedScore = action.score;
 
     // Apply tactical doctrine modifiers
-    switch (action.action) {
+    switch (action.action as any) {
       case 'close_combat':
       case 'charge':
         modifiedScore *= modifiers.meleePreference;
@@ -294,8 +294,8 @@ export function shouldCharge(
     return false;
   }
 
-  // Melee-Centric always charges if possible
-  if (tacticalDoctrine === TacticalDoctrine.MeleeCentric) {
+  // Juggernaut (melee-centric) always charges if possible
+  if (tacticalDoctrine === TacticalDoctrine.Juggernaut) {
     return true;
   }
 

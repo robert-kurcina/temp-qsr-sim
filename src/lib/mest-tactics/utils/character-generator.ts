@@ -13,14 +13,13 @@ function generateCharacterName(): string {
 }
 
 export function createCharacter(profile: Profile): Character {
-    const archetypeKey = Object.keys(profile.archetype)[0];
-    const archetype = profile.archetype[archetypeKey];
+    const archetypeKey = Object.keys(profile.archetype as any)[0];
+    const archetype = (profile.archetype as any)[archetypeKey];
 
     const character: Character = {
         ...profile,
         name: generateCharacterName(),
-        traits: archetype.traits ? [...archetype.traits] : []
-    };
+    } as any;
 
     return character;
 }

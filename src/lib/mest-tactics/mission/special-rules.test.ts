@@ -14,15 +14,15 @@ import {
   VigilanceHandler,
   createDefaultHandlers,
 } from './special-rules';
-import { MissionState } from '../mission-config';
+import { MissionState } from '../missions/mission-config';
 
 function createTestState(): MissionState {
   return {
     currentTurn: 1,
     currentRound: 1,
     sides: [
-      { id: 'SideA', name: 'Side A', assemblies: [], members: [], totalBP: 0, deploymentZones: [], state: { currentTurn: 0, activatedModels: new Set(), readyModels: new Set(), woundsThisTurn: 0, eliminatedModels: [], victoryPoints: 0, missionState: {} } },
-      { id: 'SideB', name: 'Side B', assemblies: [], members: [], totalBP: 0, deploymentZones: [], state: { currentTurn: 0, activatedModels: new Set(), readyModels: new Set(), woundsThisTurn: 0, eliminatedModels: [], victoryPoints: 0, missionState: {} } },
+      { id: 'SideA', name: 'Side A', assemblies: [], members: [], totalBP: 0, deploymentZones: [], state: { currentTurn: 0, activatedModels: new Set(), readyModels: new Set(), woundsThisTurn: 0, eliminatedModels: [], victoryPoints: 0, resourcePoints: 0, predictedVp: 0, predictedRp: 0, keyScores: {}, initiativePoints: 0, missionState: {} }, objectiveMarkerManager: {} as any },
+      { id: 'SideB', name: 'Side B', assemblies: [], members: [], totalBP: 0, deploymentZones: [], state: { currentTurn: 0, activatedModels: new Set(), readyModels: new Set(), woundsThisTurn: 0, eliminatedModels: [], victoryPoints: 0, resourcePoints: 0, predictedVp: 0, predictedRp: 0, keyScores: {}, initiativePoints: 0, missionState: {} }, objectiveMarkerManager: {} as any },
     ],
     vpBySide: new Map(),
     ended: false,
@@ -512,7 +512,7 @@ describe('BreakthroughHandler', () => {
     expect(result.handled).toBe(true);
     expect(result.message).toContain('ALPHA');
     // Alpha doesn't trigger victory, only gamma does
-    expect(result.stateChanges?.breakthroughMarkers?.alpha).toBe(true);
+    expect((result.stateChanges as any)?.breakthroughMarkers?.alpha).toBe(true);
   });
 
   it('should trigger gamma marker for victory', () => {

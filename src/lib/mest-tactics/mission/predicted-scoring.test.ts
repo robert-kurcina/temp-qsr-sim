@@ -59,7 +59,7 @@ describe('Predicted Scoring System', () => {
     it('should initialize with zero predicted scores', () => {
       expect(side.state.predictedVp).toBe(0);
       expect(side.state.predictedRp).toBe(0);
-      expect(side.state.keyScores).toEqual({});
+      expect(side.state.keyScores).toEqual({} as any);
     });
 
     it('should update predicted scores', () => {
@@ -148,7 +148,7 @@ describe('Predicted Scoring System', () => {
       const manager = createEliminationMission([result.sideA, result.sideB]);
 
       // Mark all Side B models as eliminated (bottled out)
-      result.sideB.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      result.sideB.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
 
       const predicted = manager.calculatePredictedScoring();
 

@@ -39,7 +39,7 @@ import { getCharacterTraitLevel } from '../status/status-system';
 const makeProfile = (
   name: string,
   attrs: { cca: number; rca: number; ref: number; int: number; pow: number; str: number; for: number; mov: number; siz: number },
-  traits: string[] = []
+  traits: any[] = []
 ): Profile => ({
   name,
   archetype: { attributes: attrs },
@@ -51,7 +51,7 @@ const makeProfile = (
   adjPhysicality: 0,
   durability: 0,
   adjDurability: 0,
-  burden: { totalLaden: 0, totalBurden: 0 },
+  burden: { totalLaden: 0, totalBurden: 0 } as any,
   totalHands: 0,
   totalDeflect: 0,
   totalAR: 0,

@@ -74,7 +74,7 @@ describe('ActionVPFilter', () => {
   });
 
   describe('filterActionsByVP', () => {
-    const createActions = (types: string[]) => types.map(type => ({ action: type as any }));
+    const createActions = (types: string[]) => types.map((type: any) => ({ action: type as any }));
 
     it('should not filter actions for low urgency', () => {
       const actions = createActions(['hide', 'wait', 'move', 'close_combat']);
@@ -115,7 +115,7 @@ describe('ActionVPFilter', () => {
 
       // hide and wait should be filtered out
       expect(filtered.length).toBe(2);
-      expect(filtered.map(a => a.action)).toEqual(['move', 'close_combat']);
+      expect(filtered.map((a: any) => a.action)).toEqual(['move', 'close_combat']);
     });
 
     it('should only allow direct VP actions for desperate urgency', () => {
@@ -137,7 +137,7 @@ describe('ActionVPFilter', () => {
 
       // Only direct VP actions should remain
       expect(filtered.length).toBe(2);
-      expect(filtered.map(a => a.action)).toEqual(['close_combat', 'ranged_combat']);
+      expect(filtered.map((a: any) => a.action)).toEqual(['close_combat', 'ranged_combat']);
     });
 
     it('should allow VP-enabling actions with high contribution in desperate mode', () => {

@@ -16,7 +16,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -32,7 +32,7 @@ describe('status-system', () => {
 
   it('should infer status types from trait descriptions', () => {
     const definitions = getStatusDefinitions();
-    const names = definitions.map(def => def.name);
+    const names = definitions.map((def: any) => def.name);
     expect(names).toContain('Confused');
   });
 
@@ -48,7 +48,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -73,7 +73,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -97,7 +97,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -121,7 +121,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -145,7 +145,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -170,7 +170,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,
@@ -207,7 +207,7 @@ describe('status-system', () => {
       adjPhysicality: 0,
       durability: 0,
       adjDurability: 0,
-      burden: { totalLaden: 0, totalBurden: 0 },
+      burden: { totalLaden: 0, totalBurden: 0 } as any,
       totalHands: 0,
       totalDeflect: 0,
       totalAR: 0,

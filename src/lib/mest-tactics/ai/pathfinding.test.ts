@@ -7,11 +7,11 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Battlefield } from '../battlefield/Battlefield';
+import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
+import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { buildAssembly, buildProfile } from '../mission/assembly-builder';
 import { buildMissionSide } from '../mission/MissionSideBuilder';
 import { GameManager } from '../engine/GameManager';
-import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
-import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 
 /**
  * Simple AI Controller for testing
@@ -69,12 +69,12 @@ class TestAIController {
   ): { type: string; target?: any; position?: { x: number; y: number }; reason: string } {
     const status = character.state;
     if (status.isEliminated || status.isKOd || status.isDistracted) {
-      return { type: 'none', reason: 'unable to act' };
+      return {  type: 'none', reason: 'unable to act'  } as any;
     }
 
     const targets = this.findTargets(character, enemies, battlefield);
     if (targets.length === 0) {
-      return { type: 'hold', reason: 'no enemies remaining' };
+      return {  type: 'hold', reason: 'no enemies remaining'  } as any;
     }
 
     const closest = targets[0];
@@ -88,9 +88,9 @@ class TestAIController {
     if (engaged) {
       const enemyCC = closest.enemy.finalAttributes?.cca ?? 2;
       if (cca >= enemyCC || this.aggression > 0.6) {
-        return { type: 'close_combat', target: closest.enemy, reason: 'engaged in combat' };
+        return {  type: 'close_combat', target: closest.enemy, reason: 'engaged in combat'  } as any;
       } else {
-        return { type: 'disengage', target: closest.enemy, reason: 'outmatched in combat' };
+        return {  type: 'disengage', target: closest.enemy, reason: 'outmatched in combat'  } as any;
       }
     }
 
@@ -143,7 +143,7 @@ class TestAIController {
       }
     }
 
-    return { type: 'hold', reason: 'in position' };
+    return {  type: 'hold', reason: 'in position'  } as any;
   }
 }
 

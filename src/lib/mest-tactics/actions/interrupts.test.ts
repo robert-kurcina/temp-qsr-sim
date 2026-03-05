@@ -6,7 +6,7 @@ import { setRoller, resetRoller } from '../subroutines/dice-roller';
 import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 import type { Profile } from '../core/Profile';
 
-const makeProfile = (name: string, attrs: { cca: number; rca: number; ref: number; int: number; pow: number; str: number; for: number; mov: number; siz: number }, traits: string[] = []): Profile => ({
+const makeProfile = (name: string, attrs: { cca: number; rca: number; ref: number; int: number; pow: number; str: number; for: number; mov: number; siz: number }, traits: any[] = []): Profile => ({
   name,
   archetype: { attributes: attrs },
   items: [],
@@ -17,7 +17,7 @@ const makeProfile = (name: string, attrs: { cca: number; rca: number; ref: numbe
   adjPhysicality: 0,
   durability: 0,
   adjDurability: 0,
-  burden: { totalLaden: 0, totalBurden: 0 },
+  burden: { totalLaden: 0, totalBurden: 0 } as any,
   totalHands: 0,
   totalDeflect: 0,
   totalAR: 0,

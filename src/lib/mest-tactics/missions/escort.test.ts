@@ -39,7 +39,7 @@ describe('Escort Mission', () => {
     reinforcementRosters.set(sideA.id, reinforceRosterA);
     reinforcementRosters.set(sideB.id, reinforceRosterB);
 
-    const escortZonePosition: Position = { x: 12, y: 12 };
+    const escortZonePosition: Position = { x: 12, y: 12 } as any;
 
     manager = createEscortMission([sideA, sideB], vipMemberIds, reinforcementRosters, escortZonePosition);
   });

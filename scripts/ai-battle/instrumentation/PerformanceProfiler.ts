@@ -13,7 +13,7 @@ import type {
   PhaseTimingSummary,
   TurnTimingSummary,
   SlowActivationSummary,
-} from '../shared/BattleReportTypes';
+} from '../../shared/BattleReportTypes';
 
 export interface PerformanceProfilerConfig {
   /** Enable detailed performance profiling */

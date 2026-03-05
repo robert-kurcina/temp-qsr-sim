@@ -1,11 +1,11 @@
 /**
  * Battle Summary Formatter
- * 
+ *
  * Generates human-readable summaries from battle audit data.
  * Creates executive summaries, key statistics, and turn-by-turn highlights.
  */
 
-import type { BattleReport, BattleAuditTrace, TurnAudit, ActivationAudit } from '../shared/BattleReportTypes';
+import type { BattleReport, BattleAuditTrace, TurnAudit, ActivationAudit } from '../../shared/BattleReportTypes';
 
 export interface BattleSummary {
   executiveSummary: string;
@@ -282,36 +282,36 @@ function findMVP(audit: BattleAuditTrace | undefined, report: BattleReport): Mvp
   // Find model with highest score (eliminations * 3 + hits * 1 + actions * 0.5)
   let bestModel: { id: string; stats: any } | null = null;
   let bestScore = 0;
-  
-  modelStats.forEach((stats, id) => {
+
+  modelStats.forEach((stats: any, id: string) => {
     const score = stats.eliminations * 3 + stats.hits * 1 + stats.actions * 0.5;
     if (score > bestScore) {
       bestScore = score;
       bestModel = { id, stats };
     }
   });
-  
+
   if (!bestModel) return null;
-  
+
   // Get model name from ID
-  const modelName = bestModel.id.split('-').slice(0, -1).join('-') || bestModel.id;
-  
-  let reason = `${bestModel.stats.actions} actions executed`;
-  if (bestModel.stats.eliminations > 0) {
-    reason = `${bestModel.stats.eliminations} eliminations, ${reason}`;
+  const modelName = (bestModel as any).id.split('-').slice(0, -1).join('-') || (bestModel as any).id;
+
+  let reason = `${(bestModel as any).stats.actions} actions executed`;
+  if ((bestModel as any).stats.eliminations > 0) {
+    reason = `${(bestModel as any).stats.eliminations} eliminations, ${reason}`;
   }
-  if (bestModel.stats.hits > 0) {
-    reason = `${bestModel.stats.hits} successful hits, ${reason}`;
+  if ((bestModel as any).stats.hits > 0) {
+    reason = `${(bestModel as any).stats.hits} successful hits, ${reason}`;
   }
-  
+
   return {
     modelName,
-    side: bestModel.stats.side,
+    side: (bestModel as any).stats.side,
     reason,
     stats: {
-      actions: bestModel.stats.actions,
-      hits: bestModel.stats.hits,
-      eliminations: bestModel.stats.eliminations,
+      actions: (bestModel as any).stats.actions,
+      hits: (bestModel as any).stats.hits,
+      eliminations: (bestModel as any).stats.eliminations,
     },
   };
 }

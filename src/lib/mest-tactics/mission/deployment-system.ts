@@ -12,6 +12,7 @@ import { Character } from '../core/Character';
 import { Position } from '../battlefield/Position';
 import { MissionSide } from './MissionSide';
 import { Battlefield } from '../battlefield/Battlefield';
+import { DeploymentValidationResult } from './bp-validator';
 
 export interface DeploymentZone {
   /** Zone identifier */

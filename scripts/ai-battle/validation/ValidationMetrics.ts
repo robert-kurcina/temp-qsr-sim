@@ -9,7 +9,7 @@ import { TacticalDoctrine } from '../../../src/lib/mest-tactics/ai/stratagems/AI
 import { LightingCondition } from '../../../src/lib/mest-tactics/utils/visibility';
 import { BattlefieldLosCacheStats } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
 import { PathfindingCacheStats } from '../../../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
-import type { BattlePerformanceSummary } from '../shared/BattleReportTypes';
+import type { BattlePerformanceSummary } from '../../shared/BattleReportTypes';
 
 // ============================================================================
 // Battle Statistics
@@ -447,10 +447,6 @@ export function divideAdvancedRuleMetrics(total: AdvancedRuleMetrics, runs: numb
 // Additional Types for AIBattleRunner
 // ============================================================================
 
-export interface RuleTypeBreakdown {
-  [type: string]: number;
-}
-
 export interface SideSection {
   name: string;
   assemblies: AssemblySection[];
@@ -580,7 +576,7 @@ export function createSeededRandom(seed: number): () => number {
 /**
  * Create empty knowledge object for AI
  */
-import type { CharacterKnowledge } from '../src/lib/mest-tactics/ai/core/AIController';
+import type { CharacterKnowledge } from '../../../src/lib/mest-tactics/ai/core/AIController';
 
 export function emptyKnowledge(turn: number): CharacterKnowledge {
   return {

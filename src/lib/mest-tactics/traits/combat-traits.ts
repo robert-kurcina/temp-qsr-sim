@@ -533,11 +533,11 @@ export function checkJam(rng: () => number = Math.random): JamCheckResult {
  * Clear weapon jam (requires Fiddle action)
  */
 export function clearWeaponJam(character: Character, weaponIndex: number = 0): void {
-  const jammedWeapons = character.state.statusTokens['jammedWeapons'] || [];
+  const jammedWeapons = ((character.state.statusTokens['jammedWeapons'] as unknown) as number[]) || [];
   const index = jammedWeapons.indexOf(weaponIndex);
   if (index > -1) {
     jammedWeapons.splice(index, 1);
-    character.state.statusTokens['jammedWeapons'] = jammedWeapons;
+    character.state.statusTokens['jammedWeapons'] = jammedWeapons as any;
   }
 }
 
@@ -545,10 +545,10 @@ export function clearWeaponJam(character: Character, weaponIndex: number = 0): v
  * Set weapon as jammed
  */
 export function setWeaponJammed(character: Character, weaponIndex: number = 0): void {
-  const jammedWeapons = character.state.statusTokens['jammedWeapons'] || [];
+  const jammedWeapons = ((character.state.statusTokens['jammedWeapons'] as unknown) as number[]) || [];
   if (!jammedWeapons.includes(weaponIndex)) {
     jammedWeapons.push(weaponIndex);
-    character.state.statusTokens['jammedWeapons'] = jammedWeapons;
+    character.state.statusTokens['jammedWeapons'] = jammedWeapons as any;
   }
 }
 
@@ -556,7 +556,7 @@ export function setWeaponJammed(character: Character, weaponIndex: number = 0): 
  * Check if weapon is jammed
  */
 export function isWeaponJammed(character: Character, weaponIndex: number = 0): boolean {
-  const jammedWeapons = character.state.statusTokens['jammedWeapons'] || [];
+  const jammedWeapons = ((character.state.statusTokens['jammedWeapons'] as unknown) as number[]) || [];
   return jammedWeapons.includes(weaponIndex);
 }
 
@@ -632,7 +632,7 @@ export function recordWeaponUse(character: Character, weaponIndex: number): void
  * Reset multiple attack tracking (end of Initiative)
  */
 export function resetMultipleAttackTracking(character: Character): void {
-  character.state.statusTokens['lastWeaponUsed'] = null;
+  character.state.statusTokens['lastWeaponUsed'] = null as any;
 }
 
 // ============================================================================
@@ -2160,7 +2160,7 @@ export function getImpalePenalty(
   isDistracted: boolean,
   remainingImpact: number
 ): number {
-  if (!hasImpale(character) || !isDistracted) {
+  if (!hasImpale(defender) || !isDistracted) {
     return 0;
   }
 
@@ -2408,7 +2408,7 @@ export function getSurefootedLevel(character: Character): number {
   return getCharacterTraitLevel(character, 'Surefooted');
 }
 
-export type TerrainType = 'Clear' | 'Rough' | 'Difficult' | 'Impassable';
+export type TerrainType = 'Clear' | 'Rough' | 'Difficult' | 'Impassable' | 'Obstacle';
 
 export function upgradeTerrain(terrain: TerrainType, surefootedLevel: number): TerrainType {
   if (surefootedLevel <= 0) {

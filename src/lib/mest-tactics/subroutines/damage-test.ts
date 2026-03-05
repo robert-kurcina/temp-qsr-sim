@@ -125,7 +125,7 @@ export function resolveDamage(
 
         const { value: damageValue, dice: damageDice } = parseDamageFormula(damageFormula, attacker);
 
-        const bonusDice = { ...damageDice, ...hitTestResult.carryOverDice };
+        const bonusDice = { ...damageDice, base: (damageDice.base || 0) + (hitTestResult.cascades || 0) };
         if (context.isConcentrating && (context.concentrateTarget ?? 'hit') === 'damage') {
             bonusDice[DiceType.Wild] = (bonusDice[DiceType.Wild] || 0) + 1;
         }

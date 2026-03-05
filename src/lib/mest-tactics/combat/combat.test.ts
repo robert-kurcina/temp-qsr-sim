@@ -19,14 +19,14 @@ describe('CombatEngine', () => {
   beforeEach(() => {
     const attackerProfile: Profile = {
       name: 'Attacker',
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: { cca: 3, rca: 2, ref: 2, int: 2, pow: 2, str: 3, for: 2, mov: 2, siz: 3 },
       traits: [],
       items: [],
     };
     const defenderProfile: Profile = {
       name: 'Defender',
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: { cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 3, mov: 2, siz: 3 },
       traits: [],
       items: [],

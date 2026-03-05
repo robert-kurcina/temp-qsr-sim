@@ -3,6 +3,7 @@ import { PointOfInterest, POIType, POIManager, createPOI } from '../mission/poi-
 import { Position } from '../battlefield/Position';
 import {
   calculateZoneControlFractionalVP,
+  calculateMarkerControlFractionalVP,
   calculateEliminationFractionalVP,
   calculateBottledFractionalVP,
   calculateAggressionFractionalVP,
@@ -336,7 +337,7 @@ export class BreachMissionManager {
       results.push({
         switched: newController !== currentController,
         markerId: marker.id,
-        previousController: currentController,
+        previousController: currentController ?? null,
         newController,
         vpAwarded,
       });

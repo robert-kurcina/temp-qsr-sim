@@ -53,7 +53,7 @@ function makeTestProfile(
     adjPhysicality: Math.max(str, siz),
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,

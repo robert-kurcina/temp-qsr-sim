@@ -1,4 +1,4 @@
-import { ScoringRuleConfig, ScoringResult, MissionState } from '../mission-config';
+import { ScoringRuleConfig, ScoringResult, MissionState } from '../missions/mission-config';
 
 /**
  * Scoring Trigger
@@ -274,7 +274,7 @@ export class ThreatLevelScoring extends BaseScoringRule {
     super(config);
   }
 
-  apply(state: MissionState, context?: { threatLevel?: number }): ScoringResult {
+  apply(state: MissionState, context?: { threatLevel?: number; sideId?: string }): ScoringResult {
     if (!context?.threatLevel) {
       return { vpAwarded: 0 };
     }
@@ -282,13 +282,14 @@ export class ThreatLevelScoring extends BaseScoringRule {
     const currentThreat = state.customState['threatLevel'] as number ?? 0;
     if (context.threatLevel > currentThreat) {
       state.customState['threatLevel'] = context.threatLevel;
+      state.customState['sideId'] = context.sideId;
       // Award to side that triggered it
       this.awardVP(state, context.sideId ?? 'unknown', this.config.vp);
       return {
         vpAwarded: this.config.vp,
         sideId: context.sideId,
         reason: `Threat level reached ${context.threatLevel}`,
-      };
+      } as any;
     }
 
     return { vpAwarded: 0 };
@@ -342,13 +343,13 @@ export function createScoringRule(config: ScoringRuleConfig): ScoringRule {
       return new ModelEliminatedScoring(configWithVp);
     case 'first_blood':
       return new FirstBloodScoring(configWithVp);
-    case 'reinforcement.arrival':
+    case 'reinforcement.arrival' as any:
       return new ReinforcementArrivalScoring(configWithVp);
-    case 'alert.level':
+    case 'alert.level' as any:
       return new AlertLevelScoring(configWithVp);
-    case 'threat.level':
+    case 'threat.level' as any:
       return new ThreatLevelScoring(configWithVp);
-    case 'sally.forth':
+    case 'sally.forth' as any:
       return new SallyForthScoring(configWithVp);
     default:
       // Return a no-op scoring rule for unknown triggers

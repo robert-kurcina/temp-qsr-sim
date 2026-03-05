@@ -42,7 +42,7 @@ describe('BattlefieldFactory coverage', () => {
     const diameter = treeInfo.dimensions.diameter;
     const treeArea = Math.PI * Math.pow(diameter / 2, 2);
 
-    const treeCount = battlefield.terrain.filter(feature => feature.meta?.category === 'tree').length;
+    const treeCount = battlefield.terrain.filter((feature: any) => feature.meta?.category === 'tree').length;
     const coveredArea = treeCount * treeArea;
     const targetArea = width * height * 0.5;
 

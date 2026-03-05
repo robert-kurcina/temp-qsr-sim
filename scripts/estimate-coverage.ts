@@ -1,4 +1,4 @@
-import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/BattlefieldFactory';
+import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory';
 
 type TerrainFeature = { vertices: { x: number; y: number }[]; meta?: Record<string, any> };
 

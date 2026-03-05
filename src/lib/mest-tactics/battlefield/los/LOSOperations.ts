@@ -1,5 +1,5 @@
-import { Battlefield } from './Battlefield';
-import { Position } from './Position';
+import { Battlefield } from '../';
+import { Position } from '../';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
 import { distance, segmentIntersection } from '../terrain/BattlefieldUtils';
 

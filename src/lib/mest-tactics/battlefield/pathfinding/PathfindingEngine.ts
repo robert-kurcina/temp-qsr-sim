@@ -1,5 +1,5 @@
-import { Battlefield } from './Battlefield';
-import { Position } from './Position';
+import { Battlefield } from '../';
+import { Position } from '../';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
 import {
   pointInPolygon,
@@ -436,6 +436,9 @@ export class PathfindingEngine {
       remainingMu: Math.max(0, limit - limited.usedMu),
     };
   }
+
+  // Backward compatibility alias
+  findPathLimited = this.findPathWithMaxMu.bind(this);
 
   findPathSegmentsByMu(
     start: Position,

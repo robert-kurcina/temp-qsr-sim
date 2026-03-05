@@ -1,6 +1,6 @@
 import { Delaunay } from 'd3-delaunay';
 import { Battlefield } from '../Battlefield';
-import { Position } from './Position';
+import { Position } from '../Position';
 import { TerrainFeature } from '../terrain/Terrain';
 
 export interface SvgLayerToggle {

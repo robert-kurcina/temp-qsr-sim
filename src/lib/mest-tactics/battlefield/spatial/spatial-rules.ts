@@ -1,7 +1,7 @@
 import { Battlefield } from '../Battlefield';
 import { LOSOperations } from '../los/LOSOperations';
 import { LOFOperations, LOFModel } from '../los/LOFOperations';
-import { Position } from '../battlefield/Position';
+import { Position } from '../Position';
 import { TerrainFeature, TerrainType } from '../terrain/Terrain';
 import { TestContext } from '../../utils/TestContext';
 import {

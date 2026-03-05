@@ -107,6 +107,9 @@ export interface SideMember {
   objectiveMarkers: string[];
 }
 
+// Alias for backward compatibility
+export type ModelSlot = SideMember;
+
 /**
  * Deployment zone definition
  */

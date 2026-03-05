@@ -143,7 +143,7 @@ describe('Group Actions - Cohesion', () => {
 
   describe('validateGroupCohesion', () => {
     it('should validate when all members within cohesion', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
       
       const valid = validateGroupCohesion(group, getPosition);
       
@@ -153,7 +153,7 @@ describe('Group Actions - Cohesion', () => {
     it('should fail when member out of cohesion', () => {
       positions.set(member2.id, { x: 10, y: 10 }); // Out of 4 MU cohesion
       
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
       
       const valid = validateGroupCohesion(group, getPosition);
       
@@ -163,7 +163,7 @@ describe('Group Actions - Cohesion', () => {
     it('should fail when leader has no position', () => {
       positions.delete(leader.id);
       
-      const group: GroupAction = { leader, members: [leader, member1] };
+      const group: GroupAction = { leader, members: [leader, member1] } as any;
       
       const valid = validateGroupCohesion(group, getPosition);
       
@@ -173,7 +173,7 @@ describe('Group Actions - Cohesion', () => {
     it('should fail when member has no position', () => {
       positions.delete(member1.id);
       
-      const group: GroupAction = { leader, members: [leader, member1] };
+      const group: GroupAction = { leader, members: [leader, member1] } as any;
       
       const valid = validateGroupCohesion(group, getPosition);
       
@@ -184,7 +184,7 @@ describe('Group Actions - Cohesion', () => {
       // Place member at exactly 4 MU
       positions.set(member1.id, { x: 4, y: 0 });
       
-      const group: GroupAction = { leader, members: [leader, member1] };
+      const group: GroupAction = { leader, members: [leader, member1] } as any;
       
       const valid = validateGroupCohesion(group, getPosition);
       
@@ -195,7 +195,7 @@ describe('Group Actions - Cohesion', () => {
       // Place member at 8 MU
       positions.set(member1.id, { x: 8, y: 0 });
       
-      const group: GroupAction = { leader, members: [leader, member1] };
+      const group: GroupAction = { leader, members: [leader, member1] } as any;
       
       const valid = validateGroupCohesion(group, getPosition);
       
@@ -217,7 +217,7 @@ describe('Group Actions - Bonuses', () => {
 
   describe('calculateGroupBonus', () => {
     it('should return 0 for solo character', () => {
-      const group: GroupAction = { leader, members: [leader] };
+      const group: GroupAction = { leader, members: [leader] } as any;
       
       const bonus = calculateGroupBonus(group);
       
@@ -225,7 +225,7 @@ describe('Group Actions - Bonuses', () => {
     });
 
     it('should return +1 for two members', () => {
-      const group: GroupAction = { leader, members: [leader, member1] };
+      const group: GroupAction = { leader, members: [leader, member1] } as any;
       
       const bonus = calculateGroupBonus(group);
       
@@ -233,7 +233,7 @@ describe('Group Actions - Bonuses', () => {
     });
 
     it('should return +2 for three members', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
       
       const bonus = calculateGroupBonus(group);
       
@@ -270,7 +270,7 @@ describe('Group Actions - Execution', () => {
 
   describe('executeGroupRangedAttack', () => {
     it('should execute attacks for all members', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
       const attackResults = [
         { hit: true, score: 5 },
         { hit: false, score: 2 },
@@ -288,7 +288,7 @@ describe('Group Actions - Execution', () => {
     });
 
     it('should fail if all members miss', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
       const attackResults = [
         { hit: false, score: 2 },
         { hit: false, score: 1 },
@@ -304,7 +304,7 @@ describe('Group Actions - Execution', () => {
     });
 
     it('should track best score', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
       const attackResults = [
         { hit: true, score: 3 },
         { hit: true, score: 7 },
@@ -322,12 +322,12 @@ describe('Group Actions - Execution', () => {
 
   describe('executeGroupCloseCombat', () => {
     it('should apply group bonus to all attacks', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
-      const bonusesApplied: number[] = [];
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
+      const bonusesApplied: any[] = [];
       
       const attackFunction = (_: Character, __: Character, bonus: number) => {
         bonusesApplied.push(bonus);
-        return { hit: true, score: 5 };
+        return {  hit: true, score: 5  } as any;
       };
       
       executeGroupCloseCombat(group, target, attackFunction);
@@ -337,7 +337,7 @@ describe('Group Actions - Execution', () => {
     });
 
     it('should succeed if any member hits', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
       const attackResults = [
         { hit: false, score: 2 },
         { hit: true, score: 5 },
@@ -373,8 +373,8 @@ describe('Group Actions - Execution', () => {
     });
 
     it('should move all members maintaining formation', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
-      const destination: Position = { x: 10, y: 10 };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
+      const destination: Position = { x: 10, y: 10 } as any;
       
       const result = executeGroupMove(group, destination, moveFunction, getPosition);
       
@@ -393,8 +393,8 @@ describe('Group Actions - Execution', () => {
     });
 
     it('should fail if any member cannot move', () => {
-      const group: GroupAction = { leader, members: [leader, member1, member2] };
-      const destination: Position = { x: 10, y: 10 };
+      const group: GroupAction = { leader, members: [leader, member1, member2] } as any;
+      const destination: Position = { x: 10, y: 10 } as any;
       
       // Member1 blocked
       moveFunction = (character: Character, _: Position) => {
@@ -409,8 +409,8 @@ describe('Group Actions - Execution', () => {
     it('should fail if leader has no position', () => {
       positions.delete(leader.id);
       
-      const group: GroupAction = { leader, members: [leader, member1] };
-      const destination: Position = { x: 10, y: 10 };
+      const group: GroupAction = { leader, members: [leader, member1] } as any;
+      const destination: Position = { x: 10, y: 10 } as any;
       
       const result = executeGroupMove(group, destination, moveFunction, getPosition);
       

@@ -29,9 +29,9 @@ import { SvgRenderer } from '../../src/lib/mest-tactics/battlefield/rendering/Sv
 import { AIGameLoop, DEFAULT_AI_GAME_LOOP_CONFIG } from '../../src/lib/mest-tactics/ai/executor/AIGameLoop';
 import {
   executeIntelligentDeployment,
-  DeploymentDoctrine,
   DEFAULT_DOCTRINES
 } from '../../src/lib/mest-tactics/engine/DeploymentPlacer';
+import { DeploymentDoctrine } from '../../src/lib/mest-tactics/engine/DeploymentScorer';
 import { createDefaultDeploymentZones } from '../../src/lib/mest-tactics/mission/deployment-system';
 import { AuditService } from '../../src/lib/mest-tactics/audit/AuditService';
 
@@ -171,6 +171,8 @@ export interface KeysToVictory {
   /** Aggression: First to cross midline */
   aggressionAwarded: boolean;
   aggressionSide: string | null;
+  // Backward compatibility property
+  firstBloodSide?: string;
 }
 
 // ============================================================================
@@ -748,7 +750,7 @@ export class BattleRunner {
             modelsRequired: [],
             results: [],
             sideBottled: result.sideBottled,
-          })) : [],
+          } as any)) : [] as any,
           endGameTrigger: {
             diceAdded: true,
             totalDice: endDice,
@@ -785,7 +787,7 @@ export class BattleRunner {
             modelsRequired: [],
             results: [],
             sideBottled: result.sideBottled,
-          })) : [],
+          } as any)) : [] as any,
           endGameTrigger: {
             diceAdded: false,
             totalDice: 0,
@@ -797,9 +799,9 @@ export class BattleRunner {
             victoryPoints: vpBySide[s.id] || 0,
             resourcePoints: 0,
           })),
-        };
+        } as any;
 
-        if (this.config.instrumentationGrade >= 2) {
+        if (this.config.instrumentationGrade >= 2 && turnEndReport) {
           this.logger.logTurnEnd(turnEndReport);
         }
       }
@@ -888,7 +890,7 @@ export class BattleRunner {
       stats,
       keys,
       audit: this.auditService ? this.addTerrainToAudit(this.auditService.getAudit()) : undefined,
-    };
+    } as any;
   }
 
   /**

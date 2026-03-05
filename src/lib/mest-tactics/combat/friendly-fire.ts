@@ -19,7 +19,7 @@ import { Character } from '../core/Character';
 import { Position } from '../battlefield/Position';
 import { Battlefield } from '../battlefield/Battlefield';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
-import { LOSOperations } from '../battlefield/LOSOperations';
+import { LOSOperations } from '../battlefield/los/LOSOperations';
 import { TestDice, DiceType, resolveTest } from '../subroutines/dice-roller';
 import { Item } from '../core/Item';
 

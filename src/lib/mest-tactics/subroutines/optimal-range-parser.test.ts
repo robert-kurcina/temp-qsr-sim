@@ -1,6 +1,6 @@
 
 import { parseOptimalRange } from './optimal-range-parser';
-import { FinalAttributes } from '../Attributes';
+import { FinalAttributes } from '../core/Attributes';
 import { describe, it, expect } from 'vitest';
 
 describe('parseOptimalRange', () => {
@@ -13,7 +13,7 @@ describe('parseOptimalRange', () => {
         rca: 9,
         cca: 10,
         ref: 11,
-    };
+    } as any;
 
     it('should return 0 for undefined input', () => {
         expect(parseOptimalRange(undefined, attributes)).toBe(0);

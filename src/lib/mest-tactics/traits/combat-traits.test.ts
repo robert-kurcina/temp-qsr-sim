@@ -34,14 +34,13 @@ import {
   getLeadershipLevel,
   isNaturalWeapon,
   getParryBonus,
-  getReachExtension,
   getShootLevel,
   getStunLevel,
 } from './combat-traits';
 import { Item } from '../core/Item';
 
 // Helper to create a test character with specific traits
-function createTestCharacter(archetype: string, itemNames: string[] = []): Character {
+function createTestCharacter(archetype: string, itemNames: any[] = []): Character {
   const profile = buildProfile(archetype, { itemNames });
   return new Character(profile);
 }
@@ -482,7 +481,7 @@ describe('Combat Traits', () => {
       
       // Knife-fighter provides bonus in Scrum (base-contact with 2+ enemies)
       // getKnifeFighterBonus returns { bonusBaseDice, bonusImpact }
-      const knifeFighterResult = getKnifeFighterBonus(character, false, false);
+      const knifeFighterResult = getKnifeFighterBonus(character, false, false, false);
       expect(knifeFighterResult.bonusBaseDice).toBe(0); // No Knife-fighter trait
       expect(knifeFighterResult.bonusImpact).toBe(0);
     });
@@ -492,7 +491,7 @@ describe('Combat Traits', () => {
       
       // Need 2+ enemies in base-contact for Scrum
       // getKnifeFighterBonus returns { bonusBaseDice, bonusImpact }
-      const knifeFighterResult = getKnifeFighterBonus(character, true, true);
+      const knifeFighterResult = getKnifeFighterBonus(character, true, true, true);
       expect(knifeFighterResult.bonusBaseDice).toBe(0); // No Knife-fighter trait
       expect(knifeFighterResult.bonusImpact).toBe(0);
     });

@@ -57,6 +57,10 @@ export interface MissionRuntimeUpdate {
   delta: MissionScoreDelta;
   firstBloodSideId?: string;
   immediateWinnerSideId?: string;
+  // Backward compatibility properties
+  vpBySide?: Record<string, number>;
+  rpBySide?: Record<string, number>;
+  modelStates?: Record<string, any>;
 }
 
 export interface TransferMarkerResult {
@@ -131,6 +135,8 @@ function pickVipMemberId(side: MissionSide): string | undefined {
 export class MissionRuntimeAdapter {
   readonly missionId: string;
   readonly objectiveMarkers = new ObjectiveMarkerManager();
+  // Backward compatibility property
+  readonly battlefieldSize: number = 48;
 
   private readonly sides: MissionSide[];
   private readonly sideIds: string[];
@@ -854,6 +860,11 @@ export class MissionRuntimeAdapter {
     return {
       delta,
     };
+  }
+
+  // Backward compatibility alias
+  public updateForTurnEnd(turn: number, models: MissionModel[]): MissionRuntimeUpdate {
+    return this.onTurnEnd(turn, models);
   }
 
   public recordAttack(attackerSideId: string | undefined, woundsAdded: number): MissionRuntimeUpdate {

@@ -10,7 +10,7 @@ import {
   createBeaconZones,
   createExtractionZones,
 } from './poi-zone-control';
-import { SpatialModel } from './battlefield/spatial/spatial-rules';
+import { SpatialModel } from '../battlefield/spatial/spatial-rules';
 
 const createModel = (id: string, x: number, y: number, baseDiameter = 1): SpatialModel => ({
   id,
@@ -181,8 +181,8 @@ describe('POIManager', () => {
       const inPOI = manager.getModelsInPOI('poi-1', models);
 
       expect(inPOI.length).toBe(2);
-      expect(inPOI.map(m => m.id)).toContain('m1');
-      expect(inPOI.map(m => m.id)).toContain('m2');
+      expect(inPOI.map((m: any) => m.id)).toContain('m1');
+      expect(inPOI.map((m: any) => m.id)).toContain('m2');
     });
   });
 

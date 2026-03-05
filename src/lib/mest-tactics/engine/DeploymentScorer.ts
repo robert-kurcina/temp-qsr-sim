@@ -18,9 +18,10 @@ import { Character } from '../core/Character';
 import { Profile } from '../core/Profile';
 import { Position } from '../battlefield/Position';
 import { Battlefield } from '../battlefield/Battlefield';
+import { TerrainType } from '../battlefield/terrain/Terrain';
+import { LightingCondition, type LightingConditionLike, getVisibilityOR } from '../utils/visibility';
 import { DeploymentZone } from '../mission/deployment-system';
-import { ObjectiveMarker } from '../mission/ObjectiveMarker';
-import { LightingCondition } from '../utils/visibility';
+import { ObjectiveMarker } from '../mission/objective-markers';
 
 export interface DeploymentScore {
   /** Total weighted score (higher = better) */
@@ -35,6 +36,8 @@ export interface DeploymentScore {
   roleAlignment: number;
   /** Squad cohesion maintenance (0-10) */
   cohesionScore: number;
+  /** Movement cost (0-10) */
+  movementCost: number;
   /** Detailed breakdown for debugging */
   breakdown: {
     coverDetails: string;
@@ -103,7 +106,7 @@ export function evaluateDeploymentPosition(
   objectives: ObjectiveMarker[],
   deployedModels: Map<string, { characterId: string; sideId: string; position: Position }>,
   doctrine: DeploymentDoctrine = DEFAULT_DOCTRINES.balanced,
-  lighting: LightingCondition = { name: 'Day, Clear', visibilityOR: 16 }
+  lighting: LightingConditionLike = { name: 'Day, Clear', visibilityOR: 16 }
 ): DeploymentScore {
   const profile = character.profile;
 
@@ -114,13 +117,13 @@ export function evaluateDeploymentPosition(
   const objectiveProximity = evaluateObjectiveProximity(position, objectives, doctrine);
 
   // 3. LOS Quality (0-10) - includes Situational Awareness
-  const losQuality = evaluateLOSQuality(position, battlefield, doctrine, lighting, character);
+  const losQuality = evaluateLOSQuality(position, battlefield, doctrine, lighting as any, character);
 
   // 4. Role Alignment (0-10)
   const roleAlignment = evaluateRoleAlignment(position, character, profile, battlefield, doctrine);
 
   // 5. Squad Cohesion (0-10) - QSR: visibility-based cohesion
-  const cohesionScore = evaluateCohesion(position, character, deployedModels, doctrine, lighting.visibilityOR);
+  const cohesionScore = evaluateCohesion(position, character, deployedModels, doctrine, getVisibilityOR(lighting));
 
   // 6. Movement Cost (0-10) - NEW: Terrain movement penalty
   const movementCost = evaluateMovementCost(position, battlefield, doctrine);
@@ -163,11 +166,10 @@ export function evaluateDeploymentPosition(
     breakdown: {
       coverDetails: `Cover: ${coverScore.toFixed(1)}/10 (preference: ${doctrine.coverPreference})`,
       objectiveDetails: `Objective: ${objectiveProximity.toFixed(1)}/10 (rush: ${doctrine.objectiveRush})`,
-      losDetails: `LOS: ${losQuality.toFixed(1)}/10 (Visibility OR: ${lighting.visibilityOR} MU)`,
+      losDetails: `LOS: ${losQuality.toFixed(1)}/10 (Visibility OR: ${getVisibilityOR(lighting)} MU)`,
       roleDetails: `Role: ${roleAlignment.toFixed(1)}/10 (forward bias: ${doctrine.meleeForwardBias})`,
       cohesionDetails: `Cohesion: ${cohesionScore.toFixed(1)}/10`,
-      movementDetails: `Movement: ${movementCost.toFixed(1)}/10 (terrain cost aware)`,
-    },
+    } as any,
   };
 }
 
@@ -180,17 +182,17 @@ function evaluateCover(
   doctrine: DeploymentDoctrine
 ): number {
   const terrain = battlefield.getTerrainAt(position);
-  
+
   // Base score from terrain type
   let coverScore = 5; // Default neutral
-  
-  if (terrain.type === 'blocking' || terrain.type === 'hard_cover') {
+
+  if (terrain.type === TerrainType.Obstacle || terrain.type === TerrainType.Impassable) {
     coverScore = 9;
-  } else if (terrain.type === 'soft_cover' || terrain.type === 'rough') {
+  } else if (terrain.type === TerrainType.Rough) {
     coverScore = 7;
-  } else if (terrain.type === 'difficult') {
+  } else if (terrain.type === TerrainType.Difficult) {
     coverScore = 4; // Difficult terrain may hinder movement
-  } else if (terrain.type === 'clear' || terrain.type === 'field') {
+  } else if (terrain.type === TerrainType.Clear) {
     coverScore = 3; // No cover
   }
   
@@ -264,8 +266,8 @@ function evaluateLOSQuality(
     // Distracted (has Delay tokens)
     awarenessMultiplier = 1;
   }
-  
-  const effectiveVisibilityOR = lighting.visibilityOR * awarenessMultiplier;
+
+  const effectiveVisibilityOR = getVisibilityOR(lighting) * awarenessMultiplier;
   
   // LOS quality: count how many directions are visible within effective range
   const checkDistances = [8, 16, 24].filter(d => d <= effectiveVisibilityOR);
@@ -292,7 +294,7 @@ function evaluateLOSQuality(
         totalCount++;
         // Check if LOS is clear (not blocked by terrain)
         const terrain = battlefield.getTerrainAt(dir);
-        if (terrain.type !== 'blocking' && terrain.type !== 'impassable') {
+        if (terrain.type !== TerrainType.Obstacle && terrain.type !== TerrainType.Impassable) {
           visibleCount++;
         }
       }
@@ -320,17 +322,17 @@ function evaluateMovementCost(
   doctrine: DeploymentDoctrine
 ): number {
   const terrain = battlefield.getTerrainAt(position);
-  
+
   // Base score from terrain movement cost
   let movementScore = 10; // Default clear terrain
-  
-  if (terrain.type === 'impassable') {
+
+  if (terrain.type === TerrainType.Impassable) {
     return 0; // Should be filtered out, but safety check
-  } else if (terrain.type === 'difficult') {
+  } else if (terrain.type === TerrainType.Difficult) {
     movementScore = 3; // 2× movement cost, hard to maneuver
-  } else if (terrain.type === 'rough') {
+  } else if (terrain.type === TerrainType.Rough) {
     movementScore = 7; // 2× movement cost
-  } else if (terrain.type === 'blocking') {
+  } else if (terrain.type === TerrainType.Obstacle) {
     movementScore = 1; // Can't move through
   }
   

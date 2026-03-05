@@ -4,6 +4,31 @@ import { parseOptimalRange } from '../subroutines/optimal-range-parser';
 
 export type LightingCondition = 'Day, Clear' | 'Day, Rain/Fog' | 'Twilight, Overcast' | 'Night';
 
+// Backward compatibility - LightingCondition can be either a string or an object
+export type LightingConditionLike = LightingCondition | LightingConditionObject;
+
+// Backward compatibility interface for object-style lighting config
+export interface LightingConditionObject {
+  name: LightingCondition;
+  visibilityOR: number;
+}
+
+// Helper function to get visibility OR from either string or object
+export function getVisibilityOR(lighting: LightingConditionLike): number {
+  if (typeof lighting === 'string') {
+    return getVisibilityOrForLighting(lighting);
+  }
+  return lighting.visibilityOR;
+}
+
+// Helper function to get name from either string or object
+export function getLightingName(lighting: LightingConditionLike): LightingCondition {
+  if (typeof lighting === 'string') {
+    return lighting;
+  }
+  return lighting.name;
+}
+
 export interface VisibilityConfig {
   visibilityOrMu: number;
   maxOrm: number;

@@ -16,7 +16,7 @@ import { AIContext, AIControllerConfig } from './AIController';
 // Test Helpers
 // ============================================================================
 
-function createTestCharacter(archetype: string, itemNames: string[] = []): Character {
+function createTestCharacter(archetype: string, itemNames: any[] = []): Character {
   const profile = buildProfile(archetype, { itemNames });
   return new Character(profile);
 }
@@ -30,7 +30,7 @@ function createMockROFWeapon(rofLevel: number) {
     accuracy: '',
     traits: [`ROF ${rofLevel}`],
     range: 16,
-  };
+  } as any;
 }
 
 function createAIContext(
@@ -38,7 +38,7 @@ function createAIContext(
   battlefield: Battlefield,
   allies: Character[],
   enemies: Character[],
-  config: Partial<AIControllerConfig> = {}
+  config: any = {}
 ): AIContext {
   return {
     character,
@@ -47,13 +47,15 @@ function createAIContext(
     enemies,
     apRemaining: 2,
     currentTurn: 1,
+    currentRound: 1,
+    knowledge: {} as any,
     config: {
       gameSize: 'SMALL',
       perCharacterFovLos: false,
       aggression: 0.5,
       ...config,
-    },
-  };
+    } as any,
+  } as any;
 }
 
 // ============================================================================
@@ -113,7 +115,7 @@ describe('AI ROF Scoring Integration - Target Evaluation', () => {
       expect(targets.length).toBeGreaterThan(0);
       // Target should have reduced score due to Friendly fire risk
       const target = targets[0];
-      expect(target.factors.rofTargetScore).toBeDefined();
+      expect((target.factors as any).rofTargetScore).toBeDefined();
     });
 
     it('should not apply ROF scoring to non-ROF weapons', () => {
@@ -129,7 +131,7 @@ describe('AI ROF Scoring Integration - Target Evaluation', () => {
         accuracy: '',
         traits: [],
         range: 0,
-      }];
+      } as any];
       
       const enemy = createTestCharacter('Average');
       
@@ -143,7 +145,7 @@ describe('AI ROF Scoring Integration - Target Evaluation', () => {
       expect(targets.length).toBeGreaterThan(0);
       // ROF factor should be 0 for non-ROF weapons
       const target = targets[0];
-      expect(target.factors.rofTargetScore).toBe(0);
+      expect((target.factors as any).rofTargetScore).toBe(0);
     });
   });
 });
@@ -169,8 +171,8 @@ describe('AI ROF Scoring Integration - Position Safety', () => {
       // Positions should include safety factors
       expect(positions.length).toBeGreaterThan(0);
       const pos = positions[0];
-      expect(pos.factors.positionSafety).toBeDefined();
-      expect(pos.factors.suppressionZoneControl).toBeDefined();
+      expect((pos.factors as any).positionSafety).toBeDefined();
+      expect((pos.factors as any).suppressionZoneControl).toBeDefined();
     });
 
     it('should prefer safer positions for ranged characters', () => {
@@ -215,7 +217,7 @@ describe('AI ROF Scoring Integration - Suppression Zone Control', () => {
       
       // Test position that would trap enemies
       const testPosition = { x: 6, y: 6 };
-      const zoneScore = scorer.evaluateSuppressionZoneControl(testPosition, context);
+      const zoneScore = (scorer as any).evaluateSuppressionZoneControl(testPosition, context);
       
       // Score should reflect enemy presence
       expect(zoneScore).toBeDefined();
@@ -235,7 +237,7 @@ describe('AI ROF Scoring Integration - Suppression Zone Control', () => {
       
       // Test position near friendly
       const testPosition = { x: 6, y: 6 };
-      const zoneScore = scorer.evaluateSuppressionZoneControl(testPosition, context);
+      const zoneScore = (scorer as any).evaluateSuppressionZoneControl(testPosition, context);
       
       // Score should be reduced due to friendly at risk
       expect(zoneScore).toBeDefined();
@@ -298,7 +300,7 @@ describe('AI ROF Scoring Integration - End-to-End', () => {
     const actions = scorer.evaluateActions(context);
     
     // Should have attack actions with ROF consideration
-    const attackActions = actions.filter(a => a.action === 'attack');
+    const attackActions = actions.filter((a: any) => a.action === 'attack');
     // May have 0 attacks if enemies are not in LOS or other conditions
     // Just verify the evaluation completed without errors
     expect(actions.length).toBeGreaterThan(0);
@@ -327,8 +329,8 @@ describe('AI ROF Scoring Integration - End-to-End', () => {
     const positions = scorer.evaluatePositions(context);
     
     // All positions should have safety scores
-    positions.forEach(pos => {
-      expect(pos.factors.positionSafety).toBeDefined();
+    positions.forEach((pos: any) => {
+      expect((pos.factors as any).positionSafety).toBeDefined();
     });
   });
 });

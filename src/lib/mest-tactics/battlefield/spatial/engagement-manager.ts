@@ -1,10 +1,11 @@
 import { Character } from '../../core/Character';
-import { Position } from '../battlefield/Position';
+import { Position } from '../Position';
 import { SpatialModel } from './spatial-rules';
 import { ModelRegistry, MeasurementUtils } from './model-registry';
 import { LOFOperations } from '../los/LOFOperations';
 import { Item } from '../../core/Item';
-import { getCharacterTraitLevel, getReachExtension, hasPerimeter } from '../../traits/combat-traits';
+import { getCharacterTraitLevel } from '../../status/status-system';
+import { getReachExtension, hasPerimeter } from '../../traits/combat-traits';
 
 /**
  * Engagement state between two models

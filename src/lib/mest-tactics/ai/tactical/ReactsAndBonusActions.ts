@@ -6,6 +6,8 @@
 
 import { Character } from '../../core/Character';
 import { Battlefield } from '../../battlefield/Battlefield';
+import { Position } from '../../battlefield/Position';
+import { TerrainType } from '../../battlefield/terrain/Terrain';
 import { AIContext, ReactOpportunity, ReactResult, ReactActionType } from '../core/AIController';
 import { isAttackableEnemy } from '../core/ai-utils';
 import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
@@ -65,10 +67,13 @@ export class ReactEvaluator {
     }
 
     // Evaluate based on trigger type
-    switch (trigger) {
+    switch (trigger as any) {
       case 'move':
+      case 'move-only':
+      case 'abrupt-move':
         return this.evaluateMoveReact(character, actor, context);
       case 'attack':
+      case 'abrupt-non-move':
         return this.evaluateAttackReact(character, actor, context);
       case 'disengage':
         return this.evaluateDisengageReact(character, actor, context);
@@ -363,7 +368,7 @@ export class ReactEvaluator {
     for (const dir of directions) {
       if (dir.x >= 0 && dir.x < battlefield.width && dir.y >= 0 && dir.y < battlefield.height) {
         const terrain = battlefield.getTerrainAt(dir);
-        if (terrain.type === 'blocking' || terrain.type === 'impassable') {
+        if (terrain.type === TerrainType.Obstacle || terrain.type === TerrainType.Impassable) {
           count++;
         }
       }

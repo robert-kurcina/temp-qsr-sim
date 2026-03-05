@@ -349,7 +349,7 @@ export class VIPManager {
     if (!vip) {
       return {
         detected: false,
-        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {} },
+        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {}, controlled: false },
         previousLevel: DetectionLevel.Undetected,
         newLevel: DetectionLevel.Undetected,
       };
@@ -385,7 +385,7 @@ export class VIPManager {
     if (!vip) {
       return {
         detected: false,
-        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {} },
+        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {}, controlled: false },
         previousLevel: DetectionLevel.Undetected,
         newLevel: DetectionLevel.Undetected,
       };
@@ -420,7 +420,7 @@ export class VIPManager {
     if (!vip) {
       return {
         success: false,
-        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {} },
+        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {}, controlled: false },
         extractingSide,
         victoryPointsAwarded: 0,
         reason: 'VIP not found',
@@ -479,7 +479,7 @@ export class VIPManager {
     if (!vip) {
       return {
         eliminated: false,
-        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {} },
+        vip: { id: '', name: '', character: null as unknown as Character, state: VIPState.Eliminated, detectionLevel: DetectionLevel.Undetected, affiliatedSide: '', extractionVP: 0, eliminationVP: 0, type: VIPType.Standard, metadata: {}, controlled: false },
         victoryPointsAwarded: 0,
         reason: 'VIP not found',
       };

@@ -239,7 +239,7 @@ export function hasLineOfSight(
     return false;
   }
 
-  return binding.side.battlefieldHasLOS?.(model, target) ?? false;
+  return (binding.side as any).battlefieldHasLOS?.(model, target) ?? false;
 }
 
 /**

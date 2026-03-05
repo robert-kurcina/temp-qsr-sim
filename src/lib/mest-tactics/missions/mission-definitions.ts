@@ -8,7 +8,8 @@ import {
   createTurnEventHook,
   createEndTurnEventHook,
 } from './mission-event-hooks';
-import { MissionSide } from './MissionSide';
+import { MissionSide } from '../mission/MissionSide';
+import { isEliminationMission, getEliminationMission } from './elimination';
 
 /**
  * Mission definition interface
@@ -47,6 +48,11 @@ export interface MissionDefinition {
     courierVP?: number;
     collectionVP?: number;
     poiVP?: number;
+    // Backward compatibility: mission-specific VP types
+    assaultVP?: number;
+    markerVP?: number;
+    firstControlVP?: number;
+    [key: string]: number | undefined;
   }>;
 }
 
@@ -82,6 +88,8 @@ export enum VictoryConditionType {
   VIPExtracted = 'VIPExtracted',
   /** VIP survived */
   VIPSurvived = 'VIPSurvived',
+  /** VIP eliminated */
+  VIPEliminated = 'VIPEliminated',
   /** Hold objective for N turns */
   HoldObjective = 'HoldObjective',
   /** First to N points */

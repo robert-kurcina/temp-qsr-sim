@@ -44,7 +44,7 @@ function makeTestProfile(name: string, siz: number = 3): Profile {
     adjPhysicality: siz,
     durability: siz,
     adjDurability: siz,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,
@@ -361,7 +361,7 @@ describe('Range Combat: Elevation (QSR Line 1491)', () => {
 
 describe('Situational Test Modifiers Integration', () => {
   it('should apply High Ground or Elevation correctly based on combat type', () => {
-    const combatType = 'close'; // or 'range'
+    const combatType: string = 'close'; // or 'range'
     const hasHighGround = true;
     const hasElevation = true;
 

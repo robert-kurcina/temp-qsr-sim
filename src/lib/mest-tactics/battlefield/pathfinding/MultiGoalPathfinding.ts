@@ -18,10 +18,10 @@
  * @module MultiGoalPathfinding
  */
 
-import type { Position } from './Position';
+import type { Position } from '../Position';
 import type { PathfindingOptions, PathLimitedResult } from './PathfindingEngine';
 import { PathfindingEngine } from './PathfindingEngine';
-import type { Battlefield } from './Battlefield';
+import type { Battlefield } from '../Battlefield';
 
 // ============================================================================
 // Types & Interfaces

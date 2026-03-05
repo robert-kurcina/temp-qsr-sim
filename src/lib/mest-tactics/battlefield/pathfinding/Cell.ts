@@ -1,5 +1,5 @@
-import { Position } from './Position';
-import { Character } from '../character/Character';
+import { Position } from '../';
+import { Character } from '../../core/Character';
 
 export class Cell {
   public occupant: Character | null = null;

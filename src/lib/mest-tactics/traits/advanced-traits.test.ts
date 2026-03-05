@@ -28,7 +28,7 @@ import {
   type TerrainType as SurefootedTerrainType,
 } from './combat-traits';
 
-function createTestCharacter(archetype = 'Average', itemNames: string[] = []): Character {
+function createTestCharacter(archetype = 'Average', itemNames: any[] = []): Character {
   const profile = buildProfile(archetype, { itemNames });
   return new Character(profile);
 }

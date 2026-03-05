@@ -35,7 +35,10 @@ function makeTestProfile(name: string): Profile {
     items: [
       {
         name: 'Rifle',
+        class: 'Firearm',
         classification: 'Firearm',
+        type: 'Firearm',
+        bp: 0,
         dmg: '2+2w',
         impact: 0,
         accuracy: '',
@@ -50,7 +53,7 @@ function makeTestProfile(name: string): Profile {
     adjPhysicality: 3,
     durability: 3,
     adjDurability: 3,
-    burden: { totalLaden: 0, totalBurden: 0 },
+    burden: { totalLaden: 0, totalBurden: 0 } as any,
     totalHands: 2,
     totalDeflect: 0,
     totalAR: 0,

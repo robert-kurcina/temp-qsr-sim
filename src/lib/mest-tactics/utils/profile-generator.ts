@@ -33,12 +33,12 @@ const weaponDataKeys = new Set<string>([
 export function generateRandomProfile(): Profile {
     const archetypeNames = Object.keys(gameData.archetypes);
     const primaryArchetypeName = getRandomElement(archetypeNames);
-    const primaryArchetypeData = gameData.archetypes[primaryArchetypeName];
+    const primaryArchetypeData = (gameData.archetypes as any)[primaryArchetypeName];
 
-    const meleeWeaponNames = Object.keys(gameData.melee_weapons);
-    const rangedWeaponNames = Object.keys(gameData.ranged_weapons);
-    const armorNames = Object.keys(gameData.armors);
-    const equipmentNames = Object.keys(gameData.equipment);
+    const meleeWeaponNames = Object.keys((gameData as any).melee_weapons || {});
+    const rangedWeaponNames = Object.keys((gameData as any).ranged_weapons || {});
+    const armorNames = Object.keys((gameData as any).armors || {});
+    const equipmentNames = Object.keys((gameData as any).equipment || {});
 
     let selectedItems: string[] = [];
     let generatedProfile: Profile | null = null;
@@ -127,7 +127,7 @@ export function createProfiles(
     const archetypeTraits = [...primaryArchetypeData.traits];
 
     secondaryArchetypeNames.forEach(name => {
-        const data = gameData.archetypes[name];
+        const data = (gameData.archetypes as any)[name];
         if (data) {
             archetype[name] = data;
             totalBp += data.bp;
@@ -154,8 +154,8 @@ export function createProfiles(
         let itemFound = false;
         for (const key in itemDataMapping) {
             const dataKey = itemDataMapping[key] as keyof typeof gameData;
-            if (dataKey && dataKey in gameData && itemName in gameData[dataKey]) {
-                const item = { name: itemName, ...gameData[dataKey][itemName] } as Item;
+            if (dataKey && dataKey in gameData && itemName in (gameData as any)[dataKey]) {
+                const item = { name: itemName, ...(gameData as any)[dataKey][itemName] } as Item;
                 const canonicalClass = getCanonicalItemClassification(item.class);
                 if (canonicalClass) {
                     item.classification = item.classification || canonicalClass.itemClass;

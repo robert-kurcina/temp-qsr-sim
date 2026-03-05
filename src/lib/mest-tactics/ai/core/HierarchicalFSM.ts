@@ -6,6 +6,7 @@
  */
 
 import { AIContext } from './AIController';
+import { Character } from '../../core/Character';
 import { isAttackableEnemy } from './ai-utils';
 
 /**
@@ -103,10 +104,10 @@ export class HierarchicalState extends State {
       }
     }
 
-    const subStatus = this.currentState.update(context);
+    const subStatus = this.currentState?.update(context);
 
     if (subStatus === StateStatus.COMPLETE) {
-      this.currentState.onExit?.(context, subStatus);
+      this.currentState?.onExit?.(context, subStatus);
       this.currentState = undefined;
       // Transition to initial state again or complete
       if (this.initialState) {
@@ -115,7 +116,7 @@ export class HierarchicalState extends State {
         return StateStatus.COMPLETE;
       }
     } else if (subStatus === StateStatus.INTERRUPTED || subStatus === StateStatus.FAILED) {
-      this.currentState.onExit?.(context, subStatus);
+      this.currentState?.onExit?.(context, subStatus);
       this.currentState = undefined;
       return subStatus;
     }
@@ -259,8 +260,8 @@ export class FSM {
  * Idle state - evaluating options
  */
 export class IdleState extends State {
-  constructor() {
-    super('Idle');
+  constructor(name?: string) {
+    super(name || 'Idle');
   }
 
   update(context: AIContext): StateStatus {
@@ -277,8 +278,8 @@ export class MovingState extends State {
   path?: Array<{ x: number; y: number }>;
   currentWaypoint: number = 0;
 
-  constructor() {
-    super('Moving');
+  constructor(name?: string) {
+    super(name || 'Moving');
   }
 
   onEnter(context: AIContext): void {
@@ -321,8 +322,8 @@ export class AttackingState extends State {
   attackType: 'melee' | 'ranged' = 'melee';
   attackComplete: boolean = false;
 
-  constructor() {
-    super('Attacking');
+  constructor(name?: string) {
+    super(name || 'Attacking');
   }
 
   update(context: AIContext): StateStatus {
@@ -354,8 +355,8 @@ export class DisengagingState extends State {
   target?: Character;
   complete: boolean = false;
 
-  constructor() {
-    super('Disengaging');
+  constructor(name?: string) {
+    super(name || 'Disengaging');
   }
 
   update(context: AIContext): StateStatus {
@@ -387,8 +388,8 @@ export class ReactingState extends State {
   target?: Character;
   complete: boolean = false;
 
-  constructor() {
-    super('Reacting');
+  constructor(name?: string) {
+    super(name || 'Reacting');
   }
 
   update(context: AIContext): StateStatus {
@@ -413,8 +414,8 @@ export class ReactingState extends State {
 export class CompulsoryState extends State {
   actionsRemaining: string[] = [];
 
-  constructor() {
-    super('Compulsory');
+  constructor(name?: string) {
+    super(name || 'Compulsory');
   }
 
   onEnter(context: AIContext): void {

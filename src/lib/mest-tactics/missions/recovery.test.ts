@@ -30,7 +30,7 @@ describe('Recovery Mission', () => {
       [sideB.id, vipMemberIdB],
     ]);
 
-    const zonePositions: Position[] = [
+    const zonePositions: any[] = [
       { x: 3, y: 3 },
       { x: 21, y: 3 },
       { x: 12, y: 21 },
@@ -267,7 +267,7 @@ describe('Recovery Mission - Edge Cases', () => {
 
       const vipMemberIds = new Map([[result.sideA.id, result.sideA.members[0].id]]);
 
-      const zonePositions: Position[] = [
+      const zonePositions: any[] = [
         { x: 3, y: 3 },
         { x: 21, y: 3 },
         { x: 3, y: 21 },
@@ -285,7 +285,7 @@ describe('Recovery Mission - Edge Cases', () => {
       });
 
       manager.updateZoneControl(
-        result.sideA.members.map(m => ({ id: m.id, position: m.position! }))
+        result.sideA.members.map((m: any) => ({ id: m.id, position: m.position! }))
       );
 
       const vpAwarded = manager.awardTurnVP();

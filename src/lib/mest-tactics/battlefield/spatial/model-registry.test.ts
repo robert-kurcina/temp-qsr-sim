@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ModelRegistry, MeasurementUtils } from './model-registry';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
-import { Position } from '../Position';
+import { Character, Profile } from '../../core';
+import { Position } from '../';
 import { SpatialModel } from './spatial-rules';
 
 describe('ModelRegistry', () => {
@@ -11,7 +10,7 @@ describe('ModelRegistry', () => {
   const createTestCharacter = (name: string, siz: number): Character => {
     const profile: Profile = {
       name,
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: {
         cca: 2, rca: 2, ref: 2, int: 2, pow: 2,
         str: 2, for: 2, mov: 2, siz,
@@ -29,7 +28,7 @@ describe('ModelRegistry', () => {
   describe('register', () => {
     it('should register a character as a spatial model', () => {
       const character = createTestCharacter('Test', 3);
-      const position: Position = { x: 5, y: 5 };
+      const position: Position = { x: 5, y: 5 } as any;
 
       registry.register(character, position);
 
@@ -124,7 +123,7 @@ describe('ModelRegistry', () => {
       const inRange = registry.getModelsInRange({ x: 5, y: 5 }, 5);
 
       expect(inRange.length).toBe(2); // Center and Near
-      expect(inRange.map(m => m.id)).toContain('Near');
+      expect(inRange.map((m: any) => m.id)).toContain('Near');
     });
   });
 
@@ -184,7 +183,7 @@ describe('ModelRegistry', () => {
       const all = registry.getAllModels();
 
       expect(all.length).toBe(2);
-      expect(all.map(m => m.id)).toEqual(expect.arrayContaining(['Model1', 'Model2']));
+      expect(all.map((m: any) => m.id)).toEqual(expect.arrayContaining(['Model1', 'Model2']));
     });
   });
 
@@ -460,7 +459,7 @@ describe('MeasurementUtils', () => {
 
       const nearest = MeasurementUtils.findNearestSquadMate(model, []);
 
-      expect(nearest).toBe(null);
+      expect(nearest).toBe(null as any);
     });
   });
 

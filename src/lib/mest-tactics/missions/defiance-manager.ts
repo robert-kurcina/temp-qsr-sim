@@ -36,6 +36,8 @@ export interface DefianceMissionState {
   winner?: string;
   /** Reason for ending */
   endReason?: string;
+  /** Breakthrough level (backward compatibility) */
+  breakthroughLevel?: number;
 }
 
 /**

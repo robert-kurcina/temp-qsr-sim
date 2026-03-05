@@ -21,7 +21,7 @@ import { Profile } from '../core/Profile';
 function createTestCharacter(name: string, mov: number = 4): Character {
   const profile: Profile = {
     name,
-    archetype: 'Average',
+    archetype: 'Average' as any,
     attributes: {
       cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 2, mov, siz: 3,
     },

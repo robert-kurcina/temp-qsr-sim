@@ -89,7 +89,7 @@ describe('AuditService', () => {
       const audit = service.getAudit();
       
       expect(audit.turns.length).toBe(3);
-      expect(audit.turns.map(t => t.turn)).toEqual([1, 2, 3]);
+      expect(audit.turns.map((t: any) => t.turn)).toEqual([1, 2, 3]);
     });
 
     it('should throw error when ending turn without starting', () => {
@@ -227,8 +227,8 @@ describe('AuditService', () => {
     });
 
     it('should record move action', () => {
-      const positionBefore: Position = { x: 5, y: 5 };
-      const positionAfter: Position = { x: 9, y: 5 };
+      const positionBefore: Position = { x: 5, y: 5 } as any;
+      const positionAfter: Position = { x: 9, y: 5 } as any;
       
       const moveVector: AuditVector = {
         kind: 'movement',

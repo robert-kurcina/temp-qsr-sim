@@ -1,12 +1,14 @@
 /**
  * Hand Requirements Enforcement
- * 
+ *
  * QSR Rules:
  * - Characters have Hands equal to their model's sculpt (default 2 for Humanoids)
  * - Items require [1H] or [2H] commitment
  * - Can use item with one less hand but suffer -1b penalty on next Test
  * - Fiddle actions require 1 Hand each
  */
+
+import { hasItemTraitOnWeapon } from '../traits/item-traits';
 
 import { Character } from '../core/Character';
 import { Item } from '../core/Item';
@@ -58,10 +60,10 @@ export function getTotalHands(character: Character): number {
  * Returns 1 for [1H], 2 for [2H], 0 for no hand requirement
  */
 export function getItemHandRequirement(item: Item): number {
-  if (hasItemTrait(item, '2H')) {
+  if (hasItemTraitOnWeapon(item, '2H')) {
     return 2;
   }
-  if (hasItemTrait(item, '1H')) {
+  if (hasItemTraitOnWeapon(item, '1H')) {
     return 1;
   }
   

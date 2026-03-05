@@ -5,6 +5,7 @@ import { Attributes } from './Attributes';
  * This is the raw data loaded from archetypes.json.
  */
 export interface Archetype {
+  name?: string; // Backward compatibility
   attributes: Attributes;
   traits: string[];
   bp: number;

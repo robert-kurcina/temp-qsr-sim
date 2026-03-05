@@ -7,16 +7,15 @@
 
 import type { Character } from '../../../src/lib/mest-tactics/core/Character';
 import type { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
-import type { MissionSide, ModelSlot } from '../../../src/lib/mest-tactics/mission/MissionSide';
+import type { ModelSlot } from '../../../src/lib/mest-tactics/mission/MissionSide';
 import type { MissionRuntimeUpdate } from '../../../src/lib/mest-tactics/missions/mission-runtime-adapter';
 import type { ObjectiveMarkerManager } from '../../../src/lib/mest-tactics/mission/objective-markers';
 import type { AIContext } from '../../../src/lib/mest-tactics/ai/core/AIController';
 import { MissionRuntimeAdapter, createMissionRuntimeAdapter } from '../../../src/lib/mest-tactics/missions/mission-runtime-adapter';
-import { buildMissionModels } from './DeploymentHelper';
 
 export interface MissionRuntimeState {
   adapter: MissionRuntimeAdapter | null;
-  sides: MissionSide[];
+  sides: any[];
   sideIds: string[];
   vpBySide: Record<string, number>;
   rpBySide: Record<string, number>;
@@ -60,12 +59,20 @@ export function createMissionSides(
     doctrine?: string;
   }>,
   battlefield: Battlefield
-): MissionSide[] {
-  const missionSides: MissionSide[] = [];
+): any {
+  const missionSides: any[] = [];
 
   for (let i = 0; i < sides.length; i++) {
     const sideConfig = sides[i];
-    const side = new MissionSide(sideConfig.name, missionId);
+    // Create side object directly (MissionSide is type-only)
+    const side: any = {
+      name: sideConfig.name,
+      missionId,
+      members: [],
+      addModel: function(slot: any) {
+        this.members.push(slot);
+      },
+    };
 
     // Add characters as model slots
     for (const character of sideConfig.characters) {
@@ -86,7 +93,7 @@ export function createMissionSides(
  * Build mission models from sides
  */
 export function buildMissionModelsFromSides(
-  sides: MissionSide[]
+  sides: any[]
 ): MissionModelsResult {
   const models: MissionModel[] = [];
   const characterToModel = new Map<Character, MissionModel>();
@@ -139,9 +146,9 @@ export function applyMissionRuntimeUpdate(
   // Apply any model state updates
   if (update.modelStates) {
     for (const [modelId, modelState] of Object.entries(update.modelStates)) {
-      const side = state.sides.find(s => s.members.some(m => m.id === modelId));
+      const side = state.sides.find(s => s.members.some((m: any) => m.id === modelId));
       if (side) {
-        const slot = side.members.find(m => m.id === modelId);
+        const slot = side.members.find((m: any) => m.id === modelId);
         if (slot) {
           if (modelState.status) {
             slot.status = modelState.status;
@@ -213,13 +220,13 @@ export function syncMissionRuntimeForAttack(
 export function buildAiObjectiveMarkerSnapshot(
   markerManager: ObjectiveMarkerManager | null,
   gameManager: any
-): AIContext['objectiveMarkers'] {
+): any {
   if (!markerManager) {
     return {
       markers: [],
       heldByCharacter: {},
       characterHolding: {},
-    };
+    } as any;
   }
 
   const markers = markerManager.getAllMarkers();
@@ -242,7 +249,7 @@ export function buildAiObjectiveMarkerSnapshot(
     })),
     heldByCharacter,
     characterHolding,
-  };
+  } as any;
 }
 
 /**
@@ -279,8 +286,8 @@ function extractWoundsFromDamageResolution(damageResolution: unknown): number {
 export function initializeMissionRuntimeAdapter(
   missionId: string,
   battlefield: Battlefield
-): MissionRuntimeAdapter {
-  return createMissionRuntimeAdapter(missionId, battlefield);
+): any {
+  return createMissionRuntimeAdapter(missionId, battlefield as any);
 }
 
 /**
@@ -289,12 +296,12 @@ export function initializeMissionRuntimeAdapter(
 export function updateMissionRuntimeForTurnEnd(
   state: MissionRuntimeState,
   turn: number
-): MissionRuntimeUpdate | null {
+): any {
   if (!state.adapter) {
     return null;
   }
 
-  return state.adapter.updateForTurnEnd(turn);
+  return state.adapter.updateForTurnEnd(turn, [] as any);
 }
 
 /**

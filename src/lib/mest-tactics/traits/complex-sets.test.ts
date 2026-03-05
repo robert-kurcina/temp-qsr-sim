@@ -35,13 +35,13 @@ import {
   hasLumbering,
 } from './combat-traits';
 import { getCharacterTraitLevel } from '../status/status-system';
-import { buildMissionSide } from '../mission/mission-builder';
+import { buildMissionSide } from '../mission/MissionSideBuilder';
 
 // ============================================================================
 // Test Helpers
 // ============================================================================
 
-function createTestCharacter(archetype: string, itemNames: string[] = []): Character {
+function createTestCharacter(archetype: string, itemNames: any[] = []): Character {
   const profile = buildProfile(archetype, { itemNames });
   return new Character(profile);
 }
@@ -55,7 +55,7 @@ function createMockItem(name: string, traits: string[], classification: string =
     accuracy: '',
     traits,
     range: 0,
-  };
+  } as any;
 }
 
 // ============================================================================

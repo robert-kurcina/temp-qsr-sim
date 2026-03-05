@@ -1,7 +1,7 @@
 
-import { createProfiles } from '../src/lib/mest-tactics/profile-generator';
+import { createProfiles } from '../src/lib/mest-tactics/utils/profile-generator';
 import { gameData } from '../src/lib/data';
-import { Archetype } from '../src/lib/mest-tactics/Archetype';
+import { Archetype } from '../src/lib/mest-tactics/core/Archetype';
 
 // Default values
 let archetypeName = 'Average';

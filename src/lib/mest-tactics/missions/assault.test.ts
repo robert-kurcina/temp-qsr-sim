@@ -26,7 +26,7 @@ describe('Assault Mission', () => {
     sideA = result.sideA;
     sideB = result.sideB;
 
-    const markerPositions: Position[] = [
+    const markerPositions: any[] = [
       { x: 6, y: 6 },
       { x: 18, y: 6 },
       { x: 6, y: 18 },
@@ -61,7 +61,7 @@ describe('Assault Mission', () => {
     it('should have resource markers', () => {
       const markers = manager.getAllMarkers();
       // Every 3rd marker is a resource (0-indexed: 0, 3, 6...)
-      const resources = markers.filter(m => m.type === 'Resource' as any);
+      const resources = markers.filter((m: any) => m.type === 'Resource' as any);
       expect(resources.length).toBeGreaterThanOrEqual(1);
     });
   });
@@ -242,7 +242,7 @@ describe('Assault Mission', () => {
       sideA.members[0].position = { x: 6, y: 6 };
       manager.assaultMarker(sideA.members[0].id, 'assault-1');
 
-      sideA.members.forEach(m => m.status = ModelSlotStatus.Eliminated);
+      sideA.members.forEach((m: any) => m.status = ModelSlotStatus.Eliminated);
       manager.endMission(undefined, 'Turn limit');
 
       // Side B should win by default (only active side)
@@ -292,7 +292,7 @@ describe('Assault Mission - Edge Cases', () => {
         [{ archetypeName: 'Veteran', count: 6 }]
       );
 
-      const markerPositions: Position[] = [
+      const markerPositions: any[] = [
         { x: 6, y: 6 },
         { x: 18, y: 6 },
         { x: 6, y: 18 },

@@ -91,7 +91,6 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
     averagePathLengthPerMovedModel: 0,
     averagePathLengthPerModel: 0,
     topPathModels: [],
-    modelUsage: [],
   };
   const usage = report.usage ?? fallbackUsage;
   const advancedRules = report.advancedRules ?? createEmptyAdvancedRuleMetrics();
@@ -132,7 +131,7 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(`📏 Game Size: ${GAME_SIZE_CONFIG[report.config.gameSize].name}`);
   lines.push(`🗺️  Battlefield: ${report.config.battlefieldSize}×${report.config.battlefieldSize} MU`);
   lines.push(`🌲 Terrain Density: ${report.config.densityRatio}%`);
-  lines.push(`💡 Lighting: ${report.config.lighting.name} (Visibility OR ${report.config.visibilityOrMu} MU)`);
+  lines.push(`💡 Lighting: ${(report.config.lighting as any).name || report.config.lighting} (Visibility OR ${report.config.visibilityOrMu} MU)`);
   lines.push(`🎲 Seed: ${report.seed ?? 'n/a'}`);
   lines.push(`⏱️  Turns Completed: ${stats.turnsCompleted ?? 0}/${report.config.maxTurns}`);
   lines.push('');

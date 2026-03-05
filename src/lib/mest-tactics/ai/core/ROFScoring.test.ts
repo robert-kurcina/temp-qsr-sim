@@ -3,9 +3,9 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Character } from '../../core/Character';
-import { buildProfile } from '../../mission/assembly-builder';
-import { Battlefield } from '../../battlefield/Battlefield';
+import { Character } from '../../core';
+import { buildProfile } from '../../mission';
+import { Battlefield } from '../../battlefield';
 import {
   // ROF scoring
   scoreROFPlacement,
@@ -27,7 +27,7 @@ import {
 // Test Helpers
 // ============================================================================
 
-function createTestCharacter(archetype: string, itemNames: string[] = []): Character {
+function createTestCharacter(archetype: string, itemNames: any[] = []): Character {
   const profile = buildProfile(archetype, { itemNames });
   return new Character(profile);
 }
@@ -35,13 +35,16 @@ function createTestCharacter(archetype: string, itemNames: string[] = []): Chara
 function createMockROFWeapon(rofLevel: number) {
   return {
     name: 'Machine Gun',
+    class: 'Firearm',
     classification: 'Firearm',
+    type: 'Firearm',
+    bp: 0,
     dmg: '2+2w',
     impact: 1,
     accuracy: '',
     traits: [`ROF ${rofLevel}`],
     range: 16,
-  };
+  } as any;
 }
 
 // ============================================================================
@@ -120,7 +123,7 @@ describe('AI ROF Scoring - Suppression Zone', () => {
       battlefield.placeCharacter(enemy1, { x: 5, y: 5 });
       battlefield.placeCharacter(enemy2, { x: 5.5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5, y: 5 }, range: 1, creatorId: 'attacker' },
         { id: 'sup2', position: { x: 5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
@@ -138,7 +141,7 @@ describe('AI ROF Scoring - Suppression Zone', () => {
       
       battlefield.placeCharacter(friendly, { x: 5, y: 5 });
       
-      const markers: SuppressionMarker[] = [
+      const markers: any[] = [
         { id: 'sup1', position: { x: 5, y: 5 }, range: 1, creatorId: friendly.id },
       ];
       
@@ -150,10 +153,10 @@ describe('AI ROF Scoring - Suppression Zone', () => {
 
     it('should calculate DR correctly for marker count', () => {
       const battlefield = new Battlefield(12, 12);
-      const allCharacters: Character[] = [];
+      const allCharacters: any[] = [];
       
       // DR 1 (1 marker)
-      const markers1: SuppressionMarker[] = [
+      const markers1: any[] = [
         { id: 'sup1', position: { x: 5, y: 5 }, range: 1, creatorId: 'attacker' },
       ];
       expect(scoreSuppressionZone(battlefield, markers1, { x: 5, y: 5 }, allCharacters).dr).toBe(1);
@@ -224,7 +227,7 @@ describe('AI ROF Scoring - Firelane FOF', () => {
     it('should score higher for wider arc coverage', () => {
       const battlefield = new Battlefield(12, 12);
       const gunner = createTestCharacter('Average');
-      const allCharacters: Character[] = [];
+      const allCharacters: any[] = [];
       
       battlefield.placeCharacter(gunner, { x: 5, y: 5 });
       
@@ -251,7 +254,7 @@ describe('AI ROF Scoring - Firelane FOF', () => {
     it('should score based on suppression marker count', () => {
       const battlefield = new Battlefield(12, 12);
       const gunner = createTestCharacter('Average');
-      const allCharacters: Character[] = [];
+      const allCharacters: any[] = [];
       
       battlefield.placeCharacter(gunner, { x: 5, y: 5 });
       
@@ -281,8 +284,8 @@ describe('AI ROF Scoring - Position Safety', () => {
       const character = createTestCharacter('Average');
       const position = { x: 5, y: 5 };
       
-      const suppressionMarkers: SuppressionMarker[] = [];
-      const rofMarkers: ROFMarker[] = [];
+      const suppressionMarkers: any[] = [];
+      const rofMarkers: any[] = [];
       
       const score = scorePositionSafety(
         character,
@@ -303,11 +306,11 @@ describe('AI ROF Scoring - Position Safety', () => {
       const position = { x: 5, y: 5 };
       battlefield.placeCharacter(character, position);
 
-      const suppressionMarkers: SuppressionMarker[] = [
+      const suppressionMarkers: any[] = [
         { id: 'sup1', position: { x: 5, y: 5 }, range: 1, creatorId: 'enemy' },
         { id: 'sup2', position: { x: 5, y: 5 }, range: 1, creatorId: 'enemy' },
       ];
-      const rofMarkers: ROFMarker[] = [];
+      const rofMarkers: any[] = [];
 
       const score = scorePositionSafety(
         character,
@@ -326,8 +329,8 @@ describe('AI ROF Scoring - Position Safety', () => {
       const character = createTestCharacter('Average');
       const position = { x: 5, y: 5 };
       
-      const suppressionMarkers: SuppressionMarker[] = [];
-      const rofMarkers: ROFMarker[] = [
+      const suppressionMarkers: any[] = [];
+      const rofMarkers: any[] = [
         { id: 'rof1', position: { x: 5.5, y: 5 }, creatorId: 'enemy', initiativeCreated: 1, isSuppression: false },
         { id: 'rof2', position: { x: 5, y: 5.5 }, creatorId: 'enemy', initiativeCreated: 1, isSuppression: false },
       ];
@@ -358,7 +361,7 @@ describe('AI ROF Scoring - Suppression Crossing', () => {
       character.finalAttributes.pow = 4;
       character.finalAttributes.ref = 4;
       
-      const suppressionMarkers: SuppressionMarker[] = [
+      const suppressionMarkers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'enemy' },
       ];
       
@@ -380,7 +383,7 @@ describe('AI ROF Scoring - Suppression Crossing', () => {
       character.finalAttributes.ref = 1;
       battlefield.placeCharacter(character, { x: 5, y: 5 });
       
-      const suppressionMarkers: SuppressionMarker[] = [
+      const suppressionMarkers: any[] = [
         { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'enemy' },
       ];
       
@@ -402,7 +405,7 @@ describe('AI ROF Scoring - Suppression Crossing', () => {
       const battlefield = new Battlefield(12, 12);
       const character = createTestCharacter('Average');
       
-      const suppressionMarkers: SuppressionMarker[] = []; // No suppression
+      const suppressionMarkers: any[] = []; // No suppression
       
       const decision = evaluateSuppressionCrossing(
         character,

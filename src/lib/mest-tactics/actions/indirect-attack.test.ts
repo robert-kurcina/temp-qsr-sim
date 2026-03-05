@@ -7,7 +7,7 @@ import { setRoller, resetRoller } from '../subroutines/dice-roller';
 import { TerrainType } from '../battlefield/terrain/Terrain';
 import type { Profile } from '../core/Profile';
 
-const makeProfile = (name: string, attrs: Partial<Profile['archetype']['attributes']> = {}, items: any[] = []): Profile => ({
+const makeProfile = (name: string, attrs: any = {}, items: any[] = []): Profile => ({
   name,
   archetype: { attributes: { cca: 2, rca: 2, ref: 2, int: 1, pow: 1, str: 2, for: 2, mov: 4, siz: 3, ...attrs } },
   items,
@@ -18,7 +18,7 @@ const makeProfile = (name: string, attrs: Partial<Profile['archetype']['attribut
   adjPhysicality: 0,
   durability: 0,
   adjDurability: 0,
-  burden: { totalLaden: 0, totalBurden: 0 },
+  burden: { totalLaden: 0, totalBurden: 0 } as any,
   totalHands: 0,
   totalDeflect: 0,
   totalAR: 0,
@@ -811,7 +811,7 @@ describe('Indirect attack scrambling', () => {
     });
 
     expect(result.hitTestResult.pass).toBe(true);
-    const damagedIds = result.damageResults.map(entry => entry.targetId).sort();
+    const damagedIds = result.damageResults.map((entry: any) => entry.targetId).sort();
     expect(damagedIds).toEqual([targetA.id, targetB.id].sort());
   });
 
@@ -839,7 +839,7 @@ describe('Indirect attack scrambling', () => {
       knownAtInitiativeStart: true,
     });
 
-    const damagedIds = result.damageResults.map(entry => entry.targetId).sort();
+    const damagedIds = result.damageResults.map((entry: any) => entry.targetId).sort();
     expect(damagedIds).toEqual([targetA.id, targetB.id].sort());
     expect(targetA.state.statusTokens.Confused || 0).toBeGreaterThan(0);
     expect(targetB.state.statusTokens.Confused || 0).toBeGreaterThan(0);
@@ -868,7 +868,7 @@ describe('Indirect attack scrambling', () => {
       knownAtInitiativeStart: true,
     });
 
-    const damagedIds = result.damageResults.map(entry => entry.targetId);
+    const damagedIds = result.damageResults.map((entry: any) => entry.targetId);
     expect(damagedIds).toContain(targetNormal.id);
     expect(damagedIds).toContain(targetHighFor.id);
     expect(targetHighFor.state.wounds).toBeGreaterThan(0);
@@ -909,7 +909,7 @@ describe('Indirect attack scrambling', () => {
     });
 
     expect(result.hitTestResult.pass).toBe(true);
-    const damagedIds = result.damageResults.map(entry => entry.targetId);
+    const damagedIds = result.damageResults.map((entry: any) => entry.targetId);
     expect(damagedIds.length).toBe(1);
     expect([clearTarget.id, blockedTarget.id]).toContain(damagedIds[0]);
   });

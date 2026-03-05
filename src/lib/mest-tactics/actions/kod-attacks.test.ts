@@ -5,7 +5,7 @@ import { GameManager } from '../engine/GameManager';
 import { setRoller, resetRoller } from '../subroutines/dice-roller';
 import type { Profile } from '../core/Profile';
 
-const makeProfile = (name: string, attrs: Partial<Profile['archetype']['attributes']> = {}, traits: string[] = [], items: any[] = []): Profile => ({
+const makeProfile = (name: string, attrs: any = {}, traits: any[] = [], items: any[] = []): Profile => ({
   name,
   archetype: { attributes: { cca: 2, rca: 2, ref: 2, int: 1, pow: 1, str: 2, for: 2, mov: 3, siz: 3, ...attrs } },
   items,
@@ -16,7 +16,7 @@ const makeProfile = (name: string, attrs: Partial<Profile['archetype']['attribut
   adjPhysicality: 0,
   durability: 0,
   adjDurability: 0,
-  burden: { totalLaden: 0, totalBurden: 0 },
+  burden: { totalLaden: 0, totalBurden: 0 } as any,
   totalHands: 0,
   totalDeflect: 0,
   totalAR: 0,
@@ -65,7 +65,7 @@ describe('KOd attacks in combat actions', () => {
     manager.allowKOdAttacks = true;
 
     const result = manager.executeRangedAttack(attacker, defender, weapon as any);
-    expect(result.result.hit).toBe(true);
+    expect(result.result?.hit).toBe(true);
     expect(defender.state.isEliminated).toBe(true);
     expect(defender.state.isKOd).toBe(false);
   });
@@ -83,7 +83,7 @@ describe('KOd attacks in combat actions', () => {
     manager.allowKOdAttacks = true;
 
     const result = manager.executeCloseCombatAttack(attacker, defender, weapon as any);
-    expect(result.result.hit).toBe(true);
+    expect(result?.result?.hit).toBe(true);
     expect(defender.state.isEliminated).toBe(true);
   });
 });

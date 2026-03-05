@@ -1,11 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { LOSValidator, LOFValidator } from './los-validator';
-import { Battlefield } from '../Battlefield';
-import { TerrainElement } from '../terrain/TerrainElement';
-import { SpatialModel } from './spatial-rules';
-import { Position } from './Position';
-import { Character } from '../../core/Character';
-import { Profile } from '../../core/Profile';
+import { Battlefield, TerrainElement } from '../';
+import { SpatialModel } from '../spatial/spatial-rules';
+import { Position } from '..';
+import { Character, Profile } from '../../core';
 
 describe('LOSValidator', () => {
   let battlefield: Battlefield;
@@ -20,7 +18,7 @@ describe('LOSValidator', () => {
   const createCharacter = (id: string): Character => {
     const profile: Profile = {
       name: id,
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: {
         cca: 2, rca: 2, ref: 2, int: 2, pow: 2,
         str: 2, for: 2, mov: 2, siz: 3,
@@ -73,7 +71,7 @@ describe('LOSValidator', () => {
   describe('checkLOSToPosition', () => {
     it('should check LOS to a point', () => {
       const source = createModel('A', 0, 0);
-      const targetPos: Position = { x: 5, y: 0 };
+      const targetPos: Position = { x: 5, y: 0 } as any;
 
       battlefield.placeCharacter(createCharacter('A'), { x: 0, y: 0 });
 
@@ -132,7 +130,7 @@ describe('LOSValidator', () => {
 
   describe('isVisibleFromAny', () => {
     it('should return true if visible from any observer', () => {
-      const target: Position = { x: 5, y: 0 };
+      const target: Position = { x: 5, y: 0 } as any;
       const observer1 = createModel('A', 0, 0);
 
       battlefield.placeCharacter(createCharacter('A'), { x: 0, y: 0 });
@@ -229,7 +227,7 @@ describe('LOFValidator', () => {
   const createCharacter = (id: string): Character => {
     const profile: Profile = {
       name: id,
-      archetype: 'Average',
+      archetype: 'Average' as any,
       attributes: {
         cca: 2, rca: 2, ref: 2, int: 2, pow: 2,
         str: 2, for: 2, mov: 2, siz: 3,

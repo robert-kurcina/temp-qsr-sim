@@ -1,38 +1,35 @@
-import { Character } from './lib/mest-tactics/Character';
+import { Character } from './lib/mest-tactics/core/Character';
 import { CombatEngine } from './lib/mest-tactics/combat/CombatEngine';
 import * as readline from 'readline';
-import { Profile } from './lib/mest-tactics/Profile';
-import { buildAssembly, buildProfile } from './lib/mest-tactics/assembly-builder';
-import { buildMissionSide, formatMissionSideSummary, formatMissionSideCompactSummary } from './lib/mest-tactics/MissionSideBuilder';
-import { GameManager } from './lib/mest-tactics/GameManager';
-import { GameController } from './lib/mest-tactics/GameController';
+import { Profile } from './lib/mest-tactics/core/Profile';
+import { buildAssembly, buildProfile } from './lib/mest-tactics/mission/assembly-builder';
+import { buildMissionSide, formatMissionSideSummary, formatMissionSideCompactSummary } from './lib/mest-tactics/mission/MissionSideBuilder';
+import { GameManager } from './lib/mest-tactics/engine/GameManager';
+import { GameController } from './lib/mest-tactics/engine/GameController';
 import { Battlefield } from './lib/mest-tactics/battlefield/Battlefield';
-import { TerrainElement } from './lib/mest-tactics/battlefield/TerrainElement';
+import { TerrainElement } from './lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { Position } from './lib/mest-tactics/battlefield/Position';
 
 const arisProfile: Profile = {
   name: 'Aris',
-  archetype: 'Average',
+  archetype: 'Average' as any,
   attributes: { cca: 4, rca: 2, ref: 3, int: 2, pow: 2, str: 3, for: 3, mov: 3, siz: 3 },
-  traits: [],
   items: [],
-};
+} as any;
 
 const kaelenProfile: Profile = {
   name: 'Kaelen',
-  archetype: 'Average',
+  archetype: 'Average' as any,
   attributes: { cca: 3, rca: 4, ref: 4, int: 3, pow: 2, str: 2, for: 2, mov: 4, siz: 2 },
-  traits: [],
   items: [],
-};
+} as any;
 
 const roricProfile: Profile = {
   name: 'Roric',
-  archetype: 'Average',
+  archetype: 'Average' as any,
   attributes: { cca: 3, rca: 2, ref: 2, int: 2, pow: 3, str: 4, for: 4, mov: 2, siz: 4 },
-  traits: [],
   items: [],
-};
+} as any;
 
 const characters: Character[] = [
   new Character(arisProfile),
@@ -235,17 +232,17 @@ function runTransfixDemo(): void {
   const battlefield = new Battlefield(10, 10);
   const sourceProfile: Profile = {
     name: 'Transfixer',
-    archetype: 'Average',
+    archetype: 'Average' as any,
     attributes: { cca: 2, rca: 2, ref: 2, int: 3, pow: 2, str: 2, for: 2, mov: 2, siz: 3 },
     items: [],
     finalTraits: ['Transfix 2'],
-  };
+  } as any;
   const targetProfile: Profile = {
     name: 'Target',
-    archetype: 'Average',
+    archetype: 'Average' as any,
     attributes: { cca: 2, rca: 2, ref: 2, int: 1, pow: 1, str: 2, for: 2, mov: 2, siz: 3 },
     items: [],
-  };
+  } as any;
 
   const source = new Character(sourceProfile);
   const target = new Character(targetProfile);
