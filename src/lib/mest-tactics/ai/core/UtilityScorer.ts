@@ -212,6 +212,7 @@ export class UtilityScorer {
 
   private createEvaluationSession(context: AIContext): EvaluationSession {
     const boardArea = context.battlefield.width * context.battlefield.height;
+    const gameSize = String(context.config.gameSize ?? '').toUpperCase();
     const attackableEnemyCount = context.enemies.filter(enemy =>
       isAttackableEnemy(context.character, enemy, context.config)
     ).length;
@@ -243,8 +244,26 @@ export class UtilityScorer {
       strategicRefineTopK = 3;
       localSampleCount = 14;
     }
+    if (gameSize === 'VERY_SMALL' || gameSize === 'SMALL') {
+      // Small boards do not need heavy strategic path probing each decision.
+      strategicPathQueryBudget = Math.min(strategicPathQueryBudget, 4);
+      strategicEnemyLimit = Math.min(strategicEnemyLimit, 3);
+      strategicObjectiveLimit = Math.min(strategicObjectiveLimit, 2);
+      strategicRefineTopK = Math.min(strategicRefineTopK, 1);
+      strategicDefaultResolution = 0.75;
+      localSampleCount = Math.min(localSampleCount, 10);
+    }
+    if (gameSize === 'VERY_SMALL') {
+      // Hard guard: remove strategic path probes in VERY_SMALL to avoid pathological stalls.
+      strategicPathQueryBudget = 0;
+      strategicEnemyLimit = 0;
+      strategicObjectiveLimit = 0;
+      strategicRefineTopK = 0;
+    }
 
-    strategicEnemyLimit = Math.max(2, Math.min(strategicEnemyLimit, Math.max(2, attackableEnemyCount)));
+    strategicEnemyLimit = strategicPathQueryBudget > 0
+      ? Math.max(2, Math.min(strategicEnemyLimit, Math.max(2, attackableEnemyCount)))
+      : 0;
 
     return {
       positionExposureCache: new Map(),
@@ -1084,6 +1103,8 @@ export class UtilityScorer {
     const loadout = this.getLoadoutProfile(context.character);
     const isRanged = loadout.hasRangedWeapons && !loadout.hasMeleeWeapons;
     const isMelee = loadout.hasMeleeWeapons && !loadout.hasRangedWeapons;
+    const gameSize = String(context.config.gameSize ?? '').toUpperCase();
+    const fastMeleeScoring = gameSize === 'VERY_SMALL' && isMelee;
 
     for (const pos of samples) {
       if (pos.x === characterPos.x && pos.y === characterPos.y) continue;
@@ -1101,23 +1122,23 @@ export class UtilityScorer {
       }
       // Strategic samples are pathfinding-validated, so we accept them regardless of straight-line distance
 
-      const cover = this.evaluateCover(pos, context);
+      const cover = fastMeleeScoring ? 0 : this.evaluateCover(pos, context);
       const distanceScore = this.evaluateDistance(pos, context);
-      const visibility = this.evaluateVisibility(pos, context);
+      const visibility = fastMeleeScoring ? 1 : this.evaluateVisibility(pos, context);
       const cohesion = this.evaluateCohesion(pos, context);
-      const threatRelief = this.evaluateThreatRelief(pos, context);
+      const threatRelief = fastMeleeScoring ? 0 : this.evaluateThreatRelief(pos, context);
 
       // R3: Add lean opportunity and exposure risk evaluation
-      const leanOpportunity = isRanged ? this.evaluateLeanOpportunity(pos, context) : 0;
-      const exposureRisk = this.evaluateExposureRisk(pos, context);
+      const leanOpportunity = (isRanged && !fastMeleeScoring) ? this.evaluateLeanOpportunity(pos, context) : 0;
+      const exposureRisk = fastMeleeScoring ? 0 : this.evaluateExposureRisk(pos, context);
 
       // Priority 2: Outnumber-aware positioning
       // Score positions that create local outnumbering advantage
       const outnumberScore = this.evaluateOutnumberAdvantage(pos, context);
 
       // R2.5: ROF/Suppression safety scoring
-      const positionSafety = this.evaluatePositionSafety(context.character, pos, context);
-      const suppressionZoneControl = this.evaluateSuppressionZoneControl(pos, context);
+      const positionSafety = fastMeleeScoring ? 0 : this.evaluatePositionSafety(context.character, pos, context);
+      const suppressionZoneControl = fastMeleeScoring ? 0 : this.evaluateSuppressionZoneControl(pos, context);
 
       // Phase 2.4: Gap crossing evaluation
       const gapCrossingResult = this.evaluateGapCrossing(context, characterPos, pos);
@@ -1157,6 +1178,10 @@ export class UtilityScorer {
           threatRelief,
           leanOpportunity,
           exposureRisk,
+          outnumberScore,
+          positionSafety,
+          suppressionZoneControl,
+          flankingScore,
           gapCrossing: gapCrossingBonus,
         } as any,
       });
@@ -2258,6 +2283,11 @@ export class UtilityScorer {
 
   private sampleStrategicPositions(context: AIContext, characterPos: Position): Position[] {
     const session = this.getEvaluationSession(context);
+    if (session.strategicPathQueryBudget <= 0) {
+      return [];
+    }
+    const gameSize = String(context.config.gameSize ?? '').toUpperCase();
+    const fastStrategicPathing = gameSize === 'VERY_SMALL' || gameSize === 'SMALL';
     const mov = context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2;
     const movementAllowance = Math.max(1, mov + 2);
     const footprintDiameter = getBaseDiameterFromSiz(context.character.finalAttributes.siz ?? 3);
@@ -2351,14 +2381,14 @@ export class UtilityScorer {
       const multiGoalOptions: MultiGoalPathOptions = {
         footprintDiameter,
         movementMetric: 'length',
-        useNavMesh: true,
-        useHierarchical: true,
+        useNavMesh: !fastStrategicPathing,
+        useHierarchical: !fastStrategicPathing,
         optimizeWithLOS: false,
         useTheta: false,
         turnPenalty: 0,
         portalNarrowPenalty: 0.08,
         portalNarrowThresholdFactor: 1.25,
-        gridResolution: session.strategicCoarseResolution,
+        gridResolution: fastStrategicPathing ? 1.0 : session.strategicCoarseResolution,
         maxMu: movementAllowance,
         maxDestinations: maxCoarseProbes,
       };
@@ -2416,14 +2446,14 @@ export class UtilityScorer {
           {
             footprintDiameter,
             movementMetric: 'length',
-            useNavMesh: true,
-            useHierarchical: true,
+            useNavMesh: !fastStrategicPathing,
+            useHierarchical: !fastStrategicPathing,
             optimizeWithLOS: false,
             useTheta: false,
             turnPenalty: 0,
             portalNarrowPenalty: 0.08,
             portalNarrowThresholdFactor: 1.25,
-            gridResolution: session.strategicCoarseResolution,
+            gridResolution: fastStrategicPathing ? 1.0 : session.strategicCoarseResolution,
           },
           movementAllowance
         );
@@ -2470,11 +2500,13 @@ export class UtilityScorer {
         if (b.score !== a.score) return b.score - a.score;
         if (a.distanceToTarget !== b.distanceToTarget) return a.distanceToTarget - b.distanceToTarget;
         return a.index - b.index;
-      })
-      .slice(0, session.strategicRefineTopK);
+      });
+    const probesForRefinement = fastStrategicPathing
+      ? topForRefinement.slice(0, Math.min(1, session.strategicRefineTopK))
+      : topForRefinement.slice(0, session.strategicRefineTopK);
     const refinedByIndex = new Map<number, Position>();
 
-    for (const probe of topForRefinement) {
+    for (const probe of probesForRefinement) {
       if (!this.tryConsumeStrategicPathBudget(session)) break;
       const refined = engine.findPathWithMaxMu(
         characterPos,
@@ -2482,14 +2514,16 @@ export class UtilityScorer {
         {
           footprintDiameter,
           movementMetric: 'length',
-          useNavMesh: true,
-          useHierarchical: true,
-          optimizeWithLOS: true,
-          useTheta: true,
-          turnPenalty: 0.1,
-          portalNarrowPenalty: 0.18,
+          useNavMesh: !fastStrategicPathing,
+          useHierarchical: !fastStrategicPathing,
+          optimizeWithLOS: !fastStrategicPathing,
+          useTheta: !fastStrategicPathing,
+          turnPenalty: fastStrategicPathing ? 0 : 0.1,
+          portalNarrowPenalty: fastStrategicPathing ? 0.08 : 0.18,
           portalNarrowThresholdFactor: 1.35,
-          gridResolution: probe.needsFineResolution ? 0.25 : session.strategicDefaultResolution,
+          gridResolution: fastStrategicPathing
+            ? 0.75
+            : (probe.needsFineResolution ? 0.25 : session.strategicDefaultResolution),
         },
         movementAllowance
       );

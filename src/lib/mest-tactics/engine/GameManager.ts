@@ -598,7 +598,7 @@ export class GameManager {
     // Award Initiative Points to Sides (QSR: Start of Turn)
     const ipAwarded: { sideId: string; amount: number; reason: 'highest_initiative' | 'carry_over' | 'tie_break' }[] = [];
     
-    if (sides && initiativeResults.length > 0) {
+    if (sides && sides.length > 0 && initiativeResults.length > 0) {
       const visibilityOrMu = options?.visibilityOrMu ?? 16;
       const resultByCharacterId = new Map(
         initiativeResults.map(result => [result.character.id, result] as const)
@@ -617,64 +617,68 @@ export class GameManager {
         };
       });
 
-      const highestInitiative = Math.max(...sideInitiativeResults.map(result => result.initiative));
-      let tieCandidates = sideInitiativeResults.filter(result => result.initiative === highestInitiative);
+      if (sideInitiativeResults.length > 0) {
+        const highestInitiative = Math.max(...sideInitiativeResults.map(result => result.initiative));
+        let tieCandidates = sideInitiativeResults.filter(result => result.initiative === highestInitiative);
 
-      const highestPips = Math.max(...tieCandidates.map(result => result.dicePips));
-      tieCandidates = tieCandidates.filter(result => result.dicePips === highestPips);
+        const highestPips = Math.max(...tieCandidates.map(result => result.dicePips));
+        tieCandidates = tieCandidates.filter(result => result.dicePips === highestPips);
 
-      const missionAttackerTieWinner = options?.missionAttackerWinsTie && options.missionAttackerSideId
-        ? tieCandidates.find(result => result.side.id === options.missionAttackerSideId)
-        : undefined;
-      const winnerGetsZeroIpFromTie = tieCandidates.length > 1 && !!missionAttackerTieWinner;
+        const missionAttackerTieWinner = options?.missionAttackerWinsTie && options.missionAttackerSideId
+          ? tieCandidates.find(result => result.side.id === options.missionAttackerSideId)
+          : undefined;
+        const winnerGetsZeroIpFromTie = tieCandidates.length > 1 && !!missionAttackerTieWinner;
 
-      let winnerResult = missionAttackerTieWinner ?? tieCandidates[0];
-      if (tieCandidates.length > 1 && !missionAttackerTieWinner) {
-        let unresolved = [...tieCandidates];
-        while (unresolved.length > 1) {
-          const rerolls = unresolved.map(result => ({
-            result,
-            roll: Math.floor(roller() * 6) + 1,
-          }));
-          const topRoll = Math.max(...rerolls.map(entry => entry.roll));
-          unresolved = rerolls
-            .filter(entry => entry.roll === topRoll)
-            .map(entry => entry.result);
+        let winnerResult = missionAttackerTieWinner ?? tieCandidates[0];
+        if (tieCandidates.length > 1 && !missionAttackerTieWinner) {
+          let unresolved = [...tieCandidates];
+          while (unresolved.length > 1) {
+            const rerolls = unresolved.map(result => ({
+              result,
+              roll: Math.floor(roller() * 6) + 1,
+            }));
+            const topRoll = Math.max(...rerolls.map(entry => entry.roll));
+            unresolved = rerolls
+              .filter(entry => entry.roll === topRoll)
+              .map(entry => entry.result);
+          }
+          winnerResult = unresolved[0];
         }
-        winnerResult = unresolved[0];
-      }
 
-      this.lastInitiativeWinnerSideId = winnerResult.side.id;
-      const lowestScore = Math.min(...sideInitiativeResults.map(result => result.initiative));
+        if (winnerResult) {
+          this.lastInitiativeWinnerSideId = winnerResult.side.id;
+          const lowestScore = Math.min(...sideInitiativeResults.map(result => result.initiative));
 
-      if (winnerGetsZeroIpFromTie) {
-        ipAwarded.push({
-          sideId: winnerResult.side.id,
-          amount: 0,
-          reason: 'tie_break',
-        });
-      } else {
-        const winnerIp = winnerResult.initiative - lowestScore;
-        if (winnerIp > 0) {
-          awardInitiativePoints(winnerResult.side, winnerIp);
-          ipAwarded.push({
-            sideId: winnerResult.side.id,
-            amount: winnerIp,
-            reason: 'highest_initiative',
-          });
-        }
-      }
+          if (winnerGetsZeroIpFromTie) {
+            ipAwarded.push({
+              sideId: winnerResult.side.id,
+              amount: 0,
+              reason: 'tie_break',
+            });
+          } else {
+            const winnerIp = winnerResult.initiative - lowestScore;
+            if (winnerIp > 0) {
+              awardInitiativePoints(winnerResult.side, winnerIp);
+              ipAwarded.push({
+                sideId: winnerResult.side.id,
+                amount: winnerIp,
+                reason: 'highest_initiative',
+              });
+            }
+          }
 
-      for (const sideResult of sideInitiativeResults) {
-        if (sideResult.side.id === winnerResult.side.id) continue;
-        const carryOverCount = sideResult.baseDice.filter(die => die === 6).length;
-        if (carryOverCount > 0) {
-          awardInitiativePoints(sideResult.side, carryOverCount);
-          ipAwarded.push({
-            sideId: sideResult.side.id,
-            amount: carryOverCount,
-            reason: 'carry_over',
-          });
+          for (const sideResult of sideInitiativeResults) {
+            if (sideResult.side.id === winnerResult.side.id) continue;
+            const carryOverCount = sideResult.baseDice.filter(die => die === 6).length;
+            if (carryOverCount > 0) {
+              awardInitiativePoints(sideResult.side, carryOverCount);
+              ipAwarded.push({
+                sideId: sideResult.side.id,
+                amount: carryOverCount,
+                reason: 'carry_over',
+              });
+            }
+          }
         }
       }
     }

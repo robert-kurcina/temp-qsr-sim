@@ -13,11 +13,14 @@ import { placeTerrain, type TerrainPlacementResult } from '../../../src/lib/mest
 import { exportBattlefield, getBattlefieldReference } from '../../../src/lib/mest-tactics/battlefield/BattlefieldExporter';
 import { Position } from '../../../src/lib/mest-tactics/battlefield/Position';
 import { buildAssembly, buildProfile, type GameSize } from '../../../src/lib/mest-tactics/mission/assembly-builder';
+import { createDefaultDeploymentZones } from '../../../src/lib/mest-tactics/mission/deployment-system';
+import type { MissionDeploymentType } from '../../../src/lib/mest-tactics/missions/mission-deployment';
 import type { SideConfig } from '../../shared/BattleReportTypes';
 
 export interface DeploymentConfig {
   gameSize: GameSize;
-  battlefieldSize: number;
+  battlefieldWidth: number;
+  battlefieldHeight: number;
   densityRatio: number;
   seed?: number;
 }
@@ -46,15 +49,17 @@ export async function createAssembly(
 }
 
 export function createBattlefield(
-  size: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   densityRatio: number
 ): Battlefield {
-  const battlefield = new Battlefield(size, size);
+  const battlefield = new Battlefield(battlefieldWidth, battlefieldHeight);
 
   const terrainResult = placeTerrain({
     mode: 'balanced',
     density: densityRatio,
-    battlefieldSize: size,
+    battlefieldWidth,
+    battlefieldHeight,
     seed: Math.floor(Math.random() * 1000000),
   });
 
@@ -96,15 +101,38 @@ export function deployModels(
   assembly: AssemblyResult,
   battlefield: Battlefield,
   sideIndex: number,
-  size: number
+  battlefieldWidth: number,
+  battlefieldHeight: number,
+  deploymentDepth: number = 6,
+  deploymentType: MissionDeploymentType = 'opposing_edges'
 ): void {
-  const isTop = sideIndex % 2 === 0;
-  const deployY = isTop ? size * 0.25 : size * 0.75;
-  const spacing = size / Math.max(1, assembly.characters.length);
+  const pseudoSideIds = ['side-0', 'side-1', 'side-2', 'side-3'];
+  const zones = createDefaultDeploymentZones(
+    battlefieldWidth,
+    battlefieldHeight,
+    pseudoSideIds,
+    deploymentDepth,
+    deploymentType
+  );
+  const zone = zones[Math.min(sideIndex, zones.length - 1)]?.bounds ?? {
+    x: 0,
+    y: 0,
+    width: battlefieldWidth,
+    height: battlefieldHeight,
+  };
+
+  const count = assembly.characters.length;
+  const cols = Math.max(1, Math.ceil(Math.sqrt(count * (zone.width / Math.max(1, zone.height)))));
+  const rows = Math.max(1, Math.ceil(count / cols));
+  const xSpacing = cols > 1 ? (zone.width - 1) / (cols - 1) : 0;
+  const ySpacing = rows > 1 ? (zone.height - 1) / (rows - 1) : 0;
 
   for (let i = 0; i < assembly.characters.length; i++) {
     const character = assembly.characters[i];
-    const deployX = spacing * (i + 0.5);
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const deployX = zone.x + col * xSpacing;
+    const deployY = zone.y + row * ySpacing;
 
     const position = findOpenCellNear(
       { x: deployX, y: deployY },

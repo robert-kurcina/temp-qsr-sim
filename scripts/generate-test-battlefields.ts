@@ -46,7 +46,8 @@ for (const gameSize of GAME_SIZES) {
       const terrainResult = placeTerrain({
         mode: 'balanced',
         density: density,
-        battlefieldSize: Math.max(gameSize.width, gameSize.height),
+        battlefieldWidth: gameSize.width,
+        battlefieldHeight: gameSize.height,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks', 'Small Rough Patch', 'Medium Rough Patch', 'Large Rough Patch'],
         seed: Math.floor(Math.random() * 1000000),
       });

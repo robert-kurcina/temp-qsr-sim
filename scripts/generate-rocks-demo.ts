@@ -38,7 +38,8 @@ for (const demo of demos) {
   const terrainResult = placeTerrain({
     mode: 'balanced',
     density: demo.density,
-    battlefieldSize: demo.size,
+    battlefieldWidth: demo.size,
+    battlefieldHeight: demo.size,
     terrainTypes: terrainTypes,
     structuresDensity: demo.name === 'with-structures' ? 50 : 0,
     structuresClearance: 0.5,

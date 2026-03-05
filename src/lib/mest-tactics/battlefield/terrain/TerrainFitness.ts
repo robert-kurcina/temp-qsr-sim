@@ -173,10 +173,14 @@ function projectPolygon(axis: Position, polygon: Position[]): { min: number; max
 /**
  * Check if terrain is within battlefield bounds
  */
-export function checkBounds(terrain: TerrainFeature, battlefieldSize: number): boolean {
+export function checkBounds(
+  terrain: TerrainFeature,
+  battlefieldWidth: number,
+  battlefieldHeight: number
+): boolean {
   const bounds = getTerrainBounds(terrain);
   return bounds.minX >= 0 && bounds.minY >= 0 && 
-         bounds.maxX <= battlefieldSize && bounds.maxY <= battlefieldSize;
+         bounds.maxX <= battlefieldWidth && bounds.maxY <= battlefieldHeight;
 }
 
 /**
@@ -202,13 +206,15 @@ export function minTerrainDistance(terrain1: TerrainFeature, terrain2: TerrainFe
  * Validate terrain placement fitness
  * 
  * @param terrain - Array of terrain features to validate
- * @param battlefieldSize - Battlefield dimensions (square)
+ * @param battlefieldWidth - Battlefield width in MU
+ * @param battlefieldHeight - Battlefield height in MU
  * @param minSpacing - Minimum spacing between terrain (default: 0.5 MU)
  * @returns Fitness report with issues and score
  */
 export function validateTerrainFitness(
   terrain: TerrainFeature[],
-  battlefieldSize: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   minSpacing: number = 0.5
 ): TerrainFitnessReport {
   const issues: FitnessIssue[] = [];
@@ -225,7 +231,7 @@ export function validateTerrainFitness(
     const t1 = terrain[i];
 
     // Check bounds
-    if (!checkBounds(t1, battlefieldSize)) {
+    if (!checkBounds(t1, battlefieldWidth, battlefieldHeight)) {
       stats.outOfBounds++;
       stats.legalTerrain--;
       const bounds = getTerrainBounds(t1);

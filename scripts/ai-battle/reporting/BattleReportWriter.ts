@@ -37,8 +37,8 @@ export function writeBattlefieldSvg(
 
   const svgPath = join(outputDir, `battlefield-${timestamp}.svg`);
   const svg = SvgRenderer.render(battlefield, {
-    width: config.battlefieldSize || 48,
-    height: config.battlefieldSize || 48,
+    width: config.battlefieldWidth,
+    height: config.battlefieldHeight,
     gridResolution: 0.5,
     title: `${config.missionId} - ${config.gameSize}`,
     layers: [
@@ -80,8 +80,8 @@ export function writeVisualAuditReport(report: BattleReport): string {
       perCharacterFovLos: report.config.perCharacterFovLos,
     },
     battlefield: {
-      widthMu: report.config.battlefieldSize,
-      heightMu: report.config.battlefieldSize,
+      widthMu: report.config.battlefieldWidth,
+      heightMu: report.config.battlefieldHeight,
       movementSampleStepMu: 0.5,
       lofWidthMu: 0.5,
     },
@@ -152,8 +152,8 @@ export function writeBattleReportViewer(report: BattleReport): string {
         perCharacterFovLos: report.config.perCharacterFovLos,
       },
       battlefield: {
-        widthMu: report.config.battlefieldSize || 48,
-        heightMu: report.config.battlefieldSize || 48,
+        widthMu: report.config.battlefieldWidth,
+        heightMu: report.config.battlefieldHeight,
         movementSampleStepMu: 0.5,
         lofWidthMu: 0.5,
       },

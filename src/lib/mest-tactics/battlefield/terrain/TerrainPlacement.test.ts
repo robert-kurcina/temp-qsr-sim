@@ -13,7 +13,8 @@ describe('TerrainPlacement', () => {
       const result = placeTerrain({
         mode: 'fast',
         density: 50,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -27,7 +28,8 @@ describe('TerrainPlacement', () => {
       const result = placeTerrain({
         mode: 'balanced',
         density: 50,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -43,7 +45,8 @@ describe('TerrainPlacement', () => {
       const result = placeTerrain({
         mode: 'thorough',
         density: 50,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -58,7 +61,8 @@ describe('TerrainPlacement', () => {
       const lowDensity = placeTerrain({
         mode: 'balanced',
         density: 25,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
         terrainTypes: ['Small Rough Patch', 'Medium Rough Patch', 'Large Rough Patch'],
       });
@@ -66,7 +70,8 @@ describe('TerrainPlacement', () => {
       const highDensity = placeTerrain({
         mode: 'balanced',
         density: 75,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
         terrainTypes: ['Small Rough Patch', 'Medium Rough Patch', 'Large Rough Patch'],
       });
@@ -78,7 +83,8 @@ describe('TerrainPlacement', () => {
       const small = placeTerrain({
         mode: 'balanced',
         density: 50,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -86,7 +92,8 @@ describe('TerrainPlacement', () => {
       const large = placeTerrain({
         mode: 'balanced',
         density: 50,
-        battlefieldSize: 48,
+        battlefieldWidth: 48,
+        battlefieldHeight: 48,
         seed: 12345,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -98,7 +105,8 @@ describe('TerrainPlacement', () => {
       const result1 = placeTerrain({
         mode: 'balanced',
         density: 50,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 42424,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -106,7 +114,8 @@ describe('TerrainPlacement', () => {
       const result2 = placeTerrain({
         mode: 'balanced',
         density: 50,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 42424,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -119,7 +128,8 @@ describe('TerrainPlacement', () => {
       const result = placeTerrain({
         mode: 'thorough',
         density: 50,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
         terrainTypes: ['Tree', 'Shrub', 'Small Rocks'],
       });
@@ -140,7 +150,8 @@ describe('TerrainPlacement', () => {
       const placement = placeTerrain({
         mode: 'balanced',
         density: 25,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
       });
 
@@ -163,7 +174,8 @@ describe('TerrainPlacement', () => {
       const placement = placeTerrain({
         mode: 'balanced',
         density: 25,
-        battlefieldSize: 24,
+        battlefieldWidth: 24,
+        battlefieldHeight: 24,
         seed: 12345,
       });
 
@@ -184,7 +196,7 @@ describe('TerrainPlacement', () => {
 describe('TerrainFitness', () => {
   describe('validateTerrainFitness', () => {
     it('should return 100 score for empty terrain', () => {
-      const fitness = validateTerrainFitness([], 24, 0.5);
+      const fitness = validateTerrainFitness([], 24, 24, 0.5);
       expect(fitness.overall).toBe(100);
       expect(fitness.issues.length).toBe(0);
     });
@@ -203,7 +215,7 @@ describe('TerrainFitness', () => {
         },
       ];
 
-      const fitness = validateTerrainFitness(overlappingTerrain as any, 24, 0.5);
+      const fitness = validateTerrainFitness(overlappingTerrain as any, 24, 24, 0.5);
       expect(fitness.overall).toBeLessThan(100);
       expect(fitness.issues.some(i => i.type === 'overlap')).toBe(true);
     });
@@ -217,7 +229,7 @@ describe('TerrainFitness', () => {
         },
       ];
 
-      const fitness = validateTerrainFitness(outOfBoundsTerrain as any, 24, 0.5);
+      const fitness = validateTerrainFitness(outOfBoundsTerrain as any, 24, 24, 0.5);
       expect(fitness.stats.outOfBounds).toBeGreaterThan(0);
       expect(fitness.issues.some(i => i.type === 'bounds')).toBe(true);
     });
@@ -236,7 +248,7 @@ describe('TerrainFitness', () => {
         },
       ];
 
-      const fitness = validateTerrainFitness(closeTerrain as any, 24, 0.5);
+      const fitness = validateTerrainFitness(closeTerrain as any, 24, 24, 0.5);
       expect(fitness.issues.some(i => i.type === 'spacing')).toBe(true);
     });
   });

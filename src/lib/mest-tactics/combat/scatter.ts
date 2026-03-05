@@ -78,6 +78,20 @@ const SCATTER_DIRECTIONS = [
   { angle: 300, name: 'Forward-Left' },   // d6 = 6
 ];
 
+function isBlockingTerrain(featureType: unknown): boolean {
+  const normalized = String(featureType ?? '').trim().toLowerCase();
+  return normalized === 'blocking' ||
+    normalized === String(TerrainType.Blocking).toLowerCase() ||
+    normalized === String(TerrainType.Obstacle).toLowerCase() ||
+    normalized === String(TerrainType.Impassable).toLowerCase();
+}
+
+function isRoughOrDifficultTerrain(featureType: unknown): boolean {
+  const normalized = String(featureType ?? '').trim().toLowerCase();
+  return normalized === String(TerrainType.Rough).toLowerCase() ||
+    normalized === String(TerrainType.Difficult).toLowerCase();
+}
+
 /**
  * Calculate scatter distance (QSR: misses × 1", minimum 1 MU)
  */
@@ -230,7 +244,7 @@ export function checkBarrierCollision(
         checkPos.x <= bounds.x + bounds.width &&
         checkPos.y >= bounds.y &&
         checkPos.y <= bounds.y + bounds.height &&
-        (feature.type === TerrainType.Blocking || feature.type === TerrainType.Impassable)
+        isBlockingTerrain(feature.type)
       );
     });
 
@@ -243,7 +257,7 @@ export function checkBarrierCollision(
           checkPos.x <= bounds.x + bounds.width &&
           checkPos.y >= bounds.y &&
           checkPos.y <= bounds.y + bounds.height &&
-          (feature.type === TerrainType.Blocking || feature.type === TerrainType.Impassable)
+          isBlockingTerrain(feature.type)
         );
       });
       return {
@@ -267,7 +281,7 @@ export function checkBarrierCollision(
         checkPos.x <= bounds.x + bounds.width &&
         checkPos.y >= bounds.y &&
         checkPos.y <= bounds.y + bounds.height &&
-        (feature.type === 'Rough' || feature.type === 'Difficult')
+        isRoughOrDifficultTerrain(feature.type)
       );
     });
     
@@ -280,7 +294,7 @@ export function checkBarrierCollision(
           checkPos.x <= bounds.x + bounds.width &&
           checkPos.y >= bounds.y &&
           checkPos.y <= bounds.y + bounds.height &&
-          (feature.type === 'Rough' || feature.type === 'Difficult')
+          isRoughOrDifficultTerrain(feature.type)
         );
       });
       return {
@@ -649,7 +663,7 @@ export function isValidIndirectArc(
       midpoint.x <= bounds.x + bounds.width &&
       midpoint.y >= bounds.y &&
       midpoint.y <= bounds.y + bounds.height &&
-      (feature.type === TerrainType.Blocking || feature.type === TerrainType.Impassable)
+      isBlockingTerrain(feature.type)
     );
   });
 

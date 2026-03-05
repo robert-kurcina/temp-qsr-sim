@@ -28,6 +28,8 @@ import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
 import { CharacterAI } from '../src/lib/mest-tactics/ai/core/CharacterAI';
 import { TacticalDoctrine } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { getEndGameTriggerTurn } from '../src/lib/mest-tactics/engine/end-game-trigger';
+import { createDefaultDeploymentZones } from '../src/lib/mest-tactics/mission/deployment-system';
+import { getMissionDeploymentProfile } from '../src/lib/mest-tactics/missions/mission-deployment';
 import { LightingCondition, getVisibilityOrForLighting } from '../src/lib/mest-tactics/utils/visibility';
 import { ActionStepAudit, AuditVector, ModelEffectAudit, OpposedTestAudit } from '../src/lib/mest-tactics/audit/BattleAuditExporter';
 import { GAME_SIZE_CONFIG } from './ai-battle/AIBattleConfig';
@@ -107,11 +109,11 @@ class UnifiedBattle {
 
     // 1. Place terrain
     console.log('🌲 Placing terrain...');
-    const terrainSize = Math.max(this.config.battlefieldWidth, this.config.battlefieldHeight);
     const terrainResult = placeTerrain({
       mode: 'balanced',
       density: this.config.density * 100,
-      battlefieldSize: terrainSize,
+      battlefieldWidth: this.config.battlefieldWidth,
+      battlefieldHeight: this.config.battlefieldHeight,
       seed: this.config.seed,
       terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
     });
@@ -307,22 +309,45 @@ class UnifiedBattle {
   }
 
   private async deployModels(sides: any[], battlefield: Battlefield): Promise<void> {
+    const battlefieldWidth = this.config.battlefieldWidth;
     const battlefieldHeight = this.config.battlefieldHeight;
-    const deploymentDepth = Math.max(6, Math.floor(battlefieldHeight * 0.2));
-    const edgeMargin = 3;
+    const canonicalDepth = Math.max(1, GAME_SIZE_CONFIG[this.config.gameSize]?.deploymentDepth ?? 6);
+    const deploymentProfile = getMissionDeploymentProfile(this.config.missionId, this.config.gameSize);
+    const deploymentDepth = Math.max(1, deploymentProfile.deploymentDepth || canonicalDepth);
+    const zones = createDefaultDeploymentZones(
+      battlefieldWidth,
+      battlefieldHeight,
+      sides.map((side: any) => side.id),
+      deploymentDepth,
+      deploymentProfile.deploymentType
+    );
 
     for (let sideIndex = 0; sideIndex < sides.length; sideIndex++) {
       const side = sides[sideIndex];
-      const sideStartY = sideIndex === 0 ? edgeMargin : Math.max(edgeMargin, battlefieldHeight - edgeMargin - deploymentDepth);
+      const zoneBounds = zones.find(z => z.sideId === side.id)?.bounds;
+      const zone = zoneBounds ?? {
+        x: 0,
+        y: 0,
+        width: battlefieldWidth,
+        height: battlefieldHeight,
+      };
+      const count = side.members.length;
+      const cols = Math.max(1, Math.ceil(Math.sqrt(count * (zone.width / Math.max(1, zone.height)))));
+      const rows = Math.max(1, Math.ceil(count / cols));
+      const xSpacing = cols > 1 ? (zone.width - 1) / (cols - 1) : 0;
+      const ySpacing = rows > 1 ? (zone.height - 1) / (rows - 1) : 0;
 
       for (let memberIndex = 0; memberIndex < side.members.length; memberIndex++) {
         const member = side.members[memberIndex];
-        const col = memberIndex % 3;
-        const row = Math.floor(memberIndex / 3);
-        const x = edgeMargin + col * 2;
-        const y = sideStartY + row * 2;
+        const col = memberIndex % cols;
+        const row = Math.floor(memberIndex / cols);
+        const x = zone.x + col * xSpacing;
+        const y = zone.y + row * ySpacing;
 
-        const position = { x: Math.round(x), y: Math.round(y) };
+        const position = {
+          x: Math.max(zone.x, Math.min(zone.x + zone.width - 1, Math.round(x))),
+          y: Math.max(zone.y, Math.min(zone.y + zone.height - 1, Math.round(y))),
+        };
         battlefield.placeCharacter(member.character, position);
       }
     }

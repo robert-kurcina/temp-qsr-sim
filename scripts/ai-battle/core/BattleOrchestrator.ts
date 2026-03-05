@@ -68,13 +68,13 @@ export class BattleOrchestrator {
     const sizeConfig = GAME_SIZE_CONFIG[gameSize];
     const battlefieldWidth = sizeConfig.battlefieldWidth;
     const battlefieldHeight = sizeConfig.battlefieldHeight;
-    const terrainSize = Math.max(battlefieldWidth, battlefieldHeight);
 
     // Generate terrain
     const terrainResult = placeTerrain({
       mode: 'balanced',
       density: densityRatio,
-      battlefieldSize: terrainSize,
+      battlefieldWidth,
+      battlefieldHeight,
       terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
     });
 

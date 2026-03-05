@@ -5578,7 +5578,8 @@ export const gameData = {
       "maxModels": 4,
       "battlefieldWidthMU": 18,
       "battlefieldHeightMU": 24,
-      "endGameTrigger": 3
+      "endGameTrigger": 3,
+      "deploymentDepth": 2
     },
     "SMALL": {
       "name": "Small",
@@ -5588,7 +5589,8 @@ export const gameData = {
       "maxModels": 8,
       "battlefieldWidthMU": 24,
       "battlefieldHeightMU": 24,
-      "endGameTrigger": 4
+      "endGameTrigger": 4,
+      "deploymentDepth": 2
     },
     "MEDIUM": {
       "name": "Medium",
@@ -5598,7 +5600,8 @@ export const gameData = {
       "maxModels": 12,
       "battlefieldWidthMU": 36,
       "battlefieldHeightMU": 36,
-      "endGameTrigger": 6
+      "endGameTrigger": 6,
+      "deploymentDepth": 4
     },
     "LARGE": {
       "name": "Large",
@@ -5608,7 +5611,8 @@ export const gameData = {
       "maxModels": 12,
       "battlefieldWidthMU": 48,
       "battlefieldHeightMU": 48,
-      "endGameTrigger": 8
+      "endGameTrigger": 8,
+      "deploymentDepth": 8,
     },
     "VERY_LARGE": {
       "name": "Very Large",
@@ -5618,7 +5622,8 @@ export const gameData = {
       "maxModels": 20,
       "battlefieldWidthMU": 72,
       "battlefieldHeightMU": 48,
-      "endGameTrigger": 10
+      "endGameTrigger": 10,
+      "deploymentDepth": 8
     }
   },
   "grenade_weapons": {

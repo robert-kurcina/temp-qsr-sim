@@ -76,7 +76,8 @@ function generateExecutiveSummary(report: BattleReport): string {
   
   const missionType = config.missionName || 'Elimination';
   const gameSize = config.gameSize || 'Unknown';
-  const battlefieldSize = config.battlefieldSize || 24;
+  const battlefieldWidth = config.battlefieldWidth || 24;
+  const battlefieldHeight = config.battlefieldHeight || 24;
   
   // Count eliminations and KOs
   let eliminations = 0;
@@ -95,7 +96,7 @@ function generateExecutiveSummary(report: BattleReport): string {
   
   const actionRate = turnsCompleted > 0 ? (totalActions / turnsCompleted).toFixed(1) : '0';
   
-  let summary = `In this ${gameSize} ${missionType} battle on a ${battlefieldSize}×${battlefieldSize} MU battlefield, `;
+  let summary = `In this ${gameSize} ${missionType} battle on a ${battlefieldWidth}×${battlefieldHeight} MU battlefield, `;
   
   if (winner === 'Draw') {
     summary += `both sides fought to a stalemate after ${turnsCompleted} turns of intense combat. `;

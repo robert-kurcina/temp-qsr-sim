@@ -79,7 +79,7 @@ export enum TacticalDoctrine {
   Flank = 'raider',                 // Alias: Raider (melee aggressive defensive)
   Hold = 'defender',                // Alias: Defender (melee balanced defensive)
   Rush = 'berserker',               // Alias: Berserker (melee aggressive balanced)
-  Brawler = 'veteran',              // Alias: Veteran (melee balanced)
+  Brawler = 'veteran_melee',        // Alias: Veteran (melee balanced)
   Pacifist = 'warden',              // Alias: Warden (defensive)
   Opportunistic = 'operative',      // Alias: Operative (balanced)
 }
@@ -528,11 +528,6 @@ export const TACTICAL_DOCTRINE_INFO: Record<TacticalDoctrine, {
     name: 'Warden',
     description: 'Cautious guardian. Defensive and balanced.',
     icon: '🏛️',
-  },
-  [TacticalDoctrine.Brawler]: {
-    name: 'Brawler',
-    description: 'Versatile melee fighter. Balanced close combat.',
-    icon: '🥊',
   },
 };
 

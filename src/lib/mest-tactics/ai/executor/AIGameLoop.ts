@@ -257,18 +257,13 @@ export class AIGameLoop {
       replannedActions: 0,
     };
 
-    // Start turn audit
-    if (this.auditService) {
-      this.auditService.startTurn(turn);
-    }
-
     // Initialize turn - set up activation order via initiative
     if (turn === 1 || this.manager.phase !== TurnPhase.Activation) {
       this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn, sides: this.sides });
     }
 
     // Log initiative points at start of turn AFTER initiative is rolled (grade 2+)
-    if (this.logger && this.logger['config'].grade >= InstrumentationGrade.BY_ACTION) {
+    if (this.logger) {
       const ipBySide: Record<string, number> = {};
       for (const side of this.sides) {
         ipBySide[side.id] = side.state.initiativePoints ?? 0;
@@ -338,16 +333,6 @@ export class AIGameLoop {
       }
 
       this.manager.endActivation(character);
-    }
-
-    // End turn audit
-    if (this.auditService) {
-      const sideSummaries = this.sides.map(side => ({
-        sideName: side.name,
-        activeModelsStart: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
-        activeModelsEnd: side.members.filter(m => !m.character.state.isEliminated && !m.character.state.isKOd).length,
-      }));
-      this.auditService.endTurn(sideSummaries);
     }
 
     // Advance phase at end of turn to properly transition to TurnEnd and check end-game trigger
@@ -970,24 +955,25 @@ export class AIGameLoop {
 
     if (readySquadMembers.length === 0) return result;
 
-    // Log the IP spending for instrumentation
+    // Spend 1 IP (Maintain Initiative) and immediately activate a nearby Ready squad member.
     const firstSquadMember = readySquadMembers[0];
-    if (this.logger && (this.logger as any)['config'].grade >= InstrumentationGrade.BY_ACTION) {
-      (this.logger as any).log({
-        type: 'squad_ip_coordination',
-        turn,
-        characterId: character.id,
-        squadMemberId: firstSquadMember.id,
-        ipSpent: 1,
-        reason: 'Squad formation coordination',
-      } as any);
+    const ap = this.manager.beginActivation(firstSquadMember);
+    if (ap <= 0 || firstSquadMember.state.isEliminated || firstSquadMember.state.isKOd) {
+      this.manager.endActivation(firstSquadMember);
+      return result;
     }
 
-    // Actually spend IP and activate squad member
-    // Note: This requires the manager to support Maintain Initiative action
-    // For now, we simulate by running the squad member's turn immediately
-    const ap = this.manager.beginActivation(firstSquadMember);
-    if (ap > 0 && !firstSquadMember.state.isEliminated && !firstSquadMember.state.isKOd) {
+    const spent = this.manager.maintainInitiative(side);
+    if (!spent) {
+      this.manager.endActivation(firstSquadMember);
+      return result;
+    }
+
+    if (this.logger) {
+      this.logger.logIpSpending(side.id, character.id, 'push', turn);
+    }
+
+    if (!firstSquadMember.state.isEliminated && !firstSquadMember.state.isKOd) {
       const squadResult = this.runCharacterTurn(firstSquadMember, turn);
       result.totalActions += squadResult.totalActions;
       result.successfulActions += squadResult.successfulActions;

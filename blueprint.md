@@ -52,6 +52,9 @@
 3.  **No Regex for Complex Parsing:** Use character-by-character string manipulation
 4.  **No Hardcoded Distances:** Derive from MOV, visibilityOR, weapon OR, or trait levels
 5.  **Debugging:** Use `console.log` for failing tests; remove after fix
+6.  **Mandatory Unit Tests for Code Changes:** All code changes must include unit tests upon completion.
+7.  **Unit Test Maintenance:** Existing tests that are no longer relevant must be removed. Existing tests that remain must not fail.
+8.  **TypeScript Validation:** After finishing a set of new features, run `tsc --noEmit` to ensure there are no TypeScript errors.
 
 ---
 

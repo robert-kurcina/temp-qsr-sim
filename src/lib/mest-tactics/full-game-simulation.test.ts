@@ -520,7 +520,7 @@ class FullGameRunner {
     const attackerResult = performTest(attackerDice, attackerCCA, attackerRolls.slice(0, attackerDice.base));
     const defenderResult = performTest(defenderDice, defenderCCA, defenderRolls.slice(0, defenderDice.base));
 
-    const hit = (attackerResult.successes ?? 0 ?? 0) >= (defenderResult.successes ?? 0 ?? 0);
+    const hit = (attackerResult.successes ?? 0) >= (defenderResult.successes ?? 0);
 
     if (hit) {
       // Damage test
@@ -533,7 +533,7 @@ class FullGameRunner {
       const damageResult = performTest(attackerDamageDice, attackerSTR, damageRolls.slice(0, attackerDamageDice.base));
       const armorResult = performTest(defenderArmorDice, defenderFOR, armorRolls.slice(0, defenderArmorDice.base));
 
-      if ((damageResult.successes ?? 0 ?? 0) > (armorResult.successes ?? 0 ?? 0)) {
+      if ((damageResult.successes ?? 0) > (armorResult.successes ?? 0)) {
         // Wound inflicted
         const wounds = defender.state.wounds || 0;
         const siz = defender.finalAttributes?.siz ?? defender.attributes?.siz ?? 3;
@@ -571,7 +571,7 @@ class FullGameRunner {
     const attackerResult = performTest(attackerDice, attackerRCA, attackerRolls.slice(0, attackerDice.base));
     const defenderResult = performTest(defenderDice, defenderREF, defenderRolls.slice(0, defenderDice.base));
 
-    const hit = (attackerResult.successes ?? 0 ?? 0) >= (defenderResult.successes ?? 0 ?? 0);
+    const hit = (attackerResult.successes ?? 0) >= (defenderResult.successes ?? 0);
 
     if (hit) {
       const attackerSTR = attacker.finalAttributes?.str ?? attacker.attributes?.str ?? 2;
@@ -586,7 +586,7 @@ class FullGameRunner {
       const damageResult = performTest(damageDice, attackerSTR, damageRolls.slice(0, damageDice.base));
       const armorResult = performTest(armorDice, defenderFOR, armorRolls.slice(0, armorDice.base));
 
-      if ((damageResult.successes ?? 0 ?? 0) > (armorResult.successes ?? 0 ?? 0)) {
+      if ((damageResult.successes ?? 0) > (armorResult.successes ?? 0)) {
         const wounds = defender.state.wounds || 0;
         const siz = defender.finalAttributes?.siz ?? defender.attributes?.siz ?? 3;
         

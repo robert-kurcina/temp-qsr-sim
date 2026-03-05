@@ -23,6 +23,7 @@ import { CharacterAI } from '../../src/lib/mest-tactics/ai/core/CharacterAI';
 import { TacticalDoctrine } from '../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { MissionLoader } from '../../src/lib/mest-tactics/missions/mission-loader';
 import { MissionRuntimeAdapter } from '../../src/lib/mest-tactics/missions/mission-runtime-adapter';
+import { getMissionDeploymentProfile } from '../../src/lib/mest-tactics/missions/mission-deployment';
 import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-game-trigger';
 import { InstrumentationLogger, InstrumentationGrade, StartOfGameReport, InitiativeTestReport, TurnActionReport, TurnEndReport, GameEndReport } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
 import { SvgRenderer } from '../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
@@ -408,6 +409,18 @@ export class BattleRunner {
   }
 
   /**
+   * Resolve deployment profile from mission + game size
+   */
+  private getDeploymentProfile(): { deploymentDepth: number; deploymentType: 'opposing_edges' | 'corners' | 'custom' } {
+    const canonicalFallbackDepth = CANONICAL_GAME_SIZES[this.config.gameSize]?.deploymentDepth ?? 6;
+    const profile = getMissionDeploymentProfile(this.config.missionId, this.config.gameSize);
+    return {
+      deploymentDepth: profile.deploymentDepth ?? canonicalFallbackDepth,
+      deploymentType: profile.deploymentType,
+    };
+  }
+
+  /**
    * Generate terrain
    */
   private generateTerrain(battlefieldSize: number, density: number): any[] {
@@ -484,13 +497,16 @@ export class BattleRunner {
 
     const battlefieldWidth = this.getBattlefieldWidth();
     const battlefieldHeight = this.getBattlefieldHeight();
+    const deploymentProfile = this.getDeploymentProfile();
     const sideIds = sides.map((s: any) => s.id);
 
     // Create deployment zones
     const zones = createDefaultDeploymentZones(
       battlefieldWidth,
       battlefieldHeight,
-      sideIds
+      sideIds,
+      deploymentProfile.deploymentDepth,
+      deploymentProfile.deploymentType
     );
     
     console.log(`   Created ${zones.length} deployment zones`);
@@ -556,23 +572,48 @@ export class BattleRunner {
   private deployModelsSimple(sides: any[], battlefield: Battlefield): void {
     console.log('   Using fallback simple deployment...');
 
+    const battlefieldWidth = this.getBattlefieldWidth();
     const battlefieldHeight = this.getBattlefieldHeight();
-    const zoneHeight = Math.floor(battlefieldHeight / 8);
-    const modelsPerRow = 3;
-    const spacing = Math.floor(battlefieldHeight / (modelsPerRow + 1));
+    const deploymentProfile = this.getDeploymentProfile();
+    const sideIds = sides.map((s: any) => s.id);
+    const zones = createDefaultDeploymentZones(
+      battlefieldWidth,
+      battlefieldHeight,
+      sideIds,
+      deploymentProfile.deploymentDepth,
+      deploymentProfile.deploymentType
+    );
 
     sides.forEach((side, sideIndex) => {
+      const zone = zones.find((z) => z.sideId === side.id)
+        // Fallback preserves previous index mapping if side IDs are unexpected.
+        ?? zones[Math.min(sideIndex, zones.length - 1)];
+      if (!zone) {
+        return;
+      }
+
+      const count = side.members.length;
+      const cols = Math.max(
+        1,
+        Math.ceil(Math.sqrt(count * (zone.bounds.width / Math.max(1, zone.bounds.height))))
+      );
+      const rows = Math.max(1, Math.ceil(count / cols));
+      const xSpacing = cols > 1 ? (zone.bounds.width - 1) / (cols - 1) : 0;
+      const ySpacing = rows > 1 ? (zone.bounds.height - 1) / (rows - 1) : 0;
+
       side.members.forEach((member: any, i: number) => {
-        const row = Math.floor(i / modelsPerRow);
-        const col = i % modelsPerRow;
-        const x = spacing + col * spacing;
-
-        const y = sideIndex === 0
-          ? (battlefieldHeight - zoneHeight) + (row + 1) * (zoneHeight / (modelsPerRow + 1))
-          : (row + 1) * (zoneHeight / (modelsPerRow + 1));
-
-        const gridX = Math.round(x);
-        const gridY = Math.round(y);
+        const row = Math.floor(i / cols);
+        const col = i % cols;
+        const x = zone.bounds.x + col * xSpacing;
+        const y = zone.bounds.y + row * ySpacing;
+        const gridX = Math.max(
+          zone.bounds.x,
+          Math.min(zone.bounds.x + zone.bounds.width - 1, Math.round(x))
+        );
+        const gridY = Math.max(
+          zone.bounds.y,
+          Math.min(zone.bounds.y + zone.bounds.height - 1, Math.round(y))
+        );
 
         battlefield.placeCharacter(member.character, { x: gridX, y: gridY });
       });
@@ -1147,12 +1188,19 @@ export class BattleRunner {
       })
     );
 
-    // Build deployment zones
-    const zoneHeight = Math.floor(battlefield.height / 8);
-    const deploymentZones = [
-      { x: 0, y: battlefield.height - zoneHeight, width: battlefield.width, height: zoneHeight, color: '#ff0000', opacity: 0.2 },
-      { x: 0, y: 0, width: battlefield.width, height: zoneHeight, color: '#0000ff', opacity: 0.2 },
-    ];
+    // Build deployment zones from canonical game size depth
+    const deploymentProfile = this.getDeploymentProfile();
+    const deploymentZones = createDefaultDeploymentZones(
+      battlefield.width,
+      battlefield.height,
+      sides.map((side: any) => side.id),
+      deploymentProfile.deploymentDepth,
+      deploymentProfile.deploymentType
+    ).map((zone, index) => ({
+      ...zone.bounds,
+      color: index % 2 === 0 ? '#0000ff' : '#ff0000',
+      opacity: 0.2,
+    }));
 
     // Generate SVG using SvgRenderer
     const svgContent = SvgRenderer.render(battlefield, {

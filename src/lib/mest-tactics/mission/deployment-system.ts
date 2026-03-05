@@ -13,6 +13,7 @@ import { Position } from '../battlefield/Position';
 import { MissionSide } from './MissionSide';
 import { Battlefield } from '../battlefield/Battlefield';
 import { DeploymentValidationResult } from './bp-validator';
+import type { MissionDeploymentType } from '../missions/mission-deployment';
 
 export interface DeploymentZone {
   /** Zone identifier */
@@ -77,71 +78,199 @@ export interface DeploymentConfig {
 
 /**
  * Create default deployment zones based on battlefield size
- * QSR: Deployment zones are typically 6" from edges
+ * QSR: Deployment zone depth is provided by the caller (typically from canonical game-size data).
+ * `opposing_edges` zones span the battlefield's longest dimension.
+ * `corners` zones use square corner pockets with side length = deployment depth.
+ * `custom` currently falls back to `opposing_edges` when no mission-specific geometry is supplied.
  */
 export function createDefaultDeploymentZones(
   battlefieldWidth: number,
   battlefieldHeight: number,
-  sideIds: string[]
+  sideIds: string[],
+  deploymentDepth: number = 6,
+  deploymentType: MissionDeploymentType = 'opposing_edges'
+): DeploymentZone[] {
+  if (sideIds.length < 2) {
+    return [];
+  }
+
+  if (deploymentType === 'corners') {
+    return createCornerDeploymentZones(
+      battlefieldWidth,
+      battlefieldHeight,
+      sideIds,
+      deploymentDepth
+    );
+  }
+
+  // Custom deployment geometry is mission-specific. Until that data is provided,
+  // preserve deterministic behavior using standard opposing-edge zones.
+  return createOpposingEdgeDeploymentZones(
+    battlefieldWidth,
+    battlefieldHeight,
+    sideIds,
+    deploymentDepth
+  );
+}
+
+function createOpposingEdgeDeploymentZones(
+  battlefieldWidth: number,
+  battlefieldHeight: number,
+  sideIds: string[],
+  deploymentDepth: number
 ): DeploymentZone[] {
   const zones: DeploymentZone[] = [];
-  const deploymentDepth = 6; // 6" from edge
+  const zoneDepth = Math.max(1, Math.floor(deploymentDepth));
+  const primaryTopBottom = battlefieldWidth >= battlefieldHeight;
+  const edgeOrder = primaryTopBottom
+    ? ['north', 'south', 'west', 'east']
+    : ['west', 'east', 'north', 'south'];
 
-  if (sideIds.length >= 2) {
-    // Zone 1: Top edge (Side A)
-    zones.push({
-      id: 'zone_top',
-      name: 'North Deployment Zone',
-      bounds: {
-        x: 0,
-        y: 0,
-        width: battlefieldWidth,
-        height: deploymentDepth,
-      },
-      sideId: sideIds[0],
-    });
+  for (let i = 0; i < sideIds.length && i < 4; i++) {
+    const edge = edgeOrder[i];
+    const sideId = sideIds[i];
 
-    // Zone 2: Bottom edge (Side B)
-    zones.push({
-      id: 'zone_bottom',
-      name: 'South Deployment Zone',
-      bounds: {
-        x: 0,
-        y: battlefieldHeight - deploymentDepth,
-        width: battlefieldWidth,
-        height: deploymentDepth,
-      },
-      sideId: sideIds[1],
-    });
+    if (edge === 'north') {
+      zones.push({
+        id: 'zone_top',
+        name: 'North Deployment Zone',
+        bounds: {
+          x: 0,
+          y: 0,
+          width: battlefieldWidth,
+          height: Math.min(zoneDepth, battlefieldHeight),
+        },
+        sideId,
+      });
+      continue;
+    }
+
+    if (edge === 'south') {
+      const depth = Math.min(zoneDepth, battlefieldHeight);
+      zones.push({
+        id: 'zone_bottom',
+        name: 'South Deployment Zone',
+        bounds: {
+          x: 0,
+          y: battlefieldHeight - depth,
+          width: battlefieldWidth,
+          height: depth,
+        },
+        sideId,
+      });
+      continue;
+    }
+
+    if (edge === 'west') {
+      zones.push({
+        id: 'zone_left',
+        name: 'West Deployment Zone',
+        bounds: {
+          x: 0,
+          y: 0,
+          width: Math.min(zoneDepth, battlefieldWidth),
+          height: battlefieldHeight,
+        },
+        sideId,
+      });
+      continue;
+    }
+
+    if (edge === 'east') {
+      const depth = Math.min(zoneDepth, battlefieldWidth);
+      zones.push({
+        id: 'zone_right',
+        name: 'East Deployment Zone',
+        bounds: {
+          x: battlefieldWidth - depth,
+          y: 0,
+          width: depth,
+          height: battlefieldHeight,
+        },
+        sideId,
+      });
+    }
   }
 
-  if (sideIds.length >= 3) {
-    // Zone 3: Left edge (Side C)
+  return zones;
+}
+
+function createCornerDeploymentZones(
+  battlefieldWidth: number,
+  battlefieldHeight: number,
+  sideIds: string[],
+  deploymentDepth: number
+): DeploymentZone[] {
+  const zones: DeploymentZone[] = [];
+  const zoneDepth = Math.max(1, Math.floor(deploymentDepth));
+  const depthX = Math.min(zoneDepth, battlefieldWidth);
+  const depthY = Math.min(zoneDepth, battlefieldHeight);
+  const cornerOrder: Array<'north_west' | 'south_east' | 'north_east' | 'south_west'> = [
+    'north_west',
+    'south_east',
+    'north_east',
+    'south_west',
+  ];
+
+  for (let i = 0; i < sideIds.length && i < 4; i++) {
+    const corner = cornerOrder[i];
+    const sideId = sideIds[i];
+
+    if (corner === 'north_west') {
+      zones.push({
+        id: 'zone_north_west',
+        name: 'North-West Deployment Zone',
+        bounds: {
+          x: 0,
+          y: 0,
+          width: depthX,
+          height: depthY,
+        },
+        sideId,
+      });
+      continue;
+    }
+
+    if (corner === 'south_east') {
+      zones.push({
+        id: 'zone_south_east',
+        name: 'South-East Deployment Zone',
+        bounds: {
+          x: battlefieldWidth - depthX,
+          y: battlefieldHeight - depthY,
+          width: depthX,
+          height: depthY,
+        },
+        sideId,
+      });
+      continue;
+    }
+
+    if (corner === 'north_east') {
+      zones.push({
+        id: 'zone_north_east',
+        name: 'North-East Deployment Zone',
+        bounds: {
+          x: battlefieldWidth - depthX,
+          y: 0,
+          width: depthX,
+          height: depthY,
+        },
+        sideId,
+      });
+      continue;
+    }
+
     zones.push({
-      id: 'zone_left',
-      name: 'West Deployment Zone',
+      id: 'zone_south_west',
+      name: 'South-West Deployment Zone',
       bounds: {
         x: 0,
-        y: deploymentDepth,
-        width: deploymentDepth,
-        height: battlefieldHeight - deploymentDepth * 2,
+        y: battlefieldHeight - depthY,
+        width: depthX,
+        height: depthY,
       },
-      sideId: sideIds[2],
-    });
-  }
-
-  if (sideIds.length >= 4) {
-    // Zone 4: Right edge (Side D)
-    zones.push({
-      id: 'zone_right',
-      name: 'East Deployment Zone',
-      bounds: {
-        x: battlefieldWidth - deploymentDepth,
-        y: deploymentDepth,
-        width: deploymentDepth,
-        height: battlefieldHeight - deploymentDepth * 2,
-      },
-      sideId: sideIds[3],
+      sideId,
     });
   }
 

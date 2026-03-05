@@ -345,5 +345,9 @@ export function validateAIConfig(config: AIControllerConfig): AIControllerConfig
     doctrineEngagement: config.doctrineEngagement ?? 'balanced',
     doctrinePlanning: config.doctrinePlanning ?? 'balanced',
     doctrineAggression: config.doctrineAggression ?? 'balanced',
+    tacticalDoctrine: config.tacticalDoctrine,
+    objectiveRush: config.objectiveRush,
+    coverPriority: config.coverPriority,
+    gameSize: config.gameSize,
   };
 }

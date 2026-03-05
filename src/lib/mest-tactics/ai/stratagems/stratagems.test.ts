@@ -72,7 +72,7 @@ describe('AI Tactical Doctrine', () => {
     });
 
     it('should have 27 doctrines', () => {
-      expect(Object.values(TacticalDoctrine).length).toBe(27);
+      expect(new Set(Object.values(TacticalDoctrine)).size).toBe(27);
     });
   });
 

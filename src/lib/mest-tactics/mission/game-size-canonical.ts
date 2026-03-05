@@ -19,6 +19,7 @@ export interface CanonicalGameSizeRow {
   battlefieldWidthMU: number;
   battlefieldHeightMU: number;
   endGameTrigger: number;
+  deploymentDepth: number;
 }
 
 const rawGameSizes = gameData.game_sizes as Record<string, unknown>;
@@ -42,6 +43,7 @@ function parseGameSizeRow(size: CanonicalGameSize, value: unknown): CanonicalGam
     battlefieldWidthMU: Number(row.battlefieldWidthMU),
     battlefieldHeightMU: Number(row.battlefieldHeightMU),
     endGameTrigger: Number(row.endGameTrigger),
+    deploymentDepth: Number(row.deploymentDepth),
   };
 
   const requiredNumbers = [
@@ -52,6 +54,7 @@ function parseGameSizeRow(size: CanonicalGameSize, value: unknown): CanonicalGam
     parsed.battlefieldWidthMU,
     parsed.battlefieldHeightMU,
     parsed.endGameTrigger,
+    parsed.deploymentDepth,
   ];
   if (!requiredNumbers.every(isFiniteNumber)) {
     throw new Error(`Invalid numeric fields in canonical game size row for ${size}`);
@@ -113,4 +116,8 @@ export function determineCanonicalGameSize(bpPerSide: number, modelsPerSide: num
 
 export function getCanonicalEndGameTriggerTurn(gameSize: CanonicalGameSize): number {
   return CANONICAL_GAME_SIZES[gameSize].endGameTrigger;
+}
+
+export function getCanonicalDeploymentDepth(gameSize: CanonicalGameSize): number {
+  return CANONICAL_GAME_SIZES[gameSize].deploymentDepth;
 }

@@ -97,8 +97,8 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   const nestedSections = (report as any).nestedSections ?? {
     sides: [],
     battlefieldLayout: {
-      widthMu: report.config.battlefieldSize,
-      heightMu: report.config.battlefieldSize,
+      widthMu: report.config.battlefieldWidth,
+      heightMu: report.config.battlefieldHeight,
       densityRatio: report.config.densityRatio,
       terrainFeatures: [],
       deployments: [],
@@ -129,7 +129,7 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push('');
   lines.push(`📋 Mission: ${report.config.missionName}`);
   lines.push(`📏 Game Size: ${GAME_SIZE_CONFIG[report.config.gameSize].name}`);
-  lines.push(`🗺️  Battlefield: ${report.config.battlefieldSize}×${report.config.battlefieldSize} MU`);
+  lines.push(`🗺️  Battlefield: ${report.config.battlefieldWidth}×${report.config.battlefieldHeight} MU`);
   lines.push(`🌲 Terrain Density: ${report.config.densityRatio}%`);
   lines.push(`💡 Lighting: ${(report.config.lighting as any).name || report.config.lighting} (Visibility OR ${report.config.visibilityOrMu} MU)`);
   lines.push(`🎲 Seed: ${report.seed ?? 'n/a'}`);

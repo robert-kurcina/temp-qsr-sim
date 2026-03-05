@@ -202,14 +202,17 @@ export class CharacterAI implements IAIController {
    * 4. Behavior Tree - fallback decision making
    */
   decideAction(context: AIContext): AIResult {
-    // Update knowledge
-    const knowledge = this.knowledgeBase.updateKnowledge(
-      context.character,
-      context.allies,
-      context.enemies,
-      context.battlefield,
-      context.currentTurn
-    );
+    // Reuse pre-updated knowledge for this turn when provided by the caller.
+    const existingKnowledge = context.knowledge;
+    const knowledge = existingKnowledge && existingKnowledge.lastUpdated === context.currentTurn
+      ? existingKnowledge
+      : this.knowledgeBase.updateKnowledge(
+        context.character,
+        context.allies,
+        context.enemies,
+        context.battlefield,
+        context.currentTurn
+      );
     context.knowledge = knowledge;
 
     // Phase 2: Try tactical patterns first (coordinated behavior)
@@ -251,55 +254,75 @@ export class CharacterAI implements IAIController {
       }
     }
 
-    // Phase 2: Check for stealth opportunities (Hide/Detect)
-    // StealthEvaluator uses Keys to Victory cost-benefit analysis
-    const hideDecision = this.evaluateHide(context);
-    if (hideDecision.shouldHide) {
-      return {
-        decision: {
-          type: 'hide',
-          reason: hideDecision.reason,
-          planning: {
-            source: 'utility',
-          },
-          priority: hideDecision.priority ?? 3.0,
-          requiresAP: true,
-        },
-        debug: {
-          consideredActions: ['hide'],
-          scores: { hide: hideDecision.priority ?? 3.0 },
-          actionAvailability: { hide: 1 },
-          reasoning: hideDecision.reason,
-        },
-      };
-    }
+    // Evaluate utility once so stealth can defer to strong immediate combat opportunities.
+    const scoredActions = this.utilityScorer.evaluateActions(context);
+    const bestAction = scoredActions[0];
 
-    const detectDecision = this.evaluateDetect(context);
-    if (detectDecision.shouldDetect) {
-      return {
-        decision: {
-          type: 'detect',
-          target: detectDecision.targets[0],
-          reason: detectDecision.reason ?? 'Detect hidden enemies',
-          planning: {
-            source: 'utility',
+    const visibleEnemies = context.enemies.filter(e => !e.state.isHidden);
+    const allEnemiesHidden = visibleEnemies.length === 0 && context.enemies.length > 0;
+    const bestCombatAction = scoredActions.find(action =>
+      action.action === 'close_combat' || action.action === 'ranged_combat'
+    );
+    const bestScore = bestAction?.score ?? 0;
+    const bestCombatScore = bestCombatAction?.score ?? 0;
+    const shouldPrioritizeCombat =
+      Boolean(bestCombatAction)
+      && visibleEnemies.length > 0
+      && bestCombatScore >= 1.8
+      && (
+        bestAction?.action === 'close_combat'
+        || bestAction?.action === 'ranged_combat'
+        || bestCombatScore >= bestScore * 0.72
+      );
+
+    // Phase 2: Check stealth opportunities only when no enemies are currently visible.
+    if (!shouldPrioritizeCombat && visibleEnemies.length === 0) {
+      const hideDecision = this.evaluateHide(context);
+      if (hideDecision.shouldHide) {
+        return {
+          decision: {
+            type: 'hide',
+            reason: hideDecision.reason,
+            planning: {
+              source: 'utility',
+            },
+            priority: hideDecision.priority ?? 3.0,
+            requiresAP: true,
           },
-          priority: detectDecision.priority ?? 2.5,
-          requiresAP: true,
-        },
-        debug: {
-          consideredActions: ['detect'],
-          scores: { detect: detectDecision.priority ?? 2.5 },
-          actionAvailability: { detect: 1 },
-          reasoning: detectDecision.reason ?? 'Detect hidden enemies',
-        },
-      };
+          debug: {
+            consideredActions: ['hide'],
+            scores: { hide: hideDecision.priority ?? 3.0 },
+            actionAvailability: { hide: 1 },
+            reasoning: hideDecision.reason,
+          },
+        };
+      }
+
+      const detectDecision = this.evaluateDetect(context);
+      if (detectDecision.shouldDetect) {
+        return {
+          decision: {
+            type: 'detect',
+            target: detectDecision.targets[0],
+            reason: detectDecision.reason ?? 'Detect hidden enemies',
+            planning: {
+              source: 'utility',
+            },
+            priority: detectDecision.priority ?? 2.5,
+            requiresAP: true,
+          },
+          debug: {
+            consideredActions: ['detect'],
+            scores: { detect: detectDecision.priority ?? 2.5 },
+            actionAvailability: { detect: 1 },
+            reasoning: detectDecision.reason ?? 'Detect hidden enemies',
+          },
+        };
+      }
     }
 
     // === FORCE MOVEMENT WHEN NO VISIBLE ENEMIES ===
     // When all enemies are Hidden, force movement toward enemy zone
-    const visibleEnemies = context.enemies.filter(e => !e.state.isHidden);
-    const allEnemiesHidden = visibleEnemies.length === 0 && context.enemies.length > 0;
 
     if (allEnemiesHidden) {
       const charPos = context.battlefield.getCharacterPosition(context.character);
@@ -339,11 +362,9 @@ export class CharacterAI implements IAIController {
     }
     // === END FORCE MOVEMENT ===
 
-    // Fallback: Use utility scoring for tactical decisions
-    const scoredActions = this.utilityScorer.evaluateActions(context);
-    const bestAction = scoredActions[0];
+    const selectedAction = (shouldPrioritizeCombat && bestCombatAction) ? bestCombatAction : bestAction;
 
-    if (!bestAction || bestAction.score <= 0) {
+    if (!selectedAction || selectedAction.score <= 0) {
       return {
         decision: {
           type: 'hold',
@@ -361,16 +382,18 @@ export class CharacterAI implements IAIController {
     }
 
     const decision: ActionDecision = {
-      type: bestAction.action,
-      target: bestAction.target,
-      position: bestAction.position,
-      objectiveAction: bestAction.objectiveAction,
-      markerId: bestAction.markerId,
-      markerTargetModelId: bestAction.markerTargetModelId,
-      reason: this.formatDecisionReason(bestAction),
-      planning: this.inferPlanningMetadata(bestAction),
-      priority: bestAction.score,
-      requiresAP: this.actionRequiresAP(bestAction.action),
+      type: selectedAction.action,
+      target: selectedAction.target,
+      position: selectedAction.position,
+      objectiveAction: selectedAction.objectiveAction,
+      markerId: selectedAction.markerId,
+      markerTargetModelId: selectedAction.markerTargetModelId,
+      reason: shouldPrioritizeCombat
+        ? `Combat priority: ${this.formatDecisionReason(selectedAction)}`
+        : this.formatDecisionReason(selectedAction),
+      planning: this.inferPlanningMetadata(selectedAction),
+      priority: selectedAction.score,
+      requiresAP: this.actionRequiresAP(selectedAction.action),
     };
 
     return {

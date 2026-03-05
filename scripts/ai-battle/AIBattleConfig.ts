@@ -35,7 +35,7 @@ export interface GameConfig {
   seed?: number;
   audit?: boolean;
   viewer?: boolean;
-  // Backward compatibility property
+  /** @deprecated Use battlefieldWidth + battlefieldHeight */
   battlefieldSize?: number;
 }
 
@@ -65,6 +65,7 @@ export interface GameSizeConfig {
   name: string;
   battlefieldWidth: number;
   battlefieldHeight: number;
+  deploymentDepth: number;
   maxTurns: number;
   endGameTurn: number;
   bpPerSide: number[];
@@ -103,6 +104,7 @@ function buildGameSizeConfig(size: GameSize): GameSizeConfig {
     name: canonical.name,
     battlefieldWidth: canonical.battlefieldWidthMU,
     battlefieldHeight: canonical.battlefieldHeightMU,
+    deploymentDepth: canonical.deploymentDepth,
     maxTurns: MAX_TURNS_BY_SIZE[size],
     endGameTurn: getEndGameTriggerTurn(size),
     bpPerSide: [
@@ -138,6 +140,14 @@ export function validateGameConfig(config: Partial<GameConfig>): string[] {
   
   if (!config.gameSize) {
     errors.push('Game size is required');
+  }
+
+  if (!Number.isFinite(config.battlefieldWidth) || (config.battlefieldWidth ?? 0) <= 0) {
+    errors.push('Battlefield width must be a positive number');
+  }
+
+  if (!Number.isFinite(config.battlefieldHeight) || (config.battlefieldHeight ?? 0) <= 0) {
+    errors.push('Battlefield height must be a positive number');
   }
   
   if (!config.sides || config.sides.length < 2) {

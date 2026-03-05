@@ -87,17 +87,17 @@ function createTestCharacter(overrides: any = {}): Character {
 describe('Falling Rules', () => {
   describe('calculateAgility', () => {
     it('should calculate agility as MOV × 0.5', () => {
-      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any });
+      const char = createTestCharacter({ finalAttributes: { mov: 2 } as any });
       expect(calculateAgility(char)).toBe(1);
     });
 
     it('should keep fractions up to 0.5', () => {
-      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any });
+      const char = createTestCharacter({ finalAttributes: { mov: 3 } as any });
       expect(calculateAgility(char)).toBe(1.5);
     });
 
     it('should handle MOV 1', () => {
-      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any });
+      const char = createTestCharacter({ finalAttributes: { mov: 1 } as any });
       expect(calculateAgility(char)).toBe(0.5);
     });
 
@@ -109,26 +109,25 @@ describe('Falling Rules', () => {
 
   describe('jumpDown', () => {
     it('should allow jump down within agility without wound', () => {
-      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any }); // Agility = 1
-      const result = jumpDown(char, { terrainHeight: 0.4 }); // Less than agility-0.5
+      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any }); // Agility = 2
+      const result = jumpDown(char, { terrainHeight: 1.4 }); // Less than agility-0.5
       expect(result.success).toBe(true);
       expect(result.woundAdded).toBe(false);
-      expect(result.agilitySpent).toBe(0.4);
+      expect(result.agilitySpent).toBe(1.4);
     });
 
     it('should add wound when jumping down at agility-0.5 or more', () => {
-      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any }); // Agility = 1
-      const result = jumpDown(char, { terrainHeight: 0.5 });
+      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any }); // Agility = 2
+      const result = jumpDown(char, { terrainHeight: 1.5 });
       // At exactly agility-0.5, wound should be added
       expect(result.woundAdded).toBe(true);
     });
 
     it('should trigger Falling Test when fall exceeds agility', () => {
-      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any }); // Agility = 1
-      const result = jumpDown(char, { terrainHeight: 1.5 });
+      const char = createTestCharacter({ finalAttributes: { mov: 4 } as any }); // Agility = 2
+      const result = jumpDown(char, { terrainHeight: 2.5 });
       expect(result.success).toBe(true);
       expect(result.woundAdded).toBe(true);
-      // delayAdded depends on Falling Test result (probabilistic)
       expect(result).toHaveProperty('delayAdded');
     });
 
@@ -176,7 +175,7 @@ describe('Falling Rules', () => {
         finalAttributes: { siz: 3, for: 3, mov: 4, cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2 } as any,
       });
       const charLowFor = createTestCharacter({
-        finalAttributes: { siz: 3, for: 3, mov: 4, cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2 } as any,
+        finalAttributes: { siz: 3, for: 1, mov: 4, cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2 } as any,
       });
       // Higher FOR should generally result in fewer delay tokens
       // (test is probabilistic, so we run multiple times)

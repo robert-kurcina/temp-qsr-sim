@@ -61,6 +61,7 @@ import {
 } from '../../src/lib/mest-tactics/utils/visibility';
 import type { GameConfig, SideConfig, BattleReport, BattleStats, AdvancedRuleMetrics, BattleLogEntry, NestedSections, UsageMetrics, ModelUsageStats, BattleAuditTrace, TurnAudit, ActivationAudit, ActionStepAudit, ModelEffectAudit, OpposedTestAudit, AuditVector, ModelStateAudit, BattlePerformanceSummary, PhaseTimingSummary, TurnTimingSummary, SlowActivationSummary } from '../shared/BattleReportTypes';
 import { GAME_SIZE_CONFIG } from '../shared/AIBattleConfig';
+import { getMissionDeploymentProfile, type MissionDeploymentType } from '../../src/lib/mest-tactics/missions/mission-deployment';
 import { formatBattleReportHumanReadable } from './reporting/BattleReportFormatter';
 import { writeSingleBattleReport, writeVisualAuditReport, writeBattleReportViewer, writeBattlefieldSvg } from './reporting/BattleReportWriter';
 import { createEmptyStats, createEmptyAdvancedRuleMetrics, safeRate, createSeededRandom, emptyKnowledge, CONTEXT_MODIFIER_KEYS, type RuleTypeBreakdown, type SideSection, type CharacterSection, type ReactAuditResult } from './validation/ValidationMetrics';
@@ -71,7 +72,6 @@ import { PerformanceProfiler } from './instrumentation/PerformanceProfiler';
 // Import from new core modules
 import {
   buildPredictedScoring,
-  buildSideStrategies,
   findBestRetreatPosition,
   findPushBackSelection,
   getBonusActionPriority,
@@ -171,6 +171,7 @@ export class AIBattleRunner {
   private advancedRules: AdvancedRuleMetrics = createEmptyAdvancedRuleMetrics();
 
   private currentBattlefield: Battlefield | null = null;
+  private currentGameManager: GameManager | null = null;
   private auditTurns: TurnAudit[] = [];
   private activationSequence = 0;
   private lastTerrainResult: TerrainPlacementResult | null = null;
@@ -187,6 +188,7 @@ export class AIBattleRunner {
     this.missionSides = [];
     this.missionRuntimeAdapter = null;
     this.currentBattlefield = null;
+    this.currentGameManager = null;
     this.lastTerrainResult = null;
     this.battlefieldExportPath = null;
     this.auditTurns = [];
@@ -276,6 +278,22 @@ export class AIBattleRunner {
     return hasData ? { bySide } : undefined;
   }
 
+  private normalizeKeyScores(
+    scores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number } | undefined> | undefined
+  ): Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }> {
+    const normalized: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }> = {};
+    for (const [key, value] of Object.entries(scores ?? {})) {
+      if (!value) continue;
+      normalized[key] = {
+        current: value.current,
+        predicted: value.predicted,
+        confidence: value.confidence,
+        leadMargin: value.leadMargin,
+      };
+    }
+    return normalized;
+  }
+
   /**
    * Build side-level AI strategies for battle report (R1.5: God Mode Coordination)
    * Captures strategic context and advice from all Side Coordinators
@@ -290,7 +308,6 @@ export class AIBattleRunner {
       losingKeys: string[];
     };
   }> | undefined {
-    // Use doctrineByCharacterId map to build strategies
     const strategies: Record<string, {
       doctrine: string;
       advice: string[];
@@ -302,9 +319,33 @@ export class AIBattleRunner {
       };
     }> = {};
 
-    for (const [characterId, doctrine] of this.doctrineByCharacterId.entries()) {
-      strategies[characterId] = {
-        doctrine,
+    // Prefer canonical side-level strategies from SideCoordinatorManager.
+    const managerStrategies = this.currentGameManager?.getSideStrategies?.();
+    if (managerStrategies && Object.keys(managerStrategies).length > 0) {
+      for (const [sideId, strategy] of Object.entries(managerStrategies)) {
+        if (!strategy) continue;
+        strategies[sideId] = {
+          doctrine: String(strategy.doctrine ?? TacticalDoctrine.Operative),
+          advice: Array.isArray(strategy.advice) ? strategy.advice : [],
+          context: strategy.context ? {
+            amILeading: strategy.context.amILeading,
+            vpMargin: strategy.context.vpMargin,
+            winningKeys: strategy.context.winningKeys,
+            losingKeys: strategy.context.losingKeys,
+          } : undefined,
+        };
+      }
+    }
+
+    if (Object.keys(strategies).length > 0) {
+      return strategies;
+    }
+
+    // Fallback for legacy flows without side coordinators.
+    for (const side of this.missionSides) {
+      const doctrine = this.doctrineByCharacterId.get(side.members[0]?.character.id ?? '') ?? TacticalDoctrine.Operative;
+      strategies[side.id] = {
+        doctrine: String(doctrine),
         advice: [],
       };
     }
@@ -735,6 +776,7 @@ export class AIBattleRunner {
       maxOrm: config.maxOrm,
       allowConcentrateRangeExtension: config.allowConcentrateRangeExtension,
       perCharacterFovLos: config.perCharacterFovLos,
+      gameSize: config.gameSize,
       missionId: config.missionId,
       missionRole,
       doctrineEngagement: doctrineComponents.engagement,
@@ -2153,18 +2195,30 @@ export class AIBattleRunner {
       });
       out();
 
-      // Create battlefield
-      const battlefieldSize = Math.max(config.battlefieldWidth, config.battlefieldHeight);
+      // Create battlefield using canonical rectangular dimensions.
       const battlefield = this.withPhaseTiming(
         'setup.create_battlefield',
-        () => this.createBattlefield(battlefieldSize, config.densityRatio)
+        () => this.createBattlefield(config.battlefieldWidth, config.battlefieldHeight, config.densityRatio)
       );
       this.currentBattlefield = battlefield;
 
       // Deploy models
       this.withPhaseTiming('setup.deploy_models', () => {
+        const deploymentProfile = getMissionDeploymentProfile(config.missionId, config.gameSize);
         sides.forEach((side, i) => {
-          this.deployModels(side, battlefield, i, config.battlefieldHeight);
+          const deploymentDepth = Math.max(
+            1,
+            deploymentProfile.deploymentDepth || GAME_SIZE_CONFIG[config.gameSize]?.deploymentDepth || 6
+          );
+          this.deployModels(
+            side,
+            battlefield,
+            i,
+            config.battlefieldWidth,
+            config.battlefieldHeight,
+            deploymentDepth,
+            deploymentProfile.deploymentType
+          );
         });
       });
       const allCharacters = sides.flatMap(s => s.characters);
@@ -2181,7 +2235,16 @@ export class AIBattleRunner {
 
       // Create game manager
       const gameManager = new GameManager(allCharacters, battlefield);
+      this.currentGameManager = gameManager;
       this.missionSides = this.createMissionSides(config, sides);
+      gameManager.setSides(this.missionSides);
+      const sideDoctrines = new Map<string, TacticalDoctrine>();
+      for (let sideIndex = 0; sideIndex < this.missionSides.length; sideIndex++) {
+        const sideId = this.missionSides[sideIndex].id;
+        const doctrine = config.sides[sideIndex]?.tacticalDoctrine ?? TacticalDoctrine.Operative;
+        sideDoctrines.set(sideId, doctrine);
+      }
+      gameManager.initializeSideCoordinators(this.missionSides, sideDoctrines);
       this.missionSideIds = this.missionSides.map(side => side.id);
       this.missionVpBySide = Object.fromEntries(this.missionSideIds.map(sideId => [sideId, 0]));
       this.missionRpBySide = Object.fromEntries(this.missionSideIds.map(sideId => [sideId, 0]));
@@ -2207,6 +2270,8 @@ export class AIBattleRunner {
               maxOrm: config.maxOrm,
               allowConcentrateRangeExtension: config.allowConcentrateRangeExtension,
               perCharacterFovLos: config.perCharacterFovLos,
+              gameSize: config.gameSize,
+              missionId: config.missionId,
             },
           } as any;
           aiControllers.set(char.id, new CharacterAI(aiConfig));
@@ -2221,7 +2286,7 @@ export class AIBattleRunner {
         const turnStartedMs = Date.now();
         turn++;
         this.tracker.setTurnsCompleted(turn);
-        this.withPhaseTiming('turn.start', () => gameManager.startTurn());
+        this.withPhaseTiming('turn.start', () => gameManager.startTurn(Math.random, this.missionSides));
         if (this.missionRuntimeAdapter) {
           const turnStartUpdate = this.withPhaseTiming(
             'turn.mission_start_update',
@@ -2230,47 +2295,12 @@ export class AIBattleRunner {
           this.applyMissionRuntimeUpdate(turnStartUpdate);
         }
 
-        // === R1.5: Update scoring context with ACTUAL VP/RP for Keys to Victory ===
-        // VP/RP values passed to AI context for tactical decision-making
+        // === R1.5: Update side-level scoring context from mission-managed key scores ===
         const coordinatorManager = gameManager.getSideCoordinatorManager();
         if (coordinatorManager) {
           const sideKeyScores = new Map<string, Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }>>();
-          for (const side of sides) {
-            const actualVp = this.missionVpBySide[side.id] ?? 0;
-            const actualRp = this.missionRpBySide[side.id] ?? 0;
-
-            // Calculate enemy VP/RP for lead margin
-            const enemyVpValues = Object.entries(this.missionVpBySide)
-              .filter(([sid]) => sid !== side.id)
-              .map(([, vp]) => vp);
-            const maxEnemyVp = enemyVpValues.length > 0 ? Math.max(...enemyVpValues) : 0;
-
-            const enemyRpValues = Object.entries(this.missionRpBySide)
-              .filter(([sid]) => sid !== side.id)
-              .map(([, rp]) => rp);
-            const maxEnemyRp = enemyRpValues.length > 0 ? Math.max(...enemyRpValues) : 0;
-
-            // Elimination mission key scores based on actual eliminations
-            sideKeyScores.set(side.id, {
-              elimination: {
-                current: actualVp,
-                predicted: actualVp + 0.5,
-                confidence: 0.7,
-                leadMargin: actualVp - maxEnemyVp,
-              },
-              bottled: {
-                current: 0,
-                predicted: 0.3,
-                confidence: 0.5,
-                leadMargin: 0,
-              },
-              first_blood: {
-                current: actualRp > 0 ? 1 : 0,
-                predicted: actualRp > 0 ? 1 : 0.5,
-                confidence: actualRp > 0 ? 1.0 : 0.5,
-                leadMargin: actualRp - maxEnemyRp,
-              },
-            });
+          for (const side of this.missionSides) {
+            sideKeyScores.set(side.id, this.normalizeKeyScores(side.state.keyScores as any));
           }
 
           const missionConfig = {
@@ -2534,18 +2564,16 @@ export class AIBattleRunner {
     return { characters: assembly.characters, totalBP: assembly.assembly.totalBP, id: sideConfig.assemblyName };
   }
 
-  private createBattlefield(size: number, densityRatio: number): Battlefield {
-    const battlefield = new Battlefield(size, size);
-
+  private createBattlefield(width: number, height: number, densityRatio: number): Battlefield {
+    const battlefield = new Battlefield(width, height);
     // Use layered terrain placement
     const result = placeTerrain({
       mode: 'balanced',
       density: densityRatio,
-      battlefieldSize: size,
+      battlefieldWidth: width,
+      battlefieldHeight: height,
       terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
     });
-
-    // Store terrain result for export
     this.lastTerrainResult = result;
 
     // Add placed terrain to battlefield
@@ -2602,31 +2630,43 @@ export class AIBattleRunner {
     return { x: x / vertices.length, y: y / vertices.length };
   }
 
-  private deployModels(assembly: { characters: Character[] }, battlefield: Battlefield, sideIndex: number, size: number) {
-    const edgeMargin = 3;
-    const deploymentDepth = Math.max(6, Math.floor(size * 0.22));
+  private deployModels(
+    assembly: { characters: Character[] },
+    battlefield: Battlefield,
+    sideIndex: number,
+    battlefieldWidth: number,
+    battlefieldHeight: number,
+    deploymentDepth: number,
+    deploymentType: MissionDeploymentType
+  ) {
+    const zone = this.getDeploymentBoundsForSide(
+      sideIndex,
+      battlefieldWidth,
+      battlefieldHeight,
+      deploymentDepth,
+      deploymentType
+    );
     const count = assembly.characters.length;
-    const cols = Math.max(1, Math.ceil(Math.sqrt(count * (size / deploymentDepth))));
+    const zoneWidth = zone.maxX - zone.minX + 1;
+    const zoneHeight = zone.maxY - zone.minY + 1;
+    const cols = Math.max(1, Math.ceil(Math.sqrt(count * (zoneWidth / Math.max(1, zoneHeight)))));
     const rows = Math.max(1, Math.ceil(count / cols));
-    const xSpacing = cols > 1 ? (size - edgeMargin * 2 - 1) / (cols - 1) : 0;
-    const ySpacing = rows > 1 ? (deploymentDepth - 1) / (rows - 1) : 0;
-    const sideStartY = sideIndex === 0
-      ? edgeMargin
-      : Math.max(edgeMargin, size - edgeMargin - deploymentDepth);
+    const xSpacing = cols > 1 ? (zoneWidth - 1) / (cols - 1) : 0;
+    const ySpacing = rows > 1 ? (zoneHeight - 1) / (rows - 1) : 0;
 
     assembly.characters.forEach((char: Character, i: number) => {
       let x, y;
       const row = Math.floor(i / cols);
       const col = i % cols;
 
-      x = edgeMargin + col * xSpacing;
-      y = sideStartY + row * ySpacing;
+      x = zone.minX + col * xSpacing;
+      y = zone.minY + row * ySpacing;
       const preferred = {
-        x: Math.max(0, Math.min(size - 1, Math.round(x))),
-        y: Math.max(0, Math.min(size - 1, Math.round(y))),
+        x: Math.max(zone.minX, Math.min(zone.maxX, Math.round(x))),
+        y: Math.max(zone.minY, Math.min(zone.maxY, Math.round(y))),
       };
       const fallbackRadius = Math.max(2, Math.ceil(Math.sqrt(count)));
-      const deploymentCell = this.findOpenCellNear(preferred, battlefield, fallbackRadius);
+      const deploymentCell = this.findOpenCellNear(preferred, battlefield, fallbackRadius, zone);
       if (!deploymentCell) {
         throw new Error(`Unable to deploy model ${char.id} at side index ${sideIndex}.`);
       }
@@ -2634,10 +2674,103 @@ export class AIBattleRunner {
     });
   }
 
+  private getDeploymentBoundsForSide(
+    sideIndex: number,
+    battlefieldWidth: number,
+    battlefieldHeight: number,
+    deploymentDepth: number,
+    deploymentType: MissionDeploymentType
+  ): { minX: number; maxX: number; minY: number; maxY: number } {
+    const zoneDepth = Math.max(1, Math.floor(deploymentDepth));
+    if (deploymentType === 'corners') {
+      const depthX = Math.min(zoneDepth, battlefieldWidth);
+      const depthY = Math.min(zoneDepth, battlefieldHeight);
+      const corner = sideIndex % 4;
+
+      if (corner === 0) {
+        return {
+          minX: 0,
+          maxX: depthX - 1,
+          minY: 0,
+          maxY: depthY - 1,
+        };
+      }
+
+      if (corner === 1) {
+        return {
+          minX: battlefieldWidth - depthX,
+          maxX: battlefieldWidth - 1,
+          minY: battlefieldHeight - depthY,
+          maxY: battlefieldHeight - 1,
+        };
+      }
+
+      if (corner === 2) {
+        return {
+          minX: battlefieldWidth - depthX,
+          maxX: battlefieldWidth - 1,
+          minY: 0,
+          maxY: depthY - 1,
+        };
+      }
+
+      return {
+        minX: 0,
+        maxX: depthX - 1,
+        minY: battlefieldHeight - depthY,
+        maxY: battlefieldHeight - 1,
+      };
+    }
+
+    // Custom deployment geometry is mission-specific and not yet authored here.
+    // Fall back to opposing-edge behavior for deterministic placement.
+    const edgeOrder = battlefieldWidth >= battlefieldHeight
+      ? ['north', 'south', 'west', 'east']
+      : ['west', 'east', 'north', 'south'];
+    const edge = edgeOrder[sideIndex % edgeOrder.length];
+
+    if (edge === 'north') {
+      return {
+        minX: 0,
+        maxX: battlefieldWidth - 1,
+        minY: 0,
+        maxY: Math.min(battlefieldHeight - 1, zoneDepth - 1),
+      };
+    }
+
+    if (edge === 'south') {
+      const minY = Math.max(0, battlefieldHeight - zoneDepth);
+      return {
+        minX: 0,
+        maxX: battlefieldWidth - 1,
+        minY,
+        maxY: battlefieldHeight - 1,
+      };
+    }
+
+    if (edge === 'west') {
+      return {
+        minX: 0,
+        maxX: Math.min(battlefieldWidth - 1, zoneDepth - 1),
+        minY: 0,
+        maxY: battlefieldHeight - 1,
+      };
+    }
+
+    const minX = Math.max(0, battlefieldWidth - zoneDepth);
+    return {
+      minX,
+      maxX: battlefieldWidth - 1,
+      minY: 0,
+      maxY: battlefieldHeight - 1,
+    };
+  }
+
   private findOpenCellNear(
     preferred: Position,
     battlefield: Battlefield,
-    maxRadius: number
+    maxRadius: number,
+    bounds?: { minX: number; maxX: number; minY: number; maxY: number }
   ): Position | null {
     const cx = Math.max(0, Math.min(battlefield.width - 1, Math.round(preferred.x)));
     const cy = Math.max(0, Math.min(battlefield.height - 1, Math.round(preferred.y)));
@@ -2651,6 +2784,9 @@ export class AIBattleRunner {
           const x = cx + dx;
           const y = cy + dy;
           if (x < 0 || x >= battlefield.width || y < 0 || y >= battlefield.height) {
+            continue;
+          }
+          if (bounds && (x < bounds.minX || x > bounds.maxX || y < bounds.minY || y > bounds.maxY)) {
             continue;
           }
           if (!battlefield.getCharacterAt({ x, y })) {
@@ -2753,6 +2889,10 @@ export class AIBattleRunner {
         }
 
         const apBefore = gameManager.getApRemaining(character);
+        const coordinatorManager = gameManager.getSideCoordinatorManager();
+        const sideScoringContext = coordinatorManager
+          ?.getCoordinator(sideName)
+          .getScoringContext();
         const context: AIContext = {
           character,
           allies,
@@ -2769,8 +2909,20 @@ export class AIBattleRunner {
           vpBySide: { ...this.missionVpBySide },
           rpBySide: { ...this.missionRpBySide },
           maxTurns: config.maxTurns,
+          side: this.missionSides[sideIndex],
+          scoringContext: sideScoringContext ? {
+            myKeyScores: this.normalizeKeyScores(sideScoringContext.myScores as any),
+            opponentKeyScores: this.normalizeKeyScores(sideScoringContext.opponentScores as any),
+            amILeading: sideScoringContext.amILeading,
+            vpMargin: sideScoringContext.vpMargin,
+            winningKeys: sideScoringContext.winningKeys,
+            losingKeys: sideScoringContext.losingKeys,
+          } : undefined,
         };
-        context.knowledge = aiController.updateKnowledge(context);
+        context.knowledge = this.withPhaseTiming(
+          'ai.update_knowledge',
+          () => aiController.updateKnowledge(context)
+        );
 
         const aiDecisionStartMs = Date.now();
         const aiResult = this.withPhaseTiming(
@@ -3152,6 +3304,37 @@ export class AIBattleRunner {
             }
             break;
           }
+          case 'pushing': {
+            this.tracker.incrementAction('Pushing');
+            const pushing = gameManager.executePushing(character);
+            actionExecuted = pushing.success;
+            result = pushing.success
+              ? `pushing=true:ap+${pushing.apGained}`
+              : `pushing=false:${pushing.reason ?? 'failed'}`;
+            stepDetails = {
+              pushingResult: this.sanitizeForAudit(pushing) as Record<string, unknown>,
+            };
+            break;
+          }
+          case 'refresh': {
+            this.tracker.incrementAction('Refresh');
+            const delayBefore = character.state.delayTokens ?? 0;
+            const refreshed = gameManager.refreshForCharacter(character);
+            if (refreshed) {
+              character.refreshStatusFlags();
+            }
+            actionExecuted = refreshed;
+            result = refreshed ? 'refresh=true' : 'refresh=false:failed';
+            stepDetails = {
+              refreshResult: {
+                success: refreshed,
+                delayBefore,
+                delayAfter: character.state.delayTokens ?? 0,
+                sideInitiativePoints: this.missionSides[sideIndex]?.state?.initiativePoints ?? 0,
+              },
+            };
+            break;
+          }
           case 'hide': {
             this.tracker.trackAttempt(character, 'hide');
             this.tracker.incrementAction("Hide");
@@ -3450,7 +3633,8 @@ export class AIBattleRunner {
           details: stepDetails,
         });
 
-        if (apAfter >= apBefore) {
+        const successfulNonAPAction = actionExecuted && (decision.type === 'pushing' || decision.type === 'refresh');
+        if (apAfter >= apBefore && !successfulNonAPAction) {
           const fallback = this.computeFallbackMovePosition(character, enemies, battlefield, config);
           if (fallback && gameManager.spendAp(character, 1)) {
             const fallbackStart = battlefield.getCharacterPosition(character);
@@ -3902,6 +4086,7 @@ export class AIBattleRunner {
   private snapToOpenCell(position: Position, actor: Character, battlefield: Battlefield): Position | null {
     const actorPos = battlefield.getCharacterPosition(actor);
     if (!actorPos) return null;
+    const actorBase = getBaseDiameterFromSiz(actor.finalAttributes.siz ?? actor.attributes.siz ?? 3);
 
     const cx = Math.max(0, Math.min(battlefield.width - 1, Math.round(position.x)));
     const cy = Math.max(0, Math.min(battlefield.height - 1, Math.round(position.y)));
@@ -3912,8 +4097,7 @@ export class AIBattleRunner {
           const x = Math.max(0, Math.min(battlefield.width - 1, cx + dx));
           const y = Math.max(0, Math.min(battlefield.height - 1, cy + dy));
           if (x === actorPos.x && y === actorPos.y) continue;
-          const occupant = battlefield.getCharacterAt({ x, y });
-          if (!occupant || occupant.id === actor.id) {
+          if (battlefield.canOccupy({ x, y }, actorBase)) {
             return { x, y };
           }
         }

@@ -11,14 +11,16 @@
  * const result = TerrainPlacementService.placeTerrain({
  *   mode: 'balanced',
  *   density: 50,
- *   battlefieldSize: 48,
+ *   battlefieldWidth: 48,
+ *   battlefieldHeight: 36,
  *   seed: 12345,
  * });
  * 
  * // Validate fitness
  * const fitness = TerrainFitness.validateTerrainFitness(
  *   result.terrain,
- *   48,  // battlefield size
+ *   48,  // battlefield width
+ *   36,  // battlefield height
  *   0.5  // min spacing
  * );
  * ```

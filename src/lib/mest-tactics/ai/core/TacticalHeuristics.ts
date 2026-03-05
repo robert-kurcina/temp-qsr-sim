@@ -336,6 +336,8 @@ export function getCohesionAwareEnemies(
   position: Position
 ): CohesionAwareEnemies {
   const visibilityOR = context.config.visibilityOrMu ?? 16;
+  const gameSize = String((context.config as any).gameSize ?? '').toUpperCase();
+  const skipLosForVerySmall = gameSize === 'VERY_SMALL' && !context.config.perCharacterFovLos;
   const relevant = getTacticallyRelevantEnemies(context);
   
   const mySiz = context.character.finalAttributes?.siz ?? context.character.attributes?.siz ?? 3;
@@ -349,8 +351,9 @@ export function getCohesionAwareEnemies(
     
     const dist = Math.hypot(position.x - enemyPos.x, position.y - enemyPos.y);
     
-    // QSR: Must have LOS to be within cohesion
-    const hasLOS = context.battlefield.hasLineOfSight(position, enemyPos);
+    // QSR: cohesion normally requires LOS, but VERY_SMALL god-mode runs can bypass
+    // this expensive check when per-character LOS is disabled.
+    const hasLOS = skipLosForVerySmall ? true : context.battlefield.hasLineOfSight(position, enemyPos);
     if (!hasLOS) {
       outsideCohesion.push(enemy);
       continue;

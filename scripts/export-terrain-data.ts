@@ -23,7 +23,8 @@ const battlefieldSize = 36;
 const terrainResult = placeTerrain({
   mode: 'balanced',
   density: 100,
-  battlefieldSize: battlefieldSize,
+  battlefieldWidth: battlefieldSize,
+  battlefieldHeight: battlefieldSize,
   terrainTypes: [
     'Small Building', 'Medium Building',
     'Short Wall', 'Medium Wall',

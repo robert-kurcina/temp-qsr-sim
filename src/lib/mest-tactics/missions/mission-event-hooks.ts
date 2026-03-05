@@ -216,7 +216,18 @@ export class MissionEventManager {
       priority: hook.priority ?? 0,
       metadata: hook.metadata ?? {},
     };
-    this.hooks.set(normalized.id, normalized);
+    const hookRef = hook as MissionEventHook;
+    hookRef.id = normalized.id;
+    hookRef.name = normalized.name;
+    hookRef.trigger = normalized.trigger;
+    hookRef.turnNumber = normalized.turnNumber;
+    hookRef.conditions = normalized.conditions;
+    hookRef.effects = normalized.effects;
+    hookRef.hasTriggered = normalized.hasTriggered;
+    hookRef.repeatable = normalized.repeatable;
+    hookRef.priority = normalized.priority;
+    hookRef.metadata = normalized.metadata;
+    this.hooks.set(normalized.id, hookRef);
   }
 
   /**

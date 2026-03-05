@@ -763,15 +763,38 @@ export class StealthEvaluator {
     // === Keys to Victory Cost-Benefit Analysis ===
     // Base priority for Detect action
     let priority = 2.2;
+    const detectRange = context.config.visibilityOrMu ?? 16;
     const charPos = context.battlefield.getCharacterPosition(character);
-    const nearbyHiddenCount = charPos
-      ? hiddenEnemies.filter(enemy => {
-          const enemyPos = context.battlefield.getCharacterPosition(enemy);
-          if (!enemyPos) return false;
-          const distance = Math.hypot(charPos.x - enemyPos.x, charPos.y - enemyPos.y);
-          return distance <= 16;
-        }).length
-      : 0;
+    const rankedHidden = hiddenEnemies
+      .map(enemy => {
+        const enemyPos = context.battlefield.getCharacterPosition(enemy);
+        const hasLOS = Boolean(charPos && enemyPos && SpatialRules.hasLineOfSight(
+          context.battlefield,
+          {
+            id: character.id,
+            position: charPos,
+            baseDiameter: getBaseDiameterFromSiz(character.finalAttributes.siz ?? 3),
+            siz: character.finalAttributes.siz ?? 3,
+          },
+          {
+            id: enemy.id,
+            position: enemyPos,
+            baseDiameter: getBaseDiameterFromSiz(enemy.finalAttributes.siz ?? 3),
+            siz: enemy.finalAttributes.siz ?? 3,
+          }
+        ));
+        const distance = (charPos && enemyPos)
+          ? Math.hypot(charPos.x - enemyPos.x, charPos.y - enemyPos.y)
+          : Number.POSITIVE_INFINITY;
+        return { enemy, distance, hasLOS };
+      })
+      .sort((a, b) => a.distance - b.distance);
+    const validDetectTargets = rankedHidden.filter(entry => entry.distance <= detectRange && entry.hasLOS);
+    if (validDetectTargets.length === 0) {
+      return { shouldDetect: false, targets: [], reason: 'No hidden targets in Detect LOS/range' };
+    }
+    const detectTargets = validDetectTargets.map(entry => entry.enemy);
+    const nearbyHiddenCount = validDetectTargets.length;
 
     // Tactical factors
     if (hiddenEnemies.length >= 2) {
@@ -779,6 +802,9 @@ export class StealthEvaluator {
     }
     if (nearbyHiddenCount > 0) {
       priority += 0.5; // Nearby targets = easier to reveal
+    }
+    if (nearbyHiddenCount === 0) {
+      priority -= 1.2; // Avoid spending turns on impossible/out-of-range Detect loops
     }
     if (character.state.isInCover) {
       priority += 0.2; // Safe to Detect
@@ -822,9 +848,9 @@ export class StealthEvaluator {
 
     return {
       shouldDetect: priority >= 2.4,
-      targets: hiddenEnemies,
+      targets: detectTargets,
       priority,
-      reason: `Detect ${hiddenEnemies.length} hidden (VP: ${myVP}-${enemyVP}, AP: ${apCost}, priority: ${priority.toFixed(1)})`,
+      reason: `Detect ${detectTargets.length} hidden (VP: ${myVP}-${enemyVP}, AP: ${apCost}, priority: ${priority.toFixed(1)})`,
     };
   }
 

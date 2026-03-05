@@ -33,7 +33,8 @@ export type PlacementMode = 'fast' | 'balanced' | 'thorough';
 export interface TerrainPlacementOptions {
   mode: PlacementMode;
   density: number;          // 0-100 percentage
-  battlefieldSize: number;  // MU (square battlefield)
+  battlefieldWidth: number;  // MU
+  battlefieldHeight: number; // MU
   seed?: number;            // For reproducibility
   minSpacing?: number;      // Minimum spacing between terrain (default: 0.5 MU)
   terrainTypes?: string[];  // Available terrain types
@@ -183,6 +184,8 @@ const MODE_CONFIG: Record<PlacementMode, {
 export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacementResult {
   const rng = options.seed !== undefined ? new SeededRandom(options.seed) : null;
   const config = MODE_CONFIG[options.mode];
+  const battlefieldWidth = options.battlefieldWidth;
+  const battlefieldHeight = options.battlefieldHeight;
   const allTerrainTypes = options.terrainTypes
     ? DEFAULT_TERRAIN_TYPES.filter(t => options.terrainTypes!.includes(t.name))
     : DEFAULT_TERRAIN_TYPES;
@@ -224,8 +227,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
 
   const minSpacing = options.minSpacing ?? config.minSpacing;
   const edgeMargin = 1.0;
-  const placeableWidth = options.battlefieldSize - edgeMargin * 2;
-  const placeableHeight = options.battlefieldSize - edgeMargin * 2;
+  const placeableWidth = battlefieldWidth - edgeMargin * 2;
+  const placeableHeight = battlefieldHeight - edgeMargin * 2;
 
   // Step 1: Place area terrain (rough patches) with overlap
   if (areaTerrainTypes.length > 0) {
@@ -234,7 +237,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
 
     const areaResult = placeAreaTerrainLayer(
       areaTerrainTypes,
-      options.battlefieldSize,
+      battlefieldWidth,
+      battlefieldHeight,
       areaDensity,
       areaOverlapRatio,
       edgeMargin,
@@ -259,7 +263,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
 
     structuresResult = placeStructuresLayer(
       structureTerrainTypes,
-      options.battlefieldSize,
+      battlefieldWidth,
+      battlefieldHeight,
       structuresDensity,
       structuresClearance,
       edgeMargin,
@@ -284,7 +289,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
 
     rocksResult = placeRocksLayer(
       rockTerrainTypes,
-      options.battlefieldSize,
+      battlefieldWidth,
+      battlefieldHeight,
       rocksDensity,
       rocksClearance,
       edgeMargin,
@@ -332,7 +338,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
 
     shrubsResult = placeShrubsLayer(
       shrubTerrainTypes,
-      options.battlefieldSize,
+      battlefieldWidth,
+      battlefieldHeight,
       shrubsDensity,
       edgeMargin,
       placeableWidth,
@@ -393,7 +400,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
 
     const treesResult = placeTreesLayer(
       treeTerrainTypes,
-      options.battlefieldSize,
+      battlefieldWidth,
+      battlefieldHeight,
       treesDensity,
       treesOverlapRatio,
       edgeMargin,
@@ -412,13 +420,14 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
   // Step 6: Place other terrain (etc.)
   // Structures, rocks, shrubs, and trees reduce available area for this layer
   if (otherTerrainTypes.length > 0) {
-    const terrainCount = calculateTerrainCount(options.battlefieldSize, options.density);
+    const terrainCount = calculateTerrainCount(battlefieldWidth, battlefieldHeight, options.density);
 
     for (let i = 0; i < terrainCount; i++) {
       const placed = tryPlaceTerrain(
         terrain,
         otherTerrainTypes,
-        options.battlefieldSize,
+        battlefieldWidth,
+        battlefieldHeight,
         edgeMargin,
         placeableWidth,
         placeableHeight,
@@ -437,7 +446,7 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
   }
 
   // Validate final placement
-  const fitness = validateTerrainFitness(terrain, options.battlefieldSize, minSpacing);
+  const fitness = validateTerrainFitness(terrain, battlefieldWidth, battlefieldHeight, minSpacing);
 
   return { terrain, stats, fitness };
 }
@@ -447,7 +456,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
  */
 function placeAreaTerrainLayer(
   areaTerrainTypes: TerrainTypeConfig[],
-  battlefieldSize: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   density: number,
   maxOverlapRatio: number,
   edgeMargin: number,
@@ -459,14 +469,14 @@ function placeAreaTerrainLayer(
 ): TerrainFeature[] {
   const placedFeatures: TerrainFeature[] = [];
   const areaLayer = new AreaTerrainLayer({
-    width: battlefieldSize,
-    height: battlefieldSize,
+    width: battlefieldWidth,
+    height: battlefieldHeight,
     cellResolution: 0.5,
     maxOverlapRatio,
   });
 
   // Calculate number of area terrain pieces
-  const areaCount = calculateTerrainCount(battlefieldSize, density);
+  const areaCount = calculateTerrainCount(battlefieldWidth, battlefieldHeight, density);
 
   for (let i = 0; i < areaCount; i++) {
     stats.attempts++;
@@ -503,7 +513,8 @@ function placeAreaTerrainLayer(
  */
 function placeStructuresLayer(
   structureTerrainTypes: TerrainTypeConfig[],
-  battlefieldSize: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   density: number,
   minClearance: number,
   edgeMargin: number,
@@ -515,8 +526,8 @@ function placeStructuresLayer(
 ): { terrain: TerrainFeature[]; blockedRatio: number; actualBounds: { bounds: { minX: number; minY: number; maxX: number; maxY: number } }[] } {
   const placedFeatures: TerrainFeature[] = [];
   const structuresLayer = new StructuresLayer({
-    width: battlefieldSize,
-    height: battlefieldSize,
+    width: battlefieldWidth,
+    height: battlefieldHeight,
     minClearance,
     edgeMargin,
   });
@@ -524,7 +535,7 @@ function placeStructuresLayer(
   // Calculate number of structures to place
   // Structures use a different formula: more structures per area due to smaller size
   // Base: 1 structure per 30 square MU at 100% density
-  const structuresCount = calculateStructuresCount(battlefieldSize, density);
+  const structuresCount = calculateStructuresCount(battlefieldWidth, battlefieldHeight, density);
 
   for (let i = 0; i < structuresCount; i++) {
     stats.attempts++;
@@ -574,7 +585,8 @@ function placeStructuresLayer(
  */
 function placeRocksLayer(
   rockTerrainTypes: TerrainTypeConfig[],
-  battlefieldSize: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   density: number,
   minClearance: number,
   edgeMargin: number,
@@ -587,8 +599,8 @@ function placeRocksLayer(
 ): { terrain: TerrainFeature[] } {
   const placedFeatures: TerrainFeature[] = [];
   const rocksLayer = new RocksLayer({
-    width: battlefieldSize,
-    height: battlefieldSize,
+    width: battlefieldWidth,
+    height: battlefieldHeight,
     minClearance,
     edgeMargin,
   });
@@ -597,7 +609,7 @@ function placeRocksLayer(
   rocksLayer.setStructures(structureBounds);
 
   // Calculate number of rocks to place
-  const rocksCount = calculateRocksCount(battlefieldSize, density);
+  const rocksCount = calculateRocksCount(battlefieldWidth, battlefieldHeight, density);
 
   for (let i = 0; i < rocksCount; i++) {
     stats.attempts++;
@@ -645,7 +657,8 @@ function placeRocksLayer(
  */
 function placeShrubsLayer(
   shrubTerrainTypes: TerrainTypeConfig[],
-  battlefieldSize: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   density: number,
   edgeMargin: number,
   placeableWidth: number,
@@ -657,8 +670,8 @@ function placeShrubsLayer(
 ): { terrain: TerrainFeature[] } {
   const placedFeatures: TerrainFeature[] = [];
   const shrubsLayer = new ShrubsLayer({
-    width: battlefieldSize,
-    height: battlefieldSize,
+    width: battlefieldWidth,
+    height: battlefieldHeight,
     minClearance: 0.0,  // ZERO clearance - shrubs can touch structures
     edgeMargin: 0.5,
   });
@@ -667,7 +680,7 @@ function placeShrubsLayer(
   shrubsLayer.setStructures(structureBounds);
 
   // Calculate number of shrubs to place
-  const shrubsCount = calculateShrubsCount(battlefieldSize, density);
+  const shrubsCount = calculateShrubsCount(battlefieldWidth, battlefieldHeight, density);
 
   for (let i = 0; i < shrubsCount; i++) {
     stats.attempts++;
@@ -706,7 +719,8 @@ function placeShrubsLayer(
  */
 function placeTreesLayer(
   treeTerrainTypes: TerrainTypeConfig[],
-  battlefieldSize: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   density: number,
   maxOverlapRatio: number,
   edgeMargin: number,
@@ -719,8 +733,8 @@ function placeTreesLayer(
 ): { terrain: TerrainFeature[] } {
   const placedFeatures: TerrainFeature[] = [];
   const treesLayer = new TreesLayer({
-    width: battlefieldSize,
-    height: battlefieldSize,
+    width: battlefieldWidth,
+    height: battlefieldHeight,
     minClearance: 0.0,  // ZERO clearance - trees can touch structures
     edgeMargin: 0.5,
     maxOverlapRatio,  // 20% overlap allowed between trees
@@ -730,7 +744,7 @@ function placeTreesLayer(
   treesLayer.setStructures(blockingBounds);
 
   // Calculate number of trees to place
-  const treesCount = calculateTreesCount(battlefieldSize, density);
+  const treesCount = calculateTreesCount(battlefieldWidth, battlefieldHeight, density);
 
   for (let i = 0; i < treesCount; i++) {
     stats.attempts++;
@@ -767,9 +781,9 @@ function placeTreesLayer(
  * Calculate number of trees based on density
  * Trees are medium-sized (2 MU diameter), moderate count
  */
-function calculateTreesCount(battlefieldSize: number, density: number): number {
+function calculateTreesCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
   // Base: 1 tree per 8 square MU at 100% density
-  const baseCount = (battlefieldSize * battlefieldSize) / 8;
+  const baseCount = (battlefieldWidth * battlefieldHeight) / 8;
   return Math.max(1, Math.floor(baseCount * (density / 100)));
 }
 
@@ -777,9 +791,9 @@ function calculateTreesCount(battlefieldSize: number, density: number): number {
  * Calculate number of shrubs based on density
  * Shrubs are small (1 MU diameter), so many can be placed
  */
-function calculateShrubsCount(battlefieldSize: number, density: number): number {
+function calculateShrubsCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
   // Base: 1 shrub per 4 square MU at 100% density
-  const baseCount = (battlefieldSize * battlefieldSize) / 4;
+  const baseCount = (battlefieldWidth * battlefieldHeight) / 4;
   return Math.max(1, Math.floor(baseCount * (density / 100)));
 }
 
@@ -787,9 +801,9 @@ function calculateShrubsCount(battlefieldSize: number, density: number): number 
  * Calculate number of rocks based on density
  * Rocks are smaller than structures, so more can be placed
  */
-function calculateRocksCount(battlefieldSize: number, density: number): number {
+function calculateRocksCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
   // Base: 1 rock per 20 square MU at 100% density
-  const baseCount = (battlefieldSize * battlefieldSize) / 20;
+  const baseCount = (battlefieldWidth * battlefieldHeight) / 20;
   return Math.max(1, Math.floor(baseCount * (density / 100)));
 }
 
@@ -806,19 +820,19 @@ function calculateRocksCount(battlefieldSize: number, density: number): number {
  * - At 80% density on 576 sq MU = ~15 structures attempted
  * - Expected placement: 5-8 structures = 120-200 sq MU (21-35% coverage)
  */
-function calculateStructuresCount(battlefieldSize: number, density: number): number {
+function calculateStructuresCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
   // Base: 1 structure per 25 square MU at 100% density
   // This allows for clearance overhead while targeting 40% coverage
-  const baseCount = (battlefieldSize * battlefieldSize) / 25;
+  const baseCount = (battlefieldWidth * battlefieldHeight) / 25;
   return Math.max(1, Math.floor(baseCount * (density / 100)));
 }
 
 /**
  * Calculate number of terrain pieces based on density
  */
-function calculateTerrainCount(battlefieldSize: number, density: number): number {
+function calculateTerrainCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
   // Base: 1 terrain per 100 square MU at 100% density
-  const baseCount = (battlefieldSize * battlefieldSize) / 100;
+  const baseCount = (battlefieldWidth * battlefieldHeight) / 100;
   return Math.floor(baseCount * (density / 100));
 }
 
@@ -828,7 +842,8 @@ function calculateTerrainCount(battlefieldSize: number, density: number): number
 function tryPlaceTerrain(
   existingTerrain: TerrainFeature[],
   terrainTypes: TerrainTypeConfig[],
-  battlefieldSize: number,
+  battlefieldWidth: number,
+  battlefieldHeight: number,
   edgeMargin: number,
   placeableWidth: number,
   placeableHeight: number,
@@ -856,7 +871,7 @@ function tryPlaceTerrain(
     const feature = element.toFeature();
 
     // Check bounds
-    if (config.checkBounds && !isWithinBounds(feature, battlefieldSize)) {
+    if (config.checkBounds && !isWithinBounds(feature, battlefieldWidth, battlefieldHeight)) {
       stats.outOfBounds++;
       continue;
     }
@@ -916,11 +931,11 @@ function selectTerrainType(terrainTypes: TerrainTypeConfig[], rng: SeededRandom 
 /**
  * Check if terrain is within battlefield bounds
  */
-function isWithinBounds(terrain: TerrainFeature, battlefieldSize: number): boolean {
+function isWithinBounds(terrain: TerrainFeature, battlefieldWidth: number, battlefieldHeight: number): boolean {
   if (!terrain.vertices || terrain.vertices.length === 0) return false;
 
   for (const v of terrain.vertices) {
-    if (v.x < 0 || v.x > battlefieldSize || v.y < 0 || v.y > battlefieldSize) {
+    if (v.x < 0 || v.x > battlefieldWidth || v.y < 0 || v.y > battlefieldHeight) {
       return false;
     }
   }

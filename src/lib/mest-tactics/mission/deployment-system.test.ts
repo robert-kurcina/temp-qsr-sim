@@ -142,6 +142,37 @@ describe('Deployment System - Zone Creation', () => {
       expect(zones[1].bounds.y).toBe(18); // 24 - 6
       expect(zones[1].bounds.height).toBe(6);
     });
+
+    it('should span the longest battlefield dimension by default', () => {
+      const zones = createDefaultDeploymentZones(18, 24, ['SideA', 'SideB'], 2);
+
+      expect(zones).toHaveLength(2);
+      expect(zones[0].name).toContain('West');
+      expect(zones[1].name).toContain('East');
+      expect(zones[0].bounds.width).toBe(2);
+      expect(zones[0].bounds.height).toBe(24);
+      expect(zones[1].bounds.x).toBe(16); // 18 - 2
+    });
+
+    it('should create corner deployment zones for corner missions', () => {
+      const zones = createDefaultDeploymentZones(24, 24, ['SideA', 'SideB'], 4, 'corners');
+
+      expect(zones).toHaveLength(2);
+      expect(zones[0].name).toContain('North-West');
+      expect(zones[0].bounds).toEqual({ x: 0, y: 0, width: 4, height: 4 });
+      expect(zones[1].name).toContain('South-East');
+      expect(zones[1].bounds).toEqual({ x: 20, y: 20, width: 4, height: 4 });
+    });
+
+    it('should use opposing-edge fallback when deployment type is custom', () => {
+      const zones = createDefaultDeploymentZones(24, 18, ['SideA', 'SideB'], 3, 'custom');
+
+      expect(zones).toHaveLength(2);
+      expect(zones[0].name).toContain('North');
+      expect(zones[1].name).toContain('South');
+      expect(zones[0].bounds).toEqual({ x: 0, y: 0, width: 24, height: 3 });
+      expect(zones[1].bounds).toEqual({ x: 0, y: 15, width: 24, height: 3 });
+    });
   });
 });
 

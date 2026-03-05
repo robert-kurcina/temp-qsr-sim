@@ -53,9 +53,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a point-blank bonus for the attacker', () => {
-    const rolls: number[][] = [[1, 1, 1], [1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
-    setRoller(statefulRoller);
+    setRoller(() => [1, 1, 1, 1, 1, 1, 1, 1]);
 
     makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { isPointBlank: true });
 
@@ -67,7 +65,7 @@ describe('makeRangedCombatAttack', () => {
 
   it('should add a cover bonus for the defender with direct cover', () => {
     const rolls: number[][] = [[1, 1], [1, 1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1, 1, 1, 1, 1];
     setRoller(statefulRoller);
 
     makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { hasDirectCover: true });
@@ -80,7 +78,7 @@ describe('makeRangedCombatAttack', () => {
 
   it('should add a cover bonus for the defender with intervening cover', () => {
     const rolls: number[][] = [[1, 1], [1, 1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
+    const statefulRoller: Roller = () => rolls.shift() || [1, 1, 1, 1, 1, 1];
     setRoller(statefulRoller);
 
     makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { hasInterveningCover: true });
@@ -92,9 +90,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should apply an ORM penalty to the attacker', () => {
-    const rolls: number[][] = [[1, 1], [1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
-    setRoller(statefulRoller);
+    setRoller(() => [1, 1, 1, 1, 1, 1, 1, 1]);
 
     makeRangedCombatAttack(attacker, defender, attackerWeapon, 1, {} as any);
 
@@ -105,9 +101,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should include advanced status hindrances in ranged hit penalties', () => {
-    const rolls: number[][] = [[1, 1], [1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
-    setRoller(statefulRoller);
+    setRoller(() => [1, 1, 1, 1, 1, 1, 1, 1]);
 
     attacker.state.statusTokens.Burn = 1;
     makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, {} as any);
@@ -133,9 +127,7 @@ describe('makeRangedCombatAttack', () => {
   });
 
   it('should add a suddenness bonus for the attacker', () => {
-    const rolls: number[][] = [[1, 1, 1], [1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
-    setRoller(statefulRoller);
+    setRoller(() => [1, 1, 1, 1, 1, 1, 1, 1]);
 
     makeRangedCombatAttack(attacker, defender, attackerWeapon, 0, { hasSuddenness: true });
 
@@ -160,9 +152,7 @@ describe('makeRangedCombatAttack', () => {
     attacker.profile.allTraits = ['Blinders'];
     attacker.allTraits = [];
     const thrownWeapon = { ...attackerWeapon, classification: 'Thrown', class: 'Thrown' };
-    const rolls: number[][] = [[1, 1], [1, 1]];
-    const statefulRoller: Roller = () => rolls.shift() || [1, 1];
-    setRoller(statefulRoller);
+    setRoller(() => [1, 1, 1, 1, 1, 1, 1, 1]);
 
     makeRangedCombatAttack(attacker, defender, thrownWeapon, 0, {} as any);
     const diceEvents = metricsService.getEventsByName('diceTestResolved');
