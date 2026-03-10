@@ -13,6 +13,7 @@ import fs from 'fs';
 import path from 'path';
 
 const BATTLE_REPORTS_DIR = path.join(process.cwd(), 'generated', 'ai-battle-reports');
+const VISUAL_REPORTS_DIR = path.join(process.cwd(), 'generated', 'battle-reports');
 const INDEX_PATH = path.join(BATTLE_REPORTS_DIR, 'battle-index.json');
 
 interface BattleIndexEntry {
@@ -89,6 +90,8 @@ function scanBattleReports(): BattleIndexEntry[] {
         const svgAvailable = fs.readdirSync(BATTLE_REPORTS_DIR)
           .some(f => f.endsWith('.svg') && f.includes(timestamp.substring(0, timestamp.length - 5)));
         
+        const hasInlineAudit = Boolean(report.audit && Array.isArray(report.audit.turns));
+        const hasVisualAudit = fs.existsSync(path.join(VISUAL_REPORTS_DIR, battleId, 'audit.json'));
         const entry: BattleIndexEntry = {
           id: battleId,
           timestamp,
@@ -111,7 +114,7 @@ function scanBattleReports(): BattleIndexEntry[] {
           fitness: 'Good', // TODO: Calculate actual fitness score
           tags: generateTags(report, eliminations, kos),
           svgAvailable,
-          auditAvailable: true,
+          auditAvailable: hasInlineAudit || hasVisualAudit,
           summaryAvailable: true,
         };
         

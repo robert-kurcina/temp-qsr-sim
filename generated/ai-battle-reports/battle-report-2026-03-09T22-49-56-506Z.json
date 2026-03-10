@@ -1,0 +1,2743 @@
+{
+  "config": {
+    "missionId": "QAI_11",
+    "missionName": "Elimination",
+    "gameSize": "VERY_SMALL",
+    "battlefieldWidth": 18,
+    "battlefieldHeight": 24,
+    "maxTurns": 6,
+    "endGameTurn": 3,
+    "sides": [
+      {
+        "name": "Alpha",
+        "bp": 200,
+        "modelCount": 3,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Alpha Assembly"
+      },
+      {
+        "name": "Bravo",
+        "bp": 200,
+        "modelCount": 3,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Bravo Assembly"
+      }
+    ],
+    "densityRatio": 50,
+    "lighting": "Day, Clear",
+    "visibilityOrMu": 16,
+    "maxOrm": 3,
+    "allowConcentrateRangeExtension": true,
+    "perCharacterFovLos": false,
+    "allowWaitAction": false,
+    "allowHideAction": false,
+    "verbose": true,
+    "seed": 424242,
+    "audit": false,
+    "viewer": false,
+    "battlefieldPath": "/Users/kitrok/projects/temp-qsr-sim/data/battlefields/default/simple/VERY_SMALL-battlefield_A0-B0-W0-R0-S0-T0.json"
+  },
+  "winner": "Bravo",
+  "winnerReason": "initiative_card",
+  "tieBreakMethod": "initiative_card",
+  "finalCounts": [
+    {
+      "name": "Alpha",
+      "remaining": 3
+    },
+    {
+      "name": "Bravo",
+      "remaining": 3
+    }
+  ],
+  "stats": {
+    "totalActions": 91,
+    "moves": 22,
+    "movesWhileWaiting": 0,
+    "closeCombats": 6,
+    "rangedCombats": 11,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 5,
+    "losChecks": 11,
+    "lofChecks": 11,
+    "totalPathLength": 61.90104654287823,
+    "modelsMoved": 0
+  },
+  "missionRuntime": {
+    "vpBySide": {
+      "Alpha": 0,
+      "Bravo": 0
+    },
+    "rpBySide": {
+      "Alpha": 0,
+      "Bravo": 0
+    },
+    "predictedScoring": {
+      "bySide": {
+        "Alpha": {
+          "predictedVp": 0,
+          "predictedRp": 0,
+          "keyScores": {
+            "elimination": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 1,
+              "leadMargin": 0
+            },
+            "bottled": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "aggression": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": -2
+            }
+          }
+        },
+        "Bravo": {
+          "predictedVp": 1,
+          "predictedRp": 0,
+          "keyScores": {
+            "elimination": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "bottled": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "aggression": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": -2
+            },
+            "first_blood": {
+              "current": 1,
+              "predicted": 1,
+              "confidence": 1,
+              "leadMargin": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "sideStrategies": {
+    "Alpha": {
+      "doctrine": "operative",
+      "advice": [
+        "Close game - every VP counts"
+      ],
+      "context": {
+        "amILeading": false,
+        "vpMargin": -1,
+        "winningKeys": [],
+        "losingKeys": [
+          "first_blood"
+        ]
+      },
+      "pressureContinuityDiagnostics": {
+        "scrum": {
+          "updates": 2,
+          "signatureSamples": 2,
+          "signatureMatches": 1,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 0,
+          "signatureCoverageRate": 1,
+          "breakRate": 0,
+          "matchRate": 0.5
+        },
+        "lane": {
+          "updates": 4,
+          "signatureSamples": 4,
+          "signatureMatches": 0,
+          "signatureBreaks": 3,
+          "missingSignatureUpdates": 0,
+          "signatureCoverageRate": 1,
+          "breakRate": 0.75,
+          "matchRate": 0
+        },
+        "combined": {
+          "updates": 6,
+          "signatureSamples": 6,
+          "signatureMatches": 1,
+          "signatureBreaks": 3,
+          "missingSignatureUpdates": 0,
+          "signatureCoverageRate": 1,
+          "breakRate": 0.5,
+          "matchRate": 0.1667
+        }
+      },
+      "decisionTrace": [
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.0333
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.57
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 2,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.6167
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.9,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.9,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.57
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 3,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.675,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.738,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.65
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.575,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.2321,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.57
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 4,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.1813,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.0103,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.6833
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 2.0813,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+                "score": 1,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+                "score": 1,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.3546,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.57
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 5,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1,
+            "winningKeys": [],
+            "losingKeys": [
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.5609,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+                "score": 0.75,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+                "score": 0.82,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.1108,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1,
+              "potentialDelta": -1,
+              "urgency": 1.7167
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        }
+      ]
+    },
+    "Bravo": {
+      "doctrine": "operative",
+      "advice": [
+        "Small lead - secure additional objectives to extend lead"
+      ],
+      "context": {
+        "amILeading": true,
+        "vpMargin": 1,
+        "winningKeys": [
+          "first_blood"
+        ],
+        "losingKeys": []
+      },
+      "pressureContinuityDiagnostics": {
+        "scrum": {
+          "updates": 4,
+          "signatureSamples": 4,
+          "signatureMatches": 2,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 0,
+          "signatureCoverageRate": 1,
+          "breakRate": 0,
+          "matchRate": 0.5
+        },
+        "lane": {
+          "updates": 9,
+          "signatureSamples": 9,
+          "signatureMatches": 2,
+          "signatureBreaks": 5,
+          "missingSignatureUpdates": 0,
+          "signatureCoverageRate": 1,
+          "breakRate": 0.5556,
+          "matchRate": 0.2222
+        },
+        "combined": {
+          "updates": 13,
+          "signatureSamples": 13,
+          "signatureMatches": 4,
+          "signatureBreaks": 5,
+          "missingSignatureUpdates": 0,
+          "signatureCoverageRate": 1,
+          "breakRate": 0.3846,
+          "matchRate": 0.3077
+        }
+      },
+      "decisionTrace": [
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.0333
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.98,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.08,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 2.18,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.585,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 2,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.485,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.81,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.7876,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.4797,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.0667
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.71,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.485,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.7876,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.1159,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 3,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.2825,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.1138,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.4658,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.915,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.1
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 2.1825,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 2.1138,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 1,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 1,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.4658,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.3118,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 4,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.6369,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.5853,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 0.75,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.82,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 0.82,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.202,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.0756,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.1333
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_lane_pressure"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 2.5369,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 1.75,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.5853,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 1.9,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.82,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.384,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.202,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_scrum_pressure"
+          }
+        },
+        {
+          "turn": 5,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1,
+            "winningKeys": [
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.9027,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 1.3125,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.189,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "score": 1.558,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.6724,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 1.1349,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "score": 0.9856,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.1667
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+              "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_scrum_pressure"
+          }
+        }
+      ]
+    }
+  },
+  "usage": {
+    "totalTokens": 0,
+    "tokensPerActivation": 0,
+    "decisionLatencyMs": 0,
+    "modelCount": 6,
+    "modelsMoved": 6,
+    "modelsUsedWait": 0,
+    "modelsUsedDetect": 0,
+    "modelsUsedHide": 0,
+    "modelsUsedReact": 0,
+    "totalPathLength": 61.901046542878234,
+    "averagePathLengthPerMovedModel": 10.316841090479706,
+    "averagePathLengthPerModel": 10.316841090479706,
+    "topPathModels": [
+      {
+        "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+        "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+        "side": "Alpha",
+        "pathLength": 18,
+        "moveActions": 11,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+        "modelName": "militia-armor-heavy-mail-helmet-common-loadout",
+        "side": "Alpha",
+        "pathLength": 13.16227766016838,
+        "moveActions": 6,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+        "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+        "side": "Bravo",
+        "pathLength": 11.576491222541476,
+        "moveActions": 8,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+        "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+        "side": "Alpha",
+        "pathLength": 9.16227766016838,
+        "moveActions": 8,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+        "modelName": "average-armor-heavy-mail-armored-gear-loadout",
+        "side": "Bravo",
+        "pathLength": 7,
+        "moveActions": 8,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+        "modelName": "veteran-armor-heavy-mail-armored-gear-loadout",
+        "side": "Bravo",
+        "pathLength": 3,
+        "moveActions": 5,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      }
+    ]
+  },
+  "nestedSections": {
+    "sides": [
+      {
+        "name": "Alpha",
+        "assemblies": [
+          {
+            "name": "Alpha Assembly",
+            "totalBP": 346,
+            "characters": [
+              {
+                "id": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "profile": {
+                  "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 227,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Armor, Heavy Mail",
+                      "classification": "Armor",
+                      "traits": [
+                        "Armor 6",
+                        "[Laden 2]",
+                        "Deflect",
+                        "[Mail]",
+                        "[Lumbering]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Heavy-Small",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Bash",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Armored Gear",
+                      "classification": "Armor",
+                      "traits": [
+                        "Deflect",
+                        "Conceal"
+                      ]
+                    },
+                    {
+                      "name": "Axe-Sword of Tan-doc",
+                      "classification": "Melee",
+                      "traits": [
+                        "Cleave",
+                        "STR",
+                        "Heal",
+                        "Regenerate",
+                        "Parry",
+                        "Deflect",
+                        "Bulletproof",
+                        "Battery X:Type > List"
+                      ]
+                    },
+                    {
+                      "name": "Improvised Thrown",
+                      "classification": "Thrown",
+                      "traits": [
+                        "[Discard! > Type]",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Throwing Axes",
+                      "classification": "Thrown",
+                      "traits": [
+                        "Cleave",
+                        "Conceal",
+                        "[Awkward]",
+                        "[Hafted]",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 0,
+                  "y": 0
+                },
+                "endPosition": {
+                  "x": 5,
+                  "y": 1
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 1,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": false,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "profile": {
+                  "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 84,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Armor, Heavy Mail",
+                      "classification": "Armor",
+                      "traits": [
+                        "Armor 6",
+                        "[Laden 2]",
+                        "Deflect",
+                        "[Mail]",
+                        "[Lumbering]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Heavy-Small",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Bash",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Armored Gear",
+                      "classification": "Armor",
+                      "traits": [
+                        "Deflect",
+                        "Conceal"
+                      ]
+                    },
+                    {
+                      "name": "Helmet, Common",
+                      "classification": "Armor",
+                      "traits": [
+                        "Protective"
+                      ]
+                    },
+                    {
+                      "name": "Improvised Melee",
+                      "classification": "Melee",
+                      "traits": [
+                        "[Stub]",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Black Jacks or Sap",
+                      "classification": "Melee",
+                      "traits": [
+                        "[Stub]",
+                        "Discrete",
+                        "Stun",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 0,
+                  "y": 12
+                },
+                "endPosition": {
+                  "x": 14,
+                  "y": 12
+                },
+                "state": {
+                  "wounds": 1,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                "name": "militia-armor-heavy-mail-helmet-common-loadout",
+                "profile": {
+                  "name": "militia-armor-heavy-mail-helmet-common-loadout",
+                  "archetype": "Militia",
+                  "attributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 35,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Armor, Heavy Mail",
+                      "classification": "Armor",
+                      "traits": [
+                        "Armor 6",
+                        "[Laden 2]",
+                        "Deflect",
+                        "[Mail]",
+                        "[Lumbering]"
+                      ]
+                    },
+                    {
+                      "name": "Helmet, Common",
+                      "classification": "Armor",
+                      "traits": [
+                        "Protective"
+                      ]
+                    },
+                    {
+                      "name": "Improvised Melee",
+                      "classification": "Melee",
+                      "traits": [
+                        "[Stub]",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Black Jacks or Sap",
+                      "classification": "Melee",
+                      "traits": [
+                        "[Stub]",
+                        "Discrete",
+                        "Stun",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 0,
+                  "y": 23
+                },
+                "endPosition": {
+                  "x": 12,
+                  "y": 23
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 2,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": false,
+                  "isOrdered": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bravo",
+        "assemblies": [
+          {
+            "name": "Bravo Assembly",
+            "totalBP": 247,
+            "characters": [
+              {
+                "id": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                "profile": {
+                  "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 111,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Armor, Heavy Mail",
+                      "classification": "Armor",
+                      "traits": [
+                        "Armor 6",
+                        "[Laden 2]",
+                        "Deflect",
+                        "[Mail]",
+                        "[Lumbering]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Heavy-Small",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Bash",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Armored Gear",
+                      "classification": "Armor",
+                      "traits": [
+                        "Deflect",
+                        "Conceal"
+                      ]
+                    },
+                    {
+                      "name": "Hammer, Forge",
+                      "classification": "Melee",
+                      "traits": [
+                        "Stun",
+                        "[Hafted]",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Club, Mace, Spiked",
+                      "classification": "Melee",
+                      "traits": [
+                        "Stun",
+                        "[Hafted]",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Throwing Stars",
+                      "classification": "Thrown",
+                      "traits": [
+                        "Discrete",
+                        "[Awkward]",
+                        "[Stub]",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 16,
+                  "y": 0
+                },
+                "endPosition": {
+                  "x": 12,
+                  "y": 0
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+                "name": "average-armor-heavy-mail-armored-gear-loadout",
+                "profile": {
+                  "name": "average-armor-heavy-mail-armored-gear-loadout",
+                  "archetype": "Average",
+                  "attributes": {
+                    "cca": 2,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 2,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 61,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Armor, Heavy Mail",
+                      "classification": "Armor",
+                      "traits": [
+                        "Armor 6",
+                        "[Laden 2]",
+                        "Deflect",
+                        "[Mail]",
+                        "[Lumbering]"
+                      ]
+                    },
+                    {
+                      "name": "Armored Gear",
+                      "classification": "Armor",
+                      "traits": [
+                        "Deflect",
+                        "Conceal"
+                      ]
+                    },
+                    {
+                      "name": "Polearm, Pike",
+                      "classification": "Melee",
+                      "traits": [
+                        "[Laden]",
+                        "[Awkward]",
+                        "Charge",
+                        "Perimeter",
+                        "[Hafted]",
+                        "[2H]",
+                        "Reach 2"
+                      ]
+                    },
+                    {
+                      "name": "Ballista, Heavy",
+                      "classification": "Support",
+                      "traits": [
+                        "Pierce 3",
+                        "[2H]",
+                        "[Crewed 6]",
+                        "[Carriage 5]",
+                        "[Reload 8]",
+                        "[Traversal!]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 16,
+                  "y": 12
+                },
+                "endPosition": {
+                  "x": 16,
+                  "y": 13
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+                "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                "profile": {
+                  "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 80,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Armor, Heavy Mail",
+                      "classification": "Armor",
+                      "traits": [
+                        "Armor 6",
+                        "[Laden 2]",
+                        "Deflect",
+                        "[Mail]",
+                        "[Lumbering]"
+                      ]
+                    },
+                    {
+                      "name": "Armored Gear",
+                      "classification": "Armor",
+                      "traits": [
+                        "Deflect",
+                        "Conceal"
+                      ]
+                    },
+                    {
+                      "name": "Helmet, Common",
+                      "classification": "Armor",
+                      "traits": [
+                        "Protective"
+                      ]
+                    },
+                    {
+                      "name": "Club, Circus Mallet",
+                      "classification": "Melee",
+                      "traits": [
+                        "[Stub]",
+                        "[Stun-only]",
+                        "Reach",
+                        "[Awkward]",
+                        "[2H]"
+                      ]
+                    },
+                    {
+                      "name": "Improvised Melee",
+                      "classification": "Melee",
+                      "traits": [
+                        "[Stub]",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 16,
+                  "y": 23
+                },
+                "endPosition": {
+                  "x": 13,
+                  "y": 23
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "battlefieldLayout": {
+      "widthMu": 18,
+      "heightMu": 24,
+      "densityRatio": 50,
+      "terrainFeatures": [],
+      "deployments": [
+        {
+          "characterId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+          "characterName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "endPosition": {
+            "x": 5,
+            "y": 1
+          }
+        },
+        {
+          "characterId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+          "characterName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 0,
+            "y": 12
+          },
+          "endPosition": {
+            "x": 14,
+            "y": 12
+          }
+        },
+        {
+          "characterId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+          "characterName": "militia-armor-heavy-mail-helmet-common-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 0,
+            "y": 23
+          },
+          "endPosition": {
+            "x": 12,
+            "y": 23
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+          "characterName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 16,
+            "y": 0
+          },
+          "endPosition": {
+            "x": 12,
+            "y": 0
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+          "characterName": "average-armor-heavy-mail-armored-gear-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 16,
+            "y": 12
+          },
+          "endPosition": {
+            "x": 16,
+            "y": 13
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+          "characterName": "veteran-armor-heavy-mail-armored-gear-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 16,
+            "y": 23
+          },
+          "endPosition": {
+            "x": 13,
+            "y": 23
+          }
+        }
+      ]
+    }
+  },
+  "advancedRules": {
+    "bonusActions": {
+      "opportunities": 16,
+      "optionsOffered": 78,
+      "optionsAvailable": 55,
+      "offeredByType": {
+        "Hide": 16,
+        "Refresh": 16,
+        "Reposition": 16,
+        "Circle": 6,
+        "Disengage": 6,
+        "PushBack": 6,
+        "PullBack": 6,
+        "Reversal": 6
+      },
+      "availableByType": {
+        "Hide": 10,
+        "Refresh": 10,
+        "Reposition": 10,
+        "Circle": 5,
+        "Disengage": 5,
+        "PushBack": 5,
+        "PullBack": 5,
+        "Reversal": 5
+      },
+      "executed": 15,
+      "executedByType": {
+        "Reposition": 6,
+        "Refresh": 4,
+        "PushBack": 5
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 79,
+      "optionsOffered": 216,
+      "optionsAvailable": 27,
+      "offeredByType": {
+        "CounterCharge": 90,
+        "OpportunityAttack": 90,
+        "TakeCover": 11,
+        "Defend": 17,
+        "CounterAction": 2,
+        "React": 2,
+        "CounterStrike": 2,
+        "CounterFire": 2
+      },
+      "availableByType": {
+        "TakeCover": 7,
+        "Defend": 13,
+        "CounterCharge": 4,
+        "OpportunityAttack": 3
+      },
+      "used": 20,
+      "usedByType": {
+        "Defend": 13,
+        "TakeCover": 7
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 17,
+      "modifiedTests": 15,
+      "modifiersApplied": 28,
+      "byType": {
+        "distance_orm": 7,
+        "point_blank": 1,
+        "defend": 13,
+        "multiple_attack_penalty": 4,
+        "hand_penalty": 3
+      }
+    }
+  },
+  "log": [
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 6.66; minimaxLiteOpponentReplyPressure=13.21, approachBonus=4.15, minimaxLiteBeamWidth=3.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 20.14; minimaxLiteNodeValue=16.27, minimaxLiteOpponentReplyPressure=13.36, approachBonus=8.94)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; enemiesNearby=2.00, scoringUrgencyScalar=1.04, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 20.41; minimaxLiteNodeValue=16.59, minimaxLiteOpponentReplyPressure=13.40, approachBonus=8.99)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 17.46; minimaxLiteOpponentReplyPressure=13.31, approachBonus=8.93, minimaxLiteNodeValue=8.61)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 17.42; minimaxLiteOpponentReplyPressure=13.31, approachBonus=8.98, minimaxLiteNodeValue=8.55)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; enemiesNearby=3.00, scoringUrgencyScalar=1.04, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 15.65; minimaxLiteOpponentReplyPressure=13.41, approachBonus=9.07, minimaxLiteNodeValue=6.01)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "move",
+      "detail": "Best action (score: 17.53; minimaxLiteOpponentReplyPressure=13.21, approachBonus=8.93, minimaxLiteNodeValue=8.79)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "move",
+      "detail": "Best action (score: 17.46; minimaxLiteOpponentReplyPressure=13.31, approachBonus=8.98, minimaxLiteNodeValue=8.66)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; enemiesNearby=2.00, scoringUrgencyScalar=1.04, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "move",
+      "detail": "Best action (score: 15.32; minimaxLiteOpponentReplyPressure=13.31, approachBonus=9.07, eliminationApproachBonus=5.36)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 6.91; minimaxLiteOpponentReplyPressure=12.21, minimaxLiteFollowUpPotential=7.84, minimaxLiteNodeValue=6.88)",
+      "result": "ranged=true:orm=2"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 9.18; minimaxLiteOpponentReplyPressure=12.21, minimaxLiteFollowUpPotential=7.83, minimaxLiteNodeValue=6.12)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; enemiesNearby=2.00, scoringUrgencyScalar=1.04, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 10.32; minimaxLiteOpponentReplyPressure=12.31, minimaxLiteNodeValue=10.36, minimaxLiteFollowUpPotential=7.84)",
+      "result": "ranged_combat=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 9.86; minimaxLiteOpponentReplyPressure=12.96, minimaxLiteFollowUpPotential=7.84, minimaxLiteNodeValue=7.58)",
+      "result": "ranged=true:orm=0"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 17.64; minimaxLiteNodeValue=15.80, minimaxLiteOpponentReplyPressure=12.96, minimaxLiteFollowUpPotential=7.94)",
+      "result": "ranged=true:orm=0"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; enemiesNearby=3.00, scoringUrgencyScalar=1.04, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 19.08; minimaxLiteNodeValue=15.80, minimaxLiteOpponentReplyPressure=12.96, minimaxLiteFollowUpPotential=7.94)",
+      "result": "ranged_combat=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "move",
+      "detail": "Best action (score: 16.70; minimaxLiteOpponentReplyPressure=12.96, approachBonus=9.23, minimaxLiteNodeValue=7.29)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "move",
+      "detail": "Best action (score: 7.33; minimaxLiteOpponentReplyPressure=12.99, approachBonus=4.81, minimaxLiteFollowUpPotential=3.37)",
+      "result": "move=false:Destination too small for model (requires 1.0 MU clearance)"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; enemiesNearby=2.00, scoringUrgencyScalar=1.04, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "move",
+      "detail": "Best action (score: 7.33; minimaxLiteOpponentReplyPressure=12.99, approachBonus=4.81, minimaxLiteFollowUpPotential=3.37)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 2,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "initiative_refresh",
+      "detail": "spent 1 IP to remove Delay token",
+      "result": "refresh=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 11.32; minimaxLiteOpponentReplyPressure=13.59, minimaxLiteNodeValue=9.07, minimaxLiteFollowUpPotential=7.86)",
+      "result": "ranged=true:orm=0"
+    },
+    {
+      "turn": 2,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Best action (score: 4.27; minimaxLiteOpponentReplyPressure=13.41, minimaxLiteNodeValue=-4.80, approachBonus=3.29)",
+      "result": "move=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "move",
+      "detail": "Best action (score: 9.16; minimaxLiteOpponentReplyPressure=13.33, minimaxLiteFollowUpPotential=5.46, approachBonus=4.81)",
+      "result": "move=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 14.26; minimaxLiteNodeValue=13.71, minimaxLiteOpponentReplyPressure=13.46, minimaxLiteFollowUpPotential=7.84)",
+      "result": "ranged=true:orm=0"
+    },
+    {
+      "turn": 2,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "move",
+      "detail": "Best action (score: 5.20; minimaxLiteOpponentReplyPressure=12.96, minimaxLiteFollowUpPotential=7.84, minimaxLiteBeamWidth=3.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "hold",
+      "detail": "No valid actions",
+      "result": "wait=false:disabled"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 6.94; minimaxLiteOpponentReplyPressure=13.43, minimaxLiteFollowUpPotential=7.86, minimaxLiteNodeValue=4.63)",
+      "result": "ranged=true:orm=2"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "hold",
+      "detail": "No valid actions",
+      "result": "move=true:from-hold"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "fiddle",
+      "detail": "Best action (score: 0.17; minimaxLiteOpponentReplyPressure=13.71, minimaxLiteFollowUpPotential=7.04, minimaxLiteNodeValue=-4.17)",
+      "result": "fiddle=true"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "charge",
+      "detail": "Combat priority: Best action (score: 21.19; minimaxLiteNodeValue=18.03, minimaxLiteOpponentReplyPressure=13.56, minimaxLiteFollowUpPotential=7.41)",
+      "result": "charge=false:not-engaged"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+      "side": "Alpha",
+      "model": "militia-armor-heavy-mail-helmet-common-loadout",
+      "action": "hold",
+      "detail": "No valid actions",
+      "result": "move=true:from-hold"
+    },
+    {
+      "turn": 3,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 11.35; minimaxLiteOpponentReplyPressure=13.31, minimaxLiteNodeValue=10.91, minimaxLiteFollowUpPotential=7.85)",
+      "result": "ranged=true:orm=1"
+    },
+    {
+      "turn": 3,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 24.69; focusFire=5.78, outOfPlayPressure=4.48, threatImmediacy=3.42)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 3,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 18.46; threatImmediacy=3.42, focusFire=3.00, meleeAttackApCost=2.00)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 4,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 7.44; minimaxLiteOpponentReplyPressure=13.43, minimaxLiteFollowUpPotential=7.87, minimaxLiteNodeValue=5.14)",
+      "result": "ranged=true:orm=2"
+    },
+    {
+      "turn": 4,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 27.19; minimaxLiteNodeValue=24.17, minimaxLiteOpponentReplyPressure=13.88, minimaxLiteFollowUpPotential=7.87)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 4,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 10.97; minimaxLiteOpponentReplyPressure=13.21, minimaxLiteNodeValue=10.27, minimaxLiteFollowUpPotential=7.85)",
+      "result": "ranged=true:orm=1"
+    },
+    {
+      "turn": 4,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "move",
+      "detail": "Best action (score: 3.85; minimaxLiteOpponentReplyPressure=13.28, minimaxLiteFollowUpPotential=7.84, suppressionZoneControl=4.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 4,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 20.03; focusFire=4.84, threatImmediacy=3.42, meleeAttackApCost=2.00)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 5,
+      "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 6.48; minimaxLiteOpponentReplyPressure=13.40, minimaxLiteFollowUpPotential=7.87, minimaxLiteNodeValue=4.20)",
+      "result": "ranged=true:orm=3"
+    },
+    {
+      "turn": 5,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 46.49; threatImmediacy=3.87, focusFire=3.34, selfOutOfPlayRisk=3.15)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 5,
+      "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Alpha",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "hold",
+      "detail": "No valid actions",
+      "result": "move=true:from-hold"
+    },
+    {
+      "turn": 5,
+      "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 11.17; minimaxLiteOpponentReplyPressure=13.21, minimaxLiteNodeValue=10.47, minimaxLiteFollowUpPotential=7.85)",
+      "result": "ranged=true:orm=1"
+    },
+    {
+      "turn": 5,
+      "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "average-armor-heavy-mail-armored-gear-loadout",
+      "action": "move",
+      "detail": "Best action (score: 2.74; minimaxLiteOpponentReplyPressure=12.96, minimaxLiteFollowUpPotential=7.84, minimaxLiteCurrentPatch=4.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 5,
+      "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+      "side": "Bravo",
+      "model": "veteran-armor-heavy-mail-armored-gear-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 21.33; focusFire=6.35, threatImmediacy=3.42, vpUrgencyLevel=3.00)",
+      "result": "close_combat=true"
+    }
+  ],
+  "seed": 424242
+}

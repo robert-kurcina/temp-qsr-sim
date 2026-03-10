@@ -19,8 +19,10 @@ import {
   attemptHide,
   attemptDetect,
   evaluateHide,
+  checkHiddenAtInitiativeStart,
   resolveHiddenExposure,
   resolveWaitReveal,
+  InitiativeHiddenCheckOptions,
   HideOptions,
   DetectOptions,
   RevealExposureOptions,
@@ -847,8 +849,20 @@ export class GameManager {
   /**
    * Get strategic advice for all Sides (for battle reports)
    */
-  public getSideStrategies(): Record<string, { doctrine: string; advice: string[]; context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null }> {
-    const strategies: Record<string, { doctrine: string; advice: string[]; context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null }> = {};
+  public getSideStrategies(): Record<string, {
+    doctrine: string;
+    advice: string[];
+    context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null;
+    decisionTrace: import('../ai/core/SideAICoordinator').CoordinatorDecisionTraceEntry[];
+    pressureContinuityDiagnostics: import('../ai/core/SideAICoordinator').CoordinatorPressureContinuityDiagnostics;
+  }> {
+    const strategies: Record<string, {
+      doctrine: string;
+      advice: string[];
+      context: import('../ai/stratagems/PredictedScoringIntegration').ScoringContext | null;
+      decisionTrace: import('../ai/core/SideAICoordinator').CoordinatorDecisionTraceEntry[];
+      pressureContinuityDiagnostics: import('../ai/core/SideAICoordinator').CoordinatorPressureContinuityDiagnostics;
+    }> = {};
     if (!this.sideCoordinatorManager) return strategies;
 
     for (const coordinator of this.sideCoordinatorManager.getAllCoordinators()) {
@@ -856,9 +870,60 @@ export class GameManager {
         doctrine: coordinator.getTacticalDoctrine(),
         advice: coordinator.getStrategicAdvice(),
         context: coordinator.getScoringContext(),
+        decisionTrace: coordinator.getDecisionTrace(),
+        pressureContinuityDiagnostics: coordinator.getPressureContinuityDiagnostics(),
       };
     }
     return strategies;
+  }
+
+  /**
+   * Get coordinator initiative guidance signals for current turn policy decisions.
+   */
+  public getSideInitiativeSignals(currentTurn: number): Record<string, import('../ai/core/SideAICoordinator').CoordinatorInitiativeSignal> {
+    if (!this.sideCoordinatorManager) {
+      return {};
+    }
+    return this.sideCoordinatorManager.getInitiativeSignalsForTurn(currentTurn);
+  }
+
+  /**
+   * Ask the side coordinator whether to spend IP for force-initiative.
+   */
+  public recommendForceInitiativeSpend(
+    sideId: string,
+    context: import('../ai/core/SideAICoordinator').CoordinatorForceInitiativeContext
+  ): import('../ai/core/SideAICoordinator').CoordinatorInitiativeSpendDecision {
+    if (!this.sideCoordinatorManager) {
+      return { shouldSpend: false, reason: 'missing_coordinator_manager' };
+    }
+    return this.sideCoordinatorManager.recommendForceInitiativeSpend(sideId, context);
+  }
+
+  /**
+   * Ask the side coordinator whether to spend IP for maintain-initiative.
+   */
+  public recommendMaintainInitiativeSpend(
+    sideId: string,
+    context: import('../ai/core/SideAICoordinator').CoordinatorMaintainInitiativeContext
+  ): import('../ai/core/SideAICoordinator').CoordinatorInitiativeSpendDecision {
+    if (!this.sideCoordinatorManager) {
+      return { shouldSpend: false, reason: 'missing_coordinator_manager' };
+    }
+    return this.sideCoordinatorManager.recommendMaintainInitiativeSpend(sideId, context);
+  }
+
+  /**
+   * Ask the side coordinator whether to spend IP for refresh.
+   */
+  public recommendRefreshInitiativeSpend(
+    sideId: string,
+    context: import('../ai/core/SideAICoordinator').CoordinatorRefreshInitiativeContext
+  ): import('../ai/core/SideAICoordinator').CoordinatorInitiativeSpendDecision {
+    if (!this.sideCoordinatorManager) {
+      return { shouldSpend: false, reason: 'missing_coordinator_manager' };
+    }
+    return this.sideCoordinatorManager.recommendRefreshInitiativeSpend(sideId, context);
   }
 
   public getCharacterPosition(character: Character): Position | undefined {
@@ -1538,7 +1603,8 @@ export class GameManager {
           this.setCharacterStatus(character.id, CharacterStatus.Done);
           this.battlefield?.removeCharacter(character);
         },
-        canOccupy: (position: Position, baseDiameter: number) => this.battlefield!.canOccupy(position, baseDiameter),
+        canOccupy: (position: Position, baseDiameter: number) =>
+          this.battlefield!.canOccupy(position, baseDiameter, mover.id),
         executeCloseCombatAttack: (attacker: Character, defender: Character, weapon: Item, actionOptions) =>
           this.executeCloseCombatAttack(attacker, defender, weapon, actionOptions as any),
         findPathCost: (start: Position, end: Position) => {
@@ -2220,6 +2286,17 @@ export class GameManager {
       throw new Error('Battlefield not set.');
     }
     return resolveHiddenExposure(this.battlefield, character, opponents, options);
+  }
+
+  public checkHiddenAtInitiativeStart(
+    character: Character,
+    opponents: Character[],
+    options: InitiativeHiddenCheckOptions = {}
+  ) {
+    if (!this.battlefield) {
+      throw new Error('Battlefield not set.');
+    }
+    return checkHiddenAtInitiativeStart(this.battlefield, character, opponents, options);
   }
 
   public resolveWaitReveal(

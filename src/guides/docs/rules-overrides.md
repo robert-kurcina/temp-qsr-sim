@@ -378,3 +378,61 @@ function getClimbHandRequirement(terrain: TerrainElement, goingUp: boolean): num
 - `src/lib/mest-tactics/actions/agility.ts`: Jump/fall implementation
 - `src/lib/mest-tactics/actions/pushing-and-maneuvers.ts`: Push maneuvers
 - `docs/falling-tactics-audit.md`: Falling tactics audit
+
+---
+
+## OVR-004: RP Bonus VP Threshold Override
+
+Status: **Active**
+
+### Purpose
+
+Adjust RP-based bonus VP awarding from the legacy threshold to a lower threshold for faster differentiation in play outcomes.
+
+### Rule
+
+When awarding VP from Resource Point comparison:
+
+- Award **+2 VP** to the RP-leading Side when:
+  - that Side has at least **double** the RP of the **lowest-RP opposing Side**, and
+  - that Side has at least **+3 RP** more than that lowest-RP opposing Side.
+- Otherwise, if a Side has the most RP (non-tied), award **+1 VP**.
+- If RP is tied for highest, award **0 VP** from this rule.
+
+### Override Scope
+
+This override supersedes the legacy `double +10` threshold in canonical text for current implementation and simulation runs.
+
+### Implementation Reference
+
+- `src/lib/mest-tactics/missions/mission-scoring.ts`
+  - `ResourcePointsVictoryOverride`
+  - `DEFAULT_RESOURCE_POINTS_VICTORY_OVERRIDE`
+  - `computeResourcePointsVictory(...)`
+
+---
+
+## OVR-005: Final VP Tie-Breaker (Initiative Card)
+
+Status: **Active**
+
+### Purpose
+
+Ensure end-of-game VP ties resolve deterministically.
+
+### Rule
+
+When final VP is tied after all mission and RP-based adjustments:
+
+- The Side holding the **Initiative Card** wins the battle.
+- For AI battle runner resolution, Initiative Card holder is resolved as:
+  - explicit `initiativeCardHolderSideId` (if provided), otherwise
+  - most recent initiative-winning Side (`lastInitiativeWinnerSideId`).
+- If no initiative holder can be resolved, fall back to existing non-VP tie logic.
+
+### Implementation Reference
+
+- `scripts/ai-battle/reporting/BattleReportFinalizationSupport.ts`
+  - `resolveWinnerForRunner(...)`
+- `src/lib/mest-tactics/engine/GameController.ts`
+  - `applyInitiativeCardTieBreakerIfEnabled(...)`

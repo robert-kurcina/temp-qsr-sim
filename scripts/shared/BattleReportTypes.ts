@@ -25,6 +25,8 @@ export type { ModelStateAudit, OpposedTestAudit, AuditVector, ModelEffectAudit }
 export interface BattleReport {
   config: GameConfig;
   winner: string;
+  winnerReason?: 'mission_immediate' | 'mission_vp' | 'initiative_card' | 'remaining_models' | 'draw' | 'none';
+  tieBreakMethod?: 'none' | 'initiative_card';
   finalCounts: Array<{ name: string; remaining: number }>;
   stats: BattleStats;
   missionRuntime?: {
@@ -53,11 +55,88 @@ export interface BattleReport {
       winningKeys: string[];
       losingKeys: string[];
     };
+    pressureContinuityDiagnostics?: {
+      scrum: {
+        updates: number;
+        signatureSamples: number;
+        signatureMatches: number;
+        signatureBreaks: number;
+        missingSignatureUpdates: number;
+        signatureCoverageRate: number;
+        breakRate: number;
+        matchRate: number;
+      };
+      lane: {
+        updates: number;
+        signatureSamples: number;
+        signatureMatches: number;
+        signatureBreaks: number;
+        missingSignatureUpdates: number;
+        signatureCoverageRate: number;
+        breakRate: number;
+        matchRate: number;
+      };
+      combined: {
+        updates: number;
+        signatureSamples: number;
+        signatureMatches: number;
+        signatureBreaks: number;
+        missingSignatureUpdates: number;
+        signatureCoverageRate: number;
+        breakRate: number;
+        matchRate: number;
+      };
+    };
+    decisionTrace?: Array<{
+      turn: number;
+      sideId: string;
+      doctrine: string;
+      observations: {
+        amILeading: boolean;
+        vpMargin: number;
+        winningKeys: string[];
+        losingKeys: string[];
+        topOpponentKeyPressure: Array<{
+          key: string;
+          predicted: number;
+          confidence: number;
+        }>;
+        topTargetCommitments: Array<{
+          targetId: string;
+          score: number;
+          attackerCount: number;
+        }>;
+        topScrumContinuity: Array<{
+          targetId: string;
+          score: number;
+          attackerCount: number;
+        }>;
+        topLanePressure: Array<{
+          targetId: string;
+          score: number;
+          attackerCount: number;
+        }>;
+        fractionalPotential?: {
+          myVpPotential: number;
+          opponentVpPotential: number;
+          potentialDelta: number;
+          urgency: number;
+        };
+      };
+      response: {
+        priority: string;
+        advice: string[];
+        focusTargets: string[];
+        potentialDirective?: string;
+        pressureDirective?: string;
+      };
+    }>;
   }>;
   usage?: UsageMetrics;
   nestedSections: NestedSections;
   advancedRules: AdvancedRuleMetrics;
   log: BattleLogEntry[];
+  entities?: BattleEntityManifest;
   audit?: BattleAuditTrace;
   performance?: BattlePerformanceSummary;
   seed?: number;
@@ -98,6 +177,30 @@ export interface BattleStats {
   lofChecks: number;
   totalPathLength: number;
   modelsMoved: number;
+  /** Decision samples that reported AI decisionTelemetry payloads. */
+  decisionTelemetrySamples?: number;
+  /** Number of decisions where attack gate overrode passive preference. */
+  attackGateAppliedDecisions?: number;
+  /** Attack-gate decisions caused by immediate-high attack window. */
+  attackGateImmediateHighApplied?: number;
+  /** Attack-gate decisions caused by directive attack window. */
+  attackGateDirectiveApplied?: number;
+  /** Decision telemetry attack opportunity grade counters. */
+  attackOpportunityImmediateHigh?: number;
+  attackOpportunityImmediateLow?: number;
+  attackOpportunitySetup?: number;
+  attackOpportunityNone?: number;
+  /** Combat efficacy counters. */
+  hitTestsAttempted?: number;
+  hitTestsPassed?: number;
+  hitTestsFailed?: number;
+  damageTestsAttempted?: number;
+  damageTestsPassed?: number;
+  damageTestsFailed?: number;
+  /** Positive token/state assignments observed during combat resolution steps. */
+  woundsAssigned?: number;
+  fearAssigned?: number;
+  delayAssigned?: number;
 }
 
 export interface UsageMetrics {
@@ -188,6 +291,117 @@ export interface BattleLogEntry {
   details?: Record<string, unknown>;
 }
 
+export interface BattleEntitySide {
+  id: string;
+  name: string;
+  sideIndex: number;
+  tacticalDoctrine?: string;
+  assemblyIds: string[];
+  totalBp: number;
+}
+
+export interface BattleEntityAssembly {
+  id: string;
+  name: string;
+  sideId: string;
+  sideName: string;
+  sideIndex: number;
+  members: string[];
+  totalBp: number;
+}
+
+export interface BattleEntityLoadout {
+  id: string;
+  techAge?: string;
+  itemNames: string[];
+  weapons: string[];
+  armors: string[];
+  gear: string[];
+  hasShield: boolean;
+  totalBp: number;
+}
+
+export interface BattleEntityProfile {
+  id: string;
+  name: string;
+  archetype?: string;
+  loadoutId: string;
+  totalBp?: number;
+}
+
+export interface BattleEntityCharacter {
+  id: string;
+  name: string;
+  sideId: string;
+  sideName: string;
+  sideIndex: number;
+  assemblyId: string;
+  assemblyName: string;
+  assemblyIndex: number;
+  profileId: string;
+  loadoutId: string;
+  totalBp?: number;
+}
+
+export interface BattleEntityManifest {
+  version: '1.0';
+  sides: BattleEntitySide[];
+  assemblies: BattleEntityAssembly[];
+  characters: BattleEntityCharacter[];
+  profiles: BattleEntityProfile[];
+  loadouts: BattleEntityLoadout[];
+  byModelId: Record<string, {
+    sideId: string;
+    sideName: string;
+    sideIndex: number;
+    assemblyId: string;
+    assemblyName: string;
+    profileId: string;
+    loadoutId: string;
+    characterId: string;
+    paths?: {
+      sides: string;
+      assemblies: string;
+      characters: string;
+      profiles: string;
+      loadouts: string;
+      modelIndex: string;
+      index: string;
+    };
+  }>;
+  exportPaths?: {
+    index?: string;
+    sides?: string;
+    assemblies?: string;
+    characters?: string;
+    profiles?: string;
+    loadouts?: string;
+    modelIndex?: string;
+  };
+}
+
+export interface BattleCombatMetricsAudit {
+  hitTests: {
+    attempts: number;
+    passes: number;
+    fails: number;
+    passRate: number;
+  };
+  damageTests: {
+    attempts: number;
+    passes: number;
+    fails: number;
+    passRate: number;
+  };
+  assignments: {
+    wounds: number;
+    fear: number;
+    delay: number;
+  };
+  passiveUsageByType: RuleTypeBreakdown;
+  situationalModifiersByType: RuleTypeBreakdown;
+}
+
 // ============================================================================
 // Audit Trace (for visual replay)
 // ============================================================================
@@ -211,6 +425,8 @@ export interface BattleAuditTrace {
     lofWidthMu: number;
     exportPath?: string; // Reference to battlefield.json
   };
+  entities?: BattleEntityManifest;
+  combatMetrics?: BattleCombatMetricsAudit;
   turns: TurnAudit[];
 }
 
@@ -221,6 +437,54 @@ export interface TurnAudit {
     sideName: string;
     activeModelsStart: number;
     activeModelsEnd: number;
+  }>;
+  coordinatorDecisions?: Array<{
+    sideId: string;
+    doctrine: string;
+    trace: {
+      turn: number;
+      sideId: string;
+      doctrine: string;
+      observations: {
+        amILeading: boolean;
+        vpMargin: number;
+        winningKeys: string[];
+        losingKeys: string[];
+        topOpponentKeyPressure: Array<{
+          key: string;
+          predicted: number;
+          confidence: number;
+        }>;
+        topTargetCommitments: Array<{
+          targetId: string;
+          score: number;
+          attackerCount: number;
+        }>;
+        topScrumContinuity: Array<{
+          targetId: string;
+          score: number;
+          attackerCount: number;
+        }>;
+        topLanePressure: Array<{
+          targetId: string;
+          score: number;
+          attackerCount: number;
+        }>;
+        fractionalPotential?: {
+          myVpPotential: number;
+          opponentVpPotential: number;
+          potentialDelta: number;
+          urgency: number;
+        };
+      };
+      response: {
+        priority: string;
+        advice: string[];
+        focusTargets: string[];
+        potentialDirective?: string;
+        pressureDirective?: string;
+      };
+    };
   }>;
 }
 
@@ -266,6 +530,35 @@ export interface BattlePerformanceSummary {
   caches?: {
     los: BattlefieldLosCacheStats;
     pathfinding: PathfindingCacheStats;
+    minimaxLite?: {
+      controllers: number;
+      controllersWithSamples: number;
+      hits: number;
+      misses: number;
+      hitRate: number;
+      avgHitRate: number;
+      nodeEvaluations: number;
+      avgNodeEvaluationsPerController: number;
+      totalSize: number;
+      totalMaxSize: number;
+      patchTransitions: Record<string, number>;
+      patchGraph?: {
+        hits: number;
+        misses: number;
+        hitRate: number;
+        avgHitRate: number;
+        evictions: number;
+        totalSize: number;
+        totalMaxSize: number;
+        neighborhoodGraphHits?: number;
+        neighborhoodGraphMisses?: number;
+        neighborhoodGraphHitRate?: number;
+        neighborhoodGraphAvgHitRate?: number;
+        neighborhoodGraphEvictions?: number;
+        neighborhoodGraphTotalSize?: number;
+        neighborhoodGraphTotalMaxSize?: number;
+      };
+    };
   };
 }
 

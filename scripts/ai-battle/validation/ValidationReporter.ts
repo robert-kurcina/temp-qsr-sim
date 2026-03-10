@@ -6,7 +6,11 @@
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { ValidationAggregateReport } from './ValidationMetrics';
+import type {
+  ValidationAggregateReport,
+  CombatEfficacySummary,
+  ScoringSummary,
+} from './ValidationMetrics';
 import { safeRate, createEmptyAdvancedRuleMetrics } from './ValidationMetrics';
 import type { BattlePerformanceSummary } from '../../shared/BattleReportTypes';
 
@@ -24,16 +28,91 @@ function formatTypeBreakdownLines(
   return entries.map(([type, count]) => `${indent}${type}: ${count}`);
 }
 
+function deriveCombatEfficacySummary(report: ValidationAggregateReport): CombatEfficacySummary {
+  if (report.combatEfficacy) {
+    return report.combatEfficacy;
+  }
+  const hitAttempts = Number(report.totals.hitTestsAttempted ?? 0);
+  const hitPasses = Number(report.totals.hitTestsPassed ?? 0);
+  const damageAttempts = Number(report.totals.damageTestsAttempted ?? 0);
+  const damagePasses = Number(report.totals.damageTestsPassed ?? 0);
+  return {
+    hitTests: {
+      attempts: hitAttempts,
+      passes: hitPasses,
+      fails: Number(report.totals.hitTestsFailed ?? Math.max(0, hitAttempts - hitPasses)),
+      passRate: safeRate(hitPasses, hitAttempts),
+    },
+    damageTests: {
+      attempts: damageAttempts,
+      passes: damagePasses,
+      fails: Number(report.totals.damageTestsFailed ?? Math.max(0, damageAttempts - damagePasses)),
+      passRate: safeRate(damagePasses, damageAttempts),
+    },
+    assignments: {
+      wounds: Number(report.totals.woundsAssigned ?? 0),
+      fear: Number(report.totals.fearAssigned ?? 0),
+      delay: Number(report.totals.delayAssigned ?? 0),
+    },
+  };
+}
+
+function deriveScoringSummary(report: ValidationAggregateReport): ScoringSummary {
+  if (report.scoringSummary) {
+    return report.scoringSummary;
+  }
+
+  const sideTotals = new Map<string, { totalVp: number; totalRp: number }>();
+  for (const run of report.runReports) {
+    const vpBySide = run.missionRuntime?.vpBySide ?? {};
+    const rpBySide = run.missionRuntime?.rpBySide ?? {};
+    for (const [sideId, value] of Object.entries(vpBySide)) {
+      const entry = sideTotals.get(sideId) ?? { totalVp: 0, totalRp: 0 };
+      entry.totalVp += Number(value ?? 0);
+      sideTotals.set(sideId, entry);
+    }
+    for (const [sideId, value] of Object.entries(rpBySide)) {
+      const entry = sideTotals.get(sideId) ?? { totalVp: 0, totalRp: 0 };
+      entry.totalRp += Number(value ?? 0);
+      sideTotals.set(sideId, entry);
+    }
+  }
+
+  return {
+    sideScores: Array.from(sideTotals.entries())
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([sideId, totals]) => ({
+        sideId,
+        totalVp: Number(totals.totalVp.toFixed(2)),
+        averageVp: Number((totals.totalVp / Math.max(1, report.runs)).toFixed(2)),
+        totalRp: Number(totals.totalRp.toFixed(2)),
+        averageRp: Number((totals.totalRp / Math.max(1, report.runs)).toFixed(2)),
+        keys: [],
+      })),
+  };
+}
+
 /**
  * Format validation aggregate report to human-readable text
  */
 export function formatValidationAggregateReportHumanReadable(report: ValidationAggregateReport): string {
   const advanced = report.advancedRuleTotals ?? createEmptyAdvancedRuleMetrics();
+  const combatEfficacy = deriveCombatEfficacySummary(report);
+  const scoringSummary = deriveScoringSummary(report);
   const waitTakeRate = safeRate(report.totals.waitChoicesTaken, report.totals.waitChoicesGiven);
   const waitSuccessRate = safeRate(report.totals.waitChoicesSucceeded, report.totals.waitChoicesTaken);
   const reactTakeRate = safeRate(report.totals.reactChoicesTaken, report.totals.reactChoiceWindows);
   const reactOptionSelectionRate = safeRate(report.totals.reactChoicesTaken, report.totals.reactChoicesGiven);
   const waitReactPerSuccessfulWait = safeRate(report.totals.waitTriggeredReacts, report.totals.waitChoicesSucceeded);
+  const decisionTelemetrySamples = report.totals.decisionTelemetrySamples ?? 0;
+  const attackGateAppliedDecisions = report.totals.attackGateAppliedDecisions ?? 0;
+  const attackGateImmediateHighApplied = report.totals.attackGateImmediateHighApplied ?? 0;
+  const attackGateDirectiveApplied = report.totals.attackGateDirectiveApplied ?? 0;
+  const attackGateAppliedRate = safeRate(attackGateAppliedDecisions, decisionTelemetrySamples);
+  const attackOpportunityImmediateHigh = report.totals.attackOpportunityImmediateHigh ?? 0;
+  const attackOpportunityImmediateLow = report.totals.attackOpportunityImmediateLow ?? 0;
+  const attackOpportunitySetup = report.totals.attackOpportunitySetup ?? 0;
+  const attackOpportunityNone = report.totals.attackOpportunityNone ?? 0;
 
   const lines: string[] = [];
   lines.push('════════════════════════════════════════════════════════════');
@@ -55,6 +134,33 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   lines.push('');
   lines.push('🏆 RESULTS');
   lines.push(`  Winners: ${JSON.stringify(report.winners)}`);
+  if (scoringSummary.sideScores.length > 0) {
+    lines.push('  Mission Scoring:');
+    for (const sideScore of scoringSummary.sideScores) {
+      lines.push(
+        `    ${sideScore.sideId}: VP total=${sideScore.totalVp.toFixed(2)} avg=${sideScore.averageVp.toFixed(2)}, RP total=${sideScore.totalRp.toFixed(2)} avg=${sideScore.averageRp.toFixed(2)}`
+      );
+      const scoredKeys = sideScore.keys.filter(key => key.runsScored > 0);
+      if (scoredKeys.length === 0) {
+        lines.push('      Keys scored: none');
+      } else {
+        lines.push(
+          `      Keys scored: ${scoredKeys
+            .map(key => `${key.key}=${key.totalCurrent.toFixed(2)} (${key.runsScored}/${report.runs} runs)`)
+            .join(', ')}`
+        );
+      }
+    }
+  }
+  lines.push(
+    `  Combat Efficacy (Hit): ${(combatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${combatEfficacy.hitTests.passes}/${combatEfficacy.hitTests.attempts})`
+  );
+  lines.push(
+    `  Combat Efficacy (Damage): ${(combatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${combatEfficacy.damageTests.passes}/${combatEfficacy.damageTests.attempts})`
+  );
+  lines.push(
+    `  Combat Assignments (W/F/D): ${combatEfficacy.assignments.wounds}/${combatEfficacy.assignments.fear}/${combatEfficacy.assignments.delay}`
+  );
   lines.push(`  Turns Completed: ${report.totals.turnsCompleted}`);
   lines.push(`  Total Actions: ${report.totals.totalActions}`);
   lines.push(`  Moves: ${report.totals.moves}`);
@@ -81,6 +187,14 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   lines.push(`  Wait->React Wounds Inflicted: ${report.totals.waitReactWoundsInflicted}`);
   lines.push(`  KO's: ${report.totals.kos}`);
   lines.push(`  Eliminations: ${report.totals.eliminations}`);
+  lines.push(`  Decision Telemetry Samples: ${decisionTelemetrySamples}`);
+  if (decisionTelemetrySamples > 0) {
+    lines.push(`  Attack Gate Applied: ${attackGateAppliedDecisions} (${(attackGateAppliedRate * 100).toFixed(1)}%)`);
+    lines.push(`  Attack Gate Reasons: immediate_high=${attackGateImmediateHighApplied}, directive_window=${attackGateDirectiveApplied}`);
+    lines.push(
+      `  Attack Opportunity Grades: immediate_high=${attackOpportunityImmediateHigh}, immediate_low=${attackOpportunityImmediateLow}, setup=${attackOpportunitySetup}, none=${attackOpportunityNone}`
+    );
+  }
 
   const runPerf = report.runReports
     .map(run => run.performance)
@@ -104,9 +218,25 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
       const pathMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.pathfinding.pathMisses ?? 0), 0);
       const gridHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.pathfinding.gridHits ?? 0), 0);
       const gridMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.pathfinding.gridMisses ?? 0), 0);
+      const minimaxHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.minimaxLite?.hits ?? 0), 0);
+      const minimaxMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.minimaxLite?.misses ?? 0), 0);
+      const minimaxNodes = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.minimaxLite?.nodeEvaluations ?? 0), 0);
+      const patchGraphHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.minimaxLite?.patchGraph?.hits ?? 0), 0);
+      const patchGraphMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.minimaxLite?.patchGraph?.misses ?? 0), 0);
+      const patchNeighborhoodHits = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.minimaxLite?.patchGraph?.neighborhoodGraphHits ?? 0), 0);
+      const patchNeighborhoodMisses = perfWithCache.reduce((sum, perf) => sum + (perf.caches?.minimaxLite?.patchGraph?.neighborhoodGraphMisses ?? 0), 0);
+      const minimaxTransitions: Record<string, number> = {};
+      for (const perf of perfWithCache) {
+        for (const [transition, count] of Object.entries(perf.caches?.minimaxLite?.patchTransitions ?? {})) {
+          minimaxTransitions[transition] = (minimaxTransitions[transition] ?? 0) + (Number(count) || 0);
+        }
+      }
       const losTotal = losHits + losMisses;
       const pathTotal = pathHits + pathMisses;
       const gridTotal = gridHits + gridMisses;
+      const minimaxTotal = minimaxHits + minimaxMisses;
+      const patchGraphTotal = patchGraphHits + patchGraphMisses;
+      const patchNeighborhoodTotal = patchNeighborhoodHits + patchNeighborhoodMisses;
       lines.push(
         `  Avg LOS Cache Hit Rate: ${losTotal > 0 ? ((losHits / losTotal) * 100).toFixed(1) : '0.0'}% (${losHits}/${losTotal})`
       );
@@ -116,6 +246,30 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
       lines.push(
         `  Avg Grid Cache Hit Rate: ${gridTotal > 0 ? ((gridHits / gridTotal) * 100).toFixed(1) : '0.0'}% (${gridHits}/${gridTotal})`
       );
+      lines.push(
+        `  Avg Minimax Cache Hit Rate: ${minimaxTotal > 0 ? ((minimaxHits / minimaxTotal) * 100).toFixed(1) : '0.0'}% (${minimaxHits}/${minimaxTotal})`
+      );
+      lines.push(
+        `  Avg Minimax Node Evaluations: ${(minimaxNodes / Math.max(1, perfWithCache.length)).toFixed(2)}`
+      );
+      if (patchGraphTotal > 0) {
+        lines.push(
+          `  Avg Minimax Patch Cache Hit Rate: ${((patchGraphHits / patchGraphTotal) * 100).toFixed(1)}% (${patchGraphHits}/${patchGraphTotal})`
+        );
+      }
+      if (patchNeighborhoodTotal > 0) {
+        lines.push(
+          `  Avg Minimax Patch Neighborhood Cache Hit Rate: ${((patchNeighborhoodHits / patchNeighborhoodTotal) * 100).toFixed(1)}% (${patchNeighborhoodHits}/${patchNeighborhoodTotal})`
+        );
+      }
+      const topTransitions = Object.entries(minimaxTransitions)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 4);
+      if (topTransitions.length > 0) {
+        lines.push(
+          `  Top Minimax Patch Transitions: ${topTransitions.map(([transition, count]) => `${transition}=${count}`).join(', ')}`
+        );
+      }
     }
   }
 
@@ -144,6 +298,164 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
       );
       lines.push(
         `  Grid cache hit >= ${(report.performanceGates.thresholds.minGridCacheHitRate * 100).toFixed(1)}%: ${report.performanceGates.pass.gridCacheHitRate ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgGridCacheHitRate !== null ? (report.performanceGates.observed.avgGridCacheHitRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Minimax cache hit >= ${(report.performanceGates.thresholds.minMinimaxLiteCacheHitRate * 100).toFixed(1)}%: ${report.performanceGates.pass.minimaxLiteCacheHitRate ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgMinimaxLiteCacheHitRate !== null ? (report.performanceGates.observed.avgMinimaxLiteCacheHitRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Minimax patch cache hit >= ${(report.performanceGates.thresholds.minMinimaxPatchCacheHitRate * 100).toFixed(1)}%: ${report.performanceGates.pass.minimaxPatchCacheHitRate ? 'PASS' : 'FAIL'} (avg=${report.performanceGates.observed.avgMinimaxPatchCacheHitRate !== null ? (report.performanceGates.observed.avgMinimaxPatchCacheHitRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+    }
+  }
+
+  if (report.coordinatorTraceGates?.enabled) {
+    lines.push('');
+    lines.push('🧠 COORDINATOR TRACE GATES');
+    lines.push(`  Runs Evaluated: ${report.coordinatorTraceGates.runsEvaluated}/${report.runs}`);
+    if (report.coordinatorTraceGates.pass.overall === null) {
+      lines.push('  Status: n/a (no audit turn traces)');
+    } else {
+      lines.push(`  Status: ${report.coordinatorTraceGates.pass.overall ? 'PASS' : 'FAIL'}`);
+      lines.push(
+        `  Run coverage >= ${(report.coordinatorTraceGates.thresholds.minRunCoverage * 100).toFixed(1)}%: ${report.coordinatorTraceGates.pass.runCoverage ? 'PASS' : 'FAIL'} (avg=${report.coordinatorTraceGates.observed.runCoverage !== null ? (report.coordinatorTraceGates.observed.runCoverage * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Turn coverage >= ${(report.coordinatorTraceGates.thresholds.minTurnCoverage * 100).toFixed(1)}%: ${report.coordinatorTraceGates.pass.turnCoverage ? 'PASS' : 'FAIL'} (avg=${report.coordinatorTraceGates.observed.avgTurnCoverage !== null ? (report.coordinatorTraceGates.observed.avgTurnCoverage * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Side coverage/turn >= ${(report.coordinatorTraceGates.thresholds.minSideCoveragePerTurn * 100).toFixed(1)}%: ${report.coordinatorTraceGates.pass.sideCoveragePerTurn ? 'PASS' : 'FAIL'} (avg=${report.coordinatorTraceGates.observed.avgSideCoveragePerTurn !== null ? (report.coordinatorTraceGates.observed.avgSideCoveragePerTurn * 100).toFixed(1) : 'n/a'}%)`
+      );
+    }
+  }
+
+  if (report.pressureContinuityDiagnostics) {
+    lines.push('');
+    lines.push('🔀 PRESSURE CONTINUITY DIAGNOSTICS');
+    lines.push(`  Runs Evaluated: ${report.pressureContinuityDiagnostics.runsEvaluated}/${report.runs}`);
+    lines.push(`  Runs With Data: ${report.pressureContinuityDiagnostics.runsWithData}/${report.pressureContinuityDiagnostics.runsEvaluated}`);
+    lines.push(
+      `  Scrum break-rate avg: ${report.pressureContinuityDiagnostics.observed.avgScrumBreakRate !== null ? (report.pressureContinuityDiagnostics.observed.avgScrumBreakRate * 100).toFixed(1) : 'n/a'}%`
+    );
+    lines.push(
+      `  Lane break-rate avg: ${report.pressureContinuityDiagnostics.observed.avgLaneBreakRate !== null ? (report.pressureContinuityDiagnostics.observed.avgLaneBreakRate * 100).toFixed(1) : 'n/a'}%`
+    );
+    lines.push(
+      `  Combined break-rate avg: ${report.pressureContinuityDiagnostics.observed.avgCombinedBreakRate !== null ? (report.pressureContinuityDiagnostics.observed.avgCombinedBreakRate * 100).toFixed(1) : 'n/a'}%`
+    );
+    lines.push(
+      `  Signature coverage avg: ${report.pressureContinuityDiagnostics.observed.avgSignatureCoverageRate !== null ? (report.pressureContinuityDiagnostics.observed.avgSignatureCoverageRate * 100).toFixed(1) : 'n/a'}%`
+    );
+    lines.push(
+      `  Avg breaks/run: ${report.pressureContinuityDiagnostics.observed.avgBreaksPerRun !== null ? report.pressureContinuityDiagnostics.observed.avgBreaksPerRun.toFixed(2) : 'n/a'}`
+    );
+    lines.push(
+      `  Avg signature samples/run: ${report.pressureContinuityDiagnostics.observed.avgSignatureSamplesPerRun !== null ? report.pressureContinuityDiagnostics.observed.avgSignatureSamplesPerRun.toFixed(2) : 'n/a'}`
+    );
+  }
+
+  if (report.pressureContinuityGates?.enabled) {
+    lines.push('');
+    lines.push('🧷 PRESSURE CONTINUITY GATES');
+    lines.push(`  Runs Evaluated: ${report.pressureContinuityGates.runsEvaluated}/${report.runs}`);
+    lines.push(
+      `  Profile: mission=${report.pressureContinuityGates.profile.missionId}, size=${report.pressureContinuityGates.profile.gameSize}, density=${report.pressureContinuityGates.profile.densityRatio}% (bucket ${report.pressureContinuityGates.profile.densityBucket})`
+    );
+    if (report.pressureContinuityGates.pass.overall === null) {
+      lines.push('  Status: n/a (no continuity samples)');
+    } else {
+      lines.push(`  Status: ${report.pressureContinuityGates.pass.overall ? 'PASS' : 'FAIL'}`);
+      lines.push(
+        `  Runs with data >= ${(report.pressureContinuityGates.thresholds.minRunsWithDataRate * 100).toFixed(1)}%: ${report.pressureContinuityGates.pass.runsWithDataRate === null ? 'n/a' : report.pressureContinuityGates.pass.runsWithDataRate ? 'PASS' : 'FAIL'} (avg=${report.pressureContinuityGates.observed.runsWithDataRate !== null ? (report.pressureContinuityGates.observed.runsWithDataRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Signature coverage >= ${(report.pressureContinuityGates.thresholds.minSignatureCoverageRate * 100).toFixed(1)}%: ${report.pressureContinuityGates.pass.signatureCoverageRate === null ? 'n/a' : report.pressureContinuityGates.pass.signatureCoverageRate ? 'PASS' : 'FAIL'} (avg=${report.pressureContinuityGates.observed.avgSignatureCoverageRate !== null ? (report.pressureContinuityGates.observed.avgSignatureCoverageRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Combined break-rate <= ${(report.pressureContinuityGates.thresholds.maxCombinedBreakRate * 100).toFixed(1)}%: ${report.pressureContinuityGates.pass.combinedBreakRate === null ? 'n/a' : report.pressureContinuityGates.pass.combinedBreakRate ? 'PASS' : 'FAIL'} (avg=${report.pressureContinuityGates.observed.avgCombinedBreakRate !== null ? (report.pressureContinuityGates.observed.avgCombinedBreakRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Lane break-rate <= ${(report.pressureContinuityGates.thresholds.maxLaneBreakRate * 100).toFixed(1)}%: ${report.pressureContinuityGates.pass.laneBreakRate === null ? 'n/a' : report.pressureContinuityGates.pass.laneBreakRate ? 'PASS' : 'FAIL'} (avg=${report.pressureContinuityGates.observed.avgLaneBreakRate !== null ? (report.pressureContinuityGates.observed.avgLaneBreakRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Scrum break-rate <= ${(report.pressureContinuityGates.thresholds.maxScrumBreakRate * 100).toFixed(1)}%: ${report.pressureContinuityGates.pass.scrumBreakRate === null ? 'n/a' : report.pressureContinuityGates.pass.scrumBreakRate ? 'PASS' : 'FAIL'} (avg=${report.pressureContinuityGates.observed.avgScrumBreakRate !== null ? (report.pressureContinuityGates.observed.avgScrumBreakRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+    }
+  }
+
+  if (report.combatActivityGates?.enabled) {
+    lines.push('');
+    lines.push('⚔️ COMBAT ACTIVITY GATES');
+    lines.push(`  Runs Evaluated: ${report.combatActivityGates.runsEvaluated}/${report.runs}`);
+    lines.push(
+      `  Profile: mission=${report.combatActivityGates.profile.missionId}, size=${report.combatActivityGates.profile.gameSize}, density=${report.combatActivityGates.profile.densityRatio}% (bucket ${report.combatActivityGates.profile.densityBucket})`
+    );
+    lines.push(
+      `  Horizon: ${report.combatActivityGates.profile.maxTurns}/${report.combatActivityGates.profile.configuredMaxTurns} turns (${(report.combatActivityGates.profile.horizonRatio * 100).toFixed(1)}%)`
+    );
+    if (report.combatActivityGates.pass.overall === null) {
+      lines.push(`  Status: n/a (${report.combatActivityGates.skippedReason ?? 'no run combat metrics'})`);
+    } else {
+      lines.push(`  Status: ${report.combatActivityGates.pass.overall ? 'PASS' : 'FAIL'}`);
+      lines.push(
+        `  Turn horizon >= ${(report.combatActivityGates.thresholds.minTurnHorizonRatio * 100).toFixed(1)}%: PASS`
+      );
+      lines.push(
+        `  Attack action ratio (combat runs) >= ${(report.combatActivityGates.thresholds.minAttackActionRatio * 100).toFixed(1)}%: ${report.combatActivityGates.pass.attackActionRatio === null ? 'n/a' : report.combatActivityGates.pass.attackActionRatio ? 'PASS' : 'FAIL'} (avg=${report.combatActivityGates.observed.avgAttackActionRatio !== null ? (report.combatActivityGates.observed.avgAttackActionRatio * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Runs with combat >= ${(report.combatActivityGates.thresholds.minRunsWithCombatRate * 100).toFixed(1)}%: ${report.combatActivityGates.pass.runsWithCombatRate === null ? 'n/a' : report.combatActivityGates.pass.runsWithCombatRate ? 'PASS' : 'FAIL'} (avg=${report.combatActivityGates.observed.runsWithCombatRate !== null ? (report.combatActivityGates.observed.runsWithCombatRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Zero-attack runs <= ${(report.combatActivityGates.thresholds.maxZeroAttackRunRate * 100).toFixed(1)}%: ${report.combatActivityGates.pass.zeroAttackRunRate === null ? 'n/a' : report.combatActivityGates.pass.zeroAttackRunRate ? 'PASS' : 'FAIL'} (avg=${report.combatActivityGates.observed.zeroAttackRunRate !== null ? (report.combatActivityGates.observed.zeroAttackRunRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+    }
+  }
+
+  if (report.passivenessGates?.enabled) {
+    lines.push('');
+    lines.push('🧊 PASSIVENESS GATES');
+    lines.push(`  Runs Evaluated: ${report.passivenessGates.runsEvaluated}/${report.runs}`);
+    lines.push(
+      `  Profile: mission=${report.passivenessGates.profile.missionId}, size=${report.passivenessGates.profile.gameSize}, density=${report.passivenessGates.profile.densityRatio}% (bucket ${report.passivenessGates.profile.densityBucket})`
+    );
+    if (report.passivenessGates.pass.overall === null) {
+      lines.push(`  Status: n/a (${report.passivenessGates.skippedReason ?? 'no run passiveness metrics'})`);
+    } else {
+      lines.push(`  Status: ${report.passivenessGates.pass.overall ? 'PASS' : 'FAIL'}`);
+      lines.push(
+        `  Passive action ratio <= ${(report.passivenessGates.thresholds.maxPassiveActionRatio * 100).toFixed(1)}%: ${report.passivenessGates.pass.passiveActionRatio === null ? 'n/a' : report.passivenessGates.pass.passiveActionRatio ? 'PASS' : 'FAIL'} (avg=${report.passivenessGates.observed.avgPassiveActionRatio !== null ? (report.passivenessGates.observed.avgPassiveActionRatio * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Detect+Hide action ratio <= ${(report.passivenessGates.thresholds.maxDetectHideActionRatio * 100).toFixed(1)}%: ${report.passivenessGates.pass.detectHideActionRatio === null ? 'n/a' : report.passivenessGates.pass.detectHideActionRatio ? 'PASS' : 'FAIL'} (avg=${report.passivenessGates.observed.avgDetectHideActionRatio !== null ? (report.passivenessGates.observed.avgDetectHideActionRatio * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Wait action ratio <= ${(report.passivenessGates.thresholds.maxWaitActionRatio * 100).toFixed(1)}%: ${report.passivenessGates.pass.waitActionRatio === null ? 'n/a' : report.passivenessGates.pass.waitActionRatio ? 'PASS' : 'FAIL'} (avg=${report.passivenessGates.observed.avgWaitActionRatio !== null ? (report.passivenessGates.observed.avgWaitActionRatio * 100).toFixed(1) : 'n/a'}%)`
+      );
+    }
+  }
+
+  if (report.attackGateTelemetryGates?.enabled) {
+    lines.push('');
+    lines.push('🗡️ ATTACK-GATE TELEMETRY GATES');
+    lines.push(`  Runs Evaluated: ${report.attackGateTelemetryGates.runsEvaluated}/${report.runs}`);
+    lines.push(
+      `  Profile: mission=${report.attackGateTelemetryGates.profile.missionId}, size=${report.attackGateTelemetryGates.profile.gameSize}, density=${report.attackGateTelemetryGates.profile.densityRatio}% (bucket ${report.attackGateTelemetryGates.profile.densityBucket})`
+    );
+    lines.push(
+      `  Horizon: ${report.attackGateTelemetryGates.profile.maxTurns}/${report.attackGateTelemetryGates.profile.configuredMaxTurns} turns (${(report.attackGateTelemetryGates.profile.horizonRatio * 100).toFixed(1)}%)`
+    );
+    if (report.attackGateTelemetryGates.pass.overall === null) {
+      lines.push(`  Status: n/a (${report.attackGateTelemetryGates.skippedReason ?? 'no telemetry/opportunity samples'})`);
+    } else {
+      lines.push(`  Status: ${report.attackGateTelemetryGates.pass.overall ? 'PASS' : 'FAIL'}`);
+      lines.push(
+        `  Telemetry samples/run >= ${report.attackGateTelemetryGates.thresholds.minTelemetrySamplesPerRun.toFixed(2)}: ${report.attackGateTelemetryGates.pass.telemetrySamples === null ? 'n/a' : report.attackGateTelemetryGates.pass.telemetrySamples ? 'PASS' : 'FAIL'} (avg=${report.attackGateTelemetryGates.observed.avgTelemetrySamplesPerRun !== null ? report.attackGateTelemetryGates.observed.avgTelemetrySamplesPerRun.toFixed(2) : 'n/a'})`
+      );
+      lines.push(
+        `  Immediate-high conversion >= ${(report.attackGateTelemetryGates.thresholds.minImmediateHighConversionRate * 100).toFixed(1)}% (min opportunities ${report.attackGateTelemetryGates.thresholds.minImmediateHighOpportunityCount}): ${report.attackGateTelemetryGates.pass.immediateHighConversion === null ? 'n/a' : report.attackGateTelemetryGates.pass.immediateHighConversion ? 'PASS' : 'FAIL'} (total opportunities=${report.attackGateTelemetryGates.observed.totalImmediateHighOpportunities}, avg=${report.attackGateTelemetryGates.observed.immediateHighConversionRate !== null ? (report.attackGateTelemetryGates.observed.immediateHighConversionRate * 100).toFixed(1) : 'n/a'}%)`
+      );
+      lines.push(
+        `  Pressure-opportunity apply rate >= ${(report.attackGateTelemetryGates.thresholds.minPressureOpportunityGateApplyRate * 100).toFixed(1)}%: ${report.attackGateTelemetryGates.pass.pressureOpportunityApplyRate === null ? 'n/a' : report.attackGateTelemetryGates.pass.pressureOpportunityApplyRate ? 'PASS' : 'FAIL'} (total opportunities=${report.attackGateTelemetryGates.observed.totalPressureOpportunities}, avg=${report.attackGateTelemetryGates.observed.pressureOpportunityGateApplyRate !== null ? (report.attackGateTelemetryGates.observed.pressureOpportunityGateApplyRate * 100).toFixed(1) : 'n/a'}%)`
       );
     }
   }

@@ -1228,7 +1228,7 @@ function validateMoveAction(
   }
 
   // Check for engagement (should disengage first)
-  if (context.battlefield.isEngaged?.(context.character)) {
+  if (isEngagedWithAnyEnemy(context)) {
     errors.push('Cannot move while engaged - must Disengage first');
     return;
   }
@@ -1264,7 +1264,14 @@ function validateCloseCombatAction(
     return;
   }
 
-  if (!context.battlefield.isEngaged?.(context.character)) {
+  const attackerModel = buildSpatialModelForValidation(context.character, context.battlefield);
+  const targetModel = buildSpatialModelForValidation(target, context.battlefield);
+  if (!attackerModel || !targetModel) {
+    errors.push('Cannot determine positions for engagement check');
+    return;
+  }
+
+  if (!SpatialRules.isEngaged(attackerModel, targetModel)) {
     errors.push('Not engaged with target - must move into base contact first');
   }
 
@@ -1301,7 +1308,7 @@ function validateRangedCombatAction(
   }
 
   // Check engagement (can't do ranged combat while engaged)
-  if (context.battlefield.isEngaged?.(context.character)) {
+  if (isEngagedWithAnyEnemy(context)) {
     errors.push('Cannot perform ranged combat while engaged');
   }
 
@@ -1334,7 +1341,7 @@ function validateDisengageAction(
   errors: string[],
   warnings: string[]
 ): void {
-  if (!context.battlefield.isEngaged?.(context.character)) {
+  if (!isEngagedWithAnyEnemy(context)) {
     errors.push('Not engaged - Disengage only valid when engaged');
   }
 }
@@ -1449,9 +1456,25 @@ function buildSpatialModelForValidation(character: Character, battlefield: any) 
   return {
     id: character.id,
     position,
-    baseDiameter: siz / 3, // Simplified
+    baseDiameter: getBaseDiameterFromSiz(siz),
     siz,
   };
+}
+
+function isEngagedWithAnyEnemy(context: AIContext): boolean {
+  const attackerModel = buildSpatialModelForValidation(context.character, context.battlefield);
+  if (!attackerModel) return false;
+
+  for (const enemy of context.enemies ?? []) {
+    if (!enemy || enemy.state.isKOd || enemy.state.isEliminated) continue;
+    const enemyModel = buildSpatialModelForValidation(enemy, context.battlefield);
+    if (!enemyModel) continue;
+    if (SpatialRules.isEngaged(attackerModel, enemyModel)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 /**

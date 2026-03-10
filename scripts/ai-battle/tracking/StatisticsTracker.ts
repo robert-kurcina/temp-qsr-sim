@@ -14,7 +14,8 @@ import type {
   BattleStats,
   AdvancedRuleMetrics,
   RuleTypeBreakdown,
-  ModelUsageStats
+  ModelUsageStats,
+  ActionStepAudit,
 } from '../../shared/BattleReportTypes';
 import { CONTEXT_MODIFIER_KEYS } from '../validation/ValidationMetrics';
 import type { GameManager } from '../../../src/lib/mest-tactics/engine/GameManager';
@@ -158,10 +159,40 @@ export class StatisticsTracker {
 
   trackDecisionChoiceSet(character: Character, debug: AIResult['debug'] | undefined) {
     const availability = debug?.actionAvailability;
-    if (!availability) return;
-    const waitChoices = Number(availability.wait ?? 0);
-    if (Number.isFinite(waitChoices) && waitChoices > 0) {
-      this.trackWaitChoiceGiven(character);
+    if (availability) {
+      const waitChoices = Number(availability.wait ?? 0);
+      if (Number.isFinite(waitChoices) && waitChoices > 0) {
+        this.trackWaitChoiceGiven(character);
+      }
+    }
+
+    const telemetry = debug?.decisionTelemetry;
+    if (!telemetry) return;
+
+    this.stats.decisionTelemetrySamples = (this.stats.decisionTelemetrySamples ?? 0) + 1;
+    switch (telemetry.attackOpportunityGrade) {
+      case 'immediate-high':
+        this.stats.attackOpportunityImmediateHigh = (this.stats.attackOpportunityImmediateHigh ?? 0) + 1;
+        break;
+      case 'immediate-low':
+        this.stats.attackOpportunityImmediateLow = (this.stats.attackOpportunityImmediateLow ?? 0) + 1;
+        break;
+      case 'setup':
+        this.stats.attackOpportunitySetup = (this.stats.attackOpportunitySetup ?? 0) + 1;
+        break;
+      case 'none':
+      default:
+        this.stats.attackOpportunityNone = (this.stats.attackOpportunityNone ?? 0) + 1;
+        break;
+    }
+
+    if (telemetry.attackGateApplied) {
+      this.stats.attackGateAppliedDecisions = (this.stats.attackGateAppliedDecisions ?? 0) + 1;
+      if (telemetry.attackGateReason === 'immediate_high_window') {
+        this.stats.attackGateImmediateHighApplied = (this.stats.attackGateImmediateHighApplied ?? 0) + 1;
+      } else {
+        this.stats.attackGateDirectiveApplied = (this.stats.attackGateDirectiveApplied ?? 0) + 1;
+      }
     }
   }
 
@@ -304,6 +335,10 @@ export class StatisticsTracker {
     }
   }
 
+  trackSituationalModifierType(type: string, amount: number = 1) {
+    this.incrementTypeBreakdown(this.advancedRules.situationalModifiers.byType, type, amount);
+  }
+
   // ============================================================================
   // Combat Extras Tracking
   // ============================================================================
@@ -311,11 +346,165 @@ export class StatisticsTracker {
   trackCombatExtras(params: TrackCombatExtrasParams) {
     this.trackBonusActionOptions(params.bonusActionOptions);
     this.trackBonusActionOutcome(params.bonusActionOutcome);
-    
-    const hitTestResult = params.result?.hitTestResult ?? params.hitTestResult;
+
+    const combatResultPayload = this.resolveCombatResultPayload(params);
+    const hitTestResult = this.extractHitTestResult(combatResultPayload)
+      ?? params.result?.hitTestResult
+      ?? params.hitTestResult;
     if (params.context || hitTestResult) {
       this.trackSituationalModifiers({ context: params.context, hitTestResult });
     }
+
+    this.trackCombatTests(combatResultPayload ?? params.hitTestResult);
+  }
+
+  trackCombatAssignmentsFromStep(step: ActionStepAudit) {
+    if (!this.isCombatStep(step)) {
+      return;
+    }
+    if (!Array.isArray(step.affectedModels) || step.affectedModels.length === 0) {
+      return;
+    }
+
+    let woundsAssigned = 0;
+    let fearAssigned = 0;
+    let delayAssigned = 0;
+
+    for (const effect of step.affectedModels) {
+      const before = effect?.before;
+      const after = effect?.after;
+      if (!before || !after) continue;
+      woundsAssigned += Math.max(0, (after.wounds ?? 0) - (before.wounds ?? 0));
+      fearAssigned += Math.max(0, (after.fearTokens ?? 0) - (before.fearTokens ?? 0));
+      delayAssigned += Math.max(0, (after.delayTokens ?? 0) - (before.delayTokens ?? 0));
+    }
+
+    this.stats.woundsAssigned = (this.stats.woundsAssigned ?? 0) + woundsAssigned;
+    this.stats.fearAssigned = (this.stats.fearAssigned ?? 0) + fearAssigned;
+    this.stats.delayAssigned = (this.stats.delayAssigned ?? 0) + delayAssigned;
+  }
+
+  private isCombatStep(step: ActionStepAudit): boolean {
+    const actionType = String(step.actionType ?? '').toLowerCase();
+    if (
+      actionType === 'close_combat'
+      || actionType === 'ranged_combat'
+      || actionType === 'attack'
+      || actionType === 'disengage'
+    ) {
+      return true;
+    }
+
+    const details = this.asRecord(step.details);
+    if (details && (details.attackResult || details.opportunityAttack || details.disengageResult)) {
+      return true;
+    }
+
+    const interactions = Array.isArray(step.interactions) ? step.interactions : [];
+    return interactions.some(interaction =>
+      interaction?.kind === 'react' || interaction?.kind === 'opportunity_attack'
+    );
+  }
+
+  private trackCombatTests(rawResult: unknown) {
+    const hitPass = this.extractHitTestPass(rawResult);
+    if (hitPass !== undefined) {
+      this.stats.hitTestsAttempted = (this.stats.hitTestsAttempted ?? 0) + 1;
+      if (hitPass) {
+        this.stats.hitTestsPassed = (this.stats.hitTestsPassed ?? 0) + 1;
+      } else {
+        this.stats.hitTestsFailed = (this.stats.hitTestsFailed ?? 0) + 1;
+      }
+    }
+
+    const damagePass = this.extractDamageTestPass(rawResult);
+    if (damagePass !== undefined) {
+      this.stats.damageTestsAttempted = (this.stats.damageTestsAttempted ?? 0) + 1;
+      if (damagePass) {
+        this.stats.damageTestsPassed = (this.stats.damageTestsPassed ?? 0) + 1;
+      } else {
+        this.stats.damageTestsFailed = (this.stats.damageTestsFailed ?? 0) + 1;
+      }
+    }
+  }
+
+  private extractHitTestPass(rawResult: unknown): boolean | undefined {
+    const hitTest = this.extractHitTestResult(rawResult);
+    return this.extractPassValue(hitTest);
+  }
+
+  private extractDamageTestPass(rawResult: unknown): boolean | undefined {
+    const damageResolution = this.extractDamageResolution(rawResult);
+    if (!damageResolution) return undefined;
+    const damageTest = this.asRecord(damageResolution.damageTestResult);
+    return this.extractPassValue(damageTest);
+  }
+
+  private extractPassValue(testResult: Record<string, unknown> | undefined): boolean | undefined {
+    if (!testResult) return undefined;
+    if (typeof testResult.pass === 'boolean') return testResult.pass;
+    if (typeof testResult.actorWins === 'boolean') return testResult.actorWins;
+    return undefined;
+  }
+
+  private extractHitTestResult(rawResult: unknown): Record<string, unknown> | undefined {
+    const payload = this.asRecord(rawResult);
+    if (!payload) return undefined;
+
+    const directHit = this.asRecord(payload.hitTestResult);
+    if (directHit) return directHit;
+
+    const nestedResult = this.asRecord(payload.result);
+    const nestedHit = this.asRecord(nestedResult?.hitTestResult);
+    if (nestedHit) return nestedHit;
+
+    // Some call paths pass the hit test payload directly.
+    if (typeof payload.pass === 'boolean' || typeof payload.actorWins === 'boolean') {
+      return payload;
+    }
+    return undefined;
+  }
+
+  private extractDamageResolution(rawResult: unknown): Record<string, unknown> | undefined {
+    const payload = this.asRecord(rawResult);
+    if (!payload) return undefined;
+
+    const directResolution = this.asRecord(payload.damageResolution ?? payload.damageResult);
+    if (directResolution) return directResolution;
+
+    const nestedResult = this.asRecord(payload.result);
+    const nestedResolution = this.asRecord(nestedResult?.damageResolution ?? nestedResult?.damageResult);
+    if (nestedResolution) return nestedResolution;
+
+    return undefined;
+  }
+
+  /**
+   * Callers may provide either a wrapper shape:
+   *   { result: { hitTestResult, damageResolution }, ... }
+   * or a direct combat result payload:
+   *   { hitTestResult, damageResolution, ... }
+   *
+   * Normalize to the richest payload so hit/damage test extraction can see both.
+   */
+  private resolveCombatResultPayload(params: TrackCombatExtrasParams): unknown {
+    const wrappedResult = (params as Record<string, unknown> | undefined)?.result;
+    if (wrappedResult !== undefined && wrappedResult !== null) {
+      return wrappedResult;
+    }
+    const direct = this.asRecord(params);
+    if (!direct) {
+      return params.hitTestResult;
+    }
+    if (direct.hitTestResult || direct.damageResolution || direct.damageResult) {
+      return direct;
+    }
+    return params.hitTestResult;
+  }
+
+  private asRecord(value: unknown): Record<string, unknown> | undefined {
+    if (!value || typeof value !== 'object') return undefined;
+    return value as Record<string, unknown>;
   }
 
   // ============================================================================
@@ -433,6 +622,23 @@ export class StatisticsTracker {
       lofChecks: 0,
       totalPathLength: 0,
       modelsMoved: 0,
+      decisionTelemetrySamples: 0,
+      attackGateAppliedDecisions: 0,
+      attackGateImmediateHighApplied: 0,
+      attackGateDirectiveApplied: 0,
+      attackOpportunityImmediateHigh: 0,
+      attackOpportunityImmediateLow: 0,
+      attackOpportunitySetup: 0,
+      attackOpportunityNone: 0,
+      hitTestsAttempted: 0,
+      hitTestsPassed: 0,
+      hitTestsFailed: 0,
+      damageTestsAttempted: 0,
+      damageTestsPassed: 0,
+      damageTestsFailed: 0,
+      woundsAssigned: 0,
+      fearAssigned: 0,
+      delayAssigned: 0,
     };
   }
 

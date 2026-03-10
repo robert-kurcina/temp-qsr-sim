@@ -30,6 +30,28 @@ export function performPushing(
   deps: ActivationDeps,
   character: Character
 ): PushingResult {
+  const currentAp = deps.getApRemaining(character.id);
+
+  // QSR: Pushing is only taken after AP is exhausted.
+  if (currentAp > 0) {
+    return {
+      success: false,
+      apGained: 0,
+      delayTokenAdded: false,
+      reason: 'Pushing requires 0 AP',
+    };
+  }
+
+  // QSR: Model must be Attentive to push.
+  if (!character.state.isAttentive) {
+    return {
+      success: false,
+      apGained: 0,
+      delayTokenAdded: false,
+      reason: 'Character is not Attentive',
+    };
+  }
+
   // Check if character already has Delay tokens
   if (character.state.delayTokens > 0) {
     return {
@@ -51,7 +73,6 @@ export function performPushing(
   }
 
   // Gain 1 AP
-  const currentAp = deps.getApRemaining(character.id);
   deps.setApRemaining(character.id, currentAp + 1);
 
   // Add Delay token

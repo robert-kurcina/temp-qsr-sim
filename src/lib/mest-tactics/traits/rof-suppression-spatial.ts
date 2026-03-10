@@ -18,6 +18,7 @@ import { getCharacterTraitLevel } from '../status/status-system';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { SpatialRules, type CoverResult } from '../battlefield/spatial/spatial-rules';
 import { TerrainType } from '../battlefield/terrain/Terrain';
+import { pointInPolygon, segmentPolygonIntersections } from '../battlefield/terrain/BattlefieldUtils';
 
 // Helper to create SpatialModel from Position
 function createSpatialModel(position: Position, siz: number = 3) {
@@ -27,6 +28,61 @@ function createSpatialModel(position: Position, siz: number = 3) {
     baseDiameter: getBaseDiameterFromSiz(siz),
     siz,
   };
+}
+
+function isHardCoverFeature(feature: { type?: TerrainType | string; los?: string; meta?: { los?: string } } | undefined): boolean {
+  if (!feature) return false;
+  if (feature.type === TerrainType.Obstacle || feature.type === TerrainType.Blocking) {
+    return true;
+  }
+
+  const losHint = String(feature.meta?.los ?? feature.los ?? '').toLowerCase();
+  return losHint.includes('block') || losHint.includes('hard');
+}
+
+function isBlockedByHardCover(result: CoverResult): boolean {
+  if (!result.hasLOS && isHardCoverFeature(result.blockingFeature)) {
+    return true;
+  }
+
+  // Suppression extends through Soft Cover but not Hard Cover, even when LOS still exists.
+  const hardCoverOnPath = [
+    ...result.directCoverFeatures,
+    ...result.interveningCoverFeatures,
+  ].some(feature => isHardCoverFeature(feature));
+  return hardCoverOnPath;
+}
+
+function isSuppressionPathBlockedByHardCover(
+  battlefield: Battlefield,
+  source: Position,
+  target: Position
+): boolean {
+  const sourceModel = createSpatialModel(source);
+  const targetModel = createSpatialModel(target);
+  const coverResult = SpatialRules.getCoverResult(battlefield, sourceModel, targetModel);
+  if (isBlockedByHardCover(coverResult)) {
+    return true;
+  }
+
+  // Fallback geometric check: any hard-cover feature intersecting/containing the segment
+  // blocks suppression propagation between the marker and character.
+  for (const feature of battlefield.terrain) {
+    if (!isHardCoverFeature(feature)) continue;
+
+    const sourceInside = pointInPolygon(source, feature.vertices);
+    const targetInside = pointInPolygon(target, feature.vertices);
+    if (sourceInside || targetInside) {
+      return true;
+    }
+
+    const intersections = segmentPolygonIntersections(source, target, feature.vertices);
+    if (intersections.length > 0) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // ============================================================================
@@ -319,19 +375,24 @@ export function calculateSuppressionEffect(
     return { markerCount: 0, dr: 0, behindHardCover: false };
   }
 
-  // Count markers within 1" range
+  let blockedByHardCoverCount = 0;
+
+  // Count markers within 1" range that are not blocked by Hard Cover.
   const markersInRange = suppressionMarkers.filter(marker => {
     const dist = distanceBetween(marker.position, characterPos);
     if (dist > 1) return false;
 
-    // Check if Hard Cover blocks this marker
-    const markerModel = createSpatialModel(marker.position);
-    const characterModel = createSpatialModel(characterPos);
-    const coverResult = SpatialRules.getCoverResult(battlefield, markerModel, characterModel);
-    // Hard Cover = blocking terrain that blocks LOS
-    const isBlockedByHardCover = !coverResult.hasLOS;
+    const blockedByHardCover = isSuppressionPathBlockedByHardCover(
+      battlefield,
+      marker.position,
+      characterPos
+    );
+    if (blockedByHardCover) {
+      blockedByHardCoverCount += 1;
+      return false;
+    }
 
-    return !isBlockedByHardCover;
+    return true;
   });
 
   const markerCount = markersInRange.length;
@@ -343,9 +404,9 @@ export function calculateSuppressionEffect(
   else if (markerCount >= 2) dr = 2;
   else if (markerCount >= 1) dr = 1;
 
-  // Check if behind Hard Cover (penalizes attacker)
-  // For simplicity, check if character has Hard Cover from any direction
-  const behindHardCover = false; // TODO: Implement proper Hard Cover detection
+  // Character is considered behind Hard Cover if in-range suppression exists, but every
+  // in-range marker is blocked by Hard Cover.
+  const behindHardCover = markerCount === 0 && blockedByHardCoverCount > 0;
 
   return {
     markerCount,
@@ -815,7 +876,7 @@ export function getSuppressionZoneVisualization(
     const markerModel = createSpatialModel(marker.position);
     const characterModel = createSpatialModel(characterPos);
     const coverResult = SpatialRules.getCoverResult(battlefield, markerModel, characterModel);
-    return coverResult.hasLOS;
+    return !isBlockedByHardCover(coverResult);
   });
 
   if (markersInRange.length === 0) {

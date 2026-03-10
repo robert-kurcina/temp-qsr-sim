@@ -5,19 +5,33 @@
  * Unified battle runner for MEST Tactics AI vs AI battles.
  *
  * Usage:
- *   npx tsx scripts/run-battles/                    # Run default VERY_SMALL battle
- *   npx tsx scripts/run-battles/ --config small     # Run specific config
- *   npx tsx scripts/run-battles/ --config-file path/to/config.json  # Custom JSON config
- *   npx tsx scripts/run-battles/ --help             # Show help
+ *   npm run run-battles --                          # Run default VERY_SMALL battle
+ *   npm run run-battles -- --config small           # Run specific config
+ *   npm run run-battles -- --config-file path/to/config.json  # Custom JSON config
+ *   npm run run-battles -- --help                   # Show help
  */
 
 import { readFileSync } from 'node:fs';
-import { runBattle, type BattleRunnerConfig as BattleConfig } from './battle-runner';
-import { VERY_SMALL_CONFIG } from './configs/very-small';
-import { LIGHTING_PRESETS } from './lighting-presets';
-import { GameSize } from '../../src/lib/mest-tactics/mission/assembly-builder';
-import { TacticalDoctrine } from '../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
-import { InstrumentationGrade } from '../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
+import { pathToFileURL } from 'node:url';
+import type { BattleRunnerConfig as BattleConfig } from './types';
+import type { LightingCondition } from '../../src/lib/mest-tactics/utils/visibility';
+import { AIBattleRunner } from '../ai-battle/AIBattleRunner';
+import { type GameConfig } from '../shared/AIBattleConfig';
+import type { BattleReport } from '../shared/BattleReportTypes';
+import { writeBattleArtifacts } from '../ai-battle/reporting/BattleReportWriter';
+import {
+  buildCanonicalGameConfig,
+  mapDoctrine,
+  MISSION_NAME_BY_ID,
+  toCanonicalSideConfig,
+} from '../shared/CanonicalBattleConfigAdapter';
+import {
+  parseRunBattlesCliArgs,
+  printRunBattlesHelp,
+  RunBattlesCliError,
+  type OutputFormat,
+  type ParseResult,
+} from './RunBattlesCliParser';
 
 // ============================================================================
 // Config Loader
@@ -35,159 +49,69 @@ const CONFIGS: Record<string, () => Promise<BattleConfig>> = {
   'ai-stress-test': async () => (await import('./configs/ai-stress-test')).AI_STRESS_TEST_CONFIG,
 };
 
-// ============================================================================
-// CLI Parser
-// ============================================================================
+export { mapDoctrine, toCanonicalSideConfig };
 
-function printHelp() {
-  console.log(`
-Battle Runner - AI vs AI Battle Simulation
-
-Usage:
-  npx tsx scripts/run-battles/ [options]
-
-Options:
-  --config <name>          Battle configuration preset
-                           Options: very-small, small, medium, large, very-large,
-                                    convergence-3side, trinity, trinity-4side, ai-stress-test
-                           Default: very-small
-
-  --config-file <path>     Custom JSON configuration file path
-                           Overrides --config option
-
-  --gameSize <size>        Game size (overrides config)
-                           Options: VERY_SMALL, SMALL, MEDIUM, LARGE, VERY_LARGE
-
-  --mission <id>           Mission ID (overrides config)
-                           Options: QAI_11, QAI_12, QAI_13, QAI_14, QAI_15,
-                                    QAI_16, QAI_17, QAI_18, QAI_19, QAI_20
-
-  --terrain <density>      Terrain density percentage 0-100 (overrides config)
-
-  --lighting <preset>      Lighting preset (overrides config)
-                           Options: "Day, Clear", "Day, Hazy", "Twilight, Clear",
-                                    "Night, Full Moon", "Night, Half Moon", "Pitch-black"
-
-  --instrumentation <0-5>  Instrumentation detail level (overrides config)
-                           0=None, 1=Summary, 2=By Action, 3=With Tests,
-                           4=With Dice, 5=Full Detail
-
-  --output <format>        Output format
-                           Options: console, json, both
-                           Default: console
-
-  --seed <number>          Random seed for reproducible battles
-
-  --audit                  Enable visual audit capture (generates audit.json)
-  --viewer                 Generate HTML battle report viewer (implies --audit)
-
-  --help                   Show this help message
-
-Examples:
-  # Default VERY_SMALL battle (QAI_11 Elimination)
-  npx tsx scripts/run-battles/
-
-  # SMALL battle
-  npx tsx scripts/run-battles/ --config small
-
-  # Custom MEDIUM battle with night lighting
-  npx tsx scripts/run-battles/ --gameSize MEDIUM --lighting "Night, Full Moon"
-
-  # QAI_12 Convergence mission
-  npx tsx scripts/run-battles/ --mission QAI_12
-
-  # Full detail instrumentation with JSON output
-  npx tsx scripts/run-battles/ --instrumentation 5 --output json
-
-  # Custom JSON configuration file
-  npx tsx scripts/run-battles/ --config-file my-battle.json
-
-  # Reproducible battle with seed
-  npx tsx scripts/run-battles/ --seed 424242
-
-  # VERY_SMALL battle with visual audit
-  npx tsx scripts/run-battles/ --config very-small --audit --viewer
-`);
+export function toCanonicalGameConfig(config: BattleConfig, outputFormat: OutputFormat): GameConfig {
+  return buildCanonicalGameConfig({
+    missionId: String(config.missionId || 'QAI_11'),
+    missionName: MISSION_NAME_BY_ID[String(config.missionId || 'QAI_11')] ?? String(config.missionId || 'QAI_11'),
+    gameSize: config.gameSize,
+    sides: config.sides.map(side => toCanonicalSideConfig(side, config.gameSize)),
+    densityRatio: Number(config.terrainDensity),
+    lighting: (config.lighting?.name || 'Day, Clear') as LightingCondition,
+    allowWaitAction: config.allowWaitAction,
+    allowHideAction: config.allowHideAction,
+    verbose: outputFormat !== 'json',
+    seed: config.seed,
+    audit: config.audit,
+    viewer: config.viewer,
+    battlefieldPath: config.battlefieldPath,
+  });
 }
 
-type OutputFormat = 'console' | 'json' | 'both';
+export function resolveLegacyEndGameReason(report: BattleReport): 'trigger' | 'elimination' | 'max-turn' | 'mission-immediate' {
+  const turnsPlayed = Number(report.stats?.turnsCompleted ?? 0);
+  const maxTurns = Number(report.config?.maxTurns ?? turnsPlayed);
+  const sidesWithModels = Array.isArray(report.finalCounts)
+    ? report.finalCounts.filter(count => Number(count.remaining ?? 0) > 0).length
+    : 0;
 
-interface ParseResult {
-  configName: string;
-  configFile?: string;
-  overrides: Partial<BattleConfig>;
-  outputFormat: OutputFormat;
+  if (report.missionRuntime?.immediateWinnerSideId) {
+    return 'mission-immediate';
+  }
+  if (sidesWithModels <= 1) {
+    return 'elimination';
+  }
+  if (turnsPlayed >= maxTurns) {
+    return 'max-turn';
+  }
+  return 'trigger';
+}
+
+export function toLegacyJsonOutput(report: BattleReport): Record<string, unknown> {
+  const winner = report.winner && report.winner !== 'Draw' && report.winner !== 'None' ? report.winner : null;
+  return {
+    battleId: `battle-${report.config.gameSize}-${Date.now()}`,
+    config: report.config,
+    turnsPlayed: report.stats.turnsCompleted,
+    gameEnded: true,
+    endGameReason: resolveLegacyEndGameReason(report),
+    vpBySide: report.missionRuntime?.vpBySide ?? {},
+    rpBySide: report.missionRuntime?.rpBySide ?? {},
+    winnerSide: winner,
+    stats: report.stats,
+    keys: {},
+    log: report.log,
+  };
 }
 
 async function parseArgs(): Promise<ParseResult> {
-  const args = process.argv.slice(2);
-  let configName = 'very-small';
-  let configFile: string | undefined;
-  const overrides: Partial<BattleConfig> = {};
-  let outputFormat: OutputFormat = 'console';
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    const value = args[i + 1];
-
-    switch (arg) {
-      case '--config':
-        configName = value;
-        i++;
-        break;
-      case '--config-file':
-        configFile = value;
-        i++;
-        break;
-      case '--gameSize':
-        overrides.gameSize = GameSize[value as keyof typeof GameSize];
-        i++;
-        break;
-      case '--mission':
-        overrides.missionId = value;
-        i++;
-        break;
-      case '--terrain':
-        // Convert percentage (0-100) to decimal (0.0-1.0)
-        overrides.terrainDensity = parseInt(value, 10) / 100;
-        i++;
-        break;
-      case '--lighting':
-        overrides.lighting = LIGHTING_PRESETS[value];
-        i++;
-        break;
-      case '--instrumentation':
-        overrides.instrumentationGrade = parseInt(value, 10) as InstrumentationGrade;
-        i++;
-        break;
-      case '--output':
-        if (value === 'console' || value === 'json' || value === 'both') {
-          outputFormat = value;
-        } else {
-          console.error(`Invalid output format: ${value}. Use: console, json, both`);
-          process.exit(1);
-        }
-        i++;
-        break;
-      case '--seed':
-        overrides.seed = parseInt(value, 10);
-        i++;
-        break;
-      case '--audit':
-        overrides.audit = true;
-        break;
-      case '--viewer':
-        overrides.viewer = true;
-        overrides.audit = true; // viewer implies audit
-        break;
-      case '--help':
-        printHelp();
-        process.exit(0);
-        break;
-    }
+  const parsed = parseRunBattlesCliArgs(process.argv.slice(2));
+  if (parsed.showHelp) {
+    printRunBattlesHelp();
+    process.exit(0);
   }
-
-  return { configName, configFile, overrides, outputFormat };
+  return parsed;
 }
 
 // ============================================================================
@@ -206,7 +130,7 @@ function loadJsonConfig(filePath: string): BattleConfig {
   }
 }
 
-async function main() {
+export async function main() {
   try {
     const { configName, configFile, overrides, outputFormat } = await parseArgs();
 
@@ -230,58 +154,73 @@ async function main() {
       ...overrides,
     };
 
-    // Run battle
-    const runner = new (await import('./battle-runner')).BattleRunner(config);
-    const result = await runner.run();
+    // Run canonical battle executor (AIBattleRunner)
+    const canonicalConfig = toCanonicalGameConfig(config, outputFormat);
+    const runner = new AIBattleRunner();
+    const report = await runner.runBattle(canonicalConfig, {
+      seed: canonicalConfig.seed,
+      suppressOutput: outputFormat === 'json',
+    });
+
+    const artifacts = writeBattleArtifacts(report, {
+      audit: canonicalConfig.audit || canonicalConfig.viewer,
+      viewer: canonicalConfig.viewer,
+    });
+    if (artifacts.auditPath && outputFormat !== 'json') {
+      console.log(`🎬 Visual Audit: ${artifacts.auditPath}`);
+    }
+    if (artifacts.viewerPath && outputFormat !== 'json') {
+      console.log(`📺 HTML Viewer: ${artifacts.viewerPath}`);
+    }
+    if (outputFormat !== 'json') {
+      console.log(`📁 JSON Report: ${artifacts.reportPath}`);
+    }
 
     // Output results based on format
     if (outputFormat === 'json' || outputFormat === 'both') {
       console.log('\n--- JSON OUTPUT ---');
-      const jsonOutput = JSON.stringify({
-        battleId: result.battleId,
-        config: result.config,
-        turnsPlayed: result.turnsPlayed,
-        gameEnded: result.gameEnded,
-        endGameReason: result.endGameReason,
-        vpBySide: result.vpBySide,
-        winnerSide: result.winnerSide,
-        stats: result.stats,
-        keys: result.keys,
-        log: result.log, // Include full battle log with initiative tracking (grade 2+)
-      }, null, 2);
-      console.log(jsonOutput);
+      console.log(JSON.stringify(toLegacyJsonOutput(report), null, 2));
       if (outputFormat === 'json') {
         return;
       }
     }
 
     if (outputFormat === 'console' || outputFormat === 'both') {
-      // Print final result
+      const winner = report.winner && report.winner !== 'Draw' && report.winner !== 'None' ? report.winner : null;
       console.log('═══════════════════════════════════════');
       console.log('🏆 FINAL RESULT');
       console.log('═══════════════════════════════════════');
-      
-      if (result.winnerSide) {
-        const reasonText = result.winnerReason ? ` (${result.winnerReason === 'vp' ? 'Victory Points' : result.winnerReason === 'rp' ? 'Resource Points tie-break' : result.winnerReason})` : '';
-        console.log(`🏅 Winner: ${result.winnerSide}${reasonText}`);
-      } else if (result.tieSideIds && result.tieSideIds.length > 0) {
-        console.log(`🤝 Result: Tie`);
-        console.log(`   Tied sides: ${result.tieSideIds.join(', ')}`);
-        console.log(`   Tie-break: ${result.winnerReason === 'rp' ? 'RP tie-break failed (still tied)' : 'No tie-break applied'}`);
+      if (winner) {
+        console.log(`🏅 Winner: ${winner}`);
       } else {
-        console.log(`🤝 Result: Tie`);
+        console.log('🤝 Result: Tie');
       }
-      
-      console.log(`Turns: ${result.turnsPlayed}`);
-      console.log(`End Reason: ${result.endGameReason}`);
+      console.log(`Turns: ${report.stats.turnsCompleted}`);
+      const vpBySide = report.missionRuntime?.vpBySide ?? {};
+      if (Object.keys(vpBySide).length > 0) {
+        console.log(`VP by Side: ${Object.entries(vpBySide).map(([side, vp]) => `${side}=${vp}`).join(', ')}`);
+      }
       console.log('');
     }
 
   } catch (error) {
+    if (error instanceof RunBattlesCliError) {
+      console.error(error.message);
+      process.exit(1);
+      return;
+    }
     console.error('Battle failed:', error);
     process.exit(1);
   }
 }
 
+function isMainModule(): boolean {
+  const entrypoint = process.argv[1];
+  if (!entrypoint) return false;
+  return import.meta.url === pathToFileURL(entrypoint).href;
+}
+
 // Run if executed directly
-main();
+if (isMainModule()) {
+  main();
+}

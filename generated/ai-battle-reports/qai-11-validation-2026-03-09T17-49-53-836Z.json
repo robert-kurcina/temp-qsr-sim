@@ -1,0 +1,5472 @@
+{
+  "missionId": "QAI_11",
+  "gameSize": "VERY_SMALL",
+  "densityRatio": 50,
+  "tacticalDoctrine": "operative",
+  "sideDoctrines": [
+    {
+      "sideName": "Alpha",
+      "tacticalDoctrine": "operative",
+      "loadoutProfile": "default"
+    },
+    {
+      "sideName": "Bravo",
+      "tacticalDoctrine": "operative",
+      "loadoutProfile": "default"
+    }
+  ],
+  "loadoutProfile": "default",
+  "lighting": "Day, Clear",
+  "visibilityOrMu": 16,
+  "maxOrm": 3,
+  "allowConcentrateRangeExtension": true,
+  "perCharacterFovLos": false,
+  "runs": 5,
+  "baseSeed": 424242,
+  "winners": {
+    "Alpha": 5
+  },
+  "totals": {
+    "totalActions": 387,
+    "moves": 113,
+    "movesWhileWaiting": 0,
+    "closeCombats": 45,
+    "rangedCombats": 7,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 3,
+    "turnsCompleted": 19,
+    "losChecks": 7,
+    "lofChecks": 7,
+    "totalPathLength": 292.13190272074024,
+    "modelsMoved": 0
+  },
+  "averages": {
+    "totalActions": 77.4,
+    "moves": 22.6,
+    "movesWhileWaiting": 0,
+    "closeCombats": 9,
+    "rangedCombats": 1.4,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0.6,
+    "turnsCompleted": 3.8,
+    "losChecks": 1.4,
+    "lofChecks": 1.4,
+    "totalPathLength": 58.43,
+    "modelsMoved": 0
+  },
+  "advancedRuleTotals": {
+    "bonusActions": {
+      "opportunities": 9,
+      "optionsOffered": 37,
+      "optionsAvailable": 21,
+      "offeredByType": {
+        "Hide": 9,
+        "Refresh": 9,
+        "Reposition": 9,
+        "Circle": 2,
+        "Disengage": 2,
+        "PushBack": 2,
+        "PullBack": 2,
+        "Reversal": 2
+      },
+      "availableByType": {
+        "Hide": 7,
+        "Refresh": 7,
+        "Reposition": 7
+      },
+      "executed": 7,
+      "executedByType": {
+        "Reposition": 6,
+        "Refresh": 1
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 335,
+      "optionsOffered": 919,
+      "optionsAvailable": 117,
+      "offeredByType": {
+        "CounterCharge": 340,
+        "OpportunityAttack": 340,
+        "Defend": 52,
+        "CounterAction": 45,
+        "React": 45,
+        "CounterStrike": 45,
+        "CounterFire": 45,
+        "TakeCover": 7
+      },
+      "availableByType": {
+        "Defend": 41,
+        "React": 39,
+        "CounterCharge": 23,
+        "TakeCover": 3,
+        "OpportunityAttack": 10,
+        "CounterAction": 1
+      },
+      "used": 45,
+      "usedByType": {
+        "Defend": 41,
+        "TakeCover": 3,
+        "CounterAction": 1
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 52,
+      "modifiedTests": 46,
+      "modifiersApplied": 55,
+      "byType": {
+        "distance_orm": 5,
+        "hand_penalty": 8,
+        "defend": 41,
+        "point_blank": 1
+      }
+    }
+  },
+  "advancedRuleAverages": {
+    "bonusActions": {
+      "opportunities": 1.8,
+      "optionsOffered": 7.4,
+      "optionsAvailable": 4.2,
+      "offeredByType": {
+        "Hide": 1.8,
+        "Refresh": 1.8,
+        "Reposition": 1.8,
+        "Circle": 0.4,
+        "Disengage": 0.4,
+        "PushBack": 0.4,
+        "PullBack": 0.4,
+        "Reversal": 0.4
+      },
+      "availableByType": {
+        "Hide": 1.4,
+        "Refresh": 1.4,
+        "Reposition": 1.4
+      },
+      "executed": 1.4,
+      "executedByType": {
+        "Reposition": 1.2,
+        "Refresh": 0.2
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 67,
+      "optionsOffered": 183.8,
+      "optionsAvailable": 23.4,
+      "offeredByType": {
+        "CounterCharge": 68,
+        "OpportunityAttack": 68,
+        "Defend": 10.4,
+        "CounterAction": 9,
+        "React": 9,
+        "CounterStrike": 9,
+        "CounterFire": 9,
+        "TakeCover": 1.4
+      },
+      "availableByType": {
+        "Defend": 8.2,
+        "React": 7.8,
+        "CounterCharge": 4.6,
+        "TakeCover": 0.6,
+        "OpportunityAttack": 2,
+        "CounterAction": 0.2
+      },
+      "used": 9,
+      "usedByType": {
+        "Defend": 8.2,
+        "TakeCover": 0.6,
+        "CounterAction": 0.2
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 10.4,
+      "modifiedTests": 9.2,
+      "modifiersApplied": 11,
+      "byType": {
+        "distance_orm": 1,
+        "hand_penalty": 1.6,
+        "defend": 8.2,
+        "point_blank": 0.2
+      }
+    }
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": false,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runtimeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": false,
+    "wait": false,
+    "detect": false,
+    "los": true,
+    "lof": true
+  },
+  "probeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": false,
+    "closeCombat": false,
+    "react": false,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "performanceGates": {
+    "enabled": true,
+    "runsEvaluated": 5,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2
+    },
+    "thresholds": {
+      "turn1ElapsedMsMax": 42000,
+      "activationP95MsMax": 2800,
+      "minLosCacheHitRate": 0.525,
+      "minPathCacheHitRate": 0.4305,
+      "minGridCacheHitRate": 0.95,
+      "minMinimaxLiteCacheHitRate": 0.084,
+      "minMinimaxPatchCacheHitRate": 0.21
+    },
+    "observed": {
+      "avgTurn1ElapsedMs": 50.8,
+      "avgActivationP95Ms": 9.06,
+      "avgLosCacheHitRate": 0.7443,
+      "avgPathCacheHitRate": 0.1869,
+      "avgGridCacheHitRate": 0.967,
+      "avgMinimaxLiteCacheHitRate": 0.0305,
+      "avgMinimaxPatchCacheHitRate": 0.3819
+    },
+    "pass": {
+      "turn1Elapsed": true,
+      "activationP95": true,
+      "losCacheHitRate": true,
+      "pathCacheHitRate": false,
+      "gridCacheHitRate": true,
+      "minimaxLiteCacheHitRate": false,
+      "minimaxPatchCacheHitRate": true,
+      "overall": false
+    }
+  },
+  "coordinatorTraceGates": {
+    "enabled": true,
+    "runsEvaluated": 5,
+    "thresholds": {
+      "minRunCoverage": 1,
+      "minTurnCoverage": 0.95,
+      "minSideCoveragePerTurn": 0.9
+    },
+    "observed": {
+      "runCoverage": 1,
+      "avgTurnCoverage": 1,
+      "avgSideCoveragePerTurn": 1
+    },
+    "pass": {
+      "runCoverage": true,
+      "turnCoverage": true,
+      "sideCoveragePerTurn": true,
+      "overall": true
+    }
+  },
+  "pressureContinuityDiagnostics": {
+    "runsEvaluated": 5,
+    "runsWithData": 4,
+    "observed": {
+      "avgScrumBreakRate": 0,
+      "avgLaneBreakRate": 0.3333333333333333,
+      "avgCombinedBreakRate": 0.027777777777777776,
+      "avgSignatureCoverageRate": 1,
+      "avgBreaksPerRun": 0.4,
+      "avgSignatureSamplesPerRun": 9.2
+    }
+  },
+  "pressureContinuityGates": {
+    "enabled": true,
+    "runsEvaluated": 5,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2
+    },
+    "thresholds": {
+      "minRunsWithDataRate": 0.4725,
+      "minSignatureCoverageRate": 0.693,
+      "maxCombinedBreakRate": 0.693,
+      "maxLaneBreakRate": 0.7425,
+      "maxScrumBreakRate": 0.7425
+    },
+    "observed": {
+      "runsWithDataRate": 0.8,
+      "avgSignatureCoverageRate": 1,
+      "avgCombinedBreakRate": 0.027777777777777776,
+      "avgLaneBreakRate": 0.3333333333333333,
+      "avgScrumBreakRate": 0
+    },
+    "pass": {
+      "runsWithDataRate": true,
+      "signatureCoverageRate": true,
+      "combinedBreakRate": true,
+      "laneBreakRate": true,
+      "scrumBreakRate": true,
+      "overall": true
+    }
+  },
+  "combatActivityGates": {
+    "enabled": true,
+    "runsEvaluated": 5,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2,
+      "maxTurns": 6,
+      "configuredMaxTurns": 6,
+      "horizonRatio": 1
+    },
+    "thresholds": {
+      "minTurnHorizonRatio": 0.85,
+      "minAttackActionRatio": 0.0828,
+      "minRunsWithCombatRate": 0.7245,
+      "maxZeroAttackRunRate": 0.2932
+    },
+    "observed": {
+      "avgAttackActionRatio": 0.11448708620185699,
+      "runsWithCombatRate": 1,
+      "zeroAttackRunRate": 0
+    },
+    "pass": {
+      "attackActionRatio": true,
+      "runsWithCombatRate": true,
+      "zeroAttackRunRate": true,
+      "overall": true
+    }
+  },
+  "passivenessGates": {
+    "enabled": true,
+    "runsEvaluated": 5,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2,
+      "maxTurns": 6,
+      "configuredMaxTurns": 6,
+      "horizonRatio": 1
+    },
+    "thresholds": {
+      "minTurnHorizonRatio": 0.85,
+      "maxPassiveActionRatio": 0.4455,
+      "maxDetectHideActionRatio": 0.2475,
+      "maxWaitActionRatio": 0.198
+    },
+    "observed": {
+      "avgPassiveActionRatio": 0,
+      "avgDetectHideActionRatio": 0,
+      "avgWaitActionRatio": 0
+    },
+    "pass": {
+      "passiveActionRatio": true,
+      "detectHideActionRatio": true,
+      "waitActionRatio": true,
+      "overall": true
+    }
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 1
+        },
+        {
+          "name": "Bravo",
+          "remaining": 3
+        }
+      ],
+      "stats": {
+        "totalActions": 104,
+        "moves": 26,
+        "movesWhileWaiting": 0,
+        "closeCombats": 15,
+        "rangedCombats": 5,
+        "disengages": 0,
+        "waits": 0,
+        "waitsSelectedPlanner": 0,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 0,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 0,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactChoicesTaken": 0,
+        "waitTriggeredReacts": 0,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 2,
+        "turnsCompleted": 5,
+        "losChecks": 5,
+        "lofChecks": 5,
+        "totalPathLength": 76.20973393851008,
+        "modelsMoved": 0
+      },
+      "usage": {
+        "modelCount": 6,
+        "modelsMoved": 6,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 76.20973393851007,
+        "averagePathLengthPerMovedModel": 12.701622323085012,
+        "averagePathLengthPerModel": 12.701622323085012,
+        "topPathModels": [
+          {
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 19.486832980505138,
+            "moveActions": 11
+          },
+          {
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 14.39834563766817,
+            "moveActions": 6
+          },
+          {
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 14.16227766016838,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 11.16227766016838,
+            "moveActions": 6
+          },
+          {
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "side": "Alpha",
+            "pathLength": 9,
+            "moveActions": 11
+          },
+          {
+            "modelId": "Bravo Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "side": "Bravo",
+            "pathLength": 8,
+            "moveActions": 11
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 1,
+          "Bravo": 0
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "predictedScoring": {
+          "bySide": {
+            "Alpha": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                }
+              }
+            },
+            "Bravo": {
+              "predictedVp": 2.9433333333333334,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0.61,
+                  "confidence": 1,
+                  "leadMargin": 122
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 1.3333333333333333,
+                  "confidence": 0.5,
+                  "leadMargin": 1.3333333333333333
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 1,
+                  "predicted": 1,
+                  "confidence": 1,
+                  "leadMargin": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 200,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 4,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": true,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": false
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 10
+                    },
+                    "state": {
+                      "wounds": 3,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": true,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": false
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-veteran-sword-broad-loadout",
+                    "name": "veteran-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 78,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 9,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 267,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 8
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+                    "name": "militia-spear-medium-shield-medium-loadout",
+                    "profile": {
+                      "name": "militia-spear-medium-shield-medium-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 60,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Spear, Medium",
+                          "classification": "Melee",
+                          "traits": [
+                            "Reach",
+                            "Throwable",
+                            "Charge",
+                            "Perimeter",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 16
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-elite-sword-broad-loadout",
+                    "name": "elite-sword-broad-loadout",
+                    "profile": {
+                      "name": "elite-sword-broad-loadout",
+                      "archetype": "Elite",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "totalBp": 146,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 8,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 18,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 10
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+              "characterName": "veteran-sword-broad-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 9,
+                "y": 23
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 8
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+              "characterName": "militia-spear-medium-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 16
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-elite-sword-broad-loadout",
+              "characterName": "elite-sword-broad-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 8,
+                "y": 23
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 5,
+          "optionsOffered": 15,
+          "optionsAvailable": 15,
+          "offeredByType": {
+            "Hide": 5,
+            "Refresh": 5,
+            "Reposition": 5
+          },
+          "availableByType": {
+            "Hide": 5,
+            "Refresh": 5,
+            "Reposition": 5
+          },
+          "executed": 5,
+          "executedByType": {
+            "Reposition": 4,
+            "Refresh": 1
+          }
+        },
+        "passiveOptions": {
+          "opportunities": 95,
+          "optionsOffered": 241,
+          "optionsAvailable": 36,
+          "offeredByType": {
+            "CounterCharge": 78,
+            "OpportunityAttack": 78,
+            "Defend": 20,
+            "CounterAction": 15,
+            "React": 15,
+            "CounterStrike": 15,
+            "CounterFire": 15,
+            "TakeCover": 5
+          },
+          "availableByType": {
+            "Defend": 16,
+            "React": 13,
+            "CounterCharge": 3,
+            "TakeCover": 3,
+            "OpportunityAttack": 1
+          },
+          "used": 19,
+          "usedByType": {
+            "Defend": 16,
+            "TakeCover": 3
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 20,
+          "modifiedTests": 18,
+          "modifiersApplied": 25,
+          "byType": {
+            "distance_orm": 3,
+            "hand_penalty": 5,
+            "defend": 16,
+            "point_blank": 1
+          }
+        }
+      },
+      "performance": {
+        "elapsedMs": 211,
+        "activationsProcessed": 27,
+        "heartbeatEveryActivations": 25,
+        "activationLatency": {
+          "avgMs": 6.81,
+          "p50Ms": 2,
+          "p95Ms": 21.3,
+          "maxMs": 61
+        },
+        "phases": {
+          "setup.create_assemblies": {
+            "count": 1,
+            "totalMs": 4,
+            "avgMs": 4,
+            "maxMs": 4
+          },
+          "setup.load_battlefield": {
+            "count": 1,
+            "totalMs": 2,
+            "avgMs": 2,
+            "maxMs": 2
+          },
+          "setup.deploy_models": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "turn.start": {
+            "count": 5,
+            "totalMs": 5,
+            "avgMs": 1,
+            "maxMs": 3
+          },
+          "turn.mission_start_update": {
+            "count": 5,
+            "totalMs": 1,
+            "avgMs": 0.2,
+            "maxMs": 1
+          },
+          "ai.update_knowledge": {
+            "count": 56,
+            "totalMs": 1,
+            "avgMs": 0.02,
+            "maxMs": 1
+          },
+          "ai.decide_action": {
+            "count": 56,
+            "totalMs": 90,
+            "avgMs": 1.61,
+            "maxMs": 12
+          },
+          "action.move": {
+            "count": 27,
+            "totalMs": 23,
+            "avgMs": 0.85,
+            "maxMs": 10
+          },
+          "action.total": {
+            "count": 56,
+            "totalMs": 48,
+            "avgMs": 0.86,
+            "maxMs": 12
+          },
+          "react.process": {
+            "count": 52,
+            "totalMs": 14,
+            "avgMs": 0.27,
+            "maxMs": 13
+          },
+          "action.pushing": {
+            "count": 6,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "activation.total": {
+            "count": 27,
+            "totalMs": 184,
+            "avgMs": 6.81,
+            "maxMs": 61
+          },
+          "action.close_combat": {
+            "count": 15,
+            "totalMs": 6,
+            "avgMs": 0.4,
+            "maxMs": 4
+          },
+          "action.ranged_combat": {
+            "count": 5,
+            "totalMs": 19,
+            "avgMs": 3.8,
+            "maxMs": 12
+          },
+          "turn.mission_end_update": {
+            "count": 5,
+            "totalMs": 3,
+            "avgMs": 0.6,
+            "maxMs": 2
+          },
+          "turn.total": {
+            "count": 5,
+            "totalMs": 197,
+            "avgMs": 39.4,
+            "maxMs": 135
+          },
+          "action.hold": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "mission.finalize": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          }
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "elapsedMs": 135,
+            "activations": 6
+          },
+          {
+            "turn": 2,
+            "elapsedMs": 18,
+            "activations": 6
+          },
+          {
+            "turn": 3,
+            "elapsedMs": 18,
+            "activations": 6
+          },
+          {
+            "turn": 4,
+            "elapsedMs": 12,
+            "activations": 5
+          },
+          {
+            "turn": 5,
+            "elapsedMs": 14,
+            "activations": 4
+          }
+        ],
+        "slowestActivations": [
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 61,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 24,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "elapsedMs": 15,
+            "steps": 4
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 13,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "elapsedMs": 10,
+            "steps": 5
+          },
+          {
+            "turn": 2,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 6,
+            "steps": 1
+          },
+          {
+            "turn": 3,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 6,
+            "steps": 2
+          },
+          {
+            "turn": 4,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 6,
+            "steps": 2
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 5,
+            "steps": 4
+          },
+          {
+            "turn": 5,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 5,
+            "steps": 2
+          }
+        ],
+        "caches": {
+          "los": {
+            "terrainVersion": 0,
+            "size": 955,
+            "maxSize": 25000,
+            "hits": 3856,
+            "misses": 955
+          },
+          "pathfinding": {
+            "terrainVersion": 0,
+            "gridCacheSize": 3,
+            "gridCacheMaxSize": 32,
+            "pathCacheSize": 87,
+            "pathCacheMaxSize": 8000,
+            "gridHits": 112,
+            "gridMisses": 3,
+            "pathHits": 28,
+            "pathMisses": 87
+          },
+          "minimaxLite": {
+            "controllers": 6,
+            "controllersWithSamples": 6,
+            "hits": 0,
+            "misses": 92,
+            "hitRate": 0,
+            "avgHitRate": 0,
+            "nodeEvaluations": 92,
+            "avgNodeEvaluationsPerController": 15.33,
+            "totalSize": 92,
+            "totalMaxSize": 12288,
+            "patchTransitions": {
+              "friendly_dominant->friendly_dominant": 54,
+              "contested->contested": 18,
+              "contested->friendly_dominant": 3,
+              "scrum->scrum": 5,
+              "scrum->contested": 6,
+              "friendly_dominant->contested": 5,
+              "friendly_dominant->enemy_dominant": 1
+            },
+            "patchGraph": {
+              "hits": 69,
+              "misses": 115,
+              "hitRate": 0.375,
+              "avgHitRate": 0.363,
+              "evictions": 0,
+              "totalSize": 115,
+              "totalMaxSize": 24576,
+              "neighborhoodGraphHits": 85,
+              "neighborhoodGraphMisses": 30,
+              "neighborhoodGraphHitRate": 0.7391,
+              "neighborhoodGraphAvgHitRate": 0.7329,
+              "neighborhoodGraphEvictions": 0,
+              "neighborhoodGraphTotalSize": 30,
+              "neighborhoodGraphTotalMaxSize": 1536
+            }
+          }
+        }
+      },
+      "coordinatorTrace": {
+        "hasTrace": true,
+        "turnsWithTrace": 5,
+        "totalTurns": 5,
+        "turnCoverage": 1,
+        "avgSideCoveragePerTurn": 1
+      },
+      "pressureContinuity": {
+        "hasData": true,
+        "sideCount": 2,
+        "scrumBreakRate": 0,
+        "laneBreakRate": 0.6666666666666666,
+        "combinedBreakRate": 0.1111111111111111,
+        "signatureCoverageRate": 1,
+        "totalBreaks": 2,
+        "totalSignatureSamples": 18,
+        "totalUpdates": 18
+      },
+      "combatActivity": {
+        "attackActions": 20,
+        "totalActions": 104,
+        "attackActionRatio": 0.19230769230769232,
+        "hasCombat": true
+      },
+      "passiveness": {
+        "passiveActions": 0,
+        "detectHideActions": 0,
+        "waitActions": 0,
+        "totalActions": 104,
+        "passiveActionRatio": 0,
+        "detectHideActionRatio": 0,
+        "waitActionRatio": 0
+      }
+    },
+    {
+      "run": 2,
+      "seed": 424243,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 3
+        },
+        {
+          "name": "Bravo",
+          "remaining": 3
+        }
+      ],
+      "stats": {
+        "totalActions": 62,
+        "moves": 23,
+        "movesWhileWaiting": 0,
+        "closeCombats": 2,
+        "rangedCombats": 0,
+        "disengages": 0,
+        "waits": 0,
+        "waitsSelectedPlanner": 0,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 0,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 0,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactChoicesTaken": 0,
+        "waitTriggeredReacts": 0,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 0,
+        "turnsCompleted": 3,
+        "losChecks": 0,
+        "lofChecks": 0,
+        "totalPathLength": 53.64911064067351,
+        "modelsMoved": 0
+      },
+      "usage": {
+        "modelCount": 6,
+        "modelsMoved": 6,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 53.64911064067352,
+        "averagePathLengthPerMovedModel": 8.941518440112253,
+        "averagePathLengthPerModel": 8.941518440112253,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 14.16227766016838,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Alpha Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 14.16227766016838,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 12.16227766016838,
+            "moveActions": 5
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 5.16227766016838,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 4,
+            "moveActions": 5
+          },
+          {
+            "modelId": "Bravo Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 4,
+            "moveActions": 3
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 1,
+          "Bravo": 0
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "predictedScoring": {
+          "bySide": {
+            "Alpha": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 1,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            },
+            "Bravo": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 183,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 11
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 179,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 18,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 11
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 23
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 23
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 0,
+          "optionsOffered": 0,
+          "optionsAvailable": 0,
+          "offeredByType": {},
+          "availableByType": {},
+          "executed": 0,
+          "executedByType": {}
+        },
+        "passiveOptions": {
+          "opportunities": 50,
+          "optionsOffered": 148,
+          "optionsAvailable": 14,
+          "offeredByType": {
+            "CounterCharge": 69,
+            "OpportunityAttack": 69,
+            "Defend": 2,
+            "CounterAction": 2,
+            "React": 2,
+            "CounterStrike": 2,
+            "CounterFire": 2
+          },
+          "availableByType": {
+            "CounterCharge": 7,
+            "OpportunityAttack": 3,
+            "Defend": 2,
+            "React": 2
+          },
+          "used": 2,
+          "usedByType": {
+            "Defend": 2
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 2,
+          "modifiedTests": 2,
+          "modifiersApplied": 2,
+          "byType": {
+            "defend": 2
+          }
+        }
+      },
+      "performance": {
+        "elapsedMs": 57,
+        "activationsProcessed": 18,
+        "heartbeatEveryActivations": 25,
+        "activationLatency": {
+          "avgMs": 2.89,
+          "p50Ms": 2.5,
+          "p95Ms": 6.15,
+          "maxMs": 7
+        },
+        "phases": {
+          "setup.create_assemblies": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "setup.load_battlefield": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "setup.deploy_models": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.start": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.mission_start_update": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "ai.update_knowledge": {
+            "count": 39,
+            "totalMs": 1,
+            "avgMs": 0.03,
+            "maxMs": 1
+          },
+          "ai.decide_action": {
+            "count": 39,
+            "totalMs": 29,
+            "avgMs": 0.74,
+            "maxMs": 2
+          },
+          "action.move": {
+            "count": 27,
+            "totalMs": 8,
+            "avgMs": 0.3,
+            "maxMs": 1
+          },
+          "action.total": {
+            "count": 39,
+            "totalMs": 12,
+            "avgMs": 0.31,
+            "maxMs": 1
+          },
+          "react.process": {
+            "count": 31,
+            "totalMs": 1,
+            "avgMs": 0.03,
+            "maxMs": 1
+          },
+          "action.pushing": {
+            "count": 6,
+            "totalMs": 1,
+            "avgMs": 0.17,
+            "maxMs": 1
+          },
+          "activation.total": {
+            "count": 18,
+            "totalMs": 52,
+            "avgMs": 2.89,
+            "maxMs": 7
+          },
+          "turn.mission_end_update": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.total": {
+            "count": 3,
+            "totalMs": 54,
+            "avgMs": 18,
+            "maxMs": 32
+          },
+          "action.hold": {
+            "count": 4,
+            "totalMs": 1,
+            "avgMs": 0.25,
+            "maxMs": 1
+          },
+          "action.close_combat": {
+            "count": 2,
+            "totalMs": 2,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "mission.finalize": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          }
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "elapsedMs": 32,
+            "activations": 6
+          },
+          {
+            "turn": 2,
+            "elapsedMs": 10,
+            "activations": 6
+          },
+          {
+            "turn": 3,
+            "elapsedMs": 12,
+            "activations": 6
+          }
+        ],
+        "slowestActivations": [
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 7,
+            "steps": 4
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 6,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 5,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 5,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 5,
+            "steps": 4
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 4,
+            "steps": 4
+          },
+          {
+            "turn": 3,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 4,
+            "steps": 2
+          },
+          {
+            "turn": 3,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 3,
+            "steps": 2
+          },
+          {
+            "turn": 3,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 3,
+            "steps": 2
+          },
+          {
+            "turn": 2,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 2,
+            "steps": 1
+          }
+        ],
+        "caches": {
+          "los": {
+            "terrainVersion": 0,
+            "size": 697,
+            "maxSize": 25000,
+            "hits": 1583,
+            "misses": 697
+          },
+          "pathfinding": {
+            "terrainVersion": 0,
+            "gridCacheSize": 3,
+            "gridCacheMaxSize": 32,
+            "pathCacheSize": 76,
+            "pathCacheMaxSize": 8000,
+            "gridHits": 81,
+            "gridMisses": 3,
+            "pathHits": 8,
+            "pathMisses": 76
+          },
+          "minimaxLite": {
+            "controllers": 6,
+            "controllersWithSamples": 6,
+            "hits": 6,
+            "misses": 72,
+            "hitRate": 0.0769,
+            "avgHitRate": 0.0833,
+            "nodeEvaluations": 78,
+            "avgNodeEvaluationsPerController": 13,
+            "totalSize": 72,
+            "totalMaxSize": 12288,
+            "patchTransitions": {
+              "friendly_dominant->friendly_dominant": 23,
+              "contested->contested": 31,
+              "contested->friendly_dominant": 2,
+              "scrum->scrum": 4,
+              "scrum->contested": 11,
+              "friendly_dominant->contested": 7
+            },
+            "patchGraph": {
+              "hits": 59,
+              "misses": 97,
+              "hitRate": 0.3782,
+              "avgHitRate": 0.3822,
+              "evictions": 0,
+              "totalSize": 97,
+              "totalMaxSize": 24576,
+              "neighborhoodGraphHits": 74,
+              "neighborhoodGraphMisses": 23,
+              "neighborhoodGraphHitRate": 0.7629,
+              "neighborhoodGraphAvgHitRate": 0.7582,
+              "neighborhoodGraphEvictions": 0,
+              "neighborhoodGraphTotalSize": 23,
+              "neighborhoodGraphTotalMaxSize": 1536
+            }
+          }
+        }
+      },
+      "coordinatorTrace": {
+        "hasTrace": true,
+        "turnsWithTrace": 3,
+        "totalTurns": 3,
+        "turnCoverage": 1,
+        "avgSideCoveragePerTurn": 1
+      },
+      "pressureContinuity": {
+        "hasData": true,
+        "sideCount": 2,
+        "scrumBreakRate": 0,
+        "laneBreakRate": null,
+        "combinedBreakRate": 0,
+        "signatureCoverageRate": 1,
+        "totalBreaks": 0,
+        "totalSignatureSamples": 2,
+        "totalUpdates": 2
+      },
+      "combatActivity": {
+        "attackActions": 2,
+        "totalActions": 62,
+        "attackActionRatio": 0.03225806451612903,
+        "hasCombat": true
+      },
+      "passiveness": {
+        "passiveActions": 0,
+        "detectHideActions": 0,
+        "waitActions": 0,
+        "totalActions": 62,
+        "passiveActionRatio": 0,
+        "detectHideActionRatio": 0,
+        "waitActionRatio": 0
+      }
+    },
+    {
+      "run": 3,
+      "seed": 424244,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 3
+        },
+        {
+          "name": "Bravo",
+          "remaining": 3
+        }
+      ],
+      "stats": {
+        "totalActions": 63,
+        "moves": 25,
+        "movesWhileWaiting": 0,
+        "closeCombats": 1,
+        "rangedCombats": 0,
+        "disengages": 0,
+        "waits": 0,
+        "waitsSelectedPlanner": 0,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 0,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 0,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactChoicesTaken": 0,
+        "waitTriggeredReacts": 0,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 0,
+        "turnsCompleted": 3,
+        "losChecks": 0,
+        "lofChecks": 0,
+        "totalPathLength": 55.90104654287823,
+        "modelsMoved": 0
+      },
+      "usage": {
+        "modelCount": 6,
+        "modelsMoved": 6,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 55.901046542878234,
+        "averagePathLengthPerMovedModel": 9.316841090479706,
+        "averagePathLengthPerModel": 9.316841090479706,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 14.16227766016838,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Alpha Assembly-2-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "side": "Alpha",
+            "pathLength": 14,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Alpha Assembly-3-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Alpha",
+            "pathLength": 13.576491222541476,
+            "moveActions": 6
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 5.16227766016838,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 5,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 4,
+            "moveActions": 3
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 1,
+          "Bravo": 0
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "predictedScoring": {
+          "bySide": {
+            "Alpha": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 1,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            },
+            "Bravo": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 196,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-sword-broad-loadout",
+                    "name": "veteran-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 78,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 183,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 18,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-sword-broad-loadout",
+              "characterName": "veteran-sword-broad-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 23
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 23
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 0,
+          "optionsOffered": 0,
+          "optionsAvailable": 0,
+          "offeredByType": {},
+          "availableByType": {},
+          "executed": 0,
+          "executedByType": {}
+        },
+        "passiveOptions": {
+          "opportunities": 52,
+          "optionsOffered": 155,
+          "optionsAvailable": 12,
+          "offeredByType": {
+            "CounterCharge": 75,
+            "OpportunityAttack": 75,
+            "Defend": 1,
+            "CounterAction": 1,
+            "React": 1,
+            "CounterStrike": 1,
+            "CounterFire": 1
+          },
+          "availableByType": {
+            "CounterCharge": 7,
+            "OpportunityAttack": 3,
+            "Defend": 1,
+            "React": 1
+          },
+          "used": 1,
+          "usedByType": {
+            "Defend": 1
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 1,
+          "modifiedTests": 1,
+          "modifiersApplied": 1,
+          "byType": {
+            "defend": 1
+          }
+        }
+      },
+      "performance": {
+        "elapsedMs": 50,
+        "activationsProcessed": 18,
+        "heartbeatEveryActivations": 25,
+        "activationLatency": {
+          "avgMs": 2.56,
+          "p50Ms": 2,
+          "p95Ms": 6.3,
+          "maxMs": 8
+        },
+        "phases": {
+          "setup.create_assemblies": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "setup.load_battlefield": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "setup.deploy_models": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.start": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.mission_start_update": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "ai.update_knowledge": {
+            "count": 38,
+            "totalMs": 1,
+            "avgMs": 0.03,
+            "maxMs": 1
+          },
+          "ai.decide_action": {
+            "count": 38,
+            "totalMs": 28,
+            "avgMs": 0.74,
+            "maxMs": 2
+          },
+          "action.move": {
+            "count": 26,
+            "totalMs": 6,
+            "avgMs": 0.23,
+            "maxMs": 2
+          },
+          "action.total": {
+            "count": 38,
+            "totalMs": 8,
+            "avgMs": 0.21,
+            "maxMs": 2
+          },
+          "react.process": {
+            "count": 31,
+            "totalMs": 1,
+            "avgMs": 0.03,
+            "maxMs": 1
+          },
+          "action.pushing": {
+            "count": 6,
+            "totalMs": 1,
+            "avgMs": 0.17,
+            "maxMs": 1
+          },
+          "activation.total": {
+            "count": 18,
+            "totalMs": 46,
+            "avgMs": 2.56,
+            "maxMs": 8
+          },
+          "turn.mission_end_update": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.total": {
+            "count": 3,
+            "totalMs": 47,
+            "avgMs": 15.67,
+            "maxMs": 30
+          },
+          "action.hold": {
+            "count": 5,
+            "totalMs": 1,
+            "avgMs": 0.2,
+            "maxMs": 1
+          },
+          "action.charge": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "mission.finalize": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          }
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "elapsedMs": 30,
+            "activations": 6
+          },
+          {
+            "turn": 2,
+            "elapsedMs": 9,
+            "activations": 6
+          },
+          {
+            "turn": 3,
+            "elapsedMs": 8,
+            "activations": 6
+          }
+        ],
+        "slowestActivations": [
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 8,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "elapsedMs": 6,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 4,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 4,
+            "steps": 4
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 4,
+            "steps": 4
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 4,
+            "steps": 4
+          },
+          {
+            "turn": 3,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "elapsedMs": 3,
+            "steps": 2
+          },
+          {
+            "turn": 2,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 2,
+            "steps": 1
+          },
+          {
+            "turn": 2,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 2,
+            "steps": 1
+          },
+          {
+            "turn": 3,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 2,
+            "steps": 2
+          }
+        ],
+        "caches": {
+          "los": {
+            "terrainVersion": 0,
+            "size": 707,
+            "maxSize": 25000,
+            "hits": 1621,
+            "misses": 707
+          },
+          "pathfinding": {
+            "terrainVersion": 0,
+            "gridCacheSize": 3,
+            "gridCacheMaxSize": 32,
+            "pathCacheSize": 77,
+            "pathCacheMaxSize": 8000,
+            "gridHits": 77,
+            "gridMisses": 3,
+            "pathHits": 3,
+            "pathMisses": 77
+          },
+          "minimaxLite": {
+            "controllers": 6,
+            "controllersWithSamples": 6,
+            "hits": 3,
+            "misses": 78,
+            "hitRate": 0.037,
+            "avgHitRate": 0.0417,
+            "nodeEvaluations": 81,
+            "avgNodeEvaluationsPerController": 13.5,
+            "totalSize": 78,
+            "totalMaxSize": 12288,
+            "patchTransitions": {
+              "friendly_dominant->friendly_dominant": 30,
+              "contested->contested": 22,
+              "contested->friendly_dominant": 1,
+              "scrum->scrum": 2,
+              "scrum->contested": 7,
+              "scrum->friendly_dominant": 3,
+              "friendly_dominant->contested": 4,
+              "contested->scrum": 1,
+              "friendly_dominant->enemy_dominant": 2,
+              "enemy_dominant->enemy_dominant": 6,
+              "scrum->enemy_dominant": 3
+            },
+            "patchGraph": {
+              "hits": 58,
+              "misses": 104,
+              "hitRate": 0.358,
+              "avgHitRate": 0.3619,
+              "evictions": 0,
+              "totalSize": 104,
+              "totalMaxSize": 24576,
+              "neighborhoodGraphHits": 80,
+              "neighborhoodGraphMisses": 24,
+              "neighborhoodGraphHitRate": 0.7692,
+              "neighborhoodGraphAvgHitRate": 0.7671,
+              "neighborhoodGraphEvictions": 0,
+              "neighborhoodGraphTotalSize": 24,
+              "neighborhoodGraphTotalMaxSize": 1536
+            }
+          }
+        }
+      },
+      "coordinatorTrace": {
+        "hasTrace": true,
+        "turnsWithTrace": 3,
+        "totalTurns": 3,
+        "turnCoverage": 1,
+        "avgSideCoveragePerTurn": 1
+      },
+      "pressureContinuity": {
+        "hasData": false,
+        "sideCount": 2,
+        "scrumBreakRate": null,
+        "laneBreakRate": null,
+        "combinedBreakRate": null,
+        "signatureCoverageRate": null,
+        "totalBreaks": 0,
+        "totalSignatureSamples": 0,
+        "totalUpdates": 0
+      },
+      "combatActivity": {
+        "attackActions": 1,
+        "totalActions": 63,
+        "attackActionRatio": 0.015873015873015872,
+        "hasCombat": true
+      },
+      "passiveness": {
+        "passiveActions": 0,
+        "detectHideActions": 0,
+        "waitActions": 0,
+        "totalActions": 63,
+        "passiveActionRatio": 0,
+        "detectHideActionRatio": 0,
+        "waitActionRatio": 0
+      }
+    },
+    {
+      "run": 4,
+      "seed": 424245,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 2
+        },
+        {
+          "name": "Bravo",
+          "remaining": 3
+        }
+      ],
+      "stats": {
+        "totalActions": 63,
+        "moves": 21,
+        "movesWhileWaiting": 0,
+        "closeCombats": 3,
+        "rangedCombats": 2,
+        "disengages": 0,
+        "waits": 0,
+        "waitsSelectedPlanner": 0,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 0,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 0,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactChoicesTaken": 0,
+        "waitTriggeredReacts": 0,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 1,
+        "turnsCompleted": 3,
+        "losChecks": 2,
+        "lofChecks": 2,
+        "totalPathLength": 55.04745627834168,
+        "modelsMoved": 0
+      },
+      "usage": {
+        "modelCount": 6,
+        "modelsMoved": 6,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 55.047456278341684,
+        "averagePathLengthPerMovedModel": 9.17457604639028,
+        "averagePathLengthPerModel": 9.17457604639028,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 14.16227766016838,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "side": "Alpha",
+            "pathLength": 13.16227766016838,
+            "moveActions": 6
+          },
+          {
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 10.56062329783655,
+            "moveActions": 6
+          },
+          {
+            "modelId": "Alpha Assembly-2-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "side": "Alpha",
+            "pathLength": 9,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 5.16227766016838,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 3,
+            "moveActions": 4
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 1,
+          "Bravo": 0
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "predictedScoring": {
+          "bySide": {
+            "Alpha": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                }
+              }
+            },
+            "Bravo": {
+              "predictedVp": 2.0261136712749614,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0.35944700460829493,
+                  "confidence": 1,
+                  "leadMargin": 78
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0.6666666666666666,
+                  "confidence": 0.5,
+                  "leadMargin": 0.6666666666666666
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 1,
+                  "predicted": 1,
+                  "confidence": 1,
+                  "leadMargin": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 217,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-sword-broad-loadout",
+                    "name": "veteran-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 78,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 9,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 3,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": true,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": false
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-veteran-sword-broad-loadout",
+                    "name": "veteran-sword-broad-loadout",
+                    "profile": {
+                      "name": "veteran-sword-broad-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 78,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 178,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+                    "name": "militia-spear-medium-shield-medium-loadout",
+                    "profile": {
+                      "name": "militia-spear-medium-shield-medium-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 60,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Spear, Medium",
+                          "classification": "Melee",
+                          "traits": [
+                            "Reach",
+                            "Throwable",
+                            "Charge",
+                            "Perimeter",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 3
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 18,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-sword-broad-loadout",
+              "characterName": "veteran-sword-broad-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 9,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+              "characterName": "veteran-sword-broad-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 23
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+              "characterName": "militia-spear-medium-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 3
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 23
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 4,
+          "optionsOffered": 22,
+          "optionsAvailable": 6,
+          "offeredByType": {
+            "Hide": 4,
+            "Refresh": 4,
+            "Reposition": 4,
+            "Circle": 2,
+            "Disengage": 2,
+            "PushBack": 2,
+            "PullBack": 2,
+            "Reversal": 2
+          },
+          "availableByType": {
+            "Hide": 2,
+            "Refresh": 2,
+            "Reposition": 2
+          },
+          "executed": 2,
+          "executedByType": {
+            "Reposition": 2
+          }
+        },
+        "passiveOptions": {
+          "opportunities": 54,
+          "optionsOffered": 147,
+          "optionsAvailable": 11,
+          "offeredByType": {
+            "CounterCharge": 64,
+            "OpportunityAttack": 64,
+            "TakeCover": 2,
+            "Defend": 5,
+            "CounterAction": 3,
+            "React": 3,
+            "CounterStrike": 3,
+            "CounterFire": 3
+          },
+          "availableByType": {
+            "CounterCharge": 3,
+            "OpportunityAttack": 2,
+            "CounterAction": 1,
+            "React": 3,
+            "Defend": 2
+          },
+          "used": 3,
+          "usedByType": {
+            "CounterAction": 1,
+            "Defend": 2
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 5,
+          "modifiedTests": 5,
+          "modifiersApplied": 7,
+          "byType": {
+            "distance_orm": 2,
+            "hand_penalty": 3,
+            "defend": 2
+          }
+        }
+      },
+      "performance": {
+        "elapsedMs": 54,
+        "activationsProcessed": 16,
+        "heartbeatEveryActivations": 25,
+        "activationLatency": {
+          "avgMs": 3.25,
+          "p50Ms": 2.5,
+          "p95Ms": 7,
+          "maxMs": 10
+        },
+        "phases": {
+          "setup.create_assemblies": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "setup.load_battlefield": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "setup.deploy_models": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.start": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.mission_start_update": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "ai.update_knowledge": {
+            "count": 37,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "ai.decide_action": {
+            "count": 37,
+            "totalMs": 27,
+            "avgMs": 0.73,
+            "maxMs": 2
+          },
+          "action.move": {
+            "count": 22,
+            "totalMs": 5,
+            "avgMs": 0.23,
+            "maxMs": 1
+          },
+          "action.total": {
+            "count": 37,
+            "totalMs": 15,
+            "avgMs": 0.41,
+            "maxMs": 3
+          },
+          "react.process": {
+            "count": 31,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "action.pushing": {
+            "count": 6,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "activation.total": {
+            "count": 16,
+            "totalMs": 52,
+            "avgMs": 3.25,
+            "maxMs": 10
+          },
+          "action.ranged_combat": {
+            "count": 2,
+            "totalMs": 5,
+            "avgMs": 2.5,
+            "maxMs": 3
+          },
+          "turn.mission_end_update": {
+            "count": 3,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.total": {
+            "count": 3,
+            "totalMs": 52,
+            "avgMs": 17.33,
+            "maxMs": 32
+          },
+          "action.hold": {
+            "count": 3,
+            "totalMs": 2,
+            "avgMs": 0.67,
+            "maxMs": 1
+          },
+          "action.charge": {
+            "count": 2,
+            "totalMs": 3,
+            "avgMs": 1.5,
+            "maxMs": 2
+          },
+          "action.close_combat": {
+            "count": 2,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "mission.finalize": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          }
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "elapsedMs": 32,
+            "activations": 6
+          },
+          {
+            "turn": 2,
+            "elapsedMs": 8,
+            "activations": 5
+          },
+          {
+            "turn": 3,
+            "elapsedMs": 12,
+            "activations": 5
+          }
+        ],
+        "slowestActivations": [
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 10,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 6,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "elapsedMs": 5,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "elapsedMs": 4,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 4,
+            "steps": 4
+          },
+          {
+            "turn": 3,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "elapsedMs": 4,
+            "steps": 2
+          },
+          {
+            "turn": 3,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 4,
+            "steps": 1
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 3,
+            "steps": 4
+          },
+          {
+            "turn": 2,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-sword-broad-loadout",
+            "modelName": "veteran-sword-broad-loadout",
+            "elapsedMs": 2,
+            "steps": 1
+          },
+          {
+            "turn": 2,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-militia-spear-medium-shield-medium-loadout",
+            "modelName": "militia-spear-medium-shield-medium-loadout",
+            "elapsedMs": 2,
+            "steps": 1
+          }
+        ],
+        "caches": {
+          "los": {
+            "terrainVersion": 0,
+            "size": 615,
+            "maxSize": 25000,
+            "hits": 2054,
+            "misses": 615
+          },
+          "pathfinding": {
+            "terrainVersion": 0,
+            "gridCacheSize": 3,
+            "gridCacheMaxSize": 32,
+            "pathCacheSize": 71,
+            "pathCacheMaxSize": 8000,
+            "gridHits": 75,
+            "gridMisses": 3,
+            "pathHits": 7,
+            "pathMisses": 71
+          },
+          "minimaxLite": {
+            "controllers": 6,
+            "controllersWithSamples": 6,
+            "hits": 3,
+            "misses": 75,
+            "hitRate": 0.0385,
+            "avgHitRate": 0.0417,
+            "nodeEvaluations": 78,
+            "avgNodeEvaluationsPerController": 13,
+            "totalSize": 75,
+            "totalMaxSize": 12288,
+            "patchTransitions": {
+              "friendly_dominant->friendly_dominant": 38,
+              "contested->contested": 9,
+              "enemy_dominant->enemy_dominant": 8,
+              "enemy_dominant->friendly_dominant": 1,
+              "scrum->scrum": 3,
+              "scrum->contested": 3,
+              "scrum->friendly_dominant": 6,
+              "friendly_dominant->contested": 1,
+              "friendly_dominant->enemy_dominant": 4,
+              "friendly_dominant->scrum": 2,
+              "scrum->enemy_dominant": 3
+            },
+            "patchGraph": {
+              "hits": 65,
+              "misses": 91,
+              "hitRate": 0.4167,
+              "avgHitRate": 0.4113,
+              "evictions": 0,
+              "totalSize": 91,
+              "totalMaxSize": 24576,
+              "neighborhoodGraphHits": 68,
+              "neighborhoodGraphMisses": 23,
+              "neighborhoodGraphHitRate": 0.7473,
+              "neighborhoodGraphAvgHitRate": 0.7433,
+              "neighborhoodGraphEvictions": 0,
+              "neighborhoodGraphTotalSize": 23,
+              "neighborhoodGraphTotalMaxSize": 1536
+            }
+          }
+        }
+      },
+      "coordinatorTrace": {
+        "hasTrace": true,
+        "turnsWithTrace": 3,
+        "totalTurns": 3,
+        "turnCoverage": 1,
+        "avgSideCoveragePerTurn": 1
+      },
+      "pressureContinuity": {
+        "hasData": true,
+        "sideCount": 2,
+        "scrumBreakRate": 0,
+        "laneBreakRate": 0,
+        "combinedBreakRate": 0,
+        "signatureCoverageRate": 1,
+        "totalBreaks": 0,
+        "totalSignatureSamples": 3,
+        "totalUpdates": 3
+      },
+      "combatActivity": {
+        "attackActions": 5,
+        "totalActions": 63,
+        "attackActionRatio": 0.07936507936507936,
+        "hasCombat": true
+      },
+      "passiveness": {
+        "passiveActions": 0,
+        "detectHideActions": 0,
+        "waitActions": 0,
+        "totalActions": 63,
+        "passiveActionRatio": 0,
+        "detectHideActionRatio": 0,
+        "waitActionRatio": 0
+      }
+    },
+    {
+      "run": 5,
+      "seed": 424246,
+      "winner": "Alpha",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 3
+        },
+        {
+          "name": "Bravo",
+          "remaining": 3
+        }
+      ],
+      "stats": {
+        "totalActions": 95,
+        "moves": 18,
+        "movesWhileWaiting": 0,
+        "closeCombats": 24,
+        "rangedCombats": 0,
+        "disengages": 0,
+        "waits": 0,
+        "waitsSelectedPlanner": 0,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 0,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 0,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactChoicesTaken": 0,
+        "waitTriggeredReacts": 0,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 0,
+        "turnsCompleted": 5,
+        "losChecks": 0,
+        "lofChecks": 0,
+        "totalPathLength": 51.324555320336756,
+        "modelsMoved": 0
+      },
+      "usage": {
+        "modelCount": 6,
+        "modelsMoved": 6,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 51.324555320336756,
+        "averagePathLengthPerMovedModel": 8.55409255338946,
+        "averagePathLengthPerModel": 8.55409255338946,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 14.16227766016838,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Alpha Assembly-2-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "side": "Alpha",
+            "pathLength": 12,
+            "moveActions": 11
+          },
+          {
+            "modelId": "Alpha Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Alpha",
+            "pathLength": 9,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "side": "Bravo",
+            "pathLength": 8,
+            "moveActions": 11
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "side": "Bravo",
+            "pathLength": 5.16227766016838,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "side": "Bravo",
+            "pathLength": 3,
+            "moveActions": 10
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 1,
+          "Bravo": 0
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "predictedScoring": {
+          "bySide": {
+            "Alpha": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 1,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            },
+            "Bravo": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 268,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-elite-sword-broad-loadout",
+                    "name": "elite-sword-broad-loadout",
+                    "profile": {
+                      "name": "elite-sword-broad-loadout",
+                      "archetype": "Elite",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "totalBp": 146,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 9,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 264,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-loadout",
+                    "name": "veteran-loadout",
+                    "profile": {
+                      "name": "veteran-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": []
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 14,
+                      "y": 2
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+                    "name": "average-sword-broad-shield-medium-loadout",
+                    "profile": {
+                      "name": "average-sword-broad-shield-medium-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 57,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Medium",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Coverage",
+                            "Deflect",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-elite-sword-broad-loadout",
+                    "name": "elite-sword-broad-loadout",
+                    "profile": {
+                      "name": "elite-sword-broad-loadout",
+                      "archetype": "Elite",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 3,
+                        "pow": 3,
+                        "str": 3,
+                        "for": 3,
+                        "mov": 3,
+                        "siz": 3
+                      },
+                      "totalBp": 146,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Sword, Broad",
+                          "classification": "Melee",
+                          "traits": [
+                            "Parry",
+                            "Cleave",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 8,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 18,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-elite-sword-broad-loadout",
+              "characterName": "elite-sword-broad-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 9,
+                "y": 23
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-loadout",
+              "characterName": "veteran-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 14,
+                "y": 2
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+              "characterName": "average-sword-broad-shield-medium-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-elite-sword-broad-loadout",
+              "characterName": "elite-sword-broad-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 8,
+                "y": 23
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 0,
+          "optionsOffered": 0,
+          "optionsAvailable": 0,
+          "offeredByType": {},
+          "availableByType": {},
+          "executed": 0,
+          "executedByType": {}
+        },
+        "passiveOptions": {
+          "opportunities": 84,
+          "optionsOffered": 228,
+          "optionsAvailable": 44,
+          "offeredByType": {
+            "CounterCharge": 54,
+            "OpportunityAttack": 54,
+            "Defend": 24,
+            "CounterAction": 24,
+            "React": 24,
+            "CounterStrike": 24,
+            "CounterFire": 24
+          },
+          "availableByType": {
+            "Defend": 20,
+            "React": 20,
+            "CounterCharge": 3,
+            "OpportunityAttack": 1
+          },
+          "used": 20,
+          "usedByType": {
+            "Defend": 20
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 24,
+          "modifiedTests": 20,
+          "modifiersApplied": 20,
+          "byType": {
+            "defend": 20
+          }
+        }
+      },
+      "performance": {
+        "elapsedMs": 55,
+        "activationsProcessed": 30,
+        "heartbeatEveryActivations": 25,
+        "activationLatency": {
+          "avgMs": 1.7,
+          "p50Ms": 1,
+          "p95Ms": 4.55,
+          "maxMs": 6
+        },
+        "phases": {
+          "setup.create_assemblies": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "setup.load_battlefield": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "setup.deploy_models": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.start": {
+            "count": 5,
+            "totalMs": 1,
+            "avgMs": 0.2,
+            "maxMs": 1
+          },
+          "turn.mission_start_update": {
+            "count": 5,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "ai.update_knowledge": {
+            "count": 57,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "ai.decide_action": {
+            "count": 57,
+            "totalMs": 30,
+            "avgMs": 0.53,
+            "maxMs": 2
+          },
+          "action.move": {
+            "count": 18,
+            "totalMs": 4,
+            "avgMs": 0.22,
+            "maxMs": 1
+          },
+          "action.total": {
+            "count": 57,
+            "totalMs": 9,
+            "avgMs": 0.16,
+            "maxMs": 1
+          },
+          "react.process": {
+            "count": 47,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "action.pushing": {
+            "count": 6,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "activation.total": {
+            "count": 30,
+            "totalMs": 51,
+            "avgMs": 1.7,
+            "maxMs": 6
+          },
+          "action.close_combat": {
+            "count": 23,
+            "totalMs": 4,
+            "avgMs": 0.17,
+            "maxMs": 1
+          },
+          "action.charge": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "turn.mission_end_update": {
+            "count": 5,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "turn.total": {
+            "count": 5,
+            "totalMs": 53,
+            "avgMs": 10.6,
+            "maxMs": 25
+          },
+          "action.hold": {
+            "count": 9,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "mission.finalize": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          }
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "elapsedMs": 25,
+            "activations": 6
+          },
+          {
+            "turn": 2,
+            "elapsedMs": 6,
+            "activations": 6
+          },
+          {
+            "turn": 3,
+            "elapsedMs": 8,
+            "activations": 6
+          },
+          {
+            "turn": 4,
+            "elapsedMs": 8,
+            "activations": 6
+          },
+          {
+            "turn": 5,
+            "elapsedMs": 6,
+            "activations": 6
+          }
+        ],
+        "slowestActivations": [
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "elapsedMs": 6,
+            "steps": 4
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "elapsedMs": 5,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 4,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 4,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 3,
+            "steps": 4
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-average-sword-broad-shield-medium-loadout",
+            "modelName": "average-sword-broad-shield-medium-loadout",
+            "elapsedMs": 3,
+            "steps": 3
+          },
+          {
+            "turn": 2,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 2,
+            "steps": 1
+          },
+          {
+            "turn": 3,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "elapsedMs": 2,
+            "steps": 2
+          },
+          {
+            "turn": 3,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-loadout",
+            "modelName": "veteran-loadout",
+            "elapsedMs": 2,
+            "steps": 2
+          },
+          {
+            "turn": 4,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-elite-sword-broad-loadout",
+            "modelName": "elite-sword-broad-loadout",
+            "elapsedMs": 2,
+            "steps": 2
+          }
+        ],
+        "caches": {
+          "los": {
+            "terrainVersion": 0,
+            "size": 457,
+            "maxSize": 25000,
+            "hits": 1445,
+            "misses": 457
+          },
+          "pathfinding": {
+            "terrainVersion": 0,
+            "gridCacheSize": 3,
+            "gridCacheMaxSize": 32,
+            "pathCacheSize": 59,
+            "pathCacheMaxSize": 8000,
+            "gridHits": 108,
+            "gridMisses": 3,
+            "pathHits": 52,
+            "pathMisses": 59
+          },
+          "minimaxLite": {
+            "controllers": 6,
+            "controllersWithSamples": 6,
+            "hits": 0,
+            "misses": 55,
+            "hitRate": 0,
+            "avgHitRate": 0,
+            "nodeEvaluations": 55,
+            "avgNodeEvaluationsPerController": 9.17,
+            "totalSize": 55,
+            "totalMaxSize": 12288,
+            "patchTransitions": {
+              "friendly_dominant->friendly_dominant": 28,
+              "contested->contested": 11,
+              "contested->friendly_dominant": 1,
+              "scrum->scrum": 6,
+              "scrum->contested": 4,
+              "friendly_dominant->enemy_dominant": 1,
+              "friendly_dominant->contested": 1,
+              "enemy_dominant->scrum": 1,
+              "enemy_dominant->enemy_dominant": 2
+            },
+            "patchGraph": {
+              "hits": 42,
+              "misses": 68,
+              "hitRate": 0.3818,
+              "avgHitRate": 0.3954,
+              "evictions": 0,
+              "totalSize": 68,
+              "totalMaxSize": 24576,
+              "neighborhoodGraphHits": 49,
+              "neighborhoodGraphMisses": 19,
+              "neighborhoodGraphHitRate": 0.7206,
+              "neighborhoodGraphAvgHitRate": 0.6982,
+              "neighborhoodGraphEvictions": 0,
+              "neighborhoodGraphTotalSize": 19,
+              "neighborhoodGraphTotalMaxSize": 1536
+            }
+          }
+        }
+      },
+      "coordinatorTrace": {
+        "hasTrace": true,
+        "turnsWithTrace": 5,
+        "totalTurns": 5,
+        "turnCoverage": 1,
+        "avgSideCoveragePerTurn": 1
+      },
+      "pressureContinuity": {
+        "hasData": true,
+        "sideCount": 2,
+        "scrumBreakRate": 0,
+        "laneBreakRate": null,
+        "combinedBreakRate": 0,
+        "signatureCoverageRate": 1,
+        "totalBreaks": 0,
+        "totalSignatureSamples": 23,
+        "totalUpdates": 23
+      },
+      "combatActivity": {
+        "attackActions": 24,
+        "totalActions": 95,
+        "attackActionRatio": 0.25263157894736843,
+        "hasCombat": true
+      },
+      "passiveness": {
+        "passiveActions": 0,
+        "detectHideActions": 0,
+        "waitActions": 0,
+        "totalActions": 95,
+        "passiveActionRatio": 0,
+        "detectHideActionRatio": 0,
+        "waitActionRatio": 0
+      }
+    }
+  ],
+  "generatedAt": "2026-03-09T17:49:53.836Z"
+}

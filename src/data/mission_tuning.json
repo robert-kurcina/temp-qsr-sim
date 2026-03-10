@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "categoryBlocks": {
+    "aggression": {
+      "crossingThresholdRatio": 0.5
+    },
+    "sanctuary": {
+      "defaultBpThresholdRatio": 0.25
+    },
+    "specialRules": {
+      "reinforcements": {
+        "defaultDeploymentDistance": 6
+      },
+      "alert": {
+        "defaultThreshold": 6
+      },
+      "threat": {
+        "defaultMaxLevel": 6
+      },
+      "vigilance": {
+        "normalVisibility": 8,
+        "enhancedVisibility": 16
+      }
+    },
+    "heuristicScorer": {
+      "defaultVictoryConditionThreshold": 5
+    }
+  }
+}

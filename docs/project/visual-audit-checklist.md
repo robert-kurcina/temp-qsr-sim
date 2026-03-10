@@ -9,10 +9,10 @@
 
 ```bash
 # 1. Generate a battle
-npm run ai-battle -- VERY_SMALL 50
+npm run sim -- quick VERY_SMALL 50
 
 # 2. Start dashboard server
-npm run serve:reports
+npm run sim:serve-reports
 
 # 3. Open in browser
 http://localhost:3001/dashboard
@@ -282,7 +282,7 @@ Verify layers render in correct order (bottom to top):
 
 **Test Command:**
 ```bash
-npm run ai-battle -- LARGE 50
+npm run sim -- quick LARGE 50
 ```
 
 **Expected:** Smooth loading even for large battles
@@ -299,7 +299,7 @@ npm run ai-battle -- LARGE 50
 **Test Command:**
 ```bash
 for i in {1..10}; do
-  npm run ai-battle -- VERY_SMALL 50 2>&1 > /dev/null
+  npm run sim -- quick VERY_SMALL 50 2>&1 > /dev/null
 done
 ```
 

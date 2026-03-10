@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-03-10T07:54:02.997Z",
+  "counts": {
+    "sides": 2,
+    "assemblies": 2,
+    "characters": 6,
+    "profiles": 1,
+    "loadouts": 1
+  },
+  "exportPaths": {
+    "sides": "entities/sides.json",
+    "assemblies": "entities/assemblies.json",
+    "characters": "entities/characters.json",
+    "profiles": "entities/profiles.json",
+    "loadouts": "entities/loadouts.json",
+    "modelIndex": "entities/model-index.json"
+  }
+}

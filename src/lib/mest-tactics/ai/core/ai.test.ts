@@ -292,9 +292,121 @@ describe('UtilityScorer', () => {
       },
     });
 
-    const eliminationMove = eliminationActions.find(action => action.action === 'move')?.score ?? 0;
-    const objectiveMove = objectiveActions.find(action => action.action === 'move')?.score ?? 0;
-    expect(objectiveMove).toBeGreaterThan(eliminationMove);
+    const eliminationMove = eliminationActions.find(action => action.action === 'move');
+    const objectiveMove = objectiveActions.find(action => action.action === 'move');
+    expect(eliminationMove).toBeDefined();
+    expect(objectiveMove).toBeDefined();
+    expect((objectiveMove?.factors['objectiveAdvanceWeight'] as number) ?? 0)
+      .toBeGreaterThan((eliminationMove?.factors['objectiveAdvanceWeight'] as number) ?? 0);
+  });
+
+  it('should penalize low-utilization move candidates in long-approach phases', () => {
+    const scorer = new UtilityScorer();
+    const character = makeTestCharacter('runner');
+    const enemy = makeTestCharacter('distant-enemy');
+    const battlefield = new Battlefield(40, 40);
+
+    battlefield.placeCharacter(character, { x: 4, y: 4 });
+    battlefield.placeCharacter(enemy, { x: 34, y: 34 });
+
+    const actions = scorer.evaluateActions({
+      character,
+      allies: [],
+      enemies: [enemy],
+      battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: DEFAULT_AI_CONFIG,
+    });
+
+    const moveActions = actions.filter(action => action.action === 'move');
+    expect(moveActions.length).toBeGreaterThan(0);
+
+    const bestMove = moveActions[0];
+    expect((bestMove.factors['moveLongApproachPhase'] as number) ?? 0).toBe(1);
+    expect((bestMove.factors['moveUtilization'] as number) ?? 0).toBeGreaterThanOrEqual(0.55);
+    expect((bestMove.factors['moveLowUtilizationPenalty'] as number) ?? 0).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should apply requested survival factor scaling for healthy vs wounded models', () => {
+    const scorer = new UtilityScorer();
+    const character = makeTestCharacter('survival-model');
+    const enemy = makeTestCharacter('enemy');
+    const battlefield = new Battlefield(24, 24);
+
+    battlefield.placeCharacter(character, { x: 8, y: 8 });
+    battlefield.placeCharacter(enemy, { x: 10, y: 8 });
+
+    const baseContext: any = {
+      character,
+      allies: [],
+      enemies: [enemy],
+      battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      sideId: 'Side A',
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: DEFAULT_AI_CONFIG,
+    };
+
+    const healthyFactor = (scorer as any).computeConditionalSurvivalFactor(baseContext);
+    character.state.wounds = 1;
+    const woundedFactor = (scorer as any).computeConditionalSurvivalFactor(baseContext);
+
+    expect(healthyFactor).toBeCloseTo(0.25, 6);
+    expect(woundedFactor).toBeCloseTo(0.5, 6);
+  });
+
+  it('should further reduce survival factor when in an outnumbering scrum', () => {
+    const scorer = new UtilityScorer();
+    const character = makeTestCharacter('scrum-lead');
+    const ally = makeTestCharacter('scrum-ally');
+    const enemy = makeTestCharacter('scrum-enemy');
+    const battlefield = new Battlefield(24, 24);
+
+    battlefield.placeCharacter(character, { x: 8, y: 8 });
+    battlefield.placeCharacter(ally, { x: 9, y: 8 });
+    battlefield.placeCharacter(enemy, { x: 8, y: 9 });
+
+    const context: any = {
+      character,
+      allies: [ally],
+      enemies: [enemy],
+      battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      sideId: 'Side A',
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: DEFAULT_AI_CONFIG,
+    };
+
+    const factor = (scorer as any).computeConditionalSurvivalFactor(context);
+    expect(factor).toBeCloseTo(0.125, 6); // 0.25 (healthy) * 0.5 (outnumbering scrum)
   });
 
   it('should generate objective marker fiddle actions when markers are adjacent', () => {
@@ -621,5 +733,349 @@ describe('CharacterAI', () => {
     const config = ai.getConfig();
     expect(config.aggression).toBe(0.8);
     expect(config.caution).toBe(0.3);
+  });
+
+  it('should reuse minimax-lite transposition cache on repeated decisions', () => {
+    const ai = new CharacterAI({
+      enableGOAP: false,
+      enablePatterns: false,
+      ai: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+        minimaxLiteOpponentSamples: 1,
+      },
+    });
+    const context = makeTestContext();
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+        minimaxLiteOpponentSamples: 1,
+      },
+    };
+
+    ai.clearMinimaxLiteCache();
+    ai.decideAction(aiContext as any);
+    const first = ai.getMinimaxLiteCacheStats();
+    ai.decideAction(aiContext as any);
+    const second = ai.getMinimaxLiteCacheStats();
+
+    expect(first.misses).toBeGreaterThan(0);
+    expect(second.hits).toBeGreaterThan(first.hits);
+    expect(second.patchGraph.hits).toBeGreaterThan(first.patchGraph.hits);
+    expect(second.patchGraph.neighborhoodGraphHits).toBeGreaterThanOrEqual(first.patchGraph.neighborhoodGraphHits);
+    expect(second.patchGraph.neighborhoodGraphHits).toBeGreaterThan(0);
+  });
+
+  it('should invalidate minimax-lite cache when ally tactical state changes', () => {
+    const ai = new CharacterAI({
+      enableGOAP: false,
+      enablePatterns: false,
+      ai: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+        minimaxLiteOpponentSamples: 1,
+      },
+    });
+    const context = makeTestContext();
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+        minimaxLiteOpponentSamples: 1,
+      },
+    };
+
+    ai.clearMinimaxLiteCache();
+    ai.decideAction(aiContext as any);
+    const first = ai.getMinimaxLiteCacheStats();
+
+    const moved = context.battlefield.moveCharacter(context.allies[0], { x: 9, y: 11 });
+    expect(moved).toBe(true);
+
+    ai.decideAction(aiContext as any);
+    const second = ai.getMinimaxLiteCacheStats();
+    expect(second.misses).toBeGreaterThan(first.misses);
+    expect(second.patchGraph.neighborhoodGraphMisses).toBeGreaterThanOrEqual(first.patchGraph.neighborhoodGraphMisses);
+    expect(second.patchGraph.neighborhoodGraphMisses).toBeGreaterThan(0);
+  });
+
+  it('should filter illegal close-combat candidates before final selection', () => {
+    const ai = new CharacterAI({
+      enableGOAP: false,
+      enablePatterns: false,
+      ai: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+        minimaxLiteOpponentSamples: 1,
+      },
+    });
+    const context = makeTestContext();
+    const enemy = context.enemies[0];
+    context.battlefield.moveCharacter(enemy, { x: 20, y: 12 });
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+        minimaxLiteOpponentSamples: 1,
+      },
+    };
+
+    vi.spyOn((ai as any).utilityScorer, 'evaluateActions').mockReturnValue([
+      { action: 'close_combat', target: enemy, score: 100, factors: {} },
+      { action: 'move', position: { x: 14, y: 12 }, score: 2, factors: {} },
+    ]);
+
+    const result = ai.decideAction(aiContext as any);
+    expect(result.decision.type).toBe('move');
+  });
+
+  it('should reject impossible move distance candidates', () => {
+    const ai = new CharacterAI({
+      enableGOAP: false,
+      enablePatterns: false,
+      ai: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+      },
+    });
+    const context = makeTestContext();
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 2,
+      },
+    };
+
+    vi.spyOn((ai as any).utilityScorer, 'evaluateActions').mockReturnValue([
+      { action: 'move', position: { x: 40, y: 40 }, score: 50, factors: {} },
+      { action: 'wait', score: 1.5, factors: {} },
+    ]);
+
+    const result = ai.decideAction(aiContext as any);
+    expect(result.decision.type).toBe('wait');
+  });
+
+  it('should add patch-aware minimax factors during rerank', () => {
+    const ai = new CharacterAI({
+      enableGOAP: false,
+      enablePatterns: false,
+      ai: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 3,
+      },
+    });
+    const context = makeTestContext();
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 2,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 2,
+      },
+      config: {
+        ...DEFAULT_AI_CONFIG,
+        enableMinimaxLite: true,
+        minimaxLiteBeamWidth: 3,
+      },
+    };
+
+    const utilityActions = (ai as any).utilityScorer.evaluateActions(aiContext as any);
+    const reranked = (ai as any).applyMinimaxLiteRerank(aiContext as any, utilityActions);
+
+    expect(reranked.length).toBeGreaterThan(0);
+    expect(reranked[0].factors.minimaxLitePatchControlDelta).toBeDefined();
+    expect(reranked[0].factors.minimaxLiteSimulatedStateDelta).toBeDefined();
+    expect(reranked[0].factors.minimaxLiteCurrentPatch).toBeDefined();
+    expect(reranked[0].factors.minimaxLiteProjectedPatch).toBeDefined();
+  });
+
+  it('should force attack over passive when directive attack gate is active', () => {
+    const ai = new CharacterAI({
+      enableGOAP: false,
+      enablePatterns: false,
+      ai: DEFAULT_AI_CONFIG,
+    });
+    const context = makeTestContext();
+    const enemy = context.enemies[0];
+    context.battlefield.moveCharacter(enemy, { x: 13, y: 12 });
+
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 2,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 2,
+      },
+      scoringContext: {
+        myKeyScores: {},
+        opponentKeyScores: {},
+        amILeading: false,
+        vpMargin: -1,
+        winningKeys: [],
+        losingKeys: ['keyA'],
+        coordinatorPriority: 'recover_deficit',
+        coordinatorPotentialDirective: 'expand_potential',
+        coordinatorPressureDirective: 'mixed_pressure',
+        coordinatorUrgency: 1.3,
+      },
+      config: DEFAULT_AI_CONFIG,
+    };
+
+    vi.spyOn((ai as any).utilityScorer, 'evaluateActions').mockReturnValue([
+      { action: 'wait', score: 3.1, factors: {} },
+      { action: 'close_combat', target: enemy, score: 2.4, factors: {} },
+      { action: 'move', position: { x: 13, y: 12 }, score: 1.2, factors: {} },
+    ]);
+
+    const result = ai.decideAction(aiContext as any);
+    expect(result.decision.type).toBe('close_combat');
+    expect(result.decision.reason).toContain('Attack gate');
+    expect(result.debug?.decisionTelemetry?.attackGateApplied).toBe(true);
+    expect(result.debug?.decisionTelemetry?.attackOpportunityGrade).toBe('immediate-low');
+    expect(result.debug?.decisionTelemetry?.selectedAction).toBe('close_combat');
+  });
+
+  it('should include decision telemetry for utility decisions', () => {
+    const ai = new CharacterAI({
+      enableGOAP: false,
+      enablePatterns: false,
+      ai: DEFAULT_AI_CONFIG,
+    });
+    const context = makeTestContext();
+    const enemy = context.enemies[0];
+    context.battlefield.moveCharacter(enemy, { x: 13, y: 12 });
+
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 2,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 2,
+      },
+      scoringContext: {
+        myKeyScores: {},
+        opponentKeyScores: {},
+        amILeading: true,
+        vpMargin: 2,
+        winningKeys: ['keyA'],
+        losingKeys: [],
+        coordinatorPriority: 'neutral',
+        coordinatorUrgency: 0.7,
+      },
+      config: DEFAULT_AI_CONFIG,
+    };
+
+    vi.spyOn((ai as any).utilityScorer, 'evaluateActions').mockReturnValue([
+      { action: 'wait', score: 3.1, factors: {} },
+      { action: 'close_combat', target: enemy, score: 2.0, factors: {} },
+      { action: 'move', position: { x: 13, y: 12 }, score: 1.1, factors: {} },
+    ]);
+
+    const result = ai.decideAction(aiContext as any);
+    const telemetry = result.debug?.decisionTelemetry;
+    expect(telemetry).toBeDefined();
+    expect(telemetry?.attackOpportunityGrade).toBe('immediate-low');
+    expect(telemetry?.coordinatorDirective.priority).toBe('neutral');
+    expect(telemetry?.bestAttackAction).toBe('close_combat');
+    expect(telemetry?.bestPassiveAction).toBe('wait');
+    expect(telemetry?.attackGateApplied).toBe(false);
+    expect(telemetry?.selectedAction).toBe(result.decision.type);
   });
 });

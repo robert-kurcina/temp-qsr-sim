@@ -195,7 +195,7 @@ To verify the fix is working:
 
 1. **Run AI battle:**
    ```bash
-   npm run ai-battle -- VERY_SMALL
+   npm run sim -- quick VERY_SMALL
    ```
 
 2. **Check battle report for:**

@@ -7,6 +7,7 @@
 
 import { KeyScoresBreakdown, KeyScore } from '../../mission/MissionSide';
 import { StratagemModifiers } from './AIStratagems';
+import { calculateSuddenDeathTimePressure } from '../core/TurnHorizon';
 
 // ============================================================================
 // Predicted Scoring Context
@@ -32,12 +33,36 @@ export interface ScoringContext {
   currentTurn: number;
   /** NEW: Maximum turns for this game */
   maxTurns: number;
+  /** End-game trigger turn for sudden-death planning pressure */
+  endGameTurn?: number;
   /** Which keys am I winning? */
   winningKeys: string[];
   /** Which keys am I losing? */
   losingKeys: string[];
   /** Confidence in current lead (0-1) */
   overallConfidence: number;
+  /** Optional monotonic fractional potential ledger snapshot from side coordinator */
+  fractionalPotentialLedger?: FractionalPotentialLedgerSnapshot;
+}
+
+export interface FractionalPotentialLedgerKeySnapshot {
+  myProgress: number;
+  opponentProgress: number;
+  myDeniedPotential: number;
+  opponentDeniedPotential: number;
+  myConfidence: number;
+  opponentConfidence: number;
+  lastUpdatedTurn: number;
+}
+
+export interface FractionalPotentialLedgerSnapshot {
+  myTotalPotential: number;
+  opponentTotalPotential: number;
+  myDeniedPotential: number;
+  opponentDeniedPotential: number;
+  potentialDelta: number;
+  keyProgress: Record<string, FractionalPotentialLedgerKeySnapshot>;
+  lastUpdatedTurn: number;
 }
 
 /**
@@ -76,6 +101,8 @@ export interface MissionVPConfig {
   currentTurn: number;
   /** Maximum turns for this game */
   maxTurns: number;
+  /** End-game trigger turn for sudden-death planning pressure */
+  endGameTurn?: number;
 }
 
 /**
@@ -151,6 +178,7 @@ export function buildScoringContext(
     remainingVP,
     currentTurn: missionConfig.currentTurn,
     maxTurns: missionConfig.maxTurns,
+    endGameTurn: missionConfig.endGameTurn,
     winningKeys,
     losingKeys,
     overallConfidence,
@@ -189,13 +217,14 @@ export function calculateScoringModifiers(context: ScoringContext): ScoringModif
     remainingVP,
     currentTurn,
     maxTurns,
-    winningKeys, 
-    losingKeys, 
-    overallConfidence 
+    endGameTurn,
+    winningKeys,
+    losingKeys,
+    overallConfidence
   } = context;
 
-  // Calculate time pressure (0.0 = early game, 1.0 = last turn)
-  const timePressure = maxTurns > 0 ? currentTurn / maxTurns : 0;
+  // Calculate time pressure (0.0 = early game, 1.0 = acute sudden-death pressure)
+  const timePressure = calculateSuddenDeathTimePressure(currentTurn, maxTurns, endGameTurn);
 
   // ============================================================================
   // Scenario 1: Leading in VP (Protect the Lead)

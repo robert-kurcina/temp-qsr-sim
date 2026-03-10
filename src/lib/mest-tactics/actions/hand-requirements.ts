@@ -34,6 +34,9 @@ export interface HandValidationResult {
   canUse: boolean;
   handsRequired: number;
   handsAvailable: number;
+  effectiveHandsAvailable?: number;
+  handsCommittedToItem?: number;
+  overCommittedBy?: number;
   usingOneLessHand: boolean;
   penaltyApplied: boolean;
   overreachDisallowed?: boolean;
@@ -95,6 +98,31 @@ export function getItemsInHand(character: Character): Item[] {
   return inHandItems;
 }
 
+function itemsMatch(left: Item, right: Item): boolean {
+  if (left === right) return true;
+
+  const leftId = String(left.id ?? '').trim();
+  const rightId = String(right.id ?? '').trim();
+  if (leftId.length > 0 && rightId.length > 0 && leftId === rightId) {
+    return true;
+  }
+
+  return left.name === right.name;
+}
+
+function getHandsCommittedToItem(character: Character, item: Item): number {
+  const inHandItems = getItemsInHand(character);
+  let committed = 0;
+
+  for (const inHandItem of inHandItems) {
+    if (!itemsMatch(inHandItem, item)) continue;
+    committed += getItemHandRequirement(inHandItem);
+  }
+
+  const itemRequirement = getItemHandRequirement(item);
+  return Math.min(committed, itemRequirement);
+}
+
 /**
  * Calculate committed hands for a character
  */
@@ -144,16 +172,21 @@ export function validateItemUsage(
 ): HandValidationResult {
   let handsRequired = getItemHandRequirement(item);
   const handsAvailable = getAvailableHands(character);
+  const handsCommittedToItem = getHandsCommittedToItem(character, item);
+  const effectiveHandsAvailable = handsAvailable + handsCommittedToItem;
+  const totalHands = getTotalHands(character);
+  const committedHands = getCommittedHands(character);
+  const overCommittedBy = Math.max(0, committedHands - totalHands);
   const isConcentrating = options.isConcentrating ?? false;
   const isOverreach = options.isOverreach ?? false;
-  const isTwoHanded = handsRequired >= 2;
-  const isOneHanded = handsRequired === 1;
+  const isOneHandedWeapon = handsRequired === 1;
   let overreachDisallowed = false;
 
   // [1H] weapons used with Concentrate require two hands
-  if (isConcentrating && isOneHanded) {
+  if (isConcentrating && isOneHandedWeapon) {
     handsRequired = 2;
   }
+  const isTwoHandedRequirement = handsRequired >= 2;
 
   // No hand requirement
   if (handsRequired === 0) {
@@ -162,15 +195,19 @@ export function validateItemUsage(
       canUse: true,
       handsRequired: 0,
       handsAvailable,
+      effectiveHandsAvailable,
+      handsCommittedToItem,
+      overCommittedBy,
       usingOneLessHand: false,
       penaltyApplied: false,
     };
   }
   
   // Has enough hands
-  if (handsAvailable >= handsRequired) {
+  if (effectiveHandsAvailable >= handsRequired) {
+    const overcommittedTwoHandedUse = isTwoHandedRequirement && overCommittedBy > 0 && handsCommittedToItem > 0;
     // Two-handed weapons used with two hands cannot Overreach
-    if (isTwoHanded && isOverreach) {
+    if (isTwoHandedRequirement && isOverreach) {
       overreachDisallowed = true;
     }
     return {
@@ -178,16 +215,22 @@ export function validateItemUsage(
       canUse: true,
       handsRequired,
       handsAvailable,
-      usingOneLessHand: false,
-      penaltyApplied: false,
+      effectiveHandsAvailable,
+      handsCommittedToItem,
+      overCommittedBy,
+      usingOneLessHand: overcommittedTwoHandedUse,
+      penaltyApplied: overcommittedTwoHandedUse,
       overreachDisallowed,
+      reason: overcommittedTwoHandedUse
+        ? `Using ${item.name} while over-committed by ${overCommittedBy} hand(s); vulnerable when interrupted`
+        : undefined,
     };
   }
   
   // Can use with one less hand?
   const allowOneLessHand = options.allowOneLessHand ?? true;
-  const allowOneLessHandAdjusted = isConcentrating && isOneHanded ? false : allowOneLessHand;
-  const canUseOneLess = handsAvailable >= handsRequired - 1 && handsRequired > 1;
+  const allowOneLessHandAdjusted = isConcentrating && isOneHandedWeapon ? false : allowOneLessHand;
+  const canUseOneLess = effectiveHandsAvailable >= handsRequired - 1 && handsRequired > 1;
   
   if (allowOneLessHandAdjusted && canUseOneLess) {
     return {
@@ -195,6 +238,9 @@ export function validateItemUsage(
       canUse: true,
       handsRequired,
       handsAvailable,
+      effectiveHandsAvailable,
+      handsCommittedToItem,
+      overCommittedBy,
       usingOneLessHand: true,
       penaltyApplied: true, // -1b penalty on next Test
       reason: `Using ${item.name} with one less hand (-1b penalty on next Test)`,
@@ -207,9 +253,12 @@ export function validateItemUsage(
     canUse: false,
     handsRequired,
     handsAvailable,
+    effectiveHandsAvailable,
+    handsCommittedToItem,
+    overCommittedBy,
     usingOneLessHand: false,
     penaltyApplied: false,
-    reason: `Not enough hands (need ${handsRequired}, have ${handsAvailable})`,
+    reason: `Not enough hands (need ${handsRequired}, have ${effectiveHandsAvailable} effective / ${handsAvailable} free)`,
   };
 }
 

@@ -12,6 +12,7 @@ import { AIContext, ReactOpportunity, ReactResult, ReactActionType } from '../co
 import { isAttackableEnemy } from '../core/ai-utils';
 import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
+import { estimateExpectedTurnsRemaining } from '../core/TurnHorizon';
 
 /**
  * React Configuration
@@ -709,7 +710,12 @@ export class StealthEvaluator {
     const vpDeficit = enemyVP - myVP;
     const currentTurn = context.currentTurn ?? 1;
     const maxTurns = context.maxTurns ?? 6;
-    const turnsRemaining = maxTurns - currentTurn + 1;
+    const endGameTurn = Number.isFinite(context.endGameTurn)
+      ? Number(context.endGameTurn)
+      : Number.isFinite(context.scoringContext?.predictorEndGameTurn)
+        ? Number(context.scoringContext?.predictorEndGameTurn)
+        : undefined;
+    const expectedTurnsRemaining = estimateExpectedTurnsRemaining(currentTurn, maxTurns, endGameTurn);
 
     // Behind on VP - hiding is lower priority (need to score)
     if (vpDeficit > 0) {
@@ -717,7 +723,7 @@ export class StealthEvaluator {
     }
 
     // Late game with VP lead - hiding is valuable (protect lead)
-    if (myVP > enemyVP && turnsRemaining <= 3) {
+    if (myVP > enemyVP && expectedTurnsRemaining <= 2.6) {
       priority += 0.8; // Protect the lead
     }
 
@@ -818,7 +824,12 @@ export class StealthEvaluator {
     const vpDeficit = enemyVP - myVP;
     const currentTurn = context.currentTurn ?? 1;
     const maxTurns = context.maxTurns ?? 6;
-    const turnsRemaining = maxTurns - currentTurn + 1;
+    const endGameTurn = Number.isFinite(context.endGameTurn)
+      ? Number(context.endGameTurn)
+      : Number.isFinite(context.scoringContext?.predictorEndGameTurn)
+        ? Number(context.scoringContext?.predictorEndGameTurn)
+        : undefined;
+    const expectedTurnsRemaining = estimateExpectedTurnsRemaining(currentTurn, maxTurns, endGameTurn);
 
     // Elimination Key: Revealing enemies enables VP from eliminations
     if (vpDeficit > 0) {
@@ -827,9 +838,9 @@ export class StealthEvaluator {
     }
 
     // Late game pressure: Need VP soon
-    if (turnsRemaining <= 2 && myVP === 0) {
+    if (expectedTurnsRemaining <= 1.9 && myVP === 0) {
       priority += 1.5; // Desperate for VP
-    } else if (turnsRemaining <= 3 && myVP === 0) {
+    } else if (expectedTurnsRemaining <= 2.6 && myVP === 0) {
       priority += 0.8; // Need to start scoring
     }
 

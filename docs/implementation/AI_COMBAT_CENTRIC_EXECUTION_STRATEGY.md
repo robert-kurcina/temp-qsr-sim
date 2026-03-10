@@ -23,7 +23,7 @@ QSR anchors already present in canonical docs:
 
 Fresh runtime baseline (`VERY_SMALL`):
 
-- Command: `npm run ai-battle:audit -- VERY_SMALL 30 --seed 424242`
+- Command: `npm run sim -- quick --audit --viewer VERY_SMALL 30 --seed 424242`
 - Report: `generated/ai-battle-reports/battle-report-2026-03-05T10-35-01-962Z.json`
 - Audit: `generated/battle-reports/battle-report-2026-03-05T10-35-01-964Z/audit.json`
 
@@ -37,7 +37,7 @@ Observed behavior:
 
 Validation evidence:
 
-- Command: `npm run ai-battle -- -v VERY_SMALL 30 1 424242 DAY DEFAULT operative watchman QAI_11`
+- Command: `npm run sim -- validate VERY_SMALL 30 1 424242 DAY DEFAULT operative watchman QAI_11`
 - Report: `generated/ai-battle-reports/qai-11-validation-2026-03-05T10-34-26-837Z.json`
 - Runtime coverage includes movement/pathfinding, but no melee/ranged combat.
 - Performance gate failed on activation p95 (observed 5194ms vs threshold 2100ms).

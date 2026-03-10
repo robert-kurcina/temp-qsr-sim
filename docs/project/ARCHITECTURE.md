@@ -736,10 +736,10 @@ npm test -- --coverage
 
 ```bash
 # Start dashboard server
-npm run serve:reports
+npm run sim:serve-reports
 
 # Generate battles
-npm run ai-battle -- VERY_SMALL 50
+npm run sim -- quick VERY_SMALL 50
 
 # Run tests
 npm test
@@ -799,6 +799,7 @@ npm test
 | Document | Purpose | Location |
 |----------|---------|----------|
 | `README.md` | User documentation | Root |
+| `Architecture.md` | AI battle runtime architecture (planner/coordinator/runner/orchestrator) | Root |
 | `blueprint.md` | Project roadmap | Root |
 | `docs/VISUAL_AUDIT_TEST_CHECKLIST.md` | Testing guide | docs/ |
 | `docs/BATTLEFIELD_DATA_ANALYSIS.md` | Data architecture | docs/ |

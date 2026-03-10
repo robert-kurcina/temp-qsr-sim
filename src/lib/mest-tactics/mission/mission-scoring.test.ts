@@ -151,6 +151,16 @@ describe('mission-scoring', () => {
     expect(scores.A).toBe(2);
   });
 
+  it('should award +2 resource VP when top RP doubles lowest RP with +3 margin', () => {
+    const scores = computeResourcePointsVictory({ A: 5, B: 4, C: 2 });
+    expect(scores.A).toBe(2);
+  });
+
+  it('should not award +2 resource VP when top RP doubles lowest but margin is under +3', () => {
+    const scores = computeResourcePointsVictory({ A: 3, B: 2, C: 1 });
+    expect(scores.A).toBe(1);
+  });
+
   it('should compute aggregate mission scores', () => {
     const sideA = buildMissionSideStatus(makeSide('A', 6));
     const sideB = buildMissionSideStatus(makeSide('B', 6));

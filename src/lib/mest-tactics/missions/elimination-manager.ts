@@ -7,6 +7,7 @@ import {
   computeBottledScores,
   computeOutnumberedScores,
   computeAggressionScores,
+  getAggressionCrossingThreshold,
   AggressionState,
 } from './mission-scoring';
 import {
@@ -54,6 +55,8 @@ export class EliminationMissionManager {
   private sides: Map<string, MissionSide>;
   private eventManager: MissionEventManager;
   private state: EliminationMissionState;
+  private readonly aggressionOriginHalfByModel = new Map<string, 'left' | 'right'>();
+  private readonly aggressionCrossedModelsBySide = new Map<string, Set<string>>();
   public currentTurn: number = 1;
 
   constructor(sides: MissionSide[]) {
@@ -78,6 +81,7 @@ export class EliminationMissionManager {
       this.state.eliminatedBpBySide.set(side.id, 0);
       this.state.vpBySide.set(side.id, 0);
       this.state.scholarRpBySide[side.id] = 0;
+      this.aggressionCrossedModelsBySide.set(side.id, new Set<string>());
       
       // Calculate initial Scholar RP (characters that start with Scholar trait)
       this.state.scholarRpBySide[side.id] = this.calculateScholarRp(side);
@@ -378,28 +382,34 @@ export class EliminationMissionManager {
     const side = this.sides.get(sideId);
     if (!side) return;
 
-    const startingCount = side.members.length;
-    const threshold = Math.ceil(startingCount / 2);
+    const crossedModels = this.aggressionCrossedModelsBySide.get(sideId) ?? new Set<string>();
+    this.aggressionCrossedModelsBySide.set(sideId, crossedModels);
+    if (crossedModels.has(modelId)) {
+      return;
+    }
+
+    // Infer origin half from the first tracked position for each model so each side
+    // crosses toward the opposite half rather than using a fixed x > center rule.
+    const originHalf = this.aggressionOriginHalfByModel.get(modelId)
+      ?? (position.x <= battlefieldCenter.x ? 'left' : 'right');
+    if (!this.aggressionOriginHalfByModel.has(modelId)) {
+      this.aggressionOriginHalfByModel.set(modelId, originHalf);
+    }
+
+    const hasCrossed = originHalf === 'left'
+      ? position.x > battlefieldCenter.x
+      : position.x < battlefieldCenter.x;
+    if (!hasCrossed) {
+      return;
+    }
+
+    crossedModels.add(modelId);
     const currentCrossed = this.state.aggression.crossedBySide[sideId] ?? 0;
+    this.state.aggression.crossedBySide[sideId] = currentCrossed + 1;
 
-    // Check if this model has already crossed (track unique models)
-    // For simplicity, we track count of models that have crossed
-    // A more sophisticated implementation would track individual model IDs
-
-    // Determine if model is past midline (simple x-axis check for opposite deployment)
-    // Assuming Side A deploys at x=0, Side B at x=battlefieldSize
-    // Midline is at battlefieldSize/2
-    const hasCrossed = position.x > battlefieldCenter.x;
-
-    if (hasCrossed && currentCrossed < threshold) {
-      // Track this crossing
-      const newCrossed = currentCrossed + 1;
-      this.state.aggression.crossedBySide[sideId] = newCrossed;
-
-      // Award RP to first side to cross
-      if (!this.state.aggression.firstCrossedSideId) {
-        this.state.aggression.firstCrossedSideId = sideId;
-      }
+    // Award RP to first side to cross
+    if (!this.state.aggression.firstCrossedSideId) {
+      this.state.aggression.firstCrossedSideId = sideId;
     }
   }
 
@@ -661,7 +671,7 @@ export class EliminationMissionManager {
     const aggressionScores = computeAggressionScores(sideStatuses, this.state.aggression);
     for (const side of sideStatuses) {
       const crossed = this.state.aggression.crossedBySide[side.sideId] ?? 0;
-      const threshold = Math.ceil(side.startingCount / 2);
+      const threshold = getAggressionCrossingThreshold(side.startingCount);
       const score = calculateAggressionFractionalVP(side.sideId, crossed, threshold);
 
       sideScores[side.sideId].keyScores['aggression'] = {

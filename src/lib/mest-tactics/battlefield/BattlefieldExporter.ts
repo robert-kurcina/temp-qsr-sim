@@ -10,7 +10,7 @@
 import { writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Battlefield } from './Battlefield';
-import { TerrainFeature } from './terrain/Terrain';
+import { TerrainFeature, TerrainType } from './terrain/Terrain';
 import type { TerrainPlacementResult } from './terrain/TerrainPlacement';
 import type { PathfindingCacheStats } from './pathfinding/PathfindingEngine';
 
@@ -323,6 +323,74 @@ function extractGrid(battlefield: Battlefield): GridLayerExport | undefined {
 export function loadBattlefieldExport(filePath: string): BattlefieldExport {
   const content = readFileSync(filePath, 'utf-8');
   return JSON.parse(content) as BattlefieldExport;
+}
+
+function resolveTerrainTypeFromExport(
+  typeRef: string,
+  terrainTypeInfo?: TerrainTypeInfo
+): TerrainType {
+  const normalizedRef = String(typeRef ?? '').toLowerCase();
+  const movement = terrainTypeInfo?.movement ?? 'normal';
+  const los = terrainTypeInfo?.los ?? 'clear';
+
+  if (normalizedRef.includes('rough patch') || movement === 'difficult' && normalizedRef.includes('rough')) {
+    return TerrainType.Rough;
+  }
+  if (movement === 'impassable' || los === 'blocking') {
+    return TerrainType.Obstacle;
+  }
+  if (movement === 'difficult') {
+    return TerrainType.Difficult;
+  }
+  return TerrainType.Clear;
+}
+
+function inferTerrainCategory(typeRef: string): string | undefined {
+  const value = String(typeRef ?? '').toLowerCase();
+  if (value.includes('building')) return 'building';
+  if (value.includes('wall')) return 'wall';
+  if (value.includes('tree')) return 'tree';
+  if (value.includes('rock')) return 'rocks';
+  if (value.includes('shrub') || value.includes('bush')) return 'shrub';
+  if (value.includes('rough patch')) return 'area';
+  return undefined;
+}
+
+/**
+ * Build a Battlefield instance from BattlefieldExport data.
+ */
+export function buildBattlefieldFromExport(data: BattlefieldExport): Battlefield {
+  const battlefield = new Battlefield(data.dimensions.width, data.dimensions.height);
+
+  for (const [index, instance] of (data.terrainInstances ?? []).entries()) {
+    const typeInfo = data.terrainTypes?.[instance.typeRef];
+    const terrainType = resolveTerrainTypeFromExport(instance.typeRef, typeInfo);
+    const category = inferTerrainCategory(instance.typeRef);
+
+    const feature: TerrainFeature = {
+      id: `${instance.typeRef}-${index}`,
+      type: terrainType,
+      vertices: (instance.vertices ?? []).map(v => ({ x: v.x, y: v.y })),
+      meta: {
+        name: instance.typeRef,
+        rotationDegrees: instance.rotation ?? 0,
+        category,
+        layer: category === 'area' ? 'area' : undefined,
+      },
+    };
+
+    battlefield.addTerrain(feature, true);
+  }
+
+  battlefield.finalizeTerrain();
+  return battlefield;
+}
+
+/**
+ * Load a battlefield JSON export and materialize a Battlefield instance.
+ */
+export function loadBattlefieldFromFile(filePath: string): Battlefield {
+  return buildBattlefieldFromExport(loadBattlefieldExport(filePath));
 }
 
 /**

@@ -95,15 +95,16 @@ function makeDeps(
 }
 
 describe('move action rules', () => {
-  it('rejects movement beyond MOV + 2 allowance', () => {
+  it('truncates movement at MOV + 2 allowance', () => {
     const mover = makeCharacter('mover', 4);
     const positions = new Map<string, Position>([[mover.id, { x: 0, y: 0 }]]);
     const { deps } = makeDeps(positions);
 
     const result = executeMoveAction(deps, mover, { x: 7, y: 0 });
 
-    expect(result.moved).toBe(false);
-    expect(result.reason).toContain('out of range');
+    expect(result.moved).toBe(true);
+    expect(positions.get(mover.id)?.x).toBeCloseTo(6, 2);
+    expect(positions.get(mover.id)?.y).toBeCloseTo(0, 2);
   });
 
   it('rejects movement into Impassable terrain', () => {
@@ -151,8 +152,10 @@ describe('move action rules', () => {
       ],
     });
 
-    expect(result.moved).toBe(false);
-    expect(result.reason).toContain('out of range');
+    expect(result.moved).toBe(true);
+    expect(positions.get(mover.id)?.x).toBeCloseTo(2, 2);
+    expect(positions.get(mover.id)?.y).toBeGreaterThan(0);
+    expect(positions.get(mover.id)?.y).toBeLessThan(2);
   });
 
   it('allows up to MOV + 1 direction changes (MV.8/MV.9)', () => {
@@ -193,7 +196,7 @@ describe('move action rules', () => {
     expect(result.reason).toContain('Too many direction changes');
   });
 
-  it('prevents moving past attentive opposing engagement (MV.6)', () => {
+  it('stops movement at first attentive opposing engagement (MV.6)', () => {
     const mover = makeCharacter('mover', 4);
     const opponent = makeCharacter('opponent', 4);
     opponent.state.isAttentive = true;
@@ -207,8 +210,10 @@ describe('move action rules', () => {
       opponents: [opponent],
     });
 
-    expect(result.moved).toBe(false);
-    expect(result.reason).toContain('stop when engaged');
+    expect(result.moved).toBe(true);
+    const finalPos = positions.get(mover.id);
+    expect(finalPos?.x ?? 0).toBeGreaterThan(0);
+    expect(finalPos?.x ?? 99).toBeLessThanOrEqual(1.1);
   });
 
   it('eliminates a Disordered/Panicked mover that exits battlefield bounds', () => {
@@ -264,8 +269,10 @@ describe('move action rules', () => {
     const noLeap = executeMoveAction(deps, mover, { x: 7, y: 0 }, {
       isAtStartOrEndOfMovement: false,
     });
-    expect(noLeap.moved).toBe(false);
-    expect(noLeap.reason).toContain('out of range');
+    expect(noLeap.moved).toBe(true);
+    expect(positions.get(mover.id)?.x).toBeCloseTo(6, 2);
+
+    positions.set(mover.id, { x: 0, y: 0 });
 
     const withLeap = executeMoveAction(deps, mover, { x: 7, y: 0 }, {
       isAtStartOrEndOfMovement: true,

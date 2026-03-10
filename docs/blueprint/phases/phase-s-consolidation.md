@@ -17,7 +17,7 @@
 - [x] Restore `scripts/ai-battle-setup.ts` from git
 - [x] Restore `scripts/run-battles/` from git
 - [x] Fix terrain type mapping (TerrainPlacement → TerrainElement)
-- [x] Verify audit capture works: `npm run ai-battle:audit` ✅
+- [x] Verify audit capture works: `npm run sim -- quick --audit --viewer` ✅
 - [x] Verify viewer works: Generates `battle-report.html` ✅
 
 **✅ Phase S.1: Extract Audit Capture Module** (COMPLETE)
@@ -55,8 +55,8 @@
 
 | Script | Command | AI vs AI | Audit Detail | Use Case |
 |--------|---------|----------|--------------|----------|
-| **battle.ts** | `npm run battle` | ✅ Full AI | Turns + Activations | Quick testing, rapid iteration |
-| **ai-battle-setup.ts** | `npm run ai-battle:audit` | ✅ Full AI | Action-by-action steps | Validation, reports, visualization |
+| **battle.ts** | `npm run sim -- quick` | ✅ Full AI | Turns + Activations | Quick testing, rapid iteration |
+| **ai-battle-setup.ts** | `npm run sim -- quick --audit --viewer` | ✅ Full AI | Action-by-action steps | Validation, reports, visualization |
 
 **Both scripts use identical AI stack:**
 - SideAI (Strategic layer)
@@ -83,10 +83,10 @@
 - `AuditCaptureService.ts` - Game loop audit hooks
 
 **Scripts Available:**
-- `npm run battle` - Quick battles (basic audit)
-- `npm run battle:audit` - Quick battles with viewer
-- `npm run ai-battle:audit` - Full battles (detailed audit)
-- `npm run serve:reports` - Serve battle reports
+- `npm run sim -- quick` - Quick battles (basic audit)
+- `npm run sim -- quick --audit --viewer` - Quick battles with viewer
+- `npm run sim -- quick --audit --viewer` - Full battles (detailed audit)
+- `npm run sim:serve-reports` - Serve battle reports
 
 **Output Structure:**
 ```

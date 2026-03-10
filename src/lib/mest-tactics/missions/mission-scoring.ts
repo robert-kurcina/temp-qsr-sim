@@ -5,6 +5,7 @@ import {
   determineCanonicalGameSize,
   type CanonicalGameSize
 } from '../mission/game-size-canonical';
+import { missionTuning } from '../mission/MissionTuningConfig';
 
 export type GameSize = CanonicalGameSize;
 
@@ -89,6 +90,37 @@ export interface EndGameStateResult {
   reason?: 'end-die';
 }
 
+export interface ResourcePointsVictoryOverride {
+  /**
+   * Enables alternate RP->VP threshold logic.
+   * When disabled, legacy QSR threshold is used (double second place and +10).
+   */
+  enabled: boolean;
+  /**
+   * Which RP baseline to compare the leader against for double-award checks.
+   */
+  compareAgainst: 'second-highest' | 'lowest';
+  /**
+   * Minimum RP margin required for +2 VP award.
+   */
+  minMarginForDoubleAward: number;
+}
+
+/**
+ * RP->VP override rule:
+ * +2 VP if top RP is at least double the lowest RP and at least +3 ahead.
+ */
+export const DEFAULT_RESOURCE_POINTS_VICTORY_OVERRIDE: ResourcePointsVictoryOverride = {
+  enabled: true,
+  compareAgainst: 'lowest',
+  minMarginForDoubleAward: 3,
+};
+
+export function getAggressionCrossingThreshold(startingCount: number): number {
+  const ratio = missionTuning.aggression.crossingThresholdRatio;
+  return Math.ceil(Math.max(0, startingCount) * ratio);
+}
+
 export function buildMissionSideStatus(side: MissionSide): MissionSideStatus {
   const startingCount = side.members.length;
   let inPlayCount = 0;
@@ -170,7 +202,7 @@ export function computeAggressionScores(
 
   for (const side of sides) {
     const crossed = aggression.crossedBySide[side.sideId] ?? 0;
-    const threshold = Math.ceil(side.startingCount / 2);
+    const threshold = getAggressionCrossingThreshold(side.startingCount);
     if (crossed >= threshold) {
       vpBySide[side.sideId] = (vpBySide[side.sideId] || 0) + 1;
     }
@@ -277,7 +309,10 @@ export function computeOutnumberedScores(sides: MissionSideStatus[]): Record<str
   return {};
 }
 
-export function computeResourcePointsVictory(rpBySide: Record<string, number>): Record<string, number> {
+export function computeResourcePointsVictory(
+  rpBySide: Record<string, number>,
+  override: ResourcePointsVictoryOverride = DEFAULT_RESOURCE_POINTS_VICTORY_OVERRIDE
+): Record<string, number> {
   const entries = Object.entries(rpBySide).sort((a, b) => b[1] - a[1]);
   if (entries.length < 2) {
     if (entries.length === 1 && entries[0][1] > 0) {
@@ -288,7 +323,15 @@ export function computeResourcePointsVictory(rpBySide: Record<string, number>): 
   const [topSide, topValue] = entries[0];
   const secondValue = entries[1][1];
   if (topValue === secondValue) return {};
-  if (topValue >= secondValue * 2 && topValue - secondValue >= 10) {
+
+  const comparisonValue = override.enabled && override.compareAgainst === 'lowest'
+    ? entries[entries.length - 1]?.[1] ?? secondValue
+    : secondValue;
+  const requiredMargin = override.enabled
+    ? override.minMarginForDoubleAward
+    : 10;
+
+  if (topValue >= comparisonValue * 2 && topValue - comparisonValue >= requiredMargin) {
     return { [topSide]: 2 };
   }
   return { [topSide]: 1 };

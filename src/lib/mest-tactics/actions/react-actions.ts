@@ -135,6 +135,7 @@ export interface ReactEvent {
   movedDistance?: number;
   visibilityOrMu?: number;
   reactingToReact?: boolean;
+  reactingToEngaged?: boolean;
   isGroupAction?: boolean;
 }
 
@@ -230,7 +231,15 @@ export function buildReactOptions(event: ReactEvent): ReactOption[] {
     const overreachPenalty = opponent.state.isOverreach ? -1 : 0;
     const effectiveRef = (opponent.finalAttributes.ref ?? opponent.attributes.ref ?? 0) + waitBonus + soloBonus + overreachPenalty;
     const requiredRefBase = event.trigger === 'Move' ? activeMov : activeRef;
-    const requiredRef = requiredRefBase + (event.reactingToReact ? 1 : 0);
+    const reactedToEngaged = event.reactingToEngaged ?? (
+      event.trigger === 'Move' && SpatialRules.isEngaged(opponentModel, activeModel)
+    );
+    // QSR ReactAction nuance: Abrupt (NonMove) reactions require higher REF than the active threshold.
+    const abruptHigherRefBonus = event.trigger === 'NonMove' ? 1 : 0;
+    const requiredRef = requiredRefBase
+      + abruptHigherRefBonus
+      + (reactedToEngaged ? 1 : 0)
+      + (event.reactingToReact ? 1 : 0);
     const available = effectiveRef >= requiredRef
       && (event.trigger !== 'Move' || requiresMovementTrigger);
     options.push({

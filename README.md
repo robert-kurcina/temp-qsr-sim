@@ -14,6 +14,81 @@ A tabletop wargame simulator for the MEST Tactics game rules with AI-driven batt
 - Agility movement optimization analysis
 - Character portrait system with species-based assignment
 
+## AI Layer Highlights (2026-03)
+
+Recent AI updates added stronger coordination and lower-overhead decision filtering:
+
+- **Side-level target commitments**
+  - `SideAICoordinator` now tracks decaying focus-fire commitments per target.
+  - Coordinator also tracks decaying continuity channels:
+    - scrum continuity (`close_combat`/`charge`)
+    - lane pressure (`ranged_combat`)
+  - Commitments are injected into per-activation `AIContext` and influence target scoring.
+  - Commitments clear automatically when targets become KO'd or Eliminated.
+
+- **Coordinator high-level decision trace**
+  - Side coordinators now emit bounded per-turn observation/response traces.
+  - Trace includes VP/key context, top opponent pressure keys, commitment snapshot, and directive priority.
+  - Trace now includes fractional VP potential snapshot and a potential directive (`expand`, `deny`, `protect`, `balanced`).
+  - Trace now includes top scrum/lane continuity pressure and a pressure directive (`maintain_scrum_pressure`, `maintain_lane_pressure`, `mixed_pressure`, `no_pressure_lock`).
+  - Trace is serialized into `BattleReport.sideStrategies` for post-battle reasoning audit.
+
+- **Action-legality mask memoization**
+  - `UtilityScorer` now caches action-legality masks keyed by actor state, local tactical signature, terrain version, and AP.
+  - Cached masks gate expensive action evaluation paths (target scoring, move sampling, support/swap/wait checks).
+  - Public cache instrumentation:
+    - `getActionMaskCacheStats()`
+    - `clearActionMaskCache()`
+
+- **Minimax-lite bounded re-ranking**
+  - `CharacterAI` now applies a bounded minimax-lite pass on top utility candidates.
+  - Node evaluation is patch-aware (friendly/enemy dominant, contested, scrum, objective, lane pressure).
+  - Configurable caps:
+    - `enableMinimaxLite`
+    - `minimaxLiteDepth` (currently capped at 2)
+    - `minimaxLiteBeamWidth`
+    - `minimaxLiteOpponentSamples`
+  - Includes a bounded transposition cache for repeated node evaluations:
+    - `getMinimaxLiteCacheStats()`
+    - `clearMinimaxLiteCache()`
+  - Transposition keys now include a compact tactical state signature:
+    - projected ally/enemy occupancy
+    - engagement pressure around actor
+    - LOS/cover bits against top nearby threats
+    - objective control/carrier state
+  - Node evaluation now blends lightweight tactical state transitions:
+    - projected wound/out-of-play BP swing
+    - sampled opponent reply simulation
+    - simulated follow-up potential
+  - Hard legality gating is applied before final action selection:
+    - rejects unengaged `close_combat` targets
+    - rejects impossible over-range `move` destinations
+    - rejects invalid ranged attacks (engaged attacker/no in-range ranged option)
+  - Cache telemetry now includes node evaluation volume and patch transition counts.
+
+- **BP-aware fractional out-of-play scoring**
+  - Target scoring includes BP-scaled fractional pressure for enemy models approaching out-of-play.
+  - Self-preservation adds BP-scaled risk penalties from wounds/exposure/engagement.
+  - Action scoring now includes fractional VP/RP potential and denial pressure terms.
+  - Target factor outputs now include:
+    - `targetCommitment`
+    - `scrumContinuity`
+    - `lanePressure`
+    - `outOfPlayPressure`
+    - `selfOutOfPlayRisk`
+
+- **Validation regression gates**
+  - Coordinator trace coverage gates validate run/turn/side-level trace completeness.
+  - Combat activity gates track attack-action ratio and zero-attack run rate with mission+size+density-aware profiles.
+  - Combat gates are turn-horizon aware to avoid false failures on short smoke runs (`AI_BATTLE_COMBAT_ACTIVITY_MIN_TURN_RATIO`).
+  - Passiveness gates track detect/hide/wait-heavy behavior with mission+size+density-aware thresholds.
+  - Performance gates now also track minimax-lite transposition cache hit rate (`AI_BATTLE_GATE_MINIMAX_HIT_MIN`).
+
+- **Runtime parity across AI loops**
+  - Commitment injection/update is wired in both:
+    - `scripts/ai-battle/AIBattleRunner.ts`
+    - `src/lib/mest-tactics/ai/executor/AIGameLoop.ts`
+
 ---
 
 ## Quick Start
@@ -21,24 +96,34 @@ A tabletop wargame simulator for the MEST Tactics game rules with AI-driven batt
 ### Run a Battle
 
 ```bash
-# Generate AI battle with default settings
-npm run ai-battle
+# Generate AI battle with default settings (universal entry point)
+npm run sim
 
 # Generate with specific settings
-npm run ai-battle -- VERY_SMALL 50
+npm run sim -- quick VERY_SMALL 50
 
 # Generate with audit and viewer
-npm run ai-battle -- --audit --viewer
+npm run sim -- quick --audit --viewer
 ```
 
 ### Open Dashboard
 
 ```bash
 # Start dashboard server
-npm run serve:reports
+npm run sim:serve-reports
 
 # Open in browser
 http://localhost:3001/dashboard
+```
+
+### Calibrate Validation Gates
+
+```bash
+# Summarize validation reports and print threshold suggestions by mission/size profile
+npm run sim:calibrate
+
+# Optional: include shorter runs by lowering horizon filter
+npx tsx scripts/ai-battle/validation/BenchmarkSummary.ts --min-horizon 0.5 generated/ai-battle-reports
 ```
 
 ---
@@ -357,12 +442,63 @@ generated/
 
 | Script | Description |
 |--------|-------------|
-| `npm run ai-battle` | Generate AI battle (default: VERY_SMALL) |
-| `npm run ai-battle -- VERY_SMALL 50` | Battle with size and density |
-| `npm run serve:reports` | Start dashboard server (port 3001) |
+| `npm run sim -- [command] [args...]` | Universal simulation entry point (`quick` default) |
+| `npm run sim -- help` | Print all `sim` subcommands and usage |
+| `npm run sim -- quick [SIZE] [DENSITY] [--audit] [--viewer]` | Canonical quick battle execution (`AIBattleRunner`) |
+| `npm run sim -- interactive` | Interactive setup flow |
+| `npm run sim -- validate SIZE DENSITY RUNS SEED [LIGHTING] [...]` | Validation batch runs |
+| `npm run sim -- render-report <report.json>` | Human-readable report render from saved JSON |
+| `npm run sim -- serve-reports` | Start dashboard server (port 3001) |
+| `npm run sim:quick -- [args...]` | Shortcut for `sim quick` |
+| `npm run sim:interactive` | Shortcut for `sim interactive` |
+| `npm run sim:validate -- [args...]` | Shortcut for `sim validate` |
+| `npm run sim:render-report -- <report.json>` | Shortcut for `sim render-report` |
+| `npm run sim:serve-reports` | Shortcut for `sim serve-reports` |
+| `npm run sim:calibrate` | Summarize validation reports and print gate threshold suggestions |
+| `npm run battlefield:generate -- VERY_SMALL A20 B40 W0 R20 S0 T0` | Generate reusable battlefield JSON+SVG under `data/battlefields/generated/{gameSize}` using layer tokens (A/B/W/R/S/T), quantized to nearest 20 |
+| `npm run battlefield:defaults` | Generate default empty battlefield JSON+SVG set under `data/battlefields/default/simple` |
+| `npm run battlefield:svg` | Render SVG files from battlefield JSON data under `data/battlefields/default/simple` and `data/battlefields/generated` |
 | `npm run generate:portraits` | Regenerate portrait demo |
 | `npm run validate:user-content` | Validate data/*.json files |
 | `npm test` | Run test suite (1844 tests) |
+
+### Comprehensive `sim` Invocation
+
+```bash
+# Show help
+npm run sim -- help
+
+# Quick battle (default command if omitted)
+npm run sim -- quick VERY_SMALL 50 --audit --viewer --seed 424242
+npm run sim -- VERY_SMALL 50 --audit --viewer --seed 424242
+
+# Interactive setup
+npm run sim -- interactive
+
+# Validation batch
+npm run sim -- validate VERY_SMALL 50 3 424242
+
+# Render an existing report
+npm run sim -- render-report generated/ai-battle-reports/battle-report-<ts>.json
+
+# Start report dashboard server
+npm run sim -- serve-reports
+```
+
+Compatibility note:
+- Legacy compatibility subcommands (`battle`, `run-battles`, `terrain-only`) were removed from `sim`.
+- Use `quick`, `interactive`, `validate`, `render-report`, and `serve-reports`.
+
+### Battlefield Data Directories
+
+- Default simple battlefields:
+  - `data/battlefields/default/simple`
+- Generated battlefields by game size:
+  - `data/battlefields/generated/{gameSize}`
+- `sim quick` supports loading a pre-generated battlefield via:
+  - `--battlefield <path-to-battlefield.json>`
+- If `--battlefield` is not provided, quick flow attempts to load a matching default simple battlefield for the selected game size from:
+  - `data/battlefields/default/simple`
 
 ---
 
@@ -391,16 +527,16 @@ VERY_LARGE   # 72×48 MU, 10-20 models, 1000-1250 BP (rectangular)
 
 ```bash
 # Quick test battle
-npm run ai-battle -- VERY_SMALL 25
+npm run sim -- quick VERY_SMALL 25
 
 # Standard battle
-npm run ai-battle -- SMALL 50
+npm run sim -- quick SMALL 50
 
 # Large battle with high density
-npm run ai-battle -- LARGE 75
+npm run sim -- quick LARGE 75
 
 # Very large battle
-npm run ai-battle -- VERY_LARGE 50
+npm run sim -- quick VERY_LARGE 50
 ```
 
 ---
@@ -414,7 +550,7 @@ npm run ai-battle -- VERY_LARGE 50
 lsof -i :3001
 
 # Restart server
-npm run serve:reports
+npm run sim:serve-reports
 
 # Check for generated battles
 ls generated/ai-battle-reports/
@@ -424,7 +560,7 @@ ls generated/ai-battle-reports/
 
 ```bash
 # Generate a battle first
-npm run ai-battle
+npm run sim:quick
 
 # Verify files created
 ls generated/ai-battle-reports/battle-report-*/audit.json
@@ -441,10 +577,10 @@ ls generated/ai-battle-reports/battle-report-*/audit.json
 
 ```bash
 # For large battles, reduce density
-npm run ai-battle -- LARGE 25
+npm run sim -- quick LARGE 25
 
 # Clear old battles
-rm -rf generated/battlefields/*
+rm -rf data/battlefields/generated/*
 rm -rf generated/ai-battle-reports/*
 ```
 
@@ -467,10 +603,10 @@ See `docs/VISUAL_AUDIT_TEST_CHECKLIST.md` for comprehensive testing guide.
 Quick test:
 ```bash
 # Generate battle
-npm run ai-battle -- VERY_SMALL 50
+npm run sim -- quick VERY_SMALL 50
 
 # Start dashboard
-npm run serve:reports
+npm run sim:serve-reports
 
 # Open browser and verify:
 # 1. Battle appears in Tab 1
@@ -514,6 +650,7 @@ src/
 └── data/                                 # Canonical JSON data
 
 scripts/
+├── sim.ts                              # Universal simulation entry point
 ├── ai-battle/
 │   ├── AIBattleRunner.ts                # Battle execution
 │   └── reporting/
@@ -522,8 +659,11 @@ scripts/
 ├── serve-terrain-audit.ts               # Dashboard server
 └── generate-battle-index.ts             # Index generator
 
-generated/                               # Output directory
-├── battlefields/                        # battlefield.json files
+data/battlefields/
+├── default/simple/                      # Default empty battlefields
+└── generated/{gameSize}/                # Generated battlefield.json + SVG
+
+generated/                               # Runtime output directory
 ├── ai-battle-reports/                   # Audit + SVG
 └── battle-reports/                      # Legacy format
 ```

@@ -12,10 +12,14 @@ import type { Position } from '../../../src/lib/mest-tactics/battlefield/Positio
 import type { TacticalDoctrine } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { AggressionLevel } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import type { BonusActionType, BonusActionOption, BonusActionSelection } from '../../../src/lib/mest-tactics/actions/bonus-actions';
-import type { PassiveEvent, PassiveOption } from '../../../src/lib/mest-tactics/status/passive-options';
+import type { PassiveEvent, PassiveOption, PassiveOptionType } from '../../../src/lib/mest-tactics/status/passive-options';
 import { SpatialRules } from '../../../src/lib/mest-tactics/battlefield/spatial/spatial-rules';
+import { getBaseDiameterFromSiz } from '../../../src/lib/mest-tactics/battlefield/spatial/size-utils';
+import { TerrainType } from '../../../src/lib/mest-tactics/battlefield/terrain/Terrain';
 import { LOFOperations } from '../../../src/lib/mest-tactics/battlefield/los/LOFOperations';
-import { getDoctrineComponents } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
+import { getDoctrineComponents, EngagementStyle, PlanningPriority } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
+import { getCharacterTraitLevel } from '../../../src/lib/mest-tactics/status/status-system';
+import { getLoadoutProfile } from './CombatExecutor';
 
 export interface PredictedScoringResult {
   predictedScores: Record<string, number>;
@@ -547,6 +551,807 @@ export function shouldUseLeanForDetect(
 ): boolean {
   // Similar logic to ranged attack
   return shouldUseLeanForRanged(attacker, target, battlefield);
+}
+
+/**
+ * Runner-grade doctrine-aware declared Defend preference.
+ */
+export function shouldUseDefendDeclaredForDoctrine(
+  doctrine: TacticalDoctrine,
+  attackType: 'melee' | 'ranged',
+  defender: Character
+): boolean {
+  void doctrine;
+  void attackType;
+  return defender.state.isAttentive;
+}
+
+/**
+ * Runner-grade doctrine-aware declared Take Cover preference.
+ */
+export function shouldUseTakeCoverDeclaredForDoctrine(
+  doctrine: TacticalDoctrine,
+  defender: Character
+): boolean {
+  const components = getDoctrineComponents(doctrine);
+  if (
+    components.aggression === AggressionLevel.Aggressive &&
+    components.engagement === EngagementStyle.Melee &&
+    components.planning === PlanningPriority.Aggressive
+  ) {
+    const loadout = getLoadoutProfile(defender);
+    const threatened =
+      defender.state.wounds > 0 ||
+      defender.state.delayTokens > 0 ||
+      defender.state.fearTokens > 0;
+    if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons && !threatened) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * Runner-grade passive response priority list.
+ */
+export function getPassiveResponsePriorityList(
+  doctrine: TacticalDoctrine,
+  attackType: 'melee' | 'ranged',
+  defender: Character
+): PassiveOptionType[] {
+  const components = getDoctrineComponents(doctrine);
+  const loadout = getLoadoutProfile(defender);
+  const prioritize = (list: PassiveOptionType[], preferred: PassiveOptionType[]): PassiveOptionType[] => {
+    const seen = new Set<PassiveOptionType>();
+    const ordered: PassiveOptionType[] = [];
+    for (const type of preferred) {
+      if (!seen.has(type)) {
+        seen.add(type);
+        ordered.push(type);
+      }
+    }
+    for (const type of list) {
+      if (!seen.has(type)) {
+        seen.add(type);
+        ordered.push(type);
+      }
+    }
+    return ordered;
+  };
+
+  let priority: PassiveOptionType[];
+  if (attackType === 'melee') {
+    if (components.aggression === AggressionLevel.Aggressive && components.engagement === EngagementStyle.Melee) {
+      priority = ['CounterStrike', 'CounterAction', 'CounterFire'];
+    } else if (components.aggression === AggressionLevel.Defensive) {
+      priority = ['CounterAction', 'CounterStrike', 'CounterFire'];
+    } else {
+      priority = ['CounterAction', 'CounterStrike', 'CounterFire'];
+    }
+  } else {
+    if (components.aggression === AggressionLevel.Defensive || components.engagement === EngagementStyle.Ranged) {
+      priority = ['CounterFire', 'CounterAction', 'CounterStrike'];
+    } else if (components.aggression === AggressionLevel.Aggressive && components.engagement === EngagementStyle.Melee) {
+      priority = ['CounterAction', 'CounterFire', 'CounterStrike'];
+    } else {
+      priority = ['CounterAction', 'CounterFire', 'CounterStrike'];
+    }
+  }
+
+  if (components.planning === PlanningPriority.Aggressive) {
+    priority =
+      attackType === 'melee'
+        ? prioritize(priority, ['CounterStrike', 'CounterAction'])
+        : prioritize(priority, ['CounterFire', 'CounterAction']);
+  } else if (components.planning === PlanningPriority.KeysToVictory) {
+    priority = prioritize(priority, ['CounterAction']);
+  }
+
+  if (!loadout.hasMeleeWeapons) {
+    priority = priority.filter(type => type !== 'CounterStrike');
+  }
+  if (!loadout.hasRangedWeapons) {
+    priority = priority.filter(type => type !== 'CounterFire');
+  }
+  return priority;
+}
+
+/**
+ * Runner-grade doctrine-aware counter-charge observer scoring.
+ */
+export function scoreCounterChargeObserverForDoctrine(
+  doctrine: TacticalDoctrine,
+  observer: Character,
+  mover: Character,
+  battlefield: Battlefield
+): number {
+  const components = getDoctrineComponents(doctrine);
+  const loadout = getLoadoutProfile(observer);
+  const observerPos = battlefield.getCharacterPosition(observer);
+  const moverPos = battlefield.getCharacterPosition(mover);
+  const distance =
+    observerPos && moverPos
+      ? Math.hypot(observerPos.x - moverPos.x, observerPos.y - moverPos.y)
+      : Number.POSITIVE_INFINITY;
+
+  let score = 0;
+  if (components.engagement === EngagementStyle.Melee) score += 1.5;
+  if (components.engagement === EngagementStyle.Ranged) score -= 0.6;
+  if (components.aggression === AggressionLevel.Aggressive) score += 1.2;
+  if (components.aggression === AggressionLevel.Defensive) score -= 0.4;
+  if (components.planning === PlanningPriority.Aggressive) score += 0.7;
+  if (components.planning === PlanningPriority.KeysToVictory) score -= 0.4;
+  if (loadout.hasMeleeWeapons) score += 1.0;
+  if (!loadout.hasMeleeWeapons) score -= 1.0;
+  if (!loadout.hasRangedWeapons) score += 0.3;
+  if (distance <= 8) score += 1.0;
+  else if (distance >= 14) score -= 0.5;
+  return score;
+}
+
+/**
+ * Runner-grade battlefield-position spatial model.
+ */
+export function buildSpatialModelForCharacter(character: Character, battlefield: Battlefield) {
+  const position = battlefield.getCharacterPosition(character);
+  if (!position) return null;
+  const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+  return {
+    id: character.id,
+    position,
+    baseDiameter: getBaseDiameterFromSiz(siz),
+    siz,
+  };
+}
+
+/**
+ * Runner-grade ranged lean preference.
+ */
+export function shouldUseLeanForRangedWithCover(
+  attacker: Character,
+  defender: Character,
+  battlefield: Battlefield
+): boolean {
+  if (!attacker.state.isAttentive) return false;
+  const attackerModel = buildSpatialModelForCharacter(attacker, battlefield);
+  const defenderModel = buildSpatialModelForCharacter(defender, battlefield);
+  if (!attackerModel || !defenderModel) return false;
+  const coverFromAttacker = SpatialRules.getCoverResult(battlefield, attackerModel, defenderModel);
+  const coverFromDefender = SpatialRules.getCoverResult(battlefield, defenderModel, attackerModel);
+  const hasAttackerCover =
+    coverFromDefender.hasLOS && (coverFromDefender.hasDirectCover || coverFromDefender.hasInterveningCover);
+  const hasInterveningLaneCover =
+    coverFromAttacker.hasLOS && (coverFromAttacker.hasDirectCover || coverFromAttacker.hasInterveningCover);
+  return hasAttackerCover || hasInterveningLaneCover;
+}
+
+/**
+ * Runner-grade detect lean preference.
+ */
+export function shouldUseLeanForDetectWithCover(
+  attacker: Character,
+  target: Character,
+  battlefield: Battlefield
+): boolean {
+  if (!attacker.state.isAttentive) return false;
+  const attackerModel = buildSpatialModelForCharacter(attacker, battlefield);
+  const targetModel = buildSpatialModelForCharacter(target, battlefield);
+  if (!attackerModel || !targetModel) return false;
+  const coverFromAttacker = SpatialRules.getCoverResult(battlefield, attackerModel, targetModel);
+  const coverFromTarget = SpatialRules.getCoverResult(battlefield, targetModel, attackerModel);
+  const hasAttackerCover =
+    coverFromTarget.hasLOS && (coverFromTarget.hasDirectCover || coverFromTarget.hasInterveningCover);
+  const hasInterveningLaneCover =
+    coverFromAttacker.hasLOS && (coverFromAttacker.hasDirectCover || coverFromAttacker.hasInterveningCover);
+  return hasAttackerCover || hasInterveningLaneCover;
+}
+
+export interface RunnerThreatScoringCallbacks {
+  isCombatantActive(character: Character): boolean;
+  isEngagedAtPositions(
+    first: Character,
+    firstPosition: Position,
+    second: Character,
+    secondPosition: Position
+  ): boolean;
+}
+
+export function scoreIncomingThreatAtPositionForRunner(
+  character: Character,
+  position: Position,
+  enemies: Character[],
+  battlefield: Battlefield,
+  callbacks: RunnerThreatScoringCallbacks
+): number {
+  let threat = 0;
+  for (const enemy of enemies) {
+    if (!callbacks.isCombatantActive(enemy)) continue;
+    const enemyPos = battlefield.getCharacterPosition(enemy);
+    if (!enemyPos) continue;
+    const distance = Math.hypot(position.x - enemyPos.x, position.y - enemyPos.y);
+    if (distance <= 0.01) {
+      threat += 2;
+    } else {
+      threat += Math.max(0, 1.6 - distance / 12);
+    }
+    if (battlefield.hasLineOfSight(enemyPos, position)) {
+      threat += 0.8;
+    }
+    if (callbacks.isEngagedAtPositions(character, position, enemy, enemyPos)) {
+      threat += 2.5;
+    }
+  }
+  return threat;
+}
+
+export function findBestRetreatPositionForRunner(params: {
+  actor: Character;
+  reference: Character;
+  battlefield: Battlefield;
+  enemies: Character[];
+  maxDistance: number;
+  scoreIncomingThreatAtPosition: (
+    character: Character,
+    position: Position,
+    enemies: Character[],
+    battlefield: Battlefield
+  ) => number;
+}): Position | undefined {
+  const { actor, reference, battlefield, enemies, maxDistance, scoreIncomingThreatAtPosition } = params;
+  const actorPos = battlefield.getCharacterPosition(actor);
+  const referencePos = battlefield.getCharacterPosition(reference);
+  if (!actorPos || !referencePos) return undefined;
+
+  const baseDirection = {
+    x: actorPos.x - referencePos.x,
+    y: actorPos.y - referencePos.y,
+  };
+  const baseLength = Math.hypot(baseDirection.x, baseDirection.y) || 1;
+  const dirX = baseDirection.x / baseLength;
+  const dirY = baseDirection.y / baseLength;
+
+  const candidateVectors = [
+    { x: dirX, y: dirY },
+    { x: dirX + dirY * 0.5, y: dirY - dirX * 0.5 },
+    { x: dirX - dirY * 0.5, y: dirY + dirX * 0.5 },
+    { x: -dirY, y: dirX },
+    { x: dirY, y: -dirX },
+  ];
+
+  let best: { score: number; position: Position } | null = null;
+  for (const vector of candidateVectors) {
+    const length = Math.hypot(vector.x, vector.y) || 1;
+    const unit = { x: vector.x / length, y: vector.y / length };
+    const candidate = {
+      x: Math.round(actorPos.x + unit.x * maxDistance),
+      y: Math.round(actorPos.y + unit.y * maxDistance),
+    };
+    if (candidate.x < 0 || candidate.x >= battlefield.width || candidate.y < 0 || candidate.y >= battlefield.height) {
+      continue;
+    }
+    const occupant = battlefield.getCharacterAt(candidate);
+    if (occupant && occupant.id !== actor.id) continue;
+
+    const distanceFromReference = Math.hypot(candidate.x - referencePos.x, candidate.y - referencePos.y);
+    const breaksLos = !battlefield.hasLineOfSight(referencePos, candidate);
+    const threat = scoreIncomingThreatAtPosition(actor, candidate, enemies, battlefield);
+    const score = distanceFromReference * 0.35 + (breaksLos ? 2.5 : 0) - threat;
+
+    if (!best || score > best.score) {
+      best = { score, position: candidate };
+    }
+  }
+
+  return best?.position;
+}
+
+export function findPushBackSelectionForRunner(params: {
+  attacker: Character;
+  target: Character;
+  battlefield: Battlefield;
+  allies: Character[];
+  opponents: Character[];
+  countEngagersAtPosition: (
+    target: Character,
+    targetPosition: Position,
+    candidates: Character[],
+    battlefield: Battlefield
+  ) => number;
+}): BonusActionSelection {
+  const { attacker, target, battlefield, allies, opponents, countEngagersAtPosition } = params;
+  const attackerPos = battlefield.getCharacterPosition(attacker);
+  const targetPos = battlefield.getCharacterPosition(target);
+  if (!attackerPos || !targetPos) {
+    return { type: 'PushBack' };
+  }
+
+  const attackerBase = getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3);
+  const pushDistance = Math.max(1, Math.round(attackerBase));
+  const baseDx = targetPos.x - attackerPos.x;
+  const baseDy = targetPos.y - attackerPos.y;
+  const baseLength = Math.hypot(baseDx, baseDy) || 1;
+  const forward = { x: baseDx / baseLength, y: baseDy / baseLength };
+
+  const directions = [
+    forward,
+    { x: 1, y: 0 },
+    { x: -1, y: 0 },
+    { x: 0, y: 1 },
+    { x: 0, y: -1 },
+    { x: 1, y: 1 },
+    { x: -1, y: 1 },
+    { x: 1, y: -1 },
+    { x: -1, y: -1 },
+  ];
+
+  const friendlyGroup = [attacker, ...allies.filter(ally => ally.id !== attacker.id)];
+  const enemySupportGroup = opponents.filter(candidate => candidate.id !== target.id);
+  const beforeFriendlyEngagers = countEngagersAtPosition(target, targetPos, friendlyGroup, battlefield);
+  const beforeEnemySupport = countEngagersAtPosition(target, targetPos, enemySupportGroup, battlefield);
+
+  let best: { score: number; position: Position } | null = null;
+  for (const direction of directions) {
+    const magnitude = Math.hypot(direction.x, direction.y) || 1;
+    const unit = { x: direction.x / magnitude, y: direction.y / magnitude };
+    const destination = {
+      x: Math.round(targetPos.x + unit.x * pushDistance),
+      y: Math.round(targetPos.y + unit.y * pushDistance),
+    };
+
+    let score = 0;
+    if (destination.x < 0 || destination.x >= battlefield.width || destination.y < 0 || destination.y >= battlefield.height) {
+      score += 6;
+    } else {
+      const occupant = battlefield.getCharacterAt(destination);
+      if (occupant && occupant.id !== target.id) {
+        continue;
+      }
+      const terrain = battlefield.getTerrainAt(destination).type;
+      const isBlocked = terrain === TerrainType.Impassable || terrain === TerrainType.Obstacle;
+      const isDegraded = terrain === TerrainType.Rough || terrain === TerrainType.Difficult;
+      if (isBlocked) {
+        score += 5;
+      } else if (isDegraded) {
+        score += 3;
+      }
+
+      const afterFriendlyEngagers = countEngagersAtPosition(target, destination, friendlyGroup, battlefield);
+      const afterEnemySupport = countEngagersAtPosition(target, destination, enemySupportGroup, battlefield);
+      score += (afterFriendlyEngagers - beforeFriendlyEngagers) * 1.5;
+      score += (beforeEnemySupport - afterEnemySupport) * 1.25;
+    }
+
+    if (!best || score > best.score) {
+      best = { score, position: destination };
+    }
+  }
+
+  if (best) {
+    return { type: 'PushBack', targetPosition: best.position };
+  }
+  return { type: 'PushBack' };
+}
+
+export function getBonusActionPriorityForRunner(params: {
+  doctrine: TacticalDoctrine;
+  isCloseCombat: boolean;
+  attacker: Character;
+  target: Character;
+  battlefield: Battlefield;
+  allies: Character[];
+  opponents: Character[];
+  countEngagers: (subject: Character, candidates: Character[], battlefield: Battlefield) => number;
+}): BonusActionType[] {
+  const { doctrine, isCloseCombat, attacker, target, battlefield, allies, opponents, countEngagers } = params;
+  const components = getDoctrineComponents(doctrine);
+  const loadout = getLoadoutProfile(attacker);
+  const fightLevel = getCharacterTraitLevel(attacker, 'Fight');
+  const brawlLevel = getCharacterTraitLevel(attacker, 'Brawl');
+  const archetypeName =
+    typeof attacker.profile.archetype === 'string' ? (attacker.profile.archetype as string).toLowerCase() : '';
+  const isBrawlerArchetype = attacker.profile.name.toLowerCase().includes('brawler') || archetypeName.includes('brawler');
+  const closeCombatSpecialist = fightLevel + brawlLevel > 0 || isBrawlerArchetype;
+
+  const attackerEnemyEngagers = countEngagers(attacker, opponents, battlefield);
+  const attackerAllySupport = countEngagers(attacker, allies, battlefield);
+  const attackerOutnumbered = attackerEnemyEngagers > Math.max(1, attackerAllySupport);
+
+  const friendlyGroup = [attacker, ...allies.filter(ally => ally.id !== attacker.id)];
+  const targetSupportGroup = opponents.filter(candidate => candidate.id !== target.id);
+  const targetFriendlyPressure = countEngagers(target, friendlyGroup, battlefield);
+  const targetEnemySupport = countEngagers(target, targetSupportGroup, battlefield);
+  const needsOutnumberLeverage = targetFriendlyPressure <= targetEnemySupport;
+
+  const prioritize = (list: BonusActionType[], preferred: BonusActionType[]): BonusActionType[] => {
+    const seen = new Set<BonusActionType>();
+    const ordered: BonusActionType[] = [];
+    for (const type of preferred) {
+      if (!seen.has(type)) {
+        seen.add(type);
+        ordered.push(type);
+      }
+    }
+    for (const type of list) {
+      if (!seen.has(type)) {
+        seen.add(type);
+        ordered.push(type);
+      }
+    }
+    return ordered;
+  };
+  let base: BonusActionType[];
+
+  if (components.aggression === AggressionLevel.Aggressive) {
+    if (isCloseCombat) {
+      base =
+        components.engagement === EngagementStyle.Melee
+          ? ['PushBack', 'Reversal', 'Circle', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh']
+          : ['Reposition', 'PushBack', 'Circle', 'PullBack', 'Hide', 'Disengage', 'Reversal', 'Refresh'];
+    } else {
+      base = ['Reposition', 'Hide', 'Refresh'];
+    }
+  } else if (components.aggression === AggressionLevel.Defensive) {
+    if (isCloseCombat) {
+      base =
+        components.engagement === EngagementStyle.Ranged
+          ? ['Disengage', 'PullBack', 'Reposition', 'Hide', 'Refresh', 'Circle', 'PushBack', 'Reversal']
+          : ['PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh', 'Circle', 'PushBack', 'Reversal'];
+    } else {
+      base = ['Hide', 'Reposition', 'Refresh'];
+    }
+  } else {
+    base = isCloseCombat
+      ? ['PushBack', 'Circle', 'Reversal', 'PullBack', 'Disengage', 'Reposition', 'Hide', 'Refresh']
+      : ['Reposition', 'Hide', 'Refresh'];
+  }
+
+  if (components.planning === PlanningPriority.KeysToVictory) {
+    base = isCloseCombat
+      ? prioritize(base, ['Reposition', 'Disengage', 'Hide', 'Refresh'])
+      : prioritize(base, ['Reposition', 'Hide', 'Refresh']);
+  } else if (components.planning === PlanningPriority.Aggressive) {
+    base = isCloseCombat
+      ? prioritize(base, ['PushBack', 'Reversal', 'Circle', 'PullBack'])
+      : prioritize(base, ['Reposition', 'Refresh', 'Hide']);
+  }
+
+  if (isCloseCombat) {
+    if (attackerOutnumbered) {
+      base = prioritize(base, ['Disengage', 'PullBack', 'Reversal', 'Reposition']);
+    }
+    if (needsOutnumberLeverage) {
+      base = prioritize(base, ['PushBack', 'Reversal', 'PullBack', 'Circle']);
+    }
+    if (closeCombatSpecialist) {
+      base = prioritize(base, ['PushBack', 'Reversal', 'Circle', 'PullBack']);
+    }
+    if (brawlLevel > 0 || isBrawlerArchetype) {
+      base = prioritize(base, ['PushBack', 'Circle']);
+    }
+    if (fightLevel > 0) {
+      base = prioritize(base, ['Reversal', 'Disengage', 'PullBack']);
+    }
+    if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+      base = prioritize(base, ['PushBack', 'Reversal', 'Disengage']);
+    }
+  } else if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+    base = prioritize(base, ['Reposition', 'Hide', 'Refresh']);
+  }
+
+  if (attacker.state.delayTokens > 0) {
+    const shouldRefreshEarly =
+      attackerOutnumbered || components.aggression === AggressionLevel.Defensive || attacker.state.delayTokens > 1;
+    base = shouldRefreshEarly
+      ? prioritize(base, ['Refresh'])
+      : prioritize(base, ['PushBack', 'Disengage', 'Refresh']);
+  }
+
+  const unique: BonusActionType[] = [];
+  for (const type of base) {
+    if (!unique.includes(type)) {
+      unique.push(type);
+    }
+  }
+  return unique;
+}
+
+export function findRelocationPositionAgainstThreatsForRunner(params: {
+  character: Character;
+  battlefield: Battlefield;
+  threatSources: Character[];
+  primaryThreat?: Character;
+  isCombatantActive: (character: Character) => boolean;
+  scoreIncomingThreatAtPosition: (
+    character: Character,
+    position: Position,
+    enemies: Character[],
+    battlefield: Battlefield
+  ) => number;
+}): Position | undefined {
+  const { character, battlefield, threatSources, primaryThreat, isCombatantActive, scoreIncomingThreatAtPosition } = params;
+  const start = battlefield.getCharacterPosition(character);
+  if (!start) return undefined;
+  const mov = Math.max(1, character.finalAttributes.mov ?? character.attributes.mov ?? 0);
+  const maxDistance = mov + 2;
+  const activeThreats = threatSources
+    .filter(threat => isCombatantActive(threat))
+    .map(threat => ({ threat, position: battlefield.getCharacterPosition(threat) }))
+    .filter((entry): entry is { threat: Character; position: Position } => Boolean(entry.position));
+  const primaryThreatPos = primaryThreat ? battlefield.getCharacterPosition(primaryThreat) : undefined;
+  let best: { score: number; pos: Position } | null = null;
+
+  for (let dx = -maxDistance; dx <= maxDistance; dx++) {
+    for (let dy = -maxDistance; dy <= maxDistance; dy++) {
+      const distance = Math.hypot(dx, dy);
+      if (distance <= 0 || distance > maxDistance) continue;
+      const candidate = { x: Math.round(start.x + dx), y: Math.round(start.y + dy) };
+      if (candidate.x < 0 || candidate.x >= battlefield.width || candidate.y < 0 || candidate.y >= battlefield.height) continue;
+      const occupant = battlefield.getCharacterAt(candidate);
+      if (occupant && occupant.id !== character.id) continue;
+
+      let score = -distance * 0.12;
+      if (primaryThreatPos) {
+        const breaksPrimaryLos = !battlefield.hasLineOfSight(primaryThreatPos, candidate);
+        score += breaksPrimaryLos ? 2.5 : 0;
+      }
+      if (activeThreats.length > 0) {
+        let losExposure = 0;
+        for (const { position } of activeThreats) {
+          if (battlefield.hasLineOfSight(position, candidate)) {
+            losExposure += 1;
+          }
+        }
+        score -= losExposure * 0.5;
+        score -= scoreIncomingThreatAtPosition(character, candidate, threatSources, battlefield);
+      }
+
+      if (!best || score > best.score) {
+        best = { score, pos: candidate };
+      }
+    }
+  }
+
+  return best?.pos;
+}
+
+export function findRelocationPositionForRunner(params: {
+  character: Character;
+  battlefield: Battlefield;
+  threatSource?: Character;
+  findRelocationPositionAgainstThreats: (
+    character: Character,
+    battlefield: Battlefield,
+    threatSources: Character[],
+    primaryThreat?: Character
+  ) => Position | undefined;
+}): Position | undefined {
+  const { character, battlefield, threatSource, findRelocationPositionAgainstThreats } = params;
+  const threatSources = threatSource ? [threatSource] : [];
+  return findRelocationPositionAgainstThreats(character, battlefield, threatSources, threatSource);
+}
+
+export function findTakeCoverPositionForRunner(params: {
+  defender: Character;
+  attacker: Character;
+  battlefield: Battlefield;
+  findRelocationPosition: (character: Character, battlefield: Battlefield, threatSource?: Character) => Position | undefined;
+}): Position | undefined {
+  const { defender, attacker, battlefield, findRelocationPosition } = params;
+  const start = battlefield.getCharacterPosition(defender);
+  const attackerPos = battlefield.getCharacterPosition(attacker);
+  if (!start || !attackerPos) {
+    return findRelocationPosition(defender, battlefield, attacker);
+  }
+
+  const mov = Math.max(1, defender.finalAttributes.mov ?? defender.attributes.mov ?? 0);
+  const attackerSiz = attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3;
+  const defenderSiz = defender.finalAttributes.siz ?? defender.attributes.siz ?? 3;
+  const attackerModel = {
+    id: attacker.id,
+    position: attackerPos,
+    baseDiameter: getBaseDiameterFromSiz(attackerSiz),
+    siz: attackerSiz,
+  };
+
+  let best: { score: number; pos: Position } | null = null;
+  for (let dx = -mov; dx <= mov; dx++) {
+    for (let dy = -mov; dy <= mov; dy++) {
+      const distance = Math.hypot(dx, dy);
+      if (distance <= 0 || distance > mov) continue;
+      const candidate = { x: Math.round(start.x + dx), y: Math.round(start.y + dy) };
+      if (candidate.x < 0 || candidate.x >= battlefield.width || candidate.y < 0 || candidate.y >= battlefield.height) continue;
+      const occupant = battlefield.getCharacterAt(candidate);
+      if (occupant && occupant.id !== defender.id) continue;
+
+      const defenderModel = {
+        id: defender.id,
+        position: candidate,
+        baseDiameter: getBaseDiameterFromSiz(defenderSiz),
+        siz: defenderSiz,
+      };
+      const cover = SpatialRules.getCoverResult(battlefield, attackerModel, defenderModel);
+      const hasCover = cover.hasDirectCover || cover.hasInterveningCover;
+      const hasHardCover = cover.directCoverFeatures.some(feature => feature.meta?.los === 'Hard');
+      const inLos = cover.hasLOS;
+
+      let score = 0;
+      if (!inLos) score += 8;
+      if (hasCover) score += 4;
+      if (hasHardCover) score += 1.5;
+      score -= distance * 0.15;
+
+      if (!best || score > best.score) {
+        best = { score, pos: candidate };
+      }
+    }
+  }
+
+  return best?.pos ?? findRelocationPosition(defender, battlefield, attacker);
+}
+
+export function createBonusSelectionForTypeForRunner(params: {
+  type: BonusActionType;
+  attacker: Character;
+  target: Character;
+  battlefield: Battlefield;
+  allies: Character[];
+  opponents: Character[];
+  findRelocationPositionAgainstThreats: (
+    character: Character,
+    battlefield: Battlefield,
+    threatSources: Character[],
+    primaryThreat?: Character
+  ) => Position | undefined;
+  findBestRetreatPosition: (
+    actor: Character,
+    reference: Character,
+    battlefield: Battlefield,
+    enemies: Character[],
+    maxDistance: number
+  ) => Position | undefined;
+  findPushBackSelection: (
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    allies: Character[],
+    opponents: Character[]
+  ) => BonusActionSelection;
+}): BonusActionSelection | undefined {
+  const {
+    type,
+    attacker,
+    target,
+    battlefield,
+    allies,
+    opponents,
+    findRelocationPositionAgainstThreats,
+    findBestRetreatPosition,
+    findPushBackSelection,
+  } = params;
+
+  if (type === 'Hide') {
+    return attacker.state.isHidden ? undefined : { type: 'Hide', opponents };
+  }
+  if (type === 'Reposition') {
+    const relocation = findRelocationPositionAgainstThreats(attacker, battlefield, opponents, target);
+    return relocation ? { type: 'Reposition', attackerPosition: relocation } : undefined;
+  }
+  if (type === 'Disengage') {
+    const mov = attacker.finalAttributes.mov ?? attacker.attributes.mov ?? 0;
+    const attackerBase = getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3);
+    const targetBase = getBaseDiameterFromSiz(target.finalAttributes.siz ?? target.attributes.siz ?? 3);
+    const disengageDistance = Math.max(Math.max(attackerBase, targetBase), mov / 2);
+    const retreat = findBestRetreatPosition(attacker, target, battlefield, opponents, disengageDistance);
+    return retreat ? { type: 'Disengage', attackerPosition: retreat } : undefined;
+  }
+  if (type === 'PullBack') {
+    const attackerBase = getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3);
+    const targetBase = getBaseDiameterFromSiz(target.finalAttributes.siz ?? target.attributes.siz ?? 3);
+    const pullDistance = Math.max(attackerBase, targetBase);
+    const retreat = findBestRetreatPosition(attacker, target, battlefield, opponents, pullDistance);
+    return retreat ? { type: 'PullBack', attackerPosition: retreat } : undefined;
+  }
+  if (type === 'PushBack') {
+    return findPushBackSelection(attacker, target, battlefield, allies, opponents);
+  }
+  if (type === 'Circle') {
+    const attackerPos = battlefield.getCharacterPosition(attacker);
+    const targetPos = battlefield.getCharacterPosition(target);
+    if (!attackerPos || !targetPos) return undefined;
+    const circlePos = {
+      x: Math.round(targetPos.x - (attackerPos.x - targetPos.x)),
+      y: Math.round(targetPos.y - (attackerPos.y - targetPos.y)),
+    };
+    if (
+      circlePos.x < 0 ||
+      circlePos.x >= battlefield.width ||
+      circlePos.y < 0 ||
+      circlePos.y >= battlefield.height
+    ) {
+      return undefined;
+    }
+    const occupant = battlefield.getCharacterAt(circlePos);
+    if (occupant && occupant.id !== attacker.id) {
+      return undefined;
+    }
+    return { type: 'Circle', attackerPosition: circlePos };
+  }
+  return { type };
+}
+
+export function buildAutoBonusActionSelectionsForRunner(params: {
+  attacker: Character;
+  target: Character;
+  battlefield: Battlefield;
+  allies: Character[];
+  opponents: Character[];
+  options: BonusActionOption[];
+  isCloseCombat: boolean;
+  doctrine: TacticalDoctrine;
+  getBonusActionPriority: (
+    doctrine: TacticalDoctrine,
+    isCloseCombat: boolean,
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    allies: Character[],
+    opponents: Character[]
+  ) => BonusActionType[];
+  createBonusSelectionForType: (
+    type: BonusActionType,
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    allies: Character[],
+    opponents: Character[]
+  ) => BonusActionSelection | undefined;
+}): BonusActionSelection[] {
+  const {
+    attacker,
+    target,
+    battlefield,
+    allies,
+    opponents,
+    options,
+    isCloseCombat,
+    doctrine,
+    getBonusActionPriority,
+    createBonusSelectionForType,
+  } = params;
+  const available = options.filter(option => option.available);
+  if (available.length === 0) return [];
+  const byType = new Set<BonusActionType>(available.map(option => option.type));
+  const selections: BonusActionSelection[] = [];
+  const push = (selection: BonusActionSelection) => {
+    if (!selections.some(existing => existing.type === selection.type)) {
+      selections.push(selection);
+    }
+  };
+
+  const prioritizedTypes = getBonusActionPriority(
+    doctrine,
+    isCloseCombat,
+    attacker,
+    target,
+    battlefield,
+    allies,
+    opponents
+  );
+  for (const type of prioritizedTypes) {
+    if (!byType.has(type)) continue;
+    const selection = createBonusSelectionForType(type, attacker, target, battlefield, allies, opponents);
+    if (selection) {
+      push(selection);
+    }
+  }
+
+  for (const option of available) {
+    const selection = createBonusSelectionForType(option.type, attacker, target, battlefield, allies, opponents);
+    if (selection) {
+      push(selection);
+    }
+  }
+  return selections;
 }
 
 /**

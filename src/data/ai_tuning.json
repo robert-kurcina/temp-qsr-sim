@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "categoryBlocks": {
+    "utilityScorer": {
+      "defaultWeights": {
+        "distanceToTarget": 1.0,
+        "optimalRange": 1.5,
+        "coverValue": 2.0,
+        "highGroundValue": 1.0,
+        "targetHealth": 1.5,
+        "targetThreat": 2.0,
+        "killProbability": 2.5,
+        "cohesionValue": 1.0,
+        "flankValue": 1.5,
+        "chokepointValue": 0.5,
+        "objectiveValue": 3.0,
+        "victoryConditionValue": 4.0,
+        "selfPreservation": 2.0,
+        "allyProtection": 1.0,
+        "riskAvoidance": 1.0,
+        "aggression": 1.0
+      },
+      "actionMask": {
+        "cacheMaxSize": 1024
+      }
+    },
+    "sideCoordinator": {
+      "targetCommitment": {
+        "decayPerTurn": 0.75,
+        "maxScore": 8.0,
+        "pruneThreshold": 0.15,
+        "maxStaleTurns": 5
+      },
+      "pressureContinuity": {
+        "decayPerTurn": 0.82,
+        "maxScore": 10.0,
+        "pruneThreshold": 0.2,
+        "maxStaleTurns": 6,
+        "signatureBreakPenalty": 0.45,
+        "signatureStableBonusStep": 0.04,
+        "signatureStableBonusMax": 0.35
+      },
+      "trace": {
+        "maxEntries": 64
+      }
+    },
+    "actionVpFilter": {
+      "estimatedContributionByAction": {
+        "close_combat": 0.35,
+        "ranged_combat": 0.25,
+        "charge": 0.2,
+        "move": 0.08,
+        "disengage": 0.1,
+        "detect": 0.08,
+        "hide": 0.0,
+        "wait": 0.02,
+        "rally": 0.05,
+        "revive": 0.08,
+        "hold": 0.0,
+        "fiddle": 0.0,
+        "reload": 0.05,
+        "pushing": 0.15,
+        "refresh": 0.1,
+        "combined": 0.2,
+        "none": 0.0
+      },
+      "filters": {
+        "desperateVpEnablingMinContribution": 0.15,
+        "highPassiveRejectMaxContribution": 0.03
+      },
+      "scoring": {
+        "vpEnablingUrgencyBlend": 0.5,
+        "baseVpScoreFactor": 2.0,
+        "passivePenaltyStartTurn": 3
+      },
+      "urgencyMultipliers": {
+        "desperate": 3.0,
+        "high": 2.0,
+        "medium": 1.5,
+        "low": 1.0
+      },
+      "passivePenaltyCoefficients": {
+        "desperate": 2.5,
+        "high": 1.5,
+        "medium": 0.8,
+        "turnOffset": 2
+      }
+    },
+    "turnHorizon": {
+      "fallbackMaxTurnsFloor": 6,
+      "expectedSurvivalConvergenceSteps": 12,
+      "preTriggerPressureCap": 0.6,
+      "postTriggerPressureRange": 0.4
+    }
+  }
+}

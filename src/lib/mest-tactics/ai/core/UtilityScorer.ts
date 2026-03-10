@@ -34,7 +34,7 @@ import {
   type SuppressionMarker,
 } from './ROFScoring';
 import { calculateAgility, resolveFallingTest } from '../../actions/agility';
-import { getLeapAgilityBonus, getEffectiveMovement, getThreatRange } from '../../traits/combat-traits';
+import { getLeapAgilityBonus, getEffectiveMovement, getThreatRange, getSprintMovementBonus } from '../../traits/combat-traits';
 import {
   calculateVPUrgency,
   getUrgencyMultiplier,
@@ -57,6 +57,9 @@ import {
 } from './TacticalHeuristics';
 import { TERRAIN_HEIGHTS } from '../../battlefield/terrain/TerrainElement';
 import { detectGapAlongLine, canJumpGap, getGapTacticalValue } from '../../battlefield/GapDetector';
+import { assessBestMeleeLegality } from '../shared/MeleeLegality';
+import { calculateSuddenDeathTimePressure, estimateExpectedTurnsRemaining } from './TurnHorizon';
+import { aiTuning } from '../config/AITuningConfig';
 
 /**
  * Weight configuration for utility scoring
@@ -97,22 +100,7 @@ export interface UtilityWeights {
  * Default utility weights
  */
 export const DEFAULT_WEIGHTS: UtilityWeights = {
-  distanceToTarget: 1.0,
-  optimalRange: 1.5,
-  coverValue: 2.0,
-  highGroundValue: 1.0,
-  targetHealth: 1.5,
-  targetThreat: 2.0,
-  killProbability: 2.5,
-  cohesionValue: 1.0,
-  flankValue: 1.5,
-  chokepointValue: 0.5,
-  objectiveValue: 3.0,
-  victoryConditionValue: 4.0,
-  selfPreservation: 2.0,
-  allyProtection: 1.0,
-  riskAvoidance: 1.0,
-  aggression: 1.0,
+  ...aiTuning.utilityScorer.defaultWeights,
 };
 
 /**
@@ -160,7 +148,17 @@ export interface ScoredTarget {
     visibility: number;
     missionPriority: number;
     focusFire?: number;
+    targetCommitment?: number;
+    scrumContinuity?: number;
+    lanePressure?: number;
+    outOfPlayPressure?: number;
+    selfOutOfPlayRisk?: number;
     finishOff?: number;
+    vpPressure?: number;
+    vpPotential?: number;
+    vpDenial?: number;
+    rpPotential?: number;
+    rpDenial?: number;
   };
 }
 
@@ -192,12 +190,65 @@ interface EvaluationSession {
   pathBudgetExceeded: boolean;
 }
 
+interface ActionLegalityMask {
+  canMove: boolean;
+  canEvaluateTargets: boolean;
+  canCloseCombat: boolean;
+  canRangedCombat: boolean;
+  canDisengage: boolean;
+  canSupport: boolean;
+  canWeaponSwap: boolean;
+  canWait: boolean;
+  canPushing: boolean;
+  canRefresh: boolean;
+  candidateEnemyIds: string[];
+}
+
+interface FractionalScoringPotential {
+  sideVP: number;
+  opponentVP: number;
+  sideRP: number;
+  opponentRP: number;
+  vpDeficit: number;
+  rpDeficit: number;
+  myFractionalVpPotential: number;
+  opponentFractionalVpPotential: number;
+  vpPotentialDelta: number;
+  myRpVpPotential: number;
+  opponentRpVpPotential: number;
+  urgencyScalar: number;
+}
+
+interface TargetVPRPPressureBreakdown {
+  vpPotential: number;
+  vpDenial: number;
+  rpPotential: number;
+  rpDenial: number;
+  total: number;
+}
+
+interface ActionFractionalScoringBreakdown {
+  vpPotential: number;
+  vpDenial: number;
+  rpPotential: number;
+  rpDenial: number;
+  total: number;
+}
+
 /**
  * Utility Scorer class
  */
 export class UtilityScorer {
   weights: UtilityWeights;
   private activeEvaluationSession: EvaluationSession | null = null;
+  private actionMaskCache = new Map<string, ActionLegalityMask>();
+  private actionMaskCacheHits = 0;
+  private actionMaskCacheMisses = 0;
+  private actionMaskCacheBypasses = 0;
+  private readonly actionMaskCacheMaxSize = aiTuning.utilityScorer.actionMask.cacheMaxSize;
+  private static globalActionMaskCacheHits = 0;
+  private static globalActionMaskCacheMisses = 0;
+  private static globalActionMaskCacheBypasses = 0;
 
   constructor(weights: Partial<UtilityWeights> = {}) {
     this.weights = { ...DEFAULT_WEIGHTS, ...weights };
@@ -210,9 +261,233 @@ export class UtilityScorer {
     this.weights = { ...this.weights, ...weights };
   }
 
+  getActionMaskCacheStats(): {
+    size: number;
+    maxSize: number;
+    hits: number;
+    misses: number;
+    bypasses: number;
+    hitRate: number;
+  } {
+    const total = this.actionMaskCacheHits + this.actionMaskCacheMisses;
+    return {
+      size: this.actionMaskCache.size,
+      maxSize: this.actionMaskCacheMaxSize,
+      hits: this.actionMaskCacheHits,
+      misses: this.actionMaskCacheMisses,
+      bypasses: this.actionMaskCacheBypasses,
+      hitRate: total > 0 ? this.actionMaskCacheHits / total : 0,
+    };
+  }
+
+  static getGlobalActionMaskCacheStats(): {
+    hits: number;
+    misses: number;
+    bypasses: number;
+    hitRate: number;
+  } {
+    const total = UtilityScorer.globalActionMaskCacheHits + UtilityScorer.globalActionMaskCacheMisses;
+    return {
+      hits: UtilityScorer.globalActionMaskCacheHits,
+      misses: UtilityScorer.globalActionMaskCacheMisses,
+      bypasses: UtilityScorer.globalActionMaskCacheBypasses,
+      hitRate: total > 0 ? UtilityScorer.globalActionMaskCacheHits / total : 0,
+    };
+  }
+
+  static resetGlobalActionMaskCacheStats(): void {
+    UtilityScorer.globalActionMaskCacheHits = 0;
+    UtilityScorer.globalActionMaskCacheMisses = 0;
+    UtilityScorer.globalActionMaskCacheBypasses = 0;
+  }
+
+  clearActionMaskCache(): void {
+    this.actionMaskCache.clear();
+    this.actionMaskCacheHits = 0;
+    this.actionMaskCacheMisses = 0;
+    this.actionMaskCacheBypasses = 0;
+  }
+
+  private getActionLegalityMask(
+    context: AIContext,
+    loadout: { hasMeleeWeapons: boolean; hasRangedWeapons: boolean },
+    characterPos: Position | undefined
+  ): ActionLegalityMask {
+    if (process.env.AI_DISABLE_ACTION_MASK_CACHE === '1') {
+      this.actionMaskCacheBypasses += 1;
+      UtilityScorer.globalActionMaskCacheBypasses += 1;
+      return this.computeActionLegalityMask(context, loadout);
+    }
+
+    const key = this.buildActionMaskCacheKey(context, loadout, characterPos);
+    const cached = this.actionMaskCache.get(key);
+    if (cached) {
+      this.actionMaskCacheHits += 1;
+      UtilityScorer.globalActionMaskCacheHits += 1;
+      // Refresh insertion order to keep this key hot.
+      this.actionMaskCache.delete(key);
+      this.actionMaskCache.set(key, cached);
+      return cached;
+    }
+
+    this.actionMaskCacheMisses += 1;
+    UtilityScorer.globalActionMaskCacheMisses += 1;
+    const computed = this.computeActionLegalityMask(context, loadout);
+    this.actionMaskCache.set(key, computed);
+    if (this.actionMaskCache.size > this.actionMaskCacheMaxSize) {
+      const oldestKey = this.actionMaskCache.keys().next().value;
+      if (oldestKey !== undefined) {
+        this.actionMaskCache.delete(oldestKey);
+      }
+    }
+    return computed;
+  }
+
+  private buildActionMaskCacheKey(
+    context: AIContext,
+    loadout: { hasMeleeWeapons: boolean; hasRangedWeapons: boolean },
+    characterPos: Position | undefined
+  ): string {
+    const terrainVersion = context.battlefield.getTerrainVersion?.() ?? 0;
+    const actorState = context.character.state;
+    const actorStateKey = [
+      context.apRemaining,
+      actorState.isKOd ? 1 : 0,
+      actorState.isEliminated ? 1 : 0,
+      actorState.isAttentive ? 1 : 0,
+      actorState.isOrdered ? 1 : 0,
+      actorState.isWaiting ? 1 : 0,
+      actorState.isHidden ? 1 : 0,
+      actorState.wounds ?? 0,
+      actorState.delayTokens ?? 0,
+      actorState.fearTokens ?? 0,
+      (actorState as any).hasPushedThisInitiative ? 1 : 0,
+    ].join(':');
+
+    const positionKey = characterPos
+      ? `${characterPos.x.toFixed(1)},${characterPos.y.toFixed(1)}`
+      : 'no-pos';
+    const engagementKey = context.battlefield.isEngaged?.(context.character) ? 'engaged' : 'free';
+    const enemyKey = this.buildEnemyActionMaskSignature(context, characterPos);
+    const allySupportKey = `${context.allies.length}:` +
+      `${context.allies.filter(ally => ally.state.isKOd).length}:` +
+      `${context.allies.filter(ally => (ally.state.fearTokens ?? 0) > 0).length}`;
+
+    return [
+      context.character.id,
+      context.currentTurn ?? 0,
+      terrainVersion,
+      actorStateKey,
+      `${loadout.hasMeleeWeapons ? 1 : 0}${loadout.hasRangedWeapons ? 1 : 0}`,
+      positionKey,
+      engagementKey,
+      enemyKey,
+      allySupportKey,
+    ].join('|');
+  }
+
+  private buildEnemyActionMaskSignature(context: AIContext, characterPos: Position | undefined): string {
+    if (!characterPos) {
+      return `no-pos:${context.enemies.length}`;
+    }
+
+    const candidates = context.enemies
+      .filter(enemy => isAttackableEnemy(context.character, enemy, context.config))
+      .map(enemy => {
+        const pos = context.battlefield.getCharacterPosition(enemy);
+        if (!pos) return null;
+        const dist = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
+        return { enemy, pos, dist };
+      })
+      .filter((entry): entry is { enemy: Character; pos: Position; dist: number } => Boolean(entry))
+      .sort((a, b) => (a.dist === b.dist ? a.enemy.id.localeCompare(b.enemy.id) : a.dist - b.dist))
+      .slice(0, 6)
+      .map(({ enemy, pos }) =>
+        `${enemy.id}@${pos.x.toFixed(1)},${pos.y.toFixed(1)}:${enemy.state.isHidden ? 1 : 0}${enemy.state.isKOd ? 1 : 0}${enemy.state.isEliminated ? 1 : 0}`
+      )
+      .join(';');
+
+    return `${context.enemies.length}:${candidates}`;
+  }
+
+  private computeActionLegalityMask(
+    context: AIContext,
+    loadout: { hasMeleeWeapons: boolean; hasRangedWeapons: boolean }
+  ): ActionLegalityMask {
+    const canAct =
+      !context.character.state.isKOd &&
+      !context.character.state.isEliminated;
+    const hasAp = context.apRemaining > 0;
+    const isEngaged = context.battlefield.isEngaged?.(context.character) ?? false;
+    const candidateEnemies = context.enemies.filter(enemy =>
+      isAttackableEnemy(context.character, enemy, context.config)
+    );
+    const engagedEnemyIds = isEngaged
+      ? candidateEnemies
+          .filter(enemy => this.isInMeleeRange(context.character, enemy, context.battlefield))
+          .map(enemy => enemy.id)
+      : [];
+    const candidateEnemyIds = engagedEnemyIds.length > 0
+      ? engagedEnemyIds
+      : candidateEnemies.map(enemy => enemy.id);
+
+    const canCloseCombat =
+      canAct &&
+      context.apRemaining >= 1 &&
+      loadout.hasMeleeWeapons &&
+      candidateEnemyIds.length > 0;
+    const canRangedCombat =
+      canAct &&
+      context.apRemaining >= 1 &&
+      loadout.hasRangedWeapons &&
+      candidateEnemies.length > 0;
+
+    const stowedCount = context.character.profile?.stowedItems?.length ?? 0;
+    const initiativePoints = context.side?.state?.initiativePoints ?? 0;
+    const hasSupportTarget = context.allies.some(ally => ally.state.isKOd || (ally.state.fearTokens ?? 0) > 0);
+
+    return {
+      canMove: canAct && hasAp && context.apRemaining >= 1,
+      canEvaluateTargets: canCloseCombat || canRangedCombat,
+      canCloseCombat,
+      canRangedCombat,
+      canDisengage: canAct && hasAp && context.apRemaining >= 1 && isEngaged,
+      canSupport: canAct && hasAp && context.apRemaining >= 1 && hasSupportTarget,
+      canWeaponSwap: canAct && hasAp && context.apRemaining >= 1 && stowedCount > 0,
+      canWait:
+        canAct &&
+        hasAp &&
+        (context.config.allowWaitAction ?? true) &&
+        context.apRemaining >= 2 &&
+        !context.character.state.isWaiting &&
+        context.character.state.isAttentive &&
+        context.character.state.isOrdered &&
+        !isEngaged &&
+        loadout.hasRangedWeapons,
+      canPushing:
+        canAct &&
+        context.apRemaining === 0 &&
+        context.character.state.isAttentive &&
+        !(context.character.state as any).hasPushedThisInitiative &&
+        (context.character.state.delayTokens ?? 0) === 0,
+      canRefresh:
+        canAct &&
+        hasAp &&
+        (context.character.state.delayTokens ?? 0) > 0 &&
+        initiativePoints >= 1,
+      candidateEnemyIds,
+    };
+  }
+
   private createEvaluationSession(context: AIContext): EvaluationSession {
     const boardArea = context.battlefield.width * context.battlefield.height;
     const gameSize = String(context.config.gameSize ?? '').toUpperCase();
+    const missionId = String(context.config.missionId ?? '').toUpperCase();
+    const isEliminationPressureMission =
+      missionId === 'ELIMINATION' ||
+      missionId === 'QAI_11' ||
+      missionId === 'QAI_17' ||
+      missionId === 'QAI_18';
     const attackableEnemyCount = context.enemies.filter(enemy =>
       isAttackableEnemy(context.character, enemy, context.config)
     ).length;
@@ -254,11 +529,20 @@ export class UtilityScorer {
       localSampleCount = Math.min(localSampleCount, 10);
     }
     if (gameSize === 'VERY_SMALL') {
-      // Hard guard: remove strategic path probes in VERY_SMALL to avoid pathological stalls.
-      strategicPathQueryBudget = 0;
-      strategicEnemyLimit = 0;
-      strategicObjectiveLimit = 0;
-      strategicRefineTopK = 0;
+      if (isEliminationPressureMission) {
+        // Keep a tiny strategic probe budget for elimination-heavy missions so melee units
+        // can consistently select long-lane advance endpoints on very small boards.
+        strategicPathQueryBudget = Math.max(1, Math.min(strategicPathQueryBudget, 2));
+        strategicEnemyLimit = Math.max(2, Math.min(strategicEnemyLimit, 3));
+        strategicObjectiveLimit = Math.min(strategicObjectiveLimit, 1);
+        strategicRefineTopK = 1;
+      } else {
+        // Hard guard: remove strategic path probes in VERY_SMALL to avoid pathological stalls.
+        strategicPathQueryBudget = 0;
+        strategicEnemyLimit = 0;
+        strategicObjectiveLimit = 0;
+        strategicRefineTopK = 0;
+      }
     }
 
     strategicEnemyLimit = strategicPathQueryBudget > 0
@@ -324,122 +608,206 @@ export class UtilityScorer {
       const doctrineEngagement = this.getDoctrineEngagement(context, loadout);
       const missionBias = this.getMissionBias(context);
       const characterPos = context.battlefield.getCharacterPosition(context.character);
+      const actionMask = this.getActionLegalityMask(context, loadout, characterPos);
+      const candidateEnemyIds = new Set(actionMask.candidateEnemyIds);
+      const targetContext: AIContext =
+        actionMask.canEvaluateTargets &&
+        candidateEnemyIds.size > 0 &&
+        candidateEnemyIds.size < context.enemies.length
+          ? {
+              ...context,
+              enemies: context.enemies.filter(enemy => candidateEnemyIds.has(enemy.id)),
+            }
+          : context;
 
       // Evaluate attack actions first so move pressure can adapt when no legal attacks exist.
-      const attackTargets = this.evaluateTargets(context);
+      const attackTargets = actionMask.canEvaluateTargets
+        ? this.evaluateTargets(targetContext)
+        : [];
+      const hasChargeTraitMeleeWeapon = this.hasChargeTraitMeleeWeapon(context.character);
+      const engagedMeleeAttackApCost = this.estimateMeleeAttackApCost(context.character, true);
+      const canAffordImmediateMeleeAttack = context.apRemaining >= engagedMeleeAttackApCost;
+      const canAffordImmediateChargeAttack = context.apRemaining >= (1 + engagedMeleeAttackApCost);
+      const isFreeAtStart = !(context.battlefield.isEngaged?.(context.character) ?? false);
       for (const target of attackTargets) {
-      // Check if in melee range
-      const inMelee = this.isInMeleeRange(context.character, target.target, context.battlefield);
-      if (inMelee) {
-        let score = target.score * 1.2;
-        if (!loadout.hasMeleeWeapons && loadout.hasRangedWeapons) {
-          // Ranged-only models generally should avoid base-contact fights.
-          score *= 0.55;
-        } else if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
-          score *= 1.2;
-        }
-        if (doctrineEngagement === 'melee') {
-          score *= 1.15;
-        } else if (doctrineEngagement === 'ranged') {
-          score *= 0.82;
-        }
-        if (doctrinePlanning === 'keys_to_victory') {
-          score *= Math.max(0.72, 1 - missionBias.objectiveActionPressure * 0.22);
-        } else if (doctrinePlanning === 'aggression') {
-          score *= 1.08;
-        }
-        score *= missionBias.attackPressure;
+        if (actionMask.canCloseCombat) {
+          const meleeLegality = assessBestMeleeLegality(context.character, target.target, context.battlefield, {
+            weapons: this.getMeleeWeapons(context.character),
+            isFirstAction: true,
+            isFreeAtStart,
+          });
+          if (meleeLegality.canAttack) {
+            if (!canAffordImmediateMeleeAttack) {
+              continue;
+            }
+            let score = target.score * 1.2;
+            if (!loadout.hasMeleeWeapons && loadout.hasRangedWeapons) {
+              // Ranged-only models generally should avoid base-contact fights.
+              score *= 0.55;
+            } else if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+              score *= 1.2;
+            }
+            if (doctrineEngagement === 'melee') {
+              score *= 1.15;
+            } else if (doctrineEngagement === 'ranged') {
+              score *= 0.82;
+            }
+            if (doctrinePlanning === 'keys_to_victory') {
+              score *= Math.max(0.72, 1 - missionBias.objectiveActionPressure * 0.22);
+            } else if (doctrinePlanning === 'aggression') {
+              score *= 1.08;
+            }
+            if (meleeLegality.requiresOverreach) {
+              // Overreach trades legality for risk (-1 REF / -1 hit modifier).
+              score *= 0.9;
+            } else if (meleeLegality.requiresReach) {
+              score *= 1.02;
+            }
+            score *= missionBias.attackPressure;
 
-        // Multiple Weapons bonus consideration for melee
-        if (qualifiesForMultipleWeapons(context.character, true)) {
-          const bonus = getMultipleWeaponsBonus(context.character, 0, true);
-          score += bonus * 0.3;
-        }
+            // Multiple Weapons bonus consideration for melee
+            if (qualifiesForMultipleWeapons(context.character, true)) {
+              const bonus = getMultipleWeaponsBonus(context.character, 0, true);
+              score += bonus * 0.3;
+            }
 
-        // Priority 1: Bonus Action potential (Push-back, Pull-back, Reversal)
-        // Evaluate after we know we have a valid melee target
-        const attackerPosition = context.battlefield.getCharacterPosition(context.character);
-        const bonusActionEval = this.evaluateBonusActions(context, target.target, 2, attackerPosition);
-        if (bonusActionEval.score > 0) {
-          score += bonusActionEval.score * 0.5; // Weight bonus actions moderately
-        }
+            // Priority 1: Bonus Action potential (Push-back, Pull-back, Reversal)
+            // Evaluate after we know we have a valid melee target
+            const attackerPosition = context.battlefield.getCharacterPosition(context.character);
+            const bonusActionEval = this.evaluateBonusActions(context, target.target, 2, attackerPosition);
+            if (bonusActionEval.score > 0) {
+              score += bonusActionEval.score * 0.5; // Weight bonus actions moderately
+            }
 
-        attackActions.push({
-          action: 'close_combat',
-          target: target.target,
-          score: score,
-          factors: { ...target.factors, multipleWeapons: qualifiesForMultipleWeapons(context.character, true) ? 1 : 0 },
-        });
-      }
+            attackActions.push({
+              action: 'close_combat',
+              target: target.target,
+              score: score,
+              factors: {
+                ...target.factors,
+                multipleWeapons: qualifiesForMultipleWeapons(context.character, true) ? 1 : 0,
+                meleeAttackApCost: engagedMeleeAttackApCost,
+                meleeRequiresReach: meleeLegality.requiresReach ? 1 : 0,
+                meleeRequiresOverreach: meleeLegality.requiresOverreach ? 1 : 0,
+              },
+            });
+          } else if (actionMask.canMove) {
+            // Charge = move into base contact + immediate close combat pressure.
+            const chargeOpportunity = this.evaluateChargeOpportunity(context, target.target);
+            if (chargeOpportunity.canCharge && chargeOpportunity.destination && canAffordImmediateChargeAttack) {
+              let score = target.score * 1.16;
+              if (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons) {
+                score *= 1.1;
+              }
+              if (doctrineEngagement === 'melee') {
+                score *= 1.12;
+              } else if (doctrineEngagement === 'ranged') {
+                score *= 0.9;
+              }
+              if (doctrinePlanning === 'aggression') {
+                score *= 1.08;
+              }
+              score *= missionBias.attackPressure;
+              if (hasChargeTraitMeleeWeapon) {
+                score *= 1.08;
+              }
 
-      // Check if in range for ranged attack using session visibility + ORM logic
-      const rangedOpportunity = this.evaluateRangedOpportunity(context, target.target);
-      if (rangedOpportunity.canAttack) {
-        let score = target.score;
-
-        // Multiple Weapons bonus consideration
-        if (qualifiesForMultipleWeapons(context.character, false)) {
-          const bonus = getMultipleWeaponsBonus(context.character, 0, false);
-          score += bonus * 0.3;
-        }
-        // Heavier ORM penalties make long, low-probability shots less dominant.
-        score *= 1 / (1 + (rangedOpportunity.orm * 0.35));
-        if (rangedOpportunity.requiresConcentrate && characterPos) {
-          // Priority 3: Prefer Concentrate + Attack when Outnumbered
-          // Concentrate removes +1 Wild die from Opposing Outnumber bonus
-          const friendsNearby = this.countFriendlyInMeleeRange(context, characterPos, 1.5);
-          const enemiesNearby = this.countEnemyInMeleeRange(context, characterPos, 1.5);
-          const isOutnumbered = enemiesNearby > friendsNearby;
-          
-          if (isOutnumbered) {
-            // Strongly prefer Concentrate when outnumbered - removes enemy outnumber bonus
-            score *= 1.4;
-          } else {
-            // Keep this viable, but less preferred than immediate fire
-            score *= 0.8;
+              attackActions.push({
+                action: 'charge',
+                target: target.target,
+                position: chargeOpportunity.destination,
+                score,
+                factors: {
+                  ...target.factors,
+                  chargeDistance: chargeOpportunity.travelDistance,
+                  chargeRemainingGap: chargeOpportunity.remainingGap,
+                  chargeApproachValue: chargeOpportunity.travelDistance > 0 ? 1 : 0,
+                  chargeTraitWeapon: hasChargeTraitMeleeWeapon ? 1 : 0,
+                  chargeAttackApCost: engagedMeleeAttackApCost,
+                },
+              });
+            }
           }
         }
-        if (rangedOpportunity.leanOpportunity) {
-          score += 1.2;
-        }
-        if (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons) {
-          score *= 1.12;
-        } else if (!loadout.hasRangedWeapons && loadout.hasMeleeWeapons) {
-          score *= 0.75;
-        }
-        if (doctrineEngagement === 'ranged') {
-          score *= 1.12;
-        } else if (doctrineEngagement === 'melee') {
-          score *= 0.86;
-        }
-        if (doctrinePlanning === 'keys_to_victory') {
-          score *= Math.max(0.72, 1 - missionBias.objectiveActionPressure * 0.2);
-        } else if (doctrinePlanning === 'aggression') {
-          score *= 1.06;
-        }
-        score *= missionBias.attackPressure;
 
-        attackActions.push({
-          action: 'ranged_combat',
-          target: target.target,
-          score: score,
-          factors: {
-            ...target.factors,
-            multipleWeapons: qualifiesForMultipleWeapons(context.character, false) ? 1 : 0,
-            requiresConcentrate: rangedOpportunity.requiresConcentrate ? 1 : 0,
-            orm: rangedOpportunity.orm,
-            leanOpportunity: rangedOpportunity.leanOpportunity ? 1 : 0,
-          },
-        });
+        if (actionMask.canRangedCombat) {
+          // Check if in range for ranged attack using session visibility + ORM logic
+          const rangedOpportunity = this.evaluateRangedOpportunity(context, target.target);
+          if (rangedOpportunity.canAttack) {
+            let score = target.score;
+
+            // Multiple Weapons bonus consideration
+            if (qualifiesForMultipleWeapons(context.character, false)) {
+              const bonus = getMultipleWeaponsBonus(context.character, 0, false);
+              score += bonus * 0.3;
+            }
+            // Heavier ORM penalties make long, low-probability shots less dominant.
+            score *= 1 / (1 + (rangedOpportunity.orm * 0.35));
+            if (rangedOpportunity.requiresConcentrate && characterPos) {
+              // Priority 3: Prefer Concentrate + Attack when Outnumbered
+              // Concentrate removes +1 Wild die from Opposing Outnumber bonus
+              const friendsNearby = this.countFriendlyInMeleeRange(context, characterPos, 1.5);
+              const enemiesNearby = this.countEnemyInMeleeRange(context, characterPos, 1.5);
+              const isOutnumbered = enemiesNearby > friendsNearby;
+              
+              if (isOutnumbered) {
+                // Strongly prefer Concentrate when outnumbered - removes enemy outnumber bonus
+                score *= 1.4;
+              } else {
+                // Keep this viable, but less preferred than immediate fire
+                score *= 0.8;
+              }
+            }
+            if (rangedOpportunity.leanOpportunity) {
+              score += 1.2;
+            }
+            if (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons) {
+              score *= 1.12;
+            } else if (!loadout.hasRangedWeapons && loadout.hasMeleeWeapons) {
+              score *= 0.75;
+            }
+            if (doctrineEngagement === 'ranged') {
+              score *= 1.12;
+            } else if (doctrineEngagement === 'melee') {
+              score *= 0.86;
+            }
+            if (doctrinePlanning === 'keys_to_victory') {
+              score *= Math.max(0.72, 1 - missionBias.objectiveActionPressure * 0.2);
+            } else if (doctrinePlanning === 'aggression') {
+              score *= 1.06;
+            }
+            score *= missionBias.attackPressure;
+
+            attackActions.push({
+              action: 'ranged_combat',
+              target: target.target,
+              score: score,
+              factors: {
+                ...target.factors,
+                multipleWeapons: qualifiesForMultipleWeapons(context.character, false) ? 1 : 0,
+                requiresConcentrate: rangedOpportunity.requiresConcentrate ? 1 : 0,
+                orm: rangedOpportunity.orm,
+                leanOpportunity: rangedOpportunity.leanOpportunity ? 1 : 0,
+              },
+            });
+          }
+        }
       }
-      }
+
+      const survivalFactor = this.computeConditionalSurvivalFactor(context);
 
       // Evaluate movement actions
-      const movePositions = this.evaluatePositions(context);
-      const nearestEnemyDistance = characterPos
+      const movePositions = actionMask.canMove ? this.evaluatePositions(context, survivalFactor) : [];
+      const nearestEnemyDistance = actionMask.canMove && characterPos
         ? this.distanceToClosestAttackableEnemy(characterPos, context)
         : Number.POSITIVE_INFINITY;
-      const currentExposure = characterPos ? this.countEnemySightLinesToPosition(characterPos, context) : 0;
+      const currentExposure = actionMask.canMove && characterPos
+        ? this.countEnemySightLinesToPosition(characterPos, context)
+        : 0;
+      const movementAllowance = Math.max(
+        1,
+        (context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2) + 2
+      );
       let moveMultiplier = attackActions.length > 0
         ? (loadout.hasRangedWeapons && !loadout.hasMeleeWeapons ? 0.95 : 0.9)
         : (loadout.hasMeleeWeapons && !loadout.hasRangedWeapons ? 1.95 : 1.5);
@@ -460,43 +828,132 @@ export class UtilityScorer {
       const objectiveAdvanceWeight =
         missionBias.objectiveActionPressure *
         (doctrinePlanning === 'keys_to_victory' ? 4.2 : doctrinePlanning === 'balanced' ? 2.6 : 1.4);
-      for (const pos of movePositions.slice(0, 3)) {
-        const objectiveAdvance = this.evaluateObjectiveAdvance(pos.position, context);
-        const moveWaitForecast = loadout.hasRangedWeapons
-          ? forecastWaitReact(context, pos.position)
-          : null;
-        const exposureReduction = moveWaitForecast
-          ? Math.max(0, currentExposure - moveWaitForecast.exposureCount)
-          : 0;
-        const goapFutureWaitValue = moveWaitForecast
-          ? (moveWaitForecast.expectedReactValue * 0.55) +
-            (moveWaitForecast.hiddenRevealTargets * 0.8) +
-            (moveWaitForecast.refGatePassCount * 0.22) +
-            (exposureReduction * 0.2)
-          : 0;
-        const goapFutureWaitWeight = context.apRemaining >= 2 ? 0.45 : 0.25;
-        actions.push({
-          action: 'move',
-          position: pos.position,
-          score:
-            pos.score * moveMultiplier +
-            advanceBonus +
-            (missionBias.objectiveActionPressure * pos.factors.visibility * 0.35) +
-            (objectiveAdvance * objectiveAdvanceWeight) +
-            (goapFutureWaitValue * goapFutureWaitWeight),
-          factors: {
-            ...pos.factors,
-            moveMultiplier,
-            advanceBonus,
-            objectiveAdvance,
-            objectiveAdvanceWeight,
-            goapFutureWaitValue,
-            goapFutureWaitWeight,
-            goapExposureReduction: exposureReduction,
-            strategicPathBudgetExceeded: session.pathBudgetExceeded ? 1 : 0,
-            objectivePressure: missionBias.objectiveActionPressure,
-          },
-        });
+      if (actionMask.canMove) {
+        for (const pos of movePositions.slice(0, 3)) {
+          const objectiveAdvance = this.evaluateObjectiveAdvance(pos.position, context);
+          const approachProgress = characterPos
+            ? this.evaluateApproachProgress(characterPos, pos.position, context)
+            : { deltaMu: 0, normalizedDelta: 0 };
+          const approachWeight = attackActions.length > 0 ? 0.7 : 2.1;
+          const objectiveApproachScalar = 1 + (missionBias.objectiveActionPressure * 0.35);
+          const approachBonus =
+            ((Math.max(0, approachProgress.deltaMu) * approachWeight) +
+            (Math.max(0, approachProgress.normalizedDelta) * 0.9)) *
+            objectiveApproachScalar;
+          const approachPenalty = approachProgress.deltaMu < 0
+            ? Math.abs(approachProgress.deltaMu) * (attackActions.length > 0 ? 1.4 : 2.8)
+            : 0;
+          const displacementMu = characterPos
+            ? Math.hypot(pos.position.x - characterPos.x, pos.position.y - characterPos.y)
+            : 0;
+          const movementUtilization = this.clamp(displacementMu / Math.max(1, movementAllowance), 0, 1);
+          const longApproachPhase =
+            Number.isFinite(nearestEnemyDistance) &&
+            nearestEnemyDistance > movementAllowance + 0.75;
+          const nearEngagementEnvelope =
+            Number.isFinite(nearestEnemyDistance) && nearestEnemyDistance <= 2.75;
+          const objectiveMicroPositioning = objectiveAdvance >= 0.3;
+          const shouldAllowMicroReposition =
+            objectiveMicroPositioning ||
+            attackActions.length > 0 ||
+            Boolean(context.battlefield.isEngaged?.(context.character));
+          const lowUtilizationPenalty =
+            context.apRemaining >= 2 &&
+            longApproachPhase &&
+            !shouldAllowMicroReposition &&
+            movementUtilization < 0.55
+              ? 0.7 + ((0.55 - movementUtilization) * 1.6)
+              : 0;
+          const movementUtilizationBonus = shouldAllowMicroReposition
+            ? movementUtilization * 0.18
+            : movementUtilization * (longApproachPhase ? 0.85 : 0.45);
+          const isClosingMove = approachProgress.deltaMu > 0.05;
+          const canUseMoreAllowance =
+            displacementMu + 0.1 < movementAllowance &&
+            Number.isFinite(nearestEnemyDistance) &&
+            nearestEnemyDistance > 1.25;
+          const approachUtilizationTarget = longApproachPhase ? 0.92 : 0.78;
+          const approachUtilizationGap = isClosingMove && canUseMoreAllowance
+            ? Math.max(0, approachUtilizationTarget - movementUtilization)
+            : 0;
+          const closeApproachBonus = isClosingMove
+            ? movementUtilization * (longApproachPhase ? 1.2 : 0.65)
+            : 0;
+          const closeApproachPenalty =
+            isClosingMove &&
+            canUseMoreAllowance &&
+            !nearEngagementEnvelope &&
+            !objectiveMicroPositioning &&
+            movementUtilization < approachUtilizationTarget
+              ? 1.2 + (approachUtilizationGap * (longApproachPhase ? 7.2 : 5.2))
+              : 0;
+          const moveWaitForecast = loadout.hasRangedWeapons
+            ? forecastWaitReact(context, pos.position)
+            : null;
+          const exposureReduction = moveWaitForecast
+            ? Math.max(0, currentExposure - moveWaitForecast.exposureCount)
+            : 0;
+          const goapFutureWaitValue = moveWaitForecast
+            ? (moveWaitForecast.expectedReactValue * 0.55) +
+              (moveWaitForecast.hiddenRevealTargets * 0.8) +
+              (moveWaitForecast.refGatePassCount * 0.22) +
+              (exposureReduction * 0.2)
+            : 0;
+          const goapFutureWaitWeight = context.apRemaining >= 2 ? 0.45 : 0.25;
+          const meleeSetupValue =
+            loadout.hasMeleeWeapons && !canAffordImmediateChargeAttack
+              ? this.evaluateMeleeSetupValue(context, pos.position)
+              : 0;
+          const meleeSetupWeight = loadout.hasMeleeWeapons ? 0.85 : 0;
+          actions.push({
+            action: 'move',
+            position: pos.position,
+            score:
+              pos.score * moveMultiplier +
+              advanceBonus +
+              (missionBias.objectiveActionPressure * pos.factors.visibility * 0.35) +
+              (objectiveAdvance * objectiveAdvanceWeight) +
+              approachBonus -
+              approachPenalty +
+              movementUtilizationBonus -
+              closeApproachPenalty +
+              closeApproachBonus -
+              lowUtilizationPenalty +
+              (meleeSetupValue * meleeSetupWeight) +
+              (goapFutureWaitValue * goapFutureWaitWeight),
+            factors: {
+              ...pos.factors,
+              moveMultiplier,
+              advanceBonus,
+              objectiveAdvance,
+              objectiveAdvanceWeight,
+              approachDeltaMu: approachProgress.deltaMu,
+              approachNormalizedDelta: approachProgress.normalizedDelta,
+              approachBonus,
+              approachPenalty: -approachPenalty,
+              moveDisplacementMu: displacementMu,
+              moveUtilization: movementUtilization,
+              moveUtilizationBonus: movementUtilizationBonus,
+              moveCloseApproachBonus: closeApproachBonus,
+              moveCloseApproachPenalty: -closeApproachPenalty,
+              moveClosingIntent: isClosingMove ? 1 : 0,
+              moveCanUseMoreAllowance: canUseMoreAllowance ? 1 : 0,
+              moveApproachUtilizationTarget: approachUtilizationTarget,
+              moveApproachUtilizationGap: approachUtilizationGap,
+              moveLowUtilizationPenalty: -lowUtilizationPenalty,
+              moveLongApproachPhase: longApproachPhase ? 1 : 0,
+              moveAllowMicroReposition: shouldAllowMicroReposition ? 1 : 0,
+              survivalFactor,
+              goapFutureWaitValue,
+              goapFutureWaitWeight,
+              goapExposureReduction: exposureReduction,
+              meleeSetupValue,
+              meleeSetupWeight,
+              strategicPathBudgetExceeded: session.pathBudgetExceeded ? 1 : 0,
+              objectivePressure: missionBias.objectiveActionPressure,
+            },
+          });
+        }
       }
       actions.push(...attackActions);
 
@@ -505,7 +962,7 @@ export class UtilityScorer {
       actions.push(...objectiveActions);
 
       // Evaluate disengage if engaged
-      if (context.battlefield.isEngaged?.(context.character)) {
+      if (actionMask.canDisengage && context.battlefield.isEngaged?.(context.character)) {
         const shouldDisengage = this.shouldDisengage(context);
         if (shouldDisengage) {
           const enemies = this.getEngagedEnemies(context.character, context.battlefield);
@@ -521,22 +978,18 @@ export class UtilityScorer {
       }
 
       // Evaluate support actions
-      const supportActions = this.evaluateSupportActions(context);
-      actions.push(...supportActions);
+      if (actionMask.canSupport) {
+        const supportActions = this.evaluateSupportActions(context);
+        actions.push(...supportActions);
+      }
 
       // Phase 2.5: Evaluate weapon swap actions (stow/unstow items)
-      const weaponSwapActions = this.evaluateWeaponSwap(context);
-      actions.push(...weaponSwapActions);
+      if (actionMask.canWeaponSwap) {
+        const weaponSwapActions = this.evaluateWeaponSwap(context);
+        actions.push(...weaponSwapActions);
+      }
 
-      const canConsiderWait =
-        context.apRemaining >= 2 &&
-        !context.character.state.isWaiting &&
-        context.character.state.isAttentive &&
-        context.character.state.isOrdered &&
-        !context.character.state.isKOd &&
-        !context.character.state.isEliminated &&
-        !context.battlefield.isEngaged?.(context.character) &&
-        loadout.hasRangedWeapons;
+      const canConsiderWait = actionMask.canWait;
       if (canConsiderWait) {
         const waitForecast = forecastWaitReact(context);
         const exposure = waitForecast.exposureCount;
@@ -725,6 +1178,55 @@ export class UtilityScorer {
         }
       }
 
+      const missionId = String(context.config.missionId ?? '').toUpperCase();
+      const isEliminationPressureMission =
+        missionId === 'ELIMINATION' ||
+        missionId === 'QAI_11' ||
+        missionId === 'QAI_17' ||
+        missionId === 'QAI_18';
+      if (
+        isEliminationPressureMission &&
+        attackActions.length === 0 &&
+        Number.isFinite(nearestEnemyDistance) &&
+        nearestEnemyDistance > 2.5
+      ) {
+        const movePressureBonus = 1.15 + Math.min(1.4, Math.max(0, nearestEnemyDistance - 2.5) * 0.08);
+        for (const action of actions) {
+          if (action.action === 'move') {
+            const approachDeltaMu = Number(action.factors?.approachDeltaMu ?? 0);
+            const approachNormalizedDelta = Number(action.factors?.approachNormalizedDelta ?? 0);
+            const approachPressureBonus =
+              (Math.max(0, approachDeltaMu) * 1.25) +
+              (Math.max(0, approachNormalizedDelta) * 0.9);
+            const approachRetreatPenalty = approachDeltaMu < 0
+              ? Math.abs(approachDeltaMu) * 2.4
+              : 0;
+            action.score += movePressureBonus + approachPressureBonus - approachRetreatPenalty;
+            action.factors = {
+              ...action.factors,
+              eliminationApproachPressure: movePressureBonus,
+              eliminationApproachDeltaMu: approachDeltaMu,
+              eliminationApproachBonus: approachPressureBonus,
+              eliminationApproachRetreatPenalty: -approachRetreatPenalty,
+            };
+            continue;
+          }
+          if (
+            action.action === 'wait' ||
+            action.action === 'hide' ||
+            action.action === 'detect' ||
+            action.action === 'hold' ||
+            action.action === 'fiddle'
+          ) {
+            action.score -= 1.35;
+            action.factors = {
+              ...action.factors,
+              eliminationApproachPenalty: -1.35,
+            };
+          }
+        }
+      }
+
       // Sort by score
       actions.sort((a, b) => b.score - a.score);
 
@@ -743,7 +1245,8 @@ export class UtilityScorer {
             totalVPPool: 5, 
             hasRPToVPConversion: false,
             currentTurn: context.currentTurn ?? 1,
-            maxTurns: context.maxTurns ?? 6
+            maxTurns: context.maxTurns ?? 6,
+            endGameTurn: context.endGameTurn ?? context.scoringContext.predictorEndGameTurn,
           }
         );
         const scoringModifiers = calculateScoringModifiers(scoringContext);
@@ -767,9 +1270,7 @@ export class UtilityScorer {
       // Evaluate Pushing action (QSR p.789-791)
       // Pushing allows character to gain +1 AP once per Initiative, but adds a Delay token
       // Evaluate BEFORE finalizing action list so Pushing can enable other actions
-      const canPush =
-        !(context.character.state as any).hasPushedThisInitiative &&
-        (context.character.state.delayTokens ?? 0) === 0;
+      const canPush = actionMask.canPushing;
       
       if (canPush) {
         // Pushing is valuable when character can use extra AP effectively:
@@ -849,6 +1350,17 @@ export class UtilityScorer {
         
         // Calculate Pushing score
         let pushScore = 0;
+
+        // At 0 AP, Pushing is the only way to continue the Initiative.
+        if (context.apRemaining === 0) {
+          const hasImmediateOpportunity =
+            actionMask.candidateEnemyIds.length > 0 ||
+            this.getInteractableObjectiveMarkers(context).length > 0;
+          pushScore += hasImmediateOpportunity ? 0.65 : 0.35;
+          if (context.scoringContext && !context.scoringContext.amILeading) {
+            pushScore += 0.25;
+          }
+        }
         
         // Base score from enabling multiple actions
         if (actionCount >= 2) {
@@ -889,6 +1401,26 @@ export class UtilityScorer {
           pushScore += doctrinePushBonus;
         }
 
+        // Avoid push->charge->attack loops when delay cancels charge modifier.
+        // Exception: charge-trait weapons still gain wild die + impact.
+        let pushingChargePenalty = 0;
+        let pushingChargeBonus = 0;
+        let pushingEnablesCharge = false;
+        if (context.apRemaining === 1 && loadout.hasMeleeWeapons && !context.battlefield.isEngaged?.(context.character)) {
+          pushingEnablesCharge = context.enemies.some(enemy =>
+            isAttackableEnemy(context.character, enemy, context.config) &&
+            this.evaluateChargeOpportunity(context, enemy).canCharge
+          );
+          if (pushingEnablesCharge) {
+            if (hasChargeTraitMeleeWeapon) {
+              pushingChargeBonus = 0.22;
+            } else {
+              pushingChargePenalty = -0.65;
+            }
+          }
+        }
+        pushScore += pushingChargePenalty + pushingChargeBonus;
+
         // Penalty if vulnerable (gaining Delay token is risky)
         if (!isInGoodPosition) {
           pushScore *= 0.5;
@@ -899,7 +1431,8 @@ export class UtilityScorer {
         pushScore += delayTokenCost;
         
         // Only recommend Pushing if net benefit is positive
-        if (pushScore > 0.2) {
+        const minPushThreshold = context.apRemaining === 0 ? 0.05 : 0.2;
+        if (pushScore > minPushThreshold) {
           finalActions.push({
             action: 'pushing',
             score: pushScore,
@@ -916,6 +1449,10 @@ export class UtilityScorer {
               hideBenefit: couldBenefitFromHiding ? 0.6 : 0,
               ipAggressionBonus: ipAggressionBonus,
               doctrinePushBonus: doctrinePushBonus,
+              pushingEnablesCharge: pushingEnablesCharge ? 1 : 0,
+              pushingChargePenalty,
+              pushingChargeBonus,
+              hasChargeTraitMeleeWeapon: hasChargeTraitMeleeWeapon ? 1 : 0,
               delayTokenCost,
             },
           });
@@ -928,7 +1465,7 @@ export class UtilityScorer {
       const hasDelayTokens = (context.character.state.delayTokens ?? 0) > 0;
       const sideHasIP = (context.side?.state.initiativePoints ?? 0) >= 1;
 
-      if (hasDelayTokens && sideHasIP) {
+      if (actionMask.canRefresh && hasDelayTokens && sideHasIP) {
         // Refresh is valuable when:
         // 1. Character has multiple Delay tokens (can act again sooner)
         // 2. Character is in a valuable position (engaged with enemy, near objective)
@@ -1024,8 +1561,15 @@ export class UtilityScorer {
         .reduce((max, [, vp]) => Math.max(max, vp), 0);
       const currentTurn = context.currentTurn ?? 1;
       const maxTurns = context.maxTurns ?? 6;
+      const endGameTurn = Number.isFinite(context.endGameTurn)
+        ? Number(context.endGameTurn)
+        : Number.isFinite(context.scoringContext?.predictorEndGameTurn)
+          ? Number(context.scoringContext?.predictorEndGameTurn)
+          : undefined;
+      const expectedTurnsRemaining = estimateExpectedTurnsRemaining(currentTurn, maxTurns, endGameTurn);
+      const effectiveMaxTurns = Math.max(currentTurn, Math.round((currentTurn - 1) + expectedTurnsRemaining));
 
-      const vpUrgency = calculateVPUrgency(myVP, enemyVP, currentTurn, maxTurns);
+      const vpUrgency = calculateVPUrgency(myVP, enemyVP, currentTurn, effectiveMaxTurns);
 
       // Filter actions based on VP urgency (desperate/high urgency only)
       if (vpUrgency.urgencyLevel === 'desperate' || vpUrgency.urgencyLevel === 'high') {
@@ -1064,6 +1608,23 @@ export class UtilityScorer {
         };
       }
 
+      // Fractional VP/RP potential and denial pressure:
+      // converts current + predicted score state into a continuous utility signal.
+      const fractionalPotential = this.computeFractionalScoringPotential(context);
+      for (const action of finalActions) {
+        const fractional = this.evaluateActionFractionalScoring(action, fractionalPotential);
+        action.score += fractional.total;
+        action.factors = {
+          ...action.factors,
+          fractionalVpPotential: fractional.vpPotential,
+          fractionalVpDenial: fractional.vpDenial,
+          fractionalRpPotential: fractional.rpPotential,
+          fractionalRpDenial: fractional.rpDenial,
+          scoringUrgencyScalar: fractionalPotential.urgencyScalar,
+          scoringPotentialDelta: fractionalPotential.vpPotentialDelta,
+        };
+      }
+
       // Re-sort after VP adjustments
       finalActions.sort((a, b) => b.score - a.score);
       // === END VP URGENCY INTEGRATION ===
@@ -1077,7 +1638,7 @@ export class UtilityScorer {
   /**
    * Evaluate positions for movement
    */
-  evaluatePositions(context: AIContext): ScoredPosition[] {
+  evaluatePositions(context: AIContext, survivalFactor: number = this.computeConditionalSurvivalFactor(context)): ScoredPosition[] {
     const positions: ScoredPosition[] = [];
     const session = this.getEvaluationSession(context);
     const characterPos = context.battlefield.getCharacterPosition(context.character);
@@ -1086,6 +1647,14 @@ export class UtilityScorer {
       1,
       (context.character.finalAttributes.mov ?? context.character.attributes.mov ?? 2) + 2
     );
+    const actorBaseDiameter = getBaseDiameterFromSiz(
+      context.character.finalAttributes.siz ?? context.character.attributes.siz ?? 3
+    );
+    const nearestEnemyDistanceFromCurrent = this.distanceToClosestAttackableEnemy(characterPos, context);
+    const longApproachPhase =
+      Number.isFinite(nearestEnemyDistanceFromCurrent) &&
+      nearestEnemyDistanceFromCurrent > movementAllowance + 0.75;
+    const isCurrentlyEngaged = Boolean(context.battlefield.isEngaged?.(context.character));
 
     // Local + strategic sampling:
     // - local ring to retain tactical nuance
@@ -1112,13 +1681,18 @@ export class UtilityScorer {
       // Check if position is occupied by another model
       const occupant = context.battlefield.getCharacterAt(pos);
       if (occupant && occupant.id !== context.character.id) continue;
+      if (!context.battlefield.canOccupy(pos, actorBaseDiameter, context.character.id)) continue;
 
       // For local samples, check straight-line distance
       // For strategic samples, trust pathfinding (already validated)
       const isLocalSample = localSamples.some(s => s.x === pos.x && s.y === pos.y);
+      const displacementMu = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
       if (isLocalSample) {
-        const distance = Math.hypot(pos.x - characterPos.x, pos.y - characterPos.y);
-        if (distance > movementAllowance + 1e-6) continue;
+        if (displacementMu > movementAllowance + 1e-6) continue;
+        // In long-approach phases, prune low-commitment local shuffles.
+        if (longApproachPhase && !isCurrentlyEngaged && displacementMu < (movementAllowance * 0.55)) {
+          continue;
+        }
       }
       // Strategic samples are pathfinding-validated, so we accept them regardless of straight-line distance
 
@@ -1156,13 +1730,13 @@ export class UtilityScorer {
       const score =
         cover * coverWeight +
         distanceScore * this.weights.distanceToTarget +
-        threatRelief * (1.5 + this.weights.riskAvoidance) +
+        (threatRelief * (1.5 + this.weights.riskAvoidance) * survivalFactor) +
         visibility * 0.5 +
         cohesion * this.weights.cohesionValue +
         (leanOpportunity * leanWeight) -
-        (exposureRisk * exposurePenalty) +
+        ((exposureRisk * exposurePenalty) * survivalFactor) +
         (outnumberScore * 2.0) + // Strong weight for outnumber advantage
-        (positionSafety * safetyWeight) + // R2.5: Safety from ROF/suppression
+        ((positionSafety * safetyWeight) * survivalFactor) + // R2.5: Safety from ROF/suppression
         (suppressionZoneControl * 1.5) + // R2.5: Area denial value
         gapCrossingBonus + // Phase 2.4: Gap crossing bonus
         (flankingScore * 2.0); // Phase 3.2: Flanking maneuvers
@@ -1183,6 +1757,7 @@ export class UtilityScorer {
           suppressionZoneControl,
           flankingScore,
           gapCrossing: gapCrossingBonus,
+          survivalFactor,
         } as any,
       });
     }
@@ -1211,6 +1786,9 @@ export class UtilityScorer {
 
     // Get ROF level from character's weapon
     const rofLevel = this.getCharacterROFLevel(context.character);
+    const survivalFactor = this.computeConditionalSurvivalFactor(context);
+    const selfOutOfPlayRiskPenalty = this.evaluateSelfOutOfPlayRiskPenalty(context, characterPos) * survivalFactor;
+    const scoringPotential = this.computeFractionalScoringPotential(context);
 
     // Phase 3.1: Focus Fire Coordination - track which enemies allies are targeting
     const allyTargetCounts = new Map<string, number>();
@@ -1250,7 +1828,9 @@ export class UtilityScorer {
         characterPos,
         rofLevel,
         allyTargetCounts,
-        currentBestScore
+        currentBestScore,
+        selfOutOfPlayRiskPenalty,
+        scoringPotential
       );
       if (target) {
         targets.push(target);
@@ -1269,7 +1849,9 @@ export class UtilityScorer {
         characterPos,
         rofLevel,
         allyTargetCounts,
-        currentBestScore
+        currentBestScore,
+        selfOutOfPlayRiskPenalty,
+        scoringPotential
       );
       if (target) {
         targets.push(target);
@@ -1291,7 +1873,9 @@ export class UtilityScorer {
     characterPos: Position,
     rofLevel: number,
     allyTargetCounts: Map<string, number>,
-    currentBestScore: number
+    currentBestScore: number,
+    selfOutOfPlayRiskPenalty: number,
+    scoringPotential: FractionalScoringPotential
   ): ScoredTarget | null {
     if (!isAttackableEnemy(context.character, enemy, context.config)) return null;
 
@@ -1323,17 +1907,25 @@ export class UtilityScorer {
 
     // Phase 3.1: Focus Fire Coordination
     const allyTargetCount = allyTargetCounts.get(enemy.id) || 0;
-    const focusFireBonus = allyTargetCount > 0 ? allyTargetCount * 1.5 : 0;
+    const allyFocusFireBonus = allyTargetCount > 0 ? allyTargetCount * 1.5 : 0;
+    const targetCommitment = context.targetCommitments?.[enemy.id] ?? 0;
+    const targetCommitmentBonus = targetCommitment > 0
+      ? Math.min(6, targetCommitment * 1.25)
+      : 0;
+    const scrumContinuity = context.scrumContinuity?.[enemy.id] ?? 0;
+    const lanePressure = context.lanePressure?.[enemy.id] ?? 0;
+    const scrumContinuityBonus = scrumContinuity > 0 ? Math.min(4.5, scrumContinuity * 1.1) : 0;
+    const lanePressureBonus = lanePressure > 0 ? Math.min(4, lanePressure * 0.95) : 0;
+    const focusFireBonus = allyFocusFireBonus + targetCommitmentBonus + scrumContinuityBonus + lanePressureBonus;
 
     // Phase 3.1: Finish weakened targets
     const enemySiz = enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3;
     const enemyWounds = enemy.state.wounds;
     const finishOffBonus = enemyWounds >= enemySiz - 1 ? 5.0 : 0;
+    const outOfPlayPressureBonus = this.evaluateEnemyOutOfPlayPressure(enemy);
 
-    // === VP/RP Pressure Scoring (VP_SCORING_GAP_ANALYSIS.md Fix 3) ===
-    // DISABLED: Performance optimization - VP/RP tracked and awarded at game end per QSR
-    // The AI already pursues elimination through doctrine aggression settings
-    let vpPressureBonus = 0;
+    const vpPressureBreakdown = this.evaluateTargetVPRPPressure(enemy, context, scoringPotential);
+    const vpPressureBonus = vpPressureBreakdown.total;
 
     // R9: Threat immediacy bonus
     const threatImmediacy = evaluateThreatImmediacy(enemy, characterPos, context as any);
@@ -1348,9 +1940,11 @@ export class UtilityScorer {
       rofTargetScore * 1.5 +
       jumpDownBonus +
       focusFireBonus +
+      outOfPlayPressureBonus +
       finishOffBonus +
       vpPressureBonus +  // === NEW: VP/RP pressure ===
-      threatImmediacyBonus;
+      threatImmediacyBonus -
+      selfOutOfPlayRiskPenalty;
 
     return {
       target: enemy,
@@ -1364,11 +1958,405 @@ export class UtilityScorer {
         rofTargetScore: rofTargetScore as any,
         jumpDown: jumpDownBonus,
         focusFire: focusFireBonus,
+        targetCommitment: targetCommitmentBonus,
+        scrumContinuity: scrumContinuityBonus,
+        lanePressure: lanePressureBonus,
+        outOfPlayPressure: outOfPlayPressureBonus,
+        selfOutOfPlayRisk: selfOutOfPlayRiskPenalty,
         finishOff: finishOffBonus,
-        vpPressure: vpPressureBonus,  // === NEW: VP/RP pressure factor ===
+        vpPressure: vpPressureBonus,
+        vpPotential: vpPressureBreakdown.vpPotential,
+        vpDenial: vpPressureBreakdown.vpDenial,
+        rpPotential: vpPressureBreakdown.rpPotential,
+        rpDenial: vpPressureBreakdown.rpDenial,
         threatImmediacy: threatImmediacyBonus,
       } as any,
     };
+  }
+
+  private evaluateEnemyOutOfPlayPressure(enemy: Character): number {
+    const enemyBp = this.getModelBPValue(enemy);
+    if (enemyBp <= 0) return 0;
+
+    const enemySiz = Math.max(1, enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3);
+    const enemyWounds = Math.max(0, enemy.state.wounds ?? 0);
+    const woundProgress = Math.min(1, enemyWounds / enemySiz);
+    const nearOutOfPlay = enemyWounds >= enemySiz - 1 ? 1 : 0;
+
+    // Fractional pressure: increases as enemy approaches out-of-play.
+    return (enemyBp * woundProgress * 0.16) + (enemyBp * nearOutOfPlay * 0.08);
+  }
+
+  private evaluateTargetVPRPPressure(
+    enemy: Character,
+    context: AIContext,
+    scoringPotential: FractionalScoringPotential
+  ): TargetVPRPPressureBreakdown {
+    const enemyBp = this.getModelBPValue(enemy);
+    const maxEnemyBp = Math.max(
+      enemyBp,
+      ...context.enemies.map(candidate => this.getModelBPValue(candidate))
+    );
+    const enemyBpShare = maxEnemyBp > 0
+      ? this.clamp(enemyBp / maxEnemyBp, 0.2, 1)
+      : 0.5;
+
+    const enemySiz = Math.max(1, enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3);
+    const enemyWounds = Math.max(0, enemy.state.wounds ?? 0);
+    const woundProgress = this.clamp01(enemyWounds / enemySiz);
+    const nearOutOfPlay = enemyWounds >= enemySiz - 1 ? 1 : 0;
+    const outOfPlayProgress = this.clamp((woundProgress * 0.7) + (nearOutOfPlay * 0.3), 0, 1);
+
+    const vpNeedScale =
+      0.45 +
+      (scoringPotential.vpDeficit * 0.28) +
+      (Math.max(0, -scoringPotential.vpPotentialDelta) * 0.22);
+    const vpPotential =
+      outOfPlayProgress *
+      enemyBpShare *
+      vpNeedScale *
+      scoringPotential.urgencyScalar *
+      2.1;
+
+    const vpDenial =
+      outOfPlayProgress *
+      enemyBpShare *
+      Math.max(0, scoringPotential.opponentFractionalVpPotential) *
+      0.9;
+
+    const rpNeedScale = scoringPotential.rpDeficit > 0
+      ? 0.3 + Math.min(1.4, scoringPotential.rpDeficit * 0.2)
+      : 0.18;
+    const rpPotential =
+      outOfPlayProgress *
+      enemyBpShare *
+      rpNeedScale *
+      (1 + Math.max(0, 1 - (scoringPotential.myRpVpPotential * 0.45)));
+
+    const rpDenial =
+      outOfPlayProgress *
+      enemyBpShare *
+      scoringPotential.opponentRpVpPotential *
+      0.35;
+
+    const total = vpPotential + vpDenial + rpPotential + rpDenial;
+    return { vpPotential, vpDenial, rpPotential, rpDenial, total };
+  }
+
+  private evaluateActionFractionalScoring(
+    action: ScoredAction,
+    scoringPotential: FractionalScoringPotential
+  ): ActionFractionalScoringBreakdown {
+    const vpInfo = getActionVPInfo(
+      action.action,
+      action.target !== undefined,
+      true
+    );
+
+    const directnessWeight = vpInfo.isDirectVPAction
+      ? 1.0
+      : vpInfo.isVPEnablingAction
+        ? 0.65
+        : vpInfo.isSupportAction
+          ? 0.45
+          : vpInfo.isMovementAction
+            ? 0.4
+            : 0.15;
+
+    const vpNeedScale =
+      1 +
+      (scoringPotential.vpDeficit * 0.35) +
+      (Math.max(0, -scoringPotential.vpPotentialDelta) * 0.2);
+    let vpPotential =
+      vpInfo.estimatedVPContribution *
+      directnessWeight *
+      scoringPotential.urgencyScalar *
+      vpNeedScale *
+      1.8;
+
+    let vpDenial =
+      (vpInfo.isDirectVPAction ? 1 : vpInfo.isVPEnablingAction ? 0.55 : 0.2) *
+      Math.max(0, scoringPotential.opponentFractionalVpPotential) *
+      0.22 *
+      scoringPotential.urgencyScalar;
+
+    const rpCatchupNeed =
+      1 +
+      (scoringPotential.rpDeficit * 0.18) +
+      (Math.max(0, scoringPotential.opponentRpVpPotential - scoringPotential.myRpVpPotential) * 0.15);
+    let rpPotential =
+      (vpInfo.isDirectVPAction ? 0.35 : vpInfo.isVPEnablingAction ? 0.2 : 0.08) *
+      rpCatchupNeed *
+      Math.max(0.4, 1 - (scoringPotential.myRpVpPotential * 0.2));
+
+    let rpDenial =
+      (vpInfo.isDirectVPAction ? 0.28 : vpInfo.isVPEnablingAction ? 0.16 : 0.06) *
+      scoringPotential.opponentRpVpPotential;
+
+    if (vpInfo.isPassiveAction) {
+      const passivePenalty =
+        (scoringPotential.vpDeficit * 0.55) +
+        (scoringPotential.rpDeficit * 0.2) +
+        (Math.max(0, -scoringPotential.vpPotentialDelta) * 0.3);
+      vpPotential -= passivePenalty;
+      rpPotential -= scoringPotential.rpDeficit > 0
+        ? 0.2 + (scoringPotential.rpDeficit * 0.1)
+        : 0;
+      vpDenial *= 0.35;
+      rpDenial *= 0.35;
+    }
+
+    const total = vpPotential + vpDenial + rpPotential + rpDenial;
+    return { vpPotential, vpDenial, rpPotential, rpDenial, total };
+  }
+
+  private computeFractionalScoringPotential(context: AIContext): FractionalScoringPotential {
+    const sideVP = this.resolveSideScore(
+      context.vpBySide,
+      context.sideId,
+      Number(context.side?.state?.victoryPoints ?? 0)
+    );
+    const opponentVP = this.resolveOpponentScore(
+      context.vpBySide,
+      context.sideId
+    );
+    const sideRP = this.resolveSideScore(
+      context.rpBySide,
+      context.sideId,
+      Number(context.side?.state?.resourcePoints ?? 0)
+    );
+    const opponentRP = this.resolveOpponentScore(
+      context.rpBySide,
+      context.sideId
+    );
+
+    const vpDeficit = Math.max(0, opponentVP - sideVP);
+    const rpDeficit = Math.max(0, opponentRP - sideRP);
+    const ledger = context.scoringContext?.fractionalPotentialLedger;
+    const myFractionalVpPotential = ledger && Number.isFinite(ledger.myTotalPotential)
+      ? Math.max(0, ledger.myTotalPotential)
+      : this.estimateFractionalKeyPotential(context.scoringContext?.myKeyScores);
+    const opponentFractionalVpPotential = ledger && Number.isFinite(ledger.opponentTotalPotential)
+      ? Math.max(0, ledger.opponentTotalPotential)
+      : this.estimateFractionalKeyPotential(context.scoringContext?.opponentKeyScores);
+    const myDeniedPotential = ledger && Number.isFinite(ledger.myDeniedPotential)
+      ? Math.max(0, ledger.myDeniedPotential)
+      : 0;
+    const opponentDeniedPotential = ledger && Number.isFinite(ledger.opponentDeniedPotential)
+      ? Math.max(0, ledger.opponentDeniedPotential)
+      : 0;
+    const denialDelta = myDeniedPotential - opponentDeniedPotential;
+    const vpPotentialDelta =
+      (myFractionalVpPotential - opponentFractionalVpPotential) +
+      (denialDelta * 0.4);
+
+    const myRpVpPotential = this.estimateRpVictoryPotential(sideRP, opponentRP);
+    const opponentRpVpPotential = this.estimateRpVictoryPotential(opponentRP, sideRP);
+
+    const currentTurn = Math.max(1, Number(context.currentTurn ?? 1));
+    const maxTurns = Math.max(currentTurn, Number(context.maxTurns ?? 6));
+    const endGameTurn = Number.isFinite(context.endGameTurn)
+      ? Number(context.endGameTurn)
+      : Number.isFinite(context.scoringContext?.predictorEndGameTurn)
+        ? Number(context.scoringContext?.predictorEndGameTurn)
+        : undefined;
+    const timePressure = calculateSuddenDeathTimePressure(currentTurn, maxTurns, endGameTurn);
+    const potentialGapPressure = Math.max(
+      0,
+      (opponentFractionalVpPotential + (opponentDeniedPotential * 0.35)) -
+      (myFractionalVpPotential + (myDeniedPotential * 0.35))
+    );
+    const urgencyScalar = this.clamp(
+      1 +
+      (vpDeficit * 0.35) +
+      (rpDeficit * 0.12) +
+      (potentialGapPressure * 0.28) +
+      (Math.max(0, -denialDelta) * 0.18) +
+      (timePressure * 0.25),
+      0.65,
+      3.4
+    );
+
+    return {
+      sideVP,
+      opponentVP,
+      sideRP,
+      opponentRP,
+      vpDeficit,
+      rpDeficit,
+      myFractionalVpPotential,
+      opponentFractionalVpPotential,
+      vpPotentialDelta,
+      myRpVpPotential,
+      opponentRpVpPotential,
+      urgencyScalar,
+    };
+  }
+
+  private estimateFractionalKeyPotential(
+    keyScores: Record<string, { current: number; predicted: number; confidence: number; leadMargin: number }> | undefined
+  ): number {
+    if (!keyScores) return 0;
+    let total = 0;
+
+    for (const score of Object.values(keyScores)) {
+      const current = Number.isFinite(score.current) ? score.current : 0;
+      const predicted = Number.isFinite(score.predicted) ? score.predicted : current;
+      const confidence = this.clamp01(Number.isFinite(score.confidence) ? score.confidence : 0.5);
+      const gain = Math.max(0, predicted - current);
+      const contestedBoost = score.leadMargin < 0 ? 1.1 : 1;
+      total += gain * (0.35 + (confidence * 0.65)) * contestedBoost;
+    }
+
+    return total;
+  }
+
+  private estimateRpVictoryPotential(myRp: number, opponentRp: number): number {
+    if (!(myRp > opponentRp)) {
+      return 0;
+    }
+    const leadMargin = Math.max(0, myRp - opponentRp);
+    const plusOnePotential = this.clamp01(leadMargin);
+    const doubleProgress = opponentRp <= 0
+      ? (myRp > 0 ? 1 : 0)
+      : myRp / (opponentRp * 2);
+    const plusTwoProgress = this.clamp01(Math.min(doubleProgress, leadMargin / 3));
+    return this.clamp(Math.max(plusOnePotential, plusTwoProgress * 2), 0, 2);
+  }
+
+  private resolveSideScore(
+    scoreBySide: Record<string, number> | undefined,
+    sideId: string | undefined,
+    fallback: number
+  ): number {
+    if (scoreBySide && sideId) {
+      const raw = scoreBySide[sideId];
+      if (typeof raw === 'number' && Number.isFinite(raw)) {
+        return Math.max(0, raw);
+      }
+    }
+    return Number.isFinite(fallback) ? Math.max(0, fallback) : 0;
+  }
+
+  private resolveOpponentScore(
+    scoreBySide: Record<string, number> | undefined,
+    sideId: string | undefined
+  ): number {
+    if (!scoreBySide) {
+      return 0;
+    }
+    return Object.entries(scoreBySide)
+      .filter(([candidateSideId]) => candidateSideId !== sideId)
+      .reduce((max, [, score]) => {
+        if (typeof score !== 'number' || !Number.isFinite(score)) {
+          return max;
+        }
+        return Math.max(max, score);
+      }, 0);
+  }
+
+  private clamp(value: number, min: number, max: number): number {
+    if (!Number.isFinite(value)) {
+      return min;
+    }
+    return Math.max(min, Math.min(max, value));
+  }
+
+  private clamp01(value: number): number {
+    return this.clamp(value, 0, 1);
+  }
+
+  private evaluateSelfOutOfPlayRiskPenalty(context: AIContext, characterPos: Position): number {
+    const selfBp = this.getModelBPValue(context.character);
+    if (selfBp <= 0) return 0;
+
+    const selfSiz = Math.max(1, context.character.finalAttributes.siz ?? context.character.attributes.siz ?? 3);
+    const selfWounds = Math.max(0, context.character.state.wounds ?? 0);
+    const woundPressure = Math.min(1, selfWounds / selfSiz);
+    const exposureCount = this.countEnemySightLinesToPosition(characterPos, context);
+    const exposurePressure = context.enemies.length > 0
+      ? Math.min(1, exposureCount / context.enemies.length)
+      : 0;
+    const engagementPressure = context.battlefield.isEngaged?.(context.character) ? 0.25 : 0;
+
+    const riskScore = Math.min(1, (woundPressure * 0.6) + (exposurePressure * 0.3) + engagementPressure);
+    let penalty = selfBp * riskScore * 0.1;
+
+    // If losing elimination pressure, preserve some aggression.
+    if (!context.scoringContext?.amILeading &&
+        context.scoringContext?.losingKeys?.includes('elimination')) {
+      penalty *= 0.75;
+    }
+
+    return penalty;
+  }
+
+  private computeConditionalSurvivalFactor(context: AIContext): number {
+    let factor = 1;
+    const wounds = Math.max(0, Number(context.character.state.wounds ?? 0));
+
+    // Human-like risk appetite:
+    // - healthier models can spend risk to gain tempo
+    // - wounded models still keep a reduced survival weighting
+    factor *= wounds > 0 ? 0.5 : 0.25;
+
+    // In favorable scrums (local outnumber), survival pressure is reduced further
+    // so the model can commit to finishing pressure.
+    if (this.hasOutnumberingScrumCondition(context)) {
+      factor *= 0.5;
+    }
+
+    return this.clamp(factor, 0.05, 1);
+  }
+
+  private hasOutnumberingScrumCondition(context: AIContext): boolean {
+    const scrum = findMyScrumGroup(context.character, context as any);
+    if (scrum && scrum.members.length >= 2 && scrum.localOutnumber > 0 && scrum.engagedEnemies.length > 0) {
+      return true;
+    }
+
+    const actorPos = context.battlefield.getCharacterPosition(context.character);
+    if (!actorPos) {
+      return false;
+    }
+
+    const scrumRange = 1.75;
+    for (const enemy of context.enemies) {
+      if (enemy.state.isEliminated || enemy.state.isKOd) continue;
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) continue;
+
+      const actorDistance = Math.hypot(enemyPos.x - actorPos.x, enemyPos.y - actorPos.y);
+      if (actorDistance > scrumRange) continue;
+
+      let friendlyCount = 1;
+      for (const ally of context.allies) {
+        if (ally.state.isEliminated || ally.state.isKOd) continue;
+        const allyPos = context.battlefield.getCharacterPosition(ally);
+        if (!allyPos) continue;
+        const allyDistance = Math.hypot(enemyPos.x - allyPos.x, enemyPos.y - allyPos.y);
+        if (allyDistance <= scrumRange) {
+          friendlyCount += 1;
+        }
+      }
+
+      let enemyCount = 0;
+      for (const opponent of context.enemies) {
+        if (opponent.state.isEliminated || opponent.state.isKOd) continue;
+        const opponentPos = context.battlefield.getCharacterPosition(opponent);
+        if (!opponentPos) continue;
+        const opponentDistance = Math.hypot(enemyPos.x - opponentPos.x, enemyPos.y - opponentPos.y);
+        if (opponentDistance <= scrumRange) {
+          enemyCount += 1;
+        }
+      }
+
+      if (friendlyCount > enemyCount) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -1550,6 +2538,18 @@ export class UtilityScorer {
     return count > 0 ? totalDistance / count : 999;
   }
 
+  private getModelBPValue(model: Character): number {
+    const adjusted = model.profile?.adjustedBp;
+    if (typeof adjusted === 'number' && Number.isFinite(adjusted)) {
+      return Math.max(0, adjusted);
+    }
+    const total = model.profile?.totalBp;
+    if (typeof total === 'number' && Number.isFinite(total)) {
+      return Math.max(0, total);
+    }
+    return 0;
+  }
+
   private evaluateCover(position: Position, context: AIContext): number {
     const session = this.getEvaluationSession(context);
     const cacheKey = this.positionKey(position);
@@ -1726,6 +2726,25 @@ export class UtilityScorer {
 
     const delta = (currentExposure - nextExposure) / currentExposure;
     return Math.max(-1, Math.min(1, delta));
+  }
+
+  private evaluateApproachProgress(
+    from: Position,
+    to: Position,
+    context: AIContext
+  ): { deltaMu: number; normalizedDelta: number } {
+    const currentNearest = this.distanceToClosestAttackableEnemy(from, context);
+    const nextNearest = this.distanceToClosestAttackableEnemy(to, context);
+    if (!Number.isFinite(currentNearest) || !Number.isFinite(nextNearest)) {
+      return { deltaMu: 0, normalizedDelta: 0 };
+    }
+
+    const deltaMu = currentNearest - nextNearest;
+    const normalizedDelta = deltaMu / Math.max(1, currentNearest);
+    return {
+      deltaMu: this.clamp(deltaMu, -6, 6),
+      normalizedDelta: this.clamp(normalizedDelta, -1, 1),
+    };
   }
 
   private countEnemySightLinesToPosition(position: Position, context: AIContext): number {
@@ -2074,6 +3093,99 @@ export class UtilityScorer {
     return SpatialRules.isEngaged(fromModel, toModel);
   }
 
+  private evaluateChargeOpportunity(
+    context: AIContext,
+    target: Character
+  ): {
+    canCharge: boolean;
+    destination?: Position;
+    travelDistance: number;
+    remainingGap: number;
+  } {
+    const actorPos = context.battlefield.getCharacterPosition(context.character);
+    const targetPos = context.battlefield.getCharacterPosition(target);
+    if (!actorPos || !targetPos) {
+      return { canCharge: false, travelDistance: 0, remainingGap: Number.POSITIVE_INFINITY };
+    }
+    if (context.battlefield.isEngaged?.(context.character)) {
+      return { canCharge: false, travelDistance: 0, remainingGap: Number.POSITIVE_INFINITY };
+    }
+
+    const actorBase = getBaseDiameterFromSiz(context.character.finalAttributes.siz ?? context.character.attributes.siz ?? 3);
+    const targetBase = getBaseDiameterFromSiz(target.finalAttributes.siz ?? target.attributes.siz ?? 3);
+    const dx = targetPos.x - actorPos.x;
+    const dy = targetPos.y - actorPos.y;
+    const centerDistance = Math.hypot(dx, dy);
+    if (!Number.isFinite(centerDistance) || centerDistance <= 1e-6) {
+      return { canCharge: false, travelDistance: 0, remainingGap: Number.POSITIVE_INFINITY };
+    }
+
+    const desiredCenterDistance = (actorBase + targetBase) / 2;
+    const travelDistance = Math.max(0, centerDistance - desiredCenterDistance);
+    if (travelDistance <= 0.05) {
+      return { canCharge: false, travelDistance: 0, remainingGap: 0 };
+    }
+
+    const movementAllowance = this.estimateChargeMovementAllowance(context);
+    if (travelDistance > movementAllowance + 0.25) {
+      return {
+        canCharge: false,
+        travelDistance,
+        remainingGap: Math.max(0, travelDistance - movementAllowance),
+      };
+    }
+
+    const invDistance = 1 / centerDistance;
+    const destination: Position = {
+      x: targetPos.x - (dx * invDistance * desiredCenterDistance),
+      y: targetPos.y - (dy * invDistance * desiredCenterDistance),
+    };
+    if (context.battlefield.isWithinBounds && !context.battlefield.isWithinBounds(destination, actorBase)) {
+      return {
+        canCharge: false,
+        travelDistance,
+        remainingGap: Math.max(0, travelDistance - movementAllowance),
+      };
+    }
+    for (const model of [...context.allies, ...context.enemies]) {
+      if (
+        model.id === context.character.id ||
+        model.id === target.id ||
+        model.state.isKOd ||
+        model.state.isEliminated
+      ) {
+        continue;
+      }
+      const modelPos = context.battlefield.getCharacterPosition(model);
+      if (!modelPos) continue;
+      const modelBase = getBaseDiameterFromSiz(model.finalAttributes.siz ?? model.attributes.siz ?? 3);
+      const separation = Math.hypot(destination.x - modelPos.x, destination.y - modelPos.y);
+      const minSeparation = ((actorBase + modelBase) / 2) - 1e-6;
+      if (separation < minSeparation) {
+        return {
+          canCharge: false,
+          travelDistance,
+          remainingGap: Math.max(0, travelDistance - movementAllowance),
+        };
+      }
+    }
+
+    return { canCharge: true, destination, travelDistance, remainingGap: 0 };
+  }
+
+  private estimateChargeMovementAllowance(context: AIContext): number {
+    const character = context.character;
+    const baseMov = character.finalAttributes.mov ?? character.attributes.mov ?? 2;
+    const sprintBonus = getSprintMovementBonus(
+      character,
+      true,
+      Boolean(character.state.isAttentive),
+      !Boolean(context.battlefield.isEngaged?.(character))
+    );
+    const leapBonus = getLeapAgilityBonus(character);
+    return Math.max(0, baseMov + 2 + sprintBonus + leapBonus);
+  }
+
   private isInRange(
     from: Character,
     to: Character,
@@ -2250,6 +3362,33 @@ export class UtilityScorer {
     return items.filter(item => this.isMeleeWeapon(item));
   }
 
+  private normalizeTraitName(trait: string): string {
+    return String(trait).toLowerCase().replace(/\[|\]/g, '').trim();
+  }
+
+  private itemHasTrait(item: Item | undefined, traitName: string): boolean {
+    if (!item || !Array.isArray(item.traits)) {
+      return false;
+    }
+    const normalizedNeedle = this.normalizeTraitName(traitName);
+    return item.traits.some(trait => this.normalizeTraitName(trait).includes(normalizedNeedle));
+  }
+
+  private hasChargeTraitMeleeWeapon(character: Character): boolean {
+    return this.getMeleeWeapons(character).some(weapon => this.itemHasTrait(weapon, 'charge'));
+  }
+
+  private estimateMeleeAttackApCost(character: Character, engaged: boolean): number {
+    const weapon = this.getMeleeWeapons(character)[0];
+    if (!weapon) {
+      return 1;
+    }
+    if (engaged && this.itemHasTrait(weapon, 'awkward')) {
+      return 2;
+    }
+    return 1;
+  }
+
   private getLoadoutProfile(character: Character): { hasMeleeWeapons: boolean; hasRangedWeapons: boolean } {
     const hasRangedWeapons = this.getRangedWeapons(character).length > 0;
     const hasMeleeWeapons = this.getMeleeWeapons(character).length > 0;
@@ -2279,6 +3418,44 @@ export class UtilityScorer {
     if (!item) return false;
     const classification = String(item.classification ?? item.class ?? '').toLowerCase();
     return classification.includes('melee') || classification.includes('natural');
+  }
+
+  private evaluateMeleeSetupValue(context: AIContext, candidatePosition: Position): number {
+    const actorBase = getBaseDiameterFromSiz(context.character.finalAttributes.siz ?? context.character.attributes.siz ?? 3);
+    const currentPos = context.battlefield.getCharacterPosition(context.character);
+    if (!currentPos) {
+      return 0;
+    }
+
+    let bestValue = 0;
+    for (const enemy of context.enemies) {
+      if (!isAttackableEnemy(context.character, enemy, context.config)) {
+        continue;
+      }
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) {
+        continue;
+      }
+      const enemyBase = getBaseDiameterFromSiz(enemy.finalAttributes.siz ?? enemy.attributes.siz ?? 3);
+      const desiredDistance = (actorBase + enemyBase) / 2;
+      const currentDistance = Math.hypot(currentPos.x - enemyPos.x, currentPos.y - enemyPos.y);
+      const projectedDistance = Math.hypot(candidatePosition.x - enemyPos.x, candidatePosition.y - enemyPos.y);
+      const currentGap = Math.max(0, currentDistance - desiredDistance);
+      const projectedGap = Math.max(0, projectedDistance - desiredDistance);
+      const gapReduction = Math.max(0, currentGap - projectedGap);
+
+      let value = 0;
+      if (projectedGap <= 0.15) {
+        value = 1.15 + (gapReduction * 0.2);
+      } else if (projectedGap <= 1) {
+        value = (1 - projectedGap) * 0.7 + (gapReduction * 0.18);
+      }
+      if (value > bestValue) {
+        bestValue = value;
+      }
+    }
+
+    return Math.max(0, Math.min(1.6, bestValue));
   }
 
   private sampleStrategicPositions(context: AIContext, characterPos: Position): Position[] {
@@ -2314,9 +3491,8 @@ export class UtilityScorer {
     const candidateEnemies = context.enemies
       .map(enemy => {
         if (!isAttackableEnemy(context.character, enemy, context.config)) return null;
-        if (context.config.perCharacterFovLos && !this.hasLOS(context.character, enemy, context.battlefield)) {
-          return null;
-        }
+        // Keep strategic approach probes even without immediate LOS so dense boards
+        // still produce directed advance toward known enemy positions.
         const enemyPos = context.battlefield.getCharacterPosition(enemy);
         if (!enemyPos) return null;
         return {

@@ -1,5 +1,6 @@
 import { Position } from '../battlefield/Position';
 import { ObjectiveMarker, MarkerState } from '../mission/objective-markers';
+import { missionTuning } from '../mission/MissionTuningConfig';
 
 export interface MissionZone {
   id: string;
@@ -115,7 +116,7 @@ export function applySanctuaryTurn(
   models: MissionModel[],
   zones: MissionZone[],
   startingBpBySide: Record<string, number>,
-  thresholdRatio = 0.25,
+  thresholdRatio = missionTuning.sanctuary.defaultBpThresholdRatio,
   winVp?: number
 ): MissionScoreDelta {
   const delta = createEmptyDelta();

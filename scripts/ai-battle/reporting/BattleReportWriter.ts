@@ -4,22 +4,53 @@
  * Handles file output for battle reports (JSON, audit, viewer).
  */
 
-import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { BattleReport, BattleAuditTrace } from '../../shared/BattleReportTypes';
+import type {
+  BattleAuditTrace,
+  BattleCombatMetricsAudit,
+  BattleEntityManifest,
+  BattleReport,
+} from '../../shared/BattleReportTypes';
 import { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
-import { SvgRenderer } from '../../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
 import type { GameConfig } from '../../shared/BattleReportTypes';
+import { writeBattlefieldSvgFile } from '../../shared/BattlefieldSvg';
+
+const JSON_REPORTS_DIR = join(process.cwd(), 'generated', 'ai-battle-reports');
+const VISUAL_REPORTS_DIR = join(process.cwd(), 'generated', 'battle-reports');
+
+export interface BattleArtifactWriteOptions {
+  runId?: string;
+}
+
+export interface BattleArtifactBundle {
+  runId: string;
+  reportPath: string;
+  auditPath?: string;
+  viewerPath?: string;
+}
+
+export interface BattleArtifactBundleOptions extends BattleArtifactWriteOptions {
+  audit?: boolean;
+  viewer?: boolean;
+}
+
+export function createBattleArtifactRunId(): string {
+  return new Date().toISOString().replace(/[:.]/g, '-');
+}
+
+function resolveRunId(options?: BattleArtifactWriteOptions): string {
+  const runId = options?.runId?.trim();
+  return runId && runId.length > 0 ? runId : createBattleArtifactRunId();
+}
 
 /**
  * Write single battle report to JSON file
  */
-export function writeSingleBattleReport(report: BattleReport): string {
-  const outputDir = join(process.cwd(), 'generated', 'ai-battle-reports');
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  mkdirSync(outputDir, { recursive: true });
-
-  const outputPath = join(outputDir, `battle-report-${timestamp}.json`);
+export function writeSingleBattleReport(report: BattleReport, options: BattleArtifactWriteOptions = {}): string {
+  const runId = resolveRunId(options);
+  mkdirSync(JSON_REPORTS_DIR, { recursive: true });
+  const outputPath = join(JSON_REPORTS_DIR, `battle-report-${runId}.json`);
   writeFileSync(outputPath, JSON.stringify(report, null, 2), 'utf-8');
   return outputPath;
 }
@@ -29,14 +60,14 @@ export function writeSingleBattleReport(report: BattleReport): string {
  */
 export function writeBattlefieldSvg(
   battlefield: Battlefield,
-  config: GameConfig
+  config: GameConfig,
+  options: BattleArtifactWriteOptions = {}
 ): string {
-  const outputDir = join(process.cwd(), 'generated', 'ai-battle-reports');
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  mkdirSync(outputDir, { recursive: true });
+  const runId = resolveRunId(options);
+  mkdirSync(JSON_REPORTS_DIR, { recursive: true });
 
-  const svgPath = join(outputDir, `battlefield-${timestamp}.svg`);
-  const svg = SvgRenderer.render(battlefield, {
+  const svgPath = join(JSON_REPORTS_DIR, `battlefield-${runId}.svg`);
+  writeBattlefieldSvgFile(svgPath, battlefield, {
     width: config.battlefieldWidth,
     height: config.battlefieldHeight,
     gridResolution: 0.5,
@@ -53,21 +84,11 @@ export function writeBattlefieldSvg(
       { id: 'delaunay', label: 'Delaunay Mesh', enabled: true },
     ],
   });
-  writeFileSync(svgPath, svg, 'utf-8');
   return svgPath;
 }
 
-/**
- * Write visual audit report (audit.json)
- */
-export function writeVisualAuditReport(report: BattleReport): string {
-  const outputDir = join(process.cwd(), 'generated', 'battle-reports');
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const battleDir = join(outputDir, `battle-report-${timestamp}`);
-  mkdirSync(battleDir, { recursive: true });
-
-  // Extract or create audit data
-  const auditData: BattleAuditTrace = (report.audit || {
+function createFallbackAuditTrace(report: BattleReport): BattleAuditTrace {
+  return {
     version: '1.0',
     session: {
       missionId: report.config.missionId,
@@ -86,19 +107,153 @@ export function writeVisualAuditReport(report: BattleReport): string {
       lofWidthMu: 0.5,
     },
     turns: [],
-  }) as any;
+  } as any;
+}
 
-  // Add terrain from battlefield if available
+function appendBattlefieldTerrainToAudit(trace: BattleAuditTrace, report: BattleReport): void {
   const reportAny = report as any;
   if (reportAny.battlefield?.terrainFeatures) {
-    (auditData as any).terrain = reportAny.battlefield.terrainFeatures.map((t: any) => ({
+    (trace as any).terrain = reportAny.battlefield.terrainFeatures.map((t: any) => ({
       id: t.id,
       type: t.type,
       vertices: t.vertices,
       meta: t.meta,
     }));
   } else if (reportAny.battlefield?.terrainElements) {
-    (auditData as any).terrain = reportAny.battlefield.terrainElements;
+    (trace as any).terrain = reportAny.battlefield.terrainElements;
+  }
+}
+
+function safeRate(numerator: number, denominator: number): number {
+  return denominator > 0 ? numerator / denominator : 0;
+}
+
+function toSafeNonNegative(value: unknown): number {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
+    return 0;
+  }
+  return Math.max(0, value);
+}
+
+function deepCloneEntityManifest(manifest: BattleEntityManifest): BattleEntityManifest {
+  return JSON.parse(JSON.stringify(manifest)) as BattleEntityManifest;
+}
+
+function buildCombatMetricsAudit(report: BattleReport): BattleCombatMetricsAudit {
+  const hitAttempts = toSafeNonNegative((report.stats as any).hitTestsAttempted);
+  const hitPasses = toSafeNonNegative((report.stats as any).hitTestsPassed);
+  const hitFails = toSafeNonNegative(
+    (report.stats as any).hitTestsFailed ?? Math.max(0, hitAttempts - hitPasses)
+  );
+  const damageAttempts = toSafeNonNegative((report.stats as any).damageTestsAttempted);
+  const damagePasses = toSafeNonNegative((report.stats as any).damageTestsPassed);
+  const damageFails = toSafeNonNegative(
+    (report.stats as any).damageTestsFailed ?? Math.max(0, damageAttempts - damagePasses)
+  );
+
+  return {
+    hitTests: {
+      attempts: hitAttempts,
+      passes: hitPasses,
+      fails: hitFails,
+      passRate: safeRate(hitPasses, hitAttempts),
+    },
+    damageTests: {
+      attempts: damageAttempts,
+      passes: damagePasses,
+      fails: damageFails,
+      passRate: safeRate(damagePasses, damageAttempts),
+    },
+    assignments: {
+      wounds: toSafeNonNegative((report.stats as any).woundsAssigned),
+      fear: toSafeNonNegative((report.stats as any).fearAssigned),
+      delay: toSafeNonNegative((report.stats as any).delayAssigned),
+    },
+    passiveUsageByType: {
+      ...(report.advancedRules?.passiveOptions?.usedByType ?? {}),
+    },
+    situationalModifiersByType: {
+      ...(report.advancedRules?.situationalModifiers?.byType ?? {}),
+    },
+  };
+}
+
+function appendEntitiesAndCombatMetricsToAudit(trace: BattleAuditTrace, report: BattleReport): void {
+  if (report.entities) {
+    trace.entities = deepCloneEntityManifest(report.entities);
+  }
+  trace.combatMetrics = buildCombatMetricsAudit(report);
+}
+
+function writeEntityManifestFiles(
+  battleDir: string,
+  entities: BattleEntityManifest
+): BattleEntityManifest {
+  const entitiesDir = join(battleDir, 'entities');
+  mkdirSync(entitiesDir, { recursive: true });
+  const writeJson = (relativePath: string, payload: unknown): string => {
+    const outputPath = join(battleDir, relativePath);
+    writeFileSync(outputPath, JSON.stringify(payload, null, 2), 'utf-8');
+    return relativePath;
+  };
+
+  const exportPaths = {
+    sides: writeJson('entities/sides.json', entities.sides),
+    assemblies: writeJson('entities/assemblies.json', entities.assemblies),
+    characters: writeJson('entities/characters.json', entities.characters),
+    profiles: writeJson('entities/profiles.json', entities.profiles),
+    loadouts: writeJson('entities/loadouts.json', entities.loadouts),
+    modelIndex: writeJson('entities/model-index.json', entities.byModelId),
+    index: '',
+  };
+
+  const indexPayload = {
+    version: entities.version,
+    generatedAt: new Date().toISOString(),
+    counts: {
+      sides: entities.sides.length,
+      assemblies: entities.assemblies.length,
+      characters: entities.characters.length,
+      profiles: entities.profiles.length,
+      loadouts: entities.loadouts.length,
+    },
+    exportPaths: {
+      sides: exportPaths.sides,
+      assemblies: exportPaths.assemblies,
+      characters: exportPaths.characters,
+      profiles: exportPaths.profiles,
+      loadouts: exportPaths.loadouts,
+      modelIndex: exportPaths.modelIndex,
+    },
+  };
+  exportPaths.index = writeJson('entities/index.json', indexPayload);
+
+  return {
+    ...entities,
+    exportPaths,
+  };
+}
+
+export function buildBattleAuditTrace(report: BattleReport): BattleAuditTrace {
+  const trace = report.audit
+    ? (JSON.parse(JSON.stringify(report.audit)) as BattleAuditTrace)
+    : createFallbackAuditTrace(report);
+  appendBattlefieldTerrainToAudit(trace, report);
+  appendEntitiesAndCombatMetricsToAudit(trace, report);
+  return trace;
+}
+
+/**
+ * Write visual audit report (audit.json)
+ */
+export function writeVisualAuditReport(report: BattleReport, options: BattleArtifactWriteOptions = {}): string {
+  const runId = resolveRunId(options);
+  const battleDir = join(VISUAL_REPORTS_DIR, `battle-report-${runId}`);
+  mkdirSync(battleDir, { recursive: true });
+
+  const auditData = buildBattleAuditTrace(report);
+  if (auditData.entities) {
+    auditData.entities = writeEntityManifestFiles(battleDir, auditData.entities);
   }
 
   const auditPath = join(battleDir, 'audit.json');
@@ -110,9 +265,15 @@ export function writeVisualAuditReport(report: BattleReport): string {
  * Write HTML battle report viewer
  */
 export function writeBattleReportViewer(report: BattleReport): string {
-  const outputDir = join(process.cwd(), 'generated', 'battle-reports');
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  const battleDir = join(outputDir, `battle-report-${timestamp}`);
+  return writeBattleReportViewerWithOptions(report, {});
+}
+
+export function writeBattleReportViewerWithOptions(
+  report: BattleReport,
+  options: BattleArtifactWriteOptions = {}
+): string {
+  const runId = resolveRunId(options);
+  const battleDir = join(VISUAL_REPORTS_DIR, `battle-report-${runId}`);
   mkdirSync(battleDir, { recursive: true });
 
   // Read the HTML viewer template
@@ -138,31 +299,32 @@ export function writeBattleReportViewer(report: BattleReport): string {
 
   // Write audit.json for viewer to load (if not already written)
   const auditPath = join(battleDir, 'audit.json');
-  if (!report.audit) {
-    const auditData: BattleAuditTrace = {
-      version: '1.0',
-      session: {
-        missionId: report.config.missionId,
-        missionName: report.config.missionName,
-        seed: report.seed,
-        lighting: report.config.lighting as any,
-        visibilityOrMu: report.config.visibilityOrMu,
-        maxOrm: report.config.maxOrm,
-        allowConcentrateRangeExtension: report.config.allowConcentrateRangeExtension,
-        perCharacterFovLos: report.config.perCharacterFovLos,
-      },
-      battlefield: {
-        widthMu: report.config.battlefieldWidth,
-        heightMu: report.config.battlefieldHeight,
-        movementSampleStepMu: 0.5,
-        lofWidthMu: 0.5,
-      },
-      turns: [],
-    } as any;
-    writeFileSync(auditPath, JSON.stringify(auditData, null, 2), 'utf-8');
+  if (!existsSync(auditPath)) {
+    writeFileSync(auditPath, JSON.stringify(buildBattleAuditTrace(report), null, 2), 'utf-8');
   }
 
   return viewerPath;
+}
+
+export function writeBattleArtifacts(
+  report: BattleReport,
+  options: BattleArtifactBundleOptions = {}
+): BattleArtifactBundle {
+  const runId = resolveRunId(options);
+  const result: BattleArtifactBundle = {
+    runId,
+    reportPath: writeSingleBattleReport(report, { runId }),
+  };
+
+  if (options.audit || options.viewer) {
+    result.auditPath = writeVisualAuditReport(report, { runId });
+  }
+
+  if (options.viewer) {
+    result.viewerPath = writeBattleReportViewerWithOptions(report, { runId });
+  }
+
+  return result;
 }
 
 /**

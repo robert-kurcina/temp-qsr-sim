@@ -235,7 +235,7 @@ npm test -- --run src/lib/mest-tactics/ai/tactical/focus-detect-combo.test.ts
 npm test -- --run
 
 # Run AI battle (debug)
-npm run ai-battle -- VERY_SMALL
+npm run sim -- quick VERY_SMALL
 ```
 
 ---

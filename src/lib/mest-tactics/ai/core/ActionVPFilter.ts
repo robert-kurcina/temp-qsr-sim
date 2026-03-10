@@ -7,6 +7,7 @@
 
 import { ActionType } from './AIController';
 import { VPUrgencyState, VPUrgencyLevel } from './VPUrgencyCalculator';
+import { aiTuning } from '../config/AITuningConfig';
 
 /**
  * VP information for an action
@@ -28,6 +29,16 @@ export interface ActionVPInfo {
   isSupportAction: boolean;
 }
 
+const actionVpTuning = aiTuning.actionVpFilter;
+
+function getEstimatedContribution(actionType: ActionType): number {
+  return (
+    actionVpTuning.estimatedContributionByAction[actionType] ??
+    actionVpTuning.estimatedContributionByAction.none ??
+    0
+  );
+}
+
 /**
  * Get VP information for an action
  *
@@ -45,7 +56,7 @@ export function getActionVPInfo(
     case 'close_combat':
       return {
         actionType,
-        estimatedVPContribution: hasValidTarget ? 0.35 : 0.0,
+        estimatedVPContribution: hasValidTarget ? getEstimatedContribution(actionType) : 0.0,
         isDirectVPAction: true,
         isVPEnablingAction: false,
         isPassiveAction: false,
@@ -55,7 +66,7 @@ export function getActionVPInfo(
     case 'ranged_combat':
       return {
         actionType,
-        estimatedVPContribution: (hasValidTarget && inRange) ? 0.25 : 0.0,
+        estimatedVPContribution: (hasValidTarget && inRange) ? getEstimatedContribution(actionType) : 0.0,
         isDirectVPAction: true,
         isVPEnablingAction: false,
         isPassiveAction: false,
@@ -65,7 +76,7 @@ export function getActionVPInfo(
     case 'charge':
       return {
         actionType,
-        estimatedVPContribution: 0.2,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -75,7 +86,7 @@ export function getActionVPInfo(
     case 'move':
       return {
         actionType,
-        estimatedVPContribution: 0.08,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -85,7 +96,7 @@ export function getActionVPInfo(
     case 'disengage':
       return {
         actionType,
-        estimatedVPContribution: 0.1,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -95,7 +106,7 @@ export function getActionVPInfo(
     case 'detect':
       return {
         actionType,
-        estimatedVPContribution: 0.08,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -105,7 +116,7 @@ export function getActionVPInfo(
     case 'hide':
       return {
         actionType,
-        estimatedVPContribution: 0.0,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: false,
         isPassiveAction: true,
@@ -115,7 +126,7 @@ export function getActionVPInfo(
     case 'wait':
       return {
         actionType,
-        estimatedVPContribution: 0.02,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: false,
         isPassiveAction: true,
@@ -125,7 +136,7 @@ export function getActionVPInfo(
     case 'rally':
       return {
         actionType,
-        estimatedVPContribution: 0.05,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: false,
         isPassiveAction: false,
@@ -135,7 +146,7 @@ export function getActionVPInfo(
     case 'revive':
       return {
         actionType,
-        estimatedVPContribution: 0.08,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: false,
         isPassiveAction: false,
@@ -145,7 +156,7 @@ export function getActionVPInfo(
     case 'hold':
       return {
         actionType,
-        estimatedVPContribution: 0.0,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: false,
         isPassiveAction: true,
@@ -155,7 +166,7 @@ export function getActionVPInfo(
     case 'fiddle':
       return {
         actionType,
-        estimatedVPContribution: 0.0,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: false,
         isPassiveAction: true,
@@ -165,7 +176,7 @@ export function getActionVPInfo(
     case 'reload':
       return {
         actionType,
-        estimatedVPContribution: 0.05,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -175,7 +186,7 @@ export function getActionVPInfo(
     case 'pushing':
       return {
         actionType,
-        estimatedVPContribution: 0.15,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -185,7 +196,7 @@ export function getActionVPInfo(
     case 'refresh':
       return {
         actionType,
-        estimatedVPContribution: 0.1,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -195,7 +206,7 @@ export function getActionVPInfo(
     case 'combined':
       return {
         actionType,
-        estimatedVPContribution: 0.2,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: true,
         isPassiveAction: false,
@@ -206,7 +217,7 @@ export function getActionVPInfo(
     default:
       return {
         actionType,
-        estimatedVPContribution: 0.0,
+        estimatedVPContribution: getEstimatedContribution(actionType),
         isDirectVPAction: false,
         isVPEnablingAction: false,
         isPassiveAction: true,
@@ -243,7 +254,10 @@ export function filterActionsByVP<T extends { action: ActionType; score?: number
         return true;
       }
       // Allow VP-enabling actions with high contribution
-      if (vpInfo.isVPEnablingAction && vpInfo.estimatedVPContribution >= 0.15) {
+      if (
+        vpInfo.isVPEnablingAction &&
+        vpInfo.estimatedVPContribution >= actionVpTuning.filters.desperateVpEnablingMinContribution
+      ) {
         return true;
       }
       return false;
@@ -255,7 +269,7 @@ export function filterActionsByVP<T extends { action: ActionType; score?: number
     return actions.filter(a => {
       const vpInfo = getActionVPInfo(a.action);
       // Reject passive actions with no VP contribution
-      if (vpInfo.isPassiveAction && vpInfo.estimatedVPContribution < 0.03) {
+      if (vpInfo.isPassiveAction && vpInfo.estimatedVPContribution < actionVpTuning.filters.highPassiveRejectMaxContribution) {
         return false;
       }
       return true;
@@ -289,7 +303,7 @@ export function applyVPurgencyBonus<T extends { action: ActionType }>(
 
   // VP-enabling actions get smaller multiplier
   if (vpInfo.isVPEnablingAction) {
-    return baseScore * (1 + (urgencyMultiplier - 1) * 0.5);
+    return baseScore * (1 + (urgencyMultiplier - 1) * actionVpTuning.scoring.vpEnablingUrgencyBlend);
   }
 
   // Passive actions get penalty when VP=0
@@ -305,17 +319,7 @@ export function applyVPurgencyBonus<T extends { action: ActionType }>(
  * Get urgency multiplier for scoring
  */
 function getUrgencyMultiplier(urgencyLevel: VPUrgencyLevel): number {
-  switch (urgencyLevel) {
-    case 'desperate':
-      return 3.0;
-    case 'high':
-      return 2.0;
-    case 'medium':
-      return 1.5;
-    case 'low':
-    default:
-      return 1.0;
-  }
+  return actionVpTuning.urgencyMultipliers[urgencyLevel] ?? actionVpTuning.urgencyMultipliers.low;
 }
 
 /**
@@ -332,16 +336,14 @@ function getPassiveActionPenalty(
   }
 
   // Penalty scales with urgency and turn number
+  const turnDelta = currentTurn - actionVpTuning.passivePenaltyCoefficients.turnOffset;
   switch (urgencyLevel) {
     case 'desperate':
-      // Turn 6+: -8 to -12 penalty
-      return -2.5 * (currentTurn - 2);
+      return -actionVpTuning.passivePenaltyCoefficients.desperate * turnDelta;
     case 'high':
-      // Turn 4-5: -4 to -6 penalty
-      return -1.5 * (currentTurn - 2);
+      return -actionVpTuning.passivePenaltyCoefficients.high * turnDelta;
     case 'medium':
-      // Turn 3-4: -2 to -3 penalty
-      return -0.8 * (currentTurn - 2);
+      return -actionVpTuning.passivePenaltyCoefficients.medium * turnDelta;
     case 'low':
     default:
       return 0;
@@ -362,7 +364,7 @@ export function scoreActionByVP<T extends { action: ActionType }>(
   const vpInfo = getActionVPInfo(action.action);
 
   // Base VP contribution
-  let vpScore = vpInfo.estimatedVPContribution * 2.0;
+  let vpScore = vpInfo.estimatedVPContribution * actionVpTuning.scoring.baseVpScoreFactor;
 
   // Urgency multiplier for direct VP actions
   if (vpInfo.isDirectVPAction) {
@@ -371,7 +373,11 @@ export function scoreActionByVP<T extends { action: ActionType }>(
   }
 
   // Penalty for passive actions when VP=0
-  if (vpInfo.isPassiveAction && urgency.myVP === 0 && urgency.currentTurn >= 3) {
+  if (
+    vpInfo.isPassiveAction &&
+    urgency.myVP === 0 &&
+    urgency.currentTurn >= actionVpTuning.scoring.passivePenaltyStartTurn
+  ) {
     const passivePenalty = getPassiveActionPenalty(urgency.urgencyLevel, urgency.currentTurn, urgency.myVP);
     vpScore += passivePenalty;
   }

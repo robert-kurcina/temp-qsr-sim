@@ -9,6 +9,8 @@ import { TacticalDoctrine } from '../../../src/lib/mest-tactics/ai/stratagems/AI
 import { LightingCondition } from '../../../src/lib/mest-tactics/utils/visibility';
 import { BattlefieldLosCacheStats } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
 import { PathfindingCacheStats } from '../../../src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine';
+import { createEmptyKnowledge as createExecutorEmptyKnowledge } from '../../../src/lib/mest-tactics/ai/executor/Knowledge';
+import type { CharacterKnowledge } from '../../../src/lib/mest-tactics/ai/core/AIController';
 import type { BattlePerformanceSummary } from '../../shared/BattleReportTypes';
 
 // ============================================================================
@@ -46,6 +48,23 @@ export interface BattleStats {
   lofChecks: number;
   totalPathLength: number;
   modelsMoved: number;
+  decisionTelemetrySamples?: number;
+  attackGateAppliedDecisions?: number;
+  attackGateImmediateHighApplied?: number;
+  attackGateDirectiveApplied?: number;
+  attackOpportunityImmediateHigh?: number;
+  attackOpportunityImmediateLow?: number;
+  attackOpportunitySetup?: number;
+  attackOpportunityNone?: number;
+  hitTestsAttempted?: number;
+  hitTestsPassed?: number;
+  hitTestsFailed?: number;
+  damageTestsAttempted?: number;
+  damageTestsPassed?: number;
+  damageTestsFailed?: number;
+  woundsAssigned?: number;
+  fearAssigned?: number;
+  delayAssigned?: number;
 }
 
 // ============================================================================
@@ -105,6 +124,50 @@ export interface ValidationCoverage {
   lof: boolean;
 }
 
+export interface CombatTestSummary {
+  attempts: number;
+  passes: number;
+  fails: number;
+  passRate: number;
+}
+
+export interface CombatAssignmentSummary {
+  wounds: number;
+  fear: number;
+  delay: number;
+}
+
+export interface CombatEfficacySummary {
+  hitTests: CombatTestSummary;
+  damageTests: CombatTestSummary;
+  assignments: CombatAssignmentSummary;
+}
+
+export interface KeyScoreSummary {
+  key: string;
+  runsObserved: number;
+  runsScored: number;
+  totalCurrent: number;
+  averageCurrent: number;
+  totalPredicted: number;
+  averagePredicted: number;
+  averageConfidence: number;
+  averageLeadMargin: number;
+}
+
+export interface SideScoreSummary {
+  sideId: string;
+  totalVp: number;
+  averageVp: number;
+  totalRp: number;
+  averageRp: number;
+  keys: KeyScoreSummary[];
+}
+
+export interface ScoringSummary {
+  sideScores: SideScoreSummary[];
+}
+
 // ============================================================================
 // Validation Aggregate Report
 // ============================================================================
@@ -130,6 +193,8 @@ export interface ValidationAggregateReport {
   winners: Record<string, number>;
   totals: BattleStats;
   averages: BattleStats;
+  scoringSummary?: ScoringSummary;
+  combatEfficacy?: CombatEfficacySummary;
   advancedRuleTotals: AdvancedRuleMetrics;
   advancedRuleAverages: AdvancedRuleMetrics;
   /** Union of runtime and probe coverage (legacy field). */
@@ -154,6 +219,8 @@ export interface ValidationAggregateReport {
       minLosCacheHitRate: number;
       minPathCacheHitRate: number;
       minGridCacheHitRate: number;
+      minMinimaxLiteCacheHitRate: number;
+      minMinimaxPatchCacheHitRate: number;
     };
     observed: {
       avgTurn1ElapsedMs: number | null;
@@ -161,6 +228,8 @@ export interface ValidationAggregateReport {
       avgLosCacheHitRate: number | null;
       avgPathCacheHitRate: number | null;
       avgGridCacheHitRate: number | null;
+      avgMinimaxLiteCacheHitRate: number | null;
+      avgMinimaxPatchCacheHitRate: number | null;
     };
     pass: {
       turn1Elapsed: boolean | null;
@@ -168,6 +237,177 @@ export interface ValidationAggregateReport {
       losCacheHitRate: boolean | null;
       pathCacheHitRate: boolean | null;
       gridCacheHitRate: boolean | null;
+      minimaxLiteCacheHitRate: boolean | null;
+      minimaxPatchCacheHitRate: boolean | null;
+      overall: boolean | null;
+    };
+  };
+  coordinatorTraceGates?: {
+    enabled: boolean;
+    runsEvaluated: number;
+    thresholds: {
+      minRunCoverage: number;
+      minTurnCoverage: number;
+      minSideCoveragePerTurn: number;
+    };
+    observed: {
+      runCoverage: number | null;
+      avgTurnCoverage: number | null;
+      avgSideCoveragePerTurn: number | null;
+    };
+    pass: {
+      runCoverage: boolean | null;
+      turnCoverage: boolean | null;
+      sideCoveragePerTurn: boolean | null;
+      overall: boolean | null;
+    };
+  };
+  pressureContinuityDiagnostics?: {
+    runsEvaluated: number;
+    runsWithData: number;
+    observed: {
+      avgScrumBreakRate: number | null;
+      avgLaneBreakRate: number | null;
+      avgCombinedBreakRate: number | null;
+      avgSignatureCoverageRate: number | null;
+      avgBreaksPerRun: number | null;
+      avgSignatureSamplesPerRun: number | null;
+    };
+  };
+  pressureContinuityGates?: {
+    enabled: boolean;
+    runsEvaluated: number;
+    profile: {
+      missionId: string;
+      gameSize: GameSize;
+      densityRatio: number;
+      densityBucket: string;
+      densityBucketIndex: number;
+    };
+    thresholds: {
+      minRunsWithDataRate: number;
+      minSignatureCoverageRate: number;
+      maxCombinedBreakRate: number;
+      maxLaneBreakRate: number;
+      maxScrumBreakRate: number;
+    };
+    observed: {
+      runsWithDataRate: number | null;
+      avgSignatureCoverageRate: number | null;
+      avgCombinedBreakRate: number | null;
+      avgLaneBreakRate: number | null;
+      avgScrumBreakRate: number | null;
+    };
+    pass: {
+      runsWithDataRate: boolean | null;
+      signatureCoverageRate: boolean | null;
+      combinedBreakRate: boolean | null;
+      laneBreakRate: boolean | null;
+      scrumBreakRate: boolean | null;
+      overall: boolean | null;
+    };
+  };
+  combatActivityGates?: {
+    enabled: boolean;
+    runsEvaluated: number;
+    profile: {
+      missionId: string;
+      gameSize: GameSize;
+      densityRatio: number;
+      densityBucket: string;
+      densityBucketIndex: number;
+      maxTurns: number;
+      configuredMaxTurns: number;
+      horizonRatio: number;
+    };
+    thresholds: {
+      minTurnHorizonRatio: number;
+      minAttackActionRatio: number;
+      minRunsWithCombatRate: number;
+      maxZeroAttackRunRate: number;
+    };
+    observed: {
+      avgAttackActionRatio: number | null;
+      runsWithCombatRate: number | null;
+      zeroAttackRunRate: number | null;
+    };
+    skippedReason?: string;
+    pass: {
+      attackActionRatio: boolean | null;
+      runsWithCombatRate: boolean | null;
+      zeroAttackRunRate: boolean | null;
+      overall: boolean | null;
+    };
+  };
+  passivenessGates?: {
+    enabled: boolean;
+    runsEvaluated: number;
+    profile: {
+      missionId: string;
+      gameSize: GameSize;
+      densityRatio: number;
+      densityBucket: string;
+      densityBucketIndex: number;
+      maxTurns: number;
+      configuredMaxTurns: number;
+      horizonRatio: number;
+    };
+    thresholds: {
+      minTurnHorizonRatio: number;
+      maxPassiveActionRatio: number;
+      maxDetectHideActionRatio: number;
+      maxWaitActionRatio: number;
+    };
+    observed: {
+      avgPassiveActionRatio: number | null;
+      avgDetectHideActionRatio: number | null;
+      avgWaitActionRatio: number | null;
+    };
+    skippedReason?: string;
+    pass: {
+      passiveActionRatio: boolean | null;
+      detectHideActionRatio: boolean | null;
+      waitActionRatio: boolean | null;
+      overall: boolean | null;
+    };
+  };
+  attackGateTelemetryGates?: {
+    enabled: boolean;
+    runsEvaluated: number;
+    profile: {
+      missionId: string;
+      gameSize: GameSize;
+      densityRatio: number;
+      densityBucket: string;
+      densityBucketIndex: number;
+      maxTurns: number;
+      configuredMaxTurns: number;
+      horizonRatio: number;
+    };
+    thresholds: {
+      minTurnHorizonRatio: number;
+      minTelemetrySamplesPerRun: number;
+      minImmediateHighOpportunityCount: number;
+      minImmediateHighConversionRate: number;
+      minPressureOpportunityGateApplyRate: number;
+    };
+    observed: {
+      avgTelemetrySamplesPerRun: number | null;
+      totalTelemetrySamples: number;
+      totalImmediateHighOpportunities: number;
+      totalImmediateLowOpportunities: number;
+      totalPressureOpportunities: number;
+      totalGateImmediateHighApplied: number;
+      totalGateDirectiveApplied: number;
+      totalGateApplied: number;
+      immediateHighConversionRate: number | null;
+      pressureOpportunityGateApplyRate: number | null;
+    };
+    skippedReason?: string;
+    pass: {
+      telemetrySamples: boolean | null;
+      immediateHighConversion: boolean | null;
+      pressureOpportunityApplyRate: boolean | null;
       overall: boolean | null;
     };
   };
@@ -175,6 +415,8 @@ export interface ValidationAggregateReport {
     run: number;
     seed: number;
     winner: string;
+    winnerReason?: 'mission_immediate' | 'mission_vp' | 'initiative_card' | 'remaining_models' | 'draw' | 'none';
+    tieBreakMethod?: 'none' | 'initiative_card';
     finalCounts: Array<{ name: string; remaining: number }>;
     stats: BattleStats;
     usage: {
@@ -199,10 +441,67 @@ export interface ValidationAggregateReport {
       vpBySide: Record<string, number>;
       rpBySide: Record<string, number>;
       immediateWinnerSideId?: string;
+      predictedScoring?: {
+        bySide: Record<string, {
+          predictedVp: number;
+          predictedRp: number;
+          keyScores: Record<string, {
+            current: number;
+            predicted: number;
+            confidence: number;
+            leadMargin: number;
+          }>;
+        }>;
+      };
     };
     nestedSections: any;
     advancedRules: AdvancedRuleMetrics;
     performance?: BattlePerformanceSummary;
+    coordinatorTrace?: {
+      hasTrace: boolean;
+      turnsWithTrace: number;
+      totalTurns: number;
+      turnCoverage: number | null;
+      avgSideCoveragePerTurn: number | null;
+    };
+    pressureContinuity?: {
+      hasData: boolean;
+      sideCount: number;
+      scrumBreakRate: number | null;
+      laneBreakRate: number | null;
+      combinedBreakRate: number | null;
+      signatureCoverageRate: number | null;
+      totalBreaks: number;
+      totalSignatureSamples: number;
+      totalUpdates: number;
+    };
+    combatActivity?: {
+      attackActions: number;
+      totalActions: number;
+      attackActionRatio: number | null;
+      hasCombat: boolean;
+    };
+    passiveness?: {
+      passiveActions: number;
+      detectHideActions: number;
+      waitActions: number;
+      totalActions: number;
+      passiveActionRatio: number | null;
+      detectHideActionRatio: number | null;
+      waitActionRatio: number | null;
+    };
+    attackGateTelemetry?: {
+      telemetrySamples: number;
+      immediateHighOpportunities: number;
+      immediateLowOpportunities: number;
+      pressureOpportunities: number;
+      gateApplied: number;
+      gateImmediateHighApplied: number;
+      gateDirectiveApplied: number;
+      immediateHighConversionRate: number | null;
+      pressureOpportunityGateApplyRate: number | null;
+    };
+    combatEfficacy?: CombatEfficacySummary;
   }>;
   generatedAt: string;
 }
@@ -256,6 +555,23 @@ export function createEmptyStats(): BattleStats {
     lofChecks: 0,
     totalPathLength: 0,
     modelsMoved: 0,
+    decisionTelemetrySamples: 0,
+    attackGateAppliedDecisions: 0,
+    attackGateImmediateHighApplied: 0,
+    attackGateDirectiveApplied: 0,
+    attackOpportunityImmediateHigh: 0,
+    attackOpportunityImmediateLow: 0,
+    attackOpportunitySetup: 0,
+    attackOpportunityNone: 0,
+    hitTestsAttempted: 0,
+    hitTestsPassed: 0,
+    hitTestsFailed: 0,
+    damageTestsAttempted: 0,
+    damageTestsPassed: 0,
+    damageTestsFailed: 0,
+    woundsAssigned: 0,
+    fearAssigned: 0,
+    delayAssigned: 0,
   };
 }
 
@@ -350,7 +666,9 @@ export function mergeCoverage(
  */
 export function accumulateStats(total: BattleStats, add: BattleStats) {
   (Object.keys(total) as Array<keyof BattleStats>).forEach((key) => {
-    total[key] += add[key];
+    const totalValue = Number(total[key] ?? 0);
+    const addValue = Number(add[key] ?? 0);
+    total[key] = Number.isFinite(totalValue + addValue) ? totalValue + addValue : totalValue;
   });
 }
 
@@ -360,7 +678,8 @@ export function accumulateStats(total: BattleStats, add: BattleStats) {
 export function divideStats(total: BattleStats, runs: number): BattleStats {
   const avg = createEmptyStats();
   (Object.keys(total) as Array<keyof BattleStats>).forEach((key) => {
-    avg[key] = Number((total[key] / runs).toFixed(2));
+    const totalValue = Number(total[key] ?? 0);
+    avg[key] = Number.isFinite(totalValue) ? Number((totalValue / runs).toFixed(2)) : 0;
   });
   return avg;
 }
@@ -573,18 +892,6 @@ export function createSeededRandom(seed: number): () => number {
   };
 }
 
-/**
- * Create empty knowledge object for AI
- */
-import type { CharacterKnowledge } from '../../../src/lib/mest-tactics/ai/core/AIController';
-
 export function emptyKnowledge(turn: number): CharacterKnowledge {
-  return {
-    knownEnemies: new Map(),
-    knownTerrain: new Map(),
-    lastKnownPositions: new Map(),
-    threatZones: [],
-    safeZones: [],
-    lastUpdated: turn,
-  };
+  return createExecutorEmptyKnowledge(turn);
 }

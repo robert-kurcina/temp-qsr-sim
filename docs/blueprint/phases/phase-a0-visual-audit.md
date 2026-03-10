@@ -34,10 +34,10 @@
 - ✅ Model rendering with positions
 
 **Scripts:**
-- ✅ `npm run battle` - Quick battles (basic audit)
-- ✅ `npm run battle:audit` - Quick battles with viewer
-- ✅ `npm run ai-battle:audit` - Full battles (detailed audit)
-- ✅ `npm run serve:reports` - Serve battle reports on port 3001
+- ✅ `npm run sim -- quick` - Quick battles (basic audit)
+- ✅ `npm run sim -- quick --audit --viewer` - Quick battles with viewer
+- ✅ `npm run sim -- quick --audit --viewer` - Full battles (detailed audit)
+- ✅ `npm run sim:serve-reports` - Serve battle reports on port 3001
 
 ### Audit Data Structure
 
@@ -88,7 +88,7 @@ generated/battle-reports/battle-report-TIMESTAMP/
 ### Test Results
 
 - ✅ 1844 tests passing
-- ✅ Audit capture verified with `npm run battle -- --audit --viewer`
+- ✅ Audit capture verified with `npm run sim -- quick --audit --viewer`
 - ✅ Action steps populated with full details
 - ✅ No regressions introduced
 

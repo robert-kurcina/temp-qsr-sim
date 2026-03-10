@@ -178,6 +178,75 @@ describe('AIActionExecutor', () => {
     expect(result.replanningRecommended).toBe(true);
   });
 
+  it('should reject close combat when only friendly engagement exists', () => {
+    const friendly = makeTestCharacter('friendly');
+    battlefield.placeCharacter(friendly, { x: 10.5, y: 12 });
+
+    const decision: ActionDecision = {
+      type: 'close_combat',
+      target,
+      reason: 'Invalid melee at range',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [friendly],
+      enemies: [target],
+      battlefield,
+    };
+
+    const result = executor.executeAction(decision, character, context);
+    expect(result.success).toBe(false);
+    expect(result.error?.toLowerCase()).toContain('melee range');
+  });
+
+  it('should hard-block illegal close combat even when validation is disabled', () => {
+    const noValidationExecutor = createAIExecutor(manager, {
+      validateActions: false,
+      enableReplanning: false,
+      verboseLogging: false,
+    });
+    character.profile.items = [
+      {
+        id: 'test-sword',
+        name: 'Test Sword',
+        classification: 'Melee',
+        burden: 1,
+        quality: 'Common',
+        traits: [],
+      } as any,
+    ];
+
+    const decision: ActionDecision = {
+      type: 'close_combat',
+      target,
+      reason: 'Bypass validation test',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    const apBefore = manager.getApRemaining(character);
+    const result = noValidationExecutor.executeAction(decision, character, context);
+    const apAfter = manager.getApRemaining(character);
+
+    expect(result.success).toBe(false);
+    expect(result.error).toContain('melee range');
+    expect(apAfter).toBe(apBefore);
+  });
+
   it('should track replan attempts', () => {
     const decision: ActionDecision = {
       type: 'close_combat',
@@ -270,6 +339,75 @@ describe('AIActionExecutor', () => {
     expect(result.error ?? '').not.toContain('executeDisengageAction');
     expect(result.action.type).toBe('disengage');
   });
+
+  it('should execute charge when destination reaches base-contact engagement', () => {
+    character.profile.items = [
+      {
+        name: 'Charger Blade',
+        class: 'Melee',
+        classification: 'Melee',
+        type: 'Melee',
+        bp: 0,
+        traits: [],
+      } as any,
+    ];
+
+    const decision: ActionDecision = {
+      type: 'charge',
+      target,
+      position: { x: 13, y: 12 },
+      reason: 'Test charge',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    const result = executor.executeAction(decision, character, context);
+    expect(result.success).toBe(true);
+  });
+
+  it('should reject charge when destination does not reach engagement', () => {
+    character.profile.items = [
+      {
+        name: 'Charger Blade',
+        class: 'Melee',
+        classification: 'Melee',
+        type: 'Melee',
+        bp: 0,
+        traits: [],
+      } as any,
+    ];
+
+    const decision: ActionDecision = {
+      type: 'charge',
+      target,
+      position: { x: 12, y: 12 },
+      reason: 'Invalid charge destination',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const context = {
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      allies: [],
+      enemies: [target],
+      battlefield,
+    };
+
+    const result = executor.executeAction(decision, character, context);
+    expect(result.success).toBe(false);
+    expect(result.error ?? '').toContain('base-contact');
+  });
 });
 
 describe('AIGameLoop', () => {
@@ -337,6 +475,62 @@ describe('AIGameLoop', () => {
 
     const result = gameLoopWithCharacterOnly.runTurn(1);
     expect(result.totalActions).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should reject illegal strategic close-combat decisions before execution', () => {
+    const constrainedLoop = createAIGameLoop(manager, battlefield, [sides.sideA, sides.sideB], {
+      enableStrategic: true,
+      enableTactical: false,
+      enableCharacterAI: false,
+      enableValidation: true,
+      verboseLogging: false,
+    });
+
+    const actor = sides.charactersA[0];
+    const farTarget = sides.charactersB[0];
+    const invalidStrategicDecision: ActionDecision = {
+      type: 'close_combat',
+      target: farTarget,
+      reason: 'Invalid strategic melee at range',
+      priority: 5,
+      requiresAP: true,
+    };
+
+    (constrainedLoop as any).sideAIs.set(sides.sideA.id, {
+      assessSituation: () => ({}),
+      getActionPriorities: () => new Map([[actor.id, invalidStrategicDecision]]),
+    });
+
+    const selectedDecision = (constrainedLoop as any).getAIDecision(actor) as ActionDecision;
+    expect(selectedDecision.type).toBe('hold');
+
+    const turnResult = constrainedLoop.runCharacterTurn(actor, 1);
+    expect(turnResult.totalActions).toBeGreaterThanOrEqual(1);
+    expect(turnResult.successfulActions).toBeGreaterThanOrEqual(1);
+    expect(turnResult.failedActions).toBeGreaterThanOrEqual(0);
+  });
+
+  it('should produce bounded fallback move distance after failed attack decision', () => {
+    const actor = sides.charactersA[0];
+    const target = sides.charactersB[0];
+    const failedAttack: ActionDecision = {
+      type: 'close_combat',
+      target,
+      reason: 'Failed attack trigger fallback',
+      priority: 3,
+      requiresAP: true,
+    };
+
+    const fallback = (gameLoop as any).getAlternativeDecision(actor, failedAttack) as ActionDecision;
+    expect(fallback.type).toBe('move');
+    expect(fallback.position).toBeDefined();
+
+    const actorPos = battlefield.getCharacterPosition(actor)!;
+    const fallbackPos = fallback.position!;
+    const fallbackDistance = Math.hypot(fallbackPos.x - actorPos.x, fallbackPos.y - actorPos.y);
+    const immediateAllowance = (gameLoop as any).estimateImmediateMoveAllowance(actor) as number;
+
+    expect(fallbackDistance).toBeLessThanOrEqual(immediateAllowance + 0.25);
   });
 });
 

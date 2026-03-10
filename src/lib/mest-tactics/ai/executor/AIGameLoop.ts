@@ -10,98 +10,35 @@
 import { Character } from '../../core/Character';
 import { Battlefield } from '../../battlefield/Battlefield';
 import { GameManager } from '../../engine/GameManager';
-import { TurnPhase } from '../../core/types';
 import { MissionSide } from '../../mission/MissionSide';
-import { createAIExecutor, AIActionExecutor, AIExecutionContext } from './AIActionExecutor';
-import { createSideAI, SideAI } from '../strategic/SideAI';
-import { createSideAssemblyAIs, AssemblyAI } from '../strategic/AssemblyAI';
-import { CharacterAI, createSideAI as createCharacterAIs } from '../core/CharacterAI';
+import type { SideAI } from '../strategic/SideAI';
+import { AIActionExecutor } from './AIActionExecutor';
 import { ActionDecision } from '../core/AIController';
-import { isAttackableEnemy } from '../core/ai-utils';
-import { InstrumentationLogger, InstrumentationGrade } from '../../instrumentation/QSRInstrumentation';
-import { AuditService, ModelStateAudit } from '../../audit/AuditService';
-import { AuditVector, ModelEffectAudit } from '../../audit/AuditService';
+import { InstrumentationLogger } from '../../instrumentation/QSRInstrumentation';
+import { AuditService } from '../../audit/AuditService';
+import { CharacterTurnResult, runCharacterTurnForGameLoop } from './CharacterTurnRunner';
+import { runGameLifecycleForGameLoop } from './GameLifecycleRunner';
+import { TurnRunResult, runTurnForGameLoop } from './TurnRunner';
+import {
+  InitializedAILayers,
+} from './AILayerInitializationSupport';
+import { estimateImmediateMoveAllowanceForGameLoop } from './DecisionSanitizationSupport';
+import {
+  createConsiderSquadIPActivationForAIGameLoop,
+  createRunGameLifecycleDepsForAIGameLoop,
+  createRunCharacterTurnDepsForAIGameLoop,
+  createRunTurnDepsForAIGameLoop,
+} from './AIGameLoopRunDeps';
+import { AIGameLoopDecisionRuntime } from './AIGameLoopDecisionRuntime';
+import { bootstrapAIGameLoopState } from './AIGameLoopBootstrap';
+import {
+  AIGameLoopConfig,
+  AIGameLoopResult,
+  DEFAULT_AI_GAME_LOOP_CONFIG,
+} from './AIGameLoopTypes';
 
-/**
- * AI Game Loop configuration
- */
-export interface AIGameLoopConfig {
-  /** Enable strategic layer (SideAI) */
-  enableStrategic: boolean;
-  /** Enable tactical layer (AssemblyAI) */
-  enableTactical: boolean;
-  /** Enable character-level AI */
-  enableCharacterAI: boolean;
-  /** Enable action validation */
-  enableValidation: boolean;
-  /** Enable replanning on failure */
-  enableReplanning: boolean;
-  /** Verbose logging */
-  verboseLogging: boolean;
-  /** Maximum actions per character per turn */
-  maxActionsPerTurn: number;
-  /** Allow attacks against KO'd targets (default false) */
-  allowKOdAttacks?: boolean;
-  /** Optional controller traits for Puppet KO'd rules */
-  kodControllerTraitsByCharacterId?: Record<string, string[]>;
-  /** Optional coordinator traits for Puppet KO'd rules */
-  kodCoordinatorTraitsByCharacterId?: Record<string, string[]>;
-  /** Optional callback after each turn resolves */
-  onTurnEnd?: (turn: number) => void;
-  /** Session visibility OR in MU (default 16 / Day, Clear) */
-  visibilityOrMu?: number;
-  /** Session Max ORM for normal OR checks (default 3) */
-  maxOrm?: number;
-  /** Allow Concentrate range extension for AI range gating (default true) */
-  allowConcentrateRangeExtension?: boolean;
-  /** If true, require per-character LOS/FOV gates in AI range/path checks */
-  perCharacterFovLos?: boolean;
-  /** Enable audit capture */
-  auditService?: AuditService;
-  /** Mission ID for audit */
-  missionId?: string;
-  /** Mission name for audit */
-  missionName?: string;
-  /** Lighting condition for audit */
-  lighting?: string;
-}
-
-/**
- * Default AI Game Loop configuration
- */
-export const DEFAULT_AI_GAME_LOOP_CONFIG: AIGameLoopConfig = {
-  enableStrategic: true,
-  enableTactical: true,
-  enableCharacterAI: true,
-  enableValidation: true,
-  enableReplanning: true,
-  verboseLogging: false,
-  maxActionsPerTurn: 3,
-  allowKOdAttacks: false,
-  onTurnEnd: undefined,
-  visibilityOrMu: 16,
-  maxOrm: 3,
-  allowConcentrateRangeExtension: true,
-  perCharacterFovLos: false,
-};
-
-/**
- * AI Game Loop execution result
- */
-export interface AIGameLoopResult {
-  /** Total actions executed */
-  totalActions: number;
-  /** Successful actions */
-  successfulActions: number;
-  /** Failed actions */
-  failedActions: number;
-  /** Actions that required replanning */
-  replannedActions: number;
-  /** Turn number when game ended */
-  finalTurn: number;
-  /** Reason for game end */
-  endReason?: string;
-}
+export { DEFAULT_AI_GAME_LOOP_CONFIG };
+export type { AIGameLoopConfig, AIGameLoopResult };
 
 /**
  * AI Game Loop Controller
@@ -116,14 +53,13 @@ export class AIGameLoop {
   private logger: InstrumentationLogger | null = null;
   private auditService: AuditService | null = null;
   private sides: MissionSide[] = [];
+  private aiLayers!: InitializedAILayers;
+  private decisionRuntime!: AIGameLoopDecisionRuntime;
 
-  // AI layers
-  private sideAIs: Map<string, SideAI> = new Map();
-  private assemblyAIs: Map<string, AssemblyAI> = new Map();
-  private characterAIs: Map<string, CharacterAI> = new Map();
-  private sideIds: string[] = [];
-  private characterSideById: Map<string, string> = new Map();
-  private characterAssemblyById: Map<string, string> = new Map();
+  // Compatibility accessors for tests/introspection that touch internals directly.
+  private get sideAIs(): Map<string, SideAI> {
+    return this.aiLayers.sideAIs;
+  }
 
   constructor(
     manager: GameManager,
@@ -139,205 +75,57 @@ export class AIGameLoop {
     this.logger = logger || null;
     this.auditService = config.auditService || null;
 
-    // Create executor
-    this.executor = createAIExecutor(manager, {
-      validateActions: this.config.enableValidation,
-      enableReplanning: this.config.enableReplanning,
-      verboseLogging: this.config.verboseLogging,
-    }, this.logger ?? undefined);
-
-    // Initialize AI layers
-    this.initializeAILayers(sides);
-  }
-
-  /**
-   * Initialize all AI layers
-   */
-  private initializeAILayers(sides: MissionSide[]): void {
-    this.sideIds = sides.map(side => side.id);
-    this.characterSideById.clear();
-    this.characterAssemblyById.clear();
-
-    for (const side of sides) {
-      for (const member of side.members) {
-        this.characterSideById.set(member.character.id, side.id);
-        this.characterAssemblyById.set(member.character.id, member.assembly.name);
-      }
-    }
-
-    for (let i = 0; i < sides.length; i++) {
-      const side = sides[i];
-      const enemySide = sides[(i + 1) % sides.length];
-
-      // Create SideAI
-      if (this.config.enableStrategic) {
-        const sideAI = createSideAI(side, this.battlefield, enemySide);
-        this.sideAIs.set(side.id, sideAI);
-      }
-
-      // Create AssemblyAIs
-      if (this.config.enableTactical) {
-        const assemblyAIs = createSideAssemblyAIs(side, this.battlefield);
-        for (const [assemblyId, assemblyAI] of assemblyAIs.entries()) {
-          this.assemblyAIs.set(assemblyId, assemblyAI);
-        }
-      }
-    }
-
-    // Create CharacterAIs
-    if (this.config.enableCharacterAI) {
-      for (const side of sides) {
-        const characters = side.members
-          .filter(m => !m.character.state.isEliminated && !m.character.state.isKOd)
-          .map(m => m.character);
-        
-        const charAIs = createCharacterAIs(characters);
-        for (const [charId, charAI] of charAIs.entries()) {
-          charAI.setConfig({
-            allowKOdAttacks: this.config.allowKOdAttacks ?? false,
-            kodControllerTraitsByCharacterId: this.config.kodControllerTraitsByCharacterId,
-            kodCoordinatorTraitsByCharacterId: this.config.kodCoordinatorTraitsByCharacterId,
-            visibilityOrMu: this.config.visibilityOrMu,
-            maxOrm: this.config.maxOrm,
-            allowConcentrateRangeExtension: this.config.allowConcentrateRangeExtension,
-            perCharacterFovLos: this.config.perCharacterFovLos,
-          });
-          this.characterAIs.set(charId, charAI);
-        }
-      }
-    }
+    const bootstrap = bootstrapAIGameLoopState({
+      manager: this.manager,
+      battlefield: this.battlefield,
+      sides: this.sides,
+      config: this.config,
+      logger: this.logger,
+    });
+    this.executor = bootstrap.executor;
+    this.aiLayers = bootstrap.aiLayers;
+    this.decisionRuntime = bootstrap.decisionRuntime;
   }
 
   /**
    * Run a complete AI-controlled game
    */
   runGame(maxTurns: number = 10): AIGameLoopResult {
-    const result: AIGameLoopResult = {
-      totalActions: 0,
-      successfulActions: 0,
-      failedActions: 0,
-      replannedActions: 0,
-      finalTurn: 0,
-    };
-
-    for (let turn = 1; turn <= maxTurns; turn++) {
-      this.executor.resetReplanAttempts();
-      
-      const turnResult = this.runTurn(turn);
-      result.totalActions += turnResult.totalActions;
-      result.successfulActions += turnResult.successfulActions;
-      result.failedActions += turnResult.failedActions;
-      result.replannedActions += turnResult.replannedActions;
-      result.finalTurn = turn;
-      this.config.onTurnEnd?.(turn);
-
-      // Check for game end conditions
-      if (this.shouldEndGame(turn)) {
-        result.endReason = this.getGameEndReason();
-        break;
-      }
-    }
-
-    return result;
+    return runGameLifecycleForGameLoop(
+      createRunGameLifecycleDepsForAIGameLoop({
+        maxTurns,
+        manager: this.manager,
+        sideIds: this.aiLayers.sideIds,
+        resetReplanAttempts: () => this.executor.resetReplanAttempts(),
+        runTurn: turn => this.runTurn(turn),
+        onTurnEnd: this.config.onTurnEnd,
+        findCharacterSide: character => this.decisionRuntime.findCharacterSide(character),
+      })
+    );
   }
 
   /**
    * Run a single turn of AI decisions and actions
    */
-  runTurn(turn: number): {
-    totalActions: number;
-    successfulActions: number;
-    failedActions: number;
-    replannedActions: number;
-  } {
-    const result = {
-      totalActions: 0,
-      successfulActions: 0,
-      failedActions: 0,
-      replannedActions: 0,
-    };
-
-    // Initialize turn - set up activation order via initiative
-    if (turn === 1 || this.manager.phase !== TurnPhase.Activation) {
-      this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn, sides: this.sides });
-    }
-
-    // Log initiative points at start of turn AFTER initiative is rolled (grade 2+)
-    if (this.logger) {
-      const ipBySide: Record<string, number> = {};
-      for (const side of this.sides) {
-        ipBySide[side.id] = side.state.initiativePoints ?? 0;
-      }
-      this.logger.logInitiativePoints(turn, ipBySide);
-    }
-
-    while (!this.manager.isTurnOver()) {
-      const character = this.manager.getNextToActivate();
-      if (!character) {
-        break;
-      }
-      if (character.state.isEliminated || character.state.isKOd) {
-        this.manager.endActivation(character);
-        continue;
-      }
-
-      const ap = this.manager.beginActivation(character);
-      if (ap <= 0) {
-        this.manager.endActivation(character);
-        continue;
-      }
-
-      // Start activation audit
-      if (this.auditService) {
-        const side = this.sides.find(s => s.members.some(m => m.character.id === character.id));
-        this.auditService.startActivation({
-          activationSequence: 0,
-          turn,
-          sideIndex: side ? this.sides.indexOf(side) : 0,
-          sideName: side?.name || 'Unknown',
-          modelId: character.id,
-          modelName: character.name || character.id,
-          initiative: character.initiative || 0,
-          apStart: ap,
-          waitAtStart: character.state.isWaiting || false,
-          delayTokensAtStart: character.state.delayTokens || 0,
-        });
-      }
-
-      const charResult = this.runCharacterTurn(character, turn);
-      result.totalActions += charResult.totalActions;
-      result.successfulActions += charResult.successfulActions;
-      result.failedActions += charResult.failedActions;
-      result.replannedActions += charResult.replannedActions;
-
-      // Phase 3.3: IP-Based Squad Formation
-      // After character completes activation, consider spending IP to activate squad member
-      if (charResult.successfulActions > 0) {
-        const squadActivationResult = this.considerSquadIPActivation(character, turn);
-        if (squadActivationResult.success) {
-          result.totalActions += squadActivationResult.totalActions;
-          result.successfulActions += squadActivationResult.successfulActions;
-          result.failedActions += squadActivationResult.failedActions;
-        }
-      }
-
-      // End activation audit
-      if (this.auditService) {
-        const apRemaining = this.manager.getApRemaining(character);
-        this.auditService.endActivation(
-          apRemaining,
-          character.state.isWaiting || false,
-          false, // waitUpkeepPaid - would need tracking
-          character.state.delayTokens || 0
-        );
-      }
-
-      this.manager.endActivation(character);
-    }
-
-    // Advance phase at end of turn to properly transition to TurnEnd and check end-game trigger
-    this.manager.advancePhase({ roller: Math.random, roundsPerTurn: this.manager.roundsPerTurn });
-    return result;
+  runTurn(turn: number): TurnRunResult {
+    return runTurnForGameLoop(
+      turn,
+      createRunTurnDepsForAIGameLoop({
+        manager: this.manager,
+        sides: this.sides,
+        logger: this.logger,
+        auditService: this.auditService,
+        runCharacterTurn: (character, currentTurn) => this.runCharacterTurn(character, currentTurn),
+        considerSquadIPActivation: createConsiderSquadIPActivationForAIGameLoop({
+          sides: this.sides,
+          battlefield: this.battlefield,
+          manager: this.manager,
+          logger: this.logger,
+          runCharacterTurn: (activeCharacter, currentTurn) =>
+            this.runCharacterTurn(activeCharacter, currentTurn),
+        }),
+      })
+    );
   }
 
   /**
@@ -346,653 +134,48 @@ export class AIGameLoop {
   runCharacterTurn(
     character: Character,
     turn: number
-  ): {
-    totalActions: number;
-    successfulActions: number;
-    failedActions: number;
-    replannedActions: number;
-  } {
-    const result = {
-      totalActions: 0,
-      successfulActions: 0,
-      failedActions: 0,
-      replannedActions: 0,
-    };
-
-    // Loop until AP exhausted or no valid actions
-    const maxActions = this.config.maxActionsPerTurn || 3;
-    let actionsThisTurn = 0;
-
-    while (actionsThisTurn < maxActions) {
-      const apRemaining = this.manager.getApRemaining(character);
-      if (apRemaining <= 0) {
-        break; // No AP left
-      }
-
-      // Get AI decision hierarchy
-      const decision = this.getAIDecision(character);
-      if (!decision || decision.type === 'hold') {
-        break; // No valid actions available
-      }
-
-      // Create execution context (refresh AP remaining)
-      const context = this.createExecutionContext(character);
-
-      // Capture state before action for audit
-      const apBefore = apRemaining;
-      const positionBefore = this.manager.getCharacterPosition(character);
-      const stateBefore = this.captureModelState(character);
-
-      // Build target data for audit
-      const targets: Array<{ modelId: string; modelName: string; side?: string; relation: 'enemy' | 'ally' | 'self' }> = [];
-      if (decision.target) {
-        const targetSide = this.getSideNameForCharacter(decision.target);
-        targets.push({
-          modelId: decision.target.id,
-          modelName: decision.target.profile.name,
-          side: targetSide,
-          relation: decision.target.id === character.id ? 'self' : (targetSide === this.getSideNameForCharacter(character) ? 'ally' : 'enemy'),
-        });
-      }
-
-      // Execute action
-      const execResult = this.executor.executeAction(decision, character, context);
-
-      // Capture state after action for audit
-      const apAfter = this.manager.getApRemaining(character);
-      const positionAfter = this.manager.getCharacterPosition(character);
-      const stateAfter = this.captureModelState(character);
-
-      // Build vectors for audit (movement actions)
-      const vectors: AuditVector[] = [];
-      if (decision.type === 'move' && decision.position && positionBefore && positionAfter) {
-        vectors.push({
-          kind: 'movement',
-          from: positionBefore,
-          to: positionAfter,
-          distanceMu: Math.sqrt(Math.pow(positionAfter.x - positionBefore.x, 2) + Math.pow(positionAfter.y - positionBefore.y, 2)),
-        });
-      }
-
-      // Build affected models for audit (attacks, disengage, etc.)
-      const affectedModels: ModelEffectAudit[] = [];
-      if (decision.target && decision.target !== character) {
-        const targetSide = this.getSideNameForCharacter(decision.target);
-        const targetStateBefore = this.captureModelState(decision.target);
-        const targetStateAfter = this.captureModelState(decision.target);
-        const changed: string[] = [];
-        if (targetStateBefore.wounds !== targetStateAfter.wounds) changed.push('wounds');
-        if (targetStateBefore.delayTokens !== targetStateAfter.delayTokens) changed.push('delayTokens');
-        if (targetStateBefore.isKOd !== targetStateAfter.isKOd) changed.push('isKOd');
-        if (targetStateBefore.isEliminated !== targetStateAfter.isEliminated) changed.push('isEliminated');
-        if (changed.length > 0) {
-          affectedModels.push({
-            modelId: decision.target.id,
-            modelName: decision.target.profile.name,
-            side: targetSide,
-            relation: 'opponent',
-            before: targetStateBefore,
-            after: targetStateAfter,
-            changed,
-          });
-        }
-      }
-
-      // Build interactions for audit
-      const interactions: Array<{ kind: string; sourceModelId: string; targetModelId?: string; success?: boolean; detail?: string }> = [];
-      if (decision.type === 'close_combat' || decision.type === 'ranged_combat') {
-        interactions.push({
-          kind: 'attack',
-          sourceModelId: character.id,
-          targetModelId: decision.target?.id,
-          success: execResult.success,
-          detail: `${decision.type} vs ${decision.target?.profile.name || 'unknown'}`,
-        });
-      }
-
-      // Record action step in audit
-      if (this.auditService) {
-        this.auditService.recordAction({
-          sequence: actionsThisTurn + 1,
-          actionType: decision.type,
-          decisionReason: decision.reason,
-          resultCode: execResult.success ? 'SUCCESS' : 'FAILED',
-          success: execResult.success,
-          apBefore,
-          apAfter,
-          apSpent: apBefore - apAfter,
-          actorPositionBefore: positionBefore || undefined,
-          actorPositionAfter: positionAfter || undefined,
-          actorStateBefore: stateBefore,
-          actorStateAfter: stateAfter,
-          vectors,
-          targets,
-          affectedModels,
-          interactions,
-          details: {
-            replanningRecommended: execResult.replanningRecommended,
-          },
-        } as any);
-      }
-
-      result.totalActions++;
-      actionsThisTurn++;
-      if (execResult.success) {
-        result.successfulActions++;
-      } else {
-        result.failedActions++;
-        if (execResult.replanningRecommended) {
-          result.replannedActions++;
-
-          // Try to get alternative action
-          const altDecision = this.getAlternativeDecision(character, decision);
-          if (altDecision) {
-            const altResult = this.executor.executeAction(altDecision, character, context);
-            result.totalActions++;
-            actionsThisTurn++;
-            if (altResult.success) {
-              result.successfulActions++;
-            } else {
-              result.failedActions++;
-            }
-          }
-        }
-        // If action failed and no replan, break out of loop
-        break;
-      }
-    }
-
-    return result;
+  ): CharacterTurnResult {
+    return runCharacterTurnForGameLoop(
+      character,
+      turn,
+      createRunCharacterTurnDepsForAIGameLoop({
+        manager: this.manager,
+        battlefield: this.battlefield,
+        executor: this.executor,
+        auditService: this.auditService,
+        maxActionsPerTurn: this.config.maxActionsPerTurn,
+        decisionRuntime: this.decisionRuntime,
+      })
+    );
   }
 
-  /**
-   * Capture current model state for audit
-   */
-  private captureModelState(character: Character): ModelStateAudit {
-    return {
-      wounds: character.state.wounds || 0,
-      delayTokens: character.state.delayTokens || 0,
-      fearTokens: character.state.fearTokens || 0,
-      isKOd: character.state.isKOd || false,
-      isEliminated: character.state.isEliminated || false,
-      isHidden: character.state.isHidden || false,
-      isWaiting: character.state.isWaiting || false,
-      isAttentive: character.state.isAttentive || false,
-      isOrdered: character.state.isOrdered || false,
-    };
-  }
-
-  /**
-   * Get AI decision for a character using full hierarchy
-   */
   private getAIDecision(character: Character): ActionDecision | null {
-    // Phase 3: Try Strategic Layer first (SideAI → AssemblyAI)
-    if (this.config.enableStrategic || this.config.enableTactical) {
-      const strategicDecision = this.getStrategicDecision(character);
-      if (strategicDecision) {
-        return strategicDecision;
-      }
-    }
-
-    // Phase 1/2: Fall back to CharacterAI
-    if (this.config.enableCharacterAI) {
-      const charAI = this.characterAIs.get(character.id);
-      if (charAI) {
-        const context = this.createAIContext(character);
-        const aiResult = charAI.decideAction(context);
-        return aiResult.decision;
-      }
-    }
-
-    // Default: Hold
-    return {
-      type: 'hold',
-      reason: 'No AI decision available',
-      priority: 0,
-      requiresAP: false,
-    };
+    return this.decisionRuntime.getAIDecision(character);
   }
 
-  /**
-   * Get decision from strategic/tactical layer
-   */
-  private getStrategicDecision(character: Character): ActionDecision | null {
-    // Find character's side
-    const sideId = this.findCharacterSide(character);
-    if (!sideId) return null;
-
-    // Get SideAI priorities
-    const sideAI = this.sideAIs.get(sideId);
-    if (sideAI && this.config.enableStrategic) {
-      const assessment = sideAI.assessSituation();
-      const priorities = sideAI.getActionPriorities(assessment);
-
-      const priority = priorities.get(character.id);
-      if (priority) {
-        // Validate strategic decision before returning
-        if (this.isValidDecision(priority, character)) {
-          return priority;
-        }
-        // Invalid strategic decision, fall through to CharacterAI
-      }
-    }
-
-    // Get AssemblyAI coordination
-    const assemblyId = this.findCharacterAssembly(character);
-    if (assemblyId) {
-      const assemblyAI = this.assemblyAIs.get(assemblyId);
-      if (assemblyAI && this.config.enableTactical) {
-        const assembly = character.profile ? {
-          id: assemblyId,
-          name: assemblyId,
-          totalBP: 0, 
-          totalCharacters: 0 
-        } : null;
-        
-        if (assembly) {
-          const characters = [character];
-          const enemies = this.getEnemyCharacters(character);
-          
-          const targetAssignments = assemblyAI.coordinateTargets(characters, enemies);
-          const decisions = assemblyAI.generateCoordinatedActions(
-            characters,
-            enemies,
-            targetAssignments
-          );
-          
-          const decision = decisions.get(character.id);
-          if (decision) {
-            return decision;
-          }
-        }
-      }
-    }
-
-    return null;
-  }
-
-  /**
-   * Get alternative decision when primary fails
-   */
   private getAlternativeDecision(
     character: Character,
     failedDecision: ActionDecision
   ): ActionDecision | null {
-    // Simple fallback: if attack failed, try move; if move failed, try hold
-    switch (failedDecision.type) {
-      case 'close_combat':
-      case 'ranged_combat':
-        // Try to move into better position
-        const nearestEnemy = this.findNearestEnemy(character);
-        if (nearestEnemy) {
-          const pos = this.battlefield.getCharacterPosition(nearestEnemy);
-          if (pos) {
-            return {
-              type: 'move',
-              position: { x: pos.x - 1, y: pos.y },
-              reason: 'Move toward enemy (fallback)',
-              priority: 2,
-              requiresAP: true,
-            };
-          }
-        }
-        break;
-
-      case 'move':
-        // Can't move, try to attack from current position
-        const target = this.findNearestEnemy(character);
-        if (target) {
-          return {
-            type: 'ranged_combat',
-            target,
-            reason: 'Attack from position (fallback)',
-            priority: 2,
-            requiresAP: true,
-          };
-        }
-        break;
-    }
-
-    // Ultimate fallback: Hold
-    return {
-      type: 'hold',
-      reason: 'Hold position (fallback)',
-      priority: 0,
-      requiresAP: false,
-    };
+    return this.decisionRuntime.getAlternativeDecision(character, failedDecision);
   }
 
-  /**
-   * Validate that a decision has required fields
-   */
-  private isValidDecision(decision: ActionDecision, character: Character): boolean {
-    // Move requires position
-    if (decision.type === 'move' && !decision.position) {
-      return false;
-    }
-    // Ranged combat requires ranged weapon
-    if (decision.type === 'ranged_combat') {
-      const hasRangedWeapon = character.profile?.items?.some(
-        item => item.classification === 'Ranged' || item.class === 'Ranged'
-      );
-      if (!hasRangedWeapon) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Create AI execution context
-   */
-  private createExecutionContext(character: Character): AIExecutionContext {
-    return {
-      currentTurn: this.manager.currentTurn,
-      currentRound: this.manager.currentRound,
-      apRemaining: this.manager.getApRemaining(character),
-      allies: this.getAllyCharacters(character),
-      enemies: this.getEnemyCharacters(character),
-      battlefield: this.battlefield,
-    };
-  }
-
-  /**
-   * Create AI context for CharacterAI
-   */
-  private createAIContext(character: Character): any {
-    const aiConfig = this.characterAIs.get(character.id)?.getConfig() ?? {
-      aggression: 0.5,
-      caution: 0.5,
-      accuracyModifier: 0,
-      godMode: true,
-    };
-
-    // R1.5: Get scoring context from Side Coordinator
-    const sideId = this.findCharacterSide(character);
-    let scoringContext: any = undefined;
-    let vpBySide: Record<string, number> | undefined = undefined;
-    let rpBySide: Record<string, number> | undefined = undefined;
-    let maxTurns: number | undefined = undefined;
-    if (sideId) {
-      const coordinatorManager = this.manager.getSideCoordinatorManager();
-      if (coordinatorManager) {
-        const coordinator = coordinatorManager.getCoordinator(sideId);
-        const context = coordinator.getScoringContext();
-        if (context) {
-          scoringContext = {
-            myKeyScores: context.myScores,
-            opponentKeyScores: context.opponentScores,
-            amILeading: context.amILeading,
-            vpMargin: context.vpMargin,
-            winningKeys: context.winningKeys,
-            losingKeys: context.losingKeys,
-          };
-        }
-      }
-
-      // Get VP/RP by side for VP urgency calculations
-      const side = this.manager.missionSides.find(s => s.id === sideId);
-      if (side) {
-        vpBySide = {};
-        rpBySide = {};
-        for (const s of this.manager.missionSides) {
-          vpBySide[s.id] = s.state.victoryPoints ?? 0;
-          rpBySide[s.id] = s.state.resourcePoints ?? 0;
-        }
-      }
-      
-      // Get max turns from mission config
-      maxTurns = this.manager.maxTurns ?? 6;
-    }
-
-    return {
-      character,
-      allies: this.getAllyCharacters(character),
-      enemies: this.getEnemyCharacters(character),
-      battlefield: this.battlefield,
-      currentTurn: this.manager.currentTurn,
-      currentRound: this.manager.currentRound,
-      apRemaining: this.manager.getApRemaining(character),
-      sideId,
-      knowledge: {
-        knownEnemies: new Map(),
-        knownTerrain: new Map(),
-        lastKnownPositions: new Map(),
-        threatZones: [],
-        safeZones: [],
-        lastUpdated: this.manager.currentTurn,
-      },
-      config: aiConfig,
-      scoringContext,
-      vpBySide,
-      rpBySide,
-      maxTurns,
-    };
-  }
-
-  /**
-   * Find character's side ID
-   */
-  private findCharacterSide(character: Character): string | null {
-    return this.characterSideById.get(character.id) ?? null;
-  }
-
-  /**
-   * Find character's assembly ID
-   */
-  private findCharacterAssembly(character: Character): string | null {
-    return this.characterAssemblyById.get(character.id) ?? null;
-  }
-
-  /**
-   * Get ally characters
-   */
-  private getAllyCharacters(character: Character): Character[] {
-    const sideId = this.findCharacterSide(character);
-    if (!sideId) {
-      return this.manager.characters.filter(
-        c => c !== character && !c.state.isEliminated && !c.state.isKOd
-      );
-    }
-    return this.manager.characters.filter(
-      c =>
-        c !== character &&
-        this.findCharacterSide(c) === sideId &&
-        !c.state.isEliminated &&
-        !c.state.isKOd
-    );
-  }
-
-  /**
-   * Get enemy characters
-   */
-  private getEnemyCharacters(character: Character): Character[] {
-    const ownSideId = this.findCharacterSide(character);
-    return this.manager.characters.filter(
-      c =>
-        c !== character &&
-        (ownSideId === null || this.findCharacterSide(c) !== ownSideId) &&
-        isAttackableEnemy(character, c, {
-          aggression: 0,
-          caution: 0,
-          accuracyModifier: 0,
-          godMode: true,
-          allowKOdAttacks: this.config.allowKOdAttacks ?? false,
-          kodControllerTraitsByCharacterId: this.config.kodControllerTraitsByCharacterId,
-          kodCoordinatorTraitsByCharacterId: this.config.kodCoordinatorTraitsByCharacterId,
-        })
-    );
-  }
-
-  /**
-   * Find nearest enemy
-   */
-  private findNearestEnemy(character: Character): Character | null {
-    const charPos = this.battlefield.getCharacterPosition(character);
-    if (!charPos) return null;
-
-    const enemies = this.getEnemyCharacters(character);
-    let nearest: Character | null = null;
-    let nearestDist = Infinity;
-
-    for (const enemy of enemies) {
-      const enemyPos = this.battlefield.getCharacterPosition(enemy);
-      if (!enemyPos) continue;
-
-      const dist = Math.hypot(enemyPos.x - charPos.x, enemyPos.y - charPos.y);
-      if (dist < nearestDist) {
-        nearestDist = dist;
-        nearest = enemy;
-      }
-    }
-
-    return nearest;
-  }
-
-  /**
-   * Check if game should end
-   */
-  private shouldEndGame(turn: number): boolean {
-    // Check if only one side has active models
-    const activeBySide = new Map<string, number>();
-    
-    for (const sideId of this.sideIds) {
-      activeBySide.set(sideId, 0);
-    }
-
-    for (const character of this.manager.characters) {
-      if (!character.state.isEliminated && !character.state.isKOd) {
-        const sideId = this.findCharacterSide(character);
-        if (sideId) {
-          const count = activeBySide.get(sideId) ?? 0;
-          activeBySide.set(sideId, count + 1);
-        }
-      }
-    }
-
-    const activeSides = Array.from(activeBySide.values()).filter(c => c > 0).length;
-    return activeSides <= 1 || turn >= 10;
-  }
-
-  /**
-   * Get game end reason
-   */
-  private getGameEndReason(): string {
-    const activeCharacters = this.manager.characters.filter(
-      c => !c.state.isEliminated && !c.state.isKOd
-    );
-
-    if (activeCharacters.length === 0) {
-      return 'All models eliminated';
-    }
-
-    const sideCounts = new Map<string, number>();
-    for (const char of activeCharacters) {
-      const sideId = this.findCharacterSide(char);
-      if (sideId) {
-        const count = sideCounts.get(sideId) ?? 0;
-        sideCounts.set(sideId, count + 1);
-      }
-    }
-
-    if (sideCounts.size === 1) {
-      return 'One side remaining';
-    }
-
-    return 'Maximum turns reached';
-  }
-
-  /**
-   * Phase 3.3: Consider spending IP to activate squad member immediately
-   * QSR: Maintain Initiative costs 1 IP to activate another Ready model from same Side
-   */
-  private considerSquadIPActivation(
+  private getAggressiveFallbackDecision(
     character: Character,
-    turn: number
-  ): {
-    success: boolean;
-    totalActions: number;
-    successfulActions: number;
-    failedActions: number;
-  } {
-    const result = {
-      success: false,
-      totalActions: 0,
-      successfulActions: 0,
-      failedActions: 0,
-    };
-
-    // Find character's side
-    const side = this.sides.find(s => 
-      s.members.some(m => m.character.id === character.id)
+    apRemaining: number,
+    preferredTarget?: Character
+  ): ActionDecision | null {
+    return this.decisionRuntime.getAggressiveFallbackDecision(
+      character,
+      apRemaining,
+      preferredTarget
     );
-    
-    if (!side) return result;
-
-    // Check if side has IP available
-    const ipAvailable = side.state.initiativePoints ?? 0;
-    if (ipAvailable < 1) return result;
-
-    // Find Ready squad members within cohesion range (8 MU)
-    const characterPos = this.battlefield.getCharacterPosition(character);
-    if (!characterPos) return result;
-
-    const readySquadMembers: Character[] = [];
-    for (const member of side.members) {
-      if (member.character.id === character.id) continue; // Skip self
-      if (member.character.state.isEliminated || member.character.state.isKOd) continue;
-      if (!member.character.state.isReady) continue; // Must be Ready
-      if (member.character.state.isWaiting) continue; // Don't interrupt Wait
-
-      const memberPos = this.battlefield.getCharacterPosition(member.character);
-      if (!memberPos) continue;
-
-      const distance = Math.hypot(memberPos.x - characterPos.x, memberPos.y - characterPos.y);
-      if (distance <= 8) { // Within cohesion range
-        readySquadMembers.push(member.character);
-      }
-    }
-
-    if (readySquadMembers.length === 0) return result;
-
-    // Spend 1 IP (Maintain Initiative) and immediately activate a nearby Ready squad member.
-    const firstSquadMember = readySquadMembers[0];
-    const ap = this.manager.beginActivation(firstSquadMember);
-    if (ap <= 0 || firstSquadMember.state.isEliminated || firstSquadMember.state.isKOd) {
-      this.manager.endActivation(firstSquadMember);
-      return result;
-    }
-
-    const spent = this.manager.maintainInitiative(side);
-    if (!spent) {
-      this.manager.endActivation(firstSquadMember);
-      return result;
-    }
-
-    if (this.logger) {
-      this.logger.logIpSpending(side.id, character.id, 'push', turn);
-    }
-
-    if (!firstSquadMember.state.isEliminated && !firstSquadMember.state.isKOd) {
-      const squadResult = this.runCharacterTurn(firstSquadMember, turn);
-      result.totalActions += squadResult.totalActions;
-      result.successfulActions += squadResult.successfulActions;
-      result.failedActions += squadResult.failedActions;
-      result.success = true;
-    }
-
-    this.manager.endActivation(firstSquadMember);
-
-    return result;
   }
 
-  /**
-   * Get side name for a character
-   */
-  private getSideNameForCharacter(character: Character): string {
-    const side = this.sides.find(s => s.members.some(m => m.character.id === character.id));
-    return side?.name || 'Unknown';
+  private estimateImmediateMoveAllowance(character: Character): number {
+    return estimateImmediateMoveAllowanceForGameLoop(character);
   }
+
 }
 
 /**

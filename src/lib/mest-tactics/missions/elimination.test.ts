@@ -138,6 +138,37 @@ describe('Elimination Mission', () => {
     });
   });
 
+  describe('trackMidlineCross', () => {
+    it('counts each model only once for Aggression crossing', () => {
+      const modelId = sideA.members[0].id;
+      const center = { x: 5, y: 5 };
+
+      manager.trackMidlineCross(modelId, sideA.id, { x: 1, y: 5 }, center);
+      manager.trackMidlineCross(modelId, sideA.id, { x: 6, y: 5 }, center);
+      manager.trackMidlineCross(modelId, sideA.id, { x: 8, y: 5 }, center);
+
+      const state = manager.getState();
+      expect(state.aggression.crossedBySide[sideA.id]).toBe(1);
+      expect(state.aggression.firstCrossedSideId).toBe(sideA.id);
+    });
+
+    it('requires crossing to the opposite half based on model origin half', () => {
+      const modelId = sideB.members[0].id;
+      const center = { x: 5, y: 5 };
+
+      manager.trackMidlineCross(modelId, sideB.id, { x: 9, y: 5 }, center);
+      manager.trackMidlineCross(modelId, sideB.id, { x: 8, y: 5 }, center);
+
+      let state = manager.getState();
+      expect(state.aggression.crossedBySide[sideB.id] ?? 0).toBe(0);
+
+      manager.trackMidlineCross(modelId, sideB.id, { x: 4, y: 5 }, center);
+      state = manager.getState();
+      expect(state.aggression.crossedBySide[sideB.id]).toBe(1);
+      expect(state.aggression.firstCrossedSideId).toBe(sideB.id);
+    });
+  });
+
   describe('checkForVictory', () => {
     it('should detect victory when all enemies eliminated', () => {
       // Eliminate all Side B models

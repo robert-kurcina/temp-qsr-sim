@@ -9,8 +9,6 @@ import type { Character } from '../../../src/lib/mest-tactics/core/Character';
 import type { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
 import type { ModelSlot } from '../../../src/lib/mest-tactics/mission/MissionSide';
 import type { MissionRuntimeUpdate } from '../../../src/lib/mest-tactics/missions/mission-runtime-adapter';
-import type { ObjectiveMarkerManager } from '../../../src/lib/mest-tactics/mission/objective-markers';
-import type { AIContext } from '../../../src/lib/mest-tactics/ai/core/AIController';
 import { MissionRuntimeAdapter, createMissionRuntimeAdapter } from '../../../src/lib/mest-tactics/missions/mission-runtime-adapter';
 
 export interface MissionRuntimeState {
@@ -212,56 +210,6 @@ export function syncMissionRuntimeForAttack(
 
   // Update mission state if needed
   // (specific logic depends on mission type)
-}
-
-/**
- * Build AI objective marker snapshot
- */
-export function buildAiObjectiveMarkerSnapshot(
-  markerManager: ObjectiveMarkerManager | null,
-  gameManager: any
-): any {
-  if (!markerManager) {
-    return {
-      markers: [],
-      heldByCharacter: {},
-      characterHolding: {},
-    } as any;
-  }
-
-  const markers = markerManager.getAllMarkers();
-  const heldByCharacter: Record<string, string> = {};
-  const characterHolding: Record<string, string> = {};
-
-  for (const marker of markers) {
-    if (marker.heldBy) {
-      heldByCharacter[marker.id] = marker.heldBy;
-      characterHolding[marker.heldBy] = marker.id;
-    }
-  }
-
-  return {
-    markers: markers.map(m => ({
-      id: m.id,
-      kind: m.kind,
-      position: m.position,
-      heldBy: m.heldBy,
-    })),
-    heldByCharacter,
-    characterHolding,
-  } as any;
-}
-
-/**
- * Get marker key IDs in hand
- */
-export function getMarkerKeyIdsInHand(
-  character: Character,
-  gameManager: any
-): string[] {
-  // This would need access to the actual marker manager
-  // For now, return empty array
-  return [];
 }
 
 /**

@@ -115,7 +115,34 @@ export function getTacticallyRelevantEnemies(context: AIContext): Character[] {
 
   // Not engaged: use visibility-based culling
   const visibilityOR = context.config.visibilityOrMu ?? 16;
-  return findEnemiesWithinRange(context, characterPos, visibilityOR);
+  const inRange = findEnemiesWithinRange(context, characterPos, visibilityOR);
+  if (inRange.length > 0) {
+    return inRange;
+  }
+
+  // Fallback: keep nearest known enemies when all are outside visibility range.
+  // This avoids empty target sets that can stall long-lane approach planning.
+  const gameSize = String(context.config.gameSize ?? '').toUpperCase();
+  const fallbackCount =
+    gameSize === 'VERY_SMALL' || gameSize === 'SMALL'
+      ? 2
+      : 3;
+  const nearestKnown = context.enemies
+    .filter(enemy => !enemy.state.isEliminated && !enemy.state.isKOd)
+    .map(enemy => {
+      const enemyPos = context.battlefield.getCharacterPosition(enemy);
+      if (!enemyPos) return null;
+      return {
+        enemy,
+        distance: Math.hypot(characterPos.x - enemyPos.x, characterPos.y - enemyPos.y),
+      };
+    })
+    .filter((entry): entry is { enemy: Character; distance: number } => Boolean(entry))
+    .sort((a, b) => (a.distance === b.distance ? a.enemy.id.localeCompare(b.enemy.id) : a.distance - b.distance))
+    .slice(0, fallbackCount)
+    .map(entry => entry.enemy);
+
+  return nearestKnown;
 }
 
 /**

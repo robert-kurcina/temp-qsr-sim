@@ -15,6 +15,10 @@ import { validateAction, ActionValidation } from '../tactical/GOAP';
 import { attemptHide, attemptDetect } from '../../status/concealment';
 import { performPushing } from '../../actions/pushing-and-maneuvers';
 import { InstrumentationLogger, LoggedActionType, LoggedAction } from '../../instrumentation/QSRInstrumentation';
+import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
+import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
+import { getSprintMovementBonus, getLeapAgilityBonus } from '../../traits/combat-traits';
+import { assessBestMeleeLegality, getMeleeWeaponsForLegality } from '../shared/MeleeLegality';
 
 /**
  * Execution result for an AI action
@@ -68,6 +72,8 @@ export interface AIExecutionContext {
   currentRound: number;
   /** AP remaining for character */
   apRemaining: number;
+  /** Actions already executed by this model in the current initiative */
+  actionsTakenThisInitiative?: number;
   /** All active allies */
   allies: Character[];
   /** All active enemies */
@@ -188,11 +194,29 @@ export class AIActionExecutor {
   /**
    * Validate an action decision
    */
+  validateActionDecision(
+    decision: ActionDecision,
+    character: Character,
+    context: AIExecutionContext
+  ): ActionValidation {
+    return this.validateDecision(decision, character, context);
+  }
+
+  /**
+   * Validate an action decision
+   */
   private validateDecision(
     decision: ActionDecision,
     character: Character,
     context: AIExecutionContext
   ): ActionValidation {
+    if (decision.type === 'close_combat') {
+      return this.validateCloseCombatDecision(decision, character, context);
+    }
+    if (decision.type === 'charge') {
+      return this.validateChargeDecision(decision, character, context);
+    }
+
     // Map AI action type to GOAP action type for validation
     const goapType = this.mapActionType(decision.type);
     
@@ -240,6 +264,108 @@ export class AIActionExecutor {
     );
   }
 
+  private validateChargeDecision(
+    decision: ActionDecision,
+    character: Character,
+    context: AIExecutionContext
+  ): ActionValidation {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    if (!decision.target) {
+      errors.push('Charge requires target');
+    }
+    if (!decision.position) {
+      errors.push('Charge requires destination');
+    }
+    if (context.apRemaining < 1) {
+      errors.push(`Insufficient AP: need 1, have ${context.apRemaining}`);
+    }
+    if (this.isEngagedWithAnyOpponents(character, context.enemies)) {
+      errors.push('Engaged models must Disengage before charging');
+    }
+
+    const startPos = context.battlefield.getCharacterPosition(character);
+    const targetPos = decision.target ? context.battlefield.getCharacterPosition(decision.target) : undefined;
+    if (!startPos) {
+      errors.push('Missing charger position');
+    }
+    if (decision.target && !targetPos) {
+      errors.push('Missing charge target position');
+    }
+    if (decision.target?.state.isKOd || decision.target?.state.isEliminated) {
+      errors.push('Charge target is out-of-play');
+    }
+
+    if (startPos && decision.position) {
+      const maxDistance = this.estimateChargeMovementAllowance(character, context.battlefield, context.enemies);
+      const distance = Math.hypot(decision.position.x - startPos.x, decision.position.y - startPos.y);
+      if (distance > maxDistance + 0.25) {
+        errors.push(`Charge destination out of range: ${distance.toFixed(2)} > ${maxDistance.toFixed(2)}`);
+      }
+    }
+
+    if (decision.position && targetPos) {
+      const attackerModel = {
+        id: character.id,
+        position: decision.position,
+        baseDiameter: getBaseDiameterFromSiz(character.finalAttributes.siz ?? character.attributes.siz ?? 3),
+        siz: character.finalAttributes.siz ?? character.attributes.siz ?? 3,
+      };
+      const targetModel = {
+        id: decision.target!.id,
+        position: targetPos,
+        baseDiameter: getBaseDiameterFromSiz(decision.target!.finalAttributes.siz ?? decision.target!.attributes.siz ?? 3),
+        siz: decision.target!.finalAttributes.siz ?? decision.target!.attributes.siz ?? 3,
+      };
+      if (!SpatialRules.isEngaged(attackerModel, targetModel)) {
+        errors.push('Charge destination does not reach base-contact engagement');
+      }
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      warnings,
+    };
+  }
+
+  private validateCloseCombatDecision(
+    decision: ActionDecision,
+    character: Character,
+    context: AIExecutionContext
+  ): ActionValidation {
+    const errors: string[] = [];
+    const warnings: string[] = [];
+
+    if (!decision.target) {
+      errors.push('Close combat requires target');
+      return { isValid: false, errors, warnings };
+    }
+    if (context.apRemaining < 1) {
+      errors.push(`Insufficient AP: need 1, have ${context.apRemaining}`);
+    }
+    if (decision.target.state.isKOd || decision.target.state.isEliminated) {
+      errors.push('Close combat target is out-of-play');
+    }
+    const selectedWeapon = decision.weapon ?? this.findMeleeWeapon(character) ?? undefined;
+    const actionsTakenThisInitiative = Math.max(0, context.actionsTakenThisInitiative ?? 0);
+    const meleeLegality = assessBestMeleeLegality(character, decision.target, context.battlefield, {
+      weapons: selectedWeapon ? [selectedWeapon] : getMeleeWeaponsForLegality(character),
+      isFirstAction: actionsTakenThisInitiative === 0,
+      isFreeAtStart: !this.isEngagedWithAnyOpponents(character, context.enemies),
+    });
+    if (!meleeLegality.canAttack) {
+      errors.push('Target not in legal melee range (base-contact/reach/overreach)');
+    }
+
+    return {
+      isValid: errors.length === 0,
+      errors,
+      warnings,
+    };
+  }
+
   /**
    * Execute a validated decision
    */
@@ -262,6 +388,15 @@ export class AIActionExecutor {
           return this.createFailure(decision, character, 'Move requires position');
         }
         return this.executeMove(character, decision.position, context);
+
+      case 'charge':
+        if (!decision.target) {
+          return this.createFailure(decision, character, 'Charge requires target');
+        }
+        if (!decision.position) {
+          return this.createFailure(decision, character, 'Charge requires destination');
+        }
+        return this.executeCharge(character, decision.target, decision.position, decision.weapon, context);
 
       case 'close_combat':
         if (!decision.target) {
@@ -343,6 +478,20 @@ export class AIActionExecutor {
     character: Character,
     context: AIExecutionContext
   ): ExecutionResult {
+    if (context.apRemaining > 0) {
+      return this.createFailure(
+        { type: 'pushing', reason: 'Pushing failed', priority: 2, requiresAP: false },
+        character,
+        'Pushing requires 0 AP'
+      );
+    }
+    if (!character.state.isAttentive) {
+      return this.createFailure(
+        { type: 'pushing', reason: 'Pushing failed', priority: 2, requiresAP: false },
+        character,
+        'Character is not Attentive'
+      );
+    }
     const result = performPushing(
       this.manager.activationDeps(),
       character
@@ -456,6 +605,101 @@ export class AIActionExecutor {
   }
 
   /**
+   * Execute Charge action (move into engagement + immediate close combat).
+   * Charge spends 1 AP for the combined sequence.
+   */
+  private executeCharge(
+    character: Character,
+    target: Character,
+    destination: Position,
+    weapon: Item | undefined,
+    context: AIExecutionContext
+  ): ExecutionResult {
+    if (!this.manager.battlefield) {
+      return this.createFailure(
+        { type: 'charge', target, position: destination, reason: 'Charge', priority: 3, requiresAP: true },
+        character,
+        'No battlefield'
+      );
+    }
+
+    if (this.isEngagedWithAnyOpponents(character, context.enemies)) {
+      return this.createFailure(
+        { type: 'charge', target, position: destination, reason: 'Charge', priority: 3, requiresAP: true },
+        character,
+        'Engaged models must Disengage before charging'
+      );
+    }
+
+    const selectedWeapon = weapon ?? this.findMeleeWeapon(character);
+    if (!selectedWeapon) {
+      return this.createFailure(
+        { type: 'charge', target, position: destination, reason: 'Charge', priority: 3, requiresAP: true },
+        character,
+        'No melee weapon available'
+      );
+    }
+
+    if (!this.manager.spendAp(character, 1)) {
+      return this.createFailure(
+        { type: 'charge', target, position: destination, reason: 'Charge', priority: 3, requiresAP: true },
+        character,
+        'Not enough AP'
+      );
+    }
+
+    const moveResult = this.manager.executeMove(character, destination, {
+      opponents: context.enemies,
+      allowOpportunityAttack: true,
+      opportunityWeapon: selectedWeapon,
+      isMovingStraight: true,
+      isAtStartOrEndOfMovement: false,
+    });
+    if (!moveResult.moved) {
+      return this.createFailure(
+        { type: 'charge', target, position: destination, reason: 'Charge', priority: 3, requiresAP: true },
+        character,
+        moveResult.reason ?? 'Charge move failed'
+      );
+    }
+
+    const attackerModel = this.buildSpatialModel(character);
+    const targetModel = this.buildSpatialModel(target);
+    if (!attackerModel || !targetModel || !SpatialRules.isEngaged(attackerModel, targetModel)) {
+      return this.createFailure(
+        { type: 'charge', target, position: destination, reason: 'Charge', priority: 3, requiresAP: true },
+        character,
+        'Charge did not end in base-contact engagement'
+      );
+    }
+
+    try {
+      this.manager.executeCloseCombatAttack(
+        character,
+        target,
+        selectedWeapon,
+        {
+          context: { isCharge: true } as any,
+          attacker: attackerModel,
+          target: targetModel,
+          allowBonusActions: true,
+        }
+      );
+      return this.createSuccess(
+        { type: 'charge', target, position: destination, weapon: selectedWeapon, reason: 'Charge attack', priority: 3, requiresAP: true },
+        character,
+        'Charge executed'
+      );
+    } catch (error) {
+      return this.createFailure(
+        { type: 'charge', target, position: destination, weapon: selectedWeapon, reason: 'Charge', priority: 3, requiresAP: true },
+        character,
+        error instanceof Error ? error.message : 'Charge failed'
+      );
+    }
+  }
+
+  /**
    * Execute Close Combat action
    */
   private executeCloseCombat(
@@ -468,11 +712,6 @@ export class AIActionExecutor {
       return this.createFailure({ type: 'close_combat', reason: '', priority: 0, requiresAP: true }, character, 'No battlefield');
     }
 
-    // Spend 1 AP for close combat attack
-    if (!this.manager.spendAp(character, 1)) {
-      return this.createFailure({ type: 'close_combat', reason: '', priority: 0, requiresAP: true }, character, 'Not enough AP');
-    }
-
     const selectedWeapon = weapon ?? this.findMeleeWeapon(character);
     if (!selectedWeapon) {
       return this.createFailure(
@@ -482,14 +721,50 @@ export class AIActionExecutor {
       );
     }
 
+    if (target.state.isKOd || target.state.isEliminated) {
+      return this.createFailure(
+        { type: 'close_combat', target, weapon: selectedWeapon, reason: 'Close combat', priority: 3, requiresAP: true },
+        character,
+        'Target is out-of-play'
+      );
+    }
+
+    const attackerModel = this.buildSpatialModel(character);
+    const targetModel = this.buildSpatialModel(target);
+    if (!attackerModel || !targetModel) {
+      return this.createFailure(
+        { type: 'close_combat', target, weapon: selectedWeapon, reason: 'Close combat', priority: 3, requiresAP: true },
+        character,
+        'Unable to resolve melee positions'
+      );
+    }
+    const meleeLegality = assessBestMeleeLegality(character, target, this.manager.battlefield, {
+      weapons: [selectedWeapon],
+      isFirstAction: Math.max(0, context.actionsTakenThisInitiative ?? 0) === 0,
+      isFreeAtStart: !this.isEngagedWithAnyOpponents(character, context.enemies),
+    });
+    if (!meleeLegality.canAttack) {
+      return this.createFailure(
+        { type: 'close_combat', target, weapon: selectedWeapon, reason: 'Close combat', priority: 3, requiresAP: true },
+        character,
+        'Target not in legal melee range'
+      );
+    }
+
+    // Spend 1 AP for close combat attack
+    if (!this.manager.spendAp(character, 1)) {
+      return this.createFailure({ type: 'close_combat', reason: '', priority: 0, requiresAP: true }, character, 'Not enough AP');
+    }
+
     try {
       const result = this.manager.executeCloseCombatAttack(
         character,
         target,
         selectedWeapon,
         {
-          attacker: this.buildSpatialModel(character),
-          target: this.buildSpatialModel(target),
+          attacker: attackerModel,
+          target: targetModel,
+          context: meleeLegality.requiresOverreach ? { isOverreach: true } : undefined,
           allowBonusActions: true,
         }
       );
@@ -976,6 +1251,7 @@ export class AIActionExecutor {
     const mapping: Record<string, string> = {
       'hold': 'hold',
       'move': 'move',
+      'charge': 'move',
       'close_combat': 'close_combat',
       'ranged_combat': 'ranged_combat',
       'disengage': 'disengage',
@@ -1027,13 +1303,49 @@ export class AIActionExecutor {
     if (!this.manager.battlefield) return null;
     const position = this.manager.battlefield.getCharacterPosition(character);
     if (!position) return null;
-    const siz = character.finalAttributes.siz ?? 3;
+    const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
     return {
       id: character.id,
       position,
-      baseDiameter: siz / 3,
+      baseDiameter: getBaseDiameterFromSiz(siz),
       siz,
     };
+  }
+
+  private isEngagedWithTarget(attacker: Character, target: Character): boolean {
+    const attackerModel = this.buildSpatialModel(attacker);
+    const targetModel = this.buildSpatialModel(target);
+    if (!attackerModel || !targetModel) return false;
+    return SpatialRules.isEngaged(attackerModel, targetModel);
+  }
+
+  private isEngagedWithAnyOpponents(character: Character, opponents: Character[]): boolean {
+    const actorModel = this.buildSpatialModel(character);
+    if (!actorModel) return false;
+
+    for (const opponent of opponents) {
+      if (!opponent || opponent.state.isKOd || opponent.state.isEliminated) continue;
+      const opponentModel = this.buildSpatialModel(opponent);
+      if (!opponentModel) continue;
+      if (SpatialRules.isEngaged(actorModel, opponentModel)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private estimateChargeMovementAllowance(character: Character, battlefield: Battlefield, opponents: Character[] = []): number {
+    const baseMov = character.finalAttributes.mov ?? character.attributes.mov ?? 2;
+    const engagedWithOpponent = this.isEngagedWithAnyOpponents(character, opponents);
+    const sprintBonus = getSprintMovementBonus(
+      character,
+      true,
+      Boolean(character.state.isAttentive),
+      !engagedWithOpponent
+    );
+    const leapBonus = getLeapAgilityBonus(character);
+    return Math.max(0, baseMov + 2 + sprintBonus + leapBonus);
   }
 
   private log(message: string): void {

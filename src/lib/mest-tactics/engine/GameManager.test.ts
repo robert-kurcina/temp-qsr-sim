@@ -541,11 +541,14 @@ describe('GameManager', () => {
     mover.finalAttributes.mov = 2;
     gameManager.placeCharacter(mover, { x: 0, y: 1 });
 
-    const blocked = gameManager.executeMove(mover, { x: 3, y: 1 });
-    expect(blocked.moved).toBe(false);
-    expect(blocked.reason).toContain('out of range');
+    const limited = gameManager.executeMove(mover, { x: 3, y: 1 });
+    expect(limited.moved).toBe(true);
+    const limitedPos = gameManager.getCharacterPosition(mover);
+    expect(limitedPos?.x ?? 0).toBeGreaterThan(0);
+    expect(limitedPos?.x ?? 99).toBeLessThan(3);
 
     mover.finalAttributes.mov = 6;
+    gameManager.moveCharacter(mover, { x: 0, y: 1 });
     const allowed = gameManager.executeMove(mover, { x: 3, y: 1 });
     expect(allowed.moved).toBe(true);
   });
@@ -568,11 +571,14 @@ describe('GameManager', () => {
     gameManager.placeCharacter(mover, { x: 0, y: 1 });
 
     mover.finalAttributes.mov = 6;
-    const blocked = gameManager.executeMove(mover, { x: 3, y: 1 });
-    expect(blocked.moved).toBe(false);
-    expect(blocked.reason).toContain('out of range');
+    const limited = gameManager.executeMove(mover, { x: 3, y: 1 });
+    expect(limited.moved).toBe(true);
+    const limitedPos = gameManager.getCharacterPosition(mover);
+    expect(limitedPos?.x ?? 0).toBeGreaterThan(0);
+    expect(limitedPos?.x ?? 99).toBeLessThan(3);
 
     mover.finalAttributes.mov = 10;
+    gameManager.moveCharacter(mover, { x: 0, y: 1 });
     const allowed = gameManager.executeMove(mover, { x: 3, y: 1 });
     expect(allowed.moved).toBe(true);
   });
@@ -615,7 +621,7 @@ describe('GameManager', () => {
       opponents: [],
     });
     expect(firstSwap.moved).toBe(true);
-    expect(firstSwap.swapApCost).toBe(0);
+    expect('swapApCost' in firstSwap ? firstSwap.swapApCost : undefined).toBe(0);
     expect(gameManager.getCharacterPosition(mover)).toEqual({ x: 2, y: 1 });
     expect(gameManager.getCharacterPosition(friendly)).toEqual({ x: 1, y: 1 });
     expect(gameManager.getApRemaining(mover)).toBe(2);
@@ -626,7 +632,7 @@ describe('GameManager', () => {
       opponents: [],
     });
     expect(secondSwap.moved).toBe(true);
-    expect(secondSwap.swapApCost).toBe(1);
+    expect('swapApCost' in secondSwap ? secondSwap.swapApCost : undefined).toBe(1);
     expect(gameManager.getCharacterPosition(mover)).toEqual({ x: 1, y: 1 });
     expect(gameManager.getCharacterPosition(friendly)).toEqual({ x: 2, y: 1 });
     expect(gameManager.getApRemaining(mover)).toBe(1);

@@ -1,0 +1,1892 @@
+{
+  "config": {
+    "missionId": "QAI_11",
+    "missionName": "Elimination",
+    "gameSize": "VERY_SMALL",
+    "battlefieldWidth": 18,
+    "battlefieldHeight": 24,
+    "maxTurns": 6,
+    "endGameTurn": 3,
+    "sides": [
+      {
+        "name": "Alpha",
+        "bp": 200,
+        "modelCount": 3,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Alpha Assembly"
+      },
+      {
+        "name": "Bravo",
+        "bp": 200,
+        "modelCount": 3,
+        "tacticalDoctrine": "operative",
+        "assemblyName": "Bravo Assembly"
+      }
+    ],
+    "densityRatio": 0,
+    "lighting": "Day, Clear",
+    "visibilityOrMu": 16,
+    "maxOrm": 3,
+    "allowConcentrateRangeExtension": true,
+    "perCharacterFovLos": false,
+    "allowWaitAction": false,
+    "allowHideAction": false,
+    "verbose": true,
+    "seed": 101,
+    "audit": false,
+    "viewer": false,
+    "battlefieldPath": "/Users/kitrok/projects/temp-qsr-sim/data/battlefields/default/simple/VERY_SMALL-battlefield_A0-B0-W0-R0-S0-T0.json"
+  },
+  "winner": "Alpha",
+  "finalCounts": [
+    {
+      "name": "Alpha",
+      "remaining": 2
+    },
+    {
+      "name": "Bravo",
+      "remaining": 2
+    }
+  ],
+  "stats": {
+    "totalActions": 69,
+    "moves": 17,
+    "movesWhileWaiting": 0,
+    "closeCombats": 8,
+    "rangedCombats": 4,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 2,
+    "turnsCompleted": 3,
+    "losChecks": 4,
+    "lofChecks": 4,
+    "totalPathLength": 50.98140956982914,
+    "modelsMoved": 0
+  },
+  "missionRuntime": {
+    "vpBySide": {
+      "Alpha": 1,
+      "Bravo": 0
+    },
+    "rpBySide": {
+      "Alpha": 0,
+      "Bravo": 0
+    },
+    "predictedScoring": {
+      "bySide": {
+        "Alpha": {
+          "predictedVp": 0.16853932584269662,
+          "predictedRp": 0,
+          "keyScores": {
+            "elimination": {
+              "current": 0,
+              "predicted": 0.16853932584269662,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "bottled": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "aggression": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": -2
+            }
+          }
+        },
+        "Bravo": {
+          "predictedVp": 1.112781954887218,
+          "predictedRp": 0,
+          "keyScores": {
+            "elimination": {
+              "current": 0,
+              "predicted": 0.11278195488721804,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "bottled": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": 0
+            },
+            "aggression": {
+              "current": 0,
+              "predicted": 0,
+              "confidence": 0,
+              "leadMargin": -2
+            },
+            "first_blood": {
+              "current": 1,
+              "predicted": 1,
+              "confidence": 1,
+              "leadMargin": 1
+            }
+          }
+        }
+      }
+    }
+  },
+  "sideStrategies": {
+    "Alpha": {
+      "doctrine": "operative",
+      "advice": [
+        "Close game - every VP counts",
+        "Behind on eliminations - seek aggressive engagements"
+      ],
+      "context": {
+        "amILeading": false,
+        "vpMargin": -1.8922305764411027,
+        "winningKeys": [],
+        "losingKeys": [
+          "elimination",
+          "bottled",
+          "first_blood"
+        ]
+      },
+      "pressureContinuityDiagnostics": {
+        "scrum": {
+          "updates": 3,
+          "signatureSamples": 0,
+          "signatureMatches": 0,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 3,
+          "signatureCoverageRate": 0,
+          "breakRate": 0,
+          "matchRate": 0
+        },
+        "lane": {
+          "updates": 2,
+          "signatureSamples": 0,
+          "signatureMatches": 0,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 2,
+          "signatureCoverageRate": 0,
+          "breakRate": 0,
+          "matchRate": 0
+        },
+        "combined": {
+          "updates": 5,
+          "signatureSamples": 0,
+          "signatureMatches": 0,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 5,
+          "signatureCoverageRate": 0,
+          "breakRate": 0,
+          "matchRate": 0
+        }
+      },
+      "decisionTrace": [
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.0333
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1.8922305764411027,
+            "winningKeys": [],
+            "losingKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              },
+              {
+                "key": "bottled",
+                "predicted": 0.6666666666666666,
+                "confidence": 0.5
+              },
+              {
+                "key": "elimination",
+                "predicted": 0.22556390977443608,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1.6756,
+              "potentialDelta": -1.6756,
+              "urgency": 2.0066
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts",
+              "Behind on eliminations - seek aggressive engagements"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 2,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1.8922305764411027,
+            "winningKeys": [],
+            "losingKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              },
+              {
+                "key": "bottled",
+                "predicted": 0.6666666666666666,
+                "confidence": 0.5
+              },
+              {
+                "key": "elimination",
+                "predicted": 0.22556390977443608,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1.6756,
+              "potentialDelta": -1.6756,
+              "urgency": 2.0532
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts",
+              "Behind on eliminations - seek aggressive engagements"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1.8922305764411027,
+            "winningKeys": [],
+            "losingKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              },
+              {
+                "key": "bottled",
+                "predicted": 0.6666666666666666,
+                "confidence": 0.5
+              },
+              {
+                "key": "elimination",
+                "predicted": 0.22556390977443608,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+                "score": 1,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Bravo Assembly-2-veteran-loadout",
+                "score": 0.9,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+                "score": 1,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-2-veteran-loadout",
+                "score": 0.9,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1.6756,
+              "potentialDelta": -1.6756,
+              "urgency": 2.0066
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts",
+              "Behind on eliminations - seek aggressive engagements"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+              "Bravo Assembly-2-veteran-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "mixed_pressure"
+          }
+        },
+        {
+          "turn": 3,
+          "sideId": "Alpha",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": -1.8922305764411027,
+            "winningKeys": [],
+            "losingKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "topOpponentKeyPressure": [
+              {
+                "key": "first_blood",
+                "predicted": 1,
+                "confidence": 1
+              },
+              {
+                "key": "bottled",
+                "predicted": 0.6666666666666666,
+                "confidence": 0.5
+              },
+              {
+                "key": "elimination",
+                "predicted": 0.22556390977443608,
+                "confidence": 1
+              }
+            ],
+            "topTargetCommitments": [
+              {
+                "targetId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+                "score": 0.75,
+                "attackerCount": 1
+              },
+              {
+                "targetId": "Bravo Assembly-2-veteran-loadout",
+                "score": 0.675,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+                "score": 0.82,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [
+              {
+                "targetId": "Bravo Assembly-2-veteran-loadout",
+                "score": 0.738,
+                "attackerCount": 1
+              }
+            ],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 1.6756,
+              "potentialDelta": -1.6756,
+              "urgency": 2.0866
+            }
+          },
+          "response": {
+            "priority": "contest_keys",
+            "advice": [
+              "Close game - every VP counts",
+              "Behind on eliminations - seek aggressive engagements"
+            ],
+            "focusTargets": [
+              "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+              "Bravo Assembly-2-veteran-loadout"
+            ],
+            "potentialDirective": "deny_opponent_potential",
+            "pressureDirective": "mixed_pressure"
+          }
+        }
+      ]
+    },
+    "Bravo": {
+      "doctrine": "operative",
+      "advice": [
+        "Small lead - secure additional objectives to extend lead",
+        "Winning eliminations - avoid risky engagements"
+      ],
+      "context": {
+        "amILeading": true,
+        "vpMargin": 1.8922305764411027,
+        "winningKeys": [
+          "elimination",
+          "bottled",
+          "first_blood"
+        ],
+        "losingKeys": []
+      },
+      "pressureContinuityDiagnostics": {
+        "scrum": {
+          "updates": 4,
+          "signatureSamples": 0,
+          "signatureMatches": 0,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 4,
+          "signatureCoverageRate": 0,
+          "breakRate": 0,
+          "matchRate": 0
+        },
+        "lane": {
+          "updates": 0,
+          "signatureSamples": 0,
+          "signatureMatches": 0,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 0,
+          "signatureCoverageRate": 0,
+          "breakRate": 0,
+          "matchRate": 0
+        },
+        "combined": {
+          "updates": 4,
+          "signatureSamples": 0,
+          "signatureMatches": 0,
+          "signatureBreaks": 0,
+          "missingSignatureUpdates": 4,
+          "signatureCoverageRate": 0,
+          "breakRate": 0,
+          "matchRate": 0
+        }
+      },
+      "decisionTrace": [
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": false,
+            "vpMargin": 0,
+            "winningKeys": [],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [],
+            "topScrumContinuity": [],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0,
+              "urgency": 1.0333
+            }
+          },
+          "response": {
+            "priority": "neutral",
+            "advice": [
+              "Close game - every VP counts"
+            ],
+            "focusTargets": [],
+            "potentialDirective": "expand_potential",
+            "pressureDirective": "no_pressure_lock"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1.8922305764411027,
+            "winningKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 1,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 1,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0.6756,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0.6756,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead",
+              "Winning eliminations - avoid risky engagements"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-3-elite-sword-broad-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_scrum_pressure"
+          }
+        },
+        {
+          "turn": 2,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1.8922305764411027,
+            "winningKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 0.75,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 0.82,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0.6756,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0.6756,
+              "urgency": 1.0667
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead",
+              "Winning eliminations - avoid risky engagements"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-3-elite-sword-broad-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_scrum_pressure"
+          }
+        },
+        {
+          "turn": 1,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1.8922305764411027,
+            "winningKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 1.75,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 1.82,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0.6756,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0.6756,
+              "urgency": 1.02
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead",
+              "Winning eliminations - avoid risky engagements"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-3-elite-sword-broad-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_scrum_pressure"
+          }
+        },
+        {
+          "turn": 3,
+          "sideId": "Bravo",
+          "doctrine": "operative",
+          "observations": {
+            "amILeading": true,
+            "vpMargin": 1.8922305764411027,
+            "winningKeys": [
+              "elimination",
+              "bottled",
+              "first_blood"
+            ],
+            "losingKeys": [],
+            "topOpponentKeyPressure": [],
+            "topTargetCommitments": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 1.3125,
+                "attackerCount": 1
+              }
+            ],
+            "topScrumContinuity": [
+              {
+                "targetId": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "score": 1.4924,
+                "attackerCount": 1
+              }
+            ],
+            "topLanePressure": [],
+            "fractionalPotential": {
+              "myVpPotential": 0.6756,
+              "opponentVpPotential": 0,
+              "potentialDelta": 0.6756,
+              "urgency": 1.1
+            }
+          },
+          "response": {
+            "priority": "stabilize",
+            "advice": [
+              "Small lead - secure additional objectives to extend lead",
+              "Winning eliminations - avoid risky engagements"
+            ],
+            "focusTargets": [
+              "Alpha Assembly-3-elite-sword-broad-loadout"
+            ],
+            "potentialDirective": "balanced_potential",
+            "pressureDirective": "maintain_scrum_pressure"
+          }
+        }
+      ]
+    }
+  },
+  "usage": {
+    "totalTokens": 0,
+    "tokensPerActivation": 0,
+    "decisionLatencyMs": 0,
+    "modelCount": 6,
+    "modelsMoved": 6,
+    "modelsUsedWait": 0,
+    "modelsUsedDetect": 0,
+    "modelsUsedHide": 0,
+    "modelsUsedReact": 0,
+    "totalPathLength": 50.98140956982914,
+    "averagePathLengthPerMovedModel": 8.496901594971524,
+    "averagePathLengthPerModel": 8.496901594971524,
+    "topPathModels": [
+      {
+        "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+        "modelName": "elite-sword-broad-loadout",
+        "side": "Alpha",
+        "pathLength": 12,
+        "moveActions": 7,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Bravo",
+        "pathLength": 9.81913190966076,
+        "moveActions": 5,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Alpha",
+        "pathLength": 9.16227766016838,
+        "moveActions": 4,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+        "modelName": "militia-spear-medium-shield-medium-loadout",
+        "side": "Alpha",
+        "pathLength": 9,
+        "moveActions": 7,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-2-veteran-loadout",
+        "modelName": "veteran-loadout",
+        "side": "Bravo",
+        "pathLength": 8,
+        "moveActions": 5,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      },
+      {
+        "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+        "modelName": "average-sword-broad-shield-medium-loadout",
+        "side": "Bravo",
+        "pathLength": 3,
+        "moveActions": 6,
+        "waitChoicesGiven": 0,
+        "waitAttempts": 0,
+        "waitSuccesses": 0,
+        "detectAttempts": 0,
+        "detectSuccesses": 0,
+        "hideAttempts": 0,
+        "hideSuccesses": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactAttempts": 0,
+        "reactSuccesses": 0
+      }
+    ]
+  },
+  "nestedSections": {
+    "sides": [
+      {
+        "name": "Alpha",
+        "assemblies": [
+          {
+            "name": "Alpha Assembly",
+            "totalBP": 266,
+            "characters": [
+              {
+                "id": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+                "name": "militia-spear-medium-shield-medium-loadout",
+                "profile": {
+                  "name": "militia-spear-medium-shield-medium-loadout",
+                  "archetype": "Militia",
+                  "attributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 60,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Spear, Medium",
+                      "classification": "Melee",
+                      "traits": [
+                        "Reach",
+                        "Throwable",
+                        "Charge",
+                        "Perimeter",
+                        "[2H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 0,
+                  "y": 0
+                },
+                "endPosition": {
+                  "x": 9,
+                  "y": 1
+                },
+                "state": {
+                  "wounds": 3,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": true,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": false,
+                  "isOrdered": false
+                }
+              },
+              {
+                "id": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+                "name": "militia-spear-medium-shield-medium-loadout",
+                "profile": {
+                  "name": "militia-spear-medium-shield-medium-loadout",
+                  "archetype": "Militia",
+                  "attributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 60,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Spear, Medium",
+                      "classification": "Melee",
+                      "traits": [
+                        "Reach",
+                        "Throwable",
+                        "Charge",
+                        "Perimeter",
+                        "[2H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 0,
+                  "y": 12
+                },
+                "endPosition": {
+                  "x": 9,
+                  "y": 12
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Alpha Assembly-3-elite-sword-broad-loadout",
+                "name": "elite-sword-broad-loadout",
+                "profile": {
+                  "name": "elite-sword-broad-loadout",
+                  "archetype": "Elite",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 3,
+                    "pow": 3,
+                    "str": 3,
+                    "for": 3,
+                    "mov": 3,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 3,
+                    "pow": 3,
+                    "str": 3,
+                    "for": 3,
+                    "mov": 3,
+                    "siz": 3
+                  },
+                  "totalBp": 146,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Sword, Broad",
+                      "classification": "Melee",
+                      "traits": [
+                        "Parry",
+                        "Cleave",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 0,
+                  "y": 23
+                },
+                "endPosition": {
+                  "x": 12,
+                  "y": 23
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bravo",
+        "assemblies": [
+          {
+            "name": "Bravo Assembly",
+            "totalBP": 178,
+            "characters": [
+              {
+                "id": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+                "name": "militia-spear-medium-shield-medium-loadout",
+                "profile": {
+                  "name": "militia-spear-medium-shield-medium-loadout",
+                  "archetype": "Militia",
+                  "attributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 1,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 1,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 60,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Spear, Medium",
+                      "classification": "Melee",
+                      "traits": [
+                        "Reach",
+                        "Throwable",
+                        "Charge",
+                        "Perimeter",
+                        "[2H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 16,
+                  "y": 0
+                },
+                "endPosition": {
+                  "x": 11,
+                  "y": 7
+                },
+                "state": {
+                  "wounds": 5,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": true,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": false,
+                  "isOrdered": false
+                }
+              },
+              {
+                "id": "Bravo Assembly-2-veteran-loadout",
+                "name": "veteran-loadout",
+                "profile": {
+                  "name": "veteran-loadout",
+                  "archetype": "Veteran",
+                  "attributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 3,
+                    "rca": 3,
+                    "ref": 3,
+                    "int": 2,
+                    "pow": 3,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 61,
+                  "burdenTotal": 0,
+                  "equipment": []
+                },
+                "startPosition": {
+                  "x": 16,
+                  "y": 12
+                },
+                "endPosition": {
+                  "x": 9,
+                  "y": 14
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              },
+              {
+                "id": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+                "name": "average-sword-broad-shield-medium-loadout",
+                "profile": {
+                  "name": "average-sword-broad-shield-medium-loadout",
+                  "archetype": "Average",
+                  "attributes": {
+                    "cca": 2,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "finalAttributes": {
+                    "cca": 2,
+                    "rca": 2,
+                    "ref": 2,
+                    "int": 2,
+                    "pow": 2,
+                    "str": 2,
+                    "for": 2,
+                    "mov": 2,
+                    "siz": 3
+                  },
+                  "totalBp": 57,
+                  "burdenTotal": 0,
+                  "equipment": [
+                    {
+                      "name": "Sword, Broad",
+                      "classification": "Melee",
+                      "traits": [
+                        "Parry",
+                        "Cleave",
+                        "[1H]"
+                      ]
+                    },
+                    {
+                      "name": "Shield, Medium",
+                      "classification": "Armor",
+                      "traits": [
+                        "[Laden]",
+                        "Armor",
+                        "Coverage",
+                        "Deflect",
+                        "[1H]"
+                      ]
+                    }
+                  ]
+                },
+                "startPosition": {
+                  "x": 16,
+                  "y": 23
+                },
+                "endPosition": {
+                  "x": 13,
+                  "y": 23
+                },
+                "state": {
+                  "wounds": 0,
+                  "delayTokens": 0,
+                  "fearTokens": 0,
+                  "isKOd": false,
+                  "isEliminated": false,
+                  "isHidden": false,
+                  "isWaiting": false,
+                  "isAttentive": true,
+                  "isOrdered": true
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "battlefieldLayout": {
+      "widthMu": 18,
+      "heightMu": 24,
+      "densityRatio": 0,
+      "terrainFeatures": [],
+      "deployments": [
+        {
+          "characterId": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+          "characterName": "militia-spear-medium-shield-medium-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 0,
+            "y": 0
+          },
+          "endPosition": {
+            "x": 9,
+            "y": 1
+          }
+        },
+        {
+          "characterId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+          "characterName": "militia-spear-medium-shield-medium-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 0,
+            "y": 12
+          },
+          "endPosition": {
+            "x": 9,
+            "y": 12
+          }
+        },
+        {
+          "characterId": "Alpha Assembly-3-elite-sword-broad-loadout",
+          "characterName": "elite-sword-broad-loadout",
+          "sideName": "Alpha",
+          "assemblyName": "Alpha Assembly",
+          "startPosition": {
+            "x": 0,
+            "y": 23
+          },
+          "endPosition": {
+            "x": 12,
+            "y": 23
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+          "characterName": "militia-spear-medium-shield-medium-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 16,
+            "y": 0
+          },
+          "endPosition": {
+            "x": 11,
+            "y": 7
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-2-veteran-loadout",
+          "characterName": "veteran-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 16,
+            "y": 12
+          },
+          "endPosition": {
+            "x": 9,
+            "y": 14
+          }
+        },
+        {
+          "characterId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+          "characterName": "average-sword-broad-shield-medium-loadout",
+          "sideName": "Bravo",
+          "assemblyName": "Bravo Assembly",
+          "startPosition": {
+            "x": 16,
+            "y": 23
+          },
+          "endPosition": {
+            "x": 13,
+            "y": 23
+          }
+        }
+      ]
+    }
+  },
+  "advancedRules": {
+    "bonusActions": {
+      "opportunities": 4,
+      "optionsOffered": 12,
+      "optionsAvailable": 12,
+      "offeredByType": {
+        "Hide": 4,
+        "Refresh": 4,
+        "Reposition": 4
+      },
+      "availableByType": {
+        "Hide": 4,
+        "Refresh": 4,
+        "Reposition": 4
+      },
+      "executed": 4,
+      "executedByType": {
+        "Reposition": 1,
+        "Refresh": 3
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 56,
+      "optionsOffered": 140,
+      "optionsAvailable": 14,
+      "offeredByType": {
+        "CounterCharge": 46,
+        "OpportunityAttack": 46,
+        "TakeCover": 4,
+        "Defend": 12,
+        "CounterAction": 8,
+        "React": 8,
+        "CounterStrike": 8,
+        "CounterFire": 8
+      },
+      "availableByType": {
+        "Defend": 7,
+        "React": 5,
+        "TakeCover": 2
+      },
+      "used": 9,
+      "usedByType": {
+        "Defend": 7,
+        "TakeCover": 2
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 12,
+      "modifiedTests": 9,
+      "modifiersApplied": 15,
+      "byType": {
+        "distance_orm": 4,
+        "hand_penalty": 4,
+        "defend": 7
+      }
+    }
+  },
+  "log": [
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "move",
+      "detail": "Best action (score: 24.18; minimaxLiteNodeValue=21.04, approachBonus=11.16, eliminationApproachBonus=6.53)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "move",
+      "detail": "Best action (score: 24.24; minimaxLiteNodeValue=21.09, approachBonus=11.26, eliminationApproachBonus=6.63)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.78; enemiesNearby=2.00, scoringUrgencyScalar=1.04, sideHasIP=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "move",
+      "detail": "Best action (score: 20.14; minimaxLiteOpponentReplyPressure=12.96, approachBonus=11.45, minimaxLiteNodeValue=10.27)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 6.76; minimaxLiteOpponentReplyPressure=12.96, approachBonus=4.15, minimaxLiteBeamWidth=3.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 19.84; minimaxLiteNodeValue=15.38, minimaxLiteOpponentReplyPressure=13.11, approachBonus=8.94)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.78; enemiesNearby=2.00, scoringUrgencyScalar=1.04, sideHasIP=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 20.08; minimaxLiteNodeValue=15.61, minimaxLiteOpponentReplyPressure=13.21, approachBonus=8.99)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 19.53; minimaxLiteNodeValue=14.10, minimaxLiteOpponentReplyPressure=12.96, approachBonus=8.93)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 19.99; minimaxLiteNodeValue=15.78, minimaxLiteOpponentReplyPressure=12.96, approachBonus=8.98)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.78; enemiesNearby=3.00, scoringUrgencyScalar=1.04, sideHasIP=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 19.01; minimaxLiteNodeValue=14.08, minimaxLiteOpponentReplyPressure=12.96, approachBonus=9.07)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 3.05; minimaxLiteOpponentReplyPressure=13.21, minimaxLiteFollowUpPotential=6.64, minimaxLiteBeamWidth=3.00)",
+      "result": "ranged=true:orm=2"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 19.30; minimaxLiteNodeValue=13.29, minimaxLiteOpponentReplyPressure=13.11, approachBonus=9.24)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; scoringUrgencyScalar=1.04, enemiesNearby=1.00, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 19.86; minimaxLiteNodeValue=15.03, minimaxLiteOpponentReplyPressure=13.21, approachBonus=9.12)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Fallback advance after stalled decision",
+      "result": "move=true:forced"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "move",
+      "detail": "Best action (score: 15.87; minimaxLiteOpponentReplyPressure=13.41, approachBonus=9.23, minimaxLiteNodeValue=5.92)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "move",
+      "detail": "Best action (score: 2.99; minimaxLiteOpponentReplyPressure=13.31, minimaxLiteNodeValue=-5.28, minimaxLiteCurrentPatch=3.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 1.38; enemiesNearby=2.00, scoringUrgencyScalar=1.04, isInGoodPosition=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-2-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "move",
+      "detail": "Best action (score: 1.50; minimaxLiteOpponentReplyPressure=13.31, minimaxLiteNodeValue=-7.29, minimaxLiteCurrentPatch=3.00)",
+      "result": "move=false:validation:Character is Distracted and cannot act"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "charge",
+      "detail": "Combat priority: Best action (score: 16.33; minimaxLiteNodeValue=15.12, minimaxLiteOpponentReplyPressure=13.49, minimaxLiteFollowUpPotential=7.84)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "pushing",
+      "detail": "Best action (score: 0.93; enemiesNearby=2.00, scoringUrgencyScalar=1.04, vpUrgencyLevel=1.00)",
+      "result": "pushing=true:ap+1"
+    },
+    {
+      "turn": 1,
+      "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 26.95; threatImmediacy=3.42, threat=2.00, scoringUrgencyScalar=1.04)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 57.11; threatImmediacy=3.42, scoringPotentialDelta=-1.68, scoringUrgencyScalar=1.55)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 8.83; minimaxLiteOpponentReplyPressure=13.21, minimaxLiteFollowUpPotential=6.77, minimaxLiteNodeValue=5.40)",
+      "result": "ranged=true:orm=1"
+    },
+    {
+      "turn": 2,
+      "modelId": "Bravo Assembly-1-militia-spear-medium-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "move",
+      "detail": "Best action (score: 16.88; minimaxLiteOpponentReplyPressure=13.31, minimaxLiteNodeValue=10.93, approachBonus=8.11)",
+      "result": "move=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Bravo Assembly-2-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "move",
+      "detail": "Best action (score: 2.18; minimaxLiteOpponentReplyPressure=13.31, minimaxLiteNodeValue=-6.45, minimaxLiteCurrentPatch=3.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 2,
+      "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 16.38; focusFire=4.84, threatImmediacy=3.42, threat=2.00)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 74.29; threatImmediacy=3.42, focusFire=3.34, vpUrgencyLevel=2.00)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-3-elite-sword-broad-loadout",
+      "side": "Alpha",
+      "model": "elite-sword-broad-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 86.35; focusFire=5.69, threatImmediacy=3.42, targetCommitment=2.19)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 6.07; minimaxLiteOpponentReplyPressure=13.31, minimaxLiteFollowUpPotential=6.89, minimaxLiteBeamWidth=3.00)",
+      "result": "ranged=true:orm=1"
+    },
+    {
+      "turn": 3,
+      "modelId": "Alpha Assembly-2-militia-spear-medium-shield-medium-loadout",
+      "side": "Alpha",
+      "model": "militia-spear-medium-shield-medium-loadout",
+      "action": "ranged_combat",
+      "detail": "Combat priority: Best action (score: 10.31; minimaxLiteOpponentReplyPressure=12.96, minimaxLiteNodeValue=7.12, minimaxLiteFollowUpPotential=6.89)",
+      "result": "ranged=true:orm=1"
+    },
+    {
+      "turn": 3,
+      "modelId": "Bravo Assembly-2-veteran-loadout",
+      "side": "Bravo",
+      "model": "veteran-loadout",
+      "action": "move",
+      "detail": "Best action (score: 8.30; minimaxLiteOpponentReplyPressure=13.41, minimaxLiteFollowUpPotential=5.05, moveDisplacementMu=4.00)",
+      "result": "move=true"
+    },
+    {
+      "turn": 3,
+      "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 16.37; focusFire=4.78, threatImmediacy=3.42, threat=2.00)",
+      "result": "close_combat=true"
+    },
+    {
+      "turn": 3,
+      "modelId": "Bravo Assembly-3-average-sword-broad-shield-medium-loadout",
+      "side": "Bravo",
+      "model": "average-sword-broad-shield-medium-loadout",
+      "action": "close_combat",
+      "detail": "Combat priority: Best action (score: 17.56; focusFire=7.13, threatImmediacy=3.42, targetCommitment=2.89)",
+      "result": "close_combat=true"
+    }
+  ],
+  "seed": 101
+}

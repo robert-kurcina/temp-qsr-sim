@@ -376,10 +376,8 @@ export function scorePositionSafety(
     distanceBetween(m.position, position) <= 1
   ).length;
 
-  // Check if behind Hard Cover (simplified)
-  // TODO: Implement proper Hard Cover check using LOS
-
-  const behindHardCover = false;
+  // Reuse spatial suppression effect hard-cover detection.
+  const behindHardCover = suppressionEffect.behindHardCover;
 
   // Calculate safety score (higher = safer)
   let score = 10; // Base score

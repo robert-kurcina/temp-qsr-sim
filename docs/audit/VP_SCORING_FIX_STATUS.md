@@ -176,7 +176,7 @@ if (rpEntries.length >= 2) {
 ### Test 1: Doctrine Defaults
 
 ```bash
-npm run ai-battle -- VERY_SMALL 50
+npm run sim -- quick VERY_SMALL 50
 ```
 
 **Expected:**
@@ -194,7 +194,7 @@ cat generated/ai-battle-reports/battle-report-*.json | jq '.stats'
 ### Test 2: VP/RP Accumulation (QSR-Correct)
 
 ```bash
-npm run ai-battle:audit -- VERY_SMALL 50
+npm run sim -- quick --audit --viewer VERY_SMALL 50
 ```
 
 **Expected:**
@@ -258,7 +258,7 @@ cat generated/ai-battle-reports/battle-report-*.json | jq '.missionRuntime'
 ## Next Steps
 
 1. **Run test battle** to verify QSR-correct VP/RP scoring
-   - Command: `npm run ai-battle:audit -- VERY_SMALL 50`
+   - Command: `npm run sim -- quick --audit --viewer VERY_SMALL 50`
    - Expected: Combat, BP tracking, VP/RP awarded at game end
 
 2. **Verify Elimination Key** awards +1 VP to highest BP eliminator

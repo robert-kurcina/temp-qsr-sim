@@ -493,7 +493,7 @@ After implementation:
 Run battle with same configuration:
 
 ```bash
-npm run ai-battle -- VERY_SMALL
+npm run sim -- quick VERY_SMALL
 ```
 
 **Expected:**

@@ -108,7 +108,7 @@ All tests passing.
 | `npm test` | Run unit tests |
 | `npm run build` | Build the project |
 | `npm run dev` | Start development server |
-| `npm run generate:svg` | Generate SVG battlefields |
+| `npm run battlefield:svg` | Generate SVG renderings from battlefield JSON files |
 | `npm run generate:portraits` | Generate portrait index |
 | `npm run validate:mission` | Validate mission JSON |
 

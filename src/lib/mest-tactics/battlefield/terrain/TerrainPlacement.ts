@@ -45,6 +45,8 @@ export interface TerrainPlacementOptions {
   
   // Structures specific options
   structuresDensity?: number; // 0-100 percentage for buildings/walls (default: 50)
+  buildingsDensity?: number; // 0-100 percentage for buildings (default: structuresDensity or 50)
+  wallsDensity?: number; // 0-100 percentage for walls (default: structuresDensity or 50)
   structuresClearance?: number; // Minimum clearance between structures (default: 0.5 MU)
   
   // Rocks specific options
@@ -206,6 +208,8 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
   const structureTerrainTypes = allTerrainTypes.filter(t =>
     t.name.includes('Building') || t.name.includes('Wall')
   );
+  const buildingTerrainTypes = structureTerrainTypes.filter(t => t.name.includes('Building'));
+  const wallTerrainTypes = structureTerrainTypes.filter(t => t.name.includes('Wall'));
   const rockTerrainTypes = allTerrainTypes.filter(t =>
     t.name.includes('Rocks')
   );
@@ -254,31 +258,66 @@ export function placeTerrain(options: TerrainPlacementOptions): TerrainPlacement
   }
 
   // Step 2: Place structures (buildings, walls) with clearance
-  let structuresBlockedRatio = 0;
   let structureBounds: { clearanceBounds: any }[] = [];
   let structuresResult: { terrain: TerrainFeature[]; blockedRatio: number; structureBounds: any[]; actualBounds: any[] } | undefined;
   if (structureTerrainTypes.length > 0) {
-    const structuresDensity = options.structuresDensity ?? 50;
     const structuresClearance = options.structuresClearance ?? 0.5;
+    const buildingsDensity = options.buildingsDensity ?? options.structuresDensity ?? 50;
+    const wallsDensity = options.wallsDensity ?? options.structuresDensity ?? 50;
 
-    structuresResult = placeStructuresLayer(
-      structureTerrainTypes,
-      battlefieldWidth,
-      battlefieldHeight,
-      structuresDensity,
-      structuresClearance,
+    const structuresLayer = new StructuresLayer({
+      width: battlefieldWidth,
+      height: battlefieldHeight,
+      minClearance: structuresClearance,
       edgeMargin,
-      placeableWidth,
-      placeableHeight,
-      config,
-      rng,
-      stats
-    ) as any;
+    });
 
-    // Add structures to result
-    terrain.push(...structuresResult!.terrain);
-    structuresBlockedRatio = structuresResult!.blockedRatio;
-    structureBounds = structuresResult!.structureBounds;
+    const placedStructures: TerrainFeature[] = [];
+    if (buildingTerrainTypes.length > 0 && buildingsDensity > 0) {
+      placedStructures.push(
+        ...placeStructuresIntoLayer(
+          structuresLayer,
+          buildingTerrainTypes,
+          battlefieldWidth,
+          battlefieldHeight,
+          buildingsDensity,
+          edgeMargin,
+          placeableWidth,
+          placeableHeight,
+          config,
+          rng,
+          stats
+        )
+      );
+    }
+
+    if (wallTerrainTypes.length > 0 && wallsDensity > 0) {
+      placedStructures.push(
+        ...placeStructuresIntoLayer(
+          structuresLayer,
+          wallTerrainTypes,
+          battlefieldWidth,
+          battlefieldHeight,
+          wallsDensity,
+          edgeMargin,
+          placeableWidth,
+          placeableHeight,
+          config,
+          rng,
+          stats
+        )
+      );
+    }
+
+    structuresResult = {
+      terrain: placedStructures,
+      blockedRatio: structuresLayer.getBlockedAreaRatio(),
+      structureBounds: structuresLayer.getStructureBounds() as any,
+      actualBounds: structuresLayer.getActualBounds() as any,
+    };
+
+    terrain.push(...placedStructures);
+    structureBounds = structuresResult.structureBounds as any;
   }
 
   // Step 3: Place rocks with clearance from structures
@@ -509,32 +548,26 @@ function placeAreaTerrainLayer(
 }
 
 /**
- * Place structures layer (buildings, walls) with clearance rules
+ * Place a structure subset into an existing structures layer.
+ * Reuses existing occupancy to guarantee buildings and walls never overlap.
  */
-function placeStructuresLayer(
+function placeStructuresIntoLayer(
+  structuresLayer: StructuresLayer,
   structureTerrainTypes: TerrainTypeConfig[],
   battlefieldWidth: number,
   battlefieldHeight: number,
   density: number,
-  minClearance: number,
   edgeMargin: number,
   placeableWidth: number,
   placeableHeight: number,
   config: typeof MODE_CONFIG['balanced'],
   rng: SeededRandom | null,
   stats: PlacementStats
-): { terrain: TerrainFeature[]; blockedRatio: number; actualBounds: { bounds: { minX: number; minY: number; maxX: number; maxY: number } }[] } {
+): TerrainFeature[] {
+  if (density <= 0 || structureTerrainTypes.length === 0) {
+    return [];
+  }
   const placedFeatures: TerrainFeature[] = [];
-  const structuresLayer = new StructuresLayer({
-    width: battlefieldWidth,
-    height: battlefieldHeight,
-    minClearance,
-    edgeMargin,
-  });
-
-  // Calculate number of structures to place
-  // Structures use a different formula: more structures per area due to smaller size
-  // Base: 1 structure per 30 square MU at 100% density
   const structuresCount = calculateStructuresCount(battlefieldWidth, battlefieldHeight, density);
 
   for (let i = 0; i < structuresCount; i++) {
@@ -549,8 +582,7 @@ function placeStructuresLayer(
     const y = (rng ? rng.nextFloat(0, placeableHeight) : Math.random() * placeableHeight) + edgeMargin;
     const baseRotation = rng ? rng.nextInt(0, 359) : Math.floor(Math.random() * 360);
 
-    // Try to place using structures layer (handles clearance checking)
-    // Try multiple rotations to improve placement success
+    // Try multiple rotations to improve placement success.
     const placed = structuresLayer.tryPlaceWithRotation(typeName, { x, y }, [
       baseRotation,
       (baseRotation + 90) % 360,
@@ -572,12 +604,7 @@ function placeStructuresLayer(
     }
   }
 
-  return {
-    terrain: placedFeatures,
-    blockedRatio: structuresLayer.getBlockedAreaRatio(),
-    structureBounds: structuresLayer.getStructureBounds(),
-    actualBounds: structuresLayer.getActualBounds(),
-  } as any;
+  return placedFeatures;
 }
 
 /**
@@ -782,6 +809,7 @@ function placeTreesLayer(
  * Trees are medium-sized (2 MU diameter), moderate count
  */
 function calculateTreesCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
+  if (density <= 0) return 0;
   // Base: 1 tree per 8 square MU at 100% density
   const baseCount = (battlefieldWidth * battlefieldHeight) / 8;
   return Math.max(1, Math.floor(baseCount * (density / 100)));
@@ -792,6 +820,7 @@ function calculateTreesCount(battlefieldWidth: number, battlefieldHeight: number
  * Shrubs are small (1 MU diameter), so many can be placed
  */
 function calculateShrubsCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
+  if (density <= 0) return 0;
   // Base: 1 shrub per 4 square MU at 100% density
   const baseCount = (battlefieldWidth * battlefieldHeight) / 4;
   return Math.max(1, Math.floor(baseCount * (density / 100)));
@@ -802,6 +831,7 @@ function calculateShrubsCount(battlefieldWidth: number, battlefieldHeight: numbe
  * Rocks are smaller than structures, so more can be placed
  */
 function calculateRocksCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
+  if (density <= 0) return 0;
   // Base: 1 rock per 20 square MU at 100% density
   const baseCount = (battlefieldWidth * battlefieldHeight) / 20;
   return Math.max(1, Math.floor(baseCount * (density / 100)));
@@ -821,6 +851,7 @@ function calculateRocksCount(battlefieldWidth: number, battlefieldHeight: number
  * - Expected placement: 5-8 structures = 120-200 sq MU (21-35% coverage)
  */
 function calculateStructuresCount(battlefieldWidth: number, battlefieldHeight: number, density: number): number {
+  if (density <= 0) return 0;
   // Base: 1 structure per 25 square MU at 100% density
   // This allows for clearance overhead while targeting 40% coverage
   const baseCount = (battlefieldWidth * battlefieldHeight) / 25;

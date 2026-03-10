@@ -1,6 +1,7 @@
 import { MissionState } from '../missions/mission-config';
 import { MissionSide } from './MissionSide';
 import { Position } from '../battlefield/Position';
+import { missionTuning } from './MissionTuningConfig';
 
 /**
  * Special Rule Handler Interface
@@ -142,7 +143,11 @@ export class ReinforcementWaveHandler extends BaseSpecialRuleHandler {
     const { sideId, position } = event.data as { sideId: string; position: Position };
     
     // Validate deployment position (within 6 MU of entry edge)
-    const deploymentDistance = this.getCustomState<number>(state, 'deploymentDistance', 6);
+    const deploymentDistance = this.getCustomState<number>(
+      state,
+      'deploymentDistance',
+      missionTuning.specialRules.reinforcements.defaultDeploymentDistance
+    );
     
     return {
       handled: true,
@@ -160,7 +165,7 @@ export class AlertLevelHandler extends BaseSpecialRuleHandler {
 
   initialize(state: MissionState): void {
     this.setCustomState(state, 'alertLevel', 0);
-    this.setCustomState(state, 'alertThreshold', 6);
+    this.setCustomState(state, 'alertThreshold', missionTuning.specialRules.alert.defaultThreshold);
     this.setCustomState(state, 'lockdownTriggered', false);
   }
 
@@ -183,7 +188,11 @@ export class AlertLevelHandler extends BaseSpecialRuleHandler {
     
     const currentAlert = this.getCustomState<number>(state, 'alertLevel', 0);
     const newAlert = currentAlert + amount;
-    const threshold = this.getCustomState<number>(state, 'alertThreshold', 6);
+    const threshold = this.getCustomState<number>(
+      state,
+      'alertThreshold',
+      missionTuning.specialRules.alert.defaultThreshold
+    );
     
     this.setCustomState(state, 'alertLevel', newAlert);
     
@@ -207,7 +216,11 @@ export class AlertLevelHandler extends BaseSpecialRuleHandler {
    */
   private handleAlertCheck(state: MissionState): SpecialRuleResult {
     const currentAlert = this.getCustomState<number>(state, 'alertLevel', 0);
-    const threshold = this.getCustomState<number>(state, 'alertThreshold', 6);
+    const threshold = this.getCustomState<number>(
+      state,
+      'alertThreshold',
+      missionTuning.specialRules.alert.defaultThreshold
+    );
     const lockdownTriggered = currentAlert >= threshold;
 
     return {
@@ -230,7 +243,7 @@ export class ThreatLevelHandler extends BaseSpecialRuleHandler {
 
   initialize(state: MissionState): void {
     this.setCustomState(state, 'threatLevel', 0);
-    this.setCustomState(state, 'maxThreatLevel', 6);
+    this.setCustomState(state, 'maxThreatLevel', missionTuning.specialRules.threat.defaultMaxLevel);
   }
 
   handle(state: MissionState, event: SpecialRuleEvent): SpecialRuleResult {
@@ -250,7 +263,11 @@ export class ThreatLevelHandler extends BaseSpecialRuleHandler {
   private handleThreatIncrease(state: MissionState, event: SpecialRuleEvent): SpecialRuleResult {
     const currentThreat = this.getCustomState<number>(state, 'threatLevel', 0);
     const newThreat = currentThreat + 1;
-    const maxThreat = this.getCustomState<number>(state, 'maxThreatLevel', 6);
+    const maxThreat = this.getCustomState<number>(
+      state,
+      'maxThreatLevel',
+      missionTuning.specialRules.threat.defaultMaxLevel
+    );
     
     this.setCustomState(state, 'threatLevel', newThreat);
 
@@ -286,7 +303,13 @@ export class ThreatLevelHandler extends BaseSpecialRuleHandler {
     if (currentThreat >= 4) {
       effects.push('melee_penalty');
     }
-    if (currentThreat >= this.getCustomState<number>(state, 'maxThreatLevel', 6)) {
+    if (
+      currentThreat >= this.getCustomState<number>(
+        state,
+        'maxThreatLevel',
+        missionTuning.specialRules.threat.defaultMaxLevel
+      )
+    ) {
       effects.push('cover_degradation');
     }
 
@@ -522,8 +545,8 @@ export class VigilanceHandler extends BaseSpecialRuleHandler {
 
   initialize(state: MissionState): void {
     this.setCustomState(state, 'vigilanceActive', false);
-    this.setCustomState(state, 'normalVisibility', 8);
-    this.setCustomState(state, 'enhancedVisibility', 16);
+    this.setCustomState(state, 'normalVisibility', missionTuning.specialRules.vigilance.normalVisibility);
+    this.setCustomState(state, 'enhancedVisibility', missionTuning.specialRules.vigilance.enhancedVisibility);
   }
 
   handle(state: MissionState, event: SpecialRuleEvent): SpecialRuleResult {
@@ -570,8 +593,16 @@ export class VigilanceHandler extends BaseSpecialRuleHandler {
    */
   private handleVisibilityGet(state: MissionState): SpecialRuleResult {
     const vigilanceActive = this.getCustomState<boolean>(state, 'vigilanceActive', false);
-    const normalVis = this.getCustomState<number>(state, 'normalVisibility', 8);
-    const enhancedVis = this.getCustomState<number>(state, 'enhancedVisibility', 16);
+    const normalVis = this.getCustomState<number>(
+      state,
+      'normalVisibility',
+      missionTuning.specialRules.vigilance.normalVisibility
+    );
+    const enhancedVis = this.getCustomState<number>(
+      state,
+      'enhancedVisibility',
+      missionTuning.specialRules.vigilance.enhancedVisibility
+    );
 
     return {
       handled: true,

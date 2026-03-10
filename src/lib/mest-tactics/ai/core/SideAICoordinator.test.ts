@@ -57,6 +57,55 @@ describe('SideAICoordinator', () => {
       expect(coordinator.isContextStale(2)).toBe(false);
       expect(coordinator.isContextStale(3)).toBe(true);
     });
+
+    it('should maintain monotonic fractional potential ledger and track denial deltas', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      const context1 = coordinator.updateScoringContext(
+        {
+          elimination: { current: 0, predicted: 2, confidence: 0.8, leadMargin: 1 },
+        },
+        {
+          elimination: { current: 0, predicted: 3, confidence: 0.9, leadMargin: 1 },
+        },
+        1,
+        DEFAULT_MISSION_CONFIG
+      );
+      const ledger1 = context1.fractionalPotentialLedger;
+      expect(ledger1).toBeDefined();
+
+      const context2 = coordinator.updateScoringContext(
+        {
+          elimination: { current: 0, predicted: 1, confidence: 0.7, leadMargin: 1 },
+        },
+        {
+          elimination: { current: 0, predicted: 1, confidence: 0.6, leadMargin: 1 },
+        },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+      const ledger2 = context2.fractionalPotentialLedger;
+      expect(ledger2).toBeDefined();
+      expect(ledger2!.myTotalPotential).toBeGreaterThanOrEqual(ledger1!.myTotalPotential);
+      expect(ledger2!.opponentTotalPotential).toBeGreaterThanOrEqual(ledger1!.opponentTotalPotential);
+      expect(ledger2!.myDeniedPotential).toBeGreaterThan(0);
+      expect(ledger2!.opponentDeniedPotential).toBeGreaterThan(0);
+    });
+
+    it('should expose initiative signal for the current turn', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 0, confidence: 0.6, leadMargin: 0 } },
+        { elimination: { current: 0, predicted: 2, confidence: 0.8, leadMargin: 1 } },
+        3,
+        DEFAULT_MISSION_CONFIG
+      );
+
+      const signal = coordinator.getInitiativeSignalForTurn(3);
+      expect(signal.sideId).toBe('Alpha');
+      expect(signal.turn).toBe(3);
+      expect(signal.priority).toBe('recover_deficit');
+      expect(signal.urgency).toBeGreaterThan(0);
+    });
   });
 
   describe('strategic advice', () => {
@@ -128,6 +177,13 @@ describe('SideAICoordinator', () => {
         3,
         DEFAULT_MISSION_CONFIG
       );
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 3, 1.0);
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 3, confidence: 0.85, leadMargin: 1 } },
+        { elimination: { current: 0, predicted: 1, confidence: 0.4, leadMargin: 1 } },
+        4,
+        DEFAULT_MISSION_CONFIG
+      );
 
       const state = coordinator.exportState();
 
@@ -137,6 +193,214 @@ describe('SideAICoordinator', () => {
       expect(newCoordinator.getSideId()).toBe('Alpha');
       expect(newCoordinator.getTacticalDoctrine()).toBe('sniper');
       expect(newCoordinator.getScoringContext()).toBeDefined();
+      expect(newCoordinator.getTargetCommitments(3)['Enemy-1']).toBeDefined();
+      expect(newCoordinator.getDecisionTrace().length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('coordinator decision trace instrumentation', () => {
+    it('should record high-level observation/response trace per scoring update', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 2, 1.0, 'close_combat');
+      coordinator.recordTargetCommitment('Enemy-2', 'Ally-2', 2, 1.0, 'ranged_combat');
+
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 3, confidence: 0.9, leadMargin: 1 } },
+        { elimination: { current: 0, predicted: 1, confidence: 0.5, leadMargin: 1 } },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+
+      const trace = coordinator.getDecisionTrace();
+      expect(trace.length).toBe(1);
+      expect(trace[0].turn).toBe(2);
+      expect(trace[0].sideId).toBe('Alpha');
+      expect(trace[0].response.priority).toBe('press_advantage');
+      expect(trace[0].response.focusTargets).toContain('Enemy-1');
+      expect(trace[0].observations.topTargetCommitments.length).toBeGreaterThan(0);
+      expect(trace[0].observations.topScrumContinuity.length).toBeGreaterThan(0);
+      expect(trace[0].observations.topLanePressure.length).toBeGreaterThan(0);
+      expect(trace[0].observations.fractionalPotential).toBeDefined();
+      expect(trace[0].observations.fractionalPotential?.myDeniedPotential).toBeDefined();
+      expect(trace[0].observations.fractionalPotential?.opponentDeniedPotential).toBeDefined();
+      expect(trace[0].response.potentialDirective).toBeDefined();
+      expect(trace[0].response.pressureDirective).toBeDefined();
+    });
+
+    it('should clear decision trace on reset', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 1, confidence: 0.7, leadMargin: 1 } },
+        {},
+        1,
+        DEFAULT_MISSION_CONFIG
+      );
+      expect(coordinator.getDecisionTrace().length).toBe(1);
+
+      coordinator.reset();
+
+      expect(coordinator.getDecisionTrace().length).toBe(0);
+    });
+
+    it('should replace same-turn decision trace entries instead of appending duplicates', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 1, confidence: 0.7, leadMargin: 1 } },
+        { elimination: { current: 0, predicted: 4, confidence: 0.9, leadMargin: 1 } },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 4, confidence: 0.9, leadMargin: 1 } },
+        { elimination: { current: 0, predicted: 1, confidence: 0.6, leadMargin: 1 } },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+
+      const trace = coordinator.getDecisionTrace();
+      expect(trace.length).toBe(1);
+      expect(trace[0].turn).toBe(2);
+      expect(trace[0].response.priority).toBe('press_advantage');
+    });
+  });
+
+  describe('initiative spend policy', () => {
+    it('recommends force spend for pushing momentum windows', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 0, confidence: 0.7, leadMargin: 0 } },
+        { elimination: { current: 0, predicted: 2, confidence: 0.9, leadMargin: 1 } },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+
+      const decision = coordinator.recommendForceInitiativeSpend({
+        currentTurn: 2,
+        endGameTurn: 6,
+        availableIp: 1,
+        readyIndex: 1,
+        scoreGain: 12,
+        candidateNearestEnemyDistance: 6,
+        candidateCanPush: true,
+      });
+
+      expect(decision.shouldSpend).toBe(true);
+      expect(decision.reason).toContain('pushing_window');
+    });
+
+    it('recommends maintain spend for chain pushing momentum', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 0, confidence: 0.7, leadMargin: 0 } },
+        { elimination: { current: 0, predicted: 2, confidence: 0.8, leadMargin: 1 } },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+
+      const decision = coordinator.recommendMaintainInitiativeSpend({
+        currentTurn: 2,
+        endGameTurn: 6,
+        availableIp: 1,
+        candidateOpportunity: true,
+        candidateCanPush: true,
+        actorGeneratedMomentum: true,
+      });
+
+      expect(decision.shouldSpend).toBe(true);
+      expect(decision.reason).toContain('chain_pushing_momentum');
+    });
+
+    it('recommends refresh spend when it unlocks pushing momentum', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 0, confidence: 0.7, leadMargin: 0 } },
+        { elimination: { current: 0, predicted: 2, confidence: 0.8, leadMargin: 1 } },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+
+      const decision = coordinator.recommendRefreshInitiativeSpend({
+        currentTurn: 2,
+        endGameTurn: 6,
+        availableIp: 1,
+        delayTokens: 1,
+        apPerActivation: 2,
+        hasMomentumOpportunity: true,
+        canUnlockPushingMomentum: true,
+        trailingOnScore: true,
+      });
+
+      expect(decision.shouldSpend).toBe(true);
+      expect(decision.reason).toContain('unlock_pushing_momentum');
+    });
+  });
+
+  describe('target commitments', () => {
+    it('should record and decay target commitments by turn', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 1, 1.0);
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-2', 1, 1.0);
+
+      const sameTurn = coordinator.getTargetCommitments(1);
+      expect(sameTurn['Enemy-1']).toBeCloseTo(2.2, 4);
+
+      const nextTurn = coordinator.getTargetCommitments(2);
+      expect(nextTurn['Enemy-1']).toBeCloseTo(1.65, 4);
+    });
+
+    it('should clear target commitment when requested', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 1, 1.0);
+      coordinator.clearTargetCommitment('Enemy-1');
+
+      expect(coordinator.getTargetCommitments(1)['Enemy-1']).toBeUndefined();
+    });
+
+    it('should clear target commitments on reset', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 1, 1.0);
+
+      coordinator.reset();
+
+      expect(coordinator.getTargetCommitments(1)).toEqual({});
+    });
+
+    it('should track scrum and lane continuity by action channel', () => {
+      const coordinator = new SideAICoordinator('Alpha');
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 1, 1.0, 'close_combat');
+      coordinator.recordTargetCommitment('Enemy-1', 'Ally-2', 1, 1.0, 'charge');
+      coordinator.recordTargetCommitment('Enemy-2', 'Ally-3', 1, 0.9, 'ranged_combat');
+
+      const scrum = coordinator.getScrumContinuity(1);
+      const lane = coordinator.getLanePressure(1);
+
+      expect(scrum['Enemy-1']).toBeGreaterThan(0);
+      expect(scrum['Enemy-2']).toBeUndefined();
+      expect(lane['Enemy-2']).toBeGreaterThan(0);
+      expect(lane['Enemy-1']).toBeUndefined();
+    });
+
+    it('should reward stable pressure topology and penalize topology breaks', () => {
+      const stableCoordinator = new SideAICoordinator('Alpha');
+      stableCoordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 1, 1.0, 'ranged_combat', 'lane|target=Enemy-1|angle=2');
+      stableCoordinator.recordTargetCommitment('Enemy-1', 'Ally-2', 1, 1.0, 'ranged_combat', 'lane|target=Enemy-1|angle=2');
+      stableCoordinator.recordTargetCommitment('Enemy-1', 'Ally-3', 1, 1.0, 'ranged_combat', 'lane|target=Enemy-1|angle=2');
+      const stableScore = stableCoordinator.getLanePressure(1)['Enemy-1'];
+      const stableDiag = stableCoordinator.getPressureContinuityDiagnostics();
+
+      const brokenCoordinator = new SideAICoordinator('Alpha');
+      brokenCoordinator.recordTargetCommitment('Enemy-1', 'Ally-1', 1, 1.0, 'ranged_combat', 'lane|target=Enemy-1|angle=2');
+      brokenCoordinator.recordTargetCommitment('Enemy-1', 'Ally-2', 1, 1.0, 'ranged_combat', 'lane|target=Enemy-1|angle=2');
+      brokenCoordinator.recordTargetCommitment('Enemy-1', 'Ally-3', 1, 1.0, 'ranged_combat', 'lane|target=Enemy-1|angle=6');
+      const brokenScore = brokenCoordinator.getLanePressure(1)['Enemy-1'];
+      const brokenDiag = brokenCoordinator.getPressureContinuityDiagnostics();
+
+      expect(stableScore).toBeGreaterThan(brokenScore);
+      expect(stableDiag.lane.breakRate).toBe(0);
+      expect(brokenDiag.lane.breakRate).toBeGreaterThan(0);
+      expect(brokenDiag.combined.signatureCoverageRate).toBeGreaterThan(0);
     });
   });
 });
@@ -213,6 +477,47 @@ describe('SideCoordinatorManager', () => {
 
       // Should not throw
       expect(() => manager.updateAllScoringContexts(sideKeyScores, 1, DEFAULT_MISSION_CONFIG)).not.toThrow();
+    });
+
+    it('should expose initiative signals for all coordinators', () => {
+      const manager = new SideCoordinatorManager();
+      manager.getCoordinator('Alpha');
+      manager.getCoordinator('Bravo');
+      manager.updateAllScoringContexts(new Map([
+        ['Alpha', { elimination: { current: 0, predicted: 3, confidence: 0.9, leadMargin: 1 } }],
+        ['Bravo', { elimination: { current: 0, predicted: 1, confidence: 0.7, leadMargin: 1 } }],
+      ]), 2, DEFAULT_MISSION_CONFIG);
+
+      const signals = manager.getInitiativeSignalsForTurn(2);
+      expect(signals.Alpha).toBeDefined();
+      expect(signals.Bravo).toBeDefined();
+      expect(signals.Alpha.turn).toBe(2);
+      expect(typeof signals.Alpha.priority).toBe('string');
+    });
+
+    it('should proxy initiative spend decisions to the side coordinator', () => {
+      const manager = new SideCoordinatorManager();
+      const coordinator = manager.getCoordinator('Alpha');
+      coordinator.updateScoringContext(
+        { elimination: { current: 0, predicted: 0, confidence: 0.6, leadMargin: 0 } },
+        { elimination: { current: 0, predicted: 2, confidence: 0.8, leadMargin: 1 } },
+        2,
+        DEFAULT_MISSION_CONFIG
+      );
+
+      const decision = manager.recommendRefreshInitiativeSpend('Alpha', {
+        currentTurn: 2,
+        endGameTurn: 6,
+        availableIp: 1,
+        delayTokens: 1,
+        apPerActivation: 2,
+        hasMomentumOpportunity: true,
+        canUnlockPushingMomentum: true,
+        trailingOnScore: true,
+      });
+
+      expect(decision.shouldSpend).toBe(true);
+      expect(decision.reason).toContain('unlock_pushing_momentum');
     });
   });
 });

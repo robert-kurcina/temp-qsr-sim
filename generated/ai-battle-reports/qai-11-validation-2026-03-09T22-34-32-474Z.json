@@ -1,0 +1,1744 @@
+{
+  "missionId": "QAI_11",
+  "gameSize": "VERY_SMALL",
+  "densityRatio": 50,
+  "tacticalDoctrine": "operative",
+  "sideDoctrines": [
+    {
+      "sideName": "Alpha",
+      "tacticalDoctrine": "operative",
+      "loadoutProfile": "default"
+    },
+    {
+      "sideName": "Bravo",
+      "tacticalDoctrine": "operative",
+      "loadoutProfile": "default"
+    }
+  ],
+  "loadoutProfile": "default",
+  "lighting": "Day, Clear",
+  "visibilityOrMu": 16,
+  "maxOrm": 3,
+  "allowConcentrateRangeExtension": true,
+  "perCharacterFovLos": false,
+  "runs": 1,
+  "baseSeed": 424242,
+  "winners": {
+    "Alpha": 1
+  },
+  "totals": {
+    "totalActions": 76,
+    "moves": 20,
+    "movesWhileWaiting": 0,
+    "closeCombats": 4,
+    "rangedCombats": 8,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 4,
+    "losChecks": 8,
+    "lofChecks": 8,
+    "totalPathLength": 56.90104654287823,
+    "modelsMoved": 0
+  },
+  "averages": {
+    "totalActions": 76,
+    "moves": 20,
+    "movesWhileWaiting": 0,
+    "closeCombats": 4,
+    "rangedCombats": 8,
+    "disengages": 0,
+    "waits": 0,
+    "waitsSelectedPlanner": 0,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 0,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 4,
+    "losChecks": 8,
+    "lofChecks": 8,
+    "totalPathLength": 56.9,
+    "modelsMoved": 0
+  },
+  "advancedRuleTotals": {
+    "bonusActions": {
+      "opportunities": 11,
+      "optionsOffered": 53,
+      "optionsAvailable": 36,
+      "offeredByType": {
+        "Hide": 11,
+        "Refresh": 11,
+        "Reposition": 11,
+        "Circle": 4,
+        "Disengage": 4,
+        "PushBack": 4,
+        "PullBack": 4,
+        "Reversal": 4
+      },
+      "availableByType": {
+        "Hide": 7,
+        "Refresh": 7,
+        "Reposition": 7,
+        "Circle": 3,
+        "Disengage": 3,
+        "PushBack": 3,
+        "PullBack": 3,
+        "Reversal": 3
+      },
+      "executed": 10,
+      "executedByType": {
+        "Reposition": 5,
+        "Refresh": 2,
+        "PushBack": 3
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 66,
+      "optionsOffered": 184,
+      "optionsAvailable": 19,
+      "offeredByType": {
+        "CounterCharge": 78,
+        "OpportunityAttack": 78,
+        "TakeCover": 8,
+        "Defend": 12,
+        "CounterAction": 2,
+        "React": 2,
+        "CounterStrike": 2,
+        "CounterFire": 2
+      },
+      "availableByType": {
+        "TakeCover": 5,
+        "Defend": 9,
+        "CounterCharge": 2,
+        "OpportunityAttack": 3
+      },
+      "used": 14,
+      "usedByType": {
+        "Defend": 9,
+        "TakeCover": 5
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 12,
+      "modifiedTests": 10,
+      "modifiersApplied": 19,
+      "byType": {
+        "distance_orm": 5,
+        "defend": 9,
+        "multiple_attack_penalty": 3,
+        "hand_penalty": 2
+      }
+    }
+  },
+  "advancedRuleAverages": {
+    "bonusActions": {
+      "opportunities": 11,
+      "optionsOffered": 53,
+      "optionsAvailable": 36,
+      "offeredByType": {
+        "Hide": 11,
+        "Refresh": 11,
+        "Reposition": 11,
+        "Circle": 4,
+        "Disengage": 4,
+        "PushBack": 4,
+        "PullBack": 4,
+        "Reversal": 4
+      },
+      "availableByType": {
+        "Hide": 7,
+        "Refresh": 7,
+        "Reposition": 7,
+        "Circle": 3,
+        "Disengage": 3,
+        "PushBack": 3,
+        "PullBack": 3,
+        "Reversal": 3
+      },
+      "executed": 10,
+      "executedByType": {
+        "Reposition": 5,
+        "Refresh": 2,
+        "PushBack": 3
+      }
+    },
+    "passiveOptions": {
+      "opportunities": 66,
+      "optionsOffered": 184,
+      "optionsAvailable": 19,
+      "offeredByType": {
+        "CounterCharge": 78,
+        "OpportunityAttack": 78,
+        "TakeCover": 8,
+        "Defend": 12,
+        "CounterAction": 2,
+        "React": 2,
+        "CounterStrike": 2,
+        "CounterFire": 2
+      },
+      "availableByType": {
+        "TakeCover": 5,
+        "Defend": 9,
+        "CounterCharge": 2,
+        "OpportunityAttack": 3
+      },
+      "used": 14,
+      "usedByType": {
+        "Defend": 9,
+        "TakeCover": 5
+      }
+    },
+    "situationalModifiers": {
+      "testsObserved": 12,
+      "modifiedTests": 10,
+      "modifiersApplied": 19,
+      "byType": {
+        "distance_orm": 5,
+        "defend": 9,
+        "multiple_attack_penalty": 3,
+        "hand_penalty": 2
+      }
+    }
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runtimeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": false,
+    "wait": false,
+    "detect": false,
+    "los": true,
+    "lof": true
+  },
+  "probeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "performanceGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2
+    },
+    "thresholds": {
+      "turn1ElapsedMsMax": 42000,
+      "activationP95MsMax": 2800,
+      "minLosCacheHitRate": 0.525,
+      "minPathCacheHitRate": 0.1845,
+      "minGridCacheHitRate": 0.95,
+      "minMinimaxLiteCacheHitRate": 0.028,
+      "minMinimaxPatchCacheHitRate": 0.21
+    },
+    "observed": {
+      "avgTurn1ElapsedMs": 198,
+      "avgActivationP95Ms": 37.55,
+      "avgLosCacheHitRate": 0.8064,
+      "avgPathCacheHitRate": 0.1023,
+      "avgGridCacheHitRate": 0.9659,
+      "avgMinimaxLiteCacheHitRate": 0.0851,
+      "avgMinimaxPatchCacheHitRate": 0.5372
+    },
+    "pass": {
+      "turn1Elapsed": true,
+      "activationP95": true,
+      "losCacheHitRate": true,
+      "pathCacheHitRate": false,
+      "gridCacheHitRate": true,
+      "minimaxLiteCacheHitRate": true,
+      "minimaxPatchCacheHitRate": true,
+      "overall": false
+    }
+  },
+  "coordinatorTraceGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "thresholds": {
+      "minRunCoverage": 1,
+      "minTurnCoverage": 0.95,
+      "minSideCoveragePerTurn": 0.9
+    },
+    "observed": {
+      "runCoverage": 1,
+      "avgTurnCoverage": 1,
+      "avgSideCoveragePerTurn": 1
+    },
+    "pass": {
+      "runCoverage": true,
+      "turnCoverage": true,
+      "sideCoveragePerTurn": true,
+      "overall": true
+    }
+  },
+  "pressureContinuityDiagnostics": {
+    "runsEvaluated": 1,
+    "runsWithData": 1,
+    "observed": {
+      "avgScrumBreakRate": 0.25,
+      "avgLaneBreakRate": 0.5,
+      "avgCombinedBreakRate": 0.42857142857142855,
+      "avgSignatureCoverageRate": 1,
+      "avgBreaksPerRun": 6,
+      "avgSignatureSamplesPerRun": 14
+    }
+  },
+  "pressureContinuityGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2
+    },
+    "thresholds": {
+      "minRunsWithDataRate": 0.4725,
+      "minSignatureCoverageRate": 0.693,
+      "maxCombinedBreakRate": 0.693,
+      "maxLaneBreakRate": 0.7425,
+      "maxScrumBreakRate": 0.7425
+    },
+    "observed": {
+      "runsWithDataRate": 1,
+      "avgSignatureCoverageRate": 1,
+      "avgCombinedBreakRate": 0.42857142857142855,
+      "avgLaneBreakRate": 0.5,
+      "avgScrumBreakRate": 0.25
+    },
+    "pass": {
+      "runsWithDataRate": true,
+      "signatureCoverageRate": true,
+      "combinedBreakRate": true,
+      "laneBreakRate": true,
+      "scrumBreakRate": true,
+      "overall": true
+    }
+  },
+  "combatActivityGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2,
+      "maxTurns": 6,
+      "configuredMaxTurns": 6,
+      "horizonRatio": 1
+    },
+    "thresholds": {
+      "minTurnHorizonRatio": 0.85,
+      "minAttackActionRatio": 0.0828,
+      "minRunsWithCombatRate": 0.7245,
+      "maxZeroAttackRunRate": 0.2932
+    },
+    "observed": {
+      "avgAttackActionRatio": 0.15789473684210525,
+      "runsWithCombatRate": 1,
+      "zeroAttackRunRate": 0
+    },
+    "pass": {
+      "attackActionRatio": true,
+      "runsWithCombatRate": true,
+      "zeroAttackRunRate": true,
+      "overall": true
+    }
+  },
+  "passivenessGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 50,
+      "densityBucket": "50-74",
+      "densityBucketIndex": 2,
+      "maxTurns": 6,
+      "configuredMaxTurns": 6,
+      "horizonRatio": 1
+    },
+    "thresholds": {
+      "minTurnHorizonRatio": 0.85,
+      "maxPassiveActionRatio": 0.4455,
+      "maxDetectHideActionRatio": 0.2475,
+      "maxWaitActionRatio": 0.198
+    },
+    "observed": {
+      "avgPassiveActionRatio": 0,
+      "avgDetectHideActionRatio": 0,
+      "avgWaitActionRatio": 0
+    },
+    "pass": {
+      "passiveActionRatio": true,
+      "detectHideActionRatio": true,
+      "waitActionRatio": true,
+      "overall": true
+    }
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Alpha",
+      "winnerReason": "initiative_card",
+      "tieBreakMethod": "initiative_card",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 3
+        },
+        {
+          "name": "Bravo",
+          "remaining": 3
+        }
+      ],
+      "stats": {
+        "totalActions": 76,
+        "moves": 20,
+        "movesWhileWaiting": 0,
+        "closeCombats": 4,
+        "rangedCombats": 8,
+        "disengages": 0,
+        "waits": 0,
+        "waitsSelectedPlanner": 0,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 0,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 0,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactChoicesTaken": 0,
+        "waitTriggeredReacts": 0,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 0,
+        "turnsCompleted": 4,
+        "losChecks": 8,
+        "lofChecks": 8,
+        "totalPathLength": 56.90104654287823,
+        "modelsMoved": 0
+      },
+      "usage": {
+        "modelCount": 6,
+        "modelsMoved": 6,
+        "modelsUsedWait": 0,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 56.901046542878234,
+        "averagePathLengthPerMovedModel": 9.483507757146372,
+        "averagePathLengthPerModel": 9.483507757146372,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "side": "Alpha",
+            "pathLength": 15,
+            "moveActions": 8
+          },
+          {
+            "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+            "modelName": "militia-armor-heavy-mail-helmet-common-loadout",
+            "side": "Alpha",
+            "pathLength": 13.16227766016838,
+            "moveActions": 6
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "side": "Bravo",
+            "pathLength": 10.576491222541476,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "side": "Alpha",
+            "pathLength": 9.16227766016838,
+            "moveActions": 6
+          },
+          {
+            "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "average-armor-heavy-mail-armored-gear-loadout",
+            "side": "Bravo",
+            "pathLength": 6,
+            "moveActions": 7
+          },
+          {
+            "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "veteran-armor-heavy-mail-armored-gear-loadout",
+            "side": "Bravo",
+            "pathLength": 3,
+            "moveActions": 4
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "predictedScoring": {
+          "bySide": {
+            "Alpha": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 1,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                }
+              }
+            },
+            "Bravo": {
+              "predictedVp": 1,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 1,
+                  "predicted": 1,
+                  "confidence": 1,
+                  "leadMargin": 1
+                }
+              }
+            }
+          }
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 346,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                    "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 227,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Heavy-Small",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Bash",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Axe-Sword of Tan-doc",
+                          "classification": "Melee",
+                          "traits": [
+                            "Cleave",
+                            "STR",
+                            "Heal",
+                            "Regenerate",
+                            "Parry",
+                            "Deflect",
+                            "Bulletproof",
+                            "Battery X:Type > List"
+                          ]
+                        },
+                        {
+                          "name": "Improvised Thrown",
+                          "classification": "Thrown",
+                          "traits": [
+                            "[Discard! > Type]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Throwing Axes",
+                          "classification": "Thrown",
+                          "traits": [
+                            "Cleave",
+                            "Conceal",
+                            "[Awkward]",
+                            "[Hafted]",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 6,
+                      "y": 1
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                    "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 84,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Heavy-Small",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Bash",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Helmet, Common",
+                          "classification": "Armor",
+                          "traits": [
+                            "Protective"
+                          ]
+                        },
+                        {
+                          "name": "Improvised Melee",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Black Jacks or Sap",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "Discrete",
+                            "Stun",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 14
+                    },
+                    "state": {
+                      "wounds": 1,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+                    "name": "militia-armor-heavy-mail-helmet-common-loadout",
+                    "profile": {
+                      "name": "militia-armor-heavy-mail-helmet-common-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 35,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Helmet, Common",
+                          "classification": "Armor",
+                          "traits": [
+                            "Protective"
+                          ]
+                        },
+                        {
+                          "name": "Improvised Melee",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Black Jacks or Sap",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "Discrete",
+                            "Stun",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 2,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 247,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                    "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 111,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Shield, Heavy-Small",
+                          "classification": "Armor",
+                          "traits": [
+                            "[Laden]",
+                            "Armor",
+                            "Bash",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Hammer, Forge",
+                          "classification": "Melee",
+                          "traits": [
+                            "Stun",
+                            "[Hafted]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Club, Mace, Spiked",
+                          "classification": "Melee",
+                          "traits": [
+                            "Stun",
+                            "[Hafted]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Throwing Stars",
+                          "classification": "Thrown",
+                          "traits": [
+                            "Discrete",
+                            "[Awkward]",
+                            "[Stub]",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 12,
+                      "y": 0
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+                    "name": "average-armor-heavy-mail-armored-gear-loadout",
+                    "profile": {
+                      "name": "average-armor-heavy-mail-armored-gear-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 61,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Polearm, Pike",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Laden]",
+                            "[Awkward]",
+                            "Charge",
+                            "Perimeter",
+                            "[Hafted]",
+                            "[2H]",
+                            "Reach 2"
+                          ]
+                        },
+                        {
+                          "name": "Ballista, Heavy",
+                          "classification": "Support",
+                          "traits": [
+                            "Pierce 3",
+                            "[2H]",
+                            "[Crewed 6]",
+                            "[Carriage 5]",
+                            "[Reload 8]",
+                            "[Traversal!]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+                    "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 80,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Helmet, Common",
+                          "classification": "Armor",
+                          "traits": [
+                            "Protective"
+                          ]
+                        },
+                        {
+                          "name": "Club, Circus Mallet",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "[Stun-only]",
+                            "Reach",
+                            "[Awkward]",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Improvised Melee",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 18,
+          "heightMu": 24,
+          "densityRatio": 50,
+          "terrainFeatures": [],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "characterName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 6,
+                "y": 1
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "characterName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 14
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+              "characterName": "militia-armor-heavy-mail-helmet-common-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 23
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "characterName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 12,
+                "y": 0
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+              "characterName": "average-armor-heavy-mail-armored-gear-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+              "characterName": "veteran-armor-heavy-mail-armored-gear-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 23
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 11,
+          "optionsOffered": 53,
+          "optionsAvailable": 36,
+          "offeredByType": {
+            "Hide": 11,
+            "Refresh": 11,
+            "Reposition": 11,
+            "Circle": 4,
+            "Disengage": 4,
+            "PushBack": 4,
+            "PullBack": 4,
+            "Reversal": 4
+          },
+          "availableByType": {
+            "Hide": 7,
+            "Refresh": 7,
+            "Reposition": 7,
+            "Circle": 3,
+            "Disengage": 3,
+            "PushBack": 3,
+            "PullBack": 3,
+            "Reversal": 3
+          },
+          "executed": 10,
+          "executedByType": {
+            "Reposition": 5,
+            "Refresh": 2,
+            "PushBack": 3
+          }
+        },
+        "passiveOptions": {
+          "opportunities": 66,
+          "optionsOffered": 184,
+          "optionsAvailable": 19,
+          "offeredByType": {
+            "CounterCharge": 78,
+            "OpportunityAttack": 78,
+            "TakeCover": 8,
+            "Defend": 12,
+            "CounterAction": 2,
+            "React": 2,
+            "CounterStrike": 2,
+            "CounterFire": 2
+          },
+          "availableByType": {
+            "TakeCover": 5,
+            "Defend": 9,
+            "CounterCharge": 2,
+            "OpportunityAttack": 3
+          },
+          "used": 14,
+          "usedByType": {
+            "Defend": 9,
+            "TakeCover": 5
+          }
+        },
+        "situationalModifiers": {
+          "testsObserved": 12,
+          "modifiedTests": 10,
+          "modifiersApplied": 19,
+          "byType": {
+            "distance_orm": 5,
+            "defend": 9,
+            "multiple_attack_penalty": 3,
+            "hand_penalty": 2
+          }
+        }
+      },
+      "performance": {
+        "elapsedMs": 335,
+        "activationsProcessed": 24,
+        "heartbeatEveryActivations": 25,
+        "activationLatency": {
+          "avgMs": 12.33,
+          "p50Ms": 6.5,
+          "p95Ms": 37.55,
+          "maxMs": 91
+        },
+        "phases": {
+          "setup.create_assemblies": {
+            "count": 1,
+            "totalMs": 8,
+            "avgMs": 8,
+            "maxMs": 8
+          },
+          "setup.load_battlefield": {
+            "count": 1,
+            "totalMs": 4,
+            "avgMs": 4,
+            "maxMs": 4
+          },
+          "setup.deploy_models": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "turn.start": {
+            "count": 4,
+            "totalMs": 6,
+            "avgMs": 1.5,
+            "maxMs": 3
+          },
+          "turn.mission_start_update": {
+            "count": 4,
+            "totalMs": 1,
+            "avgMs": 0.25,
+            "maxMs": 1
+          },
+          "ai.update_knowledge": {
+            "count": 42,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "ai.decide_action": {
+            "count": 42,
+            "totalMs": 159,
+            "avgMs": 3.79,
+            "maxMs": 43
+          },
+          "action.move": {
+            "count": 16,
+            "totalMs": 28,
+            "avgMs": 1.75,
+            "maxMs": 16
+          },
+          "action.total": {
+            "count": 42,
+            "totalMs": 89,
+            "avgMs": 2.12,
+            "maxMs": 17
+          },
+          "react.process": {
+            "count": 38,
+            "totalMs": 3,
+            "avgMs": 0.08,
+            "maxMs": 1
+          },
+          "action.pushing": {
+            "count": 6,
+            "totalMs": 1,
+            "avgMs": 0.17,
+            "maxMs": 1
+          },
+          "activation.total": {
+            "count": 24,
+            "totalMs": 296,
+            "avgMs": 12.33,
+            "maxMs": 91
+          },
+          "action.ranged_combat": {
+            "count": 10,
+            "totalMs": 40,
+            "avgMs": 4,
+            "maxMs": 17
+          },
+          "turn.mission_end_update": {
+            "count": 4,
+            "totalMs": 3,
+            "avgMs": 0.75,
+            "maxMs": 1
+          },
+          "turn.total": {
+            "count": 4,
+            "totalMs": 314,
+            "avgMs": 78.5,
+            "maxMs": 198
+          },
+          "activation.no_ap": {
+            "count": 2,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          },
+          "action.hold": {
+            "count": 4,
+            "totalMs": 3,
+            "avgMs": 0.75,
+            "maxMs": 1
+          },
+          "action.fiddle": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "action.charge": {
+            "count": 1,
+            "totalMs": 1,
+            "avgMs": 1,
+            "maxMs": 1
+          },
+          "action.close_combat": {
+            "count": 4,
+            "totalMs": 15,
+            "avgMs": 3.75,
+            "maxMs": 11
+          },
+          "mission.finalize": {
+            "count": 1,
+            "totalMs": 0,
+            "avgMs": 0,
+            "maxMs": 0
+          }
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "elapsedMs": 198,
+            "activations": 6
+          },
+          {
+            "turn": 2,
+            "elapsedMs": 31,
+            "activations": 6
+          },
+          {
+            "turn": 3,
+            "elapsedMs": 61,
+            "activations": 6
+          },
+          {
+            "turn": 4,
+            "elapsedMs": 24,
+            "activations": 6
+          }
+        ],
+        "slowestActivations": [
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "elapsedMs": 91,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "elapsedMs": 41,
+            "steps": 5
+          },
+          {
+            "turn": 3,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "average-armor-heavy-mail-armored-gear-loadout",
+            "elapsedMs": 18,
+            "steps": 1
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-2-average-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "average-armor-heavy-mail-armored-gear-loadout",
+            "elapsedMs": 16,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "elapsedMs": 15,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Alpha",
+            "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-helmet-common-loadout",
+            "modelName": "militia-armor-heavy-mail-helmet-common-loadout",
+            "elapsedMs": 13,
+            "steps": 5
+          },
+          {
+            "turn": 1,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "veteran-armor-heavy-mail-armored-gear-loadout",
+            "elapsedMs": 12,
+            "steps": 4
+          },
+          {
+            "turn": 3,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "elapsedMs": 12,
+            "steps": 1
+          },
+          {
+            "turn": 3,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "veteran-armor-heavy-mail-armored-gear-loadout",
+            "elapsedMs": 8,
+            "steps": 1
+          },
+          {
+            "turn": 2,
+            "sideName": "Bravo",
+            "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "modelName": "veteran-armor-heavy-mail-shield-heavy-small-loadout",
+            "elapsedMs": 7,
+            "steps": 1
+          }
+        ],
+        "caches": {
+          "los": {
+            "terrainVersion": 0,
+            "size": 1125,
+            "maxSize": 25000,
+            "hits": 4687,
+            "misses": 1125
+          },
+          "pathfinding": {
+            "terrainVersion": 0,
+            "gridCacheSize": 3,
+            "gridCacheMaxSize": 32,
+            "pathCacheSize": 79,
+            "pathCacheMaxSize": 8000,
+            "gridHits": 85,
+            "gridMisses": 3,
+            "pathHits": 9,
+            "pathMisses": 79
+          },
+          "minimaxLite": {
+            "controllers": 6,
+            "controllersWithSamples": 6,
+            "hits": 8,
+            "misses": 86,
+            "hitRate": 0.0851,
+            "avgHitRate": 0.1019,
+            "nodeEvaluations": 94,
+            "avgNodeEvaluationsPerController": 15.67,
+            "totalSize": 86,
+            "totalMaxSize": 12288,
+            "patchTransitions": {
+              "friendly_dominant->friendly_dominant": 56,
+              "scrum->scrum": 3,
+              "scrum->friendly_dominant": 7,
+              "friendly_dominant->enemy_dominant": 5,
+              "enemy_dominant->enemy_dominant": 17,
+              "scrum->enemy_dominant": 5,
+              "enemy_dominant->scrum": 1
+            },
+            "patchGraph": {
+              "hits": 101,
+              "misses": 87,
+              "hitRate": 0.5372,
+              "avgHitRate": 0.5375,
+              "evictions": 0,
+              "totalSize": 87,
+              "totalMaxSize": 24576,
+              "neighborhoodGraphHits": 62,
+              "neighborhoodGraphMisses": 25,
+              "neighborhoodGraphHitRate": 0.7126,
+              "neighborhoodGraphAvgHitRate": 0.711,
+              "neighborhoodGraphEvictions": 0,
+              "neighborhoodGraphTotalSize": 25,
+              "neighborhoodGraphTotalMaxSize": 1536
+            }
+          }
+        }
+      },
+      "coordinatorTrace": {
+        "hasTrace": true,
+        "turnsWithTrace": 4,
+        "totalTurns": 4,
+        "turnCoverage": 1,
+        "avgSideCoveragePerTurn": 1
+      },
+      "pressureContinuity": {
+        "hasData": true,
+        "sideCount": 2,
+        "scrumBreakRate": 0.25,
+        "laneBreakRate": 0.5,
+        "combinedBreakRate": 0.42857142857142855,
+        "signatureCoverageRate": 1,
+        "totalBreaks": 6,
+        "totalSignatureSamples": 14,
+        "totalUpdates": 14
+      },
+      "combatActivity": {
+        "attackActions": 12,
+        "totalActions": 76,
+        "attackActionRatio": 0.15789473684210525,
+        "hasCombat": true
+      },
+      "passiveness": {
+        "passiveActions": 0,
+        "detectHideActions": 0,
+        "waitActions": 0,
+        "totalActions": 76,
+        "passiveActionRatio": 0,
+        "detectHideActionRatio": 0,
+        "waitActionRatio": 0
+      }
+    }
+  ],
+  "generatedAt": "2026-03-09T22:34:32.474Z"
+}

@@ -330,10 +330,25 @@ describe('ROF Spatial Geometry - Suppression Markers', () => {
       ];
       
       const effect = calculateSuppressionEffect(character, battlefield, markers);
-      // The marker should be blocked by Hard Cover (Wall blocks LOS)
-      // Note: This test may need adjustment based on actual LOS implementation
-      // For now, we verify the marker is counted (LOS implementation detail)
-      expect(effect.markerCount).toBeGreaterThanOrEqual(0);
+      expect(effect.markerCount).toBe(0);
+      expect(effect.dr).toBe(0);
+      expect(effect.behindHardCover).toBe(true);
+    });
+
+    it('should not treat non-blocking terrain as hard cover for suppression', () => {
+      const battlefield = new Battlefield(12, 12);
+      const character = createTestCharacter('Average');
+      battlefield.placeCharacter(character, { x: 5, y: 5 });
+
+      addSquareTerrain(battlefield, 'rough', TerrainType.Rough, { x: 5.2, y: 5 });
+      const markers: any[] = [
+        { id: 'sup1', position: { x: 5.5, y: 5 }, range: 1, creatorId: 'attacker' },
+      ];
+
+      const effect = calculateSuppressionEffect(character, battlefield, markers);
+      expect(effect.markerCount).toBe(1);
+      expect(effect.dr).toBe(1);
+      expect(effect.behindHardCover).toBe(false);
     });
   });
 

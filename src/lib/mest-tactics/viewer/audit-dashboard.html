@@ -22,6 +22,22 @@
     }
     .header h1 { color: #e94560; font-size: 1.3rem; margin-bottom: 0.5rem; }
     .header p { color: #aaa; font-size: 0.9rem; }
+    .header-controls {
+      margin-top: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #aaa;
+      font-size: 0.8rem;
+    }
+    .header-controls select {
+      background: #0f3460;
+      color: #fff;
+      border: 1px solid #16213e;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.8rem;
+    }
     
     /* Tabs */
     .tabs {
@@ -979,6 +995,14 @@
   <div class="header">
     <h1>⚔️ Battle Audit Dashboard</h1>
     <p>Unified viewer for all MEST Tactics battle audits</p>
+    <div class="header-controls">
+      <label for="battle-audit-filter">Audit Output:</label>
+      <select id="battle-audit-filter">
+        <option value="all">All Reports</option>
+        <option value="with">With Audit Output</option>
+        <option value="without">Without Audit Output</option>
+      </select>
+    </div>
   </div>
   
   <div class="tabs">
@@ -1572,6 +1596,7 @@
     let isPlaying = false;
     let playInterval = null;
     let selectedModel = null;
+    let battleAuditFilter = 'all';
     let visualizationState = {
       paths: true,
       los: true,
@@ -1667,17 +1692,21 @@
       generateBtn.addEventListener('click', async () => {
         // Gather form data
         const gameSize = document.getElementById('bf-size-select').value;
-        const terrainDensities = {
-          area: parseInt(document.getElementById('density-area').value),
-          building: parseInt(document.getElementById('density-building').value),
-          wall: parseInt(document.getElementById('density-wall').value),
-          tree: parseInt(document.getElementById('density-tree').value),
-          rocks: parseInt(document.getElementById('density-rocks').value),
-          shrub: parseInt(document.getElementById('density-shrub').value),
+        const quantizeDensity = (value) => {
+          const numeric = Number.isFinite(value) ? value : 0;
+          const clamped = Math.max(0, Math.min(100, numeric));
+          return Math.max(0, Math.min(100, Math.round(clamped / 20) * 20));
         };
+        const layerTokens = [
+          ['A', parseInt(document.getElementById('density-area').value, 10)],
+          ['B', parseInt(document.getElementById('density-building').value, 10)],
+          ['W', parseInt(document.getElementById('density-wall').value, 10)],
+          ['R', parseInt(document.getElementById('density-rocks').value, 10)],
+          ['S', parseInt(document.getElementById('density-shrub').value, 10)],
+          ['T', parseInt(document.getElementById('density-tree').value, 10)],
+        ].map(([token, value]) => `${token}${quantizeDensity(value)}`);
 
-        // Debug: log slider values
-        console.log('Generating battlefield with densities:', terrainDensities);
+        console.log('Generating battlefield with args:', layerTokens);
 
         // Disable button and show progress
         generateBtn.disabled = true;
@@ -1688,7 +1717,7 @@
           const response = await fetch('/api/battlefields/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ gameSize, terrainDensities }),
+            body: JSON.stringify({ gameSize, args: layerTokens }),
           });
 
           const result = await response.json();
@@ -2070,10 +2099,20 @@
     });
 
     // Load battles from API
+    function buildBattlesApiUrl() {
+      const params = new URLSearchParams();
+      if (battleAuditFilter === 'with' || battleAuditFilter === 'without') {
+        params.set('audit', battleAuditFilter);
+      }
+      const query = params.toString();
+      return query.length > 0 ? `/api/battles?${query}` : '/api/battles';
+    }
+
     async function loadBattles() {
       try {
-        const response = await fetch('/api/battles');
-        battles = await response.json();
+        const response = await fetch(buildBattlesApiUrl());
+        const loaded = await response.json();
+        battles = loaded;
         return battles;
       } catch (error) {
         console.error('Failed to load battles:', error);
@@ -2085,9 +2124,12 @@
     async function loadBattleSelect() {
       const select = document.getElementById('battle-select');
       const battles = await loadBattles();
-      
+
       select.innerHTML = '<option value="">Select a battle...</option>' +
-        battles.map(b => `<option value="${b.id}">${b.missionName} - ${new Date(b.timestamp).toLocaleString()}</option>`).join('');
+        battles.map(b => {
+          const auditBadge = b.hasAuditOutput ? ' [audit]' : ' [no-audit]';
+          return `<option value="${b.id}">${b.missionName} - ${new Date(b.timestamp).toLocaleString()}${auditBadge}</option>`;
+        }).join('');
     }
 
     // Load battle in visual audit viewer
@@ -2630,6 +2672,10 @@
               <div class="label">Game Size</div>
             </div>
             <div class="summary-stat">
+              <div class="value">${battle.hasAuditOutput ? 'Yes' : 'No'}</div>
+              <div class="label">Has Audit Output</div>
+            </div>
+            <div class="summary-stat">
               <div class="value">${battle.instrumentationGrade || 'N/A'}</div>
               <div class="label">Instrumentation Grade</div>
             </div>
@@ -2766,6 +2812,18 @@
     document.getElementById('battle-select').addEventListener('change', (e) => {
       if (e.target.value) {
         loadBattleInViewer(e.target.value);
+      }
+    });
+
+    document.getElementById('battle-audit-filter').addEventListener('change', async (e) => {
+      battleAuditFilter = e.target.value || 'all';
+      const activeTab = document.querySelector('.tab.active')?.dataset?.tab;
+      if (activeTab === 'tab2') {
+        await loadBattleSelect();
+      } else if (activeTab === 'tab3') {
+        await loadSummaries();
+      } else if (activeTab === 'tab6') {
+        await loadAIAnalytics();
       }
     });
 
@@ -3064,16 +3122,18 @@
 
       listEl.innerHTML = filtered.map((bf) => {
         const isActive = bf.name === currentBattlefieldName ? 'active' : '';
+        const displayName = bf.relativePath ? bf.relativePath.replace(/\.json$/i, '') : bf.name;
 
-        // Extract info from filename (e.g., "generated-2026-03-01T19-54-08-476Z")
-        const dateMatch = bf.name.match(/generated-(\d{4}-\d{2}-\d{2})/);
-        const dateStr = dateMatch ? dateMatch[1] : 'Unknown';
+        const metaParts = [];
+        if (bf.source) metaParts.push(`Source: ${bf.source}`);
+        if (bf.gameSize) metaParts.push(`Size: ${bf.gameSize}`);
+        const metaText = metaParts.length > 0 ? metaParts.join(' • ') : 'Battlefield';
 
         return `
-          <div class="battlefield-audit-item ${isActive}" onclick="loadBattlefieldAuditView('${bf.name}')" title="Generated: ${dateStr}">
-            <div class="battlefield-audit-item-name">${bf.name}</div>
+          <div class="battlefield-audit-item ${isActive}" data-battlefield-id="${bf.name}" onclick="loadBattlefieldAuditView('${bf.name}')" title="${displayName}">
+            <div class="battlefield-audit-item-name">${displayName}</div>
             <div class="battlefield-audit-item-meta">
-              <span>Generated: ${dateStr}</span>
+              <span>${metaText}</span>
             </div>
           </div>
         `;
@@ -3091,13 +3151,14 @@
         
         // Update current battlefield name
         currentBattlefieldName = battlefieldName;
+        currentBattlefieldId = battlefieldName;
 
         // Save to localStorage
         saveLastBattlefield(battlefieldName);
 
         // Highlight selected item
         document.querySelectorAll('.battlefield-audit-item').forEach(el => {
-          const isActive = el.querySelector('.battlefield-audit-item-name').textContent === battlefieldName;
+          const isActive = el.dataset.battlefieldId === battlefieldName;
           el.classList.toggle('active', isActive);
         });
 

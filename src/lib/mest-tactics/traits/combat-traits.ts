@@ -2469,13 +2469,48 @@ export function getTacticsLevel(character: Character): number {
  *      acquire [Discard] when using them and failing a Close Combat attack.
  */
 export function isUnarmed(character: Character): boolean {
-  // Check if character has no weapons or only has Unarmed trait
-  const hasWeapons = character.profile?.items?.some(item => {
-    const classification = (item.classification || item.class || '').toLowerCase();
-    return classification.includes('melee') || classification.includes('ranged');
-  }) ?? false;
+  if (getCharacterTraitLevel(character, 'Unarmed') > 0) {
+    return true;
+  }
 
-  return !hasWeapons || getCharacterTraitLevel(character, 'Unarmed') > 0;
+  const profile = character.profile ?? {};
+  const inHandItems = Array.isArray(profile.inHandItems) ? profile.inHandItems : null;
+  const allItems = [
+    ...(profile.inHandItems ?? []),
+    ...(profile.items ?? []),
+    ...(profile.equipment ?? []),
+    ...(profile.stowedItems ?? []),
+  ];
+
+  const isWeaponItem = (item: Item | undefined): boolean => {
+    if (!item) return false;
+    const classification = String(item.classification ?? item.class ?? '').toLowerCase();
+    return classification.includes('melee')
+      || classification.includes('ranged')
+      || classification.includes('range')
+      || classification.includes('bow')
+      || classification.includes('thrown')
+      || classification.includes('firearm')
+      || classification.includes('support')
+      || classification.includes('natural');
+  };
+
+  // When in-hand state is tracked, only in-hand weapons (or natural weapons) prevent Unarmed.
+  if (inHandItems) {
+    const hasWeaponInHand = inHandItems.some(item => isWeaponItem(item));
+    if (hasWeaponInHand) {
+      return false;
+    }
+    const hasNaturalWeapon = allItems.some(item => {
+      const classification = String(item?.classification ?? item?.class ?? '').toLowerCase();
+      return classification.includes('natural');
+    });
+    return !hasNaturalWeapon;
+  }
+
+  // Backward-compatible fallback for older profile shapes without in-hand inventory.
+  const hasAnyWeapon = allItems.some(item => isWeaponItem(item));
+  return !hasAnyWeapon;
 }
 
 export function getUnarmedHitPenalty(character: Character): number {

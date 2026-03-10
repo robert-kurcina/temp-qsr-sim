@@ -46,6 +46,7 @@ for (const turn of audit.turns || []) {
         const hitTestResult = attackResult?.result?.hitTestResult || 
                               attackResult?.hitTestResult ||
                               step.opposedTest;
+        const hitNotation = hitTestResult?.pass === true ? 'pass' : hitTestResult?.pass === false ? 'fail' : 'n/a';
 
         if (hitTestResult) {
           console.log(`\n  📊 HIT TEST:`);
@@ -91,6 +92,12 @@ for (const turn of audit.turns || []) {
         const damageResolution = attackResult?.result?.damageResolution || 
                                  attackResult?.damageResolution ||
                                  step.details?.react?.result?.result?.damageResolution;
+        const damageNotation = damageResolution?.damageTestResult?.pass === true
+          ? 'pass'
+          : damageResolution?.damageTestResult?.pass === false
+            ? 'fail'
+            : 'n/a';
+        console.log(`  Notation: ${step.actionType} ${hitNotation}/${damageNotation}(${target})`);
 
         if (damageResolution && hitTestResult?.pass) {
           console.log(`\n  💥 DAMAGE RESOLUTION:`);

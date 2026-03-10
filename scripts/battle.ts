@@ -1,446 +1,100 @@
 #!/usr/bin/env node
 /**
- * Unified Battle Script
- * 
- * Single entry point for all MEST Tactics battles.
- * Generates terrain, executes battles, and exports all artifacts.
- * 
- * Usage:
- *   npx tsx scripts/battle.ts                      # Default VERY_SMALL
- *   npx tsx scripts/battle.ts --config small       # Specific config
- *   npx tsx scripts/battle.ts --audit --viewer     # With visual audit
- *   npx tsx scripts/battle.ts --help               # Show help
+ * Battle compatibility wrapper.
+ *
+ * Non-terrain runs delegate to canonical AIBattleRunner.
+ * Terrain-only runs generate battlefield SVG artifacts without executing a battle.
  */
 
-import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { placeTerrain, exportTerrainForReport } from '../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
-import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
 import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
-import { TerrainElement } from '../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
-import { AuditService } from '../src/lib/mest-tactics/audit/AuditService';
-import { exportBattleAudit, writeAuditExportSync, exportDeployment, exportTerrain } from '../src/lib/mest-tactics/audit/BattleAuditExporter';
-import { AIGameLoop } from '../src/lib/mest-tactics/ai/executor/AIGameLoop';
-import { InstrumentationLogger, InstrumentationGrade } from '../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
-import { buildAssembly, buildProfile, GameSize } from '../src/lib/mest-tactics/mission/assembly-builder';
-import { buildMissionSide } from '../src/lib/mest-tactics/mission/MissionSideBuilder';
-import { GameManager } from '../src/lib/mest-tactics/engine/GameManager';
-import { CharacterAI } from '../src/lib/mest-tactics/ai/core/CharacterAI';
+import { loadBattlefieldFromFile } from '../src/lib/mest-tactics/battlefield/BattlefieldExporter';
+import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
+import { placeTerrain } from '../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { GameSize } from '../src/lib/mest-tactics/mission/assembly-builder';
 import { TacticalDoctrine } from '../src/lib/mest-tactics/ai/stratagems/AIStratagems';
-import { getEndGameTriggerTurn } from '../src/lib/mest-tactics/engine/end-game-trigger';
-import { createDefaultDeploymentZones } from '../src/lib/mest-tactics/mission/deployment-system';
-import { getMissionDeploymentProfile } from '../src/lib/mest-tactics/missions/mission-deployment';
-import { LightingCondition, getVisibilityOrForLighting } from '../src/lib/mest-tactics/utils/visibility';
-import { ActionStepAudit, AuditVector, ModelEffectAudit, OpposedTestAudit } from '../src/lib/mest-tactics/audit/BattleAuditExporter';
-import { GAME_SIZE_CONFIG } from './ai-battle/AIBattleConfig';
+import { AIBattleRunner } from './ai-battle/AIBattleRunner';
+import { GAME_SIZE_CONFIG, type GameConfig } from './ai-battle/AIBattleConfig';
+import { writeBattleArtifacts } from './ai-battle/reporting/BattleReportWriter';
+import { buildCanonicalGameConfig, createDefaultHeadToHeadSides } from './shared/CanonicalBattleConfigAdapter';
+import { getDefaultSimpleBattlefieldPath } from './shared/BattlefieldPaths';
 
-// ============================================================================
-// Configuration
-// ============================================================================
-
-interface BattleConfig {
-  missionId: string;
+interface BattleCliConfig {
   gameSize: GameSize;
-  battlefieldWidth: number;
-  battlefieldHeight: number;
-  maxTurns: number;
-  sides: SideConfig[];
   density: number;
-  lighting: LightingCondition;
-  seed?: number;
+  terrainOnly: boolean;
   audit: boolean;
   viewer: boolean;
-  instrumentationGrade: InstrumentationGrade;
-  terrainOnly: boolean;
+  seed?: number;
+  battlefieldPath?: string;
 }
 
-interface SideConfig {
-  name: string;
-  bp: number;
-  modelCount: number;
-  tacticalDoctrine: TacticalDoctrine;
-  assemblyName: string;
+function createOutputDir(): string {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const dir = join(process.cwd(), 'generated', 'battle-reports', `battle-report-${timestamp}`);
+  mkdirSync(dir, { recursive: true });
+  return dir;
 }
 
-// ============================================================================
-// Main Battle Runner
-// ============================================================================
+function parseArgs(argv: string[] = process.argv.slice(2)): BattleCliConfig {
+  const config: BattleCliConfig = {
+    gameSize: GameSize.VERY_SMALL,
+    density: 0.5,
+    terrainOnly: false,
+    audit: false,
+    viewer: false,
+  };
 
-class UnifiedBattle {
-  private config: BattleConfig;
-  private outputDir: string;
-  private auditService: AuditService | null = null;
-  private logger: InstrumentationLogger;
-
-  constructor(config: BattleConfig) {
-    this.config = config;
-    this.outputDir = this.createOutputDir();
-    
-    this.logger = new InstrumentationLogger({
-      grade: config.instrumentationGrade,
-      format: 'console',
-    });
-
-    if (config.audit || config.viewer) {
-      this.auditService = new AuditService();
-    }
-  }
-
-  private createOutputDir(): string {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const dir = join(process.cwd(), 'generated', 'battle-reports', `battle-report-${timestamp}`);
-    mkdirSync(dir, { recursive: true });
-    return dir;
-  }
-
-  async run(): Promise<void> {
-    console.log('⚔️  UNIFIED BATTLE RUNNER');
-    console.log('═══════════════════════════════════════');
-    console.log(`Mission: ${this.config.missionId}`);
-    console.log(`Game Size: ${this.config.gameSize}`);
-    console.log(`Battlefield: ${this.config.battlefieldWidth}×${this.config.battlefieldHeight} MU`);
-    console.log(`Sides: ${this.config.sides.length}`);
-    console.log(`Terrain Density: ${Math.round(this.config.density * 100)}%`);
-    const lightingConfig = this.config.lighting as any;
-    const lightingName = typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig);
-    const visibilityOR = typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16);
-    console.log(`Lighting: ${lightingName} (Visibility OR ${visibilityOR} MU)`);
-    console.log('═══════════════════════════════════════\n');
-
-    // 1. Place terrain
-    console.log('🌲 Placing terrain...');
-    const terrainResult = placeTerrain({
-      mode: 'balanced',
-      density: this.config.density * 100,
-      battlefieldWidth: this.config.battlefieldWidth,
-      battlefieldHeight: this.config.battlefieldHeight,
-      seed: this.config.seed,
-      terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
-    });
-    console.log(`   ✓ Placed ${terrainResult.stats.placed} terrain elements\n`);
-
-    // 2. Generate SVG
-    console.log('🎨 Generating battlefield SVG...');
-    const svg = this.generateSvg(terrainResult.terrain);
-    const svgPath = join(this.outputDir, 'battlefield.svg');
-    writeFileSync(svgPath, svg);
-    console.log(`   ✓ Saved: ${svgPath}\n`);
-
-    // 3. Create battlefield
-    console.log('🗺️  Creating battlefield...');
-    const battlefield = new Battlefield(this.config.battlefieldWidth, this.config.battlefieldHeight);
-    for (const terrainFeature of terrainResult.terrain) {
-      const centroid = this.getCentroid(terrainFeature.vertices);
-      // Map terrain type to valid TerrainElement name
-      const typeLower = (terrainFeature.type || 'Tree').toLowerCase();
-      let terrainName = 'Tree';
-      
-      if (typeLower.includes('shrub') || typeLower.includes('bush')) {
-        terrainName = 'Shrub';
-      } else if (typeLower.includes('rock')) {
-        terrainName = Math.random() > 0.5 ? 'Small Rocks' : 'Medium Rocks';
-      } else if (typeLower.includes('tree')) {
-        terrainName = 'Tree';
-      }
-      
-      const rotation = Math.floor(Math.random() * 360);
-      battlefield.addTerrainElement(new TerrainElement(terrainName, centroid, rotation));
-    }
-    console.log(`   ✓ Battlefield created with ${terrainResult.terrain.length} terrain elements\n`);
-
-    if (this.config.terrainOnly) {
-      console.log('✅ Terrain-only mode. Battle execution skipped.\n');
-      return;
-    }
-
-    // 4. Build sides and deploy
-    console.log('🏗️  Building sides and deploying models...');
-    const sides = await this.buildSides(battlefield);
-    console.log(`   ✓ ${sides.length} sides built\n`);
-
-    // 5. Initialize audit
-    if (this.auditService) {
-      const lightingConfig = this.config.lighting as any;
-      this.auditService.initialize({
-        missionId: this.config.missionId,
-        missionName: 'Elimination',
-        lighting: (typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig)) as any,
-        visibilityOrMu: typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16),
-        maxOrm: 3,
-        allowConcentrateRangeExtension: true,
-        perCharacterFovLos: false,
-        battlefieldWidth: this.config.battlefieldWidth,
-        battlefieldHeight: this.config.battlefieldHeight,
-      });
-    }
-
-    // 6. Create game manager
-    const allCharacters = sides.flatMap(side => side.members.map((m: any) => m.character));
-    const endGameTriggerTurn = getEndGameTriggerTurn(this.config.gameSize);
-    const gameManager = new GameManager(allCharacters, battlefield, endGameTriggerTurn, this.auditService || undefined, sides);
-
-    // 7. Run battle
-    console.log('🎮 Starting battle...\n');
-    const result = await this.runGameLoop(gameManager, battlefield, sides);
-
-    // 8. Export audit with full data
-    if (this.auditService) {
-      const auditPath = join(this.outputDir, 'audit.json');
-      const lightingConfig = this.config.lighting as any;
-      const auditExport = exportBattleAudit(this.auditService, {
-        missionId: this.config.missionId,
-        missionName: 'Elimination',
-        seed: this.config.seed,
-        lighting: (typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig)) as any,
-        visibilityOrMu: typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16),
-        maxOrm: 3,
-        allowConcentrateRangeExtension: true,
-        perCharacterFovLos: false,
-        battlefieldWidth: this.config.battlefieldWidth,
-        battlefieldHeight: this.config.battlefieldHeight,
-        battlefield,
-        sides,
-      });
-      writeFileSync(auditPath, JSON.stringify(auditExport, null, 2), 'utf-8');
-      console.log(`🎬 Visual Audit: ${auditPath}`);
-      
-      // Also export deployment data
-      const deploymentPath = join(this.outputDir, 'deployment.json');
-      const deploymentExport = exportDeployment(sides, battlefield);
-      writeFileSync(deploymentPath, JSON.stringify(deploymentExport, null, 2), 'utf-8');
-      console.log(`📊 Deployment: ${deploymentPath}`);
-    }
-
-    // 9. Export viewer (copy full template)
-    if (this.config.viewer) {
-      const viewerPath = join(this.outputDir, 'battle-report.html');
-      const viewerTemplatePath = join(process.cwd(), 'src', 'lib', 'mest-tactics', 'viewer', 'battle-report-viewer.html');
-      
-      let viewerHtml = '';
-      try {
-        viewerHtml = readFileSync(viewerTemplatePath, 'utf-8');
-      } catch (e) {
-        viewerHtml = this.generateMinimalViewer();
-      }
-      
-      writeFileSync(viewerPath, viewerHtml, 'utf-8');
-      console.log(`📺 HTML Viewer: ${viewerPath}`);
-      console.log(`\n💡 Open in browser: open ${viewerPath}`);
-    }
-
-    console.log('\n✅ Battle completed successfully!\n');
-  }
-
-  private generateSvg(terrain: any[]): string {
-    // Simplified SVG generation - uses SvgRenderer
-    const battlefield = new Battlefield(this.config.battlefieldWidth, this.config.battlefieldHeight);
-    for (const t of terrain) {
-      const centroid = this.getCentroid(t.vertices);
-      // Map terrain type to valid TerrainElement name
-      const typeLower = (t.type || 'Tree').toLowerCase();
-      let terrainName = 'Tree';
-      
-      if (typeLower.includes('shrub') || typeLower.includes('bush')) {
-        terrainName = 'Shrub';
-      } else if (typeLower.includes('rock')) {
-        terrainName = Math.random() > 0.5 ? 'Small Rocks' : 'Medium Rocks';
-      } else if (typeLower.includes('tree')) {
-        terrainName = 'Tree';
-      }
-      
-      battlefield.addTerrainElement(new TerrainElement(terrainName, centroid, 0));
-    }
-
-    return SvgRenderer.render(battlefield, {
-      width: this.config.battlefieldWidth,
-      height: this.config.battlefieldHeight,
-      gridResolution: 0.5,
-      title: `${this.config.missionId} - ${this.config.gameSize}`,
-      layers: [
-        { id: 'deployment', label: 'Deployment Zones', enabled: true },
-        { id: 'grid', label: '0.5 MU Grid', enabled: true },
-        { id: 'area', label: 'Area Terrain', enabled: true },
-        { id: 'building', label: 'Buildings', enabled: true },
-        { id: 'wall', label: 'Walls', enabled: true },
-        { id: 'tree', label: 'Trees', enabled: true },
-        { id: 'rocks', label: 'Rocks', enabled: true },
-        { id: 'shrub', label: 'Shrubs', enabled: true },
-      ],
-    });
-  }
-
-  private getCentroid(vertices: any[]): { x: number; y: number } {
-    if (!vertices || vertices.length === 0) return { x: 0, y: 0 };
-    let x = 0, y = 0;
-    for (const v of vertices) { x += v.x; y += v.y; }
-    return { x: x / vertices.length, y: y / vertices.length };
-  }
-
-  private async buildSides(battlefield: Battlefield): Promise<any[]> {
-    const sides: any[] = [];
-
-    for (const sideConfig of this.config.sides) {
-      const assemblies: any[] = [];
-
-      for (let i = 0; i < sideConfig.modelCount; i++) {
-        const profile = buildProfile('Average', {
-          itemNames: ['Sword, Broad', 'Armor, Light', 'Shield, Small'],
-        });
-        const assembly = buildAssembly(`${sideConfig.assemblyName}-${i + 1}`, [profile]);
-        assemblies.push(assembly);
-      }
-
-      const side = buildMissionSide(sideConfig.name, assemblies);
-
-      // Fix character IDs
-      side.members.forEach((member: any, i: number) => {
-        member.character.id = `${sideConfig.name}-${i + 1}`;
-        member.character.name = `${sideConfig.name}-${i + 1}`;
-        member.id = `${sideConfig.name}-${i + 1}`;
-      });
-
-      sides.push(side);
-    }
-
-    // Deploy models
-    await this.deployModels(sides, battlefield);
-
-    return sides;
-  }
-
-  private async deployModels(sides: any[], battlefield: Battlefield): Promise<void> {
-    const battlefieldWidth = this.config.battlefieldWidth;
-    const battlefieldHeight = this.config.battlefieldHeight;
-    const canonicalDepth = Math.max(1, GAME_SIZE_CONFIG[this.config.gameSize]?.deploymentDepth ?? 6);
-    const deploymentProfile = getMissionDeploymentProfile(this.config.missionId, this.config.gameSize);
-    const deploymentDepth = Math.max(1, deploymentProfile.deploymentDepth || canonicalDepth);
-    const zones = createDefaultDeploymentZones(
-      battlefieldWidth,
-      battlefieldHeight,
-      sides.map((side: any) => side.id),
-      deploymentDepth,
-      deploymentProfile.deploymentType
-    );
-
-    for (let sideIndex = 0; sideIndex < sides.length; sideIndex++) {
-      const side = sides[sideIndex];
-      const zoneBounds = zones.find(z => z.sideId === side.id)?.bounds;
-      const zone = zoneBounds ?? {
-        x: 0,
-        y: 0,
-        width: battlefieldWidth,
-        height: battlefieldHeight,
-      };
-      const count = side.members.length;
-      const cols = Math.max(1, Math.ceil(Math.sqrt(count * (zone.width / Math.max(1, zone.height)))));
-      const rows = Math.max(1, Math.ceil(count / cols));
-      const xSpacing = cols > 1 ? (zone.width - 1) / (cols - 1) : 0;
-      const ySpacing = rows > 1 ? (zone.height - 1) / (rows - 1) : 0;
-
-      for (let memberIndex = 0; memberIndex < side.members.length; memberIndex++) {
-        const member = side.members[memberIndex];
-        const col = memberIndex % cols;
-        const row = Math.floor(memberIndex / cols);
-        const x = zone.x + col * xSpacing;
-        const y = zone.y + row * ySpacing;
-
-        const position = {
-          x: Math.max(zone.x, Math.min(zone.x + zone.width - 1, Math.round(x))),
-          y: Math.max(zone.y, Math.min(zone.y + zone.height - 1, Math.round(y))),
-        };
-        battlefield.placeCharacter(member.character, position);
-      }
-    }
-  }
-
-  private async runGameLoop(gameManager: GameManager, battlefield: Battlefield, sides: any[]): Promise<any> {
-    const lightingConfig = this.config.lighting as any;
-    const aiGameLoop = new AIGameLoop(gameManager, battlefield, sides, {
-      enableStrategic: true,
-      enableTactical: true,
-      enableCharacterAI: true,
-      enableValidation: true,
-      enableReplanning: true,
-      verboseLogging: false,
-      maxActionsPerTurn: 3,
-      visibilityOrMu: typeof lightingConfig === 'string' ? getVisibilityOrForLighting(lightingConfig as any) : (lightingConfig.visibilityOR || 16),
-      maxOrm: 3,
-      allowConcentrateRangeExtension: true,
-      perCharacterFovLos: false,
-      auditService: this.auditService || undefined,
-      missionId: this.config.missionId,
-      missionName: 'Elimination',
-      lighting: (typeof lightingConfig === 'string' ? lightingConfig : (lightingConfig.name || lightingConfig)) as any,
-    }, this.logger);
-
-    const result = aiGameLoop.runGame(this.config.maxTurns);
-
-    return {
-      turnsPlayed: result.finalTurn,
-      gameEnded: true,
-      endGameReason: result.endReason || 'Turn limit reached',
-    };
-  }
-
-  private generateMinimalViewer(): string {
-    // Minimal viewer HTML fallback if template not found
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <title>Battle Report</title>
-  <style>
-    body { font-family: sans-serif; background: #1a1a2e; color: #eee; padding: 2rem; }
-    h1 { color: #e94560; }
-    svg { max-width: 100%; height: auto; background: #fff; }
-  </style>
-</head>
-<body>
-  <h1>⚔️ Battle Report</h1>
-  <p>Mission: ${this.config.missionId} | Game Size: ${this.config.gameSize}</p>
-  <object data="battlefield.svg" type="image/svg+xml"></object>
-  <p style="margin-top: 2rem; color: #888;">Full interactive viewer: open audit.json in browser or use terrain audit server.</p>
-</body>
-</html>`;
-  }
-}
-
-// ============================================================================
-// CLI Parser
-// ============================================================================
-
-function parseArgs(): Partial<BattleConfig> {
-  const args = process.argv.slice(2);
-  const config: Partial<BattleConfig> = {};
-
-  for (let i = 0; i < args.length; i++) {
-    const arg = args[i];
-    const value = args[i + 1];
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i];
+    const value = argv[i + 1];
 
     switch (arg) {
-      case '--config':
-        config.gameSize = GameSize[value.toUpperCase() as keyof typeof GameSize];
+      case '--config': {
+        const mapped = value ? GameSize[value.toUpperCase() as keyof typeof GameSize] : undefined;
+        if (mapped) {
+          config.gameSize = mapped;
+        }
         i++;
         break;
+      }
       case '--audit':
         config.audit = true;
         break;
       case '--viewer':
         config.viewer = true;
+        config.audit = true;
         break;
       case '--terrain-only':
         config.terrainOnly = true;
         break;
-      case '--seed':
-        config.seed = parseInt(value, 10);
+      case '--seed': {
+        const parsed = value ? Number.parseInt(value, 10) : Number.NaN;
+        if (Number.isFinite(parsed)) {
+          config.seed = parsed;
+        }
         i++;
         break;
-      case '--density':
-        config.density = parseFloat(value);
+      }
+      case '--density': {
+        const parsed = value ? Number.parseFloat(value) : Number.NaN;
+        if (Number.isFinite(parsed)) {
+          config.density = Math.max(0, Math.min(1, parsed));
+        }
+        i++;
+        break;
+      }
+      case '--battlefield':
+        config.battlefieldPath = value;
         i++;
         break;
       case '--help':
+      case '-h':
         showHelp();
         process.exit(0);
+      default:
+        break;
     }
   }
 
@@ -461,50 +115,113 @@ Options:
   --terrain-only       Generate terrain only, skip battle
   --seed <number>      Random seed for reproducibility
   --density <0-1>      Terrain density (default: 0.5)
+  --battlefield <path> Load battlefield JSON export instead of generating terrain
   --help               Show this help message
 
 Examples:
-  npx tsx scripts/battle.ts                           # Default VERY_SMALL
-  npx tsx scripts/battle.ts --config small            # SMALL battle
-  npx tsx scripts/battle.ts --audit --viewer          # With visual audit
-  npx tsx scripts/battle.ts --terrain-only --seed 42  # Terrain only, reproducible
+  npx tsx scripts/battle.ts
+  npx tsx scripts/battle.ts --config small
+  npx tsx scripts/battle.ts --audit --viewer
+  npx tsx scripts/battle.ts --terrain-only --seed 42
+  npx tsx scripts/battle.ts --battlefield data/battlefields/default/simple/VERY_SMALL-battlefield_A0-B0-W0-R0-S0-T0.json
 `);
 }
 
-// ============================================================================
-// Main Entry Point
-// ============================================================================
-
-async function main() {
-  const userConfig = parseArgs();
-
-  const gameSize = userConfig.gameSize || GameSize.VERY_SMALL;
-  const sizeConfig = GAME_SIZE_CONFIG[gameSize];
-
-  const config: BattleConfig = {
+function toCanonicalBattleConfig(config: BattleCliConfig): GameConfig {
+  return buildCanonicalGameConfig({
     missionId: 'QAI_11',
-    gameSize,
-    battlefieldWidth: sizeConfig.battlefieldWidth,
-    battlefieldHeight: sizeConfig.battlefieldHeight,
-    maxTurns: sizeConfig.maxTurns,
-    sides: [
-      { name: 'Alpha', bp: sizeConfig.bpPerSide[1], modelCount: sizeConfig.modelsPerSide[1], tacticalDoctrine: TacticalDoctrine.Balanced, assemblyName: 'Alpha Assembly' },
-      { name: 'Bravo', bp: sizeConfig.bpPerSide[1], modelCount: sizeConfig.modelsPerSide[1], tacticalDoctrine: TacticalDoctrine.Balanced, assemblyName: 'Bravo Assembly' },
-    ],
-    density: userConfig.density ?? 0.5,
-    lighting: { name: 'Day, Clear', visibilityOR: 16 } as any,
-    seed: userConfig.seed,
-    audit: userConfig.audit ?? false,
-    viewer: userConfig.viewer ?? false,
-    instrumentationGrade: InstrumentationGrade.BY_ACTION,
-    terrainOnly: userConfig.terrainOnly ?? false,
-  };
-
-  const battle = new UnifiedBattle(config);
-  await battle.run();
+    missionName: 'Elimination',
+    gameSize: config.gameSize,
+    sides: createDefaultHeadToHeadSides(config.gameSize, TacticalDoctrine.Balanced),
+    densityRatio: config.density,
+    lighting: 'Day, Clear',
+    allowWaitAction: false,
+    allowHideAction: false,
+    verbose: true,
+    seed: config.seed,
+    audit: config.audit,
+    viewer: config.viewer,
+    battlefieldPath: config.battlefieldPath,
+  });
 }
 
-main().catch((error) => {
+async function runCanonicalBattle(config: BattleCliConfig): Promise<void> {
+  const canonicalConfig = toCanonicalBattleConfig(config);
+  const runner = new AIBattleRunner();
+  const report = await runner.runBattle(canonicalConfig, {
+    seed: canonicalConfig.seed,
+    suppressOutput: false,
+  });
+
+  const artifacts = writeBattleArtifacts(report, {
+    audit: canonicalConfig.audit || canonicalConfig.viewer,
+    viewer: canonicalConfig.viewer,
+  });
+  if (artifacts.auditPath) {
+    console.log(`🎬 Visual Audit: ${artifacts.auditPath}`);
+  }
+  if (artifacts.viewerPath) {
+    console.log(`📺 HTML Viewer: ${artifacts.viewerPath}`);
+  }
+
+  console.log(`📁 JSON Report: ${artifacts.reportPath}`);
+}
+
+function createBattlefield(config: BattleCliConfig): Battlefield {
+  const explicitPath = config.battlefieldPath;
+  const defaultPath = getDefaultSimpleBattlefieldPath(config.gameSize);
+  const resolvedPath = explicitPath ?? defaultPath;
+
+  if (resolvedPath) {
+    return loadBattlefieldFromFile(resolvedPath);
+  }
+
+  const sizeConfig = GAME_SIZE_CONFIG[config.gameSize];
+  const terrain = placeTerrain({
+    mode: 'balanced',
+    density: config.density * 100,
+    battlefieldWidth: sizeConfig.battlefieldWidth,
+    battlefieldHeight: sizeConfig.battlefieldHeight,
+    seed: config.seed,
+    terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
+  });
+
+  const battlefield = new Battlefield(sizeConfig.battlefieldWidth, sizeConfig.battlefieldHeight);
+  for (const feature of terrain.terrain) {
+    battlefield.addTerrain(feature, true);
+  }
+  battlefield.finalizeTerrain();
+  return battlefield;
+}
+
+function writeTerrainOnlyArtifacts(config: BattleCliConfig): void {
+  const battlefield = createBattlefield(config);
+  const outputDir = createOutputDir();
+  const svg = SvgRenderer.render(battlefield, {
+    width: battlefield.width,
+    height: battlefield.height,
+    gridResolution: 0.5,
+    title: `QAI_11 - ${config.gameSize}`,
+  });
+  const svgPath = join(outputDir, 'battlefield.svg');
+  writeFileSync(svgPath, svg, 'utf-8');
+
+  console.log('✅ Terrain-only mode completed.');
+  console.log(`📁 Battlefield SVG: ${svgPath}`);
+}
+
+async function main(): Promise<void> {
+  const config = parseArgs();
+
+  if (config.terrainOnly) {
+    writeTerrainOnlyArtifacts(config);
+    return;
+  }
+
+  await runCanonicalBattle(config);
+}
+
+main().catch(error => {
   console.error('\n❌ Battle failed with error:');
   console.error(error);
   process.exit(1);

@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-03-10T19:36:40.878Z",
+  "scope": {
+    "roots": [
+      "src",
+      "scripts"
+    ],
+    "excludedGlobs": [
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.spec.ts"
+    ],
+    "declarationPattern": "^(?:export\\s+)?const\\s+([A-Za-z0-9_]*(?:weight|threshold|trigger|filter|bonus|penalty|factor|multiplier|gate)[A-Za-z0-9_]*)\\s*=\\s*([^;]+);",
+    "notes": "Top-level const declarations only (line starts with const/export const)."
+  },
+  "totals": {
+    "constants": 3,
+    "categories": 2,
+    "files": 2
+  },
+  "byCategory": {
+    "threshold": 2,
+    "trigger": 1
+  },
+  "byDomain": {
+    "scripts": 2,
+    "other": 1
+  },
+  "topFiles": [
+    {
+      "file": "scripts/estimate-coverage.ts",
+      "count": 2
+    },
+    {
+      "file": "src/guides/docs/rules-overrides.md",
+      "count": 1
+    }
+  ],
+  "entries": [
+    {
+      "file": "scripts/estimate-coverage.ts",
+      "line": 8,
+      "name": "thresholdHigh",
+      "value": "0.8",
+      "category": "threshold",
+      "domain": "scripts"
+    },
+    {
+      "file": "scripts/estimate-coverage.ts",
+      "line": 9,
+      "name": "thresholdLow",
+      "value": "0.5",
+      "category": "threshold",
+      "domain": "scripts"
+    },
+    {
+      "file": "src/guides/docs/rules-overrides.md",
+      "line": 172,
+      "name": "triggerTurn",
+      "value": "getEndGameTriggerTurn(gameSize)",
+      "category": "trigger",
+      "domain": "other"
+    }
+  ]
+}

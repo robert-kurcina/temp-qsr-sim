@@ -218,7 +218,7 @@ interface BattlefieldExport {
 **Use Case:**
 ```bash
 # Reuse same battlefield for multiple battles
-npm run ai-battle -- --battlefield generated/battlefield-*.json
+npm run sim -- quick --battlefield generated/battlefield-*.json
 ```
 
 **Estimated:** 3-4 hours

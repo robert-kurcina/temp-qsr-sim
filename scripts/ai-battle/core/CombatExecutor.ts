@@ -10,6 +10,12 @@ import type { Item } from '../../../src/lib/mest-tactics/core/Item';
 import type { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
 import type { GameManager } from '../../../src/lib/mest-tactics/engine/GameManager';
 import type { AuditVector } from '../../shared/BattleReportTypes';
+export {
+  hasRangedWeapon,
+  hasMeleeWeapon,
+  getLoadoutProfile,
+  type LoadoutProfile,
+} from '../../../src/lib/mest-tactics/ai/executor/LoadoutProfile';
 
 export interface AttackResult {
   success: boolean;
@@ -346,60 +352,4 @@ export function trackCombatExtras(result: unknown): string[] {
  */
 export function isAttackDecisionType(type: string): boolean {
   return type === 'close_combat' || type === 'ranged_combat' || type === 'attack';
-}
-
-/**
- * Check if character has ranged weapon
- */
-export function hasRangedWeapon(character: Character): boolean {
-  const items = character.items || [];
-  return items.some(item => {
-    const classification = String(item.classification ?? item.class ?? '').toLowerCase();
-    return classification.includes('ranged') || 
-           classification.includes('rifle') ||
-           classification.includes('pistol') ||
-           classification.includes('bow') ||
-           classification.includes('gun');
-  });
-}
-
-/**
- * Check if character has melee weapon
- */
-export function hasMeleeWeapon(character: Character): boolean {
-  const items = character.items || [];
-  return items.some(item => {
-    const classification = String(item.classification ?? item.class ?? '').toLowerCase();
-    return classification.includes('melee') || 
-           classification.includes('sword') ||
-           classification.includes('axe') ||
-           classification.includes('spear');
-  });
-}
-
-/**
- * Get loadout profile for character
- */
-export function getLoadoutProfile(character: Character): {
-  hasMeleeWeapons: boolean;
-  hasRangedWeapons: boolean;
-  primaryWeaponType: 'melee' | 'ranged' | 'mixed' | 'none';
-} {
-  const hasMelee = hasMeleeWeapon(character);
-  const hasRanged = hasRangedWeapon(character);
-
-  let primaryWeaponType: 'melee' | 'ranged' | 'mixed' | 'none' = 'none';
-  if (hasMelee && hasRanged) {
-    primaryWeaponType = 'mixed';
-  } else if (hasMelee) {
-    primaryWeaponType = 'melee';
-  } else if (hasRanged) {
-    primaryWeaponType = 'ranged';
-  }
-
-  return {
-    hasMeleeWeapons: hasMelee,
-    hasRangedWeapons: hasRanged,
-    primaryWeaponType,
-  };
 }

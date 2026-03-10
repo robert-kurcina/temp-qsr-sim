@@ -464,6 +464,79 @@ describe('GOAP', () => {
     expect(result.errors.some(e => e.includes('engaged'))).toBe(true);
   });
 
+  it('should reject close combat when only friendly engagement exists', () => {
+    const context = makeTestContext();
+    const actions = createStandardActions();
+    const ccAction = actions.find(a => a.type === 'close_combat')!;
+
+    // Force base-contact with ally, but keep enemy out of melee range.
+    context.battlefield.placeCharacter(context.allies[0], { x: 12.5, y: 12 });
+
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        aggression: 0.5,
+        caution: 0.5,
+        accuracyModifier: 0,
+        godMode: true,
+      },
+    } as any;
+
+    const result = validateAction(ccAction, aiContext, context.enemies[0]);
+    expect(result.isValid).toBe(false);
+    expect(result.errors.some(e => e.includes('engaged'))).toBe(true);
+  });
+
+  it('should allow move when only friendly base-contact exists', () => {
+    const context = makeTestContext();
+    const actions = createStandardActions();
+    const moveAction = actions.find(a => a.type === 'move')!;
+
+    // Base-contact ally does not count as enemy engagement.
+    context.battlefield.placeCharacter(context.allies[0], { x: 12.5, y: 12 });
+
+    const aiContext = {
+      character: context.character,
+      allies: context.allies,
+      enemies: context.enemies,
+      battlefield: context.battlefield,
+      currentTurn: 1,
+      currentRound: 1,
+      apRemaining: 2,
+      knowledge: {
+        knownEnemies: new Map(),
+        knownTerrain: new Map(),
+        lastKnownPositions: new Map(),
+        threatZones: [],
+        safeZones: [],
+        lastUpdated: 1,
+      },
+      config: {
+        aggression: 0.5,
+        caution: 0.5,
+        accuracyModifier: 0,
+        godMode: true,
+      },
+    } as any;
+
+    const result = validateAction(moveAction, aiContext, undefined, { x: 13, y: 12 });
+    expect(result.isValid).toBe(true);
+  });
+
   it('should validate rally requires fear tokens', () => {
     const context = makeTestContext();
     const actions = createStandardActions();

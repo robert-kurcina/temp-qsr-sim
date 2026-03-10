@@ -43,10 +43,14 @@ describe('Pushing Action', () => {
     gameManager = new GameManager([character], battlefield);
     gameManager.startRound();
     gameManager.beginActivation(character);
+    character.state.isAttentive = true;
   });
 
   describe('performPushing', () => {
     it('should grant 1 AP and add 1 Delay token when character has no Delay tokens', () => {
+      while (gameManager.getApRemaining(character) > 0) {
+        gameManager.spendAp(character, 1);
+      }
       const initialAp = gameManager.getApRemaining(character);
       
       const result = gameManager.executePushing(character);
@@ -59,6 +63,9 @@ describe('Pushing Action', () => {
     });
 
     it('should fail if character already has Delay tokens', () => {
+      while (gameManager.getApRemaining(character) > 0) {
+        gameManager.spendAp(character, 1);
+      }
       character.state.delayTokens = 1;
       
       const result = gameManager.executePushing(character);
@@ -69,12 +76,19 @@ describe('Pushing Action', () => {
     });
 
     it('should fail if character already pushed this Initiative', () => {
+      while (gameManager.getApRemaining(character) > 0) {
+        gameManager.spendAp(character, 1);
+      }
       // First push succeeds
       const result1 = gameManager.executePushing(character);
       expect(result1.success).toBe(true);
       
-      // Remove the Delay token to test the "already pushed" check
+      // Spend gained AP and remove Delay token to isolate "already pushed" check
+      while (gameManager.getApRemaining(character) > 0) {
+        gameManager.spendAp(character, 1);
+      }
       character.state.delayTokens = 0;
+      character.state.isAttentive = true;
       
       // Second push should fail due to already having pushed
       const result2 = gameManager.executePushing(character);
@@ -84,13 +98,37 @@ describe('Pushing Action', () => {
       expect(result2.reason).toBe('Character already pushed this Initiative');
     });
 
+    it('should fail if character still has AP remaining', () => {
+      const result = gameManager.executePushing(character);
+      expect(result.success).toBe(false);
+      expect(result.reason).toBe('Pushing requires 0 AP');
+    });
+
+    it('should fail if character is not Attentive', () => {
+      while (gameManager.getApRemaining(character) > 0) {
+        gameManager.spendAp(character, 1);
+      }
+      character.state.isAttentive = false;
+
+      const result = gameManager.executePushing(character);
+      expect(result.success).toBe(false);
+      expect(result.reason).toBe('Character is not Attentive');
+    });
+
     it('should reset hasPushedThisInitiative on new round', () => {
+      while (gameManager.getApRemaining(character) > 0) {
+        gameManager.spendAp(character, 1);
+      }
       // Push in first round
       gameManager.executePushing(character);
       
       // Start new round
       gameManager.startRound();
       gameManager.beginActivation(character);
+      character.state.isAttentive = true;
+      while (gameManager.getApRemaining(character) > 0) {
+        gameManager.spendAp(character, 1);
+      }
       
       // Should be able to push again
       const result = gameManager.executePushing(character);

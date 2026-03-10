@@ -59,6 +59,11 @@ function getTerrainHeight(terrainName: string): number {
   return heightData?.height ?? 0;
 }
 
+function getTerrainName(terrain: any): string {
+  const raw = terrain?.name ?? terrain?.id ?? terrain?.type ?? 'clear';
+  return String(raw);
+}
+
 /**
  * Check if terrain is a wall or elevated surface
  */
@@ -112,13 +117,13 @@ export function detectGapAlongLine(
         ? { x: from.x + stepX * (i - 1), y: from.y + stepY * (i - 1) }
         : from;
       startTerrain = i > 0
-        ? (battlefield.getTerrainAt({ x: from.x + stepX * (i - 1), y: from.y + stepY * (i - 1) }) as any).name
+        ? getTerrainName(battlefield.getTerrainAt({ x: from.x + stepX * (i - 1), y: from.y + stepY * (i - 1) }) as any)
         : 'start';
     } else if (inGap && isWalkable) {
       // Exiting gap
       inGap = false;
       gapEnd = pos;
-      endTerrain = (terrain as any).name;
+      endTerrain = getTerrainName(terrain as any);
       break;
     }
   }
@@ -126,7 +131,7 @@ export function detectGapAlongLine(
   // If we ended in a gap, the end position is the target
   if (inGap && gapStart) {
     gapEnd = to;
-    endTerrain = (battlefield.getTerrainAt(to) as any).name;
+    endTerrain = getTerrainName(battlefield.getTerrainAt(to) as any);
   }
   
   if (!gapStart || !gapEnd) return null;
@@ -158,15 +163,24 @@ export function detectGapAlongLine(
  * Check if terrain is walkable
  */
 function isWalkableTerrain(terrain: TerrainElement | null): boolean {
-  if (!terrain || !terrain.info) return false;
+  if (!terrain) return true;
+
+  const terrainName = getTerrainName(terrain);
+  const terrainType = String((terrain as any).type ?? '').toLowerCase();
+  if (terrainName.toLowerCase() === 'clear' || terrainType === 'clear') {
+    return true;
+  }
+
+  const terrainInfo = (terrain as any).info;
+  if (!terrainInfo) return true;
   
   // Impassable terrain creates gaps
-  if (terrain.info.movement === 'Impassable') return false;
+  if (terrainInfo.movement === 'Impassable') return false;
   
   // Blocking LOS terrain may create gaps (walls, buildings)
-  if (terrain.info.los === 'Blocking') {
+  if (terrainInfo.los === 'Blocking') {
     // But some blocking terrain can be stood upon (walls, rocky)
-    const height = getTerrainHeight(terrain.name as any);
+    const height = getTerrainHeight(terrainName as any);
     return height > 0; // Can stand on top
   }
   

@@ -121,6 +121,22 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   const reactTakeRate = safeRate(stats.reactChoicesTaken ?? 0, stats.reactChoiceWindows ?? 0);
   const reactOptionSelectionRate = safeRate(stats.reactChoicesTaken ?? 0, stats.reactChoicesGiven ?? 0);
   const waitReactPerSuccessfulWait = safeRate(stats.waitTriggeredReacts ?? 0, stats.waitChoicesSucceeded ?? 0);
+  const decisionTelemetrySamples = stats.decisionTelemetrySamples ?? 0;
+  const attackGateAppliedDecisions = stats.attackGateAppliedDecisions ?? 0;
+  const attackGateImmediateHighApplied = stats.attackGateImmediateHighApplied ?? 0;
+  const attackGateDirectiveApplied = stats.attackGateDirectiveApplied ?? 0;
+  const attackGateAppliedRate = safeRate(attackGateAppliedDecisions, decisionTelemetrySamples);
+  const attackOpportunityImmediateHigh = stats.attackOpportunityImmediateHigh ?? 0;
+  const attackOpportunityImmediateLow = stats.attackOpportunityImmediateLow ?? 0;
+  const attackOpportunitySetup = stats.attackOpportunitySetup ?? 0;
+  const attackOpportunityNone = stats.attackOpportunityNone ?? 0;
+  const hitTestsAttempted = stats.hitTestsAttempted ?? 0;
+  const hitTestsPassed = stats.hitTestsPassed ?? 0;
+  const damageTestsAttempted = stats.damageTestsAttempted ?? 0;
+  const damageTestsPassed = stats.damageTestsPassed ?? 0;
+  const woundsAssigned = stats.woundsAssigned ?? 0;
+  const fearAssigned = stats.fearAssigned ?? 0;
+  const delayAssigned = stats.delayAssigned ?? 0;
 
   const lines: string[] = [];
   lines.push('════════════════════════════════════════════════════════════');
@@ -137,6 +153,12 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push('');
   lines.push('🏆 RESULT');
   lines.push(`  Winner: ${report.winner}!`);
+  if (report.winnerReason) {
+    lines.push(`  Winner Reason: ${report.winnerReason}`);
+  }
+  if (report.tieBreakMethod && report.tieBreakMethod !== 'none') {
+    lines.push(`  Tie-Break Method: ${report.tieBreakMethod}`);
+  }
   
   if (report.missionRuntime) {
     lines.push('  Mission VP:');
@@ -153,6 +175,25 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
     if (report.missionRuntime.immediateWinnerSideId) {
       lines.push(`  Mission Immediate Winner: ${report.missionRuntime.immediateWinnerSideId}`);
     }
+    const predictedBySide = report.missionRuntime.predictedScoring?.bySide ?? {};
+    if (Object.keys(predictedBySide).length > 0) {
+      lines.push('  Key Scores (Current):');
+      Object.entries(predictedBySide)
+        .sort((a, b) => a[0].localeCompare(b[0]))
+        .forEach(([sideId, sidePrediction]) => {
+          const scoredKeys = Object.entries(sidePrediction.keyScores ?? {})
+            .map(([key, value]) => ({ key, current: Number(value?.current ?? 0) }))
+            .filter(entry => Number.isFinite(entry.current))
+            .sort((left, right) => right.current - left.current || left.key.localeCompare(right.key));
+          if (scoredKeys.length === 0) {
+            lines.push(`    ${sideId}: none`);
+            return;
+          }
+          lines.push(
+            `    ${sideId}: ${scoredKeys.map(entry => `${entry.key}=${entry.current.toFixed(2)}`).join(', ')}`
+          );
+        });
+    }
   }
   
   lines.push('  Final Model Counts:');
@@ -160,6 +201,71 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
     lines.push(`    ${fc.name}: ${fc.remaining} remaining`);
   });
   lines.push('');
+
+  if (report.sideStrategies && Object.keys(report.sideStrategies).length > 0) {
+    lines.push('🧠 SIDE COORDINATOR STRATEGIES');
+    for (const [sideId, strategy] of Object.entries(report.sideStrategies)) {
+      lines.push(`  ${sideId}: doctrine=${strategy.doctrine}`);
+      if (strategy.context) {
+        lines.push(
+          `    Context: leading=${strategy.context.amILeading} vpMargin=${strategy.context.vpMargin} winningKeys=[${strategy.context.winningKeys.join(', ')}] losingKeys=[${strategy.context.losingKeys.join(', ')}]`
+        );
+      }
+      if (strategy.advice?.length) {
+        lines.push(`    Advice: ${strategy.advice.join(' | ')}`);
+      }
+      if (strategy.pressureContinuityDiagnostics) {
+        const scrum = strategy.pressureContinuityDiagnostics.scrum;
+        const lane = strategy.pressureContinuityDiagnostics.lane;
+        const combined = strategy.pressureContinuityDiagnostics.combined;
+        lines.push(
+          `    Pressure Continuity: breakRate scrum=${(scrum.breakRate * 100).toFixed(1)}% lane=${(lane.breakRate * 100).toFixed(1)}% combined=${(combined.breakRate * 100).toFixed(1)}%`
+        );
+        lines.push(
+          `    Signature Coverage: scrum=${(scrum.signatureCoverageRate * 100).toFixed(1)}% lane=${(lane.signatureCoverageRate * 100).toFixed(1)}% combined=${(combined.signatureCoverageRate * 100).toFixed(1)}%`
+        );
+      }
+      const latestTrace = strategy.decisionTrace && strategy.decisionTrace.length > 0
+        ? strategy.decisionTrace[strategy.decisionTrace.length - 1]
+        : undefined;
+      if (latestTrace) {
+        lines.push(
+          `    Trace@T${latestTrace.turn}: priority=${latestTrace.response.priority} focus=[${latestTrace.response.focusTargets.join(', ')}]`
+        );
+        if (latestTrace.response.potentialDirective) {
+          lines.push(`    Potential Directive: ${latestTrace.response.potentialDirective}`);
+        }
+        if (latestTrace.response.pressureDirective) {
+          lines.push(`    Pressure Directive: ${latestTrace.response.pressureDirective}`);
+        }
+        if (latestTrace.observations.topOpponentKeyPressure.length > 0) {
+          const pressure = latestTrace.observations.topOpponentKeyPressure
+            .map(entry => `${entry.key}:${entry.predicted.toFixed(2)}@${entry.confidence.toFixed(2)}`)
+            .join(', ');
+          lines.push(`    Opponent Pressure: ${pressure}`);
+        }
+        if (latestTrace.observations.topScrumContinuity.length > 0) {
+          const scrum = latestTrace.observations.topScrumContinuity
+            .map(entry => `${entry.targetId}:${entry.score.toFixed(2)}(${entry.attackerCount})`)
+            .join(', ');
+          lines.push(`    Scrum Continuity: ${scrum}`);
+        }
+        if (latestTrace.observations.topLanePressure.length > 0) {
+          const lane = latestTrace.observations.topLanePressure
+            .map(entry => `${entry.targetId}:${entry.score.toFixed(2)}(${entry.attackerCount})`)
+            .join(', ');
+          lines.push(`    Lane Pressure: ${lane}`);
+        }
+        if (latestTrace.observations.fractionalPotential) {
+          const p = latestTrace.observations.fractionalPotential;
+          lines.push(
+            `    Fractional Potential: my=${p.myVpPotential.toFixed(2)} opp=${p.opponentVpPotential.toFixed(2)} delta=${p.potentialDelta.toFixed(2)} urgency=${p.urgency.toFixed(2)}`
+          );
+        }
+      }
+    }
+    lines.push('');
+  }
   
   lines.push('📈 ACTION TOTALS');
   lines.push(`  Total Actions: ${stats.totalActions ?? 0}`);
@@ -194,6 +300,17 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(`  LOF Checks: ${stats.lofChecks ?? 0}`);
   lines.push(`  Eliminations: ${stats.eliminations ?? 0}`);
   lines.push(`  KO's: ${stats.kos ?? 0}`);
+  lines.push(`  Hit Tests: ${(safeRate(hitTestsPassed, hitTestsAttempted) * 100).toFixed(1)}% (${hitTestsPassed}/${hitTestsAttempted})`);
+  lines.push(`  Damage Tests: ${(safeRate(damageTestsPassed, damageTestsAttempted) * 100).toFixed(1)}% (${damageTestsPassed}/${damageTestsAttempted})`);
+  lines.push(`  Combat Assignments (W/F/D): ${woundsAssigned}/${fearAssigned}/${delayAssigned}`);
+  lines.push(`  Decision Telemetry Samples: ${decisionTelemetrySamples}`);
+  if (decisionTelemetrySamples > 0) {
+    lines.push(`  Attack Gate Applied: ${attackGateAppliedDecisions} (${(attackGateAppliedRate * 100).toFixed(1)}%)`);
+    lines.push(`  Attack Gate Reasons: immediate_high=${attackGateImmediateHighApplied}, directive_window=${attackGateDirectiveApplied}`);
+    lines.push(
+      `  Attack Opportunity Grades: immediate_high=${attackOpportunityImmediateHigh}, immediate_low=${attackOpportunityImmediateLow}, setup=${attackOpportunitySetup}, none=${attackOpportunityNone}`
+    );
+  }
   lines.push('');
   
   lines.push('📐 MOVEMENT & USAGE');
@@ -296,6 +413,38 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
       lines.push(
         `    Grid cache: hits=${path.gridHits} misses=${path.gridMisses} hitRate=${gridTotal > 0 ? ((path.gridHits / gridTotal) * 100).toFixed(1) : '0.0'}% size=${path.gridCacheSize}/${path.gridCacheMaxSize}`
       );
+      const minimax = perf.caches.minimaxLite;
+      if (minimax) {
+        const minimaxTotal = minimax.hits + minimax.misses;
+        lines.push(
+          `    Minimax cache: hits=${minimax.hits} misses=${minimax.misses} hitRate=${minimaxTotal > 0 ? ((minimax.hits / minimaxTotal) * 100).toFixed(1) : '0.0'}% size=${minimax.totalSize}/${minimax.totalMaxSize} controllers=${minimax.controllersWithSamples}/${minimax.controllers}`
+        );
+        lines.push(
+          `    Minimax nodes: total=${minimax.nodeEvaluations} avg/controller=${minimax.avgNodeEvaluationsPerController.toFixed(2)}`
+        );
+        const patchGraph = minimax.patchGraph;
+        if (patchGraph) {
+          const patchTotal = patchGraph.hits + patchGraph.misses;
+          lines.push(
+            `    Minimax patch cache: hits=${patchGraph.hits} misses=${patchGraph.misses} hitRate=${patchTotal > 0 ? ((patchGraph.hits / patchTotal) * 100).toFixed(1) : '0.0'}% size=${patchGraph.totalSize}/${patchGraph.totalMaxSize} evictions=${patchGraph.evictions}`
+          );
+          const neighborhoodTotal = Number(patchGraph.neighborhoodGraphHits ?? 0) + Number(patchGraph.neighborhoodGraphMisses ?? 0);
+          if (neighborhoodTotal > 0) {
+            lines.push(
+              `    Minimax patch neighborhoods: hits=${patchGraph.neighborhoodGraphHits} misses=${patchGraph.neighborhoodGraphMisses} hitRate=${((Number(patchGraph.neighborhoodGraphHits ?? 0) / neighborhoodTotal) * 100).toFixed(1)}% size=${patchGraph.neighborhoodGraphTotalSize ?? 0}/${patchGraph.neighborhoodGraphTotalMaxSize ?? 0} evictions=${patchGraph.neighborhoodGraphEvictions ?? 0}`
+            );
+          }
+        }
+        const topTransitions = Object.entries(minimax.patchTransitions ?? {})
+          .map(([key, count]) => [key, Number(count) || 0] as const)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 4);
+        if (topTransitions.length > 0) {
+          lines.push(
+            `    Minimax patch transitions: ${topTransitions.map(([key, count]) => `${key}=${count}`).join(', ')}`
+          );
+        }
+      }
     }
     lines.push('');
   }

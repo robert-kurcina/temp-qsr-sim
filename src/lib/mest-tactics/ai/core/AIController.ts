@@ -39,6 +39,10 @@ export interface AIControllerConfig {
   allowConcentrateRangeExtension?: boolean;
   /** If true, AI range/target checks require per-character LOS/FOV gates */
   perCharacterFovLos?: boolean;
+  /** Allow selecting Wait actions */
+  allowWaitAction?: boolean;
+  /** Allow selecting Hide actions */
+  allowHideAction?: boolean;
   /** Mission identifier for mission-aware utility scoring */
   missionId?: string;
   /** Role for asymmetric missions */
@@ -51,6 +55,14 @@ export interface AIControllerConfig {
   doctrineAggression?: DoctrineAggression;
   /** Tactical Doctrine (encapsulates engagement, planning, aggression) */
   tacticalDoctrine?: import('../stratagems/AIStratagems').TacticalDoctrine;
+  /** Enable bounded minimax-lite re-ranking over utility candidates */
+  enableMinimaxLite?: boolean;
+  /** Minimax-lite search depth cap (currently supports up to depth 2) */
+  minimaxLiteDepth?: number;
+  /** Beam width for minimax-lite candidate expansion */
+  minimaxLiteBeamWidth?: number;
+  /** Number of opponent reply samples for minimax-lite */
+  minimaxLiteOpponentSamples?: number;
   // Backward compatibility properties
   objectiveRush?: number;
   coverPriority?: number;
@@ -224,13 +236,57 @@ export interface AIContext {
     winningKeys: string[];
     /** Which keys am I losing? */
     losingKeys: string[];
+    /** Percentage of remaining VP deficit from strategic predictor */
+    vpDeficitPercent?: number;
+    /** Remaining VP in mission pool from strategic predictor */
+    remainingVP?: number;
+    /** Predictor current turn snapshot */
+    predictorCurrentTurn?: number;
+    /** Predictor max turn snapshot */
+    predictorMaxTurns?: number;
+    /** Predictor end-game trigger turn snapshot */
+    predictorEndGameTurn?: number;
+    /** Monotonic fractional potential ledger from side coordinator */
+    fractionalPotentialLedger?: {
+      myTotalPotential: number;
+      opponentTotalPotential: number;
+      myDeniedPotential: number;
+      opponentDeniedPotential: number;
+      potentialDelta: number;
+      keyProgress: Record<string, {
+        myProgress: number;
+        opponentProgress: number;
+        myDeniedPotential: number;
+        opponentDeniedPotential: number;
+        myConfidence: number;
+        opponentConfidence: number;
+        lastUpdatedTurn: number;
+      }>;
+      lastUpdatedTurn: number;
+    };
+    /** Side coordinator directive priority for this turn */
+    coordinatorPriority?: string;
+    /** Side coordinator potential directive for this turn */
+    coordinatorPotentialDirective?: string;
+    /** Side coordinator pressure directive for this turn */
+    coordinatorPressureDirective?: string;
+    /** Side coordinator urgency scalar for this turn */
+    coordinatorUrgency?: number;
   };
+  /** Side-level commitment scores by enemy model ID (focus-fire coordination) */
+  targetCommitments?: Record<string, number>;
+  /** Side-level melee continuity pressure by enemy model ID */
+  scrumContinuity?: Record<string, number>;
+  /** Side-level ranged lane pressure by enemy model ID */
+  lanePressure?: Record<string, number>;
   /** Current VP by side for VP pressure calculations (VP_SCORING_GAP_ANALYSIS.md Fix 3) */
   vpBySide?: Record<string, number>;
   /** Current RP by side for RP pressure calculations */
   rpBySide?: Record<string, number>;
   /** Maximum turns in game for end-game urgency */
   maxTurns?: number;
+  /** End-game trigger turn for sudden-death planning pressure */
+  endGameTurn?: number;
 }
 
 export interface AIObjectiveMarkerInfo {
@@ -257,6 +313,23 @@ export interface AIResult {
     scores: Record<string, number>;
     actionAvailability?: Record<string, number>;
     reasoning: string;
+    decisionTelemetry?: {
+      attackOpportunityGrade: 'none' | 'setup' | 'immediate-low' | 'immediate-high';
+      coordinatorDirective: {
+        priority: string;
+        potentialDirective?: string;
+        pressureDirective?: string;
+        urgency: number;
+      };
+      selectedAction: string;
+      selectedScore: number;
+      bestAttackAction?: string;
+      bestAttackScore?: number;
+      bestPassiveAction?: string;
+      bestPassiveScore?: number;
+      attackGateApplied: boolean;
+      attackGateReason?: string;
+    };
   };
 }
 
@@ -317,10 +390,16 @@ export const DEFAULT_AI_CONFIG: AIControllerConfig = {
   maxOrm: 3,
   allowConcentrateRangeExtension: true,
   perCharacterFovLos: false,
+  allowWaitAction: true,
+  allowHideAction: true,
   missionRole: 'neutral',
   doctrineEngagement: 'balanced',
   doctrinePlanning: 'balanced',
   doctrineAggression: 'balanced',
+  enableMinimaxLite: true,
+  minimaxLiteDepth: 2,
+  minimaxLiteBeamWidth: 3,
+  minimaxLiteOpponentSamples: 2,
 };
 
 /**
@@ -340,12 +419,18 @@ export function validateAIConfig(config: AIControllerConfig): AIControllerConfig
     maxOrm: Math.max(0, Math.floor(config.maxOrm ?? 3)),
     allowConcentrateRangeExtension: config.allowConcentrateRangeExtension ?? true,
     perCharacterFovLos: config.perCharacterFovLos ?? false,
+    allowWaitAction: config.allowWaitAction ?? true,
+    allowHideAction: config.allowHideAction ?? true,
     missionId: config.missionId,
     missionRole: config.missionRole ?? 'neutral',
     doctrineEngagement: config.doctrineEngagement ?? 'balanced',
     doctrinePlanning: config.doctrinePlanning ?? 'balanced',
     doctrineAggression: config.doctrineAggression ?? 'balanced',
     tacticalDoctrine: config.tacticalDoctrine,
+    enableMinimaxLite: config.enableMinimaxLite ?? true,
+    minimaxLiteDepth: Math.max(1, Math.min(2, Math.floor(config.minimaxLiteDepth ?? 2))),
+    minimaxLiteBeamWidth: Math.max(1, Math.min(6, Math.floor(config.minimaxLiteBeamWidth ?? 3))),
+    minimaxLiteOpponentSamples: Math.max(1, Math.min(4, Math.floor(config.minimaxLiteOpponentSamples ?? 2))),
     objectiveRush: config.objectiveRush,
     coverPriority: config.coverPriority,
     gameSize: config.gameSize,

@@ -6,7 +6,7 @@
 
 // Core
 export { Battlefield, type BattlefieldOpennessStats } from './Battlefield';
-export { Position } from './Position';
+export type { Position } from './Position';
 
 // Spatial
 export { SpatialRules, type SpatialModel } from './spatial/spatial-rules';

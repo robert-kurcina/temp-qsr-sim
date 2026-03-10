@@ -1,5 +1,6 @@
 import { MissionConfig } from '../missions/mission-config';
 import { BalanceValidationResult, BalanceWarning } from './balance-validator';
+import { missionTuning } from './MissionTuningConfig';
 
 /**
  * Heuristic Balance Score
@@ -108,7 +109,8 @@ export class HeuristicBalanceScorer {
     // Check victory thresholds
     for (const vc of vcs) {
       if (vc.type === 'dominance' || (vc.type as any) === 'first_to_vp') {
-        const threshold = vc.threshold ?? 5;
+        const threshold =
+          vc.threshold ?? missionTuning.heuristicScorer.defaultVictoryConditionThreshold;
 
         // Threshold too low (games end too fast)
         if (threshold < 3) {

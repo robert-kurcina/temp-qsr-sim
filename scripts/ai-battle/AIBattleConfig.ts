@@ -12,6 +12,9 @@ import { CANONICAL_GAME_SIZES } from '../../src/lib/mest-tactics/mission/game-si
 import { getEndGameTriggerTurn } from '../../src/lib/mest-tactics/engine/end-game-trigger';
 import { TacticalDoctrine } from '../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { LightingCondition } from '../../src/lib/mest-tactics/utils/visibility';
+import type { TechnologicalAge } from '../../src/lib/mest-tactics/utils/tech-level-filter';
+
+export type AuditLevel = 'none' | 'summary' | 'full';
 
 /**
  * Game configuration for AI battles
@@ -31,10 +34,31 @@ export interface GameConfig {
   maxOrm: number;
   allowConcentrateRangeExtension: boolean;
   perCharacterFovLos: boolean;
+  allowWaitAction?: boolean;
+  allowHideAction?: boolean;
   verbose: boolean;
   seed?: number;
   audit?: boolean;
   viewer?: boolean;
+  /**
+   * Controls audit capture/detail in report payloads.
+   * - none: no inline audit trace
+   * - summary: minimal skeleton trace (session + battlefield)
+   * - full: complete turn/activation/action trace
+   */
+  auditLevel?: AuditLevel;
+  /** Optional path to a pre-generated battlefield export JSON */
+  battlefieldPath?: string;
+  /**
+   * If true, final VP ties are resolved by Initiative Card holder.
+   * Defaults to true for QSR-aligned mission outcome resolution.
+   */
+  initiativeCardTieBreakerOnTie?: boolean;
+  /**
+   * Optional explicit Initiative Card holder side id for final tie-breaks.
+   * If omitted, the most recent initiative-winning side is used when available.
+   */
+  initiativeCardHolderSideId?: string;
   /** @deprecated Use battlefieldWidth + battlefieldHeight */
   battlefieldSize?: number;
 }
@@ -48,6 +72,7 @@ export interface SideConfig {
   modelCount: number;
   tacticalDoctrine: TacticalDoctrine;
   loadoutProfile?: 'default' | 'melee_only';
+  technologicalAge?: TechnologicalAge;
   assemblyName: string;
   aggression?: number;
   caution?: number;
@@ -240,6 +265,10 @@ export function createDefaultGameConfig(
     maxOrm: 3,
     allowConcentrateRangeExtension: true,
     perCharacterFovLos: false,
+    allowWaitAction: false,
+    allowHideAction: false,
+    auditLevel: 'none',
+    initiativeCardTieBreakerOnTie: true,
     verbose: false,
   };
 }

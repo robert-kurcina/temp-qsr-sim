@@ -160,6 +160,95 @@ describe('react-actions', () => {
     expect(allowedByWaitVisibility.executed).toBe(true);
   });
 
+  it('should require +1 REF when reacting to being Engaged on movement abrupt', () => {
+    const battlefield = new Battlefield(12, 12);
+    const active = new Character(makeProfile('Active', 2, 4));
+    const lowReactor = new Character(makeProfile('LowReactor', 3, 4)); // +1 wait => 4
+    const highReactor = new Character(makeProfile('HighReactor', 4, 4)); // +1 wait => 5
+    lowReactor.state.isWaiting = true;
+    highReactor.state.isWaiting = true;
+
+    // Active is in base-contact with both reactors => reacting to being Engaged
+    battlefield.placeCharacter(active, { x: 6, y: 6 });
+    battlefield.placeCharacter(lowReactor, { x: 7, y: 6 });
+    battlefield.placeCharacter(highReactor, { x: 6, y: 7 });
+
+    const options = buildReactOptions({
+      battlefield,
+      active,
+      opponents: [lowReactor, highReactor],
+      trigger: 'Move',
+      movedDistance: 1,
+    });
+
+    const low = options.find(option => option.actor.id === lowReactor.id)!;
+    const high = options.find(option => option.actor.id === highReactor.id)!;
+
+    expect(low.requiredRef).toBe(5);   // MOV 4 + 1 engaged
+    expect(high.requiredRef).toBe(5);  // MOV 4 + 1 engaged
+    expect(low.effectiveRef).toBe(4);  // 3 + wait
+    expect(high.effectiveRef).toBe(5); // 4 + wait
+    expect(low.available).toBe(false);
+    expect(high.available).toBe(true);
+  });
+
+  it('should not add engaged bonus requirement when movement does not engage reactor', () => {
+    const battlefield = new Battlefield(12, 12);
+    const active = new Character(makeProfile('Active', 2, 4));
+    const reactor = new Character(makeProfile('Reactor', 3, 4)); // +1 wait => 4
+    reactor.state.isWaiting = true;
+
+    battlefield.placeCharacter(active, { x: 6, y: 6 });
+    battlefield.placeCharacter(reactor, { x: 2, y: 6 }); // not engaged
+
+    const options = buildReactOptions({
+      battlefield,
+      active,
+      opponents: [reactor],
+      trigger: 'Move',
+      movedDistance: 1,
+    });
+
+    expect(options[0].requiredRef).toBe(4); // MOV only, no +1 engaged
+    expect(options[0].effectiveRef).toBe(4);
+    expect(options[0].available).toBe(true);
+  });
+
+  it('should apply overreach penalty and reactingToReact requirement on NonMove React actions', () => {
+    const battlefield = new Battlefield(12, 12);
+    const active = new Character(makeProfile('Active', 4, 4));
+    const readyReactor = new Character(makeProfile('ReadyReactor', 5, 4)); // +1 wait => 6
+    const overreachReactor = new Character(makeProfile('OverreachReactor', 5, 4)); // +1 wait -1 overreach => 5
+    readyReactor.state.isWaiting = true;
+    overreachReactor.state.isWaiting = true;
+    overreachReactor.state.isOverreach = true;
+
+    battlefield.placeCharacter(active, { x: 6, y: 6 });
+    battlefield.placeCharacter(readyReactor, { x: 2, y: 6 });
+    battlefield.placeCharacter(overreachReactor, { x: 2, y: 5 });
+
+    const options = buildReactOptions({
+      battlefield,
+      active,
+      opponents: [readyReactor, overreachReactor],
+      trigger: 'NonMove',
+      movedDistance: 0,
+      reactingToReact: true,
+    });
+
+    const ready = options.find(option => option.actor.id === readyReactor.id)!;
+    const overreach = options.find(option => option.actor.id === overreachReactor.id)!;
+
+    expect(ready.type).toBe('ReactAction');
+    expect(ready.requiredRef).toBe(6); // active REF 4 + abrupt 1 + reactingToReact 1
+    expect(ready.effectiveRef).toBe(6);
+    expect(ready.available).toBe(true);
+
+    expect(overreach.requiredRef).toBe(6);
+    expect(overreach.effectiveRef).toBe(5);
+    expect(overreach.available).toBe(false);
+  });
+
   it('should enforce declared weapon on Standard react attacks', () => {
     setRoller(() => Array(20).fill(6));
     const battlefield = new Battlefield(12, 12);

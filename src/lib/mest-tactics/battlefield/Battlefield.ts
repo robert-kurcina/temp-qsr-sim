@@ -188,7 +188,7 @@ export class Battlefield {
    * @param baseDiameter - The model's base diameter in MU
    * @returns True if the model can rest at this position
    */
-  canOccupy(position: Position, baseDiameter: number): boolean {
+  canOccupy(position: Position, baseDiameter: number, excludeCharacterId?: string): boolean {
     const radius = baseDiameter / 2;
     
     // Check if position is within battlefield bounds (with radius buffer)
@@ -209,6 +209,7 @@ export class Battlefield {
     
     // Check no other model occupies this space
     for (const [id, modelPos] of this.characterPositions.entries()) {
+      if (excludeCharacterId && id === excludeCharacterId) continue;
       const model = this.characterRegistry.get(id);
       if (!model || model.state.isKOd || model.state.isEliminated) continue;
       

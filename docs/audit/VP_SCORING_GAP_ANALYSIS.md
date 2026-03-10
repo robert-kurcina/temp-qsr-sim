@@ -376,7 +376,7 @@ export function updateMissionRuntimeForElimination(
 
 ```bash
 # Run battle with new defaults
-npm run ai-battle -- VERY_SMALL 50
+npm run sim -- quick VERY_SMALL 50
 
 # Expected: Alpha uses Aggressive, Bravo uses Balanced
 # Verify: JSON report shows tacticalDoctrine: "aggressive" / "balanced"
@@ -386,7 +386,7 @@ npm run ai-battle -- VERY_SMALL 50
 
 ```bash
 # Run battle with audit
-npm run ai-battle:audit -- VERY_SMALL 50
+npm run sim -- quick --audit --viewer VERY_SMALL 50
 
 # Expected: VP awarded for eliminations
 # Verify: audit.json shows vpBySide: { Alpha: 1, Bravo: 0 } after first kill

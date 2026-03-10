@@ -1,31 +1,33 @@
 /**
  * Battlefield Generator
  *
- * Generates battlefields with custom terrain densities and game sizes.
- * Used by the Battlefield Audit Dashboard for interactive generation.
+ * Generates battlefields with CLI-style layer tokens (A/B/W/R/S/T).
+ * Used by the Battlefield Audit Dashboard POST /api/battlefields/generate endpoint.
  */
 
-import { BattlefieldFactory } from '../src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory';
-import { SvgRenderer } from '../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
-import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
-import { exportBattlefield as exportBattlefieldToJson } from '../src/lib/mest-tactics/battlefield/BattlefieldExporter';
-import { TerrainPlacementResult } from '../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
-import { CANONICAL_GAME_SIZES, type CanonicalGameSize } from '../src/lib/mest-tactics/mission/game-size-canonical';
-import { writeFileSync, mkdirSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { Battlefield } from '../src/lib/mest-tactics/battlefield/Battlefield';
+import { exportBattlefield } from '../src/lib/mest-tactics/battlefield/BattlefieldExporter';
+import { placeTerrain, type TerrainPlacementOptions, type TerrainPlacementResult } from '../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { CANONICAL_GAME_SIZES, type CanonicalGameSize } from '../src/lib/mest-tactics/mission/game-size-canonical';
+import {
+  EMPTY_BATTLEFIELD_DENSITIES,
+  ensureBattlefieldDirectories,
+  formatBattlefieldDensityFilename,
+  getGeneratedBattlefieldDir,
+  type BattlefieldDensityConfig,
+} from './shared/BattlefieldPaths';
+import { parseBattlefieldLayerArgs as parseLayerTokens } from './shared/BattlefieldLayerTokens';
+import { parseBattlefieldGenerateArgs as parseBattlefieldGenerateCliArgs } from './shared/BattlefieldGenerateCli';
+import { printBattlefieldGenerateHelp } from './shared/BattlefieldGenerateHelp';
+import { writeBattlefieldSvgFile } from './shared/BattlefieldSvg';
 
-export interface TerrainDensities {
-  area: number;      // 0-100
-  building: number;  // 0-100
-  wall: number;      // 0-100
-  tree: number;      // 0-100
-  rocks: number;     // 0-100
-  shrub: number;     // 0-100
-}
 
 export interface BattlefieldGenerationConfig {
   gameSize: CanonicalGameSize;
-  terrainDensities: TerrainDensities;
+  args?: string[];
+  mode?: TerrainPlacementOptions['mode'];
   seed?: number;
 }
 
@@ -40,114 +42,169 @@ export interface BattlefieldGenerationResult {
     byCategory: Record<string, number>;
     fitnessScore: number;
     coverageRatio: number;
+    densities: BattlefieldDensityConfig;
   };
   generationTimeMs: number;
   error?: string;
 }
 
-const OUTPUT_DIR = join(process.cwd(), 'generated', 'battlefields');
+export function parseBattlefieldLayerArgs(args: string[] = []): BattlefieldDensityConfig {
+  return parseLayerTokens(args, token => {
+    console.warn(`[battlefield-generator] Ignoring unrecognized layer token: ${token}`);
+  });
+}
 
-/**
- * Generate a battlefield with custom terrain densities
- */
+function densitiesToLayerArgs(densities: BattlefieldDensityConfig): string[] {
+  return [
+    `A${densities.area}`,
+    `B${densities.buildings}`,
+    `W${densities.walls}`,
+    `R${densities.rocks}`,
+    `S${densities.shrubs}`,
+    `T${densities.trees}`,
+  ];
+}
+
+function buildTerrainTypes(densities: BattlefieldDensityConfig): string[] {
+  const terrainTypes: string[] = [];
+  if (densities.area > 0) {
+    terrainTypes.push('Small Rough Patch', 'Medium Rough Patch', 'Large Rough Patch');
+  }
+  if (densities.buildings > 0) {
+    terrainTypes.push('Small Building', 'Medium Building');
+  }
+  if (densities.walls > 0) {
+    terrainTypes.push('Short Wall', 'Medium Wall');
+  }
+  if (densities.rocks > 0) {
+    terrainTypes.push('Small Rocks', 'Medium Rocks', 'Large Rocks');
+  }
+  if (densities.shrubs > 0) {
+    terrainTypes.push('Shrub');
+  }
+  if (densities.trees > 0) {
+    terrainTypes.push('Tree');
+  }
+  return terrainTypes;
+}
+
+function polygonArea(vertices: Array<{ x: number; y: number }>): number {
+  if (!vertices || vertices.length < 3) return 0;
+  let area = 0;
+  for (let i = 0; i < vertices.length; i++) {
+    const j = (i + 1) % vertices.length;
+    area += vertices[i].x * vertices[j].y;
+    area -= vertices[j].x * vertices[i].y;
+  }
+  return Math.abs(area / 2);
+}
+
+function calculateGenerationStats(
+  battlefield: Battlefield,
+  terrainResult: TerrainPlacementResult,
+  densities: BattlefieldDensityConfig
+): BattlefieldGenerationResult['stats'] {
+  const byCategory: Record<string, number> = {
+    area: 0,
+    building: 0,
+    wall: 0,
+    tree: 0,
+    rocks: 0,
+    shrub: 0,
+  };
+
+  let terrainArea = 0;
+  for (const feature of terrainResult.terrain) {
+    const category = feature.meta?.category;
+    if (feature.type === 'Rough' || feature.type === 'Difficult') {
+      byCategory.area++;
+    } else if (category === 'building') {
+      byCategory.building++;
+    } else if (category === 'wall') {
+      byCategory.wall++;
+    } else if (category === 'tree') {
+      byCategory.tree++;
+    } else if (category === 'rocks') {
+      byCategory.rocks++;
+    } else if (category === 'shrub') {
+      byCategory.shrub++;
+    }
+    terrainArea += polygonArea(feature.vertices ?? []);
+  }
+
+  const battlefieldArea = battlefield.width * battlefield.height;
+  const coverageRatio = battlefieldArea > 0 ? terrainArea / battlefieldArea : 0;
+
+  return {
+    totalTerrain: terrainResult.stats.placed,
+    byCategory,
+    fitnessScore: terrainResult.fitness?.score ?? 100,
+    coverageRatio: Math.round(coverageRatio * 1000) / 1000,
+    densities,
+  };
+}
+
 export async function generateBattlefield(
   config: BattlefieldGenerationConfig
 ): Promise<BattlefieldGenerationResult> {
   const startTime = Date.now();
 
   try {
-    // Ensure output directory exists
-    mkdirSync(OUTPUT_DIR, { recursive: true });
+    const normalizedSize = String(config.gameSize || '').toUpperCase();
+    const gameSize: CanonicalGameSize = (
+      normalizedSize in CANONICAL_GAME_SIZES ? normalizedSize : 'VERY_SMALL'
+    ) as CanonicalGameSize;
 
-    // Get battlefield dimensions
-    const canonicalSize = CANONICAL_GAME_SIZES[config.gameSize] ?? CANONICAL_GAME_SIZES.SMALL;
-    const dimensions = {
-      width: canonicalSize.battlefieldWidthMU,
-      height: canonicalSize.battlefieldHeightMU,
-    };
+    ensureBattlefieldDirectories([gameSize]);
+    const outputDir = getGeneratedBattlefieldDir(gameSize);
+    mkdirSync(outputDir, { recursive: true });
 
-    // Convert terrain densities to BattlefieldFactory weights
-    // Densities are 0-100, weights are relative importance
-    const terrainWeights = {
-      area: config.terrainDensities.area,
-      building: config.terrainDensities.building,
-      wall: config.terrainDensities.wall,
-      tree: config.terrainDensities.tree,
-      rocks: config.terrainDensities.rocks,
-      shrub: config.terrainDensities.shrub,
-    };
+    const canonical = CANONICAL_GAME_SIZES[gameSize] ?? CANONICAL_GAME_SIZES.SMALL;
+    const densities = parseBattlefieldLayerArgs(config.args ?? []);
+    const filenameBase = formatBattlefieldDensityFilename(densities);
+    const terrainTypes = buildTerrainTypes(densities);
+    const mode = config.mode ?? 'balanced';
 
-    // Calculate overall density ratio (average of non-area terrains)
-    // If all densities are 0, use 0 (no terrain)
-    const nonAreaDensity = (
-      config.terrainDensities.building +
-      config.terrainDensities.wall +
-      config.terrainDensities.tree +
-      config.terrainDensities.rocks +
-      config.terrainDensities.shrub
-    ) / 5;
-
-    // Only apply density if user requested terrain (respect 0 setting)
-    const effectiveDensity = nonAreaDensity > 0 ? Math.max(10, Math.min(100, nonAreaDensity)) : 0;
-    const effectiveAreaDensity = config.terrainDensities.area > 0 ? Math.max(10, Math.min(100, config.terrainDensities.area)) : 0;
-
-    // Create battlefield using factory
-    const battlefield = BattlefieldFactory.create(dimensions.width, dimensions.height, {
-      terrain: terrainWeights,
-      densityRatio: effectiveDensity,
-      areaDensityRatio: effectiveAreaDensity,
-      maxNonAreaSpacing: 0.5,
-      maxPlacementAttempts: 1000,
-      maxFillerAttempts: 1000,
-      maxPlacementMs: 30000,
+    const terrainResult = placeTerrain({
+      mode,
+      density: 0,
+      battlefieldWidth: canonical.battlefieldWidthMU,
+      battlefieldHeight: canonical.battlefieldHeightMU,
+      seed: config.seed,
+      terrainTypes,
+      areaDensity: densities.area,
+      structuresDensity: Math.max(densities.buildings, densities.walls),
+      buildingsDensity: densities.buildings,
+      wallsDensity: densities.walls,
+      rocksDensity: densities.rocks,
+      shrubsDensity: densities.shrubs,
+      treesDensity: densities.trees,
     });
 
-    // Generate SVG using static render method with proper dimensions
-    const svg = SvgRenderer.render(battlefield, {
-      width: battlefield.width,
-      height: battlefield.height,
-      title: `Generated Battlefield ${config.gameSize}`,
-    });
+    const battlefield = new Battlefield(canonical.battlefieldWidthMU, canonical.battlefieldHeightMU);
+    for (const feature of terrainResult.terrain) {
+      battlefield.addTerrain(feature, true);
+    }
+    battlefield.finalizeTerrain();
 
-    // Export battlefield JSON
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const battlefieldId = `generated-${timestamp}`;
-
-    // Create a minimal terrain result for export
-    const terrainResult: TerrainPlacementResult = {
-      terrain: battlefield.terrain,
-      stats: {
-        placed: battlefield.terrain.length,
-        seed: config.seed ?? Math.floor(Math.random() * 1000000),
-        rejected: 0,
-        attempts: battlefield.terrain.length,
-        overlaps: 0,
-        outOfBounds: 0,
-      },
-      fitness: {} as any,
-    };
-
-    const battlefieldJson = exportBattlefieldToJson(
+    const jsonPath = exportBattlefield(
       battlefield,
       terrainResult,
-      OUTPUT_DIR,
-      `${battlefieldId}.json`
+      outputDir,
+      `${filenameBase}.json`
     );
-
-    // Save SVG
-    const svgPath = join(OUTPUT_DIR, `${battlefieldId}.svg`);
-    writeFileSync(svgPath, svg, 'utf-8');
-
-    // Calculate stats
-    const stats = calculateGenerationStats(battlefield, terrainResult);
+    const svgPath = join(outputDir, `${filenameBase}.svg`);
+    writeBattlefieldSvgFile(svgPath, battlefield, {
+      title: `${gameSize} ${filenameBase}`,
+    });
 
     return {
       success: true,
-      battlefieldId,
+      battlefieldId: `${gameSize}-${filenameBase}`,
       svgPath,
-      jsonPath: battlefieldJson,
-      battlefieldPath: battlefieldJson,
-      stats,
+      jsonPath,
+      battlefieldPath: jsonPath,
+      stats: calculateGenerationStats(battlefield, terrainResult, densities),
       generationTimeMs: Date.now() - startTime,
     };
   } catch (error) {
@@ -163,6 +220,7 @@ export async function generateBattlefield(
         byCategory: {},
         fitnessScore: 0,
         coverageRatio: 0,
+        densities: { ...EMPTY_BATTLEFIELD_DENSITIES },
       },
       generationTimeMs: Date.now() - startTime,
       error: errorMessage,
@@ -170,129 +228,57 @@ export async function generateBattlefield(
   }
 }
 
-/**
- * Calculate generation statistics
- */
-function calculateGenerationStats(
-  battlefield: Battlefield,
-  terrainResult: TerrainPlacementResult
-): {
-  totalTerrain: number;
-  byCategory: Record<string, number>;
-  fitnessScore: number;
-  coverageRatio: number;
-} {
-  const totalTerrain = terrainResult.stats.placed;
-
-  // Count by category (simplified - would need terrain type mapping)
-  const byCategory: Record<string, number> = {
-    area: 0,
-    building: 0,
-    wall: 0,
-    tree: 0,
-    rocks: 0,
-    shrub: 0,
-  };
-
-  // Count terrain by type
-  for (const feature of terrainResult.terrain) {
-    const type = feature.type || 'unknown';
-    if (type === 'Rough' || type === 'Difficult') {
-      byCategory.area++;
-    } else if (type === 'Obstacle' || type === 'Impassable') {
-      // Check meta for specific type
-      const category = feature.meta?.category || '';
-      if (category === 'building') byCategory.building++;
-      else if (category === 'wall') byCategory.wall++;
-      else if (category === 'tree') byCategory.tree++;
-      else if (category === 'rocks') byCategory.rocks++;
-      else if (category === 'shrub') byCategory.shrub++;
-    }
+function parseCliArgs(argv: string[]): BattlefieldGenerationConfig {
+  if (argv.includes('--help') || argv.includes('-h')) {
+    printBattlefieldGenerateHelp({
+      title: 'battlefield-generator',
+      usageLine: 'node --import tsx scripts/battlefield-generator.ts [GAME_SIZE] [A#] [B#] [W#] [R#] [S#] [T#] [options]',
+      notes: ['If multiple game sizes are provided, the first one is used.'],
+      examples: [
+        'node --import tsx scripts/battlefield-generator.ts VERY_SMALL A20 B40',
+        'node --import tsx scripts/battlefield-generator.ts SMALL A17 B73 W50 --seed 42',
+      ],
+    });
+    process.exit(0);
   }
 
-  // Calculate coverage ratio
-  const battlefieldArea = battlefield.width * battlefield.height;
-  let terrainArea = 0;
-  for (const feature of terrainResult.terrain) {
-    if (feature.vertices && feature.vertices.length >= 3) {
-      // Simple polygon area calculation
-      let area = 0;
-      for (let i = 0; i < feature.vertices.length; i++) {
-        const j = (i + 1) % feature.vertices.length;
-        area += feature.vertices[i].x * feature.vertices[j].y;
-        area -= feature.vertices[j].x * feature.vertices[i].y;
-      }
-      terrainArea += Math.abs(area / 2);
-    }
+  const parsed = parseBattlefieldGenerateCliArgs(argv, {
+    onUnknownToken: token => {
+      console.warn(`[battlefield-generator] Ignoring unrecognized token: ${token}`);
+    },
+  });
+  const gameSize = (parsed.gameSizes[0] || 'VERY_SMALL') as CanonicalGameSize;
+
+  if (parsed.gameSizes.length > 1) {
+    console.warn(
+      `[battlefield-generator] Multiple game sizes provided (${parsed.gameSizes.join(', ')}); using '${gameSize}'.`
+    );
   }
-  const coverageRatio = terrainArea / battlefieldArea;
 
   return {
-    totalTerrain,
-    byCategory,
-    fitnessScore: terrainResult.fitness?.score || 100,
-    coverageRatio: Math.round(coverageRatio * 100) / 100,
+    gameSize,
+    mode: parsed.mode,
+    seed: parsed.seed,
+    args: densitiesToLayerArgs(parsed.densities),
   };
 }
 
-/**
- * CLI entry point for testing
- */
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const args = process.argv.slice(2);
-  const config: BattlefieldGenerationConfig = {
-    gameSize: 'MEDIUM',
-    terrainDensities: {
-      area: 50,
-      building: 30,
-      wall: 30,
-      tree: 50,
-      rocks: 40,
-      shrub: 40,
-    },
-    seed: 12345,
-  };
-
-  // Parse arguments
-  for (let i = 0; i < args.length; i++) {
-    switch (args[i]) {
-      case '--gameSize':
-        config.gameSize = args[++i] as any;
-        break;
-      case '--density':
-        const density = parseInt(args[++i], 10);
-        config.terrainDensities.area = density;
-        config.terrainDensities.building = density;
-        config.terrainDensities.wall = density;
-        config.terrainDensities.tree = density;
-        config.terrainDensities.rocks = density;
-        config.terrainDensities.shrub = density;
-        break;
-      case '--seed':
-        config.seed = parseInt(args[++i], 10);
-        break;
-    }
-  }
-
-  console.log('Generating battlefield...');
-  console.log(`  Game Size: ${config.gameSize}`);
-  console.log(`  Terrain Densities: ${JSON.stringify(config.terrainDensities)}`);
-  console.log(`  Seed: ${config.seed}`);
-
-  generateBattlefield(config).then((result) => {
-    if (result.success) {
-      console.log('\n✅ Battlefield generated successfully!');
-      console.log(`  ID: ${result.battlefieldId}`);
-      console.log(`  SVG: ${result.svgPath}`);
-      console.log(`  JSON: ${result.jsonPath}`);
-      console.log(`  Total Terrain: ${result.stats.totalTerrain}`);
-      console.log(`  Coverage: ${result.stats.coverageRatio * 100}%`);
-      console.log(`  Fitness: ${result.stats.fitnessScore}`);
-      console.log(`  Time: ${result.generationTimeMs}ms`);
-    } else {
-      console.error('\n❌ Battlefield generation failed!');
-      console.error(`  Error: ${result.error}`);
+  const config = parseCliArgs(process.argv.slice(2));
+  generateBattlefield(config).then(result => {
+    if (!result.success) {
+      console.error('❌ Battlefield generation failed');
+      console.error(result.error ?? 'Unknown error');
       process.exit(1);
     }
+
+    console.log('✅ Battlefield generated successfully');
+    console.log(`  ID: ${result.battlefieldId}`);
+    console.log(`  JSON: ${result.jsonPath}`);
+    console.log(`  SVG: ${result.svgPath}`);
+    console.log(`  Terrain: ${result.stats.totalTerrain}`);
+    console.log(`  Coverage: ${(result.stats.coverageRatio * 100).toFixed(1)}%`);
+    console.log(`  Densities: ${JSON.stringify(result.stats.densities)}`);
+    console.log(`  Time: ${result.generationTimeMs}ms`);
   });
 }

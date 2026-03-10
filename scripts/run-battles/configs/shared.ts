@@ -1,7 +1,7 @@
 import { GameSize } from '../../../src/lib/mest-tactics/mission/assembly-builder';
 import { InstrumentationGrade } from '../../../src/lib/mest-tactics/instrumentation/QSRInstrumentation';
 import { LIGHTING_PRESETS } from '../lighting-presets';
-import type { AITacticalDoctrine, BattleRunnerConfig, SideConfig } from '../battle-runner';
+import type { AITacticalDoctrine, BattleRunnerConfig, SideConfig } from '../types';
 
 interface SymmetricEliminationConfigOptions {
   gameSize: GameSize;
@@ -59,6 +59,8 @@ export function createPresetBattleConfig(
     terrainDensity: options.terrainDensity ?? 0.50,
     lighting: LIGHTING_PRESETS['Day, Clear'],
     missionId: options.missionId,
+    allowWaitAction: false,
+    allowHideAction: false,
     sides: options.sideTemplates.map(createSideConfig),
     instrumentationGrade: options.instrumentationGrade ?? InstrumentationGrade.BY_ACTION_WITH_TESTS,
   };

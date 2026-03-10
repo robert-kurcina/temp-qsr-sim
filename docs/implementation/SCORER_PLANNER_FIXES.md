@@ -230,10 +230,10 @@ Option B: Focus (if priority > React)
 npm test -- --run
 
 # Run AI battle
-npm run ai-battle -- VERY_SMALL
+npm run sim -- quick VERY_SMALL
 
 # Run AI battle with audit
-npm run ai-battle:audit -- VERY_SMALL
+npm run sim -- quick --audit --viewer VERY_SMALL
 ```
 
 ---

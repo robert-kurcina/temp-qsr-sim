@@ -177,7 +177,7 @@ This is:
 
 Run battle:
 ```bash
-npm run ai-battle -- VERY_SMALL
+npm run sim -- quick VERY_SMALL
 ```
 
 **Expected:** 5+ moves, 10+ MU path length, reduced Hide/Detect

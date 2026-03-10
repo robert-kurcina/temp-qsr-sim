@@ -1,24 +1,28 @@
 /**
- * Battle Orchestrator
- * 
- * Unified battle execution engine for MEST Tactics.
- * Consolidates common functionality between battle.ts and ai-battle-setup.ts.
- * 
- * Usage:
- *   const orchestrator = new BattleOrchestrator(config);
- *   const report = await orchestrator.runBattle();
+ * Battle Orchestrator (Compatibility Layer)
+ *
+ * Maintains the historical orchestration API while routing battle execution
+ * through the canonical AIBattleRunner runtime.
  */
 
-import { mkdirSync } from 'node:fs';
-import { join } from 'node:path';
 import { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
-import { placeTerrain } from '../../../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
 import { SvgRenderer } from '../../../src/lib/mest-tactics/battlefield/rendering/SvgRenderer';
-import { AIBattleRunner } from '../AIBattleRunner';
-import { writeBattlefieldSvg } from '../reporting/BattleReportWriter';
-import type { GameConfig, BattleReport } from '../../shared/BattleReportTypes';
+import { placeTerrain } from '../../../src/lib/mest-tactics/battlefield/terrain/TerrainPlacement';
+import { TacticalDoctrine } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import type { GameSize } from '../../../src/lib/mest-tactics/mission/assembly-builder';
+import type { GameConfig, BattleReport } from '../../shared/BattleReportTypes';
+import { AIBattleRunner } from '../AIBattleRunner';
 import { GAME_SIZE_CONFIG } from '../AIBattleConfig';
+import {
+  createBattleArtifactRunId,
+  writeBattleArtifacts,
+  writeBattlefieldSvg,
+} from '../reporting/BattleReportWriter';
+import {
+  buildCanonicalGameConfig,
+  createDefaultHeadToHeadSides,
+} from '../../shared/CanonicalBattleConfigAdapter';
+import { resolveMissionName } from '../../shared/MissionCatalog';
 
 export interface BattleOrchestratorConfig {
   missionId: string;
@@ -40,26 +44,14 @@ export interface BattleOutput {
 }
 
 export class BattleOrchestrator {
-  private config: BattleOrchestratorConfig;
-  private outputDir: string;
-  private runner: AIBattleRunner;
+  private readonly config: BattleOrchestratorConfig;
+  private readonly runner: AIBattleRunner;
 
   constructor(config: BattleOrchestratorConfig) {
     this.config = config;
-    this.outputDir = this.createOutputDir();
     this.runner = new AIBattleRunner();
   }
 
-  private createOutputDir(): string {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const dir = join(process.cwd(), 'generated', 'battle-reports', `battle-report-${timestamp}`);
-    mkdirSync(dir, { recursive: true });
-    return dir;
-  }
-
-  /**
-   * Generate battlefield terrain and SVG
-   */
   async generateBattlefield(): Promise<{
     battlefield: Battlefield;
     svgPath: string;
@@ -69,69 +61,46 @@ export class BattleOrchestrator {
     const battlefieldWidth = sizeConfig.battlefieldWidth;
     const battlefieldHeight = sizeConfig.battlefieldHeight;
 
-    // Generate terrain
     const terrainResult = placeTerrain({
       mode: 'balanced',
       density: densityRatio,
       battlefieldWidth,
       battlefieldHeight,
       terrainTypes: ['Tree', 'Shrub', 'Small Rocks', 'Medium Rocks', 'Large Rocks'],
+      seed: this.config.seed,
     });
 
-    // Create battlefield with terrain
     const battlefield = new Battlefield(battlefieldWidth, battlefieldHeight);
-    for (const terrainFeature of terrainResult.terrain) {
-      const centroid = this.getCentroid(terrainFeature.vertices);
-      const typeLower = (terrainFeature.id || terrainFeature.type || 'Tree').toLowerCase();
-      let terrainName = 'Tree';
-
-      if (typeLower.includes('shrub') || typeLower.includes('bush')) {
-        terrainName = 'Shrub';
-      } else if (typeLower.includes('rock')) {
-        terrainName = Math.random() > 0.5 ? 'Small Rocks' : 'Medium Rocks';
-      } else if (typeLower.includes('tree')) {
-        terrainName = 'Tree';
-      }
-
-      const rotation = Math.floor(Math.random() * 360);
-      battlefield.addTerrainElement({
-        type: terrainName as any,
-        position: centroid,
-        rotation,
-      } as any);
+    for (const feature of terrainResult.terrain) {
+      battlefield.addTerrain(feature, true);
     }
+    battlefield.finalizeTerrain();
 
-    // Generate SVG
-    const config = this.buildGameConfig();
-    const svgPath = writeBattlefieldSvg(battlefield, config);
-
+    const runId = createBattleArtifactRunId();
+    const svgPath = writeBattlefieldSvg(battlefield, this.buildGameConfig(), { runId });
     return { battlefield, svgPath };
   }
 
-  /**
-   * Run full AI battle
-   */
   async runBattle(): Promise<BattleOutput> {
-    const config = this.buildGameConfig();
-    
-    const report = await this.runner.runBattle(config, {
+    const gameConfig = this.buildGameConfig();
+    const report = await this.runner.runBattle(gameConfig, {
       seed: this.config.seed,
       suppressOutput: !this.config.verbose,
     });
 
-    const output: BattleOutput = { report };
+    const artifacts = writeBattleArtifacts(report, {
+      audit: gameConfig.audit || gameConfig.viewer,
+      viewer: gameConfig.viewer,
+    });
 
-    // Generate SVG if not already generated
-    if (!output.svgPath) {
-      // SVG is now generated automatically by AIBattleRunner
-    }
-
-    return output;
+    return {
+      report,
+      jsonPath: artifacts.reportPath,
+      auditPath: artifacts.auditPath,
+      viewerPath: artifacts.viewerPath,
+    };
   }
 
-  /**
-   * Run quick battle without AI (terrain + deployment only)
-   */
   async runQuickBattle(): Promise<{
     battlefield: Battlefield;
     svgPath: string;
@@ -140,79 +109,30 @@ export class BattleOrchestrator {
   }
 
   private buildGameConfig(): GameConfig {
-    const sizeConfig = GAME_SIZE_CONFIG[this.config.gameSize];
+    const missionId = String(this.config.missionId || 'QAI_11');
+    const lighting = (this.config.lighting?.name || 'Day, Clear') as any;
 
-    return {
-      missionId: this.config.missionId,
-      missionName: this.getMissionName(this.config.missionId),
+    return buildCanonicalGameConfig({
+      missionId,
+      missionName: resolveMissionName(missionId),
       gameSize: this.config.gameSize,
-      battlefieldWidth: sizeConfig.battlefieldWidth,
-      battlefieldHeight: sizeConfig.battlefieldHeight,
-      maxTurns: sizeConfig.maxTurns,
-      endGameTurn: sizeConfig.endGameTurn,
-      sides: [
-        {
-          name: 'Alpha',
-          bp: sizeConfig.bpPerSide[1],
-          modelCount: sizeConfig.modelsPerSide[1],
-          tacticalDoctrine: 'Operative' as any,
-          assemblyName: 'Alpha Assembly',
-        },
-        {
-          name: 'Bravo',
-          bp: sizeConfig.bpPerSide[1],
-          modelCount: sizeConfig.modelsPerSide[1],
-          tacticalDoctrine: 'Operative' as any,
-          assemblyName: 'Bravo Assembly',
-        },
-      ],
+      sides: createDefaultHeadToHeadSides(this.config.gameSize, TacticalDoctrine.Operative),
       densityRatio: this.config.densityRatio,
-      lighting: this.config.lighting as any,
-      visibilityOrMu: (this.config.lighting as any).visibilityOR ?? 16,
-      maxOrm: 3,
-      allowConcentrateRangeExtension: true,
-      perCharacterFovLos: false,
+      lighting,
+      allowWaitAction: false,
+      allowHideAction: false,
       verbose: this.config.verbose ?? true,
       seed: this.config.seed,
       audit: this.config.audit,
       viewer: this.config.viewer,
-    };
-  }
-
-  private getMissionName(missionId: string): string {
-    const names: Record<string, string> = {
-      QAI_11: 'Elimination',
-      QAI_12: 'Convergence',
-      QAI_13: 'Assault',
-      QAI_14: 'Dominion',
-      QAI_15: 'Recovery',
-      QAI_16: 'Escort',
-      QAI_17: 'Triumvirate',
-      QAI_18: 'Stealth',
-      QAI_19: 'Defiance',
-      QAI_20: 'Breach',
-    };
-    return names[missionId] || 'Elimination';
-  }
-
-  private getCentroid(vertices: { x: number; y: number }[]): { x: number; y: number } {
-    if (!vertices || vertices.length === 0) return { x: 0, y: 0 };
-    let x = 0, y = 0;
-    for (const v of vertices) {
-      x += v.x;
-      y += v.y;
-    }
-    return { x: x / vertices.length, y: y / vertices.length };
+    });
   }
 }
 
-/**
- * Run battle with default configuration
- */
 export async function runBattle(config: Partial<BattleOrchestratorConfig> = {}): Promise<BattleOutput> {
   const fullConfig: BattleOrchestratorConfig = {
     missionId: config.missionId || 'QAI_11',
-    gameSize: config.gameSize || 'VERY_SMALL' as GameSize,
+    gameSize: (config.gameSize || 'VERY_SMALL') as GameSize,
     densityRatio: config.densityRatio ?? 50,
     lighting: config.lighting || { name: 'Day, Clear', visibilityOR: 16 },
     seed: config.seed,

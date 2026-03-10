@@ -1,0 +1,916 @@
+{
+  "generatedAt": "2026-03-10T20:11:07.695Z",
+  "scope": {
+    "roots": [
+      "src",
+      "scripts"
+    ],
+    "excludedGlobs": [
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.spec.ts"
+    ],
+    "declarationPattern": "\\bconst\\s+([A-Za-z0-9_]*(?:weight|threshold|trigger|filter|bonus|penalty|factor|multiplier|gate)[A-Za-z0-9_]*)\\b",
+    "notes": "Any const declaration line with keyword in variable name; includes top-level and local constants."
+  },
+  "totals": {
+    "declarations": 85,
+    "categories": 8,
+    "files": 48
+  },
+  "byCategory": {
+    "threshold": 24,
+    "bonus": 19,
+    "weight": 11,
+    "gate": 8,
+    "penalty": 8,
+    "filter": 6,
+    "trigger": 5,
+    "factor": 4
+  },
+  "byDomain": {
+    "ai-battle-script": 28,
+    "missions": 13,
+    "other": 13,
+    "battlefield": 11,
+    "ai-core": 8,
+    "actions": 7,
+    "scripts": 5
+  },
+  "topFiles": [
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "count": 8
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "count": 7
+    },
+    {
+      "file": "scripts/ai-battle/core/PassiveCombatFollowups.ts",
+      "count": 4
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/UtilityScorer.ts",
+      "count": 4
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/combat-actions.ts",
+      "count": 3
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.ts",
+      "count": 3
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory.ts",
+      "count": 3
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/heuristic-scorer.ts",
+      "count": 3
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/special-rules.ts",
+      "count": 3
+    },
+    {
+      "file": "scripts/ai-battle/core/BattleTurnCycleSupport.ts",
+      "count": 2
+    },
+    {
+      "file": "scripts/estimate-coverage.ts",
+      "count": 2
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/simple-actions.ts",
+      "count": 2
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/TurnHorizon.ts",
+      "count": 2
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/validation/action-context.ts",
+      "count": 2
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/mission-scoring.ts",
+      "count": 2
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/accuracy-parser.ts",
+      "count": 2
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/morale-test.ts",
+      "count": 2
+    },
+    {
+      "file": "scripts/ai-battle-setup.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/ai-battle/core/ActionExecutionReactPostProcessing.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/ai-battle/core/PassiveResponseHandler.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/ai-battle/core/TechAgeLoadoutCatalog.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/ai-battle/loadouts/generate-tech-age-loadouts.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/ai-battle/validation/BenchmarkSummary.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationMetrics.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/mission-validation-scan.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/serve/routes/BattleRoutes.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/shared/BattlefieldPaths.ts",
+      "count": 1
+    },
+    {
+      "file": "scripts/validate-mission.js",
+      "count": 1
+    },
+    {
+      "file": "src/guides/docs/rules-overrides.md",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/agility.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/counter-actions.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/CharacterAI.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/mission/MissionAI.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/pathfinding/MultiGoalPathfinding.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/terrain/move-validator.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/combat/close-combat.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/combat/friendly-fire.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/combat/obscured.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/engine/DeploymentScorer.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/engine/GameManager.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/instrumentation/QSRInstrumentation.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/convergence-manager.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/dominion-manager.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/elimination-manager.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/mission-keys.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/triumvirate-manager.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/status/status-system.ts",
+      "count": 1
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/damage-test.ts",
+      "count": 1
+    }
+  ],
+  "entries": [
+    {
+      "file": "scripts/ai-battle-setup.ts",
+      "line": 153,
+      "name": "isValidationAggregate",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const isValidationAggregate ="
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 243,
+      "name": "thresholds",
+      "category": "threshold",
+      "domain": "ai-battle-script",
+      "sourceLine": "const thresholds: PerformanceGateThresholds = {"
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 273,
+      "name": "factor",
+      "category": "factor",
+      "domain": "ai-battle-script",
+      "sourceLine": "const factor = sizeFactor * densityFactor;"
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 275,
+      "name": "thresholds",
+      "category": "threshold",
+      "domain": "ai-battle-script",
+      "sourceLine": "const thresholds: PassivenessGateThresholds = {"
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 304,
+      "name": "thresholds",
+      "category": "threshold",
+      "domain": "ai-battle-script",
+      "sourceLine": "const thresholds: CombatActivityGateThresholds = {"
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 344,
+      "name": "thresholds",
+      "category": "threshold",
+      "domain": "ai-battle-script",
+      "sourceLine": "const thresholds: PressureContinuityGateThresholds = {"
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 383,
+      "name": "thresholds",
+      "category": "threshold",
+      "domain": "ai-battle-script",
+      "sourceLine": "const thresholds: AttackGateTelemetryGateThresholds = {"
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 407,
+      "name": "thresholds",
+      "category": "threshold",
+      "domain": "ai-battle-script",
+      "sourceLine": "const thresholds = {"
+    },
+    {
+      "file": "scripts/ai-battle/cli/EnvConfig.ts",
+      "line": 546,
+      "name": "gateValues",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const gateValues = ["
+    },
+    {
+      "file": "scripts/ai-battle/core/ActionExecutionReactPostProcessing.ts",
+      "line": 124,
+      "name": "trigger",
+      "category": "trigger",
+      "domain": "ai-battle-script",
+      "sourceLine": "const trigger = movedDistance > 0 ? 'Move' : 'NonMove';"
+    },
+    {
+      "file": "scripts/ai-battle/core/BattleTurnCycleSupport.ts",
+      "line": 576,
+      "name": "bonusAudits",
+      "category": "bonus",
+      "domain": "ai-battle-script",
+      "sourceLine": "const bonusAudits: ActivationAudit[] = [];"
+    },
+    {
+      "file": "scripts/ai-battle/core/BattleTurnCycleSupport.ts",
+      "line": 584,
+      "name": "bonusGuardLimit",
+      "category": "bonus",
+      "domain": "ai-battle-script",
+      "sourceLine": "const bonusGuardLimit = Math.max(1, sideCharacters.length);"
+    },
+    {
+      "file": "scripts/ai-battle/core/PassiveCombatFollowups.ts",
+      "line": 63,
+      "name": "bonusActionOptions",
+      "category": "bonus",
+      "domain": "ai-battle-script",
+      "sourceLine": "const bonusActionOptions = buildBonusActionOptions({"
+    },
+    {
+      "file": "scripts/ai-battle/core/PassiveCombatFollowups.ts",
+      "line": 173,
+      "name": "bonusFollowup",
+      "category": "bonus",
+      "domain": "ai-battle-script",
+      "sourceLine": "const bonusFollowup = battlefield && result.bonusActionEligible"
+    },
+    {
+      "file": "scripts/ai-battle/core/PassiveCombatFollowups.ts",
+      "line": 200,
+      "name": "bonusFollowup",
+      "category": "bonus",
+      "domain": "ai-battle-script",
+      "sourceLine": "const bonusFollowup = battlefield && result.bonusActionEligible"
+    },
+    {
+      "file": "scripts/ai-battle/core/PassiveCombatFollowups.ts",
+      "line": 224,
+      "name": "bonusFollowup",
+      "category": "bonus",
+      "domain": "ai-battle-script",
+      "sourceLine": "const bonusFollowup = battlefield"
+    },
+    {
+      "file": "scripts/ai-battle/core/PassiveResponseHandler.ts",
+      "line": 314,
+      "name": "bonusAction",
+      "category": "bonus",
+      "domain": "ai-battle-script",
+      "sourceLine": "for (const bonusAction of availableBonusActions) {"
+    },
+    {
+      "file": "scripts/ai-battle/core/TechAgeLoadoutCatalog.ts",
+      "line": 65,
+      "name": "weighted",
+      "category": "weight",
+      "domain": "ai-battle-script",
+      "sourceLine": "const weighted: Array<{ style: WeaponStyle; weight: number }> = styles.map(style => ({"
+    },
+    {
+      "file": "scripts/ai-battle/loadouts/generate-tech-age-loadouts.ts",
+      "line": 116,
+      "name": "filtered",
+      "category": "filter",
+      "domain": "ai-battle-script",
+      "sourceLine": "const filtered = pool.filter(item => item.name !== primary.name);"
+    },
+    {
+      "file": "scripts/ai-battle/validation/BenchmarkSummary.ts",
+      "line": 94,
+      "name": "weight",
+      "category": "weight",
+      "domain": "ai-battle-script",
+      "sourceLine": "const weight = rank - low;"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationMetrics.ts",
+      "line": 880,
+      "name": "weight",
+      "category": "weight",
+      "domain": "ai-battle-script",
+      "sourceLine": "const weight = index - lower;"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "line": 608,
+      "name": "gateApplied",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const gateApplied = Math.max(0, Number(stats.attackGateAppliedDecisions ?? 0));"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "line": 609,
+      "name": "gateImmediateHighApplied",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const gateImmediateHighApplied = Math.max(0, Number(stats.attackGateImmediateHighApplied ?? 0));"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "line": 610,
+      "name": "gateDirectiveApplied",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const gateDirectiveApplied = Math.max(0, Number(stats.attackGateDirectiveApplied ?? 0));"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "line": 1155,
+      "name": "filtered",
+      "category": "filter",
+      "domain": "ai-battle-script",
+      "sourceLine": "const filtered = values.filter((value): value is number => Number.isFinite(value));"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "line": 1416,
+      "name": "aggregateReport",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const aggregateReport: ValidationAggregateReport = {"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "line": 1492,
+      "name": "gateApplied",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const gateApplied = totals.attackGateAppliedDecisions ?? 0;"
+    },
+    {
+      "file": "scripts/ai-battle/validation/ValidationRunner.ts",
+      "line": 1493,
+      "name": "gateRate",
+      "category": "gate",
+      "domain": "ai-battle-script",
+      "sourceLine": "const gateRate = safeRate(gateApplied, telemetrySamples);"
+    },
+    {
+      "file": "scripts/estimate-coverage.ts",
+      "line": 8,
+      "name": "thresholdHigh",
+      "category": "threshold",
+      "domain": "scripts",
+      "sourceLine": "const thresholdHigh = 0.8;"
+    },
+    {
+      "file": "scripts/estimate-coverage.ts",
+      "line": 9,
+      "name": "thresholdLow",
+      "category": "threshold",
+      "domain": "scripts",
+      "sourceLine": "const thresholdLow = 0.5;"
+    },
+    {
+      "file": "scripts/mission-validation-scan.ts",
+      "line": 239,
+      "name": "bonusRate",
+      "category": "bonus",
+      "domain": "scripts",
+      "sourceLine": "const bonusRate = result.bonusActions.executed / result.bonusActions.offered;"
+    },
+    {
+      "file": "scripts/serve/routes/BattleRoutes.ts",
+      "line": 10,
+      "name": "filters",
+      "category": "filter",
+      "domain": "scripts",
+      "sourceLine": "const filters = {"
+    },
+    {
+      "file": "scripts/shared/BattlefieldPaths.ts",
+      "line": 115,
+      "name": "filteredFiles",
+      "category": "filter",
+      "domain": "battlefield",
+      "sourceLine": "const filteredFiles = files.filter(file => {"
+    },
+    {
+      "file": "scripts/validate-mission.js",
+      "line": 154,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "scripts",
+      "sourceLine": "const threshold = dominanceVC.threshold;"
+    },
+    {
+      "file": "src/guides/docs/rules-overrides.md",
+      "line": 172,
+      "name": "triggerTurn",
+      "category": "trigger",
+      "domain": "other",
+      "sourceLine": "const triggerTurn = getEndGameTriggerTurn(gameSize);  // Returns 3"
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/agility.ts",
+      "line": 389,
+      "name": "bonusAgility",
+      "category": "bonus",
+      "domain": "actions",
+      "sourceLine": "const bonusAgility = moveDistance / 4;"
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/combat-actions.ts",
+      "line": 297,
+      "name": "penalty",
+      "category": "penalty",
+      "domain": "actions",
+      "sourceLine": "const penalty = getHandPenalty(attacker);"
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/combat-actions.ts",
+      "line": 442,
+      "name": "penaltyResult",
+      "category": "penalty",
+      "domain": "actions",
+      "sourceLine": "const penaltyResult = getMultipleAttackPenalty(attacker, weaponIndex);"
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/combat-actions.ts",
+      "line": 1063,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "actions",
+      "sourceLine": "const threshold = getKOdEliminationThreshold(defender);"
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/counter-actions.ts",
+      "line": 220,
+      "name": "bonusActionCascades",
+      "category": "bonus",
+      "domain": "actions",
+      "sourceLine": "const bonusActionCascades = deps.resolveCarryOverSuccesses(carryOverDice, options.carryOverRolls);"
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/simple-actions.ts",
+      "line": 289,
+      "name": "penaltyDice",
+      "category": "penalty",
+      "domain": "actions",
+      "sourceLine": "const penaltyDice = applyHandPenalty ? { base: 1 } : undefined;"
+    },
+    {
+      "file": "src/lib/mest-tactics/actions/simple-actions.ts",
+      "line": 296,
+      "name": "bonusDice",
+      "category": "bonus",
+      "domain": "actions",
+      "sourceLine": "const bonusDice: { modifier?: number } = {};"
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/CharacterAI.ts",
+      "line": 2429,
+      "name": "factors",
+      "category": "factor",
+      "domain": "ai-core",
+      "sourceLine": "const factors = Object.entries(action.factors ?? {})"
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/TurnHorizon.ts",
+      "line": 49,
+      "name": "triggerTurn",
+      "category": "trigger",
+      "domain": "ai-core",
+      "sourceLine": "const triggerTurn = Number.isFinite(endGameTurn) && (endGameTurn ?? 0) > 0"
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/TurnHorizon.ts",
+      "line": 91,
+      "name": "triggerTurn",
+      "category": "trigger",
+      "domain": "ai-core",
+      "sourceLine": "const triggerTurn = Number.isFinite(endGameTurn) && (endGameTurn ?? 0) > 0"
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/UtilityScorer.ts",
+      "line": 670,
+      "name": "bonus",
+      "category": "bonus",
+      "domain": "ai-core",
+      "sourceLine": "const bonus = getMultipleWeaponsBonus(context.character, 0, true);"
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/UtilityScorer.ts",
+      "line": 677,
+      "name": "bonusActionEval",
+      "category": "bonus",
+      "domain": "ai-core",
+      "sourceLine": "const bonusActionEval = this.evaluateBonusActions(context, target.target, 2, attackerPosition);"
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/UtilityScorer.ts",
+      "line": 741,
+      "name": "bonus",
+      "category": "bonus",
+      "domain": "ai-core",
+      "sourceLine": "const bonus = getMultipleWeaponsBonus(context.character, 0, false);"
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/core/UtilityScorer.ts",
+      "line": 1143,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "ai-core",
+      "sourceLine": "const threshold = ("
+    },
+    {
+      "file": "src/lib/mest-tactics/ai/mission/MissionAI.ts",
+      "line": 179,
+      "name": "factory",
+      "category": "factor",
+      "domain": "ai-core",
+      "sourceLine": "const factory = this.factories.get(missionId);"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/pathfinding/MultiGoalPathfinding.ts",
+      "line": 107,
+      "name": "filteredDestinations",
+      "category": "filter",
+      "domain": "battlefield",
+      "sourceLine": "const filteredDestinations = this.filterDestinationsByDistance("
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.ts",
+      "line": 228,
+      "name": "weight",
+      "category": "weight",
+      "domain": "battlefield",
+      "sourceLine": "const weight = terrainType === TerrainType.Rough || terrainType === TerrainType.Difficult ? 2 : 1;"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.ts",
+      "line": 517,
+      "name": "weight",
+      "category": "weight",
+      "domain": "battlefield",
+      "sourceLine": "const weight = vector.terrain === TerrainType.Rough || vector.terrain === TerrainType.Difficult ? 2 : 1;"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/pathfinding/PathfindingEngine.ts",
+      "line": 786,
+      "name": "weight",
+      "category": "weight",
+      "domain": "battlefield",
+      "sourceLine": "const weight = this.movementCostAt(point, halfRadius, fullRadius, clearancePenalty);"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory.ts",
+      "line": 105,
+      "name": "weight",
+      "category": "weight",
+      "domain": "battlefield",
+      "sourceLine": "const weight = Math.max(0.0001, bandWeight(position, height));"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory.ts",
+      "line": 220,
+      "name": "weights",
+      "category": "weight",
+      "domain": "battlefield",
+      "sourceLine": "const weights: TerrainWeights = {"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/rendering/BattlefieldFactory.ts",
+      "line": 329,
+      "name": "weight",
+      "category": "weight",
+      "domain": "battlefield",
+      "sourceLine": "const weight = clamp(weights[category] ?? 0, 0, 100);"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/terrain/move-validator.ts",
+      "line": 257,
+      "name": "triggers",
+      "category": "trigger",
+      "domain": "battlefield",
+      "sourceLine": "const triggers: CompulsoryActionTrigger[] = [];"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/validation/action-context.ts",
+      "line": 78,
+      "name": "penaltyScore",
+      "category": "penalty",
+      "domain": "battlefield",
+      "sourceLine": "const penaltyScore = (cover.hasDirectCover ? 2 : 0) + (cover.hasInterveningCover ? 1 : 0);"
+    },
+    {
+      "file": "src/lib/mest-tactics/battlefield/validation/action-context.ts",
+      "line": 267,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "battlefield",
+      "sourceLine": "const threshold = options.snapThresholdMu ?? 0.5;"
+    },
+    {
+      "file": "src/lib/mest-tactics/combat/close-combat.ts",
+      "line": 342,
+      "name": "bonusDistance",
+      "category": "bonus",
+      "domain": "other",
+      "sourceLine": "const bonusDistance = Math.floor(additionalCascades / 2);"
+    },
+    {
+      "file": "src/lib/mest-tactics/combat/friendly-fire.ts",
+      "line": 277,
+      "name": "penaltyDice",
+      "category": "penalty",
+      "domain": "other",
+      "sourceLine": "const penaltyDice: TestDice = {};"
+    },
+    {
+      "file": "src/lib/mest-tactics/combat/obscured.ts",
+      "line": 10,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "other",
+      "sourceLine": "for (const threshold of OBSCURED_THRESHOLDS) {"
+    },
+    {
+      "file": "src/lib/mest-tactics/engine/DeploymentScorer.ts",
+      "line": 132,
+      "name": "weights",
+      "category": "weight",
+      "domain": "other",
+      "sourceLine": "const weights = {"
+    },
+    {
+      "file": "src/lib/mest-tactics/engine/GameManager.ts",
+      "line": 1368,
+      "name": "bonusMarkers",
+      "category": "bonus",
+      "domain": "other",
+      "sourceLine": "const bonusMarkers = this.placeAdditionalROFMarkersForSuppression("
+    },
+    {
+      "file": "src/lib/mest-tactics/instrumentation/QSRInstrumentation.ts",
+      "line": 730,
+      "name": "filteredAction",
+      "category": "filter",
+      "domain": "other",
+      "sourceLine": "const filteredAction = this.filterActionByGrade(action);"
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/heuristic-scorer.ts",
+      "line": 56,
+      "name": "factors",
+      "category": "factor",
+      "domain": "missions",
+      "sourceLine": "const factors = {"
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/heuristic-scorer.ts",
+      "line": 65,
+      "name": "weights",
+      "category": "weight",
+      "domain": "missions",
+      "sourceLine": "const weights = {"
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/heuristic-scorer.ts",
+      "line": 112,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold ="
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/special-rules.ts",
+      "line": 191,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = this.getCustomState<number>("
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/special-rules.ts",
+      "line": 219,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = this.getCustomState<number>("
+    },
+    {
+      "file": "src/lib/mest-tactics/mission/special-rules.ts",
+      "line": 476,
+      "name": "thresholdOpen",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const thresholdOpen = this.getCustomState<boolean>(state, 'thresholdOpen', false);"
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/convergence-manager.ts",
+      "line": 520,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = getAggressionCrossingThreshold(side.startingCount);"
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/dominion-manager.ts",
+      "line": 521,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = getAggressionCrossingThreshold(side.startingCount);"
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/elimination-manager.ts",
+      "line": 674,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = getAggressionCrossingThreshold(side.startingCount);"
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/mission-keys.ts",
+      "line": 134,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = (startingBpBySide[sideId] || 0) * thresholdRatio;"
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/mission-scoring.ts",
+      "line": 176,
+      "name": "thresholdTurn",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const thresholdTurn = getEndGameTriggerTurn(input.gameSize as any);"
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/mission-scoring.ts",
+      "line": 205,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = getAggressionCrossingThreshold(side.startingCount);"
+    },
+    {
+      "file": "src/lib/mest-tactics/missions/triumvirate-manager.ts",
+      "line": 526,
+      "name": "threshold",
+      "category": "threshold",
+      "domain": "missions",
+      "sourceLine": "const threshold = getAggressionCrossingThreshold(side.startingCount);"
+    },
+    {
+      "file": "src/lib/mest-tactics/status/status-system.ts",
+      "line": 342,
+      "name": "penaltyDice",
+      "category": "penalty",
+      "domain": "other",
+      "sourceLine": "const penaltyDice: TestDice = { [DiceType.Modifier]: effectiveX };"
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/accuracy-parser.ts",
+      "line": 8,
+      "name": "bonusDice",
+      "category": "bonus",
+      "domain": "other",
+      "sourceLine": "const bonusDice: TestDice = {};"
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/accuracy-parser.ts",
+      "line": 9,
+      "name": "penaltyDice",
+      "category": "penalty",
+      "domain": "other",
+      "sourceLine": "const penaltyDice: TestDice = {};"
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/damage-test.ts",
+      "line": 128,
+      "name": "bonusDice",
+      "category": "bonus",
+      "domain": "other",
+      "sourceLine": "const bonusDice = { ...damageDice, base: (damageDice.base || 0) + (hitTestResult.cascades || 0) };"
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/morale-test.ts",
+      "line": 16,
+      "name": "bonusDice",
+      "category": "bonus",
+      "domain": "other",
+      "sourceLine": "const bonusDice: TestDice = {};"
+    },
+    {
+      "file": "src/lib/mest-tactics/subroutines/morale-test.ts",
+      "line": 17,
+      "name": "penaltyDice",
+      "category": "penalty",
+      "domain": "other",
+      "sourceLine": "const penaltyDice: TestDice = {};"
+    }
+  ]
+}

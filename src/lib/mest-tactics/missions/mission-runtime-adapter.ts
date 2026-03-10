@@ -611,6 +611,10 @@ export class MissionRuntimeAdapter {
         if (!model) continue;
         member.position = model.position;
         member.status = getModelStatus(model);
+        if (this.manager instanceof EliminationMissionManager && this.battlefieldSize) {
+          const battlefieldCenter = { x: this.battlefieldSize / 2, y: this.battlefieldSize / 2 };
+          this.manager.trackMidlineCross(member.id, side.id, model.position, battlefieldCenter);
+        }
       }
     }
   }

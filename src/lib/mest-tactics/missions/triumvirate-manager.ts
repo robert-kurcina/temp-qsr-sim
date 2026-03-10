@@ -7,7 +7,7 @@ import {
   calculateEliminationFractionalVP,
   calculateBottledFractionalVP,
 } from './FractionalScoringUtils';
-import { EncroachmentState } from './mission-scoring';
+import { EncroachmentState, getAggressionCrossingThreshold } from './mission-scoring';
 
 /**
  * Triumvirate Mission State
@@ -523,7 +523,7 @@ export class TriumvirateMissionManager {
     // Encroachment: Fractional VP based on crossing progress
     for (const side of sideStatuses) {
       const crossed = (this.state.encroachment.crossedBySide as any)?.[side.sideId] ?? 0;
-      const threshold = Math.ceil(side.startingCount / 2);
+      const threshold = getAggressionCrossingThreshold(side.startingCount);
       const score = calculateAggressionFractionalVP(side.sideId, crossed, threshold);
 
       sideScores[side.sideId].keyScores['encroachment'] = {

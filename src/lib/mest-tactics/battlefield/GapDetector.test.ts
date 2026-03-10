@@ -58,27 +58,22 @@ describe('GapDetector', () => {
   });
 
   describe('detectGapAlongLine', () => {
-    it('should detect gap between two positions', () => {
-      // Simple test - gap detection on empty battlefield
+    it('should not report synthetic gaps on clear terrain', () => {
       const from = { x: 5, y: 10 };
       const to = { x: 15, y: 10 };
       
       const gap = detectGapAlongLine(battlefield, from, to);
       
-      // On empty battlefield, gap detection returns start/end info
-      // Gap is only "real" if there's terrain blocking
-      expect(gap).toBeDefined();
+      expect(gap).toBeNull();
     });
 
-    it('should return gap info even for short distances', () => {
+    it('should return null for short clear-terrain probes', () => {
       const from = { x: 10, y: 10 };
       const to = { x: 10.3, y: 10 }; // Less than 0.5 MU
       
       const gap = detectGapAlongLine(battlefield, from, to);
       
-      // Gap detector returns info even for short distances
-      expect(gap).toBeDefined();
-      expect(gap?.width).toBeLessThan(0.5);
+      expect(gap).toBeNull();
     });
   });
 
@@ -245,13 +240,12 @@ describe('GapDetector', () => {
   });
 
   describe('findGapsAroundPosition', () => {
-    it('should scan in multiple directions', () => {
+    it('should return no gaps on a clear battlefield', () => {
       const position = { x: 12, y: 12 };
       
       const gaps = findGapsAroundPosition(battlefield, position, 8, 8);
       
-      // Scans in 8 directions, returns gap info for each
-      expect(gaps.length).toBe(8);
+      expect(gaps.length).toBe(0);
     });
   });
 });

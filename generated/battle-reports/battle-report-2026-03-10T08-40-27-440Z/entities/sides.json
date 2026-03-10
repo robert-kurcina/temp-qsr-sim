@@ -1,0 +1,22 @@
+[
+  {
+    "id": "side-1-side-a",
+    "name": "Side A",
+    "sideIndex": 0,
+    "tacticalDoctrine": "operative",
+    "assemblyIds": [
+      "assembly-1-assembly-a"
+    ],
+    "totalBp": 594
+  },
+  {
+    "id": "side-2-side-b",
+    "name": "Side B",
+    "sideIndex": 1,
+    "tacticalDoctrine": "operative",
+    "assemblyIds": [
+      "assembly-2-assembly-b"
+    ],
+    "totalBp": 594
+  }
+]
