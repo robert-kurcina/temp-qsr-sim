@@ -11,6 +11,15 @@ import {
 import type { LoadoutCombinationEntry, TechAgeLoadoutCatalog } from '../loadouts/types';
 
 const VALIDATED_COMBINATION_CACHE = new Map<string, LoadoutCombinationEntry[]>();
+const IMPROVISED_ALLOWED_ARCHETYPE_NAMES = new Set(['militia', 'untrained']);
+const IMPROVISED_WEAPON_NAMES = new Set<string>([
+  ...Object.keys((gameData as any).melee_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).ranged_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).bow_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).thrown_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).grenade_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).support_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+]);
 
 function normalizeLoadoutProfile(value: SideConfig['loadoutProfile']): RunnerLoadoutProfile {
   return value === 'melee_only' ? 'melee_only' : 'default';
@@ -49,6 +58,19 @@ function getArchetypePhysicality(archetypeName: string): number {
   return Math.max(str, siz);
 }
 
+function hasImprovisedWeaponForCombination(entry: LoadoutCombinationEntry): boolean {
+  return entry.items.some(item => IMPROVISED_WEAPON_NAMES.has(item));
+}
+
+function canArchetypeReceiveImprovisedLoadouts(archetypeName: string): boolean {
+  const normalized = archetypeName.trim().toLowerCase();
+  if (IMPROVISED_ALLOWED_ARCHETYPE_NAMES.has(normalized)) {
+    return true;
+  }
+  const rootName = normalized.split(',')[0]?.trim() ?? normalized;
+  return IMPROVISED_ALLOWED_ARCHETYPE_NAMES.has(rootName);
+}
+
 function getValidatedCombinationsForArchetype(params: {
   archetypeName: string;
   catalog: TechAgeLoadoutCatalog;
@@ -67,7 +89,10 @@ function getValidatedCombinationsForArchetype(params: {
     ? compatible.filter(entry => entry.weaponStyle === 'melee_centric')
     : compatible;
   const pool = styleFiltered.length > 0 ? styleFiltered : compatible;
-  const validated = pool.filter(entry => entry.requiredPhysicality <= archetypePhysicality);
+  const physicalityFiltered = pool.filter(entry => entry.requiredPhysicality <= archetypePhysicality);
+  const validated = canArchetypeReceiveImprovisedLoadouts(archetypeName)
+    ? physicalityFiltered
+    : physicalityFiltered.filter(entry => !hasImprovisedWeaponForCombination(entry));
 
   VALIDATED_COMBINATION_CACHE.set(cacheKey, validated);
   return validated;

@@ -1,7 +1,7 @@
 {
   "techAge": "Colonial",
   "techLevel": 7,
-  "generatedAt": "2026-03-11T18:16:27.454Z",
+  "generatedAt": "2026-03-11T19:43:59.919Z",
   "armorLoadouts": [
     {
       "id": "light-no_gear_no_shield-no_helmet",
@@ -449,13 +449,13 @@
       "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 32,
-        "adjusted": 27
+        "base": 31,
+        "adjusted": 26
       }
     },
     {
@@ -466,13 +466,13 @@
       "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 201,
-        "adjusted": 174
+        "base": 109,
+        "adjusted": 90
       }
     },
     {
@@ -500,11 +500,11 @@
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 48,
+        "base": 47,
         "adjusted": 42
       }
     },
@@ -517,12 +517,12 @@
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 169,
-        "adjusted": 158
+        "base": 92,
+        "adjusted": 81
       }
     },
     {
@@ -647,13 +647,13 @@
       "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 52,
-        "adjusted": 52
+        "base": 51,
+        "adjusted": 51
       }
     },
     {
@@ -664,13 +664,13 @@
       "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 147,
-        "adjusted": 147
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -731,8 +731,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Improvised Melee",
@@ -755,13 +755,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 40,
-        "adjusted": 35
+        "base": 39,
+        "adjusted": 34
       }
     },
     {
@@ -776,13 +776,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 209,
-        "adjusted": 182
+        "base": 117,
+        "adjusted": 98
       }
     },
     {
@@ -793,8 +793,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Club, Circus Mallet",
@@ -818,11 +818,11 @@
       "items": [
         "Armor, Light",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 56,
+        "base": 55,
         "adjusted": 50
       }
     },
@@ -839,12 +839,12 @@
       "items": [
         "Armor, Light",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 177,
-        "adjusted": 166
+        "base": 100,
+        "adjusted": 89
       }
     },
     {
@@ -855,8 +855,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Improvised Thrown",
@@ -916,8 +916,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Bow, Light",
@@ -977,8 +977,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Improvised Melee",
@@ -1001,13 +1001,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 60,
-        "adjusted": 60
+        "base": 59,
+        "adjusted": 59
       }
     },
     {
@@ -1018,17 +1018,17 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 155,
-        "adjusted": 155
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -1099,8 +1099,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -1125,13 +1125,13 @@
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 40
+        "base": 44,
+        "adjusted": 39
       }
     },
     {
@@ -1147,13 +1147,13 @@
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 214,
-        "adjusted": 187
+        "base": 122,
+        "adjusted": 103
       }
     },
     {
@@ -1164,8 +1164,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -1191,11 +1191,11 @@
         "Armor, Light",
         "Armored Gear",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 61,
+        "base": 60,
         "adjusted": 55
       }
     },
@@ -1213,12 +1213,12 @@
         "Armor, Light",
         "Armored Gear",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 182,
-        "adjusted": 171
+        "base": 105,
+        "adjusted": 94
       }
     },
     {
@@ -1229,8 +1229,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -1293,8 +1293,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -1357,8 +1357,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -1383,13 +1383,13 @@
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 65,
-        "adjusted": 65
+        "base": 64,
+        "adjusted": 64
       }
     },
     {
@@ -1400,18 +1400,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 160,
-        "adjusted": 160
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -1485,8 +1485,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -1511,13 +1511,13 @@
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 37
+        "base": 41,
+        "adjusted": 36
       }
     },
     {
@@ -1533,13 +1533,13 @@
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 211,
-        "adjusted": 184
+        "base": 119,
+        "adjusted": 100
       }
     },
     {
@@ -1577,12 +1577,12 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 58,
-        "adjusted": 58
+        "base": 57,
+        "adjusted": 57
       }
     },
     {
@@ -1599,12 +1599,12 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 179,
-        "adjusted": 168
+        "base": 102,
+        "adjusted": 102
       }
     },
     {
@@ -1615,8 +1615,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -1743,8 +1743,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -1769,13 +1769,13 @@
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 62,
-        "adjusted": 62
+        "base": 61,
+        "adjusted": 61
       }
     },
     {
@@ -1786,18 +1786,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 157,
-        "adjusted": 157
+        "base": 80,
+        "adjusted": 80
       }
     },
     {
@@ -1871,8 +1871,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -1899,13 +1899,13 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 42
+        "base": 46,
+        "adjusted": 41
       }
     },
     {
@@ -1922,13 +1922,13 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 216,
-        "adjusted": 189
+        "base": 124,
+        "adjusted": 105
       }
     },
     {
@@ -1968,12 +1968,12 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 63,
-        "adjusted": 63
+        "base": 62,
+        "adjusted": 62
       }
     },
     {
@@ -1991,12 +1991,12 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 184,
-        "adjusted": 173
+        "base": 107,
+        "adjusted": 107
       }
     },
     {
@@ -2007,8 +2007,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -2141,8 +2141,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -2169,13 +2169,13 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 67,
-        "adjusted": 67
+        "base": 66,
+        "adjusted": 66
       }
     },
     {
@@ -2186,19 +2186,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 162,
-        "adjusted": 162
+        "base": 85,
+        "adjusted": 85
       }
     },
     {
@@ -2275,8 +2275,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Helmet, Common",
@@ -2301,13 +2301,13 @@
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 43,
-        "adjusted": 38
+        "base": 42,
+        "adjusted": 37
       }
     },
     {
@@ -2323,13 +2323,13 @@
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 212,
-        "adjusted": 185
+        "base": 120,
+        "adjusted": 101
       }
     },
     {
@@ -2340,8 +2340,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Helmet, Common",
@@ -2367,11 +2367,11 @@
         "Armor, Light",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 59,
+        "base": 58,
         "adjusted": 53
       }
     },
@@ -2389,12 +2389,12 @@
         "Armor, Light",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 180,
-        "adjusted": 169
+        "base": 103,
+        "adjusted": 92
       }
     },
     {
@@ -2405,8 +2405,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Helmet, Common",
@@ -2469,8 +2469,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Helmet, Common",
@@ -2533,8 +2533,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Helmet, Common",
@@ -2559,13 +2559,13 @@
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 63,
-        "adjusted": 63
+        "base": 62,
+        "adjusted": 62
       }
     },
     {
@@ -2576,18 +2576,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 158,
-        "adjusted": 158
+        "base": 81,
+        "adjusted": 81
       }
     },
     {
@@ -2661,8 +2661,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -2689,13 +2689,13 @@
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 48,
-        "adjusted": 43
+        "base": 47,
+        "adjusted": 42
       }
     },
     {
@@ -2712,13 +2712,13 @@
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 217,
-        "adjusted": 190
+        "base": 125,
+        "adjusted": 106
       }
     },
     {
@@ -2729,8 +2729,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -2758,11 +2758,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 64,
+        "base": 63,
         "adjusted": 58
       }
     },
@@ -2781,12 +2781,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 185,
-        "adjusted": 174
+        "base": 108,
+        "adjusted": 97
       }
     },
     {
@@ -2797,8 +2797,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -2864,8 +2864,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -2931,8 +2931,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
@@ -2959,13 +2959,13 @@
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 68
+        "base": 67,
+        "adjusted": 67
       }
     },
     {
@@ -2976,19 +2976,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 163,
-        "adjusted": 163
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -3065,8 +3065,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -3093,13 +3093,13 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 40
+        "base": 44,
+        "adjusted": 39
       }
     },
     {
@@ -3116,13 +3116,13 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 214,
-        "adjusted": 187
+        "base": 122,
+        "adjusted": 103
       }
     },
     {
@@ -3162,12 +3162,12 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 61,
-        "adjusted": 61
+        "base": 60,
+        "adjusted": 60
       }
     },
     {
@@ -3185,12 +3185,12 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 182,
-        "adjusted": 171
+        "base": 105,
+        "adjusted": 105
       }
     },
     {
@@ -3201,8 +3201,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -3335,8 +3335,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -3363,13 +3363,13 @@
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 65,
-        "adjusted": 65
+        "base": 64,
+        "adjusted": 64
       }
     },
     {
@@ -3380,19 +3380,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 160,
-        "adjusted": 160
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -3469,8 +3469,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -3499,13 +3499,13 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 45
+        "base": 49,
+        "adjusted": 44
       }
     },
     {
@@ -3523,13 +3523,13 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 219,
-        "adjusted": 192
+        "base": 127,
+        "adjusted": 108
       }
     },
     {
@@ -3571,12 +3571,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 66,
-        "adjusted": 66
+        "base": 65,
+        "adjusted": 65
       }
     },
     {
@@ -3595,12 +3595,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 187,
-        "adjusted": 176
+        "base": 110,
+        "adjusted": 110
       }
     },
     {
@@ -3611,8 +3611,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -3751,8 +3751,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
@@ -3781,13 +3781,13 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 70
+        "base": 69,
+        "adjusted": 69
       }
     },
     {
@@ -3798,20 +3798,20 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 165,
-        "adjusted": 165
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -3891,8 +3891,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Improvised Melee",
@@ -3915,13 +3915,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 40
+        "base": 44,
+        "adjusted": 39
       }
     },
     {
@@ -3936,13 +3936,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 214,
-        "adjusted": 187
+        "base": 122,
+        "adjusted": 103
       }
     },
     {
@@ -3953,8 +3953,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Club, Circus Mallet",
@@ -3978,11 +3978,11 @@
       "items": [
         "Armor, Medium",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 61,
+        "base": 60,
         "adjusted": 55
       }
     },
@@ -3999,12 +3999,12 @@
       "items": [
         "Armor, Medium",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 182,
-        "adjusted": 182
+        "base": 105,
+        "adjusted": 105
       }
     },
     {
@@ -4015,8 +4015,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Improvised Thrown",
@@ -4076,8 +4076,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Bow, Light",
@@ -4137,8 +4137,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Improvised Melee",
@@ -4161,13 +4161,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 65,
-        "adjusted": 65
+        "base": 64,
+        "adjusted": 64
       }
     },
     {
@@ -4178,17 +4178,17 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 160,
-        "adjusted": 160
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -4259,8 +4259,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -4285,13 +4285,13 @@
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 45
+        "base": 49,
+        "adjusted": 44
       }
     },
     {
@@ -4307,13 +4307,13 @@
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 219,
-        "adjusted": 192
+        "base": 127,
+        "adjusted": 108
       }
     },
     {
@@ -4324,8 +4324,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -4351,11 +4351,11 @@
         "Armor, Medium",
         "Armored Gear",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 66,
+        "base": 65,
         "adjusted": 60
       }
     },
@@ -4373,12 +4373,12 @@
         "Armor, Medium",
         "Armored Gear",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 187,
-        "adjusted": 187
+        "base": 110,
+        "adjusted": 110
       }
     },
     {
@@ -4389,8 +4389,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -4453,8 +4453,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -4517,8 +4517,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -4543,13 +4543,13 @@
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 70
+        "base": 69,
+        "adjusted": 69
       }
     },
     {
@@ -4560,18 +4560,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 165,
-        "adjusted": 165
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -4645,8 +4645,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -4671,13 +4671,13 @@
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 55,
-        "adjusted": 55
+        "base": 54,
+        "adjusted": 54
       }
     },
     {
@@ -4693,13 +4693,13 @@
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 224,
-        "adjusted": 224
+        "base": 132,
+        "adjusted": 132
       }
     },
     {
@@ -4737,12 +4737,12 @@
         "Armor, Medium",
         "Shield, Medium",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 71,
-        "adjusted": 71
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -4759,12 +4759,12 @@
         "Armor, Medium",
         "Shield, Medium",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 192,
-        "adjusted": 192
+        "base": 115,
+        "adjusted": 115
       }
     },
     {
@@ -4775,8 +4775,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -4903,8 +4903,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -4929,13 +4929,13 @@
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 74,
+        "adjusted": 74
       }
     },
     {
@@ -4946,18 +4946,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 170,
-        "adjusted": 170
+        "base": 93,
+        "adjusted": 93
       }
     },
     {
@@ -5031,8 +5031,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -5059,13 +5059,13 @@
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 60,
-        "adjusted": 60
+        "base": 59,
+        "adjusted": 59
       }
     },
     {
@@ -5082,13 +5082,13 @@
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 229,
-        "adjusted": 229
+        "base": 137,
+        "adjusted": 137
       }
     },
     {
@@ -5128,12 +5128,12 @@
         "Shield, Medium",
         "Armored Gear",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 76,
-        "adjusted": 76
+        "base": 75,
+        "adjusted": 75
       }
     },
     {
@@ -5151,12 +5151,12 @@
         "Shield, Medium",
         "Armored Gear",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 197,
-        "adjusted": 197
+        "base": 120,
+        "adjusted": 120
       }
     },
     {
@@ -5167,8 +5167,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -5301,8 +5301,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -5329,13 +5329,13 @@
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 80,
-        "adjusted": 80
+        "base": 79,
+        "adjusted": 79
       }
     },
     {
@@ -5346,19 +5346,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 175,
-        "adjusted": 175
+        "base": 98,
+        "adjusted": 98
       }
     },
     {
@@ -5435,8 +5435,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
@@ -5461,13 +5461,13 @@
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 48,
-        "adjusted": 43
+        "base": 47,
+        "adjusted": 42
       }
     },
     {
@@ -5483,13 +5483,13 @@
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 217,
-        "adjusted": 190
+        "base": 125,
+        "adjusted": 106
       }
     },
     {
@@ -5500,8 +5500,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
@@ -5527,11 +5527,11 @@
         "Armor, Medium",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 64,
+        "base": 63,
         "adjusted": 58
       }
     },
@@ -5549,12 +5549,12 @@
         "Armor, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 185,
-        "adjusted": 185
+        "base": 108,
+        "adjusted": 108
       }
     },
     {
@@ -5565,8 +5565,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
@@ -5629,8 +5629,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
@@ -5693,8 +5693,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
@@ -5719,13 +5719,13 @@
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 68
+        "base": 67,
+        "adjusted": 67
       }
     },
     {
@@ -5736,18 +5736,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 163,
-        "adjusted": 163
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -5821,8 +5821,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -5849,13 +5849,13 @@
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 53,
-        "adjusted": 48
+        "base": 52,
+        "adjusted": 47
       }
     },
     {
@@ -5872,13 +5872,13 @@
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 222,
-        "adjusted": 195
+        "base": 130,
+        "adjusted": 111
       }
     },
     {
@@ -5889,8 +5889,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -5918,11 +5918,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 69,
+        "base": 68,
         "adjusted": 63
       }
     },
@@ -5941,12 +5941,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 190,
-        "adjusted": 190
+        "base": 113,
+        "adjusted": 113
       }
     },
     {
@@ -5957,8 +5957,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -6024,8 +6024,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -6091,8 +6091,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
@@ -6119,13 +6119,13 @@
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 73,
-        "adjusted": 73
+        "base": 72,
+        "adjusted": 72
       }
     },
     {
@@ -6136,19 +6136,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 168,
-        "adjusted": 168
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -6225,8 +6225,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -6253,13 +6253,13 @@
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 58,
-        "adjusted": 58
+        "base": 57,
+        "adjusted": 57
       }
     },
     {
@@ -6276,13 +6276,13 @@
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 227,
-        "adjusted": 227
+        "base": 135,
+        "adjusted": 135
       }
     },
     {
@@ -6322,12 +6322,12 @@
         "Shield, Medium",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 74,
-        "adjusted": 74
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -6345,12 +6345,12 @@
         "Shield, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 195,
-        "adjusted": 195
+        "base": 118,
+        "adjusted": 118
       }
     },
     {
@@ -6361,8 +6361,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -6495,8 +6495,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -6523,13 +6523,13 @@
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 78,
-        "adjusted": 78
+        "base": 77,
+        "adjusted": 77
       }
     },
     {
@@ -6540,19 +6540,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 173,
-        "adjusted": 173
+        "base": 96,
+        "adjusted": 96
       }
     },
     {
@@ -6629,8 +6629,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -6659,13 +6659,13 @@
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 63,
-        "adjusted": 63
+        "base": 62,
+        "adjusted": 62
       }
     },
     {
@@ -6683,13 +6683,13 @@
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 232,
-        "adjusted": 232
+        "base": 140,
+        "adjusted": 140
       }
     },
     {
@@ -6731,12 +6731,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 79,
-        "adjusted": 79
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -6755,12 +6755,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 200,
-        "adjusted": 200
+        "base": 123,
+        "adjusted": 123
       }
     },
     {
@@ -6771,8 +6771,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -6911,8 +6911,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
@@ -6941,13 +6941,13 @@
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 83
+        "base": 82,
+        "adjusted": 82
       }
     },
     {
@@ -6958,20 +6958,20 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 178,
-        "adjusted": 178
+        "base": 101,
+        "adjusted": 101
       }
     },
     {
@@ -7051,8 +7051,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Improvised Melee",
@@ -7075,13 +7075,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 47
+        "base": 46,
+        "adjusted": 46
       }
     },
     {
@@ -7096,13 +7096,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 216,
-        "adjusted": 216
+        "base": 124,
+        "adjusted": 124
       }
     },
     {
@@ -7113,8 +7113,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Club, Circus Mallet",
@@ -7138,12 +7138,12 @@
       "items": [
         "Armor, Heavy",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 63,
-        "adjusted": 63
+        "base": 62,
+        "adjusted": 62
       }
     },
     {
@@ -7159,12 +7159,12 @@
       "items": [
         "Armor, Heavy",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 184,
-        "adjusted": 184
+        "base": 107,
+        "adjusted": 107
       }
     },
     {
@@ -7175,8 +7175,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Improvised Thrown",
@@ -7236,8 +7236,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Bow, Light",
@@ -7297,8 +7297,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Improvised Melee",
@@ -7321,13 +7321,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 67,
-        "adjusted": 67
+        "base": 66,
+        "adjusted": 66
       }
     },
     {
@@ -7338,17 +7338,17 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 162,
-        "adjusted": 162
+        "base": 85,
+        "adjusted": 85
       }
     },
     {
@@ -7419,8 +7419,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -7445,13 +7445,13 @@
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 52,
-        "adjusted": 52
+        "base": 51,
+        "adjusted": 51
       }
     },
     {
@@ -7467,13 +7467,13 @@
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 221,
-        "adjusted": 221
+        "base": 129,
+        "adjusted": 129
       }
     },
     {
@@ -7484,8 +7484,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -7511,12 +7511,12 @@
         "Armor, Heavy",
         "Armored Gear",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 68
+        "base": 67,
+        "adjusted": 67
       }
     },
     {
@@ -7533,12 +7533,12 @@
         "Armor, Heavy",
         "Armored Gear",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 189,
-        "adjusted": 189
+        "base": 112,
+        "adjusted": 112
       }
     },
     {
@@ -7549,8 +7549,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -7613,8 +7613,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -7677,8 +7677,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -7703,13 +7703,13 @@
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 72,
-        "adjusted": 72
+        "base": 71,
+        "adjusted": 71
       }
     },
     {
@@ -7720,18 +7720,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 167,
-        "adjusted": 167
+        "base": 90,
+        "adjusted": 90
       }
     },
     {
@@ -7805,8 +7805,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -7831,13 +7831,13 @@
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 50
+        "base": 49,
+        "adjusted": 49
       }
     },
     {
@@ -7853,13 +7853,13 @@
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 219,
-        "adjusted": 219
+        "base": 127,
+        "adjusted": 127
       }
     },
     {
@@ -7897,12 +7897,12 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 66,
-        "adjusted": 66
+        "base": 65,
+        "adjusted": 65
       }
     },
     {
@@ -7919,12 +7919,12 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 187,
-        "adjusted": 187
+        "base": 110,
+        "adjusted": 110
       }
     },
     {
@@ -7935,8 +7935,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -8063,8 +8063,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -8089,13 +8089,13 @@
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 70
+        "base": 69,
+        "adjusted": 69
       }
     },
     {
@@ -8106,18 +8106,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 165,
-        "adjusted": 165
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -8191,8 +8191,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -8219,13 +8219,13 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 55,
-        "adjusted": 55
+        "base": 54,
+        "adjusted": 54
       }
     },
     {
@@ -8242,13 +8242,13 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 224,
-        "adjusted": 224
+        "base": 132,
+        "adjusted": 132
       }
     },
     {
@@ -8288,12 +8288,12 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 71,
-        "adjusted": 71
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -8311,12 +8311,12 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 192,
-        "adjusted": 192
+        "base": 115,
+        "adjusted": 115
       }
     },
     {
@@ -8327,8 +8327,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -8461,8 +8461,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -8489,13 +8489,13 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 74,
+        "adjusted": 74
       }
     },
     {
@@ -8506,19 +8506,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 170,
-        "adjusted": 170
+        "base": 93,
+        "adjusted": 93
       }
     },
     {
@@ -8595,8 +8595,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
@@ -8621,13 +8621,13 @@
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 50
+        "base": 49,
+        "adjusted": 49
       }
     },
     {
@@ -8643,13 +8643,13 @@
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 219,
-        "adjusted": 219
+        "base": 127,
+        "adjusted": 127
       }
     },
     {
@@ -8660,8 +8660,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
@@ -8687,12 +8687,12 @@
         "Armor, Heavy",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 66,
-        "adjusted": 66
+        "base": 65,
+        "adjusted": 65
       }
     },
     {
@@ -8709,12 +8709,12 @@
         "Armor, Heavy",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 187,
-        "adjusted": 187
+        "base": 110,
+        "adjusted": 110
       }
     },
     {
@@ -8725,8 +8725,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
@@ -8789,8 +8789,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
@@ -8853,8 +8853,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
@@ -8879,13 +8879,13 @@
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 70
+        "base": 69,
+        "adjusted": 69
       }
     },
     {
@@ -8896,18 +8896,18 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 165,
-        "adjusted": 165
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -8981,8 +8981,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -9009,13 +9009,13 @@
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 55,
-        "adjusted": 55
+        "base": 54,
+        "adjusted": 54
       }
     },
     {
@@ -9032,13 +9032,13 @@
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 224,
-        "adjusted": 224
+        "base": 132,
+        "adjusted": 132
       }
     },
     {
@@ -9049,8 +9049,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -9078,12 +9078,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 71,
-        "adjusted": 71
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -9101,12 +9101,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 192,
-        "adjusted": 192
+        "base": 115,
+        "adjusted": 115
       }
     },
     {
@@ -9117,8 +9117,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -9184,8 +9184,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -9251,8 +9251,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
@@ -9279,13 +9279,13 @@
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 74,
+        "adjusted": 74
       }
     },
     {
@@ -9296,19 +9296,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 170,
-        "adjusted": 170
+        "base": 93,
+        "adjusted": 93
       }
     },
     {
@@ -9385,8 +9385,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -9413,13 +9413,13 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 53,
-        "adjusted": 53
+        "base": 52,
+        "adjusted": 52
       }
     },
     {
@@ -9436,13 +9436,13 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 222,
-        "adjusted": 222
+        "base": 130,
+        "adjusted": 130
       }
     },
     {
@@ -9482,12 +9482,12 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 69,
-        "adjusted": 69
+        "base": 68,
+        "adjusted": 68
       }
     },
     {
@@ -9505,12 +9505,12 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 190,
-        "adjusted": 190
+        "base": 113,
+        "adjusted": 113
       }
     },
     {
@@ -9521,8 +9521,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -9655,8 +9655,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -9683,13 +9683,13 @@
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 73,
-        "adjusted": 73
+        "base": 72,
+        "adjusted": 72
       }
     },
     {
@@ -9700,19 +9700,19 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 168,
-        "adjusted": 168
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -9789,8 +9789,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -9819,13 +9819,13 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
         "Hammer, Forge",
+        "Club, Mace, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 58,
-        "adjusted": 58
+        "base": 57,
+        "adjusted": 57
       }
     },
     {
@@ -9843,13 +9843,13 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
-        "Whip, Mollysword",
+        "Hammer, War, Ban-2",
+        "Hammer, War, Ban-1",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 227,
-        "adjusted": 227
+        "base": 135,
+        "adjusted": 135
       }
     },
     {
@@ -9891,12 +9891,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe, Long",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 74,
-        "adjusted": 74
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -9915,12 +9915,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 195,
-        "adjusted": 195
+        "base": 118,
+        "adjusted": 118
       }
     },
     {
@@ -9931,8 +9931,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -10071,8 +10071,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
@@ -10101,13 +10101,13 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Hook, Sickle, Fist",
+        "Hammer, Forge",
         "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 78,
-        "adjusted": 78
+        "base": 77,
+        "adjusted": 77
       }
     },
     {
@@ -10118,20 +10118,20 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 173,
-        "adjusted": 173
+        "base": 96,
+        "adjusted": 96
       }
     },
     {

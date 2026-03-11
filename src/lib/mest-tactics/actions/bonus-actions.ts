@@ -4,6 +4,7 @@ import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules
 import { LOSOperations } from '../battlefield/los/LOSOperations';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { TerrainType } from '../battlefield/terrain/Terrain';
+import { TERRAIN_HEIGHTS } from '../battlefield/terrain/TerrainElement';
 import { attemptHide, evaluateHide, HideCheckResult } from '../status/concealment';
 import { getCharacterTraitLevel } from '../status/status-system';
 
@@ -331,9 +332,14 @@ function applyPushBack(context: BonusActionContext, cost: number, selection: Bon
   };
   const targetDestination = toGridPosition(targetDestinationRaw);
   const insideBoard = isInsideBoard(context.battlefield, targetDestination);
-  const targetTerrain = insideBoard ? context.battlefield.getTerrainAt(targetDestination).type : TerrainType.Impassable;
+  const destinationTerrainFeature = insideBoard ? context.battlefield.getTerrainAt(targetDestination) : null;
+  const targetTerrain = destinationTerrainFeature?.type ?? TerrainType.Impassable;
   const blockedTerrain = targetTerrain === TerrainType.Impassable || targetTerrain === TerrainType.Obstacle;
   const degradedTerrain = targetTerrain === TerrainType.Rough || targetTerrain === TerrainType.Difficult;
+  const sourceTerrainFeature = context.battlefield.getTerrainAt(targetPos);
+  const sourceTerrainHeight = getTerrainHeight(sourceTerrainFeature);
+  const destinationTerrainHeight = destinationTerrainFeature ? getTerrainHeight(destinationTerrainFeature) : 0;
+  const pushedOffPrecipice = insideBoard && !blockedTerrain && sourceTerrainHeight - destinationTerrainHeight >= 1;
   const destinationOccupant = insideBoard ? context.battlefield.getCharacterAt(targetDestination) : null;
   if (destinationOccupant && destinationOccupant.id !== context.target.id) {
     return { executed: false, reason: 'Push-back blocked by another model.', spentCascades: 0 };
@@ -354,11 +360,17 @@ function applyPushBack(context: BonusActionContext, cost: number, selection: Bon
     if (!movedTarget) {
       return { executed: false, reason: 'Push-back failed.', spentCascades: 0 };
     }
-    if (degradedTerrain) {
+    if (degradedTerrain || pushedOffPrecipice) {
       context.target.state.delayTokens += 1;
       context.target.refreshStatusFlags();
       delayTokenApplied = true;
-      reason = 'Push-back into degraded terrain; target gained Delay token.';
+      if (degradedTerrain && pushedOffPrecipice) {
+        reason = 'Push-back into degraded terrain/off precipice; target gained Delay token.';
+      } else if (pushedOffPrecipice) {
+        reason = 'Push-back off precipice; target gained Delay token.';
+      } else {
+        reason = 'Push-back into degraded terrain; target gained Delay token.';
+      }
     }
   }
 
@@ -463,6 +475,36 @@ function normalize(vec: { x: number; y: number }): { x: number; y: number } | nu
   const length = Math.hypot(vec.x, vec.y);
   if (length <= 1e-6) return null;
   return { x: vec.x / length, y: vec.y / length };
+}
+
+function resolveTerrainHeightKey(feature: any): string | null {
+  const raw = [
+    String(feature?.meta?.name ?? ''),
+    String(feature?.meta?.category ?? ''),
+    String(feature?.id ?? ''),
+    String(feature?.type ?? ''),
+  ]
+    .join(' ')
+    .toLowerCase();
+
+  if (!raw || raw.includes('clear')) return null;
+  if (raw.includes('building')) return raw.includes('large') ? 'building-large' : 'building';
+  if (raw.includes('wall')) return raw.includes('large') ? 'wall-large' : 'wall';
+  if (raw.includes('rock')) return 'rocky';
+  if (raw.includes('shrub') || raw.includes('bush')) return 'shrub';
+  if (raw.includes('tree')) return 'tree';
+  if (raw.includes('cliff')) return 'wall';
+  return null;
+}
+
+function getTerrainHeight(feature: any): number {
+  const explicitHeight = Number(feature?.meta?.height ?? feature?.elevation);
+  if (Number.isFinite(explicitHeight) && explicitHeight > 0) {
+    return explicitHeight;
+  }
+  const key = resolveTerrainHeightKey(feature);
+  if (!key) return 0;
+  return TERRAIN_HEIGHTS[key]?.height ?? 0;
 }
 
 function isEngaged(context: BonusActionContext): boolean {

@@ -377,6 +377,45 @@ describe('Bonus Actions - Push-back (◆➔)', () => {
     expect(outcome.executed).toBe(true);
     expect(outcome.delayTokenApplied).toBe(true);
   });
+
+  it('should apply Delay token when pushed off a precipice', () => {
+    const battlefield = new Battlefield(12, 12);
+    const attacker = new Character(makeProfile('attacker', { cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 2, mov: 2, siz: 3 }));
+    const target = new Character(makeProfile('target', { cca: 2, rca: 2, ref: 2, int: 2, pow: 2, str: 2, for: 2, mov: 2, siz: 3 }));
+    battlefield.addTerrain({
+      id: 'high-ledge',
+      type: TerrainType.Clear,
+      vertices: [
+        { x: 5.5, y: 4.5 },
+        { x: 6.5, y: 4.5 },
+        { x: 6.5, y: 5.5 },
+        { x: 5.5, y: 5.5 },
+      ],
+      meta: { name: 'Wall', height: 1.5 },
+    });
+    battlefield.addTerrain({
+      id: 'low-ground',
+      type: TerrainType.Clear,
+      vertices: [
+        { x: 6.5, y: 4.5 },
+        { x: 7.5, y: 4.5 },
+        { x: 7.5, y: 5.5 },
+        { x: 6.5, y: 5.5 },
+      ],
+      meta: { name: 'Clear Ground', height: 0 },
+    });
+    battlefield.placeCharacter(attacker, { x: 5, y: 5 });
+    battlefield.placeCharacter(target, { x: 6, y: 5 });
+
+    const outcome = applyBonusAction(
+      createTestContext(battlefield, attacker, target, 2, true, true),
+      { type: 'PushBack' }
+    );
+
+    expect(outcome.executed).toBe(true);
+    expect(outcome.delayTokenApplied).toBe(true);
+    expect(outcome.reason ?? '').toContain('precipice');
+  });
 });
 
 // ============================================================================
@@ -509,4 +548,3 @@ describe('Bonus Actions - Trait Interactions', () => {
     });
   });
 });
-

@@ -47,6 +47,7 @@ const NATURAL_MELEE_PATTERN = /^(bite|claw|claws|pummel|unarmed)\b/i;
 const STOWED_OPTION_PATTERN = /(dagger|daggers|stiletto|throwing|knife)/i;
 const GEAR_NAME_PATTERN = /(gear|harness|reinforced|bracer|padding|vaumbrace|collar)/i;
 const UNARMED_ITEM_PATTERN = /^unarmed\b/i;
+const IMPROVISED_ITEM_PATTERN = /^improvised\b/i;
 
 const SUIT_WEIGHT_PATTERNS: Record<ArmorWeight, RegExp[]> = {
   light: [/armor,\s*light/i, /light mail/i, /\blight\b/i],
@@ -208,6 +209,10 @@ function requiredPhysicalityForNames(names: string[], byName: Map<string, Indexe
 
 function hasSupportWeapon(names: string[], byName: Map<string, IndexedItem>): boolean {
   return names.some(name => byName.get(name)?.itemClass === 'Support');
+}
+
+function hasImprovisedWeapon(names: string[]): boolean {
+  return names.some(name => IMPROVISED_ITEM_PATTERN.test(name.trim()));
 }
 
 function buildArmorLoadouts(
@@ -429,10 +434,18 @@ function buildCombinations(
   const combinations: LoadoutCombinationEntry[] = [];
   for (const armor of armorLoadouts) {
     for (const weapon of weaponLoadouts) {
-      const compatible = !(armor.hasShield && weapon.handConfiguration === '2h');
-      const compatibilityReason: LoadoutCombinationEntry['compatibilityReason'] = compatible
-        ? 'ok'
-        : 'shield_requires_1h_weapon';
+      const armorItems = armor.items.map(name => byName.get(name)).filter(Boolean) as IndexedItem[];
+      const hasArmorSuit = armorItems.some(item => item.itemClass === 'Armor' && item.itemType === 'Suit');
+      const hasShield = armor.hasShield || armorItems.some(item => item.itemClass === 'Armor' && item.itemType === 'Shield');
+      const hasImprovised = hasImprovisedWeapon(weapon.items);
+      const shieldHandConflict = armor.hasShield && weapon.handConfiguration === '2h';
+      const improvisedArmorConflict = hasImprovised && (hasArmorSuit || hasShield);
+      const compatible = !shieldHandConflict && !improvisedArmorConflict;
+      const compatibilityReason: LoadoutCombinationEntry['compatibilityReason'] = shieldHandConflict
+        ? 'shield_requires_1h_weapon'
+        : improvisedArmorConflict
+          ? 'improvised_requires_no_suit_or_shield'
+          : 'ok';
       const items = dedupeNames([...armor.items, ...weapon.items]);
       if (hasSupportWeapon(items, byName)) {
         throw new Error(`Support weapons must not appear in individual loadout combinations: ${armor.id}__${weapon.id}`);

@@ -700,13 +700,6 @@
     }
   },
   {
-    "item": "Axe-Sword of Tan-doc",
-    "tech_window": {
-      "early": 15,
-      "latest": 15
-    }
-  },
-  {
     "item": "Ballista, Heavy",
     "tech_window": {
       "early": 5,
@@ -5112,8 +5105,8 @@
   {
     "item": "Whip, Mollysword",
     "tech_window": {
-      "early": 5,
-      "latest": 15
+      "early": 16,
+      "latest": 20
     }
   },
   {

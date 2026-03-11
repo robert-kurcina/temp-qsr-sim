@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 import type { Character } from '../../../src/lib/mest-tactics/core/Character';
 import type { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
 import type { Item } from '../../../src/lib/mest-tactics/core/Item';
+import { TerrainType } from '../../../src/lib/mest-tactics/battlefield/terrain/Terrain';
 import { TacticalDoctrine } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import {
+  findPushBackSelectionForRunner,
   shouldUseDefendDeclaredForDoctrine,
   shouldUseTakeCoverDeclaredForDoctrine,
   getPassiveResponsePriorityList,
@@ -45,6 +47,42 @@ function makeCharacter(params: {
       fearTokens: params.fear ?? 0,
     },
   } as unknown as Character;
+}
+
+function createPushBackBattlefield(params: {
+  width?: number;
+  height?: number;
+  positions: Record<string, { x: number; y: number }>;
+  terrainByPosition?: Record<string, TerrainType>;
+  characters: Character[];
+}): Battlefield {
+  const {
+    width = 12,
+    height = 12,
+    positions,
+    terrainByPosition = {},
+    characters,
+  } = params;
+  const byId = new Map(characters.map(character => [character.id, character]));
+
+  return {
+    width,
+    height,
+    getCharacterPosition: (character: Character) => positions[character.id],
+    getCharacterAt: (position: { x: number; y: number }) => {
+      for (const [id, candidatePosition] of Object.entries(positions)) {
+        if (candidatePosition.x === position.x && candidatePosition.y === position.y) {
+          return byId.get(id) ?? null;
+        }
+      }
+      return null;
+    },
+    getTerrainAt: (position: { x: number; y: number }) => {
+      const key = `${position.x},${position.y}`;
+      const type = terrainByPosition[key] ?? TerrainType.Clear;
+      return { id: key, type, vertices: [] };
+    },
+  } as unknown as Battlefield;
 }
 
 describe('AIDecisionSupport runner helper exports', () => {
@@ -132,5 +170,80 @@ describe('AIDecisionSupport runner helper exports', () => {
     );
 
     expect(nearScore).toBeGreaterThan(farScore);
+  });
+
+  it('prefers difficult-terrain pushbacks over rough/clear destinations', () => {
+    const attacker = makeCharacter({ id: 'attacker' });
+    const target = makeCharacter({ id: 'target' });
+    const battlefield = createPushBackBattlefield({
+      positions: {
+        attacker: { x: 4, y: 4 },
+        target: { x: 5, y: 4 },
+      },
+      terrainByPosition: {
+        '5,5': TerrainType.Rough,
+        '5,3': TerrainType.Difficult,
+      },
+      characters: [attacker, target],
+    });
+
+    const selection = findPushBackSelectionForRunner({
+      attacker,
+      target,
+      battlefield,
+      allies: [],
+      opponents: [target],
+      countEngagersAtPosition: () => 0,
+    });
+
+    expect(selection?.type).toBe('PushBack');
+    expect(selection?.targetPosition).toEqual({ x: 5, y: 3 });
+  });
+
+  it('prefers pushing off the battlefield when available', () => {
+    const attacker = makeCharacter({ id: 'attacker' });
+    const target = makeCharacter({ id: 'target' });
+    const battlefield = createPushBackBattlefield({
+      positions: {
+        attacker: { x: 1, y: 5 },
+        target: { x: 0, y: 5 },
+      },
+      characters: [attacker, target],
+    });
+
+    const selection = findPushBackSelectionForRunner({
+      attacker,
+      target,
+      battlefield,
+      allies: [],
+      opponents: [target],
+      countEngagersAtPosition: () => 0,
+    });
+
+    expect(selection?.type).toBe('PushBack');
+    expect((selection?.targetPosition?.x ?? 0) < 0).toBe(true);
+  });
+
+  it('returns no pushback selection when no tactical upside exists', () => {
+    const attacker = makeCharacter({ id: 'attacker' });
+    const target = makeCharacter({ id: 'target' });
+    const battlefield = createPushBackBattlefield({
+      positions: {
+        attacker: { x: 5, y: 5 },
+        target: { x: 6, y: 5 },
+      },
+      characters: [attacker, target],
+    });
+
+    const selection = findPushBackSelectionForRunner({
+      attacker,
+      target,
+      battlefield,
+      allies: [],
+      opponents: [target],
+      countEngagersAtPosition: () => 0,
+    });
+
+    expect(selection).toBeUndefined();
   });
 });

@@ -4,7 +4,6 @@
 	"Axe, Long": {"class": "Melee","bp":27,"or": "-","accuracy": "-","impact": 2,"dmg": "STR+1w","traits":[ "Cleave 2", "Throwable", "Reach", "[Hafted]", "[2H]" ]},
 	"Axe, Pick": {"class": "Melee","bp":16,"or": "-","accuracy": "-","impact": 3,"dmg": "2+1w","traits":[ "Cleave", "Reach", "[Hafted]", "[Awkward]", "[2H]" ]},
 	"Axe, Tactical": {"class": "Melee","bp":16,"or": "STR+2","accuracy": "-","impact": 1,"dmg": "STR+1m","traits":[ "Cleave", "Discrete", "[Stub]", "Throwable", "[1H]" ]},
-	"Axe-Sword of Tan-doc": {"class": "Melee","bp":130,"or": "-","accuracy": "-","impact": 5,"dmg": "2+1w","traits":[ "Cleave", "STR", "Heal", "Regenerate", "Parry", "Deflect", "Bulletproof", "Battery X:Type > List" ]},
 	"Bayonet": {"class": "Melee","bp":17,"or": "-","accuracy": "-","impact": 2,"dmg": "2+1m","traits":[ "[Awkward]", "Reach", "Impale", "Silent 2" ]},
 	"Bite-1": {"class": "Natural","bp":8,"or": "-","accuracy": "-1m","impact": 1,"dmg": "2+1m","traits":[ "[Stub]", "Cleave" ]},
 	"Bite-2": {"class": "Natural","bp":11,"or": "-","accuracy": "-2m","impact": 2,"dmg": "2+2m","traits":[ "[Stub]", "Cleave" ]},

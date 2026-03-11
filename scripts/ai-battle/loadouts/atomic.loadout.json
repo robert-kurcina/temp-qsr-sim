@@ -1,7 +1,7 @@
 {
   "techAge": "Atomic",
   "techLevel": 12,
-  "generatedAt": "2026-03-11T18:16:27.688Z",
+  "generatedAt": "2026-03-11T19:44:00.152Z",
   "armorLoadouts": [
     {
       "id": "light-no_gear_no_shield-no_helmet",
@@ -449,13 +449,13 @@
       "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 35,
-        "adjusted": 29
+        "base": 34,
+        "adjusted": 28
       }
     },
     {
@@ -467,12 +467,12 @@
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 166,
-        "adjusted": 157
+        "base": 89,
+        "adjusted": 80
       }
     },
     {
@@ -500,12 +500,12 @@
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 44
+        "base": 49,
+        "adjusted": 43
       }
     },
     {
@@ -649,13 +649,13 @@
       "requiredPhysicality": 2,
       "optionalStowedItem": "Throwing Stars",
       "items": [
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 45
+        "base": 44,
+        "adjusted": 44
       }
     },
     {
@@ -733,8 +733,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Improvised Melee",
@@ -757,13 +757,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 53,
-        "adjusted": 47
+        "base": 52,
+        "adjusted": 46
       }
     },
     {
@@ -779,12 +779,12 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 184,
-        "adjusted": 184
+        "base": 107,
+        "adjusted": 107
       }
     },
     {
@@ -795,8 +795,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Club, Circus Mallet",
@@ -820,12 +820,12 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 62
+        "base": 67,
+        "adjusted": 61
       }
     },
     {
@@ -857,8 +857,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Improvised Thrown",
@@ -919,8 +919,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Rifle, Light, Archaic",
@@ -981,8 +981,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Improvised Melee",
@@ -1005,13 +1005,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 63,
-        "adjusted": 63
+        "base": 62,
+        "adjusted": 62
       }
     },
     {
@@ -1022,8 +1022,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Chainsaw, Heavy",
@@ -1103,8 +1103,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -1129,13 +1129,13 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 62
+        "base": 67,
+        "adjusted": 61
       }
     },
     {
@@ -1152,12 +1152,12 @@
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 199,
-        "adjusted": 199
+        "base": 122,
+        "adjusted": 122
       }
     },
     {
@@ -1168,8 +1168,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -1195,12 +1195,12 @@
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 77
+        "base": 82,
+        "adjusted": 76
       }
     },
     {
@@ -1233,8 +1233,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -1298,8 +1298,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -1363,8 +1363,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -1389,13 +1389,13 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 78,
-        "adjusted": 78
+        "base": 77,
+        "adjusted": 77
       }
     },
     {
@@ -1406,8 +1406,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -1491,8 +1491,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -1517,13 +1517,13 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 72,
-        "adjusted": 66
+        "base": 71,
+        "adjusted": 65
       }
     },
     {
@@ -1540,12 +1540,12 @@
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 203,
-        "adjusted": 203
+        "base": 126,
+        "adjusted": 126
       }
     },
     {
@@ -1583,12 +1583,12 @@
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 87,
-        "adjusted": 87
+        "base": 86,
+        "adjusted": 80
       }
     },
     {
@@ -1621,8 +1621,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -1751,8 +1751,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -1777,13 +1777,13 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 82,
-        "adjusted": 82
+        "base": 81,
+        "adjusted": 81
       }
     },
     {
@@ -1794,8 +1794,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -1879,8 +1879,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -1907,13 +1907,13 @@
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
         "Armored Gear, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 87,
-        "adjusted": 81
+        "base": 86,
+        "adjusted": 80
       }
     },
     {
@@ -1931,12 +1931,12 @@
         "Shield, Small, Bulletproof",
         "Armored Gear, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 218,
-        "adjusted": 218
+        "base": 141,
+        "adjusted": 141
       }
     },
     {
@@ -1976,12 +1976,12 @@
         "Shield, Small, Bulletproof",
         "Armored Gear, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 102,
-        "adjusted": 102
+        "base": 101,
+        "adjusted": 95
       }
     },
     {
@@ -2015,8 +2015,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -2151,8 +2151,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -2179,13 +2179,13 @@
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
         "Armored Gear, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 97,
-        "adjusted": 97
+        "base": 96,
+        "adjusted": 96
       }
     },
     {
@@ -2196,8 +2196,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -2285,8 +2285,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -2311,13 +2311,13 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 66,
-        "adjusted": 60
+        "base": 65,
+        "adjusted": 59
       }
     },
     {
@@ -2334,12 +2334,12 @@
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 197,
-        "adjusted": 197
+        "base": 120,
+        "adjusted": 120
       }
     },
     {
@@ -2350,8 +2350,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -2377,12 +2377,12 @@
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 81,
-        "adjusted": 75
+        "base": 80,
+        "adjusted": 74
       }
     },
     {
@@ -2415,8 +2415,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -2480,8 +2480,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -2545,8 +2545,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -2571,13 +2571,13 @@
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 76,
-        "adjusted": 76
+        "base": 75,
+        "adjusted": 75
       }
     },
     {
@@ -2588,8 +2588,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -2673,8 +2673,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -2701,13 +2701,13 @@
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 81,
-        "adjusted": 75
+        "base": 80,
+        "adjusted": 74
       }
     },
     {
@@ -2725,12 +2725,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 212,
-        "adjusted": 212
+        "base": 135,
+        "adjusted": 135
       }
     },
     {
@@ -2741,8 +2741,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -2770,12 +2770,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 96,
-        "adjusted": 90
+        "base": 95,
+        "adjusted": 89
       }
     },
     {
@@ -2809,8 +2809,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -2877,8 +2877,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -2945,8 +2945,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -2973,13 +2973,13 @@
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 91,
-        "adjusted": 91
+        "base": 90,
+        "adjusted": 90
       }
     },
     {
@@ -2990,8 +2990,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -3079,8 +3079,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3107,13 +3107,13 @@
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 85,
-        "adjusted": 79
+        "base": 84,
+        "adjusted": 78
       }
     },
     {
@@ -3131,12 +3131,12 @@
         "Shield, Small, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 216,
-        "adjusted": 216
+        "base": 139,
+        "adjusted": 139
       }
     },
     {
@@ -3176,12 +3176,12 @@
         "Shield, Small, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 100,
-        "adjusted": 100
+        "base": 99,
+        "adjusted": 93
       }
     },
     {
@@ -3215,8 +3215,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3351,8 +3351,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3379,13 +3379,13 @@
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 95,
-        "adjusted": 95
+        "base": 94,
+        "adjusted": 94
       }
     },
     {
@@ -3396,8 +3396,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3485,8 +3485,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3515,13 +3515,13 @@
         "Shield, Small, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 100,
-        "adjusted": 94
+        "base": 99,
+        "adjusted": 93
       }
     },
     {
@@ -3540,12 +3540,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 231,
-        "adjusted": 231
+        "base": 154,
+        "adjusted": 154
       }
     },
     {
@@ -3587,12 +3587,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 115,
-        "adjusted": 115
+        "base": 114,
+        "adjusted": 108
       }
     },
     {
@@ -3627,8 +3627,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3769,8 +3769,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 2,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3799,13 +3799,13 @@
         "Shield, Small, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 110,
-        "adjusted": 110
+        "base": 109,
+        "adjusted": 109
       }
     },
     {
@@ -3816,8 +3816,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light, Bulletproof",
         "Shield, Small, Bulletproof",
@@ -3909,8 +3909,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Improvised Melee",
@@ -3933,13 +3933,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 58,
-        "adjusted": 52
+        "base": 57,
+        "adjusted": 51
       }
     },
     {
@@ -3955,12 +3955,12 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 189,
-        "adjusted": 189
+        "base": 112,
+        "adjusted": 112
       }
     },
     {
@@ -3971,8 +3971,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Club, Circus Mallet",
@@ -3996,12 +3996,12 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 73,
-        "adjusted": 67
+        "base": 72,
+        "adjusted": 66
       }
     },
     {
@@ -4033,8 +4033,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Improvised Thrown",
@@ -4095,8 +4095,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Rifle, Light, Archaic",
@@ -4157,8 +4157,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Improvised Melee",
@@ -4181,13 +4181,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 68
+        "base": 67,
+        "adjusted": 67
       }
     },
     {
@@ -4198,8 +4198,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Chainsaw, Heavy",
@@ -4279,8 +4279,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -4305,13 +4305,13 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 73,
-        "adjusted": 67
+        "base": 72,
+        "adjusted": 66
       }
     },
     {
@@ -4328,12 +4328,12 @@
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 204,
-        "adjusted": 204
+        "base": 127,
+        "adjusted": 127
       }
     },
     {
@@ -4344,8 +4344,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -4371,12 +4371,12 @@
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 88,
-        "adjusted": 82
+        "base": 87,
+        "adjusted": 81
       }
     },
     {
@@ -4409,8 +4409,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -4474,8 +4474,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -4539,8 +4539,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -4565,13 +4565,13 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 83
+        "base": 82,
+        "adjusted": 82
       }
     },
     {
@@ -4582,8 +4582,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -4667,8 +4667,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -4693,13 +4693,13 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 79,
-        "adjusted": 79
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -4716,12 +4716,12 @@
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 210,
-        "adjusted": 210
+        "base": 133,
+        "adjusted": 133
       }
     },
     {
@@ -4759,12 +4759,12 @@
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 94,
-        "adjusted": 94
+        "base": 93,
+        "adjusted": 93
       }
     },
     {
@@ -4797,8 +4797,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -4927,8 +4927,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -4953,13 +4953,13 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 89,
-        "adjusted": 89
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -4970,8 +4970,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -5055,8 +5055,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -5083,13 +5083,13 @@
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 94,
-        "adjusted": 94
+        "base": 93,
+        "adjusted": 93
       }
     },
     {
@@ -5107,12 +5107,12 @@
         "Shield, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 225,
-        "adjusted": 225
+        "base": 148,
+        "adjusted": 148
       }
     },
     {
@@ -5152,12 +5152,12 @@
         "Shield, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 109,
-        "adjusted": 109
+        "base": 108,
+        "adjusted": 108
       }
     },
     {
@@ -5191,8 +5191,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -5327,8 +5327,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -5355,13 +5355,13 @@
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 104,
-        "adjusted": 104
+        "base": 103,
+        "adjusted": 103
       }
     },
     {
@@ -5372,8 +5372,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -5461,8 +5461,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -5487,13 +5487,13 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 71,
-        "adjusted": 65
+        "base": 70,
+        "adjusted": 64
       }
     },
     {
@@ -5510,12 +5510,12 @@
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 202,
-        "adjusted": 202
+        "base": 125,
+        "adjusted": 125
       }
     },
     {
@@ -5526,8 +5526,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -5553,12 +5553,12 @@
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 86,
-        "adjusted": 80
+        "base": 85,
+        "adjusted": 79
       }
     },
     {
@@ -5591,8 +5591,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -5656,8 +5656,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -5721,8 +5721,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -5747,13 +5747,13 @@
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 81,
-        "adjusted": 81
+        "base": 80,
+        "adjusted": 80
       }
     },
     {
@@ -5764,8 +5764,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -5849,8 +5849,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -5877,13 +5877,13 @@
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 86,
-        "adjusted": 80
+        "base": 85,
+        "adjusted": 79
       }
     },
     {
@@ -5901,12 +5901,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 217,
-        "adjusted": 217
+        "base": 140,
+        "adjusted": 140
       }
     },
     {
@@ -5917,8 +5917,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -5946,12 +5946,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 101,
-        "adjusted": 95
+        "base": 100,
+        "adjusted": 94
       }
     },
     {
@@ -5985,8 +5985,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -6053,8 +6053,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -6121,8 +6121,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -6149,13 +6149,13 @@
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 96,
-        "adjusted": 96
+        "base": 95,
+        "adjusted": 95
       }
     },
     {
@@ -6166,8 +6166,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -6255,8 +6255,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -6283,13 +6283,13 @@
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 92,
-        "adjusted": 92
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -6307,12 +6307,12 @@
         "Shield, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 223,
-        "adjusted": 223
+        "base": 146,
+        "adjusted": 146
       }
     },
     {
@@ -6352,12 +6352,12 @@
         "Shield, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 107,
-        "adjusted": 107
+        "base": 106,
+        "adjusted": 106
       }
     },
     {
@@ -6391,8 +6391,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -6527,8 +6527,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -6555,13 +6555,13 @@
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 102,
-        "adjusted": 102
+        "base": 101,
+        "adjusted": 101
       }
     },
     {
@@ -6572,8 +6572,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -6661,8 +6661,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -6691,13 +6691,13 @@
         "Shield, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 107,
-        "adjusted": 107
+        "base": 106,
+        "adjusted": 106
       }
     },
     {
@@ -6716,12 +6716,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 238,
-        "adjusted": 238
+        "base": 161,
+        "adjusted": 161
       }
     },
     {
@@ -6763,12 +6763,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 122,
-        "adjusted": 122
+        "base": 121,
+        "adjusted": 121
       }
     },
     {
@@ -6803,8 +6803,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -6945,8 +6945,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -6975,13 +6975,13 @@
         "Shield, Medium, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 117,
-        "adjusted": 117
+        "base": 116,
+        "adjusted": 116
       }
     },
     {
@@ -6992,8 +6992,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium, Bulletproof",
         "Shield, Medium, Bulletproof",
@@ -7085,8 +7085,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Improvised Melee",
@@ -7109,13 +7109,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 59,
-        "adjusted": 59
+        "base": 58,
+        "adjusted": 58
       }
     },
     {
@@ -7131,12 +7131,12 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 190,
-        "adjusted": 190
+        "base": 113,
+        "adjusted": 113
       }
     },
     {
@@ -7147,8 +7147,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Club, Circus Mallet",
@@ -7172,12 +7172,12 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 74,
-        "adjusted": 74
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -7209,8 +7209,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Improvised Thrown",
@@ -7271,8 +7271,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Rifle, Light, Archaic",
@@ -7333,8 +7333,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Improvised Melee",
@@ -7357,13 +7357,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 69,
-        "adjusted": 69
+        "base": 68,
+        "adjusted": 68
       }
     },
     {
@@ -7374,8 +7374,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Chainsaw, Heavy",
@@ -7455,8 +7455,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -7481,13 +7481,13 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 74,
-        "adjusted": 74
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -7504,12 +7504,12 @@
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 205,
-        "adjusted": 205
+        "base": 128,
+        "adjusted": 128
       }
     },
     {
@@ -7520,8 +7520,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -7547,12 +7547,12 @@
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 89,
-        "adjusted": 89
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -7585,8 +7585,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -7650,8 +7650,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -7715,8 +7715,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -7741,13 +7741,13 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 84,
-        "adjusted": 84
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -7758,8 +7758,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -7843,8 +7843,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -7869,13 +7869,13 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 83
+        "base": 82,
+        "adjusted": 82
       }
     },
     {
@@ -7892,12 +7892,12 @@
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 214,
-        "adjusted": 214
+        "base": 137,
+        "adjusted": 137
       }
     },
     {
@@ -7935,12 +7935,12 @@
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 98,
-        "adjusted": 98
+        "base": 97,
+        "adjusted": 97
       }
     },
     {
@@ -7973,8 +7973,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -8103,8 +8103,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -8129,13 +8129,13 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 93,
-        "adjusted": 93
+        "base": 92,
+        "adjusted": 92
       }
     },
     {
@@ -8146,8 +8146,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -8231,8 +8231,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -8259,13 +8259,13 @@
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
         "Armored Gear, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 98,
-        "adjusted": 98
+        "base": 97,
+        "adjusted": 97
       }
     },
     {
@@ -8283,12 +8283,12 @@
         "Shield, Large, Bulletproof",
         "Armored Gear, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 229,
-        "adjusted": 229
+        "base": 152,
+        "adjusted": 152
       }
     },
     {
@@ -8328,12 +8328,12 @@
         "Shield, Large, Bulletproof",
         "Armored Gear, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 113,
-        "adjusted": 113
+        "base": 112,
+        "adjusted": 112
       }
     },
     {
@@ -8367,8 +8367,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -8503,8 +8503,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -8531,13 +8531,13 @@
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
         "Armored Gear, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 108,
-        "adjusted": 108
+        "base": 107,
+        "adjusted": 107
       }
     },
     {
@@ -8548,8 +8548,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -8637,8 +8637,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -8663,13 +8663,13 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 72,
-        "adjusted": 72
+        "base": 71,
+        "adjusted": 71
       }
     },
     {
@@ -8686,12 +8686,12 @@
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 203,
-        "adjusted": 203
+        "base": 126,
+        "adjusted": 126
       }
     },
     {
@@ -8702,8 +8702,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -8729,12 +8729,12 @@
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 87,
-        "adjusted": 87
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -8767,8 +8767,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -8832,8 +8832,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -8897,8 +8897,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -8923,13 +8923,13 @@
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 82,
-        "adjusted": 82
+        "base": 81,
+        "adjusted": 81
       }
     },
     {
@@ -8940,8 +8940,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Helmet, Common, Bulletproof",
@@ -9025,8 +9025,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -9053,13 +9053,13 @@
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 87,
-        "adjusted": 87
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -9077,12 +9077,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 218,
-        "adjusted": 218
+        "base": 141,
+        "adjusted": 141
       }
     },
     {
@@ -9093,8 +9093,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -9122,12 +9122,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 102,
-        "adjusted": 102
+        "base": 101,
+        "adjusted": 101
       }
     },
     {
@@ -9161,8 +9161,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -9229,8 +9229,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -9297,8 +9297,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 4,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -9325,13 +9325,13 @@
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 97,
-        "adjusted": 97
+        "base": 96,
+        "adjusted": 96
       }
     },
     {
@@ -9342,8 +9342,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 6,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Armored Gear, Bulletproof",
@@ -9431,8 +9431,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -9459,13 +9459,13 @@
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 96,
-        "adjusted": 96
+        "base": 95,
+        "adjusted": 95
       }
     },
     {
@@ -9483,12 +9483,12 @@
         "Shield, Large, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 227,
-        "adjusted": 227
+        "base": 150,
+        "adjusted": 150
       }
     },
     {
@@ -9528,12 +9528,12 @@
         "Shield, Large, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 111,
-        "adjusted": 111
+        "base": 110,
+        "adjusted": 110
       }
     },
     {
@@ -9567,8 +9567,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -9703,8 +9703,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -9731,13 +9731,13 @@
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 106,
-        "adjusted": 106
+        "base": 105,
+        "adjusted": 105
       }
     },
     {
@@ -9748,8 +9748,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -9837,8 +9837,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -9867,13 +9867,13 @@
         "Shield, Large, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 111,
-        "adjusted": 111
+        "base": 110,
+        "adjusted": 110
       }
     },
     {
@@ -9892,12 +9892,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 242,
-        "adjusted": 242
+        "base": 165,
+        "adjusted": 165
       }
     },
     {
@@ -9939,12 +9939,12 @@
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 126,
-        "adjusted": 126
+        "base": 125,
+        "adjusted": 125
       }
     },
     {
@@ -9979,8 +9979,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -10121,8 +10121,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",
@@ -10151,13 +10151,13 @@
         "Shield, Large, Bulletproof",
         "Armored Gear, Bulletproof",
         "Helmet, Common, Bulletproof",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 121,
-        "adjusted": 121
+        "base": 120,
+        "adjusted": 120
       }
     },
     {
@@ -10168,8 +10168,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Heavy, Bulletproof",
         "Shield, Large, Bulletproof",

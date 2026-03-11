@@ -155,7 +155,7 @@ function findPushBackSelection(
   battlefield: Battlefield,
   allies: Character[],
   opponents: Character[]
-): BonusActionSelection {
+): BonusActionSelection | undefined {
   return findPushBackSelectionForRunner({
     attacker,
     target,

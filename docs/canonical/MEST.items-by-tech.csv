@@ -99,7 +99,6 @@ Axe,p01_Ancient,01-Stone,20-Symbolic
 "Axe, Long",p01_Ancient,02-Bronze,20-Symbolic
 "Axe, Pick",p01_Ancient,03-Iron,20-Symbolic
 "Axe, Tactical",p04_Modern,11-Modern,20-Symbolic
-Axe-Sword of Tan-doc,p05_Near_Future,15-Fusion,15-Fusion
 "Ballista, Heavy",p02_Archaic,05-Medieval,20-Symbolic
 "Ballista, Medium",p01_Ancient,03-Iron,20-Symbolic
 "Ballista, Light",p01_Ancient,03-Iron,20-Symbolic
@@ -729,5 +728,5 @@ Vibrosword,p06_Far_Future,16-Quantum,20-Symbolic
 "Wheeled, Tankette",p05_Near_Future,15-Fusion,20-Symbolic
 "Whip, Bull",p01_Ancient,01-Stone,20-Symbolic
 "Whip, Metal Chain",p01_Ancient,03-Iron,20-Symbolic
-"Whip, Mollysword",p02_Archaic,05-Medieval,15-Fusion
+"Whip, Mollysword",p06_Far_Future,16-Quantum,20-Symbolic
 "Whip, Monowire",p06_Far_Future,16-Quantum,20-Symbolic

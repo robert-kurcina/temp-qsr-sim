@@ -28,7 +28,9 @@ export interface TrackSituationalParams {
 
 export interface TrackCombatExtrasParams {
   bonusActionOptions?: BonusActionOption[];
+  bonusActionOptionSets?: BonusActionOption[][];
   bonusActionOutcome?: BonusActionOutcome;
+  bonusActionOutcomes?: BonusActionOutcome[];
   context?: TestContext;
   result?: { hitTestResult?: { finalPools?: Record<string, unknown> } };
   hitTestResult?: { finalPools?: Record<string, unknown> };
@@ -350,8 +352,19 @@ export class StatisticsTracker {
   // ============================================================================
 
   trackCombatExtras(params: TrackCombatExtrasParams) {
-    this.trackBonusActionOptions(params.bonusActionOptions);
-    this.trackBonusActionOutcome(params.bonusActionOutcome);
+    const optionSets = Array.isArray(params.bonusActionOptionSets) && params.bonusActionOptionSets.length > 0
+      ? params.bonusActionOptionSets
+      : (params.bonusActionOptions ? [params.bonusActionOptions] : []);
+    for (const options of optionSets) {
+      this.trackBonusActionOptions(options);
+    }
+
+    const outcomes = Array.isArray(params.bonusActionOutcomes) && params.bonusActionOutcomes.length > 0
+      ? params.bonusActionOutcomes
+      : (params.bonusActionOutcome ? [params.bonusActionOutcome] : []);
+    for (const outcome of outcomes) {
+      this.trackBonusActionOutcome(outcome);
+    }
 
     const combatResultPayload = this.resolveCombatResultPayload(params);
     const hitTestResult = this.extractHitTestResult(combatResultPayload)

@@ -42,7 +42,10 @@ export interface LoadoutCombinationEntry {
   handConfiguration: HandConfiguration;
   requiredPhysicality: number;
   compatible: boolean;
-  compatibilityReason: 'ok' | 'shield_requires_1h_weapon';
+  compatibilityReason:
+    | 'ok'
+    | 'shield_requires_1h_weapon'
+    | 'improvised_requires_no_suit_or_shield';
   items: string[];
   bp: {
     base: number;

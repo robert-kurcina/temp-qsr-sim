@@ -999,7 +999,7 @@
     "Gas Grenade, Steam": { "loa": 1 }
   },
   {
-    "Gas Grenade: { "loa": S }team": { "loa": 1 }
+    "Gas Grenade, Steam": { "loa": 1 }
   },
   {
     "Gas-mask": { "loa": 1 }
@@ -1470,16 +1470,16 @@
     "Musket, Medium, Smoothbore": { "loa": 1 }
   },
   {
-    "Nanotech: { "loa":Ra }ge": { "loa": 1 }
+    "Nanotech: Rage": { "loa": 1 }
   },
   {
-    "Nanotech: { "loa":Ra }mpage": { "loa": 0 }
+    "Nanotech: Rampage": { "loa": 0 }
   },
   {
-    "Nanotech: { "loa":Re }sist": { "loa": 0 }
+    "Nanotech: Resist": { "loa": 0 }
   },
   {
-    "Nanotech: { "loa":Ru }n": { "loa": 1 }
+    "Nanotech: Run": { "loa": 1 }
   },
   {
     "Necklace of Comfort": { "loa": 3 }
@@ -2124,25 +2124,25 @@
     "Unarmed": { "loa": 0 }
   },
   {
-    "Upgrade: { "loa":Ba }lanced": { "loa": 0 }
+    "Upgrade: Balanced": { "loa": 0 }
   },
   {
-    "Upgrade: { "loa":Ma }sterworks": { "loa": 0 }
+    "Upgrade: Masterworks": { "loa": 0 }
   },
   {
-    "Upgrade: { "loa":Po }isoned": { "loa": 1 }
+    "Upgrade: Poisoned": { "loa": 1 }
   },
   {
-    "Upgrade: { "loa":Po }isoned, Deadly": { "loa": 1 }
+    "Upgrade: Poisoned, Deadly": { "loa": 1 }
   },
   {
-    "Upgrade: { "loa":Re }inforced": { "loa": 0 }
+    "Upgrade: Reinforced": { "loa": 0 }
   },
   {
-    "Upgrade: { "loa":Re }inforced, Polearm": { "loa": 0 }
+    "Upgrade: Reinforced, Polearm": { "loa": 0 }
   },
   {
-    "Upgrade: { "loa":We }ll-honed": { "loa": 0 }
+    "Upgrade: Well-honed": { "loa": 0 }
   },
   {
     "Vibrodagger": { "loa": 1 }

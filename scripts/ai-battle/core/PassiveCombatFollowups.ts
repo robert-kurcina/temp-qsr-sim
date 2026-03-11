@@ -4,6 +4,7 @@ import type { GameManager } from '../../../src/lib/mest-tactics/engine/GameManag
 import {
   applyBonusAction,
   buildBonusActionOptions,
+  computeBonusActionBudget,
   type BonusActionOption,
   type BonusActionOutcome,
   type BonusActionSelection,
@@ -24,6 +25,173 @@ export function resolveCarryOverBonusCascadesForRunner(hitTestResult: any): numb
   if (totalDice <= 0) return 0;
   const rolls = Array.from({ length: totalDice }, () => Math.floor(Math.random() * 6) + 1);
   return Math.max(0, performTest(carryOverDice, 0, rolls).score);
+}
+
+interface ExecuteChainedBonusActionsForRunnerParams {
+  actor: Character;
+  target: Character;
+  battlefield: Battlefield;
+  allies: Character[];
+  opponents: Character[];
+  doctrine: TacticalDoctrine;
+  cascades: number;
+  isCloseCombat: boolean;
+  isCharge?: boolean;
+  areEngaged: (attacker: Character, target: Character, battlefield: Battlefield) => boolean;
+  buildAutoBonusActionSelections: (
+    attacker: Character,
+    target: Character,
+    battlefield: Battlefield,
+    allies: Character[],
+    opponents: Character[],
+    options: BonusActionOption[],
+    isCloseCombat: boolean,
+    doctrine: TacticalDoctrine
+  ) => BonusActionSelection[];
+  applyRefreshLocally: (character: Character) => void;
+  trackBonusActionOptions?: (options: BonusActionOption[]) => void;
+  trackBonusActionOutcome?: (outcome: BonusActionOutcome) => void;
+}
+
+interface ExecuteChainedBonusActionsForRunnerResult {
+  initialCascades: number;
+  maxActions: number;
+  spentCascades: number;
+  remainingCascades: number;
+  actionsUsed: number;
+  optionSets: BonusActionOption[][];
+  outcomes: BonusActionOutcome[];
+  lastOutcome?: BonusActionOutcome;
+}
+
+function executeChainedBonusActionsForRunner(
+  params: ExecuteChainedBonusActionsForRunnerParams
+): ExecuteChainedBonusActionsForRunnerResult {
+  const initialCascades = Math.max(0, Math.floor(params.cascades));
+  const initialEngaged = params.areEngaged(params.actor, params.target, params.battlefield);
+  const budget = computeBonusActionBudget({
+    battlefield: params.battlefield,
+    attacker: params.actor,
+    target: params.target,
+    cascades: initialCascades,
+    isCloseCombat: params.isCloseCombat,
+    isCharge: params.isCharge ?? false,
+    engaged: initialEngaged,
+  });
+
+  const maxActions = Math.max(0, Math.floor(budget.maxActions ?? 0));
+  let remainingCascades = Math.max(0, Math.floor(budget.cascades ?? 0));
+  if (remainingCascades <= 0 || maxActions <= 0) {
+    return {
+      initialCascades,
+      maxActions,
+      spentCascades: 0,
+      remainingCascades: 0,
+      actionsUsed: 0,
+      optionSets: [],
+      outcomes: [],
+    };
+  }
+
+  const optionSets: BonusActionOption[][] = [];
+  const outcomes: BonusActionOutcome[] = [];
+  let lastOutcome: BonusActionOutcome | undefined;
+  let actionsUsed = 0;
+  let spentCascades = 0;
+
+  while (remainingCascades > 0 && actionsUsed < maxActions) {
+    const engaged = params.areEngaged(params.actor, params.target, params.battlefield);
+    const unconstrainedOptions = buildBonusActionOptions({
+      battlefield: params.battlefield,
+      attacker: params.actor,
+      target: params.target,
+      cascades: Number.MAX_SAFE_INTEGER,
+      isCloseCombat: params.isCloseCombat,
+      engaged,
+    });
+    const optionByType = new Map<BonusActionType, BonusActionOption>();
+    const options = unconstrainedOptions.map(option => {
+      const available = option.available && option.costCascades <= remainingCascades;
+      const normalized: BonusActionOption = {
+        ...option,
+        available,
+        reason: available ? undefined : option.reason,
+      };
+      optionByType.set(normalized.type, normalized);
+      return normalized;
+    });
+    optionSets.push(options);
+    params.trackBonusActionOptions?.(options);
+    if (!options.some(option => option.available)) {
+      break;
+    }
+
+    const selections = params.buildAutoBonusActionSelections(
+      params.actor,
+      params.target,
+      params.battlefield,
+      params.allies,
+      params.opponents,
+      options,
+      params.isCloseCombat,
+      params.doctrine
+    );
+    if (selections.length === 0) {
+      break;
+    }
+
+    let executedThisStep = false;
+    for (const selection of selections) {
+      const option = optionByType.get(selection.type);
+      if (!option?.available) continue;
+      const requiredCascades = option.costCascades + Math.max(0, selection.extraCascades ?? 0);
+      if (requiredCascades > remainingCascades) continue;
+
+      const outcome = applyBonusAction(
+        {
+          battlefield: params.battlefield,
+          attacker: params.actor,
+          target: params.target,
+          cascades: Number.MAX_SAFE_INTEGER,
+          isCloseCombat: params.isCloseCombat,
+          isCharge: params.isCharge ?? false,
+          engaged,
+        },
+        selection
+      );
+      lastOutcome = outcome;
+      if (outcome.refreshApplied) {
+        params.applyRefreshLocally(params.actor);
+      }
+      if (!outcome.executed) {
+        continue;
+      }
+
+      const spentForOutcome = Math.max(0, Math.floor(outcome.spentCascades ?? requiredCascades));
+      spentCascades += spentForOutcome;
+      remainingCascades = Math.max(0, remainingCascades - spentForOutcome);
+      actionsUsed += 1;
+      outcomes.push(outcome);
+      params.trackBonusActionOutcome?.(outcome);
+      executedThisStep = true;
+      break;
+    }
+
+    if (!executedThisStep) {
+      break;
+    }
+  }
+
+  return {
+    initialCascades,
+    maxActions,
+    spentCascades,
+    remainingCascades,
+    actionsUsed,
+    optionSets,
+    outcomes,
+    lastOutcome,
+  };
 }
 
 export function applyPassiveFollowupBonusActionsForRunner(params: {
@@ -50,67 +218,38 @@ export function applyPassiveFollowupBonusActionsForRunner(params: {
 }): {
   bonusActionCascades: number;
   bonusActionOptions?: BonusActionOption[];
+  bonusActionOptionSets?: BonusActionOption[][];
   bonusActionOutcome?: BonusActionOutcome;
+  bonusActionOutcomes?: BonusActionOutcome[];
 } {
   const { defender, attacker, battlefield, doctrine, attackType } = params;
   const cascades = Math.max(0, Math.floor(params.cascades));
-  if (cascades <= 0) {
-    return { bonusActionCascades: 0 };
-  }
 
   const isCloseCombat = attackType === 'melee';
-  const engaged = params.areEngaged(defender, attacker, battlefield);
-  const bonusActionOptions = buildBonusActionOptions({
-    battlefield,
-    attacker: defender,
+  const chained = executeChainedBonusActionsForRunner({
+    actor: defender,
     target: attacker,
+    battlefield,
+    allies: [],
+    opponents: [attacker],
+    doctrine,
     cascades,
     isCloseCombat,
-    engaged,
+    areEngaged: params.areEngaged,
+    buildAutoBonusActionSelections: params.buildAutoBonusActionSelections,
+    applyRefreshLocally: params.applyRefreshLocally,
+    trackBonusActionOptions: params.trackBonusActionOptions,
+    trackBonusActionOutcome: params.trackBonusActionOutcome,
   });
-  params.trackBonusActionOptions(bonusActionOptions);
-
-  const selections = params.buildAutoBonusActionSelections(
-    defender,
-    attacker,
-    battlefield,
-    [],
-    [attacker],
-    bonusActionOptions,
-    isCloseCombat,
-    doctrine
-  );
-
-  let bonusActionOutcome: BonusActionOutcome | undefined;
-  for (const selection of selections) {
-    const outcome = applyBonusAction(
-      {
-        battlefield,
-        attacker: defender,
-        target: attacker,
-        cascades,
-        isCloseCombat,
-        engaged,
-      },
-      selection
-    );
-    if (outcome.refreshApplied) {
-      params.applyRefreshLocally(defender);
-    }
-    if (outcome.executed) {
-      bonusActionOutcome = outcome;
-      break;
-    }
-    bonusActionOutcome = outcome;
-  }
-  if (bonusActionOutcome) {
-    params.trackBonusActionOutcome(bonusActionOutcome);
-  }
+  const bonusActionOptions = chained.optionSets[0];
+  const bonusActionOutcome = chained.outcomes.at(-1) ?? chained.lastOutcome;
 
   return {
     bonusActionCascades: cascades,
     bonusActionOptions,
+    bonusActionOptionSets: chained.optionSets.length > 0 ? chained.optionSets : undefined,
     bonusActionOutcome,
+    bonusActionOutcomes: chained.outcomes.length > 0 ? chained.outcomes : undefined,
   };
 }
 
@@ -140,7 +279,9 @@ export function executeFailedHitPassiveResponseForRunner(params: {
   }) => {
     bonusActionCascades: number;
     bonusActionOptions?: BonusActionOption[];
+    bonusActionOptionSets?: BonusActionOption[][];
     bonusActionOutcome?: BonusActionOutcome;
+    bonusActionOutcomes?: BonusActionOutcome[];
   };
   trackPassiveUsage: (type: string) => void;
 }): { type?: PassiveOptionType; result?: unknown } {
@@ -358,46 +499,35 @@ export function applyAutoBonusActionIfPossibleForRunner(params: {
   if (!result || typeof result !== 'object') return;
   const existing = result.bonusActionOutcome as BonusActionOutcome | undefined;
   if (existing?.executed) return;
-  const options = Array.isArray(result.bonusActionOptions)
-    ? (result.bonusActionOptions as BonusActionOption[])
-    : [];
-  if (options.length === 0) return;
 
   const cascadesRaw = result.result?.hitTestResult?.cascades
     ?? result.hitTestResult?.cascades
     ?? 0;
   const cascades = Number.isFinite(cascadesRaw) ? Number(cascadesRaw) : 0;
-  const selections = params.buildAutoBonusActionSelections(
-    attacker,
+  const chained = executeChainedBonusActionsForRunner({
+    actor: attacker,
     target,
     battlefield,
     allies,
     opponents,
-    options,
+    doctrine,
+    cascades,
     isCloseCombat,
-    doctrine
-  );
-  if (selections.length === 0) return;
+    isCharge: isCharge ?? false,
+    areEngaged: params.areEngaged,
+    buildAutoBonusActionSelections: params.buildAutoBonusActionSelections,
+    applyRefreshLocally: params.applyRefreshLocally,
+  });
 
-  for (const selection of selections) {
-    const outcome = applyBonusAction(
-      {
-        battlefield,
-        attacker,
-        target,
-        cascades,
-        isCloseCombat,
-        isCharge: isCharge ?? false,
-        engaged: params.areEngaged(attacker, target, battlefield),
-      },
-      selection
-    );
-    if (outcome.refreshApplied) {
-      params.applyRefreshLocally(attacker);
-    }
-    if (outcome.executed) {
-      result.bonusActionOutcome = outcome;
-      break;
-    }
+  if (chained.optionSets.length > 0) {
+    result.bonusActionOptions = chained.optionSets[0];
+    result.bonusActionOptionSets = chained.optionSets;
+  }
+  const latestOutcome = chained.outcomes.at(-1) ?? chained.lastOutcome;
+  if (latestOutcome) {
+    result.bonusActionOutcome = latestOutcome;
+  }
+  if (chained.outcomes.length > 0) {
+    result.bonusActionOutcomes = chained.outcomes;
   }
 }

@@ -1,7 +1,7 @@
 {
   "techAge": "Robotics",
   "techLevel": 14,
-  "generatedAt": "2026-03-11T18:16:27.786Z",
+  "generatedAt": "2026-03-11T19:44:00.238Z",
   "armorLoadouts": [
     {
       "id": "light-no_gear_no_shield-no_helmet",
@@ -449,13 +449,13 @@
       "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 35,
-        "adjusted": 29
+        "base": 34,
+        "adjusted": 28
       }
     },
     {
@@ -467,12 +467,12 @@
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 166,
-        "adjusted": 157
+        "base": 89,
+        "adjusted": 80
       }
     },
     {
@@ -500,12 +500,12 @@
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 44
+        "base": 49,
+        "adjusted": 43
       }
     },
     {
@@ -649,13 +649,13 @@
       "requiredPhysicality": 2,
       "optionalStowedItem": "Throwing Stars",
       "items": [
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 45
+        "base": 44,
+        "adjusted": 44
       }
     },
     {
@@ -733,8 +733,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Melee",
@@ -757,13 +757,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light Flex",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 41,
-        "adjusted": 35
+        "base": 40,
+        "adjusted": 34
       }
     },
     {
@@ -779,12 +779,12 @@
       "items": [
         "Armor, Light Flex",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 172,
-        "adjusted": 163
+        "base": 95,
+        "adjusted": 86
       }
     },
     {
@@ -795,8 +795,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Club, Circus Mallet",
@@ -820,12 +820,12 @@
       "items": [
         "Armor, Light Flex",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 56,
-        "adjusted": 50
+        "base": 55,
+        "adjusted": 49
       }
     },
     {
@@ -857,8 +857,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Thrown",
@@ -919,8 +919,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Rifle, Light, Archaic",
@@ -981,8 +981,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Melee",
@@ -1005,13 +1005,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light Flex",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 51,
-        "adjusted": 51
+        "base": 50,
+        "adjusted": 50
       }
     },
     {
@@ -1022,8 +1022,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Chainsaw, Heavy",
@@ -1103,8 +1103,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -1129,13 +1129,13 @@
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 62
+        "base": 67,
+        "adjusted": 61
       }
     },
     {
@@ -1152,12 +1152,12 @@
         "Armor, Light Flex",
         "Jet-pack, Gear",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 199,
-        "adjusted": 199
+        "base": 122,
+        "adjusted": 122
       }
     },
     {
@@ -1168,8 +1168,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -1195,12 +1195,12 @@
         "Armor, Light Flex",
         "Jet-pack, Gear",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 77
+        "base": 82,
+        "adjusted": 76
       }
     },
     {
@@ -1233,8 +1233,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -1298,8 +1298,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -1363,8 +1363,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -1389,13 +1389,13 @@
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 78,
-        "adjusted": 78
+        "base": 77,
+        "adjusted": 77
       }
     },
     {
@@ -1406,8 +1406,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -1491,8 +1491,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -1517,13 +1517,13 @@
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 44,
-        "adjusted": 38
+        "base": 43,
+        "adjusted": 37
       }
     },
     {
@@ -1540,12 +1540,12 @@
         "Armor, Light Flex",
         "Improvised Parry",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 175,
-        "adjusted": 166
+        "base": 98,
+        "adjusted": 89
       }
     },
     {
@@ -1583,12 +1583,12 @@
         "Armor, Light Flex",
         "Improvised Parry",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 59,
-        "adjusted": 53
+        "base": 58,
+        "adjusted": 52
       }
     },
     {
@@ -1621,8 +1621,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -1751,8 +1751,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -1777,13 +1777,13 @@
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 54,
-        "adjusted": 54
+        "base": 53,
+        "adjusted": 53
       }
     },
     {
@@ -1794,8 +1794,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -1879,8 +1879,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -1907,13 +1907,13 @@
         "Armor, Light Flex",
         "Improvised Parry",
         "Jet-pack, Gear",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 71,
-        "adjusted": 65
+        "base": 70,
+        "adjusted": 64
       }
     },
     {
@@ -1931,12 +1931,12 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 202,
-        "adjusted": 202
+        "base": 125,
+        "adjusted": 125
       }
     },
     {
@@ -1976,12 +1976,12 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 86,
-        "adjusted": 80
+        "base": 85,
+        "adjusted": 79
       }
     },
     {
@@ -2015,8 +2015,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -2151,8 +2151,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -2179,13 +2179,13 @@
         "Armor, Light Flex",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 81,
-        "adjusted": 81
+        "base": 80,
+        "adjusted": 80
       }
     },
     {
@@ -2196,8 +2196,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -2285,8 +2285,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
@@ -2311,13 +2311,13 @@
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 61,
-        "adjusted": 55
+        "base": 60,
+        "adjusted": 54
       }
     },
     {
@@ -2334,12 +2334,12 @@
         "Armor, Light Flex",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 192,
-        "adjusted": 183
+        "base": 115,
+        "adjusted": 106
       }
     },
     {
@@ -2350,8 +2350,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
@@ -2377,12 +2377,12 @@
         "Armor, Light Flex",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 76,
-        "adjusted": 70
+        "base": 75,
+        "adjusted": 69
       }
     },
     {
@@ -2415,8 +2415,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
@@ -2480,8 +2480,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
@@ -2545,8 +2545,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
@@ -2571,13 +2571,13 @@
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 71,
-        "adjusted": 71
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -2588,8 +2588,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Comm-helmet",
@@ -2673,8 +2673,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -2701,13 +2701,13 @@
         "Armor, Light Flex",
         "Jet-pack, Gear",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 88,
-        "adjusted": 82
+        "base": 87,
+        "adjusted": 81
       }
     },
     {
@@ -2725,12 +2725,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 219,
-        "adjusted": 219
+        "base": 142,
+        "adjusted": 142
       }
     },
     {
@@ -2741,8 +2741,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -2770,12 +2770,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 103,
-        "adjusted": 97
+        "base": 102,
+        "adjusted": 96
       }
     },
     {
@@ -2809,8 +2809,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -2877,8 +2877,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -2945,8 +2945,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -2973,13 +2973,13 @@
         "Armor, Light Flex",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 98,
-        "adjusted": 98
+        "base": 97,
+        "adjusted": 97
       }
     },
     {
@@ -2990,8 +2990,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Jet-pack, Gear",
@@ -3079,8 +3079,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3107,13 +3107,13 @@
         "Armor, Light Flex",
         "Improvised Parry",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 64,
-        "adjusted": 58
+        "base": 63,
+        "adjusted": 57
       }
     },
     {
@@ -3131,12 +3131,12 @@
         "Improvised Parry",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 195,
-        "adjusted": 186
+        "base": 118,
+        "adjusted": 109
       }
     },
     {
@@ -3176,12 +3176,12 @@
         "Improvised Parry",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 79,
-        "adjusted": 73
+        "base": 78,
+        "adjusted": 72
       }
     },
     {
@@ -3215,8 +3215,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3351,8 +3351,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3379,13 +3379,13 @@
         "Armor, Light Flex",
         "Improvised Parry",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 74,
-        "adjusted": 74
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -3396,8 +3396,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3485,8 +3485,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3515,13 +3515,13 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 91,
-        "adjusted": 85
+        "base": 90,
+        "adjusted": 84
       }
     },
     {
@@ -3540,12 +3540,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 222,
-        "adjusted": 222
+        "base": 145,
+        "adjusted": 145
       }
     },
     {
@@ -3587,12 +3587,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 106,
-        "adjusted": 100
+        "base": 105,
+        "adjusted": 99
       }
     },
     {
@@ -3627,8 +3627,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3769,8 +3769,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3799,13 +3799,13 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 101,
-        "adjusted": 101
+        "base": 100,
+        "adjusted": 100
       }
     },
     {
@@ -3816,8 +3816,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Light Flex",
         "Improvised Parry",
@@ -3909,8 +3909,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Melee",
@@ -3933,13 +3933,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium Nanoweave",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 55,
-        "adjusted": 49
+        "base": 54,
+        "adjusted": 48
       }
     },
     {
@@ -3955,12 +3955,12 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 186,
-        "adjusted": 177
+        "base": 109,
+        "adjusted": 100
       }
     },
     {
@@ -3971,8 +3971,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Club, Circus Mallet",
@@ -3996,12 +3996,12 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 64
+        "base": 69,
+        "adjusted": 63
       }
     },
     {
@@ -4033,8 +4033,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Thrown",
@@ -4095,8 +4095,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Rifle, Light, Archaic",
@@ -4157,8 +4157,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Melee",
@@ -4181,13 +4181,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium Nanoweave",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 65,
-        "adjusted": 65
+        "base": 64,
+        "adjusted": 64
       }
     },
     {
@@ -4198,8 +4198,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Chainsaw, Heavy",
@@ -4279,8 +4279,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -4305,13 +4305,13 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 82,
-        "adjusted": 76
+        "base": 81,
+        "adjusted": 75
       }
     },
     {
@@ -4328,12 +4328,12 @@
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 213,
-        "adjusted": 213
+        "base": 136,
+        "adjusted": 136
       }
     },
     {
@@ -4344,8 +4344,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -4371,12 +4371,12 @@
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 97,
-        "adjusted": 91
+        "base": 96,
+        "adjusted": 90
       }
     },
     {
@@ -4409,8 +4409,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -4474,8 +4474,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -4539,8 +4539,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -4565,13 +4565,13 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 92,
-        "adjusted": 92
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -4582,8 +4582,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -4667,8 +4667,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -4693,13 +4693,13 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 58,
-        "adjusted": 52
+        "base": 57,
+        "adjusted": 51
       }
     },
     {
@@ -4716,12 +4716,12 @@
         "Armor, Medium Nanoweave",
         "Improvised Parry",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 189,
-        "adjusted": 180
+        "base": 112,
+        "adjusted": 103
       }
     },
     {
@@ -4759,12 +4759,12 @@
         "Armor, Medium Nanoweave",
         "Improvised Parry",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 73,
-        "adjusted": 67
+        "base": 72,
+        "adjusted": 66
       }
     },
     {
@@ -4797,8 +4797,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -4927,8 +4927,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -4953,13 +4953,13 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 68,
-        "adjusted": 68
+        "base": 67,
+        "adjusted": 67
       }
     },
     {
@@ -4970,8 +4970,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -5055,8 +5055,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -5083,13 +5083,13 @@
         "Armor, Medium Nanoweave",
         "Improvised Parry",
         "Jet-pack, Gear",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 85,
-        "adjusted": 79
+        "base": 84,
+        "adjusted": 78
       }
     },
     {
@@ -5107,12 +5107,12 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 216,
-        "adjusted": 216
+        "base": 139,
+        "adjusted": 139
       }
     },
     {
@@ -5152,12 +5152,12 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 100,
-        "adjusted": 94
+        "base": 99,
+        "adjusted": 93
       }
     },
     {
@@ -5191,8 +5191,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -5327,8 +5327,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -5355,13 +5355,13 @@
         "Armor, Medium Nanoweave",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 95,
-        "adjusted": 95
+        "base": 94,
+        "adjusted": 94
       }
     },
     {
@@ -5372,8 +5372,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -5461,8 +5461,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
@@ -5487,13 +5487,13 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 69
+        "base": 74,
+        "adjusted": 68
       }
     },
     {
@@ -5510,12 +5510,12 @@
         "Armor, Medium Nanoweave",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 206,
-        "adjusted": 197
+        "base": 129,
+        "adjusted": 120
       }
     },
     {
@@ -5526,8 +5526,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
@@ -5553,12 +5553,12 @@
         "Armor, Medium Nanoweave",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 90,
-        "adjusted": 84
+        "base": 89,
+        "adjusted": 83
       }
     },
     {
@@ -5591,8 +5591,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
@@ -5656,8 +5656,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
@@ -5721,8 +5721,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
@@ -5747,13 +5747,13 @@
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 85,
-        "adjusted": 85
+        "base": 84,
+        "adjusted": 84
       }
     },
     {
@@ -5764,8 +5764,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Comm-helmet",
@@ -5849,8 +5849,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -5877,13 +5877,13 @@
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 102,
-        "adjusted": 96
+        "base": 101,
+        "adjusted": 95
       }
     },
     {
@@ -5901,12 +5901,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 233,
-        "adjusted": 233
+        "base": 156,
+        "adjusted": 156
       }
     },
     {
@@ -5917,8 +5917,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -5946,12 +5946,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 117,
-        "adjusted": 111
+        "base": 116,
+        "adjusted": 110
       }
     },
     {
@@ -5985,8 +5985,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -6053,8 +6053,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -6121,8 +6121,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -6149,13 +6149,13 @@
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 112,
-        "adjusted": 112
+        "base": 111,
+        "adjusted": 111
       }
     },
     {
@@ -6166,8 +6166,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Jet-pack, Gear",
@@ -6255,8 +6255,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -6283,13 +6283,13 @@
         "Armor, Medium Nanoweave",
         "Improvised Parry",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 78,
-        "adjusted": 72
+        "base": 77,
+        "adjusted": 71
       }
     },
     {
@@ -6307,12 +6307,12 @@
         "Improvised Parry",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 209,
-        "adjusted": 200
+        "base": 132,
+        "adjusted": 123
       }
     },
     {
@@ -6352,12 +6352,12 @@
         "Improvised Parry",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 93,
-        "adjusted": 87
+        "base": 92,
+        "adjusted": 86
       }
     },
     {
@@ -6391,8 +6391,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -6527,8 +6527,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -6555,13 +6555,13 @@
         "Armor, Medium Nanoweave",
         "Improvised Parry",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 88,
-        "adjusted": 88
+        "base": 87,
+        "adjusted": 87
       }
     },
     {
@@ -6572,8 +6572,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -6661,8 +6661,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -6691,13 +6691,13 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 105,
-        "adjusted": 99
+        "base": 104,
+        "adjusted": 98
       }
     },
     {
@@ -6716,12 +6716,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 236,
-        "adjusted": 236
+        "base": 159,
+        "adjusted": 159
       }
     },
     {
@@ -6763,12 +6763,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 120,
-        "adjusted": 114
+        "base": 119,
+        "adjusted": 113
       }
     },
     {
@@ -6803,8 +6803,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -6945,8 +6945,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -6975,13 +6975,13 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 115,
-        "adjusted": 115
+        "base": 114,
+        "adjusted": 114
       }
     },
     {
@@ -6992,8 +6992,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Armor, Medium Nanoweave",
         "Improvised Parry",
@@ -7085,8 +7085,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Melee",
@@ -7109,13 +7109,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Exxo-skeleton, Heavy",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 64
+        "base": 69,
+        "adjusted": 63
       }
     },
     {
@@ -7131,12 +7131,12 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 201,
-        "adjusted": 192
+        "base": 124,
+        "adjusted": 115
       }
     },
     {
@@ -7147,8 +7147,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Club, Circus Mallet",
@@ -7172,12 +7172,12 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 85,
-        "adjusted": 79
+        "base": 84,
+        "adjusted": 78
       }
     },
     {
@@ -7209,8 +7209,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Thrown",
@@ -7271,8 +7271,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Rifle, Light, Archaic",
@@ -7333,8 +7333,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Melee",
@@ -7357,13 +7357,13 @@
       "compatibilityReason": "ok",
       "items": [
         "Exxo-skeleton, Heavy",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 80,
-        "adjusted": 80
+        "base": 79,
+        "adjusted": 79
       }
     },
     {
@@ -7374,8 +7374,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Chainsaw, Heavy",
@@ -7455,8 +7455,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7481,13 +7481,13 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 97,
-        "adjusted": 91
+        "base": 96,
+        "adjusted": 90
       }
     },
     {
@@ -7504,12 +7504,12 @@
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 228,
-        "adjusted": 228
+        "base": 151,
+        "adjusted": 151
       }
     },
     {
@@ -7520,8 +7520,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7547,12 +7547,12 @@
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 112,
-        "adjusted": 106
+        "base": 111,
+        "adjusted": 105
       }
     },
     {
@@ -7585,8 +7585,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7650,8 +7650,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7715,8 +7715,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7741,13 +7741,13 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 107,
-        "adjusted": 107
+        "base": 106,
+        "adjusted": 106
       }
     },
     {
@@ -7758,8 +7758,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7843,8 +7843,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -7869,13 +7869,13 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 73,
-        "adjusted": 67
+        "base": 72,
+        "adjusted": 66
       }
     },
     {
@@ -7892,12 +7892,12 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 204,
-        "adjusted": 195
+        "base": 127,
+        "adjusted": 118
       }
     },
     {
@@ -7935,12 +7935,12 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 88,
-        "adjusted": 82
+        "base": 87,
+        "adjusted": 81
       }
     },
     {
@@ -7973,8 +7973,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8103,8 +8103,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8129,13 +8129,13 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 83
+        "base": 82,
+        "adjusted": 82
       }
     },
     {
@@ -8146,8 +8146,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8231,8 +8231,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8259,13 +8259,13 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Jet-pack, Gear",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 100,
-        "adjusted": 94
+        "base": 99,
+        "adjusted": 93
       }
     },
     {
@@ -8283,12 +8283,12 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 231,
-        "adjusted": 231
+        "base": 154,
+        "adjusted": 154
       }
     },
     {
@@ -8328,12 +8328,12 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 115,
-        "adjusted": 109
+        "base": 114,
+        "adjusted": 108
       }
     },
     {
@@ -8367,8 +8367,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8503,8 +8503,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8531,13 +8531,13 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 110,
-        "adjusted": 110
+        "base": 109,
+        "adjusted": 109
       }
     },
     {
@@ -8548,8 +8548,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8637,8 +8637,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8663,13 +8663,13 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 90,
-        "adjusted": 84
+        "base": 89,
+        "adjusted": 83
       }
     },
     {
@@ -8686,12 +8686,12 @@
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 221,
-        "adjusted": 212
+        "base": 144,
+        "adjusted": 135
       }
     },
     {
@@ -8702,8 +8702,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8729,12 +8729,12 @@
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 105,
-        "adjusted": 99
+        "base": 104,
+        "adjusted": 98
       }
     },
     {
@@ -8767,8 +8767,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8832,8 +8832,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8897,8 +8897,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8923,13 +8923,13 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 100,
-        "adjusted": 100
+        "base": 99,
+        "adjusted": 99
       }
     },
     {
@@ -8940,8 +8940,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -9025,8 +9025,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9053,13 +9053,13 @@
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 117,
-        "adjusted": 111
+        "base": 116,
+        "adjusted": 110
       }
     },
     {
@@ -9077,12 +9077,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 248,
-        "adjusted": 248
+        "base": 171,
+        "adjusted": 171
       }
     },
     {
@@ -9093,8 +9093,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9122,12 +9122,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 132,
-        "adjusted": 126
+        "base": 131,
+        "adjusted": 125
       }
     },
     {
@@ -9161,8 +9161,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9229,8 +9229,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9297,8 +9297,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9325,13 +9325,13 @@
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 127,
-        "adjusted": 127
+        "base": 126,
+        "adjusted": 126
       }
     },
     {
@@ -9342,8 +9342,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9431,8 +9431,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9459,13 +9459,13 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 93,
-        "adjusted": 87
+        "base": 92,
+        "adjusted": 86
       }
     },
     {
@@ -9483,12 +9483,12 @@
         "Improvised Parry",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 224,
-        "adjusted": 215
+        "base": 147,
+        "adjusted": 138
       }
     },
     {
@@ -9528,12 +9528,12 @@
         "Improvised Parry",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 108,
-        "adjusted": 102
+        "base": 107,
+        "adjusted": 101
       }
     },
     {
@@ -9567,8 +9567,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9703,8 +9703,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9731,13 +9731,13 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 103,
-        "adjusted": 103
+        "base": 102,
+        "adjusted": 102
       }
     },
     {
@@ -9748,8 +9748,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9837,8 +9837,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9867,13 +9867,13 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
+        "Knuckledusters, Spiked",
         "Chainsaw, Claw, Light",
-        "Sword, Saber",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 120,
-        "adjusted": 114
+        "base": 119,
+        "adjusted": 113
       }
     },
     {
@@ -9892,12 +9892,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Chainsaw, Heavy",
-        "Axe-Sword of Tan-doc",
+        "Hammer, War, Ban-2",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 251,
-        "adjusted": 251
+        "base": 174,
+        "adjusted": 174
       }
     },
     {
@@ -9939,12 +9939,12 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Staff, Lesser Mage",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 135,
-        "adjusted": 129
+        "base": 134,
+        "adjusted": 128
       }
     },
     {
@@ -9979,8 +9979,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -10121,8 +10121,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -10151,13 +10151,13 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Chainsaw, Claw, Light",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 130,
-        "adjusted": 130
+        "base": 129,
+        "adjusted": 129
       }
     },
     {
@@ -10168,8 +10168,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",

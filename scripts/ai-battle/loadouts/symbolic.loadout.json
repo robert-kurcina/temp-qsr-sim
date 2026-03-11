@@ -1,7 +1,7 @@
 {
   "techAge": "Symbolic",
   "techLevel": 19,
-  "generatedAt": "2026-03-11T18:16:28.106Z",
+  "generatedAt": "2026-03-11T19:44:00.424Z",
   "armorLoadouts": [
     {
       "id": "light-no_gear_no_shield-no_helmet",
@@ -449,8 +449,8 @@
       "requiredPhysicality": 1,
       "optionalStowedItem": "Knife, Tactical",
       "items": [
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -500,7 +500,7 @@
       "optionalStowedItem": "Knife, Tactical",
       "items": [
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -649,7 +649,7 @@
       "requiredPhysicality": 2,
       "optionalStowedItem": "Knife, Tactical",
       "items": [
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -733,8 +733,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Melee",
@@ -757,8 +757,8 @@
       "compatibilityReason": "ok",
       "items": [
         "Exxo-skeleton, Light",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -795,8 +795,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Club, Circus Mallet",
@@ -820,7 +820,7 @@
       "items": [
         "Exxo-skeleton, Light",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -857,8 +857,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Thrown",
@@ -919,8 +919,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Discus",
@@ -981,8 +981,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Melee",
@@ -1005,7 +1005,7 @@
       "compatibilityReason": "ok",
       "items": [
         "Exxo-skeleton, Light",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -1022,8 +1022,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Chainsaw, Heavy",
@@ -1103,8 +1103,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -1129,8 +1129,8 @@
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -1168,8 +1168,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -1195,7 +1195,7 @@
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -1233,8 +1233,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -1298,8 +1298,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -1363,8 +1363,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -1389,7 +1389,7 @@
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -1406,8 +1406,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -1491,8 +1491,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -1517,8 +1517,8 @@
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -1583,7 +1583,7 @@
         "Exxo-skeleton, Light",
         "Improvised Parry",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -1621,8 +1621,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -1751,8 +1751,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -1777,7 +1777,7 @@
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -1794,8 +1794,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -1879,8 +1879,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -1907,8 +1907,8 @@
         "Exxo-skeleton, Light",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -1976,7 +1976,7 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -2015,8 +2015,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -2151,8 +2151,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -2179,7 +2179,7 @@
         "Exxo-skeleton, Light",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -2196,8 +2196,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -2285,8 +2285,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
@@ -2311,8 +2311,8 @@
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -2350,8 +2350,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
@@ -2377,7 +2377,7 @@
         "Exxo-skeleton, Light",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -2415,8 +2415,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
@@ -2480,8 +2480,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
@@ -2545,8 +2545,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
@@ -2571,7 +2571,7 @@
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -2588,8 +2588,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Comm-helmet",
@@ -2673,8 +2673,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -2701,8 +2701,8 @@
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -2741,8 +2741,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -2770,7 +2770,7 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -2809,8 +2809,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -2877,8 +2877,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -2945,8 +2945,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -2973,7 +2973,7 @@
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -2990,8 +2990,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Jet-pack, Gear",
@@ -3079,8 +3079,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3107,8 +3107,8 @@
         "Exxo-skeleton, Light",
         "Improvised Parry",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -3176,7 +3176,7 @@
         "Improvised Parry",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -3215,8 +3215,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3351,8 +3351,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3379,7 +3379,7 @@
         "Exxo-skeleton, Light",
         "Improvised Parry",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -3396,8 +3396,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3485,8 +3485,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3515,8 +3515,8 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -3587,7 +3587,7 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -3627,8 +3627,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3769,8 +3769,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3799,7 +3799,7 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -3816,8 +3816,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Light",
         "Improvised Parry",
@@ -3909,8 +3909,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Melee",
@@ -3933,8 +3933,8 @@
       "compatibilityReason": "ok",
       "items": [
         "Psi Armor, Medium",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -3971,8 +3971,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Club, Circus Mallet",
@@ -3996,7 +3996,7 @@
       "items": [
         "Psi Armor, Medium",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -4033,8 +4033,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Thrown",
@@ -4095,8 +4095,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Discus",
@@ -4157,8 +4157,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Melee",
@@ -4181,7 +4181,7 @@
       "compatibilityReason": "ok",
       "items": [
         "Psi Armor, Medium",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -4198,8 +4198,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Chainsaw, Heavy",
@@ -4279,8 +4279,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -4305,8 +4305,8 @@
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -4344,8 +4344,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -4371,7 +4371,7 @@
         "Psi Armor, Medium",
         "Jet-pack, Gear",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -4409,8 +4409,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -4474,8 +4474,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -4539,8 +4539,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -4565,7 +4565,7 @@
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -4582,8 +4582,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -4667,8 +4667,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -4693,8 +4693,8 @@
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -4759,7 +4759,7 @@
         "Psi Armor, Medium",
         "Improvised Parry",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -4797,8 +4797,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -4927,8 +4927,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -4953,7 +4953,7 @@
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -4970,8 +4970,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -5055,8 +5055,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -5083,8 +5083,8 @@
         "Psi Armor, Medium",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -5152,7 +5152,7 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -5191,8 +5191,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -5327,8 +5327,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -5355,7 +5355,7 @@
         "Psi Armor, Medium",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -5372,8 +5372,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -5461,8 +5461,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
@@ -5487,8 +5487,8 @@
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -5526,8 +5526,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
@@ -5553,7 +5553,7 @@
         "Psi Armor, Medium",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -5591,8 +5591,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
@@ -5656,8 +5656,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
@@ -5721,8 +5721,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
@@ -5747,7 +5747,7 @@
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -5764,8 +5764,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Comm-helmet",
@@ -5849,8 +5849,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -5877,8 +5877,8 @@
         "Psi Armor, Medium",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -5917,8 +5917,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -5946,7 +5946,7 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -5985,8 +5985,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -6053,8 +6053,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -6121,8 +6121,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -6149,7 +6149,7 @@
         "Psi Armor, Medium",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -6166,8 +6166,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Jet-pack, Gear",
@@ -6255,8 +6255,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -6283,8 +6283,8 @@
         "Psi Armor, Medium",
         "Improvised Parry",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -6352,7 +6352,7 @@
         "Improvised Parry",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -6391,8 +6391,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -6527,8 +6527,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -6555,7 +6555,7 @@
         "Psi Armor, Medium",
         "Improvised Parry",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -6572,8 +6572,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -6661,8 +6661,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -6691,8 +6691,8 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -6763,7 +6763,7 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -6803,8 +6803,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -6945,8 +6945,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -6975,7 +6975,7 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -6992,8 +6992,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 7,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Psi Armor, Medium",
         "Improvised Parry",
@@ -7085,8 +7085,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Melee",
@@ -7109,8 +7109,8 @@
       "compatibilityReason": "ok",
       "items": [
         "Exxo-skeleton, Heavy",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -7147,8 +7147,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Club, Circus Mallet",
@@ -7172,7 +7172,7 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -7209,8 +7209,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Thrown",
@@ -7271,8 +7271,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Discus",
@@ -7333,8 +7333,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Melee",
@@ -7357,7 +7357,7 @@
       "compatibilityReason": "ok",
       "items": [
         "Exxo-skeleton, Heavy",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -7374,8 +7374,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Chainsaw, Heavy",
@@ -7455,8 +7455,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7481,8 +7481,8 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -7520,8 +7520,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7547,7 +7547,7 @@
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -7585,8 +7585,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7650,8 +7650,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7715,8 +7715,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7741,7 +7741,7 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -7758,8 +7758,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -7843,8 +7843,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -7869,8 +7869,8 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -7935,7 +7935,7 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -7973,8 +7973,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8103,8 +8103,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8129,7 +8129,7 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -8146,8 +8146,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8231,8 +8231,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8259,8 +8259,8 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -8328,7 +8328,7 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -8367,8 +8367,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8503,8 +8503,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8531,7 +8531,7 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Jet-pack, Gear",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -8548,8 +8548,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -8637,8 +8637,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8663,8 +8663,8 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -8702,8 +8702,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8729,7 +8729,7 @@
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -8767,8 +8767,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8832,8 +8832,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8897,8 +8897,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -8923,7 +8923,7 @@
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -8940,8 +8940,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Comm-helmet",
@@ -9025,8 +9025,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9053,8 +9053,8 @@
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -9093,8 +9093,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9122,7 +9122,7 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -9161,8 +9161,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9229,8 +9229,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9297,8 +9297,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9325,7 +9325,7 @@
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -9342,8 +9342,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Jet-pack, Gear",
@@ -9431,8 +9431,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9459,8 +9459,8 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -9528,7 +9528,7 @@
         "Improvised Parry",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -9567,8 +9567,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9703,8 +9703,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 1,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9731,7 +9731,7 @@
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -9748,8 +9748,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9837,8 +9837,8 @@
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -9867,8 +9867,8 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
         "Knuckledusters, Spiked",
+        "Hook, Sickle, Fist",
         "Knife, Tactical"
       ],
       "bp": {
@@ -9939,7 +9939,7 @@
         "Jet-pack, Gear",
         "Comm-helmet",
         "Powered Gauntlets",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Knife, Tactical"
       ],
       "bp": {
@@ -9979,8 +9979,8 @@
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -10121,8 +10121,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 3,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",
@@ -10151,7 +10151,7 @@
         "Improvised Parry",
         "Jet-pack, Gear",
         "Comm-helmet",
-        "Hook, Sickle, Fist",
+        "Knuckledusters, Spiked",
         "Explosives, Kettle-bomb",
         "Knife, Tactical"
       ],
@@ -10168,8 +10168,8 @@
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
       "requiredPhysicality": 5,
-      "compatible": true,
-      "compatibilityReason": "ok",
+      "compatible": false,
+      "compatibilityReason": "improvised_requires_no_suit_or_shield",
       "items": [
         "Exxo-skeleton, Heavy",
         "Improvised Parry",

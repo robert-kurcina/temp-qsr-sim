@@ -17,6 +17,14 @@ function techAges(): TechnologicalAge[] {
 const SUPPORT_WEAPON_NAMES = new Set<string>(
   Object.keys((gameData as any).support_weapons ?? {})
 );
+const IMPROVISED_WEAPON_NAMES = new Set<string>([
+  ...Object.keys((gameData as any).melee_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).ranged_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).bow_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).thrown_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).grenade_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+  ...Object.keys((gameData as any).support_weapons ?? {}).filter(name => /^improvised\b/i.test(name)),
+]);
 
 describe('TechAgeLoadoutCatalog', () => {
   it('normalizes common age formats and falls back for unknown values', () => {
@@ -76,6 +84,47 @@ describe('TechAgeLoadoutCatalog', () => {
       const catalog = getTechAgeLoadoutCatalogForRunner(age);
       expect(catalog.weaponLoadouts.some(entry => entry.items.some(item => SUPPORT_WEAPON_NAMES.has(item)))).toBe(false);
       expect(catalog.combinations.some(entry => entry.items.some(item => SUPPORT_WEAPON_NAMES.has(item)))).toBe(false);
+    }
+  });
+
+  it('never keeps improvised weapon combinations compatible when armor or shield is present', () => {
+    for (const age of techAges()) {
+      const catalog = getTechAgeLoadoutCatalogForRunner(age);
+      const armorById = new Map(catalog.armorLoadouts.map(entry => [entry.id, entry]));
+      const weaponById = new Map(catalog.weaponLoadouts.map(entry => [entry.id, entry]));
+      let foundImprovisedWeaponCombo = false;
+      for (const combination of catalog.combinations) {
+        const armor = armorById.get(combination.armorLoadoutId);
+        const weapon = weaponById.get(combination.weaponLoadoutId);
+        expect(armor).toBeDefined();
+        expect(weapon).toBeDefined();
+
+        const hasImprovisedWeapon = (weapon?.items ?? []).some(item => IMPROVISED_WEAPON_NAMES.has(item));
+        if (!hasImprovisedWeapon) {
+          continue;
+        }
+
+        foundImprovisedWeaponCombo = true;
+        const hasArmorSuit = (armor?.items ?? []).some(item => /^armor\s*,/i.test(item) && !/shield|helm|gear/i.test(item));
+        const hasShield = Boolean(armor?.hasShield);
+
+        if (hasArmorSuit || hasShield) {
+          expect(combination.compatible).toBe(false);
+          if (hasShield && combination.handConfiguration === '2h') {
+            expect(combination.compatibilityReason).toBe('shield_requires_1h_weapon');
+          } else {
+            expect(combination.compatibilityReason).toBe('improvised_requires_no_suit_or_shield');
+          }
+        }
+      }
+      expect(
+        catalog.combinations.some(
+          combination =>
+            combination.compatible &&
+            (weaponById.get(combination.weaponLoadoutId)?.items ?? []).some(item => IMPROVISED_WEAPON_NAMES.has(item))
+        )
+      ).toBe(false);
+      expect(foundImprovisedWeaponCombo).toBe(true);
     }
   });
 

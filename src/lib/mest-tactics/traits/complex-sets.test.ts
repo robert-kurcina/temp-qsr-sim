@@ -64,15 +64,15 @@ function createMockItem(name: string, traits: string[], classification: string =
 
 describe('Complex Set Tests - Set 1: Most Complex Weapons', () => {
   // Based on melee_weapons.json analysis:
-  // 1. "Axe-Sword of Tan-doc" - 9 traits: Cleave, STR, Heal, Regenerate, Parry, Deflect, Bulletproof, Battery X:Type > List
+  // 1. "Relic Axe-Sword" - 9 traits: Cleave, STR, Heal, Regenerate, Parry, Deflect, Bulletproof, Battery X:Type > List
   // 2. "Electrostaff, Neon" - 7 traits: [Reveal], Stun 2, Reach, [Hafted], Perimeter, [2H], Light X (Flicker)
   // 3. "Dagger, Obsidian" - 8 traits: [Stub], Discrete, Throwable, Impale, [Discard+], [1H], Silent
 
-  describe('Weapon #1: Axe-Sword of Tan-doc (9 traits)', () => {
+  describe('Weapon #1: Relic Axe-Sword (9 traits)', () => {
     it('should have Cleave, Parry, and Deflect traits active', () => {
       const character = createTestCharacter('Elite');
       character.allTraits = [{ name: 'Cleave', level: 1 }, { name: 'Parry', level: 1 }, { name: 'Deflect', level: 1 }];
-      const weapon = createMockItem('Axe-Sword of Tan-doc', [
+      const weapon = createMockItem('Relic Axe-Sword', [
         'Cleave',
         'STR',
         'Heal',
@@ -99,7 +99,7 @@ describe('Complex Set Tests - Set 1: Most Complex Weapons', () => {
       attacker.allTraits = [{ name: 'Cleave', level: 1 }];
       const defender = createTestCharacter('Average');
 
-      const weapon = createMockItem('Axe-Sword of Tan-doc', ['Cleave']);
+      const weapon = createMockItem('Relic Axe-Sword', ['Cleave']);
       attacker.profile.equipment = [weapon];
 
       // Verify Cleave trait is present
@@ -272,11 +272,11 @@ describe('Complex Set Tests - Set 2: Most Complex Equipment', () => {
 // ============================================================================
 
 describe('Complex Set Tests - Set 3: Most Complex Items (Combined)', () => {
-  describe('Item #1: Axe-Sword of Tan-doc (9 traits)', () => {
+  describe('Item #1: Relic Axe-Sword (9 traits)', () => {
     it('should have multiple defensive and offensive traits', () => {
       const character = createTestCharacter('Elite');
       character.allTraits = [{ name: 'Cleave', level: 1 }, { name: 'Parry', level: 1 }, { name: 'Deflect', level: 1 }];
-      const weapon = createMockItem('Axe-Sword of Tan-doc', [
+      const weapon = createMockItem('Relic Axe-Sword', [
         'Cleave',
         'Parry',
         'Deflect',
@@ -408,7 +408,7 @@ describe('Complex Set Tests - Crucible Combat Scenarios', () => {
       attacker.allTraits = [{ name: 'Cleave', level: 1 }, { name: 'Parry', level: 1 }, { name: 'Deflect', level: 1 }];
       const defender = createTestCharacter('Elite');
 
-      const weapon = createMockItem('Axe-Sword of Tan-doc', [
+      const weapon = createMockItem('Relic Axe-Sword', [
         'Cleave',
         'Parry',
         'Deflect',

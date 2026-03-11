@@ -220,8 +220,7 @@
       "Sword, Long",
       "Sword, Scimitar",
       "Sword, Scimitar, Grand",
-      "Sword, Short",
-      "Whip, Mollysword"
+      "Sword, Short"
     ]
   },
   {
@@ -646,7 +645,6 @@
       "Armor, Light, Bulletproof Advanced",
       "Armor, Medium Advanced",
       "Armor, Medium, Bulletproof Advanced",
-      "Axe-Sword of Tan-doc",
       "Beam Cannon",
       "Beam Carbine",
       "Beam Gun",
@@ -729,6 +727,7 @@
       "Powered Armor-Combat",
       "Vibrodagger",
       "Vibrosword",
+      "Whip, Mollysword",
       "Whip, Monowire"
     ]
   },

@@ -600,12 +600,6 @@
     "tech_age_latest": "20-Symbolic"
   },
   {
-    "item": "Axe-Sword of Tan-doc",
-    "tech_period": "p05_Near_Future",
-    "tech_age": "15-Fusion",
-    "tech_age_latest": "15-Fusion"
-  },
-  {
     "item": "Ballista, Heavy",
     "tech_period": "p02_Archaic",
     "tech_age": "05-Medieval",
@@ -4381,9 +4375,9 @@
   },
   {
     "item": "Whip, Mollysword",
-    "tech_period": "p02_Archaic",
-    "tech_age": "05-Medieval",
-    "tech_age_latest": "15-Fusion"
+    "tech_period": "p06_Far_Future",
+    "tech_age": "16-Quantum",
+    "tech_age_latest": "20-Symbolic"
   },
   {
     "item": "Whip, Monowire",

@@ -16,6 +16,7 @@ import type { PassiveEvent, PassiveOption, PassiveOptionType } from '../../../sr
 import { SpatialRules } from '../../../src/lib/mest-tactics/battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../../src/lib/mest-tactics/battlefield/spatial/size-utils';
 import { TerrainType } from '../../../src/lib/mest-tactics/battlefield/terrain/Terrain';
+import { TERRAIN_HEIGHTS } from '../../../src/lib/mest-tactics/battlefield/terrain/TerrainElement';
 import { LOFOperations } from '../../../src/lib/mest-tactics/battlefield/los/LOFOperations';
 import { getDoctrineComponents, EngagementStyle, PlanningPriority } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 import { getCharacterTraitLevel } from '../../../src/lib/mest-tactics/status/status-system';
@@ -845,6 +846,52 @@ export function findBestRetreatPositionForRunner(params: {
   return best?.position;
 }
 
+function getTerrainSeverityForRunner(type: TerrainType | `${TerrainType}`): number {
+  switch (type) {
+    case TerrainType.Clear:
+      return 0;
+    case TerrainType.Rough:
+      return 1;
+    case TerrainType.Difficult:
+      return 2;
+    case TerrainType.Impassable:
+    case TerrainType.Obstacle:
+      return 3;
+    default:
+      return 0;
+  }
+}
+
+function resolveTerrainHeightKeyForRunner(feature: any): string | null {
+  const raw = [
+    String(feature?.meta?.name ?? ''),
+    String(feature?.meta?.category ?? ''),
+    String(feature?.id ?? ''),
+    String(feature?.type ?? ''),
+  ]
+    .join(' ')
+    .toLowerCase();
+
+  if (!raw || raw.includes('clear')) return null;
+  if (raw.includes('building')) return raw.includes('large') ? 'building-large' : 'building';
+  if (raw.includes('wall')) return raw.includes('large') ? 'wall-large' : 'wall';
+  if (raw.includes('rock')) return 'rocky';
+  if (raw.includes('shrub') || raw.includes('bush')) return 'shrub';
+  if (raw.includes('tree')) return 'tree';
+  if (raw.includes('cliff')) return 'wall';
+  return null;
+}
+
+function getTerrainHeightForRunner(feature: any): number {
+  const explicitHeight = Number(feature?.meta?.height ?? feature?.elevation);
+  if (Number.isFinite(explicitHeight) && explicitHeight > 0) {
+    return explicitHeight;
+  }
+  const key = resolveTerrainHeightKeyForRunner(feature);
+  if (!key) return 0;
+  return TERRAIN_HEIGHTS[key]?.height ?? 0;
+}
+
 export function findPushBackSelectionForRunner(params: {
   attacker: Character;
   target: Character;
@@ -857,12 +904,12 @@ export function findPushBackSelectionForRunner(params: {
     candidates: Character[],
     battlefield: Battlefield
   ) => number;
-}): BonusActionSelection {
+}): BonusActionSelection | undefined {
   const { attacker, target, battlefield, allies, opponents, countEngagersAtPosition } = params;
   const attackerPos = battlefield.getCharacterPosition(attacker);
   const targetPos = battlefield.getCharacterPosition(target);
   if (!attackerPos || !targetPos) {
-    return { type: 'PushBack' };
+    return undefined;
   }
 
   const attackerBase = getBaseDiameterFromSiz(attacker.finalAttributes.siz ?? attacker.attributes.siz ?? 3);
@@ -885,9 +932,15 @@ export function findPushBackSelectionForRunner(params: {
   ];
 
   const friendlyGroup = [attacker, ...allies.filter(ally => ally.id !== attacker.id)];
+  const allySupportGroup = allies.filter(ally => ally.id !== attacker.id);
   const enemySupportGroup = opponents.filter(candidate => candidate.id !== target.id);
-  const beforeFriendlyEngagers = countEngagersAtPosition(target, targetPos, friendlyGroup, battlefield);
-  const beforeEnemySupport = countEngagersAtPosition(target, targetPos, enemySupportGroup, battlefield);
+  const targetFriendlyPressureBefore = countEngagersAtPosition(target, targetPos, friendlyGroup, battlefield);
+  const targetEnemySupportBefore = countEngagersAtPosition(target, targetPos, enemySupportGroup, battlefield);
+  const attackerEnemyEngagersBefore = countEngagersAtPosition(attacker, attackerPos, opponents, battlefield);
+  const attackerAllySupportBefore = countEngagersAtPosition(attacker, attackerPos, allySupportGroup, battlefield);
+  const sourceTerrain = battlefield.getTerrainAt(targetPos);
+  const sourceTerrainSeverity = getTerrainSeverityForRunner(sourceTerrain.type);
+  const sourceTerrainHeight = getTerrainHeightForRunner(sourceTerrain);
 
   let best: { score: number; position: Position } | null = null;
   for (const direction of directions) {
@@ -897,28 +950,111 @@ export function findPushBackSelectionForRunner(params: {
       x: Math.round(targetPos.x + unit.x * pushDistance),
       y: Math.round(targetPos.y + unit.y * pushDistance),
     };
+    const insideBoard = (
+      destination.x >= 0 &&
+      destination.x < battlefield.width &&
+      destination.y >= 0 &&
+      destination.y < battlefield.height
+    );
+    const destinationTerrain = insideBoard
+      ? battlefield.getTerrainAt(destination)
+      : { id: 'offboard', type: TerrainType.Impassable, vertices: [] as Position[] };
+    const destinationTerrainType = destinationTerrain.type;
+    const destinationTerrainSeverity = getTerrainSeverityForRunner(destinationTerrainType);
+    const destinationTerrainHeight = insideBoard ? getTerrainHeightForRunner(destinationTerrain) : 0;
+    const blockedTerrain =
+      !insideBoard ||
+      destinationTerrainType === TerrainType.Impassable ||
+      destinationTerrainType === TerrainType.Obstacle;
+    const movedTarget = insideBoard && !blockedTerrain;
+    const pushesOffPrecipice = movedTarget && sourceTerrainHeight - destinationTerrainHeight >= 1;
+    const attackerAfterPosition = movedTarget ? targetPos : attackerPos;
+    const targetAfterPosition = movedTarget ? destination : targetPos;
+    const attackerEnemiesAfter = countEngagersAtPosition(
+      attacker,
+      attackerAfterPosition,
+      movedTarget ? enemySupportGroup : opponents,
+      battlefield
+    );
+    const attackerAlliesAfter = countEngagersAtPosition(
+      attacker,
+      attackerAfterPosition,
+      allySupportGroup,
+      battlefield
+    );
+    const targetFriendlyPressureAfter = countEngagersAtPosition(
+      target,
+      targetAfterPosition,
+      friendlyGroup,
+      battlefield
+    );
+    const targetEnemySupportAfter = countEngagersAtPosition(
+      target,
+      targetAfterPosition,
+      enemySupportGroup,
+      battlefield
+    );
 
     let score = 0;
-    if (destination.x < 0 || destination.x >= battlefield.width || destination.y < 0 || destination.y >= battlefield.height) {
-      score += 6;
+    if (!insideBoard) {
+      score += 10;
     } else {
       const occupant = battlefield.getCharacterAt(destination);
       if (occupant && occupant.id !== target.id) {
         continue;
       }
-      const terrain = battlefield.getTerrainAt(destination).type;
-      const isBlocked = terrain === TerrainType.Impassable || terrain === TerrainType.Obstacle;
-      const isDegraded = terrain === TerrainType.Rough || terrain === TerrainType.Difficult;
-      if (isBlocked) {
-        score += 5;
-      } else if (isDegraded) {
-        score += 3;
+      if (destinationTerrainType === TerrainType.Impassable || destinationTerrainType === TerrainType.Obstacle) {
+        score += 9;
+      } else if (destinationTerrainType === TerrainType.Difficult) {
+        score += 6;
+      } else if (destinationTerrainType === TerrainType.Rough) {
+        score += 4;
       }
+    }
+    if (pushesOffPrecipice) {
+      score += 8;
+    }
+    if (destinationTerrainSeverity > sourceTerrainSeverity) {
+      score += (destinationTerrainSeverity - sourceTerrainSeverity) * 1.75;
+    }
 
-      const afterFriendlyEngagers = countEngagersAtPosition(target, destination, friendlyGroup, battlefield);
-      const afterEnemySupport = countEngagersAtPosition(target, destination, enemySupportGroup, battlefield);
-      score += (afterFriendlyEngagers - beforeFriendlyEngagers) * 1.5;
-      score += (beforeEnemySupport - afterEnemySupport) * 1.25;
+    const attackerOutnumberedBefore = attackerEnemyEngagersBefore > Math.max(1, attackerAllySupportBefore);
+    const attackerOutnumberedAfter = attackerEnemiesAfter > Math.max(1, attackerAlliesAfter);
+    if (attackerOutnumberedBefore && !attackerOutnumberedAfter) {
+      score += 7;
+    }
+    if (attackerEnemiesAfter < attackerEnemyEngagersBefore) {
+      score += (attackerEnemyEngagersBefore - attackerEnemiesAfter) * 2.25;
+    }
+    if (attackerEnemyEngagersBefore > 1 && attackerEnemiesAfter <= 1) {
+      score += 4;
+    }
+
+    const targetSupportDelta =
+      (targetFriendlyPressureAfter - targetEnemySupportAfter) -
+      (targetFriendlyPressureBefore - targetEnemySupportBefore);
+    if (targetSupportDelta > 0) {
+      score += targetSupportDelta * 2;
+    }
+    if (
+      targetFriendlyPressureBefore <= targetEnemySupportBefore &&
+      targetFriendlyPressureAfter > targetEnemySupportAfter
+    ) {
+      score += 5;
+    }
+    if (targetEnemySupportAfter < targetEnemySupportBefore) {
+      score += (targetEnemySupportBefore - targetEnemySupportAfter) * 1.75;
+    }
+    if (targetFriendlyPressureAfter < targetFriendlyPressureBefore) {
+      score -= (targetFriendlyPressureBefore - targetFriendlyPressureAfter) * 0.8;
+    }
+    if (
+      destinationTerrainSeverity === sourceTerrainSeverity &&
+      !pushesOffPrecipice &&
+      attackerEnemiesAfter >= attackerEnemyEngagersBefore &&
+      targetSupportDelta <= 0
+    ) {
+      score -= 1;
     }
 
     if (!best || score > best.score) {
@@ -926,10 +1062,10 @@ export function findPushBackSelectionForRunner(params: {
     }
   }
 
-  if (best) {
+  if (best && best.score > 0.5) {
     return { type: 'PushBack', targetPosition: best.position };
   }
-  return { type: 'PushBack' };
+  return undefined;
 }
 
 export function getBonusActionPriorityForRunner(params: {
@@ -1215,7 +1351,7 @@ export function createBonusSelectionForTypeForRunner(params: {
     battlefield: Battlefield,
     allies: Character[],
     opponents: Character[]
-  ) => BonusActionSelection;
+  ) => BonusActionSelection | undefined;
 }): BonusActionSelection | undefined {
   const {
     type,
