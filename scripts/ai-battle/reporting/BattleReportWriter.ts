@@ -150,6 +150,19 @@ function buildCombatMetricsAudit(report: BattleReport): BattleCombatMetricsAudit
   const damageFails = toSafeNonNegative(
     (report.stats as any).damageTestsFailed ?? Math.max(0, damageAttempts - damagePasses)
   );
+  const totalAssignments = {
+    wounds: toSafeNonNegative((report.stats as any).woundsAssigned),
+    fear: toSafeNonNegative((report.stats as any).fearAssigned),
+    delay: toSafeNonNegative((report.stats as any).delayAssigned),
+  };
+  const damageAssignments = {
+    wounds: toSafeNonNegative((report.stats as any).damageWoundsAssigned ?? totalAssignments.wounds),
+    fear: toSafeNonNegative((report.stats as any).damageFearAssigned ?? totalAssignments.fear),
+    delay: toSafeNonNegative((report.stats as any).damageDelayAssigned ?? totalAssignments.delay),
+  };
+  const passiveOrOtherDelay = toSafeNonNegative(
+    (report.stats as any).passiveOrOtherDelayAssigned ?? Math.max(0, totalAssignments.delay - damageAssignments.delay)
+  );
 
   return {
     hitTests: {
@@ -164,11 +177,9 @@ function buildCombatMetricsAudit(report: BattleReport): BattleCombatMetricsAudit
       fails: damageFails,
       passRate: safeRate(damagePasses, damageAttempts),
     },
-    assignments: {
-      wounds: toSafeNonNegative((report.stats as any).woundsAssigned),
-      fear: toSafeNonNegative((report.stats as any).fearAssigned),
-      delay: toSafeNonNegative((report.stats as any).delayAssigned),
-    },
+    assignments: totalAssignments,
+    damageAssignments,
+    passiveOrOtherDelay,
     passiveUsageByType: {
       ...(report.advancedRules?.passiveOptions?.usedByType ?? {}),
     },

@@ -1,12 +1,13 @@
 {
   "techAge": "Machine",
   "techLevel": 10,
-  "generatedAt": "2026-03-09T21:27:49.054Z",
+  "generatedAt": "2026-03-11T18:16:27.595Z",
   "armorLoadouts": [
     {
       "id": "light-no_gear_no_shield-no_helmet",
       "armorWeight": "light",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -22,6 +23,7 @@
       "id": "light-gear_no_shield-no_helmet",
       "armorWeight": "light",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": true,
       "hasShield": false,
       "hasHelmet": false,
@@ -38,6 +40,7 @@
       "id": "light-shield_no_gear-no_helmet",
       "armorWeight": "light",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -54,6 +57,7 @@
       "id": "light-shield_and_gear-no_helmet",
       "armorWeight": "light",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 2,
       "hasGear": true,
       "hasShield": true,
       "hasHelmet": false,
@@ -71,6 +75,7 @@
       "id": "light-no_gear_no_shield-helmet",
       "armorWeight": "light",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -87,6 +92,7 @@
       "id": "light-gear_no_shield-helmet",
       "armorWeight": "light",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": true,
       "hasShield": false,
       "hasHelmet": true,
@@ -104,6 +110,7 @@
       "id": "light-shield_no_gear-helmet",
       "armorWeight": "light",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -121,6 +128,7 @@
       "id": "light-shield_and_gear-helmet",
       "armorWeight": "light",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 2,
       "hasGear": true,
       "hasShield": true,
       "hasHelmet": true,
@@ -139,6 +147,7 @@
       "id": "medium-no_gear_no_shield-no_helmet",
       "armorWeight": "medium",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -154,6 +163,7 @@
       "id": "medium-gear_no_shield-no_helmet",
       "armorWeight": "medium",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": true,
       "hasShield": false,
       "hasHelmet": false,
@@ -170,6 +180,7 @@
       "id": "medium-shield_no_gear-no_helmet",
       "armorWeight": "medium",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -186,6 +197,7 @@
       "id": "medium-shield_and_gear-no_helmet",
       "armorWeight": "medium",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 4,
       "hasGear": true,
       "hasShield": true,
       "hasHelmet": false,
@@ -203,6 +215,7 @@
       "id": "medium-no_gear_no_shield-helmet",
       "armorWeight": "medium",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -219,6 +232,7 @@
       "id": "medium-gear_no_shield-helmet",
       "armorWeight": "medium",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": true,
       "hasShield": false,
       "hasHelmet": true,
@@ -236,6 +250,7 @@
       "id": "medium-shield_no_gear-helmet",
       "armorWeight": "medium",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -253,6 +268,7 @@
       "id": "medium-shield_and_gear-helmet",
       "armorWeight": "medium",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 4,
       "hasGear": true,
       "hasShield": true,
       "hasHelmet": true,
@@ -271,6 +287,7 @@
       "id": "heavy-no_gear_no_shield-no_helmet",
       "armorWeight": "heavy",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -286,6 +303,7 @@
       "id": "heavy-gear_no_shield-no_helmet",
       "armorWeight": "heavy",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": true,
       "hasShield": false,
       "hasHelmet": false,
@@ -302,6 +320,7 @@
       "id": "heavy-shield_no_gear-no_helmet",
       "armorWeight": "heavy",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 5,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -318,6 +337,7 @@
       "id": "heavy-shield_and_gear-no_helmet",
       "armorWeight": "heavy",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 5,
       "hasGear": true,
       "hasShield": true,
       "hasHelmet": false,
@@ -335,6 +355,7 @@
       "id": "heavy-no_gear_no_shield-helmet",
       "armorWeight": "heavy",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -351,6 +372,7 @@
       "id": "heavy-gear_no_shield-helmet",
       "armorWeight": "heavy",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": true,
       "hasShield": false,
       "hasHelmet": true,
@@ -368,6 +390,7 @@
       "id": "heavy-shield_no_gear-helmet",
       "armorWeight": "heavy",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 5,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -385,6 +408,7 @@
       "id": "heavy-shield_and_gear-helmet",
       "armorWeight": "heavy",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 5,
       "hasGear": true,
       "hasShield": true,
       "hasHelmet": true,
@@ -406,6 +430,7 @@
       "style": "melee_centric",
       "optionIndex": 1,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Improvised Melee",
@@ -421,6 +446,7 @@
       "style": "melee_centric",
       "optionIndex": 2,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Knuckledusters, Spiked",
@@ -437,6 +463,7 @@
       "style": "melee_centric",
       "optionIndex": 3,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Axe-Sword of Tan-doc",
@@ -453,6 +480,7 @@
       "style": "melee_centric",
       "optionIndex": 1,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Club, Circus Mallet",
@@ -468,6 +496,7 @@
       "style": "melee_centric",
       "optionIndex": 2,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Axe, Long",
@@ -484,6 +513,7 @@
       "style": "melee_centric",
       "optionIndex": 3,
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Polearm, Pike",
@@ -500,10 +530,11 @@
       "style": "ranged_centric",
       "optionIndex": 1,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 0,
@@ -515,15 +546,15 @@
       "style": "ranged_centric",
       "optionIndex": 2,
       "handConfiguration": "1h",
-      "optionalStowedItem": "Throwing Stars",
+      "requiredPhysicality": 1,
+      "optionalStowedItem": null,
       "items": [
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 29,
-        "adjusted": 29
+        "base": 19,
+        "adjusted": 19
       }
     },
     {
@@ -531,15 +562,16 @@
       "style": "ranged_centric",
       "optionIndex": 3,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 94,
-        "adjusted": 94
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -547,14 +579,15 @@
       "style": "ranged_centric",
       "optionIndex": 1,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": -7,
-        "adjusted": 0
+        "base": 3,
+        "adjusted": 3
       }
     },
     {
@@ -562,9 +595,10 @@
       "style": "ranged_centric",
       "optionIndex": 2,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -578,15 +612,16 @@
       "style": "ranged_centric",
       "optionIndex": 3,
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 62,
-        "adjusted": 62
+        "base": 65,
+        "adjusted": 65
       }
     },
     {
@@ -594,6 +629,7 @@
       "style": "balanced",
       "optionIndex": 1,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Improvised Melee",
@@ -609,15 +645,16 @@
       "style": "balanced",
       "optionIndex": 2,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 49,
-        "adjusted": 49
+        "base": 52,
+        "adjusted": 52
       }
     },
     {
@@ -625,10 +662,11 @@
       "style": "balanced",
       "optionIndex": 3,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -641,10 +679,11 @@
       "style": "balanced",
       "optionIndex": 1,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 10,
@@ -656,6 +695,7 @@
       "style": "balanced",
       "optionIndex": 2,
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "optionalStowedItem": null,
       "items": [
         "Axe, Long",
@@ -671,14 +711,15 @@
       "style": "balanced",
       "optionIndex": 3,
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "optionalStowedItem": null,
       "items": [
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 15,
-        "adjusted": 15
+        "base": 25,
+        "adjusted": 25
       }
     }
   ],
@@ -690,6 +731,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -709,6 +751,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -729,6 +772,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -749,6 +793,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -768,6 +813,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -788,6 +834,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -808,12 +855,13 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 8,
@@ -827,17 +875,17 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 37,
-        "adjusted": 37
+        "base": 27,
+        "adjusted": 27
       }
     },
     {
@@ -847,17 +895,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 102,
-        "adjusted": 102
+        "base": 81,
+        "adjusted": 81
       }
     },
     {
@@ -867,16 +916,17 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 1,
-        "adjusted": 1
+        "base": 11,
+        "adjusted": 11
       }
     },
     {
@@ -886,11 +936,12 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -906,17 +957,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 70
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -926,6 +978,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -945,17 +998,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 57,
-        "adjusted": 57
+        "base": 60,
+        "adjusted": 60
       }
     },
     {
@@ -965,12 +1019,13 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -985,12 +1040,13 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 18,
@@ -1004,6 +1060,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1023,16 +1080,17 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 23,
-        "adjusted": 23
+        "base": 33,
+        "adjusted": 33
       }
     },
     {
@@ -1042,6 +1100,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1062,6 +1121,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1083,6 +1143,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1104,6 +1165,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1124,6 +1186,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1145,6 +1208,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1166,13 +1230,14 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 13,
@@ -1186,18 +1251,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 42
+        "base": 32,
+        "adjusted": 32
       }
     },
     {
@@ -1207,18 +1272,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 107,
-        "adjusted": 107
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -1228,17 +1294,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 6,
-        "adjusted": 6
+        "base": 16,
+        "adjusted": 16
       }
     },
     {
@@ -1248,12 +1315,13 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -1269,18 +1337,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -1290,6 +1359,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1310,18 +1380,19 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 62,
-        "adjusted": 62
+        "base": 65,
+        "adjusted": 65
       }
     },
     {
@@ -1331,13 +1402,14 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -1352,13 +1424,14 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 23,
@@ -1372,6 +1445,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1392,17 +1466,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 28,
-        "adjusted": 28
+        "base": 38,
+        "adjusted": 38
       }
     },
     {
@@ -1412,6 +1487,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1432,6 +1508,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1453,6 +1530,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1474,6 +1552,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1494,6 +1573,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1515,6 +1595,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1536,13 +1617,14 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 10,
@@ -1556,18 +1638,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 39,
-        "adjusted": 39
+        "base": 29,
+        "adjusted": 29
       }
     },
     {
@@ -1577,18 +1659,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 104,
-        "adjusted": 104
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -1598,17 +1681,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 3,
-        "adjusted": 3
+        "base": 13,
+        "adjusted": 13
       }
     },
     {
@@ -1618,12 +1702,13 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -1639,18 +1724,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 72,
-        "adjusted": 72
+        "base": 75,
+        "adjusted": 75
       }
     },
     {
@@ -1660,6 +1746,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1680,18 +1767,19 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 59,
-        "adjusted": 59
+        "base": 62,
+        "adjusted": 62
       }
     },
     {
@@ -1701,13 +1789,14 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -1722,13 +1811,14 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 20,
@@ -1742,6 +1832,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1762,17 +1853,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 25,
-        "adjusted": 25
+        "base": 35,
+        "adjusted": 35
       }
     },
     {
@@ -1782,6 +1874,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1803,6 +1896,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1825,6 +1919,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1847,6 +1942,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1868,6 +1964,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1890,6 +1987,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1912,14 +2010,15 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 15,
@@ -1933,6 +2032,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1940,12 +2040,11 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 44,
-        "adjusted": 44
+        "base": 34,
+        "adjusted": 34
       }
     },
     {
@@ -1955,19 +2054,20 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 109,
-        "adjusted": 109
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -1977,18 +2077,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 8,
-        "adjusted": 8
+        "base": 18,
+        "adjusted": 18
       }
     },
     {
@@ -1998,13 +2099,14 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Armored Gear",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -2020,6 +2122,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2027,12 +2130,12 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 77,
-        "adjusted": 77
+        "base": 80,
+        "adjusted": 80
       }
     },
     {
@@ -2042,6 +2145,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2063,6 +2167,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2070,12 +2175,12 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 64,
-        "adjusted": 64
+        "base": 67,
+        "adjusted": 67
       }
     },
     {
@@ -2085,6 +2190,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2092,7 +2198,7 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -2107,6 +2213,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2114,7 +2221,7 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 25,
@@ -2128,6 +2235,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2149,6 +2257,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2156,11 +2265,11 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 30,
-        "adjusted": 30
+        "base": 40,
+        "adjusted": 40
       }
     },
     {
@@ -2170,6 +2279,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2190,6 +2300,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2211,6 +2322,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2232,6 +2344,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2252,6 +2365,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2273,6 +2387,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2294,13 +2409,14 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 11,
@@ -2314,18 +2430,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 40,
-        "adjusted": 40
+        "base": 30,
+        "adjusted": 30
       }
     },
     {
@@ -2335,18 +2451,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 105,
-        "adjusted": 105
+        "base": 84,
+        "adjusted": 84
       }
     },
     {
@@ -2356,17 +2473,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 4,
-        "adjusted": 4
+        "base": 14,
+        "adjusted": 14
       }
     },
     {
@@ -2376,12 +2494,13 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -2397,18 +2516,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 73,
-        "adjusted": 73
+        "base": 76,
+        "adjusted": 76
       }
     },
     {
@@ -2418,6 +2538,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2438,18 +2559,19 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 60,
-        "adjusted": 60
+        "base": 63,
+        "adjusted": 63
       }
     },
     {
@@ -2459,13 +2581,14 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -2480,13 +2603,14 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 21,
@@ -2500,6 +2624,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2520,17 +2645,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 26,
-        "adjusted": 26
+        "base": 36,
+        "adjusted": 36
       }
     },
     {
@@ -2540,6 +2666,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2561,6 +2688,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2583,6 +2711,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2605,6 +2734,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2626,6 +2756,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2648,6 +2779,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2670,14 +2802,15 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 16,
@@ -2691,6 +2824,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2698,12 +2832,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 45
+        "base": 35,
+        "adjusted": 35
       }
     },
     {
@@ -2713,19 +2846,20 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 110,
-        "adjusted": 110
+        "base": 89,
+        "adjusted": 89
       }
     },
     {
@@ -2735,18 +2869,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 9,
-        "adjusted": 9
+        "base": 19,
+        "adjusted": 19
       }
     },
     {
@@ -2756,13 +2891,14 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Armored Gear",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -2778,6 +2914,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2785,12 +2922,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 78,
-        "adjusted": 78
+        "base": 81,
+        "adjusted": 81
       }
     },
     {
@@ -2800,6 +2937,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2821,6 +2959,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2828,12 +2967,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 65,
-        "adjusted": 65
+        "base": 68,
+        "adjusted": 68
       }
     },
     {
@@ -2843,6 +2982,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2850,7 +2990,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -2865,6 +3005,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2872,7 +3013,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 26,
@@ -2886,6 +3027,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2907,6 +3049,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2914,11 +3057,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 31,
-        "adjusted": 31
+        "base": 41,
+        "adjusted": 41
       }
     },
     {
@@ -2928,6 +3071,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2949,6 +3093,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2971,6 +3116,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2993,6 +3139,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3014,6 +3161,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3036,6 +3184,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3058,14 +3207,15 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 13,
@@ -3079,6 +3229,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3086,12 +3237,11 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 42
+        "base": 32,
+        "adjusted": 32
       }
     },
     {
@@ -3101,19 +3251,20 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 107,
-        "adjusted": 107
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -3123,18 +3274,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 6,
-        "adjusted": 6
+        "base": 16,
+        "adjusted": 16
       }
     },
     {
@@ -3144,13 +3296,14 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -3166,6 +3319,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3173,12 +3327,12 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -3188,6 +3342,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3209,6 +3364,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3216,12 +3372,12 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 62,
-        "adjusted": 62
+        "base": 65,
+        "adjusted": 65
       }
     },
     {
@@ -3231,6 +3387,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3238,7 +3395,7 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -3253,6 +3410,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3260,7 +3418,7 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 23,
@@ -3274,6 +3432,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3295,6 +3454,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3302,11 +3462,11 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 28,
-        "adjusted": 28
+        "base": 38,
+        "adjusted": 38
       }
     },
     {
@@ -3316,6 +3476,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3338,6 +3499,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3361,6 +3523,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3384,6 +3547,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3406,6 +3570,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3429,6 +3594,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3452,6 +3618,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3459,8 +3626,8 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 18,
@@ -3474,6 +3641,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3482,12 +3650,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 47
+        "base": 37,
+        "adjusted": 37
       }
     },
     {
@@ -3497,6 +3664,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3504,13 +3672,13 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 112,
-        "adjusted": 112
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -3520,6 +3688,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3527,12 +3696,12 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 11,
-        "adjusted": 11
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -3542,6 +3711,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3549,7 +3719,7 @@
         "Shield, Improvised-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -3565,6 +3735,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3573,12 +3744,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 80,
-        "adjusted": 80
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -3588,6 +3759,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3610,6 +3782,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3618,12 +3791,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 67,
-        "adjusted": 67
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -3633,6 +3806,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3641,7 +3815,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -3656,6 +3830,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3664,7 +3839,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 28,
@@ -3678,6 +3853,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3700,6 +3876,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3708,11 +3885,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 33,
-        "adjusted": 33
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -3722,6 +3899,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3741,6 +3919,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3761,6 +3940,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3781,6 +3961,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3800,6 +3981,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3820,6 +4002,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3830,7 +4013,7 @@
       ],
       "bp": {
         "base": 182,
-        "adjusted": 171
+        "adjusted": 182
       }
     },
     {
@@ -3840,12 +4023,13 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 13,
@@ -3859,17 +4043,17 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 42
+        "base": 32,
+        "adjusted": 32
       }
     },
     {
@@ -3879,17 +4063,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 107,
-        "adjusted": 107
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -3899,16 +4084,17 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 6,
-        "adjusted": 6
+        "base": 16,
+        "adjusted": 16
       }
     },
     {
@@ -3918,11 +4104,12 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -3938,17 +4125,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -3958,6 +4146,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3977,17 +4166,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 62,
-        "adjusted": 62
+        "base": 65,
+        "adjusted": 65
       }
     },
     {
@@ -3997,12 +4187,13 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -4017,12 +4208,13 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 23,
@@ -4036,6 +4228,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4055,16 +4248,17 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 28,
-        "adjusted": 28
+        "base": 38,
+        "adjusted": 38
       }
     },
     {
@@ -4074,6 +4268,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4094,6 +4289,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4115,6 +4311,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4136,6 +4333,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4156,6 +4354,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4177,6 +4376,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4188,7 +4388,7 @@
       ],
       "bp": {
         "base": 187,
-        "adjusted": 176
+        "adjusted": 187
       }
     },
     {
@@ -4198,13 +4398,14 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 18,
@@ -4218,18 +4419,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 47
+        "base": 37,
+        "adjusted": 37
       }
     },
     {
@@ -4239,18 +4440,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 112,
-        "adjusted": 112
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -4260,17 +4462,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 11,
-        "adjusted": 11
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -4280,12 +4483,13 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -4301,18 +4505,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 80,
-        "adjusted": 80
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -4322,6 +4527,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4342,18 +4548,19 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 67,
-        "adjusted": 67
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -4363,13 +4570,14 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -4384,13 +4592,14 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 28,
@@ -4404,6 +4613,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4424,17 +4634,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 33,
-        "adjusted": 33
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -4444,6 +4655,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4464,6 +4676,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4475,7 +4688,7 @@
       ],
       "bp": {
         "base": 56,
-        "adjusted": 50
+        "adjusted": 56
       }
     },
     {
@@ -4485,6 +4698,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4496,7 +4710,7 @@
       ],
       "bp": {
         "base": 224,
-        "adjusted": 197
+        "adjusted": 224
       }
     },
     {
@@ -4506,6 +4720,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4526,6 +4741,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4537,7 +4753,7 @@
       ],
       "bp": {
         "base": 71,
-        "adjusted": 65
+        "adjusted": 71
       }
     },
     {
@@ -4547,6 +4763,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4558,7 +4775,7 @@
       ],
       "bp": {
         "base": 192,
-        "adjusted": 181
+        "adjusted": 192
       }
     },
     {
@@ -4568,13 +4785,14 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 23,
@@ -4588,18 +4806,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 52,
-        "adjusted": 52
+        "base": 42,
+        "adjusted": 42
       }
     },
     {
@@ -4609,18 +4827,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 117,
-        "adjusted": 117
+        "base": 96,
+        "adjusted": 96
       }
     },
     {
@@ -4630,17 +4849,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 16,
-        "adjusted": 16
+        "base": 26,
+        "adjusted": 26
       }
     },
     {
@@ -4650,12 +4870,13 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -4671,18 +4892,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 85,
-        "adjusted": 85
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -4692,6 +4914,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4712,18 +4935,19 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 72,
-        "adjusted": 72
+        "base": 75,
+        "adjusted": 75
       }
     },
     {
@@ -4733,13 +4957,14 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -4754,13 +4979,14 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 33,
@@ -4774,6 +5000,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4794,17 +5021,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 38,
-        "adjusted": 38
+        "base": 48,
+        "adjusted": 48
       }
     },
     {
@@ -4814,6 +5042,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4835,6 +5064,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4847,7 +5077,7 @@
       ],
       "bp": {
         "base": 61,
-        "adjusted": 55
+        "adjusted": 61
       }
     },
     {
@@ -4857,6 +5087,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4869,7 +5100,7 @@
       ],
       "bp": {
         "base": 229,
-        "adjusted": 202
+        "adjusted": 229
       }
     },
     {
@@ -4879,6 +5110,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4900,6 +5132,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4912,7 +5145,7 @@
       ],
       "bp": {
         "base": 76,
-        "adjusted": 70
+        "adjusted": 76
       }
     },
     {
@@ -4922,6 +5155,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4934,7 +5168,7 @@
       ],
       "bp": {
         "base": 197,
-        "adjusted": 186
+        "adjusted": 197
       }
     },
     {
@@ -4944,14 +5178,15 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 28,
@@ -4965,6 +5200,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4972,12 +5208,11 @@
         "Shield, Medium",
         "Armored Gear",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 57,
-        "adjusted": 57
+        "base": 47,
+        "adjusted": 47
       }
     },
     {
@@ -4987,19 +5222,20 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 122,
-        "adjusted": 122
+        "base": 101,
+        "adjusted": 101
       }
     },
     {
@@ -5009,18 +5245,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 21,
-        "adjusted": 21
+        "base": 31,
+        "adjusted": 31
       }
     },
     {
@@ -5030,13 +5267,14 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Armored Gear",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -5052,6 +5290,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5059,12 +5298,12 @@
         "Shield, Medium",
         "Armored Gear",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 90,
-        "adjusted": 90
+        "base": 93,
+        "adjusted": 93
       }
     },
     {
@@ -5074,6 +5313,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5095,6 +5335,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5102,12 +5343,12 @@
         "Shield, Medium",
         "Armored Gear",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 77,
-        "adjusted": 77
+        "base": 80,
+        "adjusted": 80
       }
     },
     {
@@ -5117,6 +5358,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5124,7 +5366,7 @@
         "Shield, Medium",
         "Armored Gear",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -5139,6 +5381,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5146,7 +5389,7 @@
         "Shield, Medium",
         "Armored Gear",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 38,
@@ -5160,6 +5403,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5181,6 +5425,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5188,11 +5433,11 @@
         "Shield, Medium",
         "Armored Gear",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 43,
-        "adjusted": 43
+        "base": 53,
+        "adjusted": 53
       }
     },
     {
@@ -5202,6 +5447,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5222,6 +5468,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5243,6 +5490,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5264,6 +5512,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5284,6 +5533,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5305,6 +5555,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5316,7 +5567,7 @@
       ],
       "bp": {
         "base": 185,
-        "adjusted": 174
+        "adjusted": 185
       }
     },
     {
@@ -5326,13 +5577,14 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 16,
@@ -5346,18 +5598,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 45
+        "base": 35,
+        "adjusted": 35
       }
     },
     {
@@ -5367,18 +5619,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 110,
-        "adjusted": 110
+        "base": 89,
+        "adjusted": 89
       }
     },
     {
@@ -5388,17 +5641,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 9,
-        "adjusted": 9
+        "base": 19,
+        "adjusted": 19
       }
     },
     {
@@ -5408,12 +5662,13 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -5429,18 +5684,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 78,
-        "adjusted": 78
+        "base": 81,
+        "adjusted": 81
       }
     },
     {
@@ -5450,6 +5706,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5470,18 +5727,19 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 65,
-        "adjusted": 65
+        "base": 68,
+        "adjusted": 68
       }
     },
     {
@@ -5491,13 +5749,14 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -5512,13 +5771,14 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 26,
@@ -5532,6 +5792,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5552,17 +5813,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 31,
-        "adjusted": 31
+        "base": 41,
+        "adjusted": 41
       }
     },
     {
@@ -5572,6 +5834,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5593,6 +5856,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5615,6 +5879,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5637,6 +5902,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5658,6 +5924,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5680,6 +5947,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5692,7 +5960,7 @@
       ],
       "bp": {
         "base": 190,
-        "adjusted": 179
+        "adjusted": 190
       }
     },
     {
@@ -5702,14 +5970,15 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 21,
@@ -5723,6 +5992,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5730,12 +6000,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 50
+        "base": 40,
+        "adjusted": 40
       }
     },
     {
@@ -5745,19 +6014,20 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 115,
-        "adjusted": 115
+        "base": 94,
+        "adjusted": 94
       }
     },
     {
@@ -5767,18 +6037,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 14,
-        "adjusted": 14
+        "base": 24,
+        "adjusted": 24
       }
     },
     {
@@ -5788,13 +6059,14 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -5810,6 +6082,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5817,12 +6090,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 83
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -5832,6 +6105,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5853,6 +6127,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5860,12 +6135,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 70
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -5875,6 +6150,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5882,7 +6158,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -5897,6 +6173,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5904,7 +6181,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 31,
@@ -5918,6 +6195,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5939,6 +6217,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5946,11 +6225,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 36,
-        "adjusted": 36
+        "base": 46,
+        "adjusted": 46
       }
     },
     {
@@ -5960,6 +6239,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5981,6 +6261,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5993,7 +6274,7 @@
       ],
       "bp": {
         "base": 59,
-        "adjusted": 53
+        "adjusted": 59
       }
     },
     {
@@ -6003,6 +6284,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6015,7 +6297,7 @@
       ],
       "bp": {
         "base": 227,
-        "adjusted": 200
+        "adjusted": 227
       }
     },
     {
@@ -6025,6 +6307,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6046,6 +6329,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6058,7 +6342,7 @@
       ],
       "bp": {
         "base": 74,
-        "adjusted": 68
+        "adjusted": 74
       }
     },
     {
@@ -6068,6 +6352,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6080,7 +6365,7 @@
       ],
       "bp": {
         "base": 195,
-        "adjusted": 184
+        "adjusted": 195
       }
     },
     {
@@ -6090,14 +6375,15 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 26,
@@ -6111,6 +6397,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6118,12 +6405,11 @@
         "Shield, Medium",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 55,
-        "adjusted": 55
+        "base": 45,
+        "adjusted": 45
       }
     },
     {
@@ -6133,19 +6419,20 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 120,
-        "adjusted": 120
+        "base": 99,
+        "adjusted": 99
       }
     },
     {
@@ -6155,18 +6442,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 19,
-        "adjusted": 19
+        "base": 29,
+        "adjusted": 29
       }
     },
     {
@@ -6176,13 +6464,14 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -6198,6 +6487,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6205,12 +6495,12 @@
         "Shield, Medium",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 88,
-        "adjusted": 88
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -6220,6 +6510,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6241,6 +6532,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6248,12 +6540,12 @@
         "Shield, Medium",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -6263,6 +6555,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6270,7 +6563,7 @@
         "Shield, Medium",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -6285,6 +6578,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6292,7 +6586,7 @@
         "Shield, Medium",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 36,
@@ -6306,6 +6600,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6327,6 +6622,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6334,11 +6630,11 @@
         "Shield, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 41,
-        "adjusted": 41
+        "base": 51,
+        "adjusted": 51
       }
     },
     {
@@ -6348,6 +6644,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6370,6 +6667,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6383,7 +6681,7 @@
       ],
       "bp": {
         "base": 64,
-        "adjusted": 58
+        "adjusted": 64
       }
     },
     {
@@ -6393,6 +6691,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6406,7 +6705,7 @@
       ],
       "bp": {
         "base": 232,
-        "adjusted": 205
+        "adjusted": 232
       }
     },
     {
@@ -6416,6 +6715,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6438,6 +6738,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6451,7 +6752,7 @@
       ],
       "bp": {
         "base": 79,
-        "adjusted": 73
+        "adjusted": 79
       }
     },
     {
@@ -6461,6 +6762,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6474,7 +6776,7 @@
       ],
       "bp": {
         "base": 200,
-        "adjusted": 189
+        "adjusted": 200
       }
     },
     {
@@ -6484,6 +6786,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6491,8 +6794,8 @@
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 31,
@@ -6506,6 +6809,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6514,12 +6818,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 60,
-        "adjusted": 60
+        "base": 50,
+        "adjusted": 50
       }
     },
     {
@@ -6529,6 +6832,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6536,13 +6840,13 @@
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 125,
-        "adjusted": 125
+        "base": 104,
+        "adjusted": 104
       }
     },
     {
@@ -6552,6 +6856,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6559,12 +6864,12 @@
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 24,
-        "adjusted": 24
+        "base": 34,
+        "adjusted": 34
       }
     },
     {
@@ -6574,6 +6879,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6581,7 +6887,7 @@
         "Shield, Medium",
         "Armored Gear",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -6597,6 +6903,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6605,12 +6912,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 93,
-        "adjusted": 93
+        "base": 96,
+        "adjusted": 96
       }
     },
     {
@@ -6620,6 +6927,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6642,6 +6950,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6650,12 +6959,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 80,
-        "adjusted": 80
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -6665,6 +6974,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6673,7 +6983,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -6688,6 +6998,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6696,7 +7007,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 41,
@@ -6710,6 +7021,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6732,6 +7044,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6740,11 +7053,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 46,
-        "adjusted": 46
+        "base": 56,
+        "adjusted": 56
       }
     },
     {
@@ -6754,6 +7067,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6773,6 +7087,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6783,7 +7098,7 @@
       ],
       "bp": {
         "base": 48,
-        "adjusted": 42
+        "adjusted": 48
       }
     },
     {
@@ -6793,6 +7108,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6803,7 +7119,7 @@
       ],
       "bp": {
         "base": 216,
-        "adjusted": 189
+        "adjusted": 216
       }
     },
     {
@@ -6813,6 +7129,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6832,6 +7149,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6842,7 +7160,7 @@
       ],
       "bp": {
         "base": 63,
-        "adjusted": 57
+        "adjusted": 63
       }
     },
     {
@@ -6852,6 +7170,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6862,7 +7181,7 @@
       ],
       "bp": {
         "base": 184,
-        "adjusted": 173
+        "adjusted": 184
       }
     },
     {
@@ -6872,12 +7191,13 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 15,
@@ -6891,17 +7211,17 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 44,
-        "adjusted": 44
+        "base": 34,
+        "adjusted": 34
       }
     },
     {
@@ -6911,17 +7231,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 109,
-        "adjusted": 109
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -6931,16 +7252,17 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 8,
-        "adjusted": 8
+        "base": 18,
+        "adjusted": 18
       }
     },
     {
@@ -6950,11 +7272,12 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -6970,17 +7293,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 77,
-        "adjusted": 77
+        "base": 80,
+        "adjusted": 80
       }
     },
     {
@@ -6990,6 +7314,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7009,17 +7334,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 64,
-        "adjusted": 64
+        "base": 67,
+        "adjusted": 67
       }
     },
     {
@@ -7029,12 +7355,13 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -7049,12 +7376,13 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 25,
@@ -7068,6 +7396,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7087,16 +7416,17 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 30,
-        "adjusted": 30
+        "base": 40,
+        "adjusted": 40
       }
     },
     {
@@ -7106,6 +7436,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7126,6 +7457,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7137,7 +7469,7 @@
       ],
       "bp": {
         "base": 53,
-        "adjusted": 47
+        "adjusted": 53
       }
     },
     {
@@ -7147,6 +7479,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7158,7 +7491,7 @@
       ],
       "bp": {
         "base": 221,
-        "adjusted": 194
+        "adjusted": 221
       }
     },
     {
@@ -7168,6 +7501,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7188,6 +7522,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7199,7 +7534,7 @@
       ],
       "bp": {
         "base": 68,
-        "adjusted": 62
+        "adjusted": 68
       }
     },
     {
@@ -7209,6 +7544,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7220,7 +7556,7 @@
       ],
       "bp": {
         "base": 189,
-        "adjusted": 178
+        "adjusted": 189
       }
     },
     {
@@ -7230,13 +7566,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 20,
@@ -7250,18 +7587,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 49,
-        "adjusted": 49
+        "base": 39,
+        "adjusted": 39
       }
     },
     {
@@ -7271,18 +7608,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 114,
-        "adjusted": 114
+        "base": 93,
+        "adjusted": 93
       }
     },
     {
@@ -7292,17 +7630,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 13,
-        "adjusted": 13
+        "base": 23,
+        "adjusted": 23
       }
     },
     {
@@ -7312,12 +7651,13 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -7333,18 +7673,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 82,
-        "adjusted": 82
+        "base": 85,
+        "adjusted": 85
       }
     },
     {
@@ -7354,6 +7695,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7374,18 +7716,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 69,
-        "adjusted": 69
+        "base": 72,
+        "adjusted": 72
       }
     },
     {
@@ -7395,13 +7738,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -7416,13 +7760,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 30,
@@ -7436,6 +7781,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7456,17 +7802,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 35,
-        "adjusted": 35
+        "base": 45,
+        "adjusted": 45
       }
     },
     {
@@ -7476,6 +7823,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7496,6 +7844,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7507,7 +7856,7 @@
       ],
       "bp": {
         "base": 51,
-        "adjusted": 45
+        "adjusted": 51
       }
     },
     {
@@ -7517,6 +7866,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7528,7 +7878,7 @@
       ],
       "bp": {
         "base": 219,
-        "adjusted": 192
+        "adjusted": 219
       }
     },
     {
@@ -7538,6 +7888,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7558,6 +7909,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7569,7 +7921,7 @@
       ],
       "bp": {
         "base": 66,
-        "adjusted": 60
+        "adjusted": 66
       }
     },
     {
@@ -7579,6 +7931,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7590,7 +7943,7 @@
       ],
       "bp": {
         "base": 187,
-        "adjusted": 176
+        "adjusted": 187
       }
     },
     {
@@ -7600,13 +7953,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 18,
@@ -7620,18 +7974,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 47
+        "base": 37,
+        "adjusted": 37
       }
     },
     {
@@ -7641,18 +7995,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 112,
-        "adjusted": 112
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -7662,17 +8017,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 11,
-        "adjusted": 11
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -7682,12 +8038,13 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -7703,18 +8060,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 80,
-        "adjusted": 80
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -7724,6 +8082,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7744,18 +8103,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 67,
-        "adjusted": 67
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -7765,13 +8125,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -7786,13 +8147,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 28,
@@ -7806,6 +8168,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7826,17 +8189,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 33,
-        "adjusted": 33
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -7846,6 +8210,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7867,6 +8232,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7879,7 +8245,7 @@
       ],
       "bp": {
         "base": 56,
-        "adjusted": 50
+        "adjusted": 56
       }
     },
     {
@@ -7889,6 +8255,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7901,7 +8268,7 @@
       ],
       "bp": {
         "base": 224,
-        "adjusted": 197
+        "adjusted": 224
       }
     },
     {
@@ -7911,6 +8278,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7932,6 +8300,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7944,7 +8313,7 @@
       ],
       "bp": {
         "base": 71,
-        "adjusted": 65
+        "adjusted": 71
       }
     },
     {
@@ -7954,6 +8323,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7966,7 +8336,7 @@
       ],
       "bp": {
         "base": 192,
-        "adjusted": 181
+        "adjusted": 192
       }
     },
     {
@@ -7976,14 +8346,15 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 23,
@@ -7997,6 +8368,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8004,12 +8376,11 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 52,
-        "adjusted": 52
+        "base": 42,
+        "adjusted": 42
       }
     },
     {
@@ -8019,19 +8390,20 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 117,
-        "adjusted": 117
+        "base": 96,
+        "adjusted": 96
       }
     },
     {
@@ -8041,18 +8413,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 16,
-        "adjusted": 16
+        "base": 26,
+        "adjusted": 26
       }
     },
     {
@@ -8062,13 +8435,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Armored Gear",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -8084,6 +8458,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8091,12 +8466,12 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 85,
-        "adjusted": 85
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -8106,6 +8481,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8127,6 +8503,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8134,12 +8511,12 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 72,
-        "adjusted": 72
+        "base": 75,
+        "adjusted": 75
       }
     },
     {
@@ -8149,6 +8526,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8156,7 +8534,7 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -8171,6 +8549,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8178,7 +8557,7 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 33,
@@ -8192,6 +8571,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8213,6 +8593,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8220,11 +8601,11 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 38,
-        "adjusted": 38
+        "base": 48,
+        "adjusted": 48
       }
     },
     {
@@ -8234,6 +8615,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8254,6 +8636,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8265,7 +8648,7 @@
       ],
       "bp": {
         "base": 51,
-        "adjusted": 45
+        "adjusted": 51
       }
     },
     {
@@ -8275,6 +8658,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8286,7 +8670,7 @@
       ],
       "bp": {
         "base": 219,
-        "adjusted": 192
+        "adjusted": 219
       }
     },
     {
@@ -8296,6 +8680,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8316,6 +8701,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8327,7 +8713,7 @@
       ],
       "bp": {
         "base": 66,
-        "adjusted": 60
+        "adjusted": 66
       }
     },
     {
@@ -8337,6 +8723,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8348,7 +8735,7 @@
       ],
       "bp": {
         "base": 187,
-        "adjusted": 176
+        "adjusted": 187
       }
     },
     {
@@ -8358,13 +8745,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 18,
@@ -8378,18 +8766,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 47
+        "base": 37,
+        "adjusted": 37
       }
     },
     {
@@ -8399,18 +8787,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 112,
-        "adjusted": 112
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -8420,17 +8809,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 11,
-        "adjusted": 11
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -8440,12 +8830,13 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -8461,18 +8852,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 80,
-        "adjusted": 80
+        "base": 83,
+        "adjusted": 83
       }
     },
     {
@@ -8482,6 +8874,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8502,18 +8895,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 67,
-        "adjusted": 67
+        "base": 70,
+        "adjusted": 70
       }
     },
     {
@@ -8523,13 +8917,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -8544,13 +8939,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 28,
@@ -8564,6 +8960,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8584,17 +8981,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 33,
-        "adjusted": 33
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -8604,6 +9002,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8625,6 +9024,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8637,7 +9037,7 @@
       ],
       "bp": {
         "base": 56,
-        "adjusted": 50
+        "adjusted": 56
       }
     },
     {
@@ -8647,6 +9047,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8659,7 +9060,7 @@
       ],
       "bp": {
         "base": 224,
-        "adjusted": 197
+        "adjusted": 224
       }
     },
     {
@@ -8669,6 +9070,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8690,6 +9092,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8702,7 +9105,7 @@
       ],
       "bp": {
         "base": 71,
-        "adjusted": 65
+        "adjusted": 71
       }
     },
     {
@@ -8712,6 +9115,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8724,7 +9128,7 @@
       ],
       "bp": {
         "base": 192,
-        "adjusted": 181
+        "adjusted": 192
       }
     },
     {
@@ -8734,14 +9138,15 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 23,
@@ -8755,6 +9160,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8762,12 +9168,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 52,
-        "adjusted": 52
+        "base": 42,
+        "adjusted": 42
       }
     },
     {
@@ -8777,19 +9182,20 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 117,
-        "adjusted": 117
+        "base": 96,
+        "adjusted": 96
       }
     },
     {
@@ -8799,18 +9205,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 16,
-        "adjusted": 16
+        "base": 26,
+        "adjusted": 26
       }
     },
     {
@@ -8820,13 +9227,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Armored Gear",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -8842,6 +9250,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8849,12 +9258,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 85,
-        "adjusted": 85
+        "base": 88,
+        "adjusted": 88
       }
     },
     {
@@ -8864,6 +9273,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8885,6 +9295,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8892,12 +9303,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 72,
-        "adjusted": 72
+        "base": 75,
+        "adjusted": 75
       }
     },
     {
@@ -8907,6 +9318,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8914,7 +9326,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -8929,6 +9341,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8936,7 +9349,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 33,
@@ -8950,6 +9363,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8971,6 +9385,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8978,11 +9393,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 38,
-        "adjusted": 38
+        "base": 48,
+        "adjusted": 48
       }
     },
     {
@@ -8992,6 +9407,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9013,6 +9429,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9025,7 +9442,7 @@
       ],
       "bp": {
         "base": 54,
-        "adjusted": 48
+        "adjusted": 54
       }
     },
     {
@@ -9035,6 +9452,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9047,7 +9465,7 @@
       ],
       "bp": {
         "base": 222,
-        "adjusted": 195
+        "adjusted": 222
       }
     },
     {
@@ -9057,6 +9475,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9078,6 +9497,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9090,7 +9510,7 @@
       ],
       "bp": {
         "base": 69,
-        "adjusted": 63
+        "adjusted": 69
       }
     },
     {
@@ -9100,6 +9520,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9112,7 +9533,7 @@
       ],
       "bp": {
         "base": 190,
-        "adjusted": 179
+        "adjusted": 190
       }
     },
     {
@@ -9122,14 +9543,15 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 21,
@@ -9143,6 +9565,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9150,12 +9573,11 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 50
+        "base": 40,
+        "adjusted": 40
       }
     },
     {
@@ -9165,19 +9587,20 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 115,
-        "adjusted": 115
+        "base": 94,
+        "adjusted": 94
       }
     },
     {
@@ -9187,18 +9610,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 14,
-        "adjusted": 14
+        "base": 24,
+        "adjusted": 24
       }
     },
     {
@@ -9208,13 +9632,14 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -9230,6 +9655,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9237,12 +9663,12 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 83,
-        "adjusted": 83
+        "base": 86,
+        "adjusted": 86
       }
     },
     {
@@ -9252,6 +9678,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9273,6 +9700,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9280,12 +9708,12 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 70,
-        "adjusted": 70
+        "base": 73,
+        "adjusted": 73
       }
     },
     {
@@ -9295,6 +9723,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9302,7 +9731,7 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -9317,6 +9746,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9324,7 +9754,7 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 31,
@@ -9338,6 +9768,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9359,6 +9790,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9366,11 +9798,11 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 36,
-        "adjusted": 36
+        "base": 46,
+        "adjusted": 46
       }
     },
     {
@@ -9380,6 +9812,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9402,6 +9835,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9415,7 +9849,7 @@
       ],
       "bp": {
         "base": 59,
-        "adjusted": 53
+        "adjusted": 59
       }
     },
     {
@@ -9425,6 +9859,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9438,7 +9873,7 @@
       ],
       "bp": {
         "base": 227,
-        "adjusted": 200
+        "adjusted": 227
       }
     },
     {
@@ -9448,6 +9883,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9470,6 +9906,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9483,7 +9920,7 @@
       ],
       "bp": {
         "base": 74,
-        "adjusted": 68
+        "adjusted": 74
       }
     },
     {
@@ -9493,6 +9930,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9506,7 +9944,7 @@
       ],
       "bp": {
         "base": 195,
-        "adjusted": 184
+        "adjusted": 195
       }
     },
     {
@@ -9516,6 +9954,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9523,8 +9962,8 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Cannon, D 75mm (17-pdr)",
-        "Improvised Thrown"
+        "Improvised Thrown",
+        "Pistol, Pepperbox"
       ],
       "bp": {
         "base": 26,
@@ -9538,6 +9977,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9546,12 +9986,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Bottle-Phial, Caustic-1",
-        "Cannon, B 25mm (2-pdr)",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 55,
-        "adjusted": 55
+        "base": 45,
+        "adjusted": 45
       }
     },
     {
@@ -9561,6 +10000,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9568,13 +10008,13 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Gatling Gun, Mini",
-        "Gatling Gun, Mini (Mounted)",
+        "Chakram Rings, Serrated",
+        "Chakram Rings",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 120,
-        "adjusted": 120
+        "base": 99,
+        "adjusted": 99
       }
     },
     {
@@ -9584,6 +10024,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9591,12 +10032,12 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Ballista, Heavy",
-        "Cannon, D 75mm (17-pdr)"
+        "Bow, Light",
+        "Improvised Thrown"
       ],
       "bp": {
-        "base": 19,
-        "adjusted": 19
+        "base": 29,
+        "adjusted": 29
       }
     },
     {
@@ -9606,6 +10047,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9613,7 +10055,7 @@
         "Shield, Heavy-Small",
         "Armored Gear",
         "Helmet, Common",
-        "Sling, Staff",
+        "Staff, Sling",
         "Bottle-Phial, Caustic-1",
         "Throwing Stars"
       ],
@@ -9629,6 +10071,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9637,12 +10080,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Crossbow, Repeating Heavy",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Axes"
       ],
       "bp": {
-        "base": 88,
-        "adjusted": 88
+        "base": 91,
+        "adjusted": 91
       }
     },
     {
@@ -9652,6 +10095,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9674,6 +10118,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9682,12 +10127,12 @@
         "Armored Gear",
         "Helmet, Common",
         "Knuckledusters, Spiked",
-        "Gatling Gun, Mini",
+        "Chakram Rings, Serrated",
         "Throwing Stars"
       ],
       "bp": {
-        "base": 75,
-        "adjusted": 75
+        "base": 78,
+        "adjusted": 78
       }
     },
     {
@@ -9697,6 +10142,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9705,7 +10151,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Axe-Sword of Tan-doc",
-        "Cannon, D 75mm (17-pdr)",
+        "Improvised Thrown",
         "Throwing Axes"
       ],
       "bp": {
@@ -9720,6 +10166,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9728,7 +10175,7 @@
         "Armored Gear",
         "Helmet, Common",
         "Club, Circus Mallet",
-        "Sling, Staff"
+        "Staff, Sling"
       ],
       "bp": {
         "base": 36,
@@ -9742,6 +10189,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 7,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9764,6 +10212,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9772,11 +10221,11 @@
         "Armored Gear",
         "Helmet, Common",
         "Polearm, Pike",
-        "Ballista, Heavy"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 41,
-        "adjusted": 41
+        "base": 51,
+        "adjusted": 51
       }
     }
   ]

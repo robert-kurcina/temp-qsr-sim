@@ -63,6 +63,7 @@ function buildParams(overrides: Record<string, unknown> = {}) {
       trackMovesWhileWaiting: vi.fn(),
       trackPassiveUsage: vi.fn(),
       trackCombatExtras: vi.fn(),
+      trackCombatAssignmentsFromStep: vi.fn(),
       incrementAction: vi.fn(),
     },
     profiler: {

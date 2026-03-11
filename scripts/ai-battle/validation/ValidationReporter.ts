@@ -36,6 +36,19 @@ function deriveCombatEfficacySummary(report: ValidationAggregateReport): CombatE
   const hitPasses = Number(report.totals.hitTestsPassed ?? 0);
   const damageAttempts = Number(report.totals.damageTestsAttempted ?? 0);
   const damagePasses = Number(report.totals.damageTestsPassed ?? 0);
+  const totalAssignments = {
+    wounds: Number(report.totals.woundsAssigned ?? 0),
+    fear: Number(report.totals.fearAssigned ?? 0),
+    delay: Number(report.totals.delayAssigned ?? 0),
+  };
+  const damageAssignments = {
+    wounds: Number(report.totals.damageWoundsAssigned ?? totalAssignments.wounds),
+    fear: Number(report.totals.damageFearAssigned ?? totalAssignments.fear),
+    delay: Number(report.totals.damageDelayAssigned ?? totalAssignments.delay),
+  };
+  const passiveOrOtherDelay = Number(
+    report.totals.passiveOrOtherDelayAssigned ?? Math.max(0, totalAssignments.delay - damageAssignments.delay)
+  );
   return {
     hitTests: {
       attempts: hitAttempts,
@@ -49,11 +62,9 @@ function deriveCombatEfficacySummary(report: ValidationAggregateReport): CombatE
       fails: Number(report.totals.damageTestsFailed ?? Math.max(0, damageAttempts - damagePasses)),
       passRate: safeRate(damagePasses, damageAttempts),
     },
-    assignments: {
-      wounds: Number(report.totals.woundsAssigned ?? 0),
-      fear: Number(report.totals.fearAssigned ?? 0),
-      delay: Number(report.totals.delayAssigned ?? 0),
-    },
+    damageAssignments,
+    passiveOrOtherDelay,
+    assignments: totalAssignments,
   };
 }
 
@@ -159,8 +170,9 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
     `  Combat Efficacy (Damage): ${(combatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${combatEfficacy.damageTests.passes}/${combatEfficacy.damageTests.attempts})`
   );
   lines.push(
-    `  Combat Assignments (W/F/D): ${combatEfficacy.assignments.wounds}/${combatEfficacy.assignments.fear}/${combatEfficacy.assignments.delay}`
+    `  Combat Assignments (Damage W/F/D): ${combatEfficacy.damageAssignments.wounds}/${combatEfficacy.damageAssignments.fear}/${combatEfficacy.damageAssignments.delay}`
   );
+  lines.push(`  Combat Delay (Passive/Other): ${combatEfficacy.passiveOrOtherDelay}`);
   lines.push(`  Turns Completed: ${report.totals.turnsCompleted}`);
   lines.push(`  Total Actions: ${report.totals.totalActions}`);
   lines.push(`  Moves: ${report.totals.moves}`);

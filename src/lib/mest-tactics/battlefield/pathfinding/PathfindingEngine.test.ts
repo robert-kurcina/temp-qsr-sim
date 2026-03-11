@@ -48,6 +48,36 @@ describe('PathfindingEngine caching', () => {
     expect(afterSecond.pathHits).toBeGreaterThanOrEqual(1);
   });
 
+  it('should reuse cached results for reverse-direction path queries', () => {
+    const battlefield = new Battlefield(20, 20);
+    battlefield.addTerrain(createRectObstacle('obs-a', 8, 6, 10, 14));
+    const engine = new PathfindingEngine(battlefield);
+    const start = { x: 2, y: 10 };
+    const end = { x: 18, y: 10 };
+
+    const forward = engine.findPath(start, end, {
+      footprintDiameter: 1,
+      useNavMesh: true,
+      useHierarchical: true,
+      optimizeWithLOS: true,
+    });
+    const afterForward = engine.getCacheStats();
+
+    const reverse = engine.findPath(end, start, {
+      footprintDiameter: 1,
+      useNavMesh: true,
+      useHierarchical: true,
+      optimizeWithLOS: true,
+    });
+    const afterReverse = engine.getCacheStats();
+
+    expect(forward.vectors.length).toBeGreaterThan(0);
+    expect(reverse.vectors.length).toBeGreaterThan(0);
+    expect(reverse.totalLength).toBeCloseTo(forward.totalLength, 6);
+    expect(afterForward.pathMisses).toBe(1);
+    expect(afterReverse.pathHits).toBeGreaterThanOrEqual(1);
+  });
+
   it('should invalidate caches when terrain version changes', () => {
     const battlefield = new Battlefield(20, 20);
     battlefield.addTerrain(createRectObstacle('obs-a', 8, 6, 10, 14));

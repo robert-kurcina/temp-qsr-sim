@@ -8,6 +8,7 @@ export interface ArmorLoadoutEntry {
   id: string;
   armorWeight: ArmorWeight;
   variation: 'no_gear_no_shield' | 'gear_no_shield' | 'shield_no_gear' | 'shield_and_gear';
+  requiredPhysicality: number;
   hasGear: boolean;
   hasShield: boolean;
   hasHelmet: boolean;
@@ -23,6 +24,7 @@ export interface WeaponLoadoutEntry {
   style: WeaponStyle;
   optionIndex: 1 | 2 | 3;
   handConfiguration: HandConfiguration;
+  requiredPhysicality: number;
   optionalStowedItem: string | null;
   items: string[];
   bp: {
@@ -38,6 +40,7 @@ export interface LoadoutCombinationEntry {
   armorWeight: ArmorWeight;
   weaponStyle: WeaponStyle;
   handConfiguration: HandConfiguration;
+  requiredPhysicality: number;
   compatible: boolean;
   compatibilityReason: 'ok' | 'shield_requires_1h_weapon';
   items: string[];

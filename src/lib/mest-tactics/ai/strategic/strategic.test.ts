@@ -22,7 +22,6 @@ import { Character, Profile } from '../../core';
 import { Battlefield } from '../../battlefield';
 import { createMissionSide } from '../../mission/MissionSide';
 import { buildAssembly } from '../../mission/assembly-builder';
-import { archetypes, melee_weapons } from '../../../data';
 
 function makeTestProfile(name: string): Profile {
   return {

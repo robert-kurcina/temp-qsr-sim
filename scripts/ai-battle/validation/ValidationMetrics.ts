@@ -65,6 +65,10 @@ export interface BattleStats {
   woundsAssigned?: number;
   fearAssigned?: number;
   delayAssigned?: number;
+  damageWoundsAssigned?: number;
+  damageFearAssigned?: number;
+  damageDelayAssigned?: number;
+  passiveOrOtherDelayAssigned?: number;
 }
 
 // ============================================================================
@@ -140,6 +144,9 @@ export interface CombatAssignmentSummary {
 export interface CombatEfficacySummary {
   hitTests: CombatTestSummary;
   damageTests: CombatTestSummary;
+  damageAssignments: CombatAssignmentSummary;
+  passiveOrOtherDelay: number;
+  /** Legacy aggregate assignment totals across combat steps. */
   assignments: CombatAssignmentSummary;
 }
 
@@ -572,6 +579,10 @@ export function createEmptyStats(): BattleStats {
     woundsAssigned: 0,
     fearAssigned: 0,
     delayAssigned: 0,
+    damageWoundsAssigned: 0,
+    damageFearAssigned: 0,
+    damageDelayAssigned: 0,
+    passiveOrOtherDelayAssigned: 0,
   };
 }
 

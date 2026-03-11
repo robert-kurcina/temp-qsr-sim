@@ -134,9 +134,14 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   const hitTestsPassed = stats.hitTestsPassed ?? 0;
   const damageTestsAttempted = stats.damageTestsAttempted ?? 0;
   const damageTestsPassed = stats.damageTestsPassed ?? 0;
-  const woundsAssigned = stats.woundsAssigned ?? 0;
-  const fearAssigned = stats.fearAssigned ?? 0;
-  const delayAssigned = stats.delayAssigned ?? 0;
+  const totalWoundsAssigned = stats.woundsAssigned ?? 0;
+  const totalFearAssigned = stats.fearAssigned ?? 0;
+  const totalDelayAssigned = stats.delayAssigned ?? 0;
+  const damageWoundsAssigned = stats.damageWoundsAssigned ?? totalWoundsAssigned;
+  const damageFearAssigned = stats.damageFearAssigned ?? totalFearAssigned;
+  const damageDelayAssigned = stats.damageDelayAssigned ?? totalDelayAssigned;
+  const passiveOrOtherDelayAssigned =
+    stats.passiveOrOtherDelayAssigned ?? Math.max(0, totalDelayAssigned - damageDelayAssigned);
 
   const lines: string[] = [];
   lines.push('════════════════════════════════════════════════════════════');
@@ -302,7 +307,9 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(`  KO's: ${stats.kos ?? 0}`);
   lines.push(`  Hit Tests: ${(safeRate(hitTestsPassed, hitTestsAttempted) * 100).toFixed(1)}% (${hitTestsPassed}/${hitTestsAttempted})`);
   lines.push(`  Damage Tests: ${(safeRate(damageTestsPassed, damageTestsAttempted) * 100).toFixed(1)}% (${damageTestsPassed}/${damageTestsAttempted})`);
-  lines.push(`  Combat Assignments (W/F/D): ${woundsAssigned}/${fearAssigned}/${delayAssigned}`);
+  lines.push(`  Combat Assignments (Damage W/F/D): ${damageWoundsAssigned}/${damageFearAssigned}/${damageDelayAssigned}`);
+  lines.push(`  Combat Delay (Passive/Other): ${passiveOrOtherDelayAssigned}`);
+  lines.push(`  Combat Assignments (All W/F/D): ${totalWoundsAssigned}/${totalFearAssigned}/${totalDelayAssigned}`);
   lines.push(`  Decision Telemetry Samples: ${decisionTelemetrySamples}`);
   if (decisionTelemetrySamples > 0) {
     lines.push(`  Attack Gate Applied: ${attackGateAppliedDecisions} (${(attackGateAppliedRate * 100).toFixed(1)}%)`);

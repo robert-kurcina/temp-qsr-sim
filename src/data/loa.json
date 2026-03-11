@@ -1,0 +1,2210 @@
+[
+  {
+    "A/Grav, Belt": { "loa": 2 }
+  },
+  {
+    "A/Grav, Ring": { "loa": 2 }
+  },
+  {
+    "Acid Spitter": { "loa": 2 }
+  },
+  {
+    "Agenda Document": { "loa": 0 }
+  },
+  {
+    "Ammo Belt, Bandolier": { "loa": 1 }
+  },
+  {
+    "Ammo Belt, Bandolier, Archaic": { "loa": 1 }
+  },
+  {
+    "Ammo Box": { "loa": 1 }
+  },
+  {
+    "Ammo, AP": { "loa": 0 }
+  },
+  {
+    "Ammo, AP-II": { "loa": 0 }
+  },
+  {
+    "Ammo, AT": { "loa": 2 }
+  },
+  {
+    "Ammo, AT-II": { "loa": 2 }
+  },
+  {
+    "Ammo, HE": { "loa": 0 }
+  },
+  {
+    "Ammo, HEAP": { "loa": 0 }
+  },
+  {
+    "Ammo, HEAP-II": { "loa": 0 }
+  },
+  {
+    "Ammo, HEAT": { "loa": 2 }
+  },
+  {
+    "Ammo, HEAT-II": { "loa": 2 }
+  },
+  {
+    "Ammo, HP": { "loa": 1 }
+  },
+  {
+    "Ammo, Tracer Round": { "loa": 1 }
+  },
+  {
+    "Amulet of Eyes": { "loa": 2 }
+  },
+  {
+    "Amulet of Fears": { "loa": 5 }
+  },
+  {
+    "Anti-gravity Harness": { "loa": 2 }
+  },
+  {
+    "Anti-tank Weapon, Bazooka, M1": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, Bazooka, M20": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, Faustpatrone": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, LAW": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, MAW": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, Panzerfaust": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, Panzerschreck": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, PIAT": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, Rocket": { "loa": 3 }
+  },
+  {
+    "Anti-tank Weapon, RPG-7": { "loa": 4 }
+  },
+  {
+    "Arc Weapon": { "loa": 2 }
+  },
+  {
+    "Arcanum, Accessory, Amulet": { "loa": 3 }
+  },
+  {
+    "Arcanum, Accessory, Monstrum": { "loa": 3 }
+  },
+  {
+    "Arcanum, Accessory, Ring": { "loa": 1 }
+  },
+  {
+    "Arcanum, Accessory, Stone": { "loa": 3 }
+  },
+  {
+    "Arcanum, Accessory, Trinket": { "loa": 3 }
+  },
+  {
+    "Arcanum, Attachment, Large": { "loa": 3 }
+  },
+  {
+    "Arcanum, Attachment, Small": { "loa": 3 }
+  },
+  {
+    "Arcanum, Codex, Common": { "loa": 1 }
+  },
+  {
+    "Arcanum, Codex, Legendary": { "loa": 2 }
+  },
+  {
+    "Arcanum, Scroll, Major": { "loa": 1 }
+  },
+  {
+    "Arcanum, Scroll, Minor": { "loa": 1 }
+  },
+  {
+    "Arcanum, Tome, Greater": { "loa": 2 }
+  },
+  {
+    "Arcanum, Tome, Lesser": { "loa": 1 }
+  },
+  {
+    "Armor, Combat Suit": { "loa": 2 }
+  },
+  {
+    "Armor, Field": { "loa": 2 }
+  },
+  {
+    "Armor, Field Advanced": { "loa": 2 }
+  },
+  {
+    "Armor, Field Bulletproof Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Field Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Field Mail": { "loa": 2 }
+  },
+  {
+    "Armor, Field Nanoweave": { "loa": 2 }
+  },
+  {
+    "Armor, Field Nanoweave BP": { "loa": 2 }
+  },
+  {
+    "Armor, Field, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Armor, Field, Bulletproof Advanced": { "loa": 2 }
+  },
+  {
+    "Armor, Heavy": { "loa": 1 }
+  },
+  {
+    "Armor, Heavy Advanced": { "loa": 1 }
+  },
+  {
+    "Armor, Heavy Bulletproof Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Heavy Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Heavy Mail": { "loa": 1 }
+  },
+  {
+    "Armor, Heavy Nanoweave": { "loa": 1 }
+  },
+  {
+    "Armor, Heavy Nanoweave BP": { "loa": 2 }
+  },
+  {
+    "Armor, Heavy, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Armor, Heavy, Bulletproof Advanced": { "loa": 2 }
+  },
+  {
+    "Armor, Light": { "loa": 0 }
+  },
+  {
+    "Armor, Light Advanced": { "loa": 0 }
+  },
+  {
+    "Armor, Light Bulletproof Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Light Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Light Mail": { "loa": 0 }
+  },
+  {
+    "Armor, Light Nanoweave": { "loa": 1 }
+  },
+  {
+    "Armor, Light Nanoweave BP": { "loa": 2 }
+  },
+  {
+    "Armor, Light, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Armor, Light, Bulletproof Advanced": { "loa": 2 }
+  },
+  {
+    "Armor, Medium": { "loa": 1 }
+  },
+  {
+    "Armor, Medium Advanced": { "loa": 1 }
+  },
+  {
+    "Armor, Medium Bulletproof Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Medium Flex": { "loa": 2 }
+  },
+  {
+    "Armor, Medium Mail": { "loa": 1 }
+  },
+  {
+    "Armor, Medium Nanoweave": { "loa": 1 }
+  },
+  {
+    "Armor, Medium Nanoweave BP": { "loa": 2 }
+  },
+  {
+    "Armor, Medium, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Armor, Medium, Bulletproof Advanced": { "loa": 2 }
+  },
+  {
+    "Armored Gear": { "loa": 0 }
+  },
+  {
+    "Armored Gear, Bracer": { "loa": 0 }
+  },
+  {
+    "Armored Gear, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Armored Gear, Padding": { "loa": 2 }
+  },
+  {
+    "Armored Gear, Padding Bulletproof": { "loa": 2 }
+  },
+  {
+    "Armored Gear, Vaumbrace": { "loa": 0 }
+  },
+  {
+    "Arquebus, Heavy": { "loa": 0 }
+  },
+  {
+    "Arquebus, Light": { "loa": 0 }
+  },
+  {
+    "Arquebus, Medium": { "loa": 0 }
+  },
+  {
+    "Auto-cannon, Heavy": { "loa": 2 }
+  },
+  {
+    "Auto-cannon, Light": { "loa": 2 }
+  },
+  {
+    "Auto-cannon, Medium": { "loa": 2 }
+  },
+  {
+    "Automedic": { "loa": 2 }
+  },
+  {
+    "Axe": { "loa": 0 }
+  },
+  {
+    "Axe, Battle": { "loa": 0 }
+  },
+  {
+    "Axe, Long": { "loa": 0 }
+  },
+  {
+    "Axe, Pick": { "loa": 0 }
+  },
+  {
+    "Axe, Tactical": { "loa": 0 }
+  },
+  {
+    "Ballista, Heavy": { "loa": 3 }
+  },
+  {
+    "Ballista, Medium": { "loa": 2 }
+  },
+  {
+    "Balllista, Light": { "loa": 2 }
+  },
+  {
+    "Bayonet": { "loa": 0 }
+  },
+  {
+    "Beam Cannon": { "loa": 2 }
+  },
+  {
+    "Beam Cannon, Heavy": { "loa": 2 }
+  },
+  {
+    "Beam Cannon, Light": { "loa": 2 }
+  },
+  {
+    "Beam Carbine": { "loa": 1 }
+  },
+  {
+    "Beam Carbine, Advanced": { "loa": 1 }
+  },
+  {
+    "Beam Gun": { "loa": 2 }
+  },
+  {
+    "Beam Gun, Advanced": { "loa": 2 }
+  },
+  {
+    "Beam Pistol": { "loa": 1 }
+  },
+  {
+    "Beam Pistol, Advanced": { "loa": 1 }
+  },
+  {
+    "Beam Rifle": { "loa": 1 }
+  },
+  {
+    "Beam Rifle, Advanced": { "loa": 1 }
+  },
+  {
+    "Beam Rifle, Advanced Heavy": { "loa": 2 }
+  },
+  {
+    "Beam Rifle, Early": { "loa": 1 }
+  },
+  {
+    "Beam Rifle, Early Heavy": { "loa": 2 }
+  },
+  {
+    "Beam Rifle, Heavy": { "loa": 2 }
+  },
+  {
+    "Belt of Strength": { "loa": 5 }
+  },
+  {
+    "Bite-1": { "loa": 0 }
+  },
+  {
+    "Bite-2": { "loa": 1 }
+  },
+  {
+    "Bite-3": { "loa": 1 }
+  },
+  {
+    "Black Jacks or Sap": { "loa": 1 }
+  },
+  {
+    "Blast, 12Minor - Basic": { "loa": 1 }
+  },
+  {
+    "Blast, 12Minor - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 12Minor - Rapid": { "loa": 1 }
+  },
+  {
+    "Blast, 12Minor - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blast, 13Major - Basic": { "loa": 1 }
+  },
+  {
+    "Blast, 13Major - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 13Major - Rapid": { "loa": 1 }
+  },
+  {
+    "Blast, 13Major - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blast, 22Minor - Basic": { "loa": 1 }
+  },
+  {
+    "Blast, 22Minor - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 22Minor - Rapid": { "loa": 1 }
+  },
+  {
+    "Blast, 22Minor - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blast, 23Major - Basic": { "loa": 1 }
+  },
+  {
+    "Blast, 23Major - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 23Major - Rapid": { "loa": 1 }
+  },
+  {
+    "Blast, 23Major - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blast, 2Minor - Basic": { "loa": 0 }
+  },
+  {
+    "Blast, 2Minor - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 2Minor - Rapid": { "loa": 1 }
+  },
+  {
+    "Blast, 2Minor - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blast, 3Major - Basic": { "loa": 0 }
+  },
+  {
+    "Blast, 3Major - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 3Major - Rapid": { "loa": 1 }
+  },
+  {
+    "Blast, 3Major - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blast, 4Greater - Basic": { "loa": 2 }
+  },
+  {
+    "Blast, 4Greater - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 4Greater - Rapid": { "loa": 2 }
+  },
+  {
+    "Blast, 4Greater - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blast, 4Wondrous - Basic": { "loa": 2 }
+  },
+  {
+    "Blast, 4Wondrous - Burst": { "loa": 2 }
+  },
+  {
+    "Blast, 4Wondrous - Rapid": { "loa": 2 }
+  },
+  {
+    "Blast, 4Wondrous - RapidBurst": { "loa": 2 }
+  },
+  {
+    "Blaster Glove": { "loa": 0 }
+  },
+  {
+    "Blaster Pistol": { "loa": 2 }
+  },
+  {
+    "Blaster Pistol, Magnum": { "loa": 2 }
+  },
+  {
+    "Blaster Rifle": { "loa": 2 }
+  },
+  {
+    "Blaster Rifle, Magnum": { "loa": 2 }
+  },
+  {
+    "Blast-suit, Advanced": { "loa": 2 }
+  },
+  {
+    "Blast-suit, Early": { "loa": 0 }
+  },
+  {
+    "Blast-suit, Reinforced": { "loa": 1 }
+  },
+  {
+    "Blow-dart Gun": { "loa": 1 }
+  },
+  {
+    "Bola": { "loa": 1 }
+  },
+  {
+    "Bolter Pistol": { "loa": 2 }
+  },
+  {
+    "Bolter Rifle": { "loa": 2 }
+  },
+  {
+    "Bolter Rifle, Adv": { "loa": 2 }
+  },
+  {
+    "Boomerang, War": { "loa": 2 }
+  },
+  {
+    "Bottle-Phial, Acid-1": { "loa": 1 }
+  },
+  {
+    "Bottle-Phial, Burn-1": { "loa": 1 }
+  },
+  {
+    "Bottle-Phial, Caustic-1": { "loa": 1 }
+  },
+  {
+    "Bottle-Phial, Confuse-1": { "loa": 1 }
+  },
+  {
+    "Bottle-Phial, Fire-1": { "loa": 1 }
+  },
+  {
+    "Bottle-Phial, Poison-1": { "loa": 1 }
+  },
+  {
+    "Bow, Light": { "loa": 1 }
+  },
+  {
+    "Bow, Light Quickened": { "loa": 0 }
+  },
+  {
+    "Bow, Long": { "loa": 1 }
+  },
+  {
+    "Bow, Medium": { "loa": 1 }
+  },
+  {
+    "Bow, Medium Heavy": { "loa": 1 }
+  },
+  {
+    "Bow, Medium Quickened": { "loa": 0 }
+  },
+  {
+    "Bow, Recurve": { "loa": 1 }
+  },
+  {
+    "Bow, Recurve Heavy": { "loa": 1 }
+  },
+  {
+    "Bow, War": { "loa": 1 }
+  },
+  {
+    "Bracers of Stealth": { "loa": 0 }
+  },
+  {
+    "Cannon, A 12.7mm": { "loa": 2 }
+  },
+  {
+    "Cannon, B 25mm (2-pdr)": { "loa": 2 }
+  },
+  {
+    "Cannon, C 42mm (6-pdr)": { "loa": 3 }
+  },
+  {
+    "Cannon, D 75mm (17-pdr)": { "loa": 3 }
+  },
+  {
+    "Carbine Light, Auto": { "loa": 1 }
+  },
+  {
+    "Carbine Light, Semi/A": { "loa": 1 }
+  },
+  {
+    "Carbine, Heavy, Auto": { "loa": 1 }
+  },
+  {
+    "Carbine, Heavy, Semi/A": { "loa": 1 }
+  },
+  {
+    "Carbine, Medium, Auto": { "loa": 1 }
+  },
+  {
+    "Carbine, Medium, Semi/A": { "loa": 1 }
+  },
+  {
+    "Chainsaw, Claw, Heavy": { "loa": 2 }
+  },
+  {
+    "Chainsaw, Claw, Light": { "loa": 2 }
+  },
+  {
+    "Chainsaw, Claw, Medium": { "loa": 2 }
+  },
+  {
+    "Chainsaw, Heavy": { "loa": 2 }
+  },
+  {
+    "Chainsaw, Light": { "loa": 2 }
+  },
+  {
+    "Chainsaw, Medium": { "loa": 2 }
+  },
+  {
+    "Chakram Rings": { "loa": 2 }
+  },
+  {
+    "Chakram Rings, Serrated": { "loa": 2 }
+  },
+  {
+    "Claw-1": { "loa": 0 }
+  },
+  {
+    "Claw-2": { "loa": 0 }
+  },
+  {
+    "Claw-3": { "loa": 0 }
+  },
+  {
+    "Claws-1": { "loa": 0 }
+  },
+  {
+    "Claws-2": { "loa": 1 }
+  },
+  {
+    "Claws-3": { "loa": 1 }
+  },
+  {
+    "Club": { "loa": 1 }
+  },
+  {
+    "Club, Baton": { "loa": 1 }
+  },
+  {
+    "Club, Circus Mallet": { "loa": 0 }
+  },
+  {
+    "Club, Crowbar": { "loa": 1 }
+  },
+  {
+    "Club, Heavy": { "loa": 1 }
+  },
+  {
+    "Club, Mace": { "loa": 1 }
+  },
+  {
+    "Club, Mace, Spiked": { "loa": 1 }
+  },
+  {
+    "Club, Shovel": { "loa": 1 }
+  },
+  {
+    "Coil-gun, Heavy": { "loa": 2 }
+  },
+  {
+    "Coil-gun, Light": { "loa": 2 }
+  },
+  {
+    "Coil-gun, Medium": { "loa": 2 }
+  },
+  {
+    "Collar, Spiked": { "loa": 1 }
+  },
+  {
+    "Comm-helmet": { "loa": 2 }
+  },
+  {
+    "Comm-helmet, Early": { "loa": 2 }
+  },
+  {
+    "Comm-link": { "loa": 1 }
+  },
+  {
+    "Comm-link, Boosted": { "loa": 1 }
+  },
+  {
+    "Comm-link, Box": { "loa": 1 }
+  },
+  {
+    "Comm-link, Box, Archaic": { "loa": 1 }
+  },
+  {
+    "Comm-link, Box, Early": { "loa": 1 }
+  },
+  {
+    "Comm-link, Box, Early (Embedded)": { "loa": 1 }
+  },
+  {
+    "Comm-link, Box-Hand-held": { "loa": 1 }
+  },
+  {
+    "Comm-link, Early": { "loa": 1 }
+  },
+  {
+    "Comm-link, Jammer, Early": { "loa": 1 }
+  },
+  {
+    "Comm-link, Jammer, Modern": { "loa": 2 }
+  },
+  {
+    "Crossbow, Heavy": { "loa": 1 }
+  },
+  {
+    "Crossbow, Light": { "loa": 1 }
+  },
+  {
+    "Crossbow, Medium": { "loa": 1 }
+  },
+  {
+    "Crossbow, Repeating": { "loa": 1 }
+  },
+  {
+    "Crossbow, Repeating Heavy": { "loa": 1 }
+  },
+  {
+    "Crossbow, Single-hand Pistol": { "loa": 1 }
+  },
+  {
+    "Crossbow, Single-hand Pistol, Hvy": { "loa": 1 }
+  },
+  {
+    "Crossbow, Single-hand Pistol, Hvy, Masterwork": { "loa": 1 }
+  },
+  {
+    "Crossbow, Single-hand Pistol, Masterwork": { "loa": 1 }
+  },
+  {
+    "Dagger, Obsidian": { "loa": 0 }
+  },
+  {
+    "Dagger, Stiletto": { "loa": 0 }
+  },
+  {
+    "Daggers": { "loa": 0 }
+  },
+  {
+    "Daggers, Spectral": { "loa": 0 }
+  },
+  {
+    "Damper > Type": { "loa": 2 }
+  },
+  {
+    "Damper 2 > Type": { "loa": 2 }
+  },
+  {
+    "Damper 3 > Type": { "loa": 2 }
+  },
+  {
+    "Damper 4 > Type": { "loa": 3 }
+  },
+  {
+    "Deceptor Pistol": { "loa": 2 }
+  },
+  {
+    "Deceptor Rifle": { "loa": 2 }
+  },
+  {
+    "Detonator": { "loa": 0 }
+  },
+  {
+    "Device, Synchron, Archaic": { "loa": 2 }
+  },
+  {
+    "Device, Synchron, Early": { "loa": 2 }
+  },
+  {
+    "Device, Synchron-1.1": { "loa": 2 }
+  },
+  {
+    "Device, Synchron-2.1": { "loa": 2 }
+  },
+  {
+    "Device, Synchron-3.2": { "loa": 2 }
+  },
+  {
+    "Discus": { "loa": 2 }
+  },
+  {
+    "Displacer Device": { "loa": 3 }
+  },
+  {
+    "Dynamic Armor, Heavy": { "loa": 2 }
+  },
+  {
+    "Dynamic Armor, Light": { "loa": 2 }
+  },
+  {
+    "Dynamic Armor, Medium": { "loa": 2 }
+  },
+  {
+    "Electrocounter Orbs": { "loa": 0 }
+  },
+  {
+    "Electrostaff": { "loa": 1 }
+  },
+  {
+    "Electrostaff, Neon": { "loa": 2 }
+  },
+  {
+    "Electroweapon, Early": { "loa": 1 }
+  },
+  {
+    "Electroweapon, Pulse, Pistol": { "loa": 1 }
+  },
+  {
+    "Electroweapon, Pulse, Rifle": { "loa": 1 }
+  },
+  {
+    "Explosives, Agenda Bomb, Large": { "loa": 2 }
+  },
+  {
+    "Explosives, Agenda Bomb, Small": { "loa": 1 }
+  },
+  {
+    "Explosives, Agenda Bomb,Medium": { "loa": 2 }
+  },
+  {
+    "Explosives, Bomb, Large": { "loa": 2 }
+  },
+  {
+    "Explosives, Bomb, Small": { "loa": 2 }
+  },
+  {
+    "Explosives, Bundle, Dynamite": { "loa": 2 }
+  },
+  {
+    "Explosives, Fire-bomb": { "loa": 2 }
+  },
+  {
+    "Explosives, Kettle-bomb": { "loa": 3 }
+  },
+  {
+    "Explosives, Mine, IED": { "loa": 4 }
+  },
+  {
+    "Explosives, Mine, Tank": { "loa": 5 }
+  },
+  {
+    "Explosives, Petard": { "loa": 3 }
+  },
+  {
+    "Explosives, Powderkeg": { "loa": 4 }
+  },
+  {
+    "Explosives, Satchel": { "loa": 3 }
+  },
+  {
+    "Explosives, Satchel, Pulse": { "loa": 3 }
+  },
+  {
+    "Explosives, Stick, Dynamite": { "loa": 2 }
+  },
+  {
+    "Exxo-skeleton, Heavy": { "loa": 1 }
+  },
+  {
+    "Exxo-skeleton, Lifter Frame": { "loa": 1 }
+  },
+  {
+    "Exxo-skeleton, Light": { "loa": 1 }
+  },
+  {
+    "Exxo-skin": { "loa": 2 }
+  },
+  {
+    "Exxo-skin, Carapace": { "loa": 2 }
+  },
+  {
+    "Exxo-skin, Scaled": { "loa": 2 }
+  },
+  {
+    "Exxo-skin, Segmented": { "loa": 2 }
+  },
+  {
+    "Favored Passage": { "loa": 0 }
+  },
+  {
+    "Field Harness": { "loa": 3 }
+  },
+  {
+    "Flail": { "loa": 1 }
+  },
+  {
+    "Flail, Farming": { "loa": 1 }
+  },
+  {
+    "Flail, Morningstar": { "loa": 1 }
+  },
+  {
+    "Flail, Tri-section": { "loa": 1 }
+  },
+  {
+    "Flame-thrower, Heavy": { "loa": 1 }
+  },
+  {
+    "Flame-thrower, Light": { "loa": 0 }
+  },
+  {
+    "Flame-thrower, Medium": { "loa": 0 }
+  },
+  {
+    "Flame-thrower, Mini": { "loa": 0 }
+  },
+  {
+    "Flashlight": { "loa": 2 }
+  },
+  {
+    "Flashlight, Advanced": { "loa": 3 }
+  },
+  {
+    "Force Armor, Heavy": { "loa": 2 }
+  },
+  {
+    "Force Armor, Light": { "loa": 2 }
+  },
+  {
+    "Force Armor, Medium": { "loa": 2 }
+  },
+  {
+    "Fusion Pistol": { "loa": 2 }
+  },
+  {
+    "Gas Cannister, Blacksmoke": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Caustic": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Knockout": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Knockout-2": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Mustard": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Nerve": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Nerve-2": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Poison": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Poison 2": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Riot": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Riot-3": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Smoke": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Smoke-2": { "loa": 1 }
+  },
+  {
+    "Gas Cannister, Steam": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Acid": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Blacksmoke": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Caustic": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Knockout": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Mustard": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Nerve": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Poison": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Poison 2": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Riot": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Smoke": { "loa": 1 }
+  },
+  {
+    "Gas Grenade, Steam": { "loa": 1 }
+  },
+  {
+    "Gas Grenade: { "loa": S }team": { "loa": 1 }
+  },
+  {
+    "Gas-mask": { "loa": 1 }
+  },
+  {
+    "Gas-mask, Hooded": { "loa": 2 }
+  },
+  {
+    "Gas-mask, Respirator": { "loa": 1 }
+  },
+  {
+    "Gatling Gun, 20mm": { "loa": 2 }
+  },
+  {
+    "Gatling Gun, Archaic": { "loa": 2 }
+  },
+  {
+    "Gatling Gun, Archaic-v2": { "loa": 1 }
+  },
+  {
+    "Gatling Gun, Early": { "loa": 2 }
+  },
+  {
+    "Gatling Gun, Early-v2": { "loa": 1 }
+  },
+  {
+    "Gatling Gun, Mini": { "loa": 2 }
+  },
+  {
+    "Gatling Gun, Mini (Mounted)": { "loa": 2 }
+  },
+  {
+    "Gauntlet, Clawed": { "loa": 0 }
+  },
+  {
+    "Gauntlet, Controller": { "loa": 2 }
+  },
+  {
+    "Goggles": { "loa": 1 }
+  },
+  {
+    "Goggles, Night-vision": { "loa": 1 }
+  },
+  {
+    "Goggles, Night-vision, Adv.": { "loa": 2 }
+  },
+  {
+    "Goggles, Optiplex": { "loa": 2 }
+  },
+  {
+    "Goggles, Pin-point": { "loa": 1 }
+  },
+  {
+    "Goggles, Sensor": { "loa": 2 }
+  },
+  {
+    "Grenade, Anti-magic": { "loa": 3 }
+  },
+  {
+    "Grenade, Anti-psi": { "loa": 1 }
+  },
+  {
+    "Grenade, Archaic": { "loa": 1 }
+  },
+  {
+    "Grenade, Concussion": { "loa": 1 }
+  },
+  {
+    "Grenade, Concussion, Adv.": { "loa": 1 }
+  },
+  {
+    "Grenade, Dancer": { "loa": 2 }
+  },
+  {
+    "Grenade, Flash": { "loa": 2 }
+  },
+  {
+    "Grenade, Flash-bang": { "loa": 2 }
+  },
+  {
+    "Grenade, Flash-bang, Adv.": { "loa": 2 }
+  },
+  {
+    "Grenade, Fragmentation": { "loa": 2 }
+  },
+  {
+    "Grenade, Fragmentation, Adv.": { "loa": 2 }
+  },
+  {
+    "Grenade, HE": { "loa": 1 }
+  },
+  {
+    "Grenade, HE, Adv.": { "loa": 1 }
+  },
+  {
+    "Grenade, Pulse": { "loa": 1 }
+  },
+  {
+    "Grenade, Pulse, Adv.": { "loa": 1 }
+  },
+  {
+    "Grenade, Shrapnel": { "loa": 1 }
+  },
+  {
+    "Grenade, Shrapnel, Adv.": { "loa": 1 }
+  },
+  {
+    "Grenade, Sonic": { "loa": 2 }
+  },
+  {
+    "Grenade, Sonic, Adv.": { "loa": 2 }
+  },
+  {
+    "Grenade, Web": { "loa": 2 }
+  },
+  {
+    "Grenade, Web Stunner": { "loa": 2 }
+  },
+  {
+    "Groundingsuit, Advanced": { "loa": 1 }
+  },
+  {
+    "Groundingsuit, Early": { "loa": 1 }
+  },
+  {
+    "Hammer, Forge": { "loa": 1 }
+  },
+  {
+    "Hammer, Long": { "loa": 1 }
+  },
+  {
+    "Hammer, Maul": { "loa": 1 }
+  },
+  {
+    "Hammer, Sledge": { "loa": 1 }
+  },
+  {
+    "Hammer, War": { "loa": 1 }
+  },
+  {
+    "Hammer, War, Ban-1": { "loa": 2 }
+  },
+  {
+    "Hammer, War, Ban-2": { "loa": 2 }
+  },
+  {
+    "Hand Cannon": { "loa": 2 }
+  },
+  {
+    "Hardsuit, Archaic": { "loa": 3 }
+  },
+  {
+    "Hardsuit, Enhanced, Archaic": { "loa": 3 }
+  },
+  {
+    "Hardsuit, Platform, Archaic": { "loa": 3 }
+  },
+  {
+    "Hardsuit, Scout": { "loa": 3 }
+  },
+  {
+    "Hardsuit, Standard": { "loa": 3 }
+  },
+  {
+    "Hardsuit, War": { "loa": 3 }
+  },
+  {
+    "Hardsuit, Windup": { "loa": 3 }
+  },
+  {
+    "Heirloom Weapon": { "loa": 1 }
+  },
+  {
+    "Helmet, Common": { "loa": 2 }
+  },
+  {
+    "Helmet, Common, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Helmet, Full": { "loa": 2 }
+  },
+  {
+    "Helmet, Full, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Helmet, Full-Elaborate": { "loa": 2 }
+  },
+  {
+    "Helmet, Reinforced": { "loa": 2 }
+  },
+  {
+    "Helmet, Reinforced Bulletproof": { "loa": 2 }
+  },
+  {
+    "Helmet, Riot": { "loa": 2 }
+  },
+  {
+    "Helmet, Riot Bulletproof": { "loa": 2 }
+  },
+  {
+    "Hook, Crook": { "loa": 1 }
+  },
+  {
+    "Hook, Meat": { "loa": 0 }
+  },
+  {
+    "Hook, Scythe": { "loa": 1 }
+  },
+  {
+    "Hook, Sickle, Fist": { "loa": 1 }
+  },
+  {
+    "Hook, Sickle, Hand": { "loa": 1 }
+  },
+  {
+    "Hook, Spearcrook": { "loa": 1 }
+  },
+  {
+    "Hook, Swordcrook": { "loa": 0 }
+  },
+  {
+    "Immune-Blast-1": { "loa": 1 }
+  },
+  {
+    "Immune-Blast-2": { "loa": 1 }
+  },
+  {
+    "Improvised Melee": { "loa": 0 }
+  },
+  {
+    "Improvised Melee, Large": { "loa": 0 }
+  },
+  {
+    "Improvised Parry": { "loa": 0 }
+  },
+  {
+    "Improvised Thrown": { "loa": 0 }
+  },
+  {
+    "Improvised Thrown, Large": { "loa": 0 }
+  },
+  {
+    "Jet-pack, Gear": { "loa": 2 }
+  },
+  {
+    "Jet-pack, Jump": { "loa": 2 }
+  },
+  {
+    "Jet-pack, Suit": { "loa": 2 }
+  },
+  {
+    "Jet-pack, Suit, Advanced": { "loa": 3 }
+  },
+  {
+    "Kit, Glider Caped": { "loa": 1 }
+  },
+  {
+    "Kit, Glider Winged": { "loa": 2 }
+  },
+  {
+    "Kit, Medical, CFAK": { "loa": 3 }
+  },
+  {
+    "Kit, Medical, CFAK-v2": { "loa": 3 }
+  },
+  {
+    "Kit, Medical, Field": { "loa": 3 }
+  },
+  {
+    "Kit, Medical, Tactical": { "loa": 3 }
+  },
+  {
+    "Knife, Large": { "loa": 0 }
+  },
+  {
+    "Knife, Medium": { "loa": 0 }
+  },
+  {
+    "Knife, Small": { "loa": 0 }
+  },
+  {
+    "Knife, Tactical": { "loa": 0 }
+  },
+  {
+    "Knuckledusters": { "loa": 1 }
+  },
+  {
+    "Knuckledusters, Spiked": { "loa": 1 }
+  },
+  {
+    "Lamp or Candle": { "loa": 1 }
+  },
+  {
+    "Lamp or Candle. Large": { "loa": 1 }
+  },
+  {
+    "Lantern, Basic": { "loa": 2 }
+  },
+  {
+    "Lantern, Basic, Large": { "loa": 3 }
+  },
+  {
+    "Lantern, Electric": { "loa": 3 }
+  },
+  {
+    "Lantern, Electric, Small": { "loa": 2 }
+  },
+  {
+    "Lantern, Fueled": { "loa": 3 }
+  },
+  {
+    "Lantern, Fueled, Small": { "loa": 2 }
+  },
+  {
+    "Launcher, Grenade Early": { "loa": 1 }
+  },
+  {
+    "Launcher, Grenade Modern": { "loa": 1 }
+  },
+  {
+    "Launcher, Grenade, Multi-rapid": { "loa": 2 }
+  },
+  {
+    "Launcher, Grenade, Rapid": { "loa": 2 }
+  },
+  {
+    "Leash": { "loa": 0 }
+  },
+  {
+    "Machine Gun, Heavy": { "loa": 2 }
+  },
+  {
+    "Machine Gun, Heavy (Mounted)": { "loa": 2 }
+  },
+  {
+    "Machine Gun, Light": { "loa": 2 }
+  },
+  {
+    "Machine Gun, Light (Mounted)": { "loa": 2 }
+  },
+  {
+    "Machine Gun, Medium": { "loa": 2 }
+  },
+  {
+    "Machine Gun, Medium (Mounted)": { "loa": 2 }
+  },
+  {
+    "Machine Gun, Mitrailleuse": { "loa": 2 }
+  },
+  {
+    "Mage Armor, Heavy": { "loa": 2 }
+  },
+  {
+    "Mage Armor, Light": { "loa": 2 }
+  },
+  {
+    "Mage Armor, Medium": { "loa": 2 }
+  },
+  {
+    "Mask of Command": { "loa": 0 }
+  },
+  {
+    "Medicinals, Alcohol": { "loa": 0 }
+  },
+  {
+    "Medicinals, Alcohol, Copious": { "loa": 0 }
+  },
+  {
+    "Medicinals, Euphorics": { "loa": 2 }
+  },
+  {
+    "Medicinals, Euphorics, Copious": { "loa": 2 }
+  },
+  {
+    "Medicinals, Hallucenogenics": { "loa": 3 }
+  },
+  {
+    "Medicinals, Hallucenogenics, Copious": { "loa": 3 }
+  },
+  {
+    "Medicinals, Healing Potion": { "loa": 2 }
+  },
+  {
+    "Medicinals, Healing Potion, Pure": { "loa": 2 }
+  },
+  {
+    "Medicinals, Painkillers": { "loa": 0 }
+  },
+  {
+    "Medicinals, Painkillers, Copious": { "loa": 0 }
+  },
+  {
+    "Medicinals, Psychoactives": { "loa": 1 }
+  },
+  {
+    "Medicinals, Stimulants": { "loa": 0 }
+  },
+  {
+    "Medicinals, Stimulants, Copious": { "loa": 0 }
+  },
+  {
+    "Mine, Acid, Small": { "loa": 3 }
+  },
+  {
+    "Mine, Anti-personnel": { "loa": 3 }
+  },
+  {
+    "Mine, Anti-personnel, Micromag": { "loa": 3 }
+  },
+  {
+    "Mine, Heat, Medium": { "loa": 3 }
+  },
+  {
+    "Mine, Heat, Small": { "loa": 3 }
+  },
+  {
+    "Mirror": { "loa": 1 }
+  },
+  {
+    "Module, Control": { "loa": 2 }
+  },
+  {
+    "Module, Manipulator": { "loa": 2 }
+  },
+  {
+    "Module, System": { "loa": 2 }
+  },
+  {
+    "Module, Trigger": { "loa": 1 }
+  },
+  {
+    "Mortar, Heavy": { "loa": 4 }
+  },
+  {
+    "Mortar, Light": { "loa": 1 }
+  },
+  {
+    "Mortar, Medium": { "loa": 1 }
+  },
+  {
+    "Mortar, Mini-mortar": { "loa": 1 }
+  },
+  {
+    "Mortar, Mini-mortar (Mounted)": { "loa": 2 }
+  },
+  {
+    "Mounted Bolter Weapon": { "loa": 2 }
+  },
+  {
+    "Mounted Flame-thrower": { "loa": 2 }
+  },
+  {
+    "Mounted Mortar, Mini-mortar": { "loa": 1 }
+  },
+  {
+    "Mounted Rail-gun": { "loa": 3 }
+  },
+  {
+    "Musket, Blunderbuss": { "loa": 0 }
+  },
+  {
+    "Musket, Heavy Smoothbore": { "loa": 1 }
+  },
+  {
+    "Musket, Light, Smoothbore": { "loa": 1 }
+  },
+  {
+    "Musket, Medium, Smoothbore": { "loa": 1 }
+  },
+  {
+    "Nanotech: { "loa":Ra }ge": { "loa": 1 }
+  },
+  {
+    "Nanotech: { "loa":Ra }mpage": { "loa": 0 }
+  },
+  {
+    "Nanotech: { "loa":Re }sist": { "loa": 0 }
+  },
+  {
+    "Nanotech: { "loa":Ru }n": { "loa": 1 }
+  },
+  {
+    "Necklace of Comfort": { "loa": 3 }
+  },
+  {
+    "Needle Rifle": { "loa": 1 }
+  },
+  {
+    "Needle Rifle, Adv": { "loa": 2 }
+  },
+  {
+    "Needler Pistol": { "loa": 1 }
+  },
+  {
+    "Needler Pistol, Adv": { "loa": 2 }
+  },
+  {
+    "Net, Deathnet": { "loa": 1 }
+  },
+  {
+    "Net, Retarius": { "loa": 1 }
+  },
+  {
+    "Net-gun, Large": { "loa": 2 }
+  },
+  {
+    "Net-gun, Small": { "loa": 1 }
+  },
+  {
+    "Notebook, Leadership": { "loa": 0 }
+  },
+  {
+    "Notebook, Scholarship": { "loa": 0 }
+  },
+  {
+    "Notebook, Tactics": { "loa": 0 }
+  },
+  {
+    "Package, Assassin": { "loa": 1 }
+  },
+  {
+    "Package, Berserker": { "loa": 2 }
+  },
+  {
+    "Package, Predict": { "loa": 2 }
+  },
+  {
+    "Package, Recon": { "loa": 0 }
+  },
+  {
+    "Package, Timer": { "loa": 3 }
+  },
+  {
+    "Package, Warrior": { "loa": 0 }
+  },
+  {
+    "PDW, Heavy": { "loa": 2 }
+  },
+  {
+    "PDW, Light": { "loa": 2 }
+  },
+  {
+    "PDW, Medium": { "loa": 2 }
+  },
+  {
+    "Phlogiston Suit": { "loa": 2 }
+  },
+  {
+    "Phlogiston Suit, Fireproof": { "loa": 2 }
+  },
+  {
+    "Phlogiston Suit, Improved": { "loa": 2 }
+  },
+  {
+    "Phlogiston Suit, Improved BP": { "loa": 2 }
+  },
+  {
+    "Pipe Cannon, 1-pdr": { "loa": 2 }
+  },
+  {
+    "Pipe Cannon, 2-pdr": { "loa": 2 }
+  },
+  {
+    "Pistol, Coach": { "loa": 0 }
+  },
+  {
+    "Pistol, Dueling": { "loa": 0 }
+  },
+  {
+    "Pistol, Heavy, Auto": { "loa": 2 }
+  },
+  {
+    "Pistol, Heavy, Semi/A": { "loa": 1 }
+  },
+  {
+    "Pistol, Light, Auto": { "loa": 2 }
+  },
+  {
+    "Pistol, Light, Semi/A": { "loa": 1 }
+  },
+  {
+    "Pistol, Medium, Auto": { "loa": 2 }
+  },
+  {
+    "Pistol, Medium, Semi/A": { "loa": 1 }
+  },
+  {
+    "Pistol, Pepperbox": { "loa": 0 }
+  },
+  {
+    "Plasma Cannon": { "loa": 3 }
+  },
+  {
+    "Plasma Cannon, Heavy": { "loa": 3 }
+  },
+  {
+    "Plasma Pistol": { "loa": 2 }
+  },
+  {
+    "Plasma Rifle": { "loa": 2 }
+  },
+  {
+    "Plasmablade": { "loa": 2 }
+  },
+  {
+    "Plasmashield, Heavy": { "loa": 2 }
+  },
+  {
+    "Plasmashield, Light": { "loa": 2 }
+  },
+  {
+    "Plasmashield, Medium": { "loa": 2 }
+  },
+  {
+    "Poisoned Weapon": { "loa": 1 }
+  },
+  {
+    "Poisoned Weapon, Deadly": { "loa": 1 }
+  },
+  {
+    "Polearm, Glaive": { "loa": 0 }
+  },
+  {
+    "Polearm, Halberd": { "loa": 0 }
+  },
+  {
+    "Polearm, Pike": { "loa": 0 }
+  },
+  {
+    "Polearm, Scythe": { "loa": 0 }
+  },
+  {
+    "Powered Armor-Early": { "loa": 2 }
+  },
+  {
+    "Powered Armor-Battle": { "loa": 3 }
+  },
+  {
+    "Powered Armor-Combat": { "loa": 2 }
+  },
+  {
+    "Powered Armor-Exxo": { "loa": 1 }
+  },
+  {
+    "Powered Armor-ExxoHvy": { "loa": 2 }
+  },
+  {
+    "Powered Armor-Standard": { "loa": 2 }
+  },
+  {
+    "Powered Armor-Stealth": { "loa": 3 }
+  },
+  {
+    "Powered Gauntlets": { "loa": 1 }
+  },
+  {
+    "Powered Gloves": { "loa": 1 }
+  },
+  {
+    "Powered Shielding": { "loa": 2 }
+  },
+  {
+    "Powered Shielding-Heavy": { "loa": 2 }
+  },
+  {
+    "Powered Staff": { "loa": 1 }
+  },
+  {
+    "Power-gem, Light": { "loa": 2 }
+  },
+  {
+    "Power-gem, Medium": { "loa": 2 }
+  },
+  {
+    "Prayer-Book": { "loa": 0 }
+  },
+  {
+    "Prayer-Relic": { "loa": 0 }
+  },
+  {
+    "Proximity Suit, Fireproof": { "loa": 2 }
+  },
+  {
+    "Proximity Suit, Fireproof BP": { "loa": 2 }
+  },
+  {
+    "Psi Armor, Heavy": { "loa": 2 }
+  },
+  {
+    "Psi Armor, Light": { "loa": 2 }
+  },
+  {
+    "Psi Armor, Medium": { "loa": 2 }
+  },
+  {
+    "Pummel-1": { "loa": 0 }
+  },
+  {
+    "Pummel-2": { "loa": 1 }
+  },
+  {
+    "Pummel-3": { "loa": 1 }
+  },
+  {
+    "Rail-gun, Heavy": { "loa": 2 }
+  },
+  {
+    "Rail-gun, Light": { "loa": 2 }
+  },
+  {
+    "Rail-gun, Medium": { "loa": 2 }
+  },
+  {
+    "Reinforced, Polearm": { "loa": 0 }
+  },
+  {
+    "Reinforced, Standard": { "loa": 0 }
+  },
+  {
+    "Revolver, Heavy": { "loa": 1 }
+  },
+  {
+    "Revolver, Heavy, Archaic": { "loa": 1 }
+  },
+  {
+    "Revolver, Light": { "loa": 1 }
+  },
+  {
+    "Revolver, Light, Archaic": { "loa": 1 }
+  },
+  {
+    "Revolver, Medium": { "loa": 1 }
+  },
+  {
+    "Revolver, Medium, Archaic": { "loa": 1 }
+  },
+  {
+    "Rifle, Heavy, Archaic": { "loa": 1 }
+  },
+  {
+    "Rifle, Heavy, Auto": { "loa": 2 }
+  },
+  {
+    "Rifle, Heavy, Bolt/A": { "loa": 2 }
+  },
+  {
+    "Rifle, Heavy, Semi/A": { "loa": 1 }
+  },
+  {
+    "Rifle, Heavy, Single/A": { "loa": 2 }
+  },
+  {
+    "Rifle, Light, Archaic": { "loa": 1 }
+  },
+  {
+    "Rifle, Light, Auto": { "loa": 2 }
+  },
+  {
+    "Rifle, Light, Bolt/A": { "loa": 1 }
+  },
+  {
+    "Rifle, Light, Semi/A": { "loa": 1 }
+  },
+  {
+    "Rifle, Light, Single/A": { "loa": 0 }
+  },
+  {
+    "Rifle, Medium, Archaic": { "loa": 1 }
+  },
+  {
+    "Rifle, Medium, Auto": { "loa": 2 }
+  },
+  {
+    "Rifle, Medium, Bolt/A": { "loa": 1 }
+  },
+  {
+    "Rifle, Medium, Semi/A": { "loa": 1 }
+  },
+  {
+    "Rifle, Medium, Single/A": { "loa": 0 }
+  },
+  {
+    "Ring of Flight": { "loa": 2 }
+  },
+  {
+    "Ring of Leaping": { "loa": 1 }
+  },
+  {
+    "Ring of Running": { "loa": 1 }
+  },
+  {
+    "Rod, Emerald Flame": { "loa": 2 }
+  },
+  {
+    "Rod, Eternal Flame": { "loa": 2 }
+  },
+  {
+    "Rod, Last Rites": { "loa": 2 }
+  },
+  {
+    "Rod, Stinging Blight": { "loa": 2 }
+  },
+  {
+    "Rod, Suffering Light": { "loa": 2 }
+  },
+  {
+    "Rope": { "loa": 1 }
+  },
+  {
+    "Seal of Arrows": { "loa": 1 }
+  },
+  {
+    "Seal of Daggers": { "loa": 0 }
+  },
+  {
+    "Sensor Array": { "loa": 2 }
+  },
+  {
+    "Shield, Heavy-Large": { "loa": 2 }
+  },
+  {
+    "Shield, Heavy-Medium": { "loa": 1 }
+  },
+  {
+    "Shield, Heavy-Small": { "loa": 0 }
+  },
+  {
+    "Shield, Improvised-Large": { "loa": 0 }
+  },
+  {
+    "Shield, Improvised-Small": { "loa": 0 }
+  },
+  {
+    "Shield, Large": { "loa": 2 }
+  },
+  {
+    "Shield, Large, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Shield, Light": { "loa": 1 }
+  },
+  {
+    "Shield, Medium": { "loa": 1 }
+  },
+  {
+    "Shield, Medium, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Shield, Medium-Spiked": { "loa": 0 }
+  },
+  {
+    "Shield, Riot": { "loa": 2 }
+  },
+  {
+    "Shield, Riot, Large": { "loa": 2 }
+  },
+  {
+    "Shield, Small": { "loa": 1 }
+  },
+  {
+    "Shield, Small, Bulletproof": { "loa": 2 }
+  },
+  {
+    "Shield, Small, Spiked": { "loa": 2 }
+  },
+  {
+    "Shield, Small-Buckle": { "loa": 0 }
+  },
+  {
+    "Shotgun, Auto": { "loa": 1 }
+  },
+  {
+    "Shotgun, Auto, Heavy": { "loa": 1 }
+  },
+  {
+    "Shotgun, Fletch": { "loa": 0 }
+  },
+  {
+    "Shotgun, Pump-action": { "loa": 0 }
+  },
+  {
+    "Shotgun, Pump-action, Heavy": { "loa": 0 }
+  },
+  {
+    "Shotgun, Sawed-off": { "loa": 0 }
+  },
+  {
+    "Shotgun, Semi/A": { "loa": 1 }
+  },
+  {
+    "Shotgun, Slug": { "loa": 0 }
+  },
+  {
+    "Shotgun, Slug, Heavy": { "loa": 0 }
+  },
+  {
+    "Sickstick": { "loa": 1 }
+  },
+  {
+    "Sigil of Athletics": { "loa": 1 }
+  },
+  {
+    "Sigil of Hunting": { "loa": 0 }
+  },
+  {
+    "Silencer": { "loa": 0 }
+  },
+  {
+    "Silencer, Advanced": { "loa": 0 }
+  },
+  {
+    "Sling": { "loa": 1 }
+  },
+  {
+    "Sling, Staff": { "loa": 1 }
+  },
+  {
+    "Slingshot": { "loa": 1 }
+  },
+  {
+    "Sniper Scope, Advanced": { "loa": 2 }
+  },
+  {
+    "Sniper Scope, Advanced, Starlight": { "loa": 2 }
+  },
+  {
+    "Sniper Scope, Basic": { "loa": 1 }
+  },
+  {
+    "Sniper Scope, Laser": { "loa": 1 }
+  },
+  {
+    "Sniper Scope, Starlight": { "loa": 2 }
+  },
+  {
+    "Sonic Pistol": { "loa": 1 }
+  },
+  {
+    "Sonic Rifle": { "loa": 1 }
+  },
+  {
+    "Sonic Rifle, Heavy": { "loa": 1 }
+  },
+  {
+    "Spear, Long": { "loa": 0 }
+  },
+  {
+    "Spear, Medium": { "loa": 0 }
+  },
+  {
+    "Spear, of Stealth": { "loa": 0 }
+  },
+  {
+    "Spear, Short": { "loa": 0 }
+  },
+  {
+    "Spear, Throwing": { "loa": 0 }
+  },
+  {
+    "Spectral Claws-1": { "loa": 0 }
+  },
+  {
+    "Spectral Claws-1, Limited": { "loa": 0 }
+  },
+  {
+    "Spectral Claws-2": { "loa": 0 }
+  },
+  {
+    "Spectral Claws-2, Limited": { "loa": 0 }
+  },
+  {
+    "Spectral Claws-3": { "loa": 0 }
+  },
+  {
+    "Spectral Claws-3, Limited": { "loa": 0 }
+  },
+  {
+    "Spell - Pyrotechnics": { "loa": 1 }
+  },
+  {
+    "Spotlight, S1-Small": { "loa": 1 }
+  },
+  {
+    "Spotlight, S2-Large": { "loa": 1 }
+  },
+  {
+    "Springsuit": { "loa": 1 }
+  },
+  {
+    "Springsuit, Combat": { "loa": 1 }
+  },
+  {
+    "Spy-glass": { "loa": 1 }
+  },
+  {
+    "Staff": { "loa": 1 }
+  },
+  {
+    "Staff, Club": { "loa": 1 }
+  },
+  {
+    "Staff, Greater Mage": { "loa": 4 }
+  },
+  {
+    "Staff, Lesser Mage": { "loa": 3 }
+  },
+  {
+    "Staff, Sling": { "loa": 1 }
+  },
+  {
+    "Stealth Suit": { "loa": 2 }
+  },
+  {
+    "Stunner, Pistol": { "loa": 0 }
+  },
+  {
+    "Stunner, Rifle": { "loa": 0 }
+  },
+  {
+    "Stunner, Riot": { "loa": 2 }
+  },
+  {
+    "Submachine-gun, Archaic": { "loa": 2 }
+  },
+  {
+    "Submachine-gun, Heavy": { "loa": 2 }
+  },
+  {
+    "Submachine-gun, Light": { "loa": 2 }
+  },
+  {
+    "Submachine-gun, Medium": { "loa": 2 }
+  },
+  {
+    "Sword, Broad": { "loa": 0 }
+  },
+  {
+    "Sword, Cutlass": { "loa": 0 }
+  },
+  {
+    "Sword, Great": { "loa": 1 }
+  },
+  {
+    "Sword, Long": { "loa": 0 }
+  },
+  {
+    "Sword, Rapier": { "loa": 0 }
+  },
+  {
+    "Sword, Saber": { "loa": 0 }
+  },
+  {
+    "Sword, Scimitar": { "loa": 0 }
+  },
+  {
+    "Sword, Scimitar, Grand": { "loa": 0 }
+  },
+  {
+    "Sword, Short": { "loa": 0 }
+  },
+  {
+    "Targeting System": { "loa": 0 }
+  },
+  {
+    "Taser, Personal": { "loa": 2 }
+  },
+  {
+    "Taser, Prod": { "loa": 0 }
+  },
+  {
+    "Taser, Rifle": { "loa": 2 }
+  },
+  {
+    "Teleporter Beacons": { "loa": 1 }
+  },
+  {
+    "Teleporter Pack": { "loa": 3 }
+  },
+  {
+    "Throwing Axes": { "loa": 0 }
+  },
+  {
+    "Throwing Dart": { "loa": 1 }
+  },
+  {
+    "Throwing Knives": { "loa": 0 }
+  },
+  {
+    "Throwing Stars": { "loa": 0 }
+  },
+  {
+    "Throwing Sticks": { "loa": 0 }
+  },
+  {
+    "Torch, Basic": { "loa": 2 }
+  },
+  {
+    "Torch, Basic, Large": { "loa": 2 }
+  },
+  {
+    "Torch, Flaming": { "loa": 2 }
+  },
+  {
+    "Torch, Flaming, Large": { "loa": 2 }
+  },
+  {
+    "Torch, Flashlight": { "loa": 2 }
+  },
+  {
+    "Torch, Staff": { "loa": 2 }
+  },
+  {
+    "Trident": { "loa": 0 }
+  },
+  {
+    "Trident, Long": { "loa": 0 }
+  },
+  {
+    "Trident, Pitchfork": { "loa": 0 }
+  },
+  {
+    "Unarmed": { "loa": 0 }
+  },
+  {
+    "Upgrade: { "loa":Ba }lanced": { "loa": 0 }
+  },
+  {
+    "Upgrade: { "loa":Ma }sterworks": { "loa": 0 }
+  },
+  {
+    "Upgrade: { "loa":Po }isoned": { "loa": 1 }
+  },
+  {
+    "Upgrade: { "loa":Po }isoned, Deadly": { "loa": 1 }
+  },
+  {
+    "Upgrade: { "loa":Re }inforced": { "loa": 0 }
+  },
+  {
+    "Upgrade: { "loa":Re }inforced, Polearm": { "loa": 0 }
+  },
+  {
+    "Upgrade: { "loa":We }ll-honed": { "loa": 0 }
+  },
+  {
+    "Vibrodagger": { "loa": 1 }
+  },
+  {
+    "Vibrosword": { "loa": 1 }
+  },
+  {
+    "Waldo, Claws, Long": { "loa": 0 }
+  },
+  {
+    "Waldo, Claws, Short": { "loa": 0 }
+  },
+  {
+    "Waldo, Hand ": { "loa": 0 }
+  },
+  {
+    "Waldo, Saw, Large": { "loa": 0 }
+  },
+  {
+    "Waldo, Saw, Small": { "loa": 0 }
+  },
+  {
+    "Wheeled, Armored-pedaler": { "loa": 2 }
+  },
+  {
+    "Wheeled, Gun Carriage, Large": { "loa": 2 }
+  },
+  {
+    "Wheeled, Gun Carriage, Tricycle": { "loa": 2 }
+  },
+  {
+    "Wheeled, Steam-chair": { "loa": 2 }
+  },
+  {
+    "Wheeled, Tankette": { "loa": 2 }
+  },
+  {
+    "Whip, Bull": { "loa": 1 }
+  },
+  {
+    "Whip, Metal Chain": { "loa": 1 }
+  },
+  {
+    "Whip, Mollysword": { "loa": 2 }
+  },
+  {
+    "Whip, Monowire": { "loa": 1 }
+  },
+  {
+    "z_Axe": { "loa": 1 }
+  },
+  {
+    "z_Daggers": { "loa": 0 }
+  },
+  {
+    "z_Hammer, War": { "loa": 3 }
+  },
+  {
+    "z_Spear, Medium": { "loa": 0 }
+  },
+  {
+    "z_Sword, Saber": { "loa": 2 }
+  }
+]

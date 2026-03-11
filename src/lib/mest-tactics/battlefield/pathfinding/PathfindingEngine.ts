@@ -196,6 +196,29 @@ export class PathfindingEngine {
     ].join('|');
   }
 
+  private buildReversedPathResult(pathResult: PathResult): PathResult {
+    if (pathResult.vectors.length === 0) {
+      return pathResult;
+    }
+    const vectors = pathResult.vectors
+      .slice()
+      .reverse()
+      .map(vector => ({
+        from: vector.to,
+        to: vector.from,
+        dx: -vector.dx,
+        dy: -vector.dy,
+        length: vector.length,
+        terrain: vector.terrain,
+      }));
+
+    return {
+      vectors,
+      totalLength: pathResult.totalLength,
+      totalEffectMu: pathResult.totalEffectMu,
+    };
+  }
+
   private buildGridData(
     gridResolution: number,
     footprintRadius: number,
@@ -413,6 +436,20 @@ export class PathfindingEngine {
       totalEffectMu: totals.totalEffectMu,
     };
     this.setBoundedCacheEntry(cache.paths, pathCacheKey, pathResult, MAX_PATH_CACHE_ENTRIES);
+    const reversePathCacheKey = this.buildPathCacheKey(end, start, gridCacheKey, {
+      useNavMesh,
+      useHierarchical,
+      optimizeWithLOS,
+      useTheta,
+      turnPenalty,
+      hierarchicalChunkSize,
+      portalNarrowPenalty,
+      portalNarrowThresholdFactor,
+    });
+    if (reversePathCacheKey !== pathCacheKey) {
+      const reversedPathResult = this.buildReversedPathResult(pathResult);
+      this.setBoundedCacheEntry(cache.paths, reversePathCacheKey, reversedPathResult, MAX_PATH_CACHE_ENTRIES);
+    }
     return pathResult;
   }
 

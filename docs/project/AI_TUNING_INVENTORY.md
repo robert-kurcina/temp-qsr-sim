@@ -72,3 +72,9 @@ This improves *tuning iteration speed* rather than runtime performance.
 1. Optional: split `ai_battle_tuning.json` by domain if file size starts slowing edits
 2. Optional: externalize heuristic scorer weight matrix into mission tuning
 3. Optional: externalize additional special-rule defaults (if ruleset expands)
+
+## Related Health Plan
+
+For amber/red remediation tracking beyond tuning-constant externalization, see:
+
+- `docs/project/AI_HEALTH_REMEDIATION_PLAN.md`

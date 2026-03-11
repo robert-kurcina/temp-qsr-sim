@@ -142,7 +142,7 @@ export function buildBattleEntityManifestForRunner(params: {
 
     for (let characterIndex = 0; characterIndex < runtimeSide.characters.length; characterIndex += 1) {
       const character = runtimeSide.characters[characterIndex];
-      const profile = (character.profile ?? {}) as Record<string, unknown>;
+      const profile = (character.profile ?? {}) as unknown as Record<string, unknown>;
       const profileName = String(profile.name ?? character.id ?? `model-${characterIndex + 1}`);
       const profileArchetype = extractProfileArchetypeName(profile);
       const profileTotalBp = toSafeNumber(profile.totalBp);

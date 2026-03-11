@@ -152,4 +152,40 @@ describe('StatisticsTracker', () => {
     expect(stats.damageTestsAttempted).toBe(1);
     expect(stats.damageTestsFailed).toBe(1);
   });
+
+  it('splits combat assignment delay into damage vs passive/other buckets', () => {
+    const tracker = new StatisticsTracker();
+    tracker.trackCombatAssignmentsFromStep({
+      actionType: 'close_combat',
+      affectedModels: [
+        {
+          relation: 'target',
+          before: {
+            wounds: 0,
+            fearTokens: 0,
+            delayTokens: 0,
+          },
+          after: {
+            wounds: 2,
+            fearTokens: 0,
+            delayTokens: 2,
+          },
+        },
+      ],
+      details: {
+        damageAssignments: {
+          wounds: 2,
+          fear: 0,
+          delay: 1,
+        },
+      },
+    } as any);
+
+    const stats = tracker.getStats();
+    expect(stats.woundsAssigned).toBe(2);
+    expect(stats.delayAssigned).toBe(2);
+    expect(stats.damageWoundsAssigned).toBe(2);
+    expect(stats.damageDelayAssigned).toBe(1);
+    expect(stats.passiveOrOtherDelayAssigned).toBe(1);
+  });
 });

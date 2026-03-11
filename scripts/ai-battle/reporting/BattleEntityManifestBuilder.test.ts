@@ -20,7 +20,7 @@ function createConfig(): GameConfig {
         bp: 100,
         modelCount: 2,
         tacticalDoctrine: TacticalDoctrine.Operative,
-        technologicalAge: 'Classical',
+        technologicalAge: 'Medieval',
         assemblyName: 'Alpha Assembly',
       },
       {
@@ -28,7 +28,7 @@ function createConfig(): GameConfig {
         bp: 100,
         modelCount: 1,
         tacticalDoctrine: TacticalDoctrine.Balanced,
-        technologicalAge: 'Classical',
+        technologicalAge: 'Medieval',
         assemblyName: 'Bravo Assembly',
       },
     ],

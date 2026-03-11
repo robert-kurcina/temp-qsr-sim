@@ -10,7 +10,7 @@ describe('createProfiles', () => {
   beforeEach(() => {
     veteranArchetypeData = {
       species: 'Humanoid',
-      attributes: { cca: 3, rca: 3, ref: 3, int: 2, pow: 3, str: 2, for: 2, mov: 2, siz: 3 },
+      attributes: { cca: 3, rca: 3, ref: 3, int: 2, pow: 3, str: 2, for: 2, mov: 4, siz: 3 },
       traits: ['Grit'],
       bp: 61,
       class: 'Common'
@@ -135,5 +135,46 @@ describe('createProfiles', () => {
     expect(profile.stowedItems?.map((item: any) => item.name)).toEqual(expect.arrayContaining([
       'Shield, Medium'
     ]));
+  });
+
+  it('should reject loadouts that exceed low-MOV physicality laden cap', () => {
+    const militiaArchetypeData: Archetype = {
+      species: 'Humanoid',
+      attributes: { cca: 1, rca: 2, ref: 2, int: 2, pow: 2, str: 1, for: 2, mov: 2, siz: 3 },
+      traits: [],
+      bp: 20,
+      class: 'Common'
+    };
+
+    const create = () => createProfiles('Militia', militiaArchetypeData, [], ['Armor, Heavy Mail', 'Shield, Heavy-Small']);
+    expect(create).toThrow('Invalid loadout: Low-MOV archetype exceeds Laden cap (2) for Physicality 3.');
+  });
+
+  it('should allow low-MOV archetypes that stay within physicality laden cap', () => {
+    const militiaArchetypeData: Archetype = {
+      species: 'Humanoid',
+      attributes: { cca: 1, rca: 2, ref: 2, int: 2, pow: 2, str: 1, for: 2, mov: 2, siz: 3 },
+      traits: [],
+      bp: 20,
+      class: 'Common'
+    };
+
+    const profiles = createProfiles('Militia', militiaArchetypeData, [], ['Armor, Heavy Mail']);
+    expect(profiles).toHaveLength(1);
+    expect(profiles[0].burden?.totalLaden).toBe(2);
+  });
+
+  it('should still allow low-MOV archetypes to use non-laden loadouts', () => {
+    const militiaArchetypeData: Archetype = {
+      species: 'Humanoid',
+      attributes: { cca: 1, rca: 2, ref: 2, int: 2, pow: 2, str: 1, for: 2, mov: 2, siz: 3 },
+      traits: [],
+      bp: 20,
+      class: 'Common'
+    };
+
+    const profiles = createProfiles('Militia', militiaArchetypeData, [], ['Sword, Broad']);
+    expect(profiles).toHaveLength(1);
+    expect(profiles[0].items?.map((item: any) => item.name)).toEqual(['Sword, Broad']);
   });
 });

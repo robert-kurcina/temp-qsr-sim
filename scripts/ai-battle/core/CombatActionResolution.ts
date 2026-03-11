@@ -110,6 +110,63 @@ export interface CombatActionResolutionDeps {
   trackLOFCheck: () => void;
 }
 
+interface DamageAssignmentBreakdown {
+  wounds: number;
+  fear: number;
+  delay: number;
+}
+
+function toSafeNonNegativeNumber(value: unknown): number {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return 0;
+  }
+  return Math.max(0, parsed);
+}
+
+function asRecord(value: unknown): Record<string, unknown> | undefined {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+  return value as Record<string, unknown>;
+}
+
+function extractDamageResolutionFromResult(result: unknown): Record<string, unknown> | undefined {
+  const payload = asRecord(result);
+  if (!payload) return undefined;
+  const direct = asRecord(payload.damageResolution ?? payload.damageResult);
+  if (direct) return direct;
+  const nested = asRecord(payload.result);
+  return asRecord(nested?.damageResolution ?? nested?.damageResult);
+}
+
+function buildDamageAssignmentBreakdown(
+  attackResult: unknown,
+  defenderStateBeforeAttack: ModelStateAudit,
+  defenderStateAfterAttack: ModelStateAudit
+): DamageAssignmentBreakdown {
+  const damageResolution = extractDamageResolutionFromResult(attackResult);
+  if (!damageResolution) {
+    return { wounds: 0, fear: 0, delay: 0 };
+  }
+
+  const woundsFromDamage = toSafeNonNegativeNumber(damageResolution.woundsAdded);
+  const woundsFromStunOverflow = toSafeNonNegativeNumber(damageResolution.stunWoundsAdded);
+  const damageDelayTokensRaw = toSafeNonNegativeNumber(damageResolution.delayTokensAdded);
+  const damageDelayTokens = Math.max(0, damageDelayTokensRaw - woundsFromStunOverflow);
+  const totalWoundsFromDamage = woundsFromDamage + woundsFromStunOverflow;
+  const totalFearDelta = Math.max(
+    0,
+    toSafeNonNegativeNumber(defenderStateAfterAttack.fearTokens) - toSafeNonNegativeNumber(defenderStateBeforeAttack.fearTokens)
+  );
+
+  return {
+    wounds: totalWoundsFromDamage,
+    fear: Math.min(totalFearDelta, totalWoundsFromDamage),
+    delay: damageDelayTokens,
+  };
+}
+
 export async function executeCloseCombatActionForRunner(params: {
   attacker: Character;
   defender: Character;
@@ -216,6 +273,11 @@ export async function executeCloseCombatActionForRunner(params: {
     deps.trackCombatExtras(result as any);
     const normalized = deps.normalizeAttackResult(result);
     const defenderStateAfterAttack = deps.snapshotModelState(defender);
+    const damageAssignments = buildDamageAssignmentBreakdown(
+      result,
+      defenderStateBeforeAttack,
+      defenderStateAfterAttack
+    );
     const becameKOd = !defenderStateBeforeAttack.isKOd && defenderStateAfterAttack.isKOd;
     const becameEliminated =
       !defenderStateBeforeAttack.isEliminated && defenderStateAfterAttack.isEliminated;
@@ -252,6 +314,7 @@ export async function executeCloseCombatActionForRunner(params: {
         weaponName: (weapon as any).name ?? (weapon as any).id ?? 'weapon',
         normalized,
         attackResult: deps.sanitizeForAudit(result) as Record<string, unknown>,
+        damageAssignments,
         isCharge,
         isOverreach,
       },
@@ -438,6 +501,11 @@ export async function executeRangedCombatActionForRunner(params: {
     deps.trackCombatExtras(result as any);
     const normalized = deps.normalizeAttackResult(result);
     const defenderStateAfterAttack = deps.snapshotModelState(defender);
+    const damageAssignments = buildDamageAssignmentBreakdown(
+      result,
+      defenderStateBeforeAttack,
+      defenderStateAfterAttack
+    );
     const becameKOd = !defenderStateBeforeAttack.isKOd && defenderStateAfterAttack.isKOd;
     const becameEliminated =
       !defenderStateBeforeAttack.isEliminated && defenderStateAfterAttack.isEliminated;
@@ -482,6 +550,7 @@ export async function executeRangedCombatActionForRunner(params: {
         weaponName: (weapon as any).name ?? (weapon as any).id ?? 'weapon',
         normalized,
         attackResult: deps.sanitizeForAudit(result) as Record<string, unknown>,
+        damageAssignments,
         ormUsed: orm,
         usedConcentrate,
         usedLean: useLean,

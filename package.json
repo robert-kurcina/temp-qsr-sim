@@ -21,6 +21,8 @@
     "sim:calibrate": "npx tsx scripts/ai-battle/validation/BenchmarkSummary.ts generated/ai-battle-reports",
     "tuning:inventory": "node --import tsx scripts/ai-tuning/keyword-constant-inventory.ts",
     "tuning:guard": "node --import tsx scripts/ai-tuning/guard-embedded-tuning.ts",
+    "tuning:guard:modules": "vitest --run scripts/ai-tuning/AIModuleGuardrails.test.ts",
+    "ai:health:gate": "npx tsc --noEmit && npm run tuning:guard:modules && npx tsx scripts/ai-battle-setup.ts --validate VERY_SMALL 50 1 424242",
     "battlefield:svg": "node --import tsx scripts/render-battlefield-svgs.ts",
     "battlefield:generate": "node --import tsx scripts/generate-battlefield-data.ts",
     "battlefield:defaults": "node --import tsx scripts/generate-default-battlefields.ts",

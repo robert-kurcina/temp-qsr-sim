@@ -1,12 +1,13 @@
 {
   "techAge": "Bronze",
   "techLevel": 2,
-  "generatedAt": "2026-03-09T21:27:48.828Z",
+  "generatedAt": "2026-03-11T18:16:27.253Z",
   "armorLoadouts": [
     {
       "id": "light-no_gear_no_shield-no_helmet",
       "armorWeight": "light",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -22,6 +23,7 @@
       "id": "light-gear_no_shield-no_helmet",
       "armorWeight": "light",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -37,6 +39,7 @@
       "id": "light-shield_no_gear-no_helmet",
       "armorWeight": "light",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -53,6 +56,7 @@
       "id": "light-shield_and_gear-no_helmet",
       "armorWeight": "light",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -69,6 +73,7 @@
       "id": "light-no_gear_no_shield-helmet",
       "armorWeight": "light",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -85,6 +90,7 @@
       "id": "light-gear_no_shield-helmet",
       "armorWeight": "light",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -101,6 +107,7 @@
       "id": "light-shield_no_gear-helmet",
       "armorWeight": "light",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -118,6 +125,7 @@
       "id": "light-shield_and_gear-helmet",
       "armorWeight": "light",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 2,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -135,6 +143,7 @@
       "id": "medium-no_gear_no_shield-no_helmet",
       "armorWeight": "medium",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -150,6 +159,7 @@
       "id": "medium-gear_no_shield-no_helmet",
       "armorWeight": "medium",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -165,6 +175,7 @@
       "id": "medium-shield_no_gear-no_helmet",
       "armorWeight": "medium",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -181,6 +192,7 @@
       "id": "medium-shield_and_gear-no_helmet",
       "armorWeight": "medium",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -197,6 +209,7 @@
       "id": "medium-no_gear_no_shield-helmet",
       "armorWeight": "medium",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -213,6 +226,7 @@
       "id": "medium-gear_no_shield-helmet",
       "armorWeight": "medium",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 3,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -229,6 +243,7 @@
       "id": "medium-shield_no_gear-helmet",
       "armorWeight": "medium",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -246,6 +261,7 @@
       "id": "medium-shield_and_gear-helmet",
       "armorWeight": "medium",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -263,6 +279,7 @@
       "id": "heavy-no_gear_no_shield-no_helmet",
       "armorWeight": "heavy",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -278,6 +295,7 @@
       "id": "heavy-gear_no_shield-no_helmet",
       "armorWeight": "heavy",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": false,
@@ -293,6 +311,7 @@
       "id": "heavy-shield_no_gear-no_helmet",
       "armorWeight": "heavy",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 5,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -309,6 +328,7 @@
       "id": "heavy-shield_and_gear-no_helmet",
       "armorWeight": "heavy",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 5,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": false,
@@ -325,6 +345,7 @@
       "id": "heavy-no_gear_no_shield-helmet",
       "armorWeight": "heavy",
       "variation": "no_gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -341,6 +362,7 @@
       "id": "heavy-gear_no_shield-helmet",
       "armorWeight": "heavy",
       "variation": "gear_no_shield",
+      "requiredPhysicality": 4,
       "hasGear": false,
       "hasShield": false,
       "hasHelmet": true,
@@ -357,6 +379,7 @@
       "id": "heavy-shield_no_gear-helmet",
       "armorWeight": "heavy",
       "variation": "shield_no_gear",
+      "requiredPhysicality": 5,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -374,6 +397,7 @@
       "id": "heavy-shield_and_gear-helmet",
       "armorWeight": "heavy",
       "variation": "shield_and_gear",
+      "requiredPhysicality": 5,
       "hasGear": false,
       "hasShield": true,
       "hasHelmet": true,
@@ -394,6 +418,7 @@
       "style": "melee_centric",
       "optionIndex": 1,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Improvised Melee",
@@ -409,6 +434,7 @@
       "style": "melee_centric",
       "optionIndex": 2,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Dagger, Obsidian",
@@ -425,6 +451,7 @@
       "style": "melee_centric",
       "optionIndex": 3,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Hammer, War, Ban-2",
@@ -441,6 +468,7 @@
       "style": "melee_centric",
       "optionIndex": 1,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Club, Circus Mallet",
@@ -456,6 +484,7 @@
       "style": "melee_centric",
       "optionIndex": 2,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Staff, Lesser Mage",
@@ -472,6 +501,7 @@
       "style": "melee_centric",
       "optionIndex": 3,
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Polearm, Pike",
@@ -488,6 +518,7 @@
       "style": "ranged_centric",
       "optionIndex": 1,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Improvised Thrown",
@@ -503,6 +534,7 @@
       "style": "ranged_centric",
       "optionIndex": 2,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Bottle-Phial, Caustic-1",
@@ -518,6 +550,7 @@
       "style": "ranged_centric",
       "optionIndex": 3,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Chakram Rings, Serrated",
@@ -534,14 +567,15 @@
       "style": "ranged_centric",
       "optionIndex": 1,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 2,
-        "adjusted": 2
+        "base": 3,
+        "adjusted": 3
       }
     },
     {
@@ -549,6 +583,7 @@
       "style": "ranged_centric",
       "optionIndex": 2,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Sling, Staff",
@@ -565,6 +600,7 @@
       "style": "ranged_centric",
       "optionIndex": 3,
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Net, Deathnet",
@@ -581,6 +617,7 @@
       "style": "balanced",
       "optionIndex": 1,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Improvised Melee",
@@ -596,6 +633,7 @@
       "style": "balanced",
       "optionIndex": 2,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Stars",
       "items": [
         "Dagger, Obsidian",
@@ -612,6 +650,7 @@
       "style": "balanced",
       "optionIndex": 3,
       "handConfiguration": "1h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": "Throwing Axes",
       "items": [
         "Hammer, War, Ban-2",
@@ -628,6 +667,7 @@
       "style": "balanced",
       "optionIndex": 1,
       "handConfiguration": "2h",
+      "requiredPhysicality": 1,
       "optionalStowedItem": null,
       "items": [
         "Club, Circus Mallet",
@@ -643,6 +683,7 @@
       "style": "balanced",
       "optionIndex": 2,
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "optionalStowedItem": null,
       "items": [
         "Staff, Lesser Mage",
@@ -658,14 +699,15 @@
       "style": "balanced",
       "optionIndex": 3,
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "optionalStowedItem": null,
       "items": [
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 24,
-        "adjusted": 24
+        "base": 25,
+        "adjusted": 25
       }
     }
   ],
@@ -677,6 +719,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -696,6 +739,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -716,6 +760,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -736,6 +781,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -755,6 +801,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -775,6 +822,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -795,6 +843,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -814,6 +863,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -833,6 +883,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -853,16 +904,17 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 10,
-        "adjusted": 10
+        "base": 11,
+        "adjusted": 11
       }
     },
     {
@@ -872,6 +924,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -892,6 +945,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -912,6 +966,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -931,6 +986,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -951,6 +1007,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -971,6 +1028,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -990,6 +1048,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1009,16 +1068,17 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 32,
-        "adjusted": 32
+        "base": 33,
+        "adjusted": 33
       }
     },
     {
@@ -1028,6 +1088,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1047,6 +1108,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1067,6 +1129,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1087,6 +1150,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1106,6 +1170,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1126,6 +1191,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1146,6 +1212,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1165,6 +1232,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1184,6 +1252,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1204,16 +1273,17 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 10,
-        "adjusted": 10
+        "base": 11,
+        "adjusted": 11
       }
     },
     {
@@ -1223,6 +1293,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1243,6 +1314,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1263,6 +1335,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1282,6 +1355,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1302,6 +1376,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1322,6 +1397,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1341,6 +1417,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1360,16 +1437,17 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 32,
-        "adjusted": 32
+        "base": 33,
+        "adjusted": 33
       }
     },
     {
@@ -1379,6 +1457,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1399,6 +1478,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1420,6 +1500,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1441,6 +1522,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1461,6 +1543,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1482,6 +1565,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1503,6 +1587,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1523,6 +1608,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1543,6 +1629,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1564,17 +1651,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 12,
-        "adjusted": 12
+        "base": 13,
+        "adjusted": 13
       }
     },
     {
@@ -1584,6 +1672,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1605,6 +1694,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1626,6 +1716,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1646,6 +1737,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1667,6 +1759,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1688,6 +1781,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1708,6 +1802,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1728,17 +1823,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 34,
-        "adjusted": 34
+        "base": 35,
+        "adjusted": 35
       }
     },
     {
@@ -1748,6 +1844,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1768,6 +1865,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1789,6 +1887,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1810,6 +1909,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1830,6 +1930,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1851,6 +1952,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1872,6 +1974,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1892,6 +1995,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1912,6 +2016,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -1933,17 +2038,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 12,
-        "adjusted": 12
+        "base": 13,
+        "adjusted": 13
       }
     },
     {
@@ -1953,6 +2059,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1974,6 +2081,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -1995,6 +2103,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2015,6 +2124,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2036,6 +2146,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2057,6 +2168,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2077,6 +2189,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2097,17 +2210,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 34,
-        "adjusted": 34
+        "base": 35,
+        "adjusted": 35
       }
     },
     {
@@ -2117,6 +2231,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2137,6 +2252,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2158,6 +2274,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2179,6 +2296,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2199,6 +2317,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2220,6 +2339,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2241,6 +2361,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2261,6 +2382,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2281,6 +2403,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2302,17 +2425,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 13,
-        "adjusted": 13
+        "base": 14,
+        "adjusted": 14
       }
     },
     {
@@ -2322,6 +2446,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2343,6 +2468,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2364,6 +2490,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2384,6 +2511,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2405,6 +2533,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2426,6 +2555,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2446,6 +2576,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2466,17 +2597,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 35,
-        "adjusted": 35
+        "base": 36,
+        "adjusted": 36
       }
     },
     {
@@ -2486,6 +2618,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2506,6 +2639,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2527,6 +2661,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2548,6 +2683,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2568,6 +2704,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2589,6 +2726,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2610,6 +2748,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2630,6 +2769,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2650,6 +2790,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2671,17 +2812,18 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 13,
-        "adjusted": 13
+        "base": 14,
+        "adjusted": 14
       }
     },
     {
@@ -2691,6 +2833,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2712,6 +2855,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2733,6 +2877,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2753,6 +2898,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2774,6 +2920,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2795,6 +2942,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2815,6 +2963,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2835,17 +2984,18 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Light",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 35,
-        "adjusted": 35
+        "base": 36,
+        "adjusted": 36
       }
     },
     {
@@ -2855,6 +3005,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2876,6 +3027,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2898,6 +3050,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -2920,6 +3073,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2941,6 +3095,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2963,6 +3118,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -2985,6 +3141,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3006,6 +3163,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3027,6 +3185,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3049,18 +3208,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 15,
-        "adjusted": 15
+        "base": 16,
+        "adjusted": 16
       }
     },
     {
@@ -3070,6 +3230,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3092,6 +3253,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3114,6 +3276,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3135,6 +3298,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3157,6 +3321,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3179,6 +3344,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3200,6 +3366,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3221,6 +3388,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3228,11 +3396,11 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 37,
-        "adjusted": 37
+        "base": 38,
+        "adjusted": 38
       }
     },
     {
@@ -3242,6 +3410,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3263,6 +3432,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3285,6 +3455,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3307,6 +3478,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3328,6 +3500,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3350,6 +3523,7 @@
       "armorWeight": "light",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3372,6 +3546,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3393,6 +3568,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3414,6 +3590,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3436,18 +3613,19 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Light",
         "Shield, Improvised-Small",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 15,
-        "adjusted": 15
+        "base": 16,
+        "adjusted": 16
       }
     },
     {
@@ -3457,6 +3635,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3479,6 +3658,7 @@
       "armorWeight": "light",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3501,6 +3681,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3522,6 +3703,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3544,6 +3726,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 2,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3566,6 +3749,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 2,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3587,6 +3771,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3608,6 +3793,7 @@
       "armorWeight": "light",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -3615,11 +3801,11 @@
         "Shield, Improvised-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 37,
-        "adjusted": 37
+        "base": 38,
+        "adjusted": 38
       }
     },
     {
@@ -3629,6 +3815,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3648,6 +3835,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3668,6 +3856,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3688,6 +3877,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3707,6 +3897,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3727,6 +3918,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3737,7 +3929,7 @@
       ],
       "bp": {
         "base": 105,
-        "adjusted": 94
+        "adjusted": 105
       }
     },
     {
@@ -3747,6 +3939,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3766,6 +3959,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3785,6 +3979,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3805,16 +4000,17 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 15,
-        "adjusted": 15
+        "base": 16,
+        "adjusted": 16
       }
     },
     {
@@ -3824,6 +4020,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3844,6 +4041,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3864,6 +4062,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3883,6 +4082,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3903,6 +4103,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3923,6 +4124,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3942,6 +4144,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3961,16 +4164,17 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 37,
-        "adjusted": 37
+        "base": 38,
+        "adjusted": 38
       }
     },
     {
@@ -3980,6 +4184,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -3999,6 +4204,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4019,6 +4225,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4039,6 +4246,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4058,6 +4266,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4078,6 +4287,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4088,7 +4298,7 @@
       ],
       "bp": {
         "base": 105,
-        "adjusted": 94
+        "adjusted": 105
       }
     },
     {
@@ -4098,6 +4308,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4117,6 +4328,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4136,6 +4348,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4156,16 +4369,17 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 15,
-        "adjusted": 15
+        "base": 16,
+        "adjusted": 16
       }
     },
     {
@@ -4175,6 +4389,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4195,6 +4410,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4215,6 +4431,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4234,6 +4451,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4254,6 +4472,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4274,6 +4493,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4293,6 +4513,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4312,16 +4533,17 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 37,
-        "adjusted": 37
+        "base": 38,
+        "adjusted": 38
       }
     },
     {
@@ -4331,6 +4553,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4351,6 +4574,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4362,7 +4586,7 @@
       ],
       "bp": {
         "base": 51,
-        "adjusted": 47
+        "adjusted": 51
       }
     },
     {
@@ -4372,6 +4596,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4383,7 +4608,7 @@
       ],
       "bp": {
         "base": 132,
-        "adjusted": 113
+        "adjusted": 132
       }
     },
     {
@@ -4393,6 +4618,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4413,6 +4639,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4434,6 +4661,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4455,6 +4683,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4475,6 +4704,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4495,6 +4725,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4516,17 +4747,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 25,
-        "adjusted": 25
+        "base": 26,
+        "adjusted": 26
       }
     },
     {
@@ -4536,6 +4768,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4557,6 +4790,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4578,6 +4812,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4598,6 +4833,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4619,6 +4855,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4640,6 +4877,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4660,6 +4898,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4680,17 +4919,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 47
+        "base": 48,
+        "adjusted": 48
       }
     },
     {
@@ -4700,6 +4940,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4720,6 +4961,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4731,7 +4973,7 @@
       ],
       "bp": {
         "base": 51,
-        "adjusted": 47
+        "adjusted": 51
       }
     },
     {
@@ -4741,6 +4983,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4752,7 +4995,7 @@
       ],
       "bp": {
         "base": 132,
-        "adjusted": 113
+        "adjusted": 132
       }
     },
     {
@@ -4762,6 +5005,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4782,6 +5026,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4803,6 +5048,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4824,6 +5070,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4844,6 +5091,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4864,6 +5112,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4885,17 +5134,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 25,
-        "adjusted": 25
+        "base": 26,
+        "adjusted": 26
       }
     },
     {
@@ -4905,6 +5155,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4926,6 +5177,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -4947,6 +5199,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4967,6 +5220,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -4988,6 +5242,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5009,6 +5264,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5029,6 +5285,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5049,17 +5306,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 47,
-        "adjusted": 47
+        "base": 48,
+        "adjusted": 48
       }
     },
     {
@@ -5069,6 +5327,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5089,6 +5348,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5110,6 +5370,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5131,6 +5392,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5151,6 +5413,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5172,6 +5435,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5183,7 +5447,7 @@
       ],
       "bp": {
         "base": 108,
-        "adjusted": 97
+        "adjusted": 108
       }
     },
     {
@@ -5193,6 +5457,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5213,6 +5478,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5233,6 +5499,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5254,17 +5521,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 18,
-        "adjusted": 18
+        "base": 19,
+        "adjusted": 19
       }
     },
     {
@@ -5274,6 +5542,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5295,6 +5564,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5316,6 +5586,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5336,6 +5607,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5357,6 +5629,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5378,6 +5651,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5398,6 +5672,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5418,17 +5693,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 40,
-        "adjusted": 40
+        "base": 41,
+        "adjusted": 41
       }
     },
     {
@@ -5438,6 +5714,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5458,6 +5735,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5479,6 +5757,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5500,6 +5779,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5520,6 +5800,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5541,6 +5822,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5552,7 +5834,7 @@
       ],
       "bp": {
         "base": 108,
-        "adjusted": 97
+        "adjusted": 108
       }
     },
     {
@@ -5562,6 +5844,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5582,6 +5865,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5602,6 +5886,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5623,17 +5908,18 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 18,
-        "adjusted": 18
+        "base": 19,
+        "adjusted": 19
       }
     },
     {
@@ -5643,6 +5929,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5664,6 +5951,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5685,6 +5973,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5705,6 +5994,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5726,6 +6016,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5747,6 +6038,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 3,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5767,6 +6059,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5787,17 +6080,18 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 40,
-        "adjusted": 40
+        "base": 41,
+        "adjusted": 41
       }
     },
     {
@@ -5807,6 +6101,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5828,6 +6123,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5840,7 +6136,7 @@
       ],
       "bp": {
         "base": 54,
-        "adjusted": 50
+        "adjusted": 54
       }
     },
     {
@@ -5850,6 +6146,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5862,7 +6159,7 @@
       ],
       "bp": {
         "base": 135,
-        "adjusted": 116
+        "adjusted": 135
       }
     },
     {
@@ -5872,6 +6169,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5893,6 +6191,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5915,6 +6214,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -5937,6 +6237,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5958,6 +6259,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -5979,6 +6281,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6001,18 +6304,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 28,
-        "adjusted": 28
+        "base": 29,
+        "adjusted": 29
       }
     },
     {
@@ -6022,6 +6326,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6044,6 +6349,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6066,6 +6372,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6087,6 +6394,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6109,6 +6417,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6131,6 +6440,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6152,6 +6462,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6173,6 +6484,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6180,11 +6492,11 @@
         "Shield, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 50
+        "base": 51,
+        "adjusted": 51
       }
     },
     {
@@ -6194,6 +6506,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6215,6 +6528,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6227,7 +6541,7 @@
       ],
       "bp": {
         "base": 54,
-        "adjusted": 50
+        "adjusted": 54
       }
     },
     {
@@ -6237,6 +6551,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6249,7 +6564,7 @@
       ],
       "bp": {
         "base": 135,
-        "adjusted": 116
+        "adjusted": 135
       }
     },
     {
@@ -6259,6 +6574,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6280,6 +6596,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6302,6 +6619,7 @@
       "armorWeight": "medium",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6324,6 +6642,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6345,6 +6664,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6366,6 +6686,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6388,18 +6709,19 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Medium",
         "Shield, Medium",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 28,
-        "adjusted": 28
+        "base": 29,
+        "adjusted": 29
       }
     },
     {
@@ -6409,6 +6731,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6431,6 +6754,7 @@
       "armorWeight": "medium",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6453,6 +6777,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6474,6 +6799,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6496,6 +6822,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6518,6 +6845,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6539,6 +6867,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6560,6 +6889,7 @@
       "armorWeight": "medium",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -6567,11 +6897,11 @@
         "Shield, Medium",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 50,
-        "adjusted": 50
+        "base": 51,
+        "adjusted": 51
       }
     },
     {
@@ -6581,6 +6911,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6600,6 +6931,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6610,7 +6942,7 @@
       ],
       "bp": {
         "base": 43,
-        "adjusted": 39
+        "adjusted": 43
       }
     },
     {
@@ -6620,6 +6952,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6630,7 +6963,7 @@
       ],
       "bp": {
         "base": 124,
-        "adjusted": 105
+        "adjusted": 124
       }
     },
     {
@@ -6640,6 +6973,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6659,6 +6993,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6669,7 +7004,7 @@
       ],
       "bp": {
         "base": 62,
-        "adjusted": 57
+        "adjusted": 62
       }
     },
     {
@@ -6679,6 +7014,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6689,7 +7025,7 @@
       ],
       "bp": {
         "base": 107,
-        "adjusted": 96
+        "adjusted": 107
       }
     },
     {
@@ -6699,6 +7035,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6718,6 +7055,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6737,6 +7075,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6757,16 +7096,17 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 17,
-        "adjusted": 17
+        "base": 18,
+        "adjusted": 18
       }
     },
     {
@@ -6776,6 +7116,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6796,6 +7137,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6816,6 +7158,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6835,6 +7178,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6855,6 +7199,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6875,6 +7220,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6894,6 +7240,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6913,16 +7260,17 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 39,
-        "adjusted": 39
+        "base": 40,
+        "adjusted": 40
       }
     },
     {
@@ -6932,6 +7280,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6951,6 +7300,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6961,7 +7311,7 @@
       ],
       "bp": {
         "base": 43,
-        "adjusted": 39
+        "adjusted": 43
       }
     },
     {
@@ -6971,6 +7321,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -6981,7 +7332,7 @@
       ],
       "bp": {
         "base": 124,
-        "adjusted": 105
+        "adjusted": 124
       }
     },
     {
@@ -6991,6 +7342,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7010,6 +7362,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7020,7 +7373,7 @@
       ],
       "bp": {
         "base": 62,
-        "adjusted": 57
+        "adjusted": 62
       }
     },
     {
@@ -7030,6 +7383,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7040,7 +7394,7 @@
       ],
       "bp": {
         "base": 107,
-        "adjusted": 96
+        "adjusted": 107
       }
     },
     {
@@ -7050,6 +7404,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7069,6 +7424,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7088,6 +7444,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7108,16 +7465,17 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 17,
-        "adjusted": 17
+        "base": 18,
+        "adjusted": 18
       }
     },
     {
@@ -7127,6 +7485,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7147,6 +7506,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7167,6 +7527,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7186,6 +7547,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7206,6 +7568,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7226,6 +7589,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7245,6 +7609,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7264,16 +7629,17 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 39,
-        "adjusted": 39
+        "base": 40,
+        "adjusted": 40
       }
     },
     {
@@ -7283,6 +7649,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7303,6 +7670,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7314,7 +7682,7 @@
       ],
       "bp": {
         "base": 46,
-        "adjusted": 42
+        "adjusted": 46
       }
     },
     {
@@ -7324,6 +7692,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7335,7 +7704,7 @@
       ],
       "bp": {
         "base": 127,
-        "adjusted": 108
+        "adjusted": 127
       }
     },
     {
@@ -7345,6 +7714,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7365,6 +7735,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7386,6 +7757,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7407,6 +7779,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7427,6 +7800,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7447,6 +7821,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7468,17 +7843,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 20,
-        "adjusted": 20
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -7488,6 +7864,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7509,6 +7886,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7530,6 +7908,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7550,6 +7929,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7571,6 +7951,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7592,6 +7973,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7612,6 +7994,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7632,17 +8015,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 42
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -7652,6 +8036,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7672,6 +8057,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7683,7 +8069,7 @@
       ],
       "bp": {
         "base": 46,
-        "adjusted": 42
+        "adjusted": 46
       }
     },
     {
@@ -7693,6 +8079,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7704,7 +8091,7 @@
       ],
       "bp": {
         "base": 127,
-        "adjusted": 108
+        "adjusted": 127
       }
     },
     {
@@ -7714,6 +8101,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7734,6 +8122,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7755,6 +8144,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7776,6 +8166,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7796,6 +8187,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7816,6 +8208,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7837,17 +8230,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 20,
-        "adjusted": 20
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -7857,6 +8251,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7878,6 +8273,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7899,6 +8295,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7919,6 +8316,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7940,6 +8338,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -7961,6 +8360,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -7981,6 +8381,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8001,17 +8402,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 42
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -8021,6 +8423,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8041,6 +8444,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8052,7 +8456,7 @@
       ],
       "bp": {
         "base": 46,
-        "adjusted": 42
+        "adjusted": 46
       }
     },
     {
@@ -8062,6 +8466,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8073,7 +8478,7 @@
       ],
       "bp": {
         "base": 127,
-        "adjusted": 108
+        "adjusted": 127
       }
     },
     {
@@ -8083,6 +8488,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8103,6 +8509,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8114,7 +8521,7 @@
       ],
       "bp": {
         "base": 65,
-        "adjusted": 60
+        "adjusted": 65
       }
     },
     {
@@ -8124,6 +8531,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8135,7 +8543,7 @@
       ],
       "bp": {
         "base": 110,
-        "adjusted": 99
+        "adjusted": 110
       }
     },
     {
@@ -8145,6 +8553,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8165,6 +8574,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8185,6 +8595,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8206,17 +8617,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 20,
-        "adjusted": 20
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -8226,6 +8638,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8247,6 +8660,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8268,6 +8682,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8288,6 +8703,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8309,6 +8725,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8330,6 +8747,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8350,6 +8768,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8370,17 +8789,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 42
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -8390,6 +8810,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8410,6 +8831,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8421,7 +8843,7 @@
       ],
       "bp": {
         "base": 46,
-        "adjusted": 42
+        "adjusted": 46
       }
     },
     {
@@ -8431,6 +8853,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8442,7 +8865,7 @@
       ],
       "bp": {
         "base": 127,
-        "adjusted": 108
+        "adjusted": 127
       }
     },
     {
@@ -8452,6 +8875,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8472,6 +8896,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8483,7 +8908,7 @@
       ],
       "bp": {
         "base": 65,
-        "adjusted": 60
+        "adjusted": 65
       }
     },
     {
@@ -8493,6 +8918,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8504,7 +8930,7 @@
       ],
       "bp": {
         "base": 110,
-        "adjusted": 99
+        "adjusted": 110
       }
     },
     {
@@ -8514,6 +8940,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8534,6 +8961,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8554,6 +8982,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8575,17 +9004,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 20,
-        "adjusted": 20
+        "base": 21,
+        "adjusted": 21
       }
     },
     {
@@ -8595,6 +9025,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8616,6 +9047,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8637,6 +9069,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8657,6 +9090,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8678,6 +9112,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8699,6 +9134,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 4,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8719,6 +9155,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8739,17 +9176,18 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
         "Armor, Heavy",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 42,
-        "adjusted": 42
+        "base": 43,
+        "adjusted": 43
       }
     },
     {
@@ -8759,6 +9197,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8780,6 +9219,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8792,7 +9232,7 @@
       ],
       "bp": {
         "base": 49,
-        "adjusted": 45
+        "adjusted": 49
       }
     },
     {
@@ -8802,6 +9242,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8814,7 +9255,7 @@
       ],
       "bp": {
         "base": 130,
-        "adjusted": 111
+        "adjusted": 130
       }
     },
     {
@@ -8824,6 +9265,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8845,6 +9287,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8867,6 +9310,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8889,6 +9333,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8910,6 +9355,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8931,6 +9377,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -8953,18 +9400,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 23,
-        "adjusted": 23
+        "base": 24,
+        "adjusted": 24
       }
     },
     {
@@ -8974,6 +9422,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -8996,6 +9445,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9018,6 +9468,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9039,6 +9490,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9061,6 +9513,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9083,6 +9536,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9104,6 +9558,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9125,6 +9580,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9132,11 +9588,11 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 45
+        "base": 46,
+        "adjusted": 46
       }
     },
     {
@@ -9146,6 +9602,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9167,6 +9624,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9179,7 +9637,7 @@
       ],
       "bp": {
         "base": 49,
-        "adjusted": 45
+        "adjusted": 49
       }
     },
     {
@@ -9189,6 +9647,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9201,7 +9660,7 @@
       ],
       "bp": {
         "base": 130,
-        "adjusted": 111
+        "adjusted": 130
       }
     },
     {
@@ -9211,6 +9670,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9232,6 +9692,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9254,6 +9715,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "melee_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9276,6 +9738,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9297,6 +9760,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9318,6 +9782,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9340,18 +9805,19 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
         "Armor, Heavy",
         "Shield, Heavy-Small",
         "Helmet, Common",
-        "Balllista, Light",
+        "Bow, Light",
         "Improvised Thrown"
       ],
       "bp": {
-        "base": 23,
-        "adjusted": 23
+        "base": 24,
+        "adjusted": 24
       }
     },
     {
@@ -9361,6 +9827,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9383,6 +9850,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "ranged_centric",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9405,6 +9873,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9426,6 +9895,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9448,6 +9918,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "1h",
+      "requiredPhysicality": 5,
       "compatible": true,
       "compatibilityReason": "ok",
       "items": [
@@ -9470,6 +9941,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 5,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9491,6 +9963,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9512,6 +9985,7 @@
       "armorWeight": "heavy",
       "weaponStyle": "balanced",
       "handConfiguration": "2h",
+      "requiredPhysicality": 6,
       "compatible": false,
       "compatibilityReason": "shield_requires_1h_weapon",
       "items": [
@@ -9519,11 +9993,11 @@
         "Shield, Heavy-Small",
         "Helmet, Common",
         "Polearm, Pike",
-        "Balllista, Light"
+        "Bow, Light"
       ],
       "bp": {
-        "base": 45,
-        "adjusted": 45
+        "base": 46,
+        "adjusted": 46
       }
     }
   ]

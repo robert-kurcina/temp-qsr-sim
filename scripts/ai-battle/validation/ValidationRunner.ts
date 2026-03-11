@@ -100,6 +100,19 @@ function buildCombatEfficacyFromStats(stats: Partial<BattleStats>): CombatEffica
   const damageFails = toSafeNonNegativeNumber(
     stats.damageTestsFailed ?? Math.max(0, damageAttempts - damagePasses)
   );
+  const totalAssignments = {
+    wounds: toSafeNonNegativeNumber(stats.woundsAssigned),
+    fear: toSafeNonNegativeNumber(stats.fearAssigned),
+    delay: toSafeNonNegativeNumber(stats.delayAssigned),
+  };
+  const damageAssignments = {
+    wounds: toSafeNonNegativeNumber(stats.damageWoundsAssigned ?? totalAssignments.wounds),
+    fear: toSafeNonNegativeNumber(stats.damageFearAssigned ?? totalAssignments.fear),
+    delay: toSafeNonNegativeNumber(stats.damageDelayAssigned ?? totalAssignments.delay),
+  };
+  const passiveOrOtherDelay = toSafeNonNegativeNumber(
+    stats.passiveOrOtherDelayAssigned ?? Math.max(0, totalAssignments.delay - damageAssignments.delay)
+  );
   return {
     hitTests: {
       attempts: hitAttempts,
@@ -113,11 +126,9 @@ function buildCombatEfficacyFromStats(stats: Partial<BattleStats>): CombatEffica
       fails: damageFails,
       passRate: safeRate(damagePasses, damageAttempts),
     },
-    assignments: {
-      wounds: toSafeNonNegativeNumber(stats.woundsAssigned),
-      fear: toSafeNonNegativeNumber(stats.fearAssigned),
-      delay: toSafeNonNegativeNumber(stats.delayAssigned),
-    },
+    damageAssignments,
+    passiveOrOtherDelay,
+    assignments: totalAssignments,
   };
 }
 
@@ -1370,7 +1381,7 @@ export async function runValidationBatch(
     });
     const elapsedLabel = report.performance ? `, elapsedMs=${report.performance.elapsedMs.toFixed(2)}` : '';
     console.log(
-      `  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}, path=${(report.usage?.totalPathLength ?? 0).toFixed(2)}, hit=${(runCombatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.hitTests.passes}/${runCombatEfficacy.hitTests.attempts}), damage=${(runCombatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.damageTests.passes}/${runCombatEfficacy.damageTests.attempts}), assigned(w/f/d)=${runCombatEfficacy.assignments.wounds}/${runCombatEfficacy.assignments.fear}/${runCombatEfficacy.assignments.delay}, ${runScoringSummary}${elapsedLabel}`
+      `  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}, path=${(report.usage?.totalPathLength ?? 0).toFixed(2)}, hit=${(runCombatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.hitTests.passes}/${runCombatEfficacy.hitTests.attempts}), damage=${(runCombatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.damageTests.passes}/${runCombatEfficacy.damageTests.attempts}), assigned(dmg w/f/d)=${runCombatEfficacy.damageAssignments.wounds}/${runCombatEfficacy.damageAssignments.fear}/${runCombatEfficacy.damageAssignments.delay}, passive/other delay=${runCombatEfficacy.passiveOrOtherDelay}, ${runScoringSummary}${elapsedLabel}`
     );
   }
 
@@ -1467,7 +1478,7 @@ export async function runValidationBatch(
     `  React Efficacy: windows=${totals.reactChoiceWindows}, choices=${totals.reactChoicesGiven}, taken=${totals.reactChoicesTaken}, takeRate=${(safeRate(totals.reactChoicesTaken, totals.reactChoiceWindows) * 100).toFixed(1)}%, optionSelectRate=${(safeRate(totals.reactChoicesTaken, totals.reactChoicesGiven) * 100).toFixed(1)}%, waitReact=${totals.waitTriggeredReacts}, waitReactWounds=${totals.waitReactWoundsInflicted.toFixed(2)}`
   );
   console.log(
-    `  Combat Efficacy: hit=${(combatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${combatEfficacy.hitTests.passes}/${combatEfficacy.hitTests.attempts}), damage=${(combatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${combatEfficacy.damageTests.passes}/${combatEfficacy.damageTests.attempts}), assigned(w/f/d)=${combatEfficacy.assignments.wounds}/${combatEfficacy.assignments.fear}/${combatEfficacy.assignments.delay}`
+    `  Combat Efficacy: hit=${(combatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${combatEfficacy.hitTests.passes}/${combatEfficacy.hitTests.attempts}), damage=${(combatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${combatEfficacy.damageTests.passes}/${combatEfficacy.damageTests.attempts}), assigned(dmg w/f/d)=${combatEfficacy.damageAssignments.wounds}/${combatEfficacy.damageAssignments.fear}/${combatEfficacy.damageAssignments.delay}, passive/other delay=${combatEfficacy.passiveOrOtherDelay}`
   );
   if (scoringSummary.sideScores.length > 0) {
     console.log('  Mission Scoring:');

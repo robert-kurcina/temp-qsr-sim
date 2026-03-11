@@ -24,6 +24,443 @@ export const gameData = {
       }
     }
   },
+  "ai_battle_tuning": {
+    "version": 1,
+    "categoryBlocks": {
+      "performance": {
+        "densityBucketLabels": [
+          "0-24",
+          "25-49",
+          "50-74",
+          "75-99",
+          "100"
+        ],
+        "defaultThresholds": {
+          "turn1ElapsedMsMax": 120000,
+          "activationP95MsMax": 8000,
+          "minLosCacheHitRate": 0.75,
+          "minPathCacheHitRate": 0.35,
+          "minGridCacheHitRate": 0.5,
+          "minMinimaxLiteCacheHitRate": 0.05,
+          "minMinimaxPatchCacheHitRate": 0.12
+        },
+        "densityBucketThresholds": [
+          {
+            "turn1ElapsedMsMax": 80000,
+            "activationP95MsMax": 4500,
+            "minLosCacheHitRate": 0.52,
+            "minPathCacheHitRate": 0.42,
+            "minGridCacheHitRate": 0.95,
+            "minMinimaxLiteCacheHitRate": 0.1,
+            "minMinimaxPatchCacheHitRate": 0.24
+          },
+          {
+            "turn1ElapsedMsMax": 100000,
+            "activationP95MsMax": 6000,
+            "minLosCacheHitRate": 0.54,
+            "minPathCacheHitRate": 0.43,
+            "minGridCacheHitRate": 0.95,
+            "minMinimaxLiteCacheHitRate": 0.09,
+            "minMinimaxPatchCacheHitRate": 0.22
+          },
+          {
+            "turn1ElapsedMsMax": 120000,
+            "activationP95MsMax": 8000,
+            "minLosCacheHitRate": 0.5,
+            "minPathCacheHitRate": 0.41,
+            "minGridCacheHitRate": 0.95,
+            "minMinimaxLiteCacheHitRate": 0.08,
+            "minMinimaxPatchCacheHitRate": 0.2
+          },
+          {
+            "turn1ElapsedMsMax": 145000,
+            "activationP95MsMax": 10000,
+            "minLosCacheHitRate": 0.46,
+            "minPathCacheHitRate": 0.38,
+            "minGridCacheHitRate": 0.95,
+            "minMinimaxLiteCacheHitRate": 0.07,
+            "minMinimaxPatchCacheHitRate": 0.18
+          },
+          {
+            "turn1ElapsedMsMax": 170000,
+            "activationP95MsMax": 12000,
+            "minLosCacheHitRate": 0.44,
+            "minPathCacheHitRate": 0.36,
+            "minGridCacheHitRate": 0.95,
+            "minMinimaxLiteCacheHitRate": 0.06,
+            "minMinimaxPatchCacheHitRate": 0.16
+          }
+        ],
+        "factors": {
+          "gameSizeLatency": {
+            "VERY_SMALL": 0.35,
+            "SMALL": 0.5,
+            "MEDIUM": 0.7,
+            "LARGE": 0.85,
+            "VERY_LARGE": 1
+          },
+          "gameSizeCacheHit": {
+            "VERY_SMALL": 1.05,
+            "SMALL": 1,
+            "MEDIUM": 0.75,
+            "LARGE": 0.45,
+            "VERY_LARGE": 0.1
+          },
+          "gameSizePathCacheHit": {
+            "VERY_SMALL": 0.45,
+            "SMALL": 1,
+            "MEDIUM": 0.75,
+            "LARGE": 0.45,
+            "VERY_LARGE": 0.1
+          },
+          "gameSizeMinimaxCacheHit": {
+            "VERY_SMALL": 0.35,
+            "SMALL": 1,
+            "MEDIUM": 0.75,
+            "LARGE": 0.45,
+            "VERY_LARGE": 0.1
+          },
+          "missionLatency": {
+            "QAI_18": 1.1,
+            "QAI_20": 1.15
+          }
+        }
+      },
+      "passiveness": {
+        "defaultThresholds": {
+          "maxPassiveActionRatio": 0.7,
+          "maxDetectHideActionRatio": 0.45,
+          "maxWaitActionRatio": 0.3
+        },
+        "missionBase": {
+          "QAI_11": {
+            "maxPassiveActionRatio": 0.45,
+            "maxDetectHideActionRatio": 0.25,
+            "maxWaitActionRatio": 0.2
+          },
+          "QAI_17": {
+            "maxPassiveActionRatio": 0.5,
+            "maxDetectHideActionRatio": 0.3,
+            "maxWaitActionRatio": 0.22
+          },
+          "QAI_18": {
+            "maxPassiveActionRatio": 0.95,
+            "maxDetectHideActionRatio": 0.9,
+            "maxWaitActionRatio": 0.7
+          }
+        },
+        "gameSizeFactors": {
+          "VERY_SMALL": 0.9,
+          "SMALL": 1,
+          "MEDIUM": 1.1,
+          "LARGE": 1.2,
+          "VERY_LARGE": 1.3
+        },
+        "densityFactors": [
+          0.9,
+          1,
+          1.1,
+          1.2,
+          1.25
+        ]
+      },
+      "combatActivity": {
+        "defaultThresholds": {
+          "minAttackActionRatio": 0.03,
+          "minRunsWithCombatRate": 0.5,
+          "maxZeroAttackRunRate": 0.5
+        },
+        "missionBase": {
+          "QAI_11": {
+            "minAttackActionRatio": 0.08,
+            "minRunsWithCombatRate": 0.7,
+            "maxZeroAttackRunRate": 0.3
+          },
+          "QAI_17": {
+            "minAttackActionRatio": 0.07,
+            "minRunsWithCombatRate": 0.65,
+            "maxZeroAttackRunRate": 0.35
+          },
+          "QAI_18": {
+            "minAttackActionRatio": 0,
+            "minRunsWithCombatRate": 0,
+            "maxZeroAttackRunRate": 1
+          }
+        },
+        "minGameSizeFactors": {
+          "VERY_SMALL": 1.15,
+          "SMALL": 1,
+          "MEDIUM": 0.85,
+          "LARGE": 0.7,
+          "VERY_LARGE": 0.6
+        },
+        "maxZeroGameSizeFactors": {
+          "VERY_SMALL": 0.85,
+          "SMALL": 1,
+          "MEDIUM": 1.15,
+          "LARGE": 1.3,
+          "VERY_LARGE": 1.4
+        },
+        "minDensityFactors": [
+          1.1,
+          1,
+          0.9,
+          0.8,
+          0.75
+        ],
+        "maxZeroDensityFactors": [
+          0.85,
+          1,
+          1.15,
+          1.3,
+          1.4
+        ]
+      },
+      "pressureContinuity": {
+        "defaultThresholds": {
+          "minRunsWithDataRate": 0.35,
+          "minSignatureCoverageRate": 0.6,
+          "maxCombinedBreakRate": 0.8,
+          "maxLaneBreakRate": 0.85,
+          "maxScrumBreakRate": 0.85
+        },
+        "missionBase": {
+          "QAI_11": {
+            "minRunsWithDataRate": 0.5,
+            "minSignatureCoverageRate": 0.7,
+            "maxCombinedBreakRate": 0.7,
+            "maxLaneBreakRate": 0.75,
+            "maxScrumBreakRate": 0.75
+          },
+          "QAI_17": {
+            "minRunsWithDataRate": 0.45,
+            "minSignatureCoverageRate": 0.65,
+            "maxCombinedBreakRate": 0.75,
+            "maxLaneBreakRate": 0.8,
+            "maxScrumBreakRate": 0.8
+          },
+          "QAI_18": {
+            "minRunsWithDataRate": 0.1,
+            "minSignatureCoverageRate": 0.3,
+            "maxCombinedBreakRate": 0.95,
+            "maxLaneBreakRate": 0.98,
+            "maxScrumBreakRate": 0.98
+          }
+        },
+        "minCoverageGameSizeFactors": {
+          "VERY_SMALL": 1.1,
+          "SMALL": 1,
+          "MEDIUM": 0.9,
+          "LARGE": 0.8,
+          "VERY_LARGE": 0.75
+        },
+        "maxBreakGameSizeFactors": {
+          "VERY_SMALL": 0.9,
+          "SMALL": 1,
+          "MEDIUM": 1.1,
+          "LARGE": 1.2,
+          "VERY_LARGE": 1.25
+        },
+        "minDataGameSizeFactors": {
+          "VERY_SMALL": 1.05,
+          "SMALL": 1,
+          "MEDIUM": 0.9,
+          "LARGE": 0.8,
+          "VERY_LARGE": 0.75
+        },
+        "minCoverageDensityFactors": [
+          1.1,
+          1,
+          0.9,
+          0.8,
+          0.75
+        ],
+        "maxBreakDensityFactors": [
+          0.9,
+          1,
+          1.1,
+          1.2,
+          1.25
+        ],
+        "minDataDensityFactors": [
+          1.1,
+          1,
+          0.9,
+          0.8,
+          0.75
+        ]
+      },
+      "attackGateTelemetry": {
+        "defaultThresholds": {
+          "minTelemetrySamplesPerRun": 8,
+          "minImmediateHighOpportunityCount": 1,
+          "minImmediateHighConversionRate": 0.01,
+          "minPressureOpportunityGateApplyRate": 0.01
+        },
+        "missionBase": {
+          "QAI_11": {
+            "minTelemetrySamplesPerRun": 12,
+            "minImmediateHighOpportunityCount": 2,
+            "minImmediateHighConversionRate": 0.05,
+            "minPressureOpportunityGateApplyRate": 0.03
+          },
+          "QAI_17": {
+            "minTelemetrySamplesPerRun": 10,
+            "minImmediateHighOpportunityCount": 2,
+            "minImmediateHighConversionRate": 0.04,
+            "minPressureOpportunityGateApplyRate": 0.025
+          },
+          "QAI_18": {
+            "minTelemetrySamplesPerRun": 4,
+            "minImmediateHighOpportunityCount": 1,
+            "minImmediateHighConversionRate": 0,
+            "minPressureOpportunityGateApplyRate": 0
+          }
+        },
+        "sampleGameSizeFactors": {
+          "VERY_SMALL": 1.15,
+          "SMALL": 1,
+          "MEDIUM": 0.9,
+          "LARGE": 0.8,
+          "VERY_LARGE": 0.7
+        },
+        "rateGameSizeFactors": {
+          "VERY_SMALL": 1.1,
+          "SMALL": 1,
+          "MEDIUM": 0.9,
+          "LARGE": 0.8,
+          "VERY_LARGE": 0.7
+        },
+        "sampleDensityFactors": [
+          1.1,
+          1,
+          0.9,
+          0.8,
+          0.75
+        ],
+        "rateDensityFactors": [
+          1.1,
+          1,
+          0.9,
+          0.8,
+          0.75
+        ]
+      },
+      "validationRunner": {
+        "coordinatorTraceGates": {
+          "defaultMinRunCoverage": 1,
+          "defaultMinTurnCoverage": 0.95,
+          "defaultMinSideCoveragePerTurn": 0.9
+        },
+        "combatActivityGates": {
+          "defaultMinTurnHorizonRatio": 0.85
+        },
+        "passivenessGates": {
+          "defaultMinTurnHorizonRatio": 0.85
+        },
+        "attackGateTelemetryGates": {
+          "defaultMinTurnHorizonRatio": 0.85,
+          "minImmediateHighOpportunityCountFloor": 1
+        }
+      }
+    }
+  },
+  "ai_tuning": {
+    "version": 1,
+    "categoryBlocks": {
+      "utilityScorer": {
+        "defaultWeights": {
+          "distanceToTarget": 1,
+          "optimalRange": 1.5,
+          "coverValue": 2,
+          "highGroundValue": 1,
+          "targetHealth": 1.5,
+          "targetThreat": 2,
+          "killProbability": 2.5,
+          "cohesionValue": 1,
+          "flankValue": 1.5,
+          "chokepointValue": 0.5,
+          "objectiveValue": 3,
+          "victoryConditionValue": 4,
+          "selfPreservation": 2,
+          "allyProtection": 1,
+          "riskAvoidance": 1,
+          "aggression": 1
+        },
+        "actionMask": {
+          "cacheMaxSize": 1024
+        }
+      },
+      "sideCoordinator": {
+        "targetCommitment": {
+          "decayPerTurn": 0.75,
+          "maxScore": 8,
+          "pruneThreshold": 0.15,
+          "maxStaleTurns": 5
+        },
+        "pressureContinuity": {
+          "decayPerTurn": 0.82,
+          "maxScore": 10,
+          "pruneThreshold": 0.2,
+          "maxStaleTurns": 6,
+          "signatureBreakPenalty": 0.45,
+          "signatureStableBonusStep": 0.04,
+          "signatureStableBonusMax": 0.35
+        },
+        "trace": {
+          "maxEntries": 64
+        }
+      },
+      "actionVpFilter": {
+        "estimatedContributionByAction": {
+          "close_combat": 0.35,
+          "ranged_combat": 0.25,
+          "charge": 0.2,
+          "move": 0.08,
+          "disengage": 0.1,
+          "detect": 0.08,
+          "hide": 0,
+          "wait": 0.02,
+          "rally": 0.05,
+          "revive": 0.08,
+          "hold": 0,
+          "fiddle": 0,
+          "reload": 0.05,
+          "pushing": 0.15,
+          "refresh": 0.1,
+          "combined": 0.2,
+          "none": 0
+        },
+        "filters": {
+          "desperateVpEnablingMinContribution": 0.15,
+          "highPassiveRejectMaxContribution": 0.03
+        },
+        "scoring": {
+          "vpEnablingUrgencyBlend": 0.5,
+          "baseVpScoreFactor": 2,
+          "passivePenaltyStartTurn": 3
+        },
+        "urgencyMultipliers": {
+          "desperate": 3,
+          "high": 2,
+          "medium": 1.5,
+          "low": 1
+        },
+        "passivePenaltyCoefficients": {
+          "desperate": 2.5,
+          "high": 1.5,
+          "medium": 0.8,
+          "turnOffset": 2
+        }
+      },
+      "turnHorizon": {
+        "fallbackMaxTurnsFloor": 6,
+        "expectedSurvivalConvergenceSteps": 12,
+        "preTriggerPressureCap": 0.6,
+        "postTriggerPressureRange": 0.4
+      }
+    }
+  },
   "archetypes": {
     "Untrained": {
       "attributes": {
@@ -5612,7 +6049,7 @@ export const gameData = {
       "battlefieldWidthMU": 48,
       "battlefieldHeightMU": 48,
       "endGameTrigger": 8,
-      "deploymentDepth": 8,
+      "deploymentDepth": 8
     },
     "VERY_LARGE": {
       "name": "Very Large",
@@ -13916,6 +14353,35 @@ export const gameData = {
       "type": "Melee"
     }
   },
+  "mission_tuning": {
+    "version": 1,
+    "categoryBlocks": {
+      "aggression": {
+        "crossingThresholdRatio": 0.5
+      },
+      "sanctuary": {
+        "defaultBpThresholdRatio": 0.25
+      },
+      "specialRules": {
+        "reinforcements": {
+          "defaultDeploymentDistance": 6
+        },
+        "alert": {
+          "defaultThreshold": 6
+        },
+        "threat": {
+          "defaultMaxLevel": 6
+        },
+        "vigilance": {
+          "normalVisibility": 8,
+          "enhancedVisibility": 16
+        }
+      },
+      "heuristicScorer": {
+        "defaultVictoryConditionThreshold": 5
+      }
+    }
+  },
   "missions": {
     "Elimination": {
       "name": "Elimination",
@@ -20183,7 +20649,3 @@ export const gameData = {
     }
   }
 };
-
-// Backward compatibility exports
-export const archetypes = gameData.archetypes;
-export const melee_weapons = gameData.melee_weapons;

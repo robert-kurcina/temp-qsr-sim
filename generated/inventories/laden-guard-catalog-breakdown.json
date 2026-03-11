@@ -1,0 +1,553 @@
+{
+  "overall": {
+    "totalCombos": 7776,
+    "uniqueFailingCombos": 6096,
+    "passCombos": 1680,
+    "uniqueFailingByFile": {
+      "atomic.loadout.json": 348,
+      "bronze.loadout.json": 348,
+      "colonial.loadout.json": 372,
+      "energy.loadout.json": 352,
+      "fusion.loadout.json": 352,
+      "gravity.loadout.json": 352,
+      "industrial.loadout.json": 384,
+      "information.loadout.json": 348,
+      "iron.loadout.json": 248,
+      "machine.loadout.json": 372,
+      "medieval.loadout.json": 268,
+      "modern.loadout.json": 348,
+      "quantum.loadout.json": 352,
+      "renaissance.loadout.json": 268,
+      "robotics.loadout.json": 312,
+      "sail.loadout.json": 372,
+      "stone.loadout.json": 348,
+      "symbolic.loadout.json": 352
+    },
+    "totalCombosByFile": {
+      "atomic.loadout.json": 432,
+      "bronze.loadout.json": 432,
+      "colonial.loadout.json": 432,
+      "energy.loadout.json": 432,
+      "fusion.loadout.json": 432,
+      "gravity.loadout.json": 432,
+      "industrial.loadout.json": 432,
+      "information.loadout.json": 432,
+      "iron.loadout.json": 432,
+      "machine.loadout.json": 432,
+      "medieval.loadout.json": 432,
+      "modern.loadout.json": 432,
+      "quantum.loadout.json": 432,
+      "renaissance.loadout.json": 432,
+      "robotics.loadout.json": 432,
+      "sail.loadout.json": 432,
+      "stone.loadout.json": 432,
+      "symbolic.loadout.json": 432
+    }
+  },
+  "runnerArchetypes": {
+    "totalFailureRows": 16344,
+    "uniqueFailingCombos": 6096,
+    "failureRowsByArchetype": {
+      "Average": 5124,
+      "Militia": 6096,
+      "Veteran": 5124
+    },
+    "uniqueFailingByFile": {
+      "atomic.loadout.json": 348,
+      "bronze.loadout.json": 348,
+      "colonial.loadout.json": 372,
+      "energy.loadout.json": 352,
+      "fusion.loadout.json": 352,
+      "gravity.loadout.json": 352,
+      "industrial.loadout.json": 384,
+      "information.loadout.json": 348,
+      "iron.loadout.json": 248,
+      "machine.loadout.json": 372,
+      "medieval.loadout.json": 268,
+      "modern.loadout.json": 348,
+      "quantum.loadout.json": 352,
+      "renaissance.loadout.json": 268,
+      "robotics.loadout.json": 312,
+      "sail.loadout.json": 372,
+      "stone.loadout.json": 348,
+      "symbolic.loadout.json": 352
+    }
+  },
+  "topShared": [
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__melee_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__melee_centric-2h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__ranged_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__ranged_centric-2h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__balanced-1h-opt2",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__balanced-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__balanced-2h-opt2",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-no_helmet__balanced-2h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__melee_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__melee_centric-2h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__ranged_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__ranged_centric-2h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__balanced-1h-opt2",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__balanced-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__balanced-2h-opt2",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-gear_no_shield-no_helmet__balanced-2h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_no_gear-no_helmet__melee_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_no_gear-no_helmet__ranged_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_no_gear-no_helmet__balanced-1h-opt2",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_no_gear-no_helmet__balanced-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_and_gear-no_helmet__melee_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_and_gear-no_helmet__ranged_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_and_gear-no_helmet__balanced-1h-opt2",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-shield_and_gear-no_helmet__balanced-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    },
+    {
+      "file": "atomic.loadout.json",
+      "comboId": "light-no_gear_no_shield-helmet__melee_centric-1h-opt3",
+      "archetypeCount": 12,
+      "archetypes": [
+        "Average",
+        "Average, Evasive",
+        "Militia",
+        "Untrained",
+        "Veteran",
+        "Veteran, Fighter",
+        "Veteran, Grizzled",
+        "Veteran, Knife-fighter",
+        "Veteran, Shooter",
+        "Veteran, Sneak",
+        "Veteran, Tactician",
+        "Veteran, Wise"
+      ]
+    }
+  ]
+}

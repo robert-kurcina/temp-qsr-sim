@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { gameData } from '../../../src/lib/data';
 import { AGE_TO_TECH_LEVEL } from '../../../src/lib/mest-tactics/utils/tech-level-filter';
 import type { TechnologicalAge } from '../../../src/lib/mest-tactics/utils/tech-level-filter';
 import type { TechAgeLoadoutCatalog } from '../loadouts/types';
@@ -12,6 +13,10 @@ function techAges(): TechnologicalAge[] {
   return Object.keys(AGE_TO_TECH_LEVEL)
     .filter((age): age is TechnologicalAge => age !== 'ANY');
 }
+
+const SUPPORT_WEAPON_NAMES = new Set<string>(
+  Object.keys((gameData as any).support_weapons ?? {})
+);
 
 describe('TechAgeLoadoutCatalog', () => {
   it('normalizes common age formats and falls back for unknown values', () => {
@@ -29,6 +34,9 @@ describe('TechAgeLoadoutCatalog', () => {
       expect(catalog.armorLoadouts).toHaveLength(24);
       expect(catalog.weaponLoadouts).toHaveLength(18);
       expect(catalog.combinations).toHaveLength(432);
+      expect(catalog.armorLoadouts.every(entry => Number.isFinite(entry.requiredPhysicality))).toBe(true);
+      expect(catalog.weaponLoadouts.every(entry => Number.isFinite(entry.requiredPhysicality))).toBe(true);
+      expect(catalog.combinations.every(entry => Number.isFinite(entry.requiredPhysicality))).toBe(true);
     }
   });
 
@@ -45,6 +53,29 @@ describe('TechAgeLoadoutCatalog', () => {
           expect(combination.compatibilityReason).toBe('shield_requires_1h_weapon');
         }
       }
+    }
+  });
+
+  it('never includes Unarmed when an armor loadout is present', () => {
+    for (const age of techAges()) {
+      const catalog = getTechAgeLoadoutCatalogForRunner(age);
+      const armorById = new Map(catalog.armorLoadouts.map(entry => [entry.id, entry]));
+
+      for (const combination of catalog.combinations) {
+        const armor = armorById.get(combination.armorLoadoutId);
+        expect(armor).toBeDefined();
+        if ((armor?.items?.length ?? 0) > 0) {
+          expect(combination.items.some(item => /^unarmed\b/i.test(item))).toBe(false);
+        }
+      }
+    }
+  });
+
+  it('never includes support weapons in individual weapon/combo loadouts', () => {
+    for (const age of techAges()) {
+      const catalog = getTechAgeLoadoutCatalogForRunner(age);
+      expect(catalog.weaponLoadouts.some(entry => entry.items.some(item => SUPPORT_WEAPON_NAMES.has(item)))).toBe(false);
+      expect(catalog.combinations.some(entry => entry.items.some(item => SUPPORT_WEAPON_NAMES.has(item)))).toBe(false);
     }
   });
 

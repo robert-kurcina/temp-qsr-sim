@@ -201,6 +201,12 @@ export interface BattleStats {
   woundsAssigned?: number;
   fearAssigned?: number;
   delayAssigned?: number;
+  /** Assignments attributable to damage resolution (QSR wound/stun damage effects). */
+  damageWoundsAssigned?: number;
+  damageFearAssigned?: number;
+  damageDelayAssigned?: number;
+  /** Delay assigned from non-damage sources (for example Defend/Take Cover/passive or maneuver effects). */
+  passiveOrOtherDelayAssigned?: number;
 }
 
 export interface UsageMetrics {
@@ -398,6 +404,12 @@ export interface BattleCombatMetricsAudit {
     fear: number;
     delay: number;
   };
+  damageAssignments?: {
+    wounds: number;
+    fear: number;
+    delay: number;
+  };
+  passiveOrOtherDelay?: number;
   passiveUsageByType: RuleTypeBreakdown;
   situationalModifiersByType: RuleTypeBreakdown;
 }

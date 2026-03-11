@@ -46,4 +46,34 @@ describe('AssemblyBuilderSupport', () => {
 
     expect(warningMessages).toHaveLength(0);
   });
+
+  it('keeps random runner assembly generation resilient with physicality-based loadout filtering', async () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.35);
+
+    const stressedAges: Array<NonNullable<SideConfig['technologicalAge']>> = [
+      'Atomic',
+      'Bronze',
+      'Colonial',
+      'Industrial',
+      'Information',
+      'Machine',
+      'Modern',
+      'Sail',
+      'Stone',
+    ];
+
+    for (const technologicalAge of stressedAges) {
+      const result = await createAssemblyForRunner(
+        buildSideConfig({
+          technologicalAge,
+          modelCount: 1,
+        })
+      );
+      const [character] = result.characters;
+      expect(character?.profile?.archetype).toHaveProperty('Militia');
+      const totalLaden = character?.profile?.burden?.totalLaden ?? 0;
+      const physicality = character?.profile?.physicality ?? 0;
+      expect(totalLaden).toBeLessThanOrEqual(Math.max(0, physicality - 1));
+    }
+  });
 });

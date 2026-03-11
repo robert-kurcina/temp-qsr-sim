@@ -1,4 +1,5 @@
 import type { Character } from '../../../src/lib/mest-tactics/core/Character';
+import { gameData } from '../../../src/lib/data';
 import { buildAssembly, buildProfile } from '../../../src/lib/mest-tactics/mission/assembly-builder';
 import type { SideConfig } from '../../shared/BattleReportTypes';
 import {
@@ -7,6 +8,9 @@ import {
   selectLoadoutCombinationForRunner,
   type RunnerLoadoutProfile,
 } from './TechAgeLoadoutCatalog';
+import type { LoadoutCombinationEntry, TechAgeLoadoutCatalog } from '../loadouts/types';
+
+const VALIDATED_COMBINATION_CACHE = new Map<string, LoadoutCombinationEntry[]>();
 
 function normalizeLoadoutProfile(value: SideConfig['loadoutProfile']): RunnerLoadoutProfile {
   return value === 'melee_only' ? 'melee_only' : 'default';
@@ -36,6 +40,56 @@ function chooseWeightedArchetype(
     }
   }
   return options[options.length - 1] ?? { archetypeName: 'Average', weight: 1 };
+}
+
+function getArchetypePhysicality(archetypeName: string): number {
+  const attributes = (gameData as any).archetypes?.[archetypeName]?.attributes ?? {};
+  const str = Number(attributes.str ?? 0);
+  const siz = Number(attributes.siz ?? 0);
+  return Math.max(str, siz);
+}
+
+function getValidatedCombinationsForArchetype(params: {
+  archetypeName: string;
+  catalog: TechAgeLoadoutCatalog;
+  loadoutProfile: RunnerLoadoutProfile;
+}): LoadoutCombinationEntry[] {
+  const { archetypeName, catalog, loadoutProfile } = params;
+  const archetypePhysicality = getArchetypePhysicality(archetypeName);
+  const cacheKey = `${catalog.techAge}|${loadoutProfile}|${archetypeName}|phys:${archetypePhysicality}`;
+  const cached = VALIDATED_COMBINATION_CACHE.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const compatible = catalog.combinations.filter(entry => entry.compatible);
+  const styleFiltered = loadoutProfile === 'melee_only'
+    ? compatible.filter(entry => entry.weaponStyle === 'melee_centric')
+    : compatible;
+  const pool = styleFiltered.length > 0 ? styleFiltered : compatible;
+  const validated = pool.filter(entry => entry.requiredPhysicality <= archetypePhysicality);
+
+  VALIDATED_COMBINATION_CACHE.set(cacheKey, validated);
+  return validated;
+}
+
+function selectValidatedCombinationForArchetype(params: {
+  archetypeName: string;
+  catalog: TechAgeLoadoutCatalog;
+  loadoutProfile: RunnerLoadoutProfile;
+}): LoadoutCombinationEntry | null {
+  const validatedCombinations = getValidatedCombinationsForArchetype(params);
+  if (validatedCombinations.length === 0) {
+    return null;
+  }
+
+  return selectLoadoutCombinationForRunner({
+    catalog: {
+      ...params.catalog,
+      combinations: validatedCombinations,
+    },
+    loadoutProfile: params.loadoutProfile,
+  });
 }
 
 export async function createAssemblyForRunner(
@@ -72,24 +126,23 @@ export async function createAssemblyForRunner(
           { archetypeName: 'Elite', weight: 1 },
         ];
     const catalog = getTechAgeLoadoutCatalogForRunner(techAge);
-    const compatibleFallback = catalog.combinations.find(entry => entry.compatible)?.items ?? ['Sword, Broad'];
 
     for (let i = 0; i < sideConfig.modelCount; i++) {
       const selected = chooseWeightedArchetype(compositions);
-      const combination = selectLoadoutCombinationForRunner({
+      const combination = selectValidatedCombinationForArchetype({
+        archetypeName: selected.archetypeName,
         catalog,
         loadoutProfile,
       });
-      const itemNames = combination.items;
       let profile;
-      try {
+      if (combination) {
         profile = buildProfile(selected.archetypeName, {
-          itemNames,
+          itemNames: combination.items,
           technologicalAge: techAge,
         });
-      } catch {
+      } else {
         profile = buildProfile(selected.archetypeName, {
-          itemNames: compatibleFallback,
+          itemNames: [],
           technologicalAge: techAge,
         });
       }

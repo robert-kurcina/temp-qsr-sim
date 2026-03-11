@@ -30,6 +30,19 @@ const weaponDataKeys = new Set<string>([
     'grenade_weapons',
 ]);
 
+function getLadenFromTrait(trait: string): number {
+    if (!trait.startsWith('[Laden')) {
+        return 0;
+    }
+    const match = trait.match(/\d+/);
+    return match ? parseInt(match[0], 10) : 1;
+}
+
+function getTotalLadenForItem(item: Item): number {
+    const traits = item.traits || [];
+    return traits.reduce((sum, trait) => sum + getLadenFromTrait(trait), 0);
+}
+
 export function generateRandomProfile(): Profile {
     const archetypeNames = Object.keys(gameData.archetypes);
     const primaryArchetypeName = getRandomElement(archetypeNames);
@@ -179,11 +192,7 @@ export function createProfiles(
                     equipmentItems.push(item);
                 }
 
-                const ladenTrait = item.traits.find(t => t.startsWith('[Laden'));
-                if (ladenTrait) {
-                    const match = ladenTrait.match(/\d+/);
-                    totalLaden += match ? parseInt(match[0]) : 1;
-                }
+                totalLaden += getTotalLadenForItem(item);
 
                 if (key === 'Equipment') equipmentCount++;
 
@@ -239,6 +248,7 @@ export function createProfiles(
     const profileName = [primaryArchetypeName.toLowerCase().replace(/, /g, '-'), ...itemNames.slice(0, 2).map(name => name.toLowerCase().replace(/, /g, '-'))].join('-').replace(/[\s_]/g, '-');
 
     const str = primaryArchetypeData.attributes.str;
+    const mov = primaryArchetypeData.attributes.mov;
     const siz = primaryArchetypeData.attributes.siz;
     const physicality = Math.max(str, siz);
 
@@ -258,6 +268,15 @@ export function createProfiles(
         if (trait.name === 'Deflect') totalDeflect += trait.level || 0;
         if (trait.name === 'Armor') totalAR += trait.level || 0;
     });
+
+    if (mov <= 2) {
+        const ladenCapForLowMov = Math.max(0, physicality - 1);
+        if (totalLaden > ladenCapForLowMov) {
+            throw new Error(
+                `Invalid loadout: Low-MOV archetype exceeds Laden cap (${ladenCapForLowMov}) for Physicality ${physicality}.`
+            );
+        }
+    }
 
     const totalBurden = Math.max(0, totalLaden - adjPhysicality);
     if (totalBurden > 2) {

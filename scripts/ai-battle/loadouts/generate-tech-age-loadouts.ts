@@ -46,6 +46,7 @@ const ITEM_DATA_KEYS = [
 const NATURAL_MELEE_PATTERN = /^(bite|claw|claws|pummel|unarmed)\b/i;
 const STOWED_OPTION_PATTERN = /(dagger|daggers|stiletto|throwing|knife)/i;
 const GEAR_NAME_PATTERN = /(gear|harness|reinforced|bracer|padding|vaumbrace|collar)/i;
+const UNARMED_ITEM_PATTERN = /^unarmed\b/i;
 
 const SUIT_WEIGHT_PATTERNS: Record<ArmorWeight, RegExp[]> = {
   light: [/armor,\s*light/i, /light mail/i, /\blight\b/i],
@@ -59,7 +60,8 @@ const SHIELD_WEIGHT_PATTERNS: Record<ArmorWeight, RegExp[]> = {
   heavy: [/\bheavy\b/i, /\blarge\b/i],
 };
 
-const RANGED_ITEM_CLASSES = new Set(['Firearm', 'Bow', 'Thrown', 'Ordnance', 'Support', 'Grenade']);
+// Support weapons are reserved for future side-level assignment and must not be attached to individual profiles.
+const RANGED_ITEM_CLASSES = new Set(['Firearm', 'Bow', 'Thrown', 'Ordnance', 'Grenade']);
 
 const BASE_ARCHETYPE_BP = Number((gameData as any).archetypes?.Average?.bp ?? 30);
 
@@ -100,6 +102,10 @@ function dedupeNames(names: string[]): string[] {
     deduped.push(name);
   }
   return deduped;
+}
+
+function isUnarmedItemName(name: string): boolean {
+  return UNARMED_ITEM_PATTERN.test(name.trim());
 }
 
 function pickFromPool(pool: IndexedItem[], optionIndex: number): IndexedItem {
@@ -191,6 +197,19 @@ function baseBpForNames(names: string[], byName: Map<string, IndexedItem>): numb
   ) / 100;
 }
 
+function totalLadenForNames(names: string[], byName: Map<string, IndexedItem>): number {
+  return names.reduce((sum, name) => sum + Number(byName.get(name)?.laden ?? 0), 0);
+}
+
+function requiredPhysicalityForNames(names: string[], byName: Map<string, IndexedItem>): number {
+  // QSR burden comparison baseline: 1 + total laden is compared against Physicality (max STR/SIZ).
+  return totalLadenForNames(names, byName) + 1;
+}
+
+function hasSupportWeapon(names: string[], byName: Map<string, IndexedItem>): boolean {
+  return names.some(name => byName.get(name)?.itemClass === 'Support');
+}
+
 function buildArmorLoadouts(
   techAge: TechnologicalAge,
   available: IndexedItem[],
@@ -254,10 +273,12 @@ function buildArmorLoadouts(
         const dedupedItems = dedupeNames(items);
         const baseBp = baseBpForNames(dedupedItems, byName);
         const adjustedBp = adjustedBpForItemNames(dedupedItems, techAge, adjustedBpCache, baseBp);
+        const requiredPhysicality = requiredPhysicalityForNames(dedupedItems, byName);
         entries.push({
           id: `${armorWeight}-${variation.id}-${hasHelmet ? 'helmet' : 'no_helmet'}`,
           armorWeight,
           variation: variation.id,
+          requiredPhysicality,
           hasGear: variation.hasGear && Boolean(gear),
           hasShield: variation.hasShield,
           hasHelmet: hasHelmet && Boolean(helmet),
@@ -285,10 +306,14 @@ function buildWeaponLoadouts(
   adjustedBpCache: Map<string, number>
 ): WeaponLoadoutEntry[] {
   const melee = available
-    .filter(item => item.itemClass === 'Melee' && !NATURAL_MELEE_PATTERN.test(item.name))
+    .filter(item =>
+      item.itemClass === 'Melee' &&
+      !NATURAL_MELEE_PATTERN.test(item.name) &&
+      !isUnarmedItemName(item.name)
+    )
     .sort(compareItems);
   const ranged = available
-    .filter(item => RANGED_ITEM_CLASSES.has(item.itemClass))
+    .filter(item => RANGED_ITEM_CLASSES.has(item.itemClass) && !isUnarmedItemName(item.name))
     .sort(compareItems);
 
   if (melee.length === 0 || ranged.length === 0) {
@@ -304,7 +329,8 @@ function buildWeaponLoadouts(
     available.filter(item =>
       item.hands <= 1 &&
       (item.itemClass === 'Melee' || RANGED_ITEM_CLASSES.has(item.itemClass)) &&
-      STOWED_OPTION_PATTERN.test(item.name)
+      STOWED_OPTION_PATTERN.test(item.name) &&
+      !isUnarmedItemName(item.name)
     )
   ).sort(compareItems);
 
@@ -349,21 +375,32 @@ function buildWeaponLoadouts(
         if (optionIndex > 0 && fallbackStowedOptions.length > 0) {
           const stowedCandidate = pickFromPool(fallbackStowedOptions, optionIndex);
           const currentHands = selected.reduce((sum, item) => sum + item.hands, 0);
-          if (selected.length < 3 && currentHands + stowedCandidate.hands <= 4 && !selected.some(item => item.name === stowedCandidate.name)) {
+          if (
+            selected.length < 3 &&
+            currentHands + stowedCandidate.hands <= 4 &&
+            !selected.some(item => item.name === stowedCandidate.name) &&
+            !isUnarmedItemName(stowedCandidate.name)
+          ) {
             selected.push(stowedCandidate);
             optionalStowedItem = stowedCandidate.name;
           }
         }
 
-        const itemNames = dedupeNames(selected.map(item => item.name));
+        const itemNames = dedupeNames(selected.map(item => item.name))
+          .filter(name => !isUnarmedItemName(name));
+        if (hasSupportWeapon(itemNames, byName)) {
+          throw new Error(`Support weapons must not appear in individual weapon loadouts: ${itemNames.join(', ')}`);
+        }
         const baseBp = baseBpForNames(itemNames, byName);
         const adjustedBp = adjustedBpForItemNames(itemNames, techAge, adjustedBpCache, baseBp);
+        const requiredPhysicality = requiredPhysicalityForNames(itemNames, byName);
 
         entries.push({
           id: `${style}-${handConfiguration}-opt${optionIndex + 1}`,
           style,
           optionIndex: (optionIndex + 1) as 1 | 2 | 3,
           handConfiguration,
+          requiredPhysicality,
           optionalStowedItem,
           items: itemNames,
           bp: {
@@ -397,8 +434,15 @@ function buildCombinations(
         ? 'ok'
         : 'shield_requires_1h_weapon';
       const items = dedupeNames([...armor.items, ...weapon.items]);
+      if (hasSupportWeapon(items, byName)) {
+        throw new Error(`Support weapons must not appear in individual loadout combinations: ${armor.id}__${weapon.id}`);
+      }
+      if (armor.items.length > 0 && items.some(isUnarmedItemName)) {
+        throw new Error(`Invalid loadout combination includes Unarmed with armor: ${armor.id}__${weapon.id}`);
+      }
       const baseBp = baseBpForNames(items, byName);
       const adjustedBp = adjustedBpForItemNames(items, techAge, adjustedBpCache, baseBp);
+      const requiredPhysicality = requiredPhysicalityForNames(items, byName);
       combinations.push({
         id: `${armor.id}__${weapon.id}`,
         armorLoadoutId: armor.id,
@@ -406,6 +450,7 @@ function buildCombinations(
         armorWeight: armor.armorWeight,
         weaponStyle: weapon.style,
         handConfiguration: weapon.handConfiguration,
+        requiredPhysicality,
         compatible,
         compatibilityReason,
         items,

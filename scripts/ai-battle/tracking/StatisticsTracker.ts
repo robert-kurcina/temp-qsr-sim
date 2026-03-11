@@ -34,6 +34,12 @@ export interface TrackCombatExtrasParams {
   hitTestResult?: { finalPools?: Record<string, unknown> };
 }
 
+interface CombatAssignmentBreakdown {
+  wounds: number;
+  fear: number;
+  delay: number;
+}
+
 export class StatisticsTracker {
   private stats: BattleStats;
   private advancedRules: AdvancedRuleMetrics;
@@ -382,12 +388,25 @@ export class StatisticsTracker {
     this.stats.woundsAssigned = (this.stats.woundsAssigned ?? 0) + woundsAssigned;
     this.stats.fearAssigned = (this.stats.fearAssigned ?? 0) + fearAssigned;
     this.stats.delayAssigned = (this.stats.delayAssigned ?? 0) + delayAssigned;
+
+    const damageAssignments = this.extractDamageAssignmentsFromStep(step, {
+      wounds: woundsAssigned,
+      fear: fearAssigned,
+      delay: delayAssigned,
+    });
+    const passiveOrOtherDelay = Math.max(0, delayAssigned - damageAssignments.delay);
+
+    this.stats.damageWoundsAssigned = (this.stats.damageWoundsAssigned ?? 0) + damageAssignments.wounds;
+    this.stats.damageFearAssigned = (this.stats.damageFearAssigned ?? 0) + damageAssignments.fear;
+    this.stats.damageDelayAssigned = (this.stats.damageDelayAssigned ?? 0) + damageAssignments.delay;
+    this.stats.passiveOrOtherDelayAssigned = (this.stats.passiveOrOtherDelayAssigned ?? 0) + passiveOrOtherDelay;
   }
 
   private isCombatStep(step: ActionStepAudit): boolean {
     const actionType = String(step.actionType ?? '').toLowerCase();
     if (
       actionType === 'close_combat'
+      || actionType === 'charge'
       || actionType === 'ranged_combat'
       || actionType === 'attack'
       || actionType === 'disengage'
@@ -404,6 +423,50 @@ export class StatisticsTracker {
     return interactions.some(interaction =>
       interaction?.kind === 'react' || interaction?.kind === 'opportunity_attack'
     );
+  }
+
+  private extractDamageAssignmentsFromStep(
+    step: ActionStepAudit,
+    totalAssignments: CombatAssignmentBreakdown
+  ): CombatAssignmentBreakdown {
+    const details = this.asRecord(step.details);
+    const explicit = this.extractExplicitDamageAssignments(details);
+    if (explicit) {
+      return {
+        wounds: Math.min(totalAssignments.wounds, explicit.wounds),
+        fear: Math.min(totalAssignments.fear, explicit.fear),
+        delay: Math.min(totalAssignments.delay, explicit.delay),
+      };
+    }
+
+    const damageResolution = this.extractDamageResolution(
+      details?.attackResult ?? details?.opportunityAttack ?? details?.disengageResult ?? details?.result ?? details
+    );
+    if (!damageResolution) {
+      return { wounds: 0, fear: 0, delay: 0 };
+    }
+
+    const woundsAdded = this.toSafeNonNegativeNumber(damageResolution.woundsAdded);
+    const stunWoundsAdded = this.toSafeNonNegativeNumber(damageResolution.stunWoundsAdded);
+    const delayTokensAdded = this.toSafeNonNegativeNumber(damageResolution.delayTokensAdded);
+
+    return {
+      wounds: Math.min(totalAssignments.wounds, woundsAdded + stunWoundsAdded),
+      fear: 0,
+      delay: Math.min(totalAssignments.delay, Math.max(0, delayTokensAdded - stunWoundsAdded)),
+    };
+  }
+
+  private extractExplicitDamageAssignments(
+    details: Record<string, unknown> | undefined
+  ): CombatAssignmentBreakdown | undefined {
+    const payload = this.asRecord(details?.damageAssignments);
+    if (!payload) return undefined;
+    return {
+      wounds: this.toSafeNonNegativeNumber(payload.wounds),
+      fear: this.toSafeNonNegativeNumber(payload.fear),
+      delay: this.toSafeNonNegativeNumber(payload.delay),
+    };
   }
 
   private trackCombatTests(rawResult: unknown) {
@@ -505,6 +568,14 @@ export class StatisticsTracker {
   private asRecord(value: unknown): Record<string, unknown> | undefined {
     if (!value || typeof value !== 'object') return undefined;
     return value as Record<string, unknown>;
+  }
+
+  private toSafeNonNegativeNumber(value: unknown): number {
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed)) {
+      return 0;
+    }
+    return Math.max(0, parsed);
   }
 
   // ============================================================================
@@ -639,6 +710,10 @@ export class StatisticsTracker {
       woundsAssigned: 0,
       fearAssigned: 0,
       delayAssigned: 0,
+      damageWoundsAssigned: 0,
+      damageFearAssigned: 0,
+      damageDelayAssigned: 0,
+      passiveOrOtherDelayAssigned: 0,
     };
   }
 

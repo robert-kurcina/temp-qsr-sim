@@ -26,6 +26,7 @@ import { FSM, createCharacterFSM, StateStatus } from './HierarchicalFSM';
 import { UtilityScorer, ScoredAction } from './UtilityScorer';
 import { KnowledgeBase, KnowledgeConfig } from './KnowledgeBase';
 import { Character } from '../../core/Character';
+import type { Item } from '../../core/Item';
 import { Battlefield } from '../../battlefield/Battlefield';
 import { Position } from '../../battlefield/Position';
 import {
@@ -56,6 +57,17 @@ import { SpatialRules } from '../../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../../battlefield/spatial/size-utils';
 import { getSprintMovementBonus, getLeapAgilityBonus } from '../../traits/combat-traits';
 import { calculateSuddenDeathTimePressure } from './TurnHorizon';
+import {
+  buildMinimaxHeuristicCacheKey,
+  buildMinimaxTranspositionKey,
+  type MinimaxCacheKeyDeps,
+} from './MinimaxCacheKey';
+import {
+  getCharacterThreatItems,
+  getRangedThreatWeapons,
+  hasMeleeThreatProfile as hasSharedMeleeThreatProfile,
+  hasRangedThreatProfile as hasSharedRangedThreatProfile,
+} from '../shared/ThreatProfileSupport';
 
 /**
  * Character AI configuration
@@ -238,11 +250,13 @@ export class CharacterAI implements IAIController {
   private bonusActionEvaluator: BonusActionEvaluator;
   private stealthEvaluator: StealthEvaluator;
   private readonly minimaxLiteCache = new Map<string, MinimaxLiteCacheEntry>();
+  private readonly minimaxLiteHeuristicCache = new Map<string, MinimaxLiteCacheEntry>();
   private minimaxLiteCacheHits = 0;
   private minimaxLiteCacheMisses = 0;
   private minimaxLiteNodeEvaluations = 0;
   private minimaxLitePatchTransitions = new Map<string, number>();
   private readonly minimaxLiteCacheMaxSize = 2048;
+  private readonly minimaxLiteHeuristicCacheMaxSize = 1024;
   private readonly patchGraphCache = new Map<string, TacticalPatchSnapshot>();
   private patchGraphCacheHits = 0;
   private patchGraphCacheMisses = 0;
@@ -254,6 +268,11 @@ export class CharacterAI implements IAIController {
   private patchNeighborhoodGraphCacheEvictions = 0;
   private readonly patchNeighborhoodGraphCacheMaxSize = 256;
   private readonly patchGraphStateKeyByContext = new WeakMap<object, string>();
+  private readonly minimaxCacheKeyDeps: MinimaxCacheKeyDeps = {
+    hasMeleeThreatProfile: (character: Character) => this.hasMeleeThreatProfile(character),
+    hasRangedThreatProfile: (character: Character) => this.hasRangedThreatProfile(character),
+    hashCompactState: (raw: string) => this.hashCompactState(raw),
+  };
 
   constructor(config: Partial<CharacterAIConfig> = {}) {
     const fullConfig = {
@@ -805,15 +824,56 @@ export class CharacterAI implements IAIController {
       currentPatch,
       projectedPatch
     );
+    const heuristicCacheKey = this.buildMinimaxHeuristicCacheKey(
+      context,
+      action,
+      actorPosition,
+      depth,
+      opponentSamples,
+      currentPatch
+    );
     const cached = this.minimaxLiteCache.get(cacheKey);
     if (cached) {
       this.minimaxLiteCacheHits += 1;
+      this.minimaxLiteCache.delete(cacheKey);
+      this.minimaxLiteCache.set(cacheKey, cached);
+      const nodeValue =
+        action.score +
+        (cached.simulatedStateDelta * 0.8) +
+        cached.followUpPotential +
+        cached.patchControlDelta -
+        cached.opponentReplyPressure;
       return {
-        nodeValue: cached.nodeValue,
+        nodeValue,
         opponentReplyPressure: cached.opponentReplyPressure,
         followUpPotential: cached.followUpPotential,
         patchControlDelta: cached.patchControlDelta,
         simulatedStateDelta: cached.simulatedStateDelta,
+        currentPatch: currentPatch.category,
+        projectedPatch: projectedPatch.category,
+        cacheHit: true,
+      };
+    }
+
+    const heuristicCached = this.minimaxLiteHeuristicCache.get(heuristicCacheKey);
+    if (heuristicCached) {
+      this.minimaxLiteCacheHits += 1;
+      this.minimaxLiteHeuristicCache.delete(heuristicCacheKey);
+      this.minimaxLiteHeuristicCache.set(heuristicCacheKey, heuristicCached);
+      this.minimaxLiteCache.set(cacheKey, heuristicCached);
+      this.trimMinimaxLiteCache();
+      const nodeValue =
+        action.score +
+        (heuristicCached.simulatedStateDelta * 0.8) +
+        heuristicCached.followUpPotential +
+        heuristicCached.patchControlDelta -
+        heuristicCached.opponentReplyPressure;
+      return {
+        nodeValue,
+        opponentReplyPressure: heuristicCached.opponentReplyPressure,
+        followUpPotential: heuristicCached.followUpPotential,
+        patchControlDelta: heuristicCached.patchControlDelta,
+        simulatedStateDelta: heuristicCached.simulatedStateDelta,
         currentPatch: currentPatch.category,
         projectedPatch: projectedPatch.category,
         cacheHit: true,
@@ -852,7 +912,15 @@ export class CharacterAI implements IAIController {
       patchControlDelta,
       simulatedStateDelta,
     });
+    this.minimaxLiteHeuristicCache.set(heuristicCacheKey, {
+      nodeValue,
+      opponentReplyPressure,
+      followUpPotential,
+      patchControlDelta,
+      simulatedStateDelta,
+    });
     this.trimMinimaxLiteCache();
+    this.trimMinimaxLiteHeuristicCache();
 
     return {
       nodeValue,
@@ -1697,21 +1765,15 @@ export class CharacterAI implements IAIController {
   }
 
   private trimPatchGraphCache(): void {
-    while (this.patchGraphCache.size > this.patchGraphCacheMaxSize) {
-      const oldest = this.patchGraphCache.keys().next();
-      if (oldest.done) break;
-      this.patchGraphCache.delete(oldest.value);
+    this.trimLruCache(this.patchGraphCache, this.patchGraphCacheMaxSize, () => {
       this.patchGraphCacheEvictions += 1;
-    }
+    });
   }
 
   private trimPatchNeighborhoodGraphCache(): void {
-    while (this.patchNeighborhoodGraphCache.size > this.patchNeighborhoodGraphCacheMaxSize) {
-      const oldest = this.patchNeighborhoodGraphCache.keys().next();
-      if (oldest.done) break;
-      this.patchNeighborhoodGraphCache.delete(oldest.value);
+    this.trimLruCache(this.patchNeighborhoodGraphCache, this.patchNeighborhoodGraphCacheMaxSize, () => {
       this.patchNeighborhoodGraphCacheEvictions += 1;
-    }
+    });
   }
 
   private evaluatePatchControlDelta(
@@ -2028,23 +2090,7 @@ export class CharacterAI implements IAIController {
       return false;
     }
 
-    const rangedWeapons = this.getCharacterItems(context.character).filter(item => {
-      const classification = String(item.classification ?? item.class ?? '').toLowerCase();
-      if (
-        classification.includes('bow') ||
-        classification.includes('thrown') ||
-        classification.includes('firearm') ||
-        classification.includes('range') ||
-        classification.includes('support')
-      ) {
-        return true;
-      }
-      return (
-        (classification.includes('melee') || classification.includes('natural')) &&
-        Array.isArray(item.traits) &&
-        item.traits.some((trait: string) => trait.toLowerCase().includes('throwable'))
-      );
-    });
+    const rangedWeapons = getRangedThreatWeapons(context.character);
     if (rangedWeapons.length === 0) {
       return false;
     }
@@ -2076,164 +2122,35 @@ export class CharacterAI implements IAIController {
     currentPatch: TacticalPatchSnapshot,
     projectedPatch: TacticalPatchSnapshot
   ): string {
-    const targetId = action.target?.id ?? '-';
-    const positionSignature = `${actorPosition.x.toFixed(1)},${actorPosition.y.toFixed(1)}`;
-    const patchSignature = [
-      `patch:${currentPatch.category}->${projectedPatch.category}`,
-      `bp:${projectedPatch.friendlyBp.toFixed(1)}:${projectedPatch.enemyBp.toFixed(1)}`,
-      `obj:${projectedPatch.objectiveDistance.toFixed(1)}:${projectedPatch.objectiveProgress.toFixed(2)}`,
-      `sup:${projectedPatch.supportBalance.toFixed(2)}`,
-      `adj:${projectedPatch.adjacencyControl.toFixed(2)}`,
-      `lane:${projectedPatch.laneThreatScore.toFixed(2)}`,
-      `scr:${projectedPatch.scrumPressure.toFixed(2)}`,
-    ].join(':');
-    const tacticalStateSignature = this.buildCompactTacticalStateSignature(
+    return buildMinimaxTranspositionKey(
       context,
-      actorPosition,
       action,
+      actorPosition,
+      depth,
+      opponentSamples,
       currentPatch,
-      projectedPatch
+      projectedPatch,
+      this.minimaxCacheKeyDeps
     );
-    return [
-      `t${context.currentTurn}`,
-      `r${context.currentRound}`,
-      `actor:${context.character.id}`,
-      `ap:${context.apRemaining}`,
-      `action:${action.action}`,
-      `target:${targetId}`,
-      `pos:${positionSignature}`,
-      `depth:${depth}`,
-      `samples:${opponentSamples}`,
-      patchSignature,
-      `state:${tacticalStateSignature}`,
-    ].join('|');
   }
 
-  /**
-   * Compact tactical state signature for minimax transposition caching.
-   *
-   * Captures local tactical topology beyond enemy-only snapshots:
-   * - allied/enemy projected occupancy (quantized)
-   * - projected engagement and local pressure around actor
-   * - actor LOS + cover profile against top nearby enemies
-   * - objective marker carrier/control state
-   *
-   * Returned as a short hex digest with low-cost collision guards.
-   */
-  private buildCompactTacticalStateSignature(
+  private buildMinimaxHeuristicCacheKey(
     context: AIContext,
-    actorPosition: Position,
     action: ScoredAction,
-    currentPatch: TacticalPatchSnapshot,
-    projectedPatch: TacticalPatchSnapshot
+    actorPosition: Position,
+    depth: number,
+    opponentSamples: number,
+    currentPatch: TacticalPatchSnapshot
   ): string {
-    const allyStates = context.allies
-      .slice()
-      .sort((a, b) => a.id.localeCompare(b.id))
-      .slice(0, 8)
-      .map(ally => this.encodeModelStateSignature(context, ally));
-
-    const enemyStates = context.enemies
-      .slice()
-      .sort((a, b) => a.id.localeCompare(b.id))
-      .slice(0, 10)
-      .map(enemy => this.encodeModelStateSignature(context, enemy));
-
-    const liveEnemies = context.enemies
-      .filter(enemy => !enemy.state.isKOd && !enemy.state.isEliminated)
-      .map(enemy => ({
-        enemy,
-        pos: context.battlefield.getCharacterPosition(enemy),
-      }))
-      .filter((entry): entry is { enemy: Character; pos: Position } => !!entry.pos)
-      .map(entry => ({
-        ...entry,
-        distance: Math.hypot(entry.pos.x - actorPosition.x, entry.pos.y - actorPosition.y),
-      }))
-      .sort((a, b) => {
-        if (a.distance === b.distance) {
-          return a.enemy.id.localeCompare(b.enemy.id);
-        }
-        return a.distance - b.distance;
-      });
-
-    const topThreats = liveEnemies.slice(0, 4);
-    const losBits = topThreats
-      .map(entry => context.battlefield.hasLineOfSight(actorPosition, entry.pos) ? '1' : '0')
-      .join('');
-    const threatCoverBits = topThreats
-      .map(entry => context.battlefield.isAreaTerrainCovered(entry.pos) ? '1' : '0')
-      .join('');
-    const threatWoundBits = topThreats
-      .map(entry => Math.max(0, Math.min(9, Number(entry.enemy.state.wounds ?? 0))).toString(10))
-      .join('');
-
-    const actorEngagedProjected = this.isProjectedActorEngaged(actorPosition, liveEnemies.map(entry => entry.pos));
-    const actorInAreaCover = context.battlefield.isAreaTerrainCovered(actorPosition);
-    const nearbyEnemy2 = liveEnemies.filter(entry => entry.distance <= 2.25).length;
-    const nearbyEnemy6 = liveEnemies.filter(entry => entry.distance <= 6).length;
-    const nearbyEnemy12 = liveEnemies.filter(entry => entry.distance <= 12).length;
-    const engagedAllies = context.allies.filter(ally => {
-      if (ally.state.isKOd || ally.state.isEliminated) return false;
-      return context.battlefield.isEngaged(ally);
-    }).length;
-    const engagedEnemies = context.enemies.filter(enemy => {
-      if (enemy.state.isKOd || enemy.state.isEliminated) return false;
-      return context.battlefield.isEngaged(enemy);
-    }).length;
-
-    const objectiveSignature = (context.objectiveMarkers ?? [])
-      .slice()
-      .sort((a, b) => a.id.localeCompare(b.id))
-      .slice(0, 6)
-      .map(marker => {
-        const mx = marker.position ? Math.round(marker.position.x * 2) : -1;
-        const my = marker.position ? Math.round(marker.position.y * 2) : -1;
-        return [
-          marker.id,
-          marker.state,
-          marker.carriedBy ?? '-',
-          marker.controlledBy ?? '-',
-          marker.scoringSideId ?? '-',
-          marker.isNeutral ? 'n' : 'o',
-          `${mx},${my}`,
-        ].join(':');
-      })
-      .join(';');
-
-    const raw = [
-      `self:${context.character.id}:${Math.round(actorPosition.x * 2)},${Math.round(actorPosition.y * 2)}:${context.character.state.wounds}:${context.character.state.isKOd ? 1 : 0}:${context.character.state.isEliminated ? 1 : 0}`,
-      `action:${action.action}:${action.target?.id ?? '-'}:${action.position ? `${Math.round(action.position.x * 2)},${Math.round(action.position.y * 2)}` : '-'}`,
-      `patch:${currentPatch.category}->${projectedPatch.category}:${Math.round(projectedPatch.friendlyBp)}:${Math.round(projectedPatch.enemyBp)}:${Math.round(projectedPatch.objectiveDistance * 2)}:${Math.round(projectedPatch.supportBalance * 10)}:${Math.round(projectedPatch.adjacencyControl * 10)}:${Math.round(projectedPatch.laneThreatScore * 10)}:${Math.round(projectedPatch.scrumPressure * 10)}:${Math.round(projectedPatch.objectiveProgress * 10)}`,
-      `pressure:${nearbyEnemy2}/${nearbyEnemy6}/${nearbyEnemy12}:${engagedAllies}/${engagedEnemies}:${actorEngagedProjected ? 1 : 0}:${actorInAreaCover ? 1 : 0}`,
-      `los:${losBits || 'x'}:cov:${threatCoverBits || 'x'}:wnd:${threatWoundBits || 'x'}`,
-      `ally:${allyStates.join(';')}`,
-      `enemy:${enemyStates.join(';')}`,
-      `obj:${objectiveSignature || '-'}`,
-    ].join('|');
-
-    const digest = this.hashCompactState(raw);
-    return [
-      digest,
-      `p${nearbyEnemy6}`,
-      `e${engagedAllies}-${engagedEnemies}`,
-      `l${losBits || 'x'}`,
-      `o${(context.objectiveMarkers ?? []).length}`,
-    ].join(':');
-  }
-
-  private encodeModelStateSignature(context: AIContext, model: Character): string {
-    const pos = context.battlefield.getCharacterPosition(model);
-    const x = pos ? Math.round(pos.x * 2) : -1;
-    const y = pos ? Math.round(pos.y * 2) : -1;
-    const engaged = (!model.state.isKOd && !model.state.isEliminated && context.battlefield.isEngaged(model)) ? 1 : 0;
-    const areaCover = pos && context.battlefield.isAreaTerrainCovered(pos) ? 1 : 0;
-    return `${model.id}:${x},${y}:${model.state.wounds}:${model.state.isKOd ? 1 : 0}:${model.state.isEliminated ? 1 : 0}:${engaged}:${areaCover}`;
-  }
-
-  private isProjectedActorEngaged(actorPosition: Position, enemyPositions: Position[]): boolean {
-    const projectedScrumRadius = 1.75;
-    return enemyPositions.some(pos => Math.hypot(pos.x - actorPosition.x, pos.y - actorPosition.y) <= projectedScrumRadius);
+    return buildMinimaxHeuristicCacheKey(
+      context,
+      action,
+      actorPosition,
+      depth,
+      opponentSamples,
+      currentPatch,
+      this.minimaxCacheKeyDeps
+    );
   }
 
   private hashCompactState(raw: string): string {
@@ -2246,82 +2163,36 @@ export class CharacterAI implements IAIController {
   }
 
   private trimMinimaxLiteCache(): void {
-    while (this.minimaxLiteCache.size > this.minimaxLiteCacheMaxSize) {
-      const oldest = this.minimaxLiteCache.keys().next();
+    this.trimLruCache(this.minimaxLiteCache, this.minimaxLiteCacheMaxSize);
+  }
+
+  private trimMinimaxLiteHeuristicCache(): void {
+    this.trimLruCache(this.minimaxLiteHeuristicCache, this.minimaxLiteHeuristicCacheMaxSize);
+  }
+
+  private trimLruCache<K, V>(cache: Map<K, V>, maxSize: number, onEvict?: () => void): void {
+    while (cache.size > maxSize) {
+      const oldest = cache.keys().next();
       if (oldest.done) break;
-      this.minimaxLiteCache.delete(oldest.value);
+      cache.delete(oldest.value);
+      onEvict?.();
     }
   }
 
-  private getCharacterItems(character: Character): any[] {
-    const profile: any = character.profile ?? {};
-    const rawItems = [
-      ...(Array.isArray(profile.equipment) ? profile.equipment : []),
-      ...(Array.isArray(profile.items) ? profile.items : []),
-      ...(Array.isArray(profile.inHandItems) ? profile.inHandItems : []),
-      ...(Array.isArray(profile.stowedItems) ? profile.stowedItems : []),
-    ];
-    const deduped: any[] = [];
-    const seen = new Set<string>();
-    for (const item of rawItems) {
-      if (!item) continue;
-      const key = `${item.name ?? ''}|${item.classification ?? ''}|${item.class ?? ''}|${item.type ?? ''}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      deduped.push(item);
-    }
-    return deduped;
+  private getCharacterItems(character: Character): Item[] {
+    return getCharacterThreatItems(character);
   }
 
   private hasMeleeThreatProfile(character: Character): boolean {
-    const items = this.getCharacterItems(character);
-    if (items.length === 0) return true;
-    return items.some(item => {
-      const classification = String(item.classification ?? item.class ?? '').toLowerCase();
-      return classification.includes('melee') || classification.includes('natural');
-    });
+    return hasSharedMeleeThreatProfile(character, { defaultWhenNoItems: true });
   }
 
   private hasRangedThreatProfile(character: Character): boolean {
-    const items = this.getCharacterItems(character);
-    return items.some(item => {
-      const classification = String(item.classification ?? item.class ?? '').toLowerCase();
-      if (
-        classification.includes('bow') ||
-        classification.includes('thrown') ||
-        classification.includes('firearm') ||
-        classification.includes('range') ||
-        classification.includes('support')
-      ) {
-        return true;
-      }
-      return (
-        (classification.includes('melee') || classification.includes('natural')) &&
-        Array.isArray(item.traits) &&
-        item.traits.some((trait: string) => trait.toLowerCase().includes('throwable'))
-      );
-    });
+    return hasSharedRangedThreatProfile(character);
   }
 
   private estimateRangedThreat(enemy: Character, distance: number, context: AIContext): number {
-    const items = this.getCharacterItems(enemy);
-    const rangedWeapons = items.filter(item => {
-      const classification = String(item.classification ?? item.class ?? '').toLowerCase();
-      if (
-        classification.includes('bow') ||
-        classification.includes('thrown') ||
-        classification.includes('firearm') ||
-        classification.includes('range') ||
-        classification.includes('support')
-      ) {
-        return true;
-      }
-      return (
-        (classification.includes('melee') || classification.includes('natural')) &&
-        Array.isArray(item.traits) &&
-        item.traits.some((trait: string) => trait.toLowerCase().includes('throwable'))
-      );
-    });
+    const rangedWeapons = getRangedThreatWeapons(enemy);
     if (rangedWeapons.length === 0) {
       return 0;
     }
@@ -2374,6 +2245,7 @@ export class CharacterAI implements IAIController {
 
   clearMinimaxLiteCache(): void {
     this.minimaxLiteCache.clear();
+    this.minimaxLiteHeuristicCache.clear();
     this.minimaxLiteCacheHits = 0;
     this.minimaxLiteCacheMisses = 0;
     this.minimaxLiteNodeEvaluations = 0;

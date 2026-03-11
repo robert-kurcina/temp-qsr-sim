@@ -1,0 +1,22 @@
+[
+  {
+    "id": "loadout-1",
+    "itemNames": [
+      "Sword, Broad",
+      "Armored Gear",
+      "Armor, Light",
+      "Shield, Small"
+    ],
+    "weapons": [
+      "Sword, Broad"
+    ],
+    "armors": [
+      "Armored Gear",
+      "Armor, Light",
+      "Shield, Small"
+    ],
+    "gear": [],
+    "hasShield": true,
+    "totalBp": 38
+  }
+]
