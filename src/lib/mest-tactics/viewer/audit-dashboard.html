@@ -193,6 +193,23 @@
       border-color: var(--side-ring, #e94560);
       box-shadow: 0 0 8px var(--side-ring, #e94560);
     }
+    .model-portrait.active-initiative {
+      border-color: #ffd166;
+      box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.9), 0 0 14px rgba(255, 209, 102, 0.85);
+      animation: activeInitiativePulse 950ms ease-in-out infinite;
+    }
+    .model-portrait.active-initiative::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ffd166;
+      box-shadow: 0 0 6px rgba(255, 209, 102, 0.9);
+      pointer-events: none;
+    }
     .model-portrait img {
       position: absolute;
       left: 0;
@@ -236,6 +253,11 @@
         transform: scale(1.35);
       }
     }
+    @keyframes activeInitiativePulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+      100% { transform: scale(1); }
+    }
     .model-portrait .callsign {
       position: absolute;
       bottom: 0;
@@ -272,6 +294,10 @@
       justify-content: center;
       box-shadow: 0 0 10px color-mix(in oklab, var(--side-ring, #aaa) 45%, transparent);
       background: #0f1a2c;
+    }
+    .stats-portrait-ring.active-initiative {
+      border-color: #ffd166;
+      box-shadow: 0 0 0 2px rgba(255, 209, 102, 0.9), 0 0 16px rgba(255, 209, 102, 0.85);
     }
     .stats-model-nav {
       display: flex;
@@ -1187,8 +1213,8 @@
           </div>
         </div>
         <div class="timeline-slider">
-          <label style="font-size: 0.8rem; color: #aaa;">Turn: <span id="turn-display">1</span></label>
-          <input type="range" id="turn-slider" min="1" max="10" value="1">
+          <label style="font-size: 0.8rem; color: #aaa;">Initiative: <span id="turn-display">0/0</span></label>
+          <input type="range" id="turn-slider" min="0" max="10" value="0">
         </div>
         <div id="action-log" class="action-log">
           <div class="log-entry">Select a battle to view audit...</div>
@@ -1688,10 +1714,12 @@
     // State
     let battles = [];
     let currentBattle = null;
-    let currentTurn = 1;
+    let currentTurn = 0;
+    let activationTimeline = [];
     let isPlaying = false;
     let playInterval = null;
     let selectedModel = null;
+    let activeInitiativeModelId = null;
     let orderedModelIds = [];
     let battleAuditFilter = 'all';
     let visualizationState = {
@@ -1709,6 +1737,43 @@
       const speed = parseFloat(document.getElementById('playback-speed')?.value || '1');
       const normalizedSpeed = Number.isFinite(speed) && speed > 0 ? speed : 1;
       return Math.max(180, Math.round((1000 / normalizedSpeed) * 0.9));
+    }
+
+    function buildInitiativeTimeline(audit) {
+      const timeline = [];
+      for (const turn of audit?.turns || []) {
+        const turnNumber = Number(turn?.turn || 0);
+        const activations = turn?.activations || [];
+        const activationCountInTurn = activations.length;
+        activations.forEach((activation, activationIndex) => {
+          timeline.push({
+            initiative: timeline.length + 1,
+            turn: turnNumber,
+            activationIndexInTurn: activationIndex + 1,
+            activationCountInTurn,
+            modelId: activation.modelId,
+            modelName: activation.modelName,
+            sideName: activation.sideName,
+            activation
+          });
+        });
+      }
+      return timeline;
+    }
+
+    function getInitiativeEntry(audit, initiativeIndex) {
+      if (!audit) return null;
+      if (!Array.isArray(activationTimeline) || activationTimeline.length === 0) {
+        activationTimeline = buildInitiativeTimeline(audit);
+      }
+      if (!Number.isFinite(Number(initiativeIndex))) return null;
+      const ordinal = Math.floor(Number(initiativeIndex));
+      if (ordinal < 1 || ordinal > activationTimeline.length) return null;
+      return activationTimeline[ordinal - 1] || null;
+    }
+
+    function getMaxInitiative() {
+      return Array.isArray(activationTimeline) ? activationTimeline.length : 0;
     }
 
     function parseBattleTimestamp(rawTimestamp) {
@@ -2284,13 +2349,14 @@
         const svgText = await svgResponse.text();
         selectedModel = null;
         orderedModelIds = [];
+        activationTimeline = buildInitiativeTimeline(currentBattle);
         
         // Display SVG
         const svgEl = document.getElementById('battlefield-svg');
         svgEl.innerHTML = svgText;
         fitBattlefieldSvgToViewer(svgEl);
         stripSvgLabels(svgEl);
-        currentTurn = 1;
+        currentTurn = 0;
 
         // Render path overlays
         renderPathOverlays(currentBattle, svgEl, currentTurn);
@@ -2314,9 +2380,10 @@
         
         // Update turn slider
         const slider = document.getElementById('turn-slider');
-        slider.max = currentBattle.turns?.length || 1;
-        slider.value = 1;
-        document.getElementById('turn-display').textContent = '1';
+        slider.min = 0;
+        slider.max = String(getMaxInitiative());
+        slider.value = '0';
+        updateTurnDisplay();
         
       } catch (error) {
         console.error('Failed to load battle:', error);
@@ -2379,13 +2446,13 @@
     }
 
     // Render path overlays on SVG
-    function renderPathOverlays(battle, svgEl, turnLimit = null) {
+    function renderPathOverlays(battle, svgEl, initiativeLimit = null) {
       if (!battle || !battle.turns) return;
       const ctx = getSvgProjectionContext(battle, svgEl);
       if (!ctx) return;
-      const hasTurnFilter = turnLimit !== null && turnLimit !== undefined && Number.isFinite(Number(turnLimit));
-      const selectedTurn = hasTurnFilter ? Number(turnLimit) : null;
-      
+      const hasInitiativeFilter = initiativeLimit !== null && initiativeLimit !== undefined && Number.isFinite(Number(initiativeLimit));
+      const selectedInitiative = hasInitiativeFilter ? Math.max(0, Math.floor(Number(initiativeLimit))) : getMaxInitiative();
+
       // Create or get path layer
       let pathLayer = ctx.svgRoot.querySelector('#layer-paths');
       if (!pathLayer) {
@@ -2400,94 +2467,125 @@
           ctx.svgRoot.appendChild(pathLayer);
         }
       }
-      const previousTurn = Number(pathLayer.dataset.renderedTurn);
-      const shouldAnimateCurrentTurn =
-        hasTurnFilter
-        && Number.isFinite(previousTurn)
-        && selectedTurn === previousTurn + 1;
-      const animationSourceTurn = shouldAnimateCurrentTurn ? previousTurn : null;
-      const latestCompletedTurn = hasTurnFilter ? Math.max(0, selectedTurn - 1) : null;
+
+      const previousInitiative = Number(pathLayer.dataset.renderedInitiative);
+      const shouldAnimateCurrentInitiative =
+        hasInitiativeFilter
+        && Number.isFinite(previousInitiative)
+        && selectedInitiative === previousInitiative + 1;
       const turnAnimationMs = getTurnAnimationDurationMs();
-      
+
       // Clear existing paths
       pathLayer.innerHTML = '';
-      
-      // Collect all movement vectors from position changes
+
       const allPaths = [];
-      battle.turns.forEach(turn => {
-        const turnNumber = Number(turn.turn || 0);
-        if (hasTurnFilter && turnNumber >= selectedTurn) return;
-        turn.activations.forEach(act => {
-          act.steps.forEach(step => {
-            const movementVectors = (step.vectors || []).filter(vec =>
-              vec &&
-              vec.kind === 'movement' &&
-              vec.from &&
-              vec.to &&
-              Number.isFinite(vec.from.x) &&
-              Number.isFinite(vec.from.y) &&
-              Number.isFinite(vec.to.x) &&
-              Number.isFinite(vec.to.y)
-            );
+      let cumulativeApSpent = 0;
+      let pathOrdinal = 0;
+      const maxInitiative = getMaxInitiative();
+      const completed = Math.max(0, Math.min(selectedInitiative, maxInitiative));
+      for (let initiative = 1; initiative <= completed; initiative++) {
+        const entry = getInitiativeEntry(battle, initiative);
+        if (!entry?.activation) continue;
+        for (const step of entry.activation.steps || []) {
+          const stepApRaw = Number(step?.apSpent ?? 0);
+          const stepApSpent = Number.isFinite(stepApRaw) ? Math.max(0, Math.round(stepApRaw)) : 0;
+          if (stepApSpent > 0) {
+            cumulativeApSpent += stepApSpent;
+          }
+          const movementVectors = (step.vectors || []).filter(vec =>
+            vec &&
+            vec.kind === 'movement' &&
+            vec.from &&
+            vec.to &&
+            Number.isFinite(vec.from.x) &&
+            Number.isFinite(vec.from.y) &&
+            Number.isFinite(vec.to.x) &&
+            Number.isFinite(vec.to.y)
+          );
 
-            if (movementVectors.length > 0) {
-              movementVectors.forEach(vec => {
-                const sampled = Array.isArray(vec.sampledPoints) ? vec.sampledPoints.filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.y)) : [];
-                const points = sampled.length >= 2 ? sampled : [vec.from, vec.to];
-                allPaths.push({
-                  points,
-                  turn: turnNumber,
-                  age: latestCompletedTurn !== null ? Math.max(0, latestCompletedTurn - turnNumber) : 0,
-                  model: act.modelName,
-                  success: step.success !== false
-                });
-              });
-              return;
-            }
-
-            if (
-              step.actorPositionBefore &&
-              step.actorPositionAfter &&
-              (
-                step.actorPositionBefore.x !== step.actorPositionAfter.x ||
-                step.actorPositionBefore.y !== step.actorPositionAfter.y
-              )
-            ) {
+          if (movementVectors.length > 0) {
+            movementVectors.forEach(vec => {
+              const sampled = Array.isArray(vec.sampledPoints)
+                ? vec.sampledPoints.filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.y))
+                : [];
+              const points = sampled.length >= 2 ? sampled : [vec.from, vec.to];
               allPaths.push({
-                points: [step.actorPositionBefore, step.actorPositionAfter],
-                turn: turnNumber,
-                age: latestCompletedTurn !== null ? Math.max(0, latestCompletedTurn - turnNumber) : 0,
-                model: act.modelName,
-                success: step.success !== false
+                points,
+                initiative,
+                model: entry.modelName,
+                sideName: entry.sideName,
+                success: step.success !== false,
+                apTick: cumulativeApSpent,
+                pathOrdinal: ++pathOrdinal
               });
-            }
-          });
-        });
+            });
+            continue;
+          }
+
+          if (
+            step.actorPositionBefore &&
+            step.actorPositionAfter &&
+            (
+              step.actorPositionBefore.x !== step.actorPositionAfter.x ||
+              step.actorPositionBefore.y !== step.actorPositionAfter.y
+            )
+          ) {
+            allPaths.push({
+              points: [step.actorPositionBefore, step.actorPositionAfter],
+              initiative,
+              model: entry.modelName,
+              sideName: entry.sideName,
+              success: step.success !== false,
+              apTick: cumulativeApSpent,
+              pathOrdinal: ++pathOrdinal
+            });
+          }
+        }
+      }
+
+      const latestApTick = allPaths.reduce((max, path) => Math.max(max, Number(path.apTick) || 0), 0);
+      const latestPathOrdinal = allPaths.reduce((max, path) => Math.max(max, Number(path.pathOrdinal) || 0), 0);
+
+      const visiblePaths = allPaths.filter(path => {
+        if (latestApTick > 0) {
+          return path.apTick === latestApTick || path.apTick === latestApTick - 1;
+        }
+        return path.pathOrdinal === latestPathOrdinal || path.pathOrdinal === latestPathOrdinal - 1;
       });
-      
-      allPaths.forEach((path, index) => {
+
+      visiblePaths.forEach(path => {
         const pointsAttr = (path.points || [])
           .map(p => `${ctx.toSvgX(p.x)},${ctx.toSvgY(p.y)}`)
           .join(' ');
         if (!pointsAttr.includes(',')) return;
 
-        const age = Number(path.age || 0);
-        const opacity = Math.max(0.14, 0.72 - age * 0.085);
-        const widthMu = Math.max(0.04, 0.09 - age * 0.004);
+        const isDotted = latestApTick > 0
+          ? path.apTick === latestApTick - 1
+          : path.pathOrdinal === latestPathOrdinal - 1;
+        const sideColor = getSideColor(path.sideName);
+        const opacity = path.success
+          ? (isDotted ? 0.48 : 0.78)
+          : (isDotted ? 0.32 : 0.55);
+        const widthMu = isDotted ? 0.075 : 0.09;
 
         const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
         polyline.setAttribute('points', pointsAttr);
         polyline.setAttribute('class', 'path-line');
         polyline.setAttribute('fill', 'none');
-        polyline.setAttribute('stroke', path.success ? '#27ae60' : '#e74c3c');
+        polyline.setAttribute('stroke', sideColor);
         polyline.setAttribute('stroke-width', String(ctx.muToSvg(widthMu)));
-        polyline.setAttribute('opacity', String(path.success ? opacity : Math.max(0.12, opacity * 0.75)));
-        polyline.setAttribute('data-turn', path.turn);
-        polyline.setAttribute('data-age', String(age));
+        polyline.setAttribute('opacity', String(opacity));
+        polyline.setAttribute('data-initiative', String(path.initiative));
+        polyline.setAttribute('data-ap-tick', String(path.apTick));
         polyline.setAttribute('data-model', path.model);
+        if (isDotted) {
+          polyline.setAttribute('stroke-dasharray', `${ctx.muToSvg(0.22)} ${ctx.muToSvg(0.16)}`);
+        } else {
+          polyline.setAttribute('stroke-dasharray', 'none');
+        }
         pathLayer.appendChild(polyline);
 
-        if (shouldAnimateCurrentTurn && Number(path.turn) === animationSourceTurn) {
+        if (shouldAnimateCurrentInitiative && Number(path.initiative) === selectedInitiative && !isDotted) {
           try {
             const totalLength = polyline.getTotalLength();
             if (Number.isFinite(totalLength) && totalLength > 0.5) {
@@ -2514,10 +2612,12 @@
               };
             }
           } catch {
-            // Skip path animation if browser cannot compute total length.
+            // Ignore path animation failures.
           }
         } else {
-          polyline.style.strokeDasharray = 'none';
+          if (!isDotted) {
+            polyline.style.strokeDasharray = 'none';
+          }
           polyline.style.strokeDashoffset = '0';
         }
       });
@@ -2526,20 +2626,19 @@
       if (modelLayer && modelLayer.parentNode === ctx.svgRoot) {
         ctx.svgRoot.insertBefore(pathLayer, modelLayer);
       }
-      if (hasTurnFilter) {
-        pathLayer.dataset.renderedTurn = String(selectedTurn);
-      }
-      
-      console.log(`Rendered ${allPaths.length} path segments`);
+      pathLayer.dataset.renderedInitiative = String(selectedInitiative);
+
+      console.log(`Rendered ${visiblePaths.length}/${allPaths.length} path segments`);
     }
 
     // Render LOS/LOF overlays on SVG
-    function renderLOSLOFOverlays(battle, svgEl, turnLimit = null) {
+    function renderLOSLOFOverlays(battle, svgEl, initiativeLimit = null) {
       if (!battle || !battle.turns) return;
       const ctx = getSvgProjectionContext(battle, svgEl);
       if (!ctx) return;
-      const hasTurnFilter = turnLimit !== null && turnLimit !== undefined && Number.isFinite(Number(turnLimit));
-      const selectedTurn = hasTurnFilter ? Number(turnLimit) : null;
+      const selectedInitiative = initiativeLimit !== null && initiativeLimit !== undefined && Number.isFinite(Number(initiativeLimit))
+        ? Math.max(0, Math.floor(Number(initiativeLimit)))
+        : getMaxInitiative();
       
       // Create or get LOS/LOF layer
       let losLayer = ctx.svgRoot.querySelector('#layer-los');
@@ -2556,38 +2655,33 @@
       // Collect all LOS/LOF vectors
       const allLOS = [];
       const allLOF = [];
-      
-      battle.turns.forEach(turn => {
-        if (hasTurnFilter && Number(turn.turn || 0) !== selectedTurn) return;
-        turn.activations.forEach(act => {
-          act.steps.forEach(step => {
-            if (step.vectors) {
-              step.vectors.forEach(vec => {
-                if (vec.kind === 'los') {
-                  allLOS.push({
-                    from: vec.from,
-                    to: vec.to,
-                    turn: turn.turn,
-                    model: act.modelName,
-                    success: vec.success !== false
-                  });
-                } else if (vec.kind === 'lof') {
-                  allLOF.push({
-                    from: vec.from,
-                    to: vec.to,
-                    turn: turn.turn,
-                    model: act.modelName,
-                    width: vec.widthMu || 1
-                  });
-                }
-              });
-            }
-          });
+      const entry = getInitiativeEntry(battle, selectedInitiative);
+      const activation = entry?.activation;
+      for (const step of activation?.steps || []) {
+        if (!step?.vectors) continue;
+        step.vectors.forEach(vec => {
+          if (vec.kind === 'los') {
+            allLOS.push({
+              from: vec.from,
+              to: vec.to,
+              turn: entry?.turn ?? 0,
+              model: entry?.modelName ?? '',
+              success: vec.success !== false
+            });
+          } else if (vec.kind === 'lof') {
+            allLOF.push({
+              from: vec.from,
+              to: vec.to,
+              turn: entry?.turn ?? 0,
+              model: entry?.modelName ?? '',
+              width: vec.widthMu || 1
+            });
+          }
         });
-      });
+      }
       
       // Render LOS lines
-      allLOS.forEach((los, index) => {
+      allLOS.forEach((los) => {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', ctx.toSvgX(los.from.x));
         line.setAttribute('y1', ctx.toSvgY(los.from.y));
@@ -2603,7 +2697,7 @@
       });
       
       // Render LOF arcs (as lines for now, could be curved)
-      allLOF.forEach((lof, index) => {
+      allLOF.forEach((lof) => {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         line.setAttribute('x1', ctx.toSvgX(lof.from.x));
         line.setAttribute('y1', ctx.toSvgY(lof.from.y));
@@ -2738,29 +2832,37 @@
       return positions;
     }
 
-    function collectModelPositionsAtTurn(audit, targetTurn) {
+    function collectModelPositionsAtInitiative(audit, completedInitiatives) {
       const positions = collectInitialModelPositions(audit);
       if (!audit?.turns) return positions;
+      const target = Math.max(0, Math.floor(Number(completedInitiatives) || 0));
+      let processed = 0;
       for (const turn of audit.turns) {
-        if ((turn.turn || 0) > targetTurn) break;
         for (const act of turn.activations || []) {
-          if (!positions.has(act.modelId)) continue;
+          if (processed >= target) {
+            return positions;
+          }
+          if (!positions.has(act.modelId)) {
+            processed += 1;
+            continue;
+          }
           const current = positions.get(act.modelId);
           for (const step of act.steps || []) {
             if (step.actorPositionAfter) {
               current.x = step.actorPositionAfter.x;
               current.y = step.actorPositionAfter.y;
             }
+            applySecondaryMovementOutcome(positions, act.modelId, step);
           }
+          processed += 1;
         }
       }
       return positions;
     }
 
-    function getDisplayedModelPositions(audit, turnNumber) {
-      const numericTurn = Number.isFinite(Number(turnNumber)) ? Number(turnNumber) : 1;
-      // Turn slider semantics: show model positions at start of selected turn.
-      return collectModelPositionsAtTurn(audit, Math.max(0, numericTurn - 1));
+    function getDisplayedModelPositions(audit, initiativeIndex) {
+      const completed = Number.isFinite(Number(initiativeIndex)) ? Number(initiativeIndex) : 0;
+      return collectModelPositionsAtInitiative(audit, Math.max(0, completed));
     }
 
     function appendUniquePoint(points, candidate) {
@@ -2772,57 +2874,111 @@
       points.push({ x: candidate.x, y: candidate.y });
     }
 
-    function collectTurnMovementTrajectories(audit, turnNumber) {
+    function isFinitePosition(position) {
+      return !!position && Number.isFinite(position.x) && Number.isFinite(position.y);
+    }
+
+    function extractPrimaryTargetId(step) {
+      const preferredTarget = (step?.targets || []).find(target => {
+        const relation = String(target?.relation || '').toLowerCase();
+        return !!target?.modelId && (!relation || relation === 'target' || relation === 'enemy' || relation === 'opponent');
+      });
+      if (preferredTarget?.modelId) {
+        return preferredTarget.modelId;
+      }
+      const preferredAffected = (step?.affectedModels || []).find(model => {
+        const relation = String(model?.relation || '').toLowerCase();
+        return !!model?.modelId && (relation === 'target' || relation === 'enemy' || relation === 'opponent');
+      });
+      if (preferredAffected?.modelId) {
+        return preferredAffected.modelId;
+      }
+      return null;
+    }
+
+    function extractSecondaryMovementOutcome(step) {
+      const attackOutcome = step?.details?.attackResult?.bonusActionOutcome;
+      const directOutcome = step?.details?.bonusActionOutcome;
+      const outcome = attackOutcome || directOutcome;
+      if (!outcome || outcome.executed === false || outcome.moved === false) {
+        return null;
+      }
+      const attackerPosition = isFinitePosition(outcome.attackerPosition) ? outcome.attackerPosition : null;
+      const targetPosition = isFinitePosition(outcome.targetPosition) ? outcome.targetPosition : null;
+      if (!attackerPosition && !targetPosition) {
+        return null;
+      }
+      return { attackerPosition, targetPosition };
+    }
+
+    function applySecondaryMovementOutcome(positions, actorId, step) {
+      const outcome = extractSecondaryMovementOutcome(step);
+      if (!outcome) return;
+
+      if (outcome.attackerPosition && positions.has(actorId)) {
+        const actor = positions.get(actorId);
+        actor.x = outcome.attackerPosition.x;
+        actor.y = outcome.attackerPosition.y;
+      }
+
+      if (!outcome.targetPosition) return;
+      const targetId = extractPrimaryTargetId(step);
+      if (!targetId || !positions.has(targetId)) return;
+      const target = positions.get(targetId);
+      target.x = outcome.targetPosition.x;
+      target.y = outcome.targetPosition.y;
+    }
+
+    function collectInitiativeMovementTrajectories(audit, initiativeIndex) {
       const trajectories = new Map();
-      const turnData = (audit?.turns || []).find(turn => Number(turn.turn) === Number(turnNumber));
-      if (!turnData) return trajectories;
+      const entry = getInitiativeEntry(audit, initiativeIndex);
+      if (!entry?.activation) return trajectories;
 
-      for (const activation of turnData.activations || []) {
-        const points = trajectories.get(activation.modelId) || [];
-        for (const step of activation.steps || []) {
-          const movementVectors = (step.vectors || []).filter(vec =>
-            vec &&
-            vec.kind === 'movement' &&
-            vec.from &&
-            vec.to &&
-            Number.isFinite(vec.from.x) &&
-            Number.isFinite(vec.from.y) &&
-            Number.isFinite(vec.to.x) &&
-            Number.isFinite(vec.to.y)
-          );
+      const activation = entry.activation;
+      const points = trajectories.get(activation.modelId) || [];
+      for (const step of activation.steps || []) {
+        const movementVectors = (step.vectors || []).filter(vec =>
+          vec &&
+          vec.kind === 'movement' &&
+          vec.from &&
+          vec.to &&
+          Number.isFinite(vec.from.x) &&
+          Number.isFinite(vec.from.y) &&
+          Number.isFinite(vec.to.x) &&
+          Number.isFinite(vec.to.y)
+        );
 
-          if (movementVectors.length > 0) {
-            for (const vec of movementVectors) {
-              const sampled = Array.isArray(vec.sampledPoints)
-                ? vec.sampledPoints.filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.y))
-                : [];
-              if (sampled.length >= 2) {
-                for (const sampledPoint of sampled) {
-                  appendUniquePoint(points, sampledPoint);
-                }
-              } else {
-                appendUniquePoint(points, vec.from);
-                appendUniquePoint(points, vec.to);
+        if (movementVectors.length > 0) {
+          for (const vec of movementVectors) {
+            const sampled = Array.isArray(vec.sampledPoints)
+              ? vec.sampledPoints.filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.y))
+              : [];
+            if (sampled.length >= 2) {
+              for (const sampledPoint of sampled) {
+                appendUniquePoint(points, sampledPoint);
               }
+            } else {
+              appendUniquePoint(points, vec.from);
+              appendUniquePoint(points, vec.to);
             }
-            continue;
           }
+          continue;
+        }
 
-          if (
-            step.actorPositionBefore &&
-            step.actorPositionAfter &&
-            (
-              step.actorPositionBefore.x !== step.actorPositionAfter.x ||
-              step.actorPositionBefore.y !== step.actorPositionAfter.y
-            )
-          ) {
-            appendUniquePoint(points, step.actorPositionBefore);
-            appendUniquePoint(points, step.actorPositionAfter);
-          }
+        if (
+          step.actorPositionBefore &&
+          step.actorPositionAfter &&
+          (
+            step.actorPositionBefore.x !== step.actorPositionAfter.x ||
+            step.actorPositionBefore.y !== step.actorPositionAfter.y
+          )
+        ) {
+          appendUniquePoint(points, step.actorPositionBefore);
+          appendUniquePoint(points, step.actorPositionAfter);
         }
-        if (points.length > 1) {
-          trajectories.set(activation.modelId, points);
-        }
+      }
+      if (points.length > 1) {
+        trajectories.set(activation.modelId, points);
       }
       return trajectories;
     }
@@ -2832,6 +2988,32 @@
       const dx = Number(a.x || 0) - Number(b.x || 0);
       const dy = Number(a.y || 0) - Number(b.y || 0);
       return Math.hypot(dx, dy);
+    }
+
+    function computeModelOverlapOffsets(positions, offsetRadiusPx) {
+      const clusters = new Map();
+      for (const model of positions.values()) {
+        const key = `${model.x.toFixed(3)}:${model.y.toFixed(3)}`;
+        const bucket = clusters.get(key) || [];
+        bucket.push(model.modelId);
+        clusters.set(key, bucket);
+      }
+
+      const offsets = new Map();
+      for (const modelIds of clusters.values()) {
+        if (!Array.isArray(modelIds) || modelIds.length <= 1) {
+          if (modelIds[0]) offsets.set(modelIds[0], { dx: 0, dy: 0 });
+          continue;
+        }
+        modelIds.forEach((modelId, index) => {
+          const angle = (Math.PI * 2 * index) / modelIds.length;
+          offsets.set(modelId, {
+            dx: Math.cos(angle) * offsetRadiusPx,
+            dy: Math.sin(angle) * offsetRadiusPx
+          });
+        });
+      }
+      return offsets;
     }
 
     function animateMarkerAlongSvgPoints(markerGroup, svgPoints, durationMs, finalTransform) {
@@ -2965,7 +3147,7 @@
       }
     }
 
-    function renderModelMarkers(audit, svgContainer, turnNumber) {
+    function renderModelMarkers(audit, svgContainer, initiativeIndex) {
       if (!audit?.turns?.length) return;
       const ctx = getSvgProjectionContext(audit, svgContainer);
       if (!ctx) return;
@@ -2980,10 +3162,11 @@
       // Keep models above path/LOS layers.
       ctx.svgRoot.appendChild(layer);
 
-      const previousTurn = Number(layer.dataset.renderedTurn);
-      const shouldAnimateForward = Number.isFinite(previousTurn) && Number(turnNumber) === previousTurn + 1;
-      const animationSourceTurn = shouldAnimateForward ? previousTurn : null;
-      const turnTrajectories = shouldAnimateForward ? collectTurnMovementTrajectories(audit, animationSourceTurn) : new Map();
+      const previousInitiative = Number(layer.dataset.renderedInitiative);
+      const numericInitiative = Math.max(0, Math.floor(Number(initiativeIndex) || 0));
+      const shouldAnimateForward = Number.isFinite(previousInitiative) && numericInitiative === previousInitiative + 1;
+      const animationSourceInitiative = shouldAnimateForward ? numericInitiative : null;
+      const turnTrajectories = shouldAnimateForward ? collectInitiativeMovementTrajectories(audit, animationSourceInitiative) : new Map();
       const turnAnimationMs = getTurnAnimationDurationMs();
       const markerRadiusPx = ctx.muToSvg(MODEL_RADIUS_MU);
       const portraitRadiusPx = ctx.muToSvg(MODEL_PORTRAIT_RADIUS_MU);
@@ -2997,16 +3180,20 @@
       });
 
       const positions = shouldAnimateForward
-        ? getDisplayedModelPositions(audit, animationSourceTurn)
-        : getDisplayedModelPositions(audit, turnNumber);
+        ? getDisplayedModelPositions(audit, Math.max(0, animationSourceInitiative - 1))
+        : getDisplayedModelPositions(audit, numericInitiative);
       const endPositions = shouldAnimateForward
-        ? collectModelPositionsAtTurn(audit, Math.max(0, Number(animationSourceTurn)))
+        ? collectModelPositionsAtInitiative(audit, Math.max(0, Number(animationSourceInitiative)))
         : positions;
+      const startOffsets = computeModelOverlapOffsets(positions, ctx.muToSvg(0.12));
+      const endOffsets = computeModelOverlapOffsets(endPositions, ctx.muToSvg(0.12));
       const seen = new Set();
       for (const model of positions.values()) {
         seen.add(model.modelId);
         const color = getSideColor(model.sideName);
         const endModel = endPositions.get(model.modelId) || model;
+        const startOffset = startOffsets.get(model.modelId) || { dx: 0, dy: 0 };
+        const endOffset = endOffsets.get(model.modelId) || { dx: 0, dy: 0 };
         const markerGroup = existingById.get(model.modelId) || (() => {
           const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
           group.setAttribute('data-model-id', model.modelId);
@@ -3049,10 +3236,12 @@
 
         const dot = markerGroup.querySelector('circle[data-role="dot"]');
         if (dot) {
+          const isActiveInitiative = activeInitiativeModelId === model.modelId;
+          const isSelected = selectedModel === model.modelId;
           dot.setAttribute('r', String(markerRadiusPx));
           dot.setAttribute('fill', color);
-          dot.setAttribute('stroke', selectedModel === model.modelId ? '#ffffff' : '#1f2a44');
-          dot.setAttribute('stroke-width', String(ctx.muToSvg(selectedModel === model.modelId ? 0.14 : 0.08)));
+          dot.setAttribute('stroke', isActiveInitiative ? '#ffd166' : (isSelected ? '#ffffff' : '#1f2a44'));
+          dot.setAttribute('stroke-width', String(ctx.muToSvg(isActiveInitiative ? 0.16 : (isSelected ? 0.14 : 0.08))));
         }
         upsertModelPortraitOnMarker(markerGroup, model.modelId, portraitRadiusPx);
 
@@ -3068,10 +3257,10 @@
           hoverLabel.setAttribute('stroke-width', String(hoverLabelStroke));
         }
 
-        const startTx = ctx.toSvgX(model.x);
-        const startTy = ctx.toSvgY(model.y);
-        const endTx = ctx.toSvgX(endModel.x);
-        const endTy = ctx.toSvgY(endModel.y);
+        const startTx = ctx.toSvgX(model.x) + startOffset.dx;
+        const startTy = ctx.toSvgY(model.y) + startOffset.dy;
+        const endTx = ctx.toSvgX(endModel.x) + endOffset.dx;
+        const endTy = ctx.toSvgY(endModel.y) + endOffset.dy;
         const finalTransform = shouldAnimateForward
           ? `translate(${endTx} ${endTy})`
           : `translate(${startTx} ${startTy})`;
@@ -3079,7 +3268,12 @@
         const turnPath = turnTrajectories.get(model.modelId);
         if (shouldAnimateForward && Array.isArray(turnPath) && turnPath.length > 1) {
           const svgPoints = turnPath
-            .map(point => ({ x: ctx.toSvgX(point.x), y: ctx.toSvgY(point.y) }))
+            .map((point, index, allPoints) => {
+              const ratio = allPoints.length > 1 ? (index / (allPoints.length - 1)) : 1;
+              const dx = startOffset.dx + (endOffset.dx - startOffset.dx) * ratio;
+              const dy = startOffset.dy + (endOffset.dy - startOffset.dy) * ratio;
+              return { x: ctx.toSvgX(point.x) + dx, y: ctx.toSvgY(point.y) + dy };
+            })
             .filter(point => Number.isFinite(point.x) && Number.isFinite(point.y));
           if (svgPoints.length === 0 || pointDistance(svgPoints[0], { x: startTx, y: startTy }) > 0.25) {
             svgPoints.unshift({ x: startTx, y: startTy });
@@ -3107,7 +3301,7 @@
         }
       }
 
-      layer.dataset.renderedTurn = String(Number(turnNumber));
+      layer.dataset.renderedInitiative = String(numericInitiative);
     }
 
     function normalizeActionType(actionType) {
@@ -3155,7 +3349,7 @@
       return points.join(' ');
     }
 
-    function renderAttackBursts(audit, svgContainer, turnNumber) {
+    function renderAttackBursts(audit, svgContainer, initiativeIndex) {
       if (!audit?.turns?.length) return;
       const ctx = getSvgProjectionContext(audit, svgContainer);
       if (!ctx) return;
@@ -3167,58 +3361,77 @@
         layer.setAttribute('class', 'layer');
         ctx.svgRoot.appendChild(layer);
       }
+      const previousInitiative = Number(layer.dataset.renderedInitiative);
+      const selectedInitiative = Math.max(0, Math.floor(Number(initiativeIndex) || 0));
+      const shouldDelayForMovement = Number.isFinite(previousInitiative) && selectedInitiative === previousInitiative + 1;
+      const revealDelayMs = shouldDelayForMovement ? Math.round(getTurnAnimationDurationMs() * 0.84) : 0;
+      const renderToken = String((Number(layer.dataset.renderToken || '0') + 1));
+      layer.dataset.renderToken = renderToken;
       layer.innerHTML = '';
 
-      const completedTurn = Math.max(0, Number(turnNumber) - 1);
-      const turnData = (audit.turns || []).find(turn => Number(turn.turn) === completedTurn);
-      if (!turnData) return;
+      const entry = getInitiativeEntry(audit, selectedInitiative);
+      if (!entry?.activation) {
+        layer.dataset.renderedInitiative = String(selectedInitiative);
+        return;
+      }
 
-      const positions = collectModelPositionsAtTurn(audit, completedTurn);
+      const positions = collectModelPositionsAtInitiative(audit, selectedInitiative);
       const perTargetCount = new Map();
       let rendered = 0;
 
-      for (const activation of turnData.activations || []) {
-        for (const step of activation.steps || []) {
-          if (isAttackAction(step)) {
-            const targetIds = extractAttackTargetIds(step);
-            for (const targetId of targetIds) {
-              const targetPos = positions.get(targetId);
-              if (!targetPos) continue;
+      for (const step of entry.activation.steps || []) {
+        if (isAttackAction(step)) {
+          const targetIds = extractAttackTargetIds(step);
+          for (const targetId of targetIds) {
+            const targetPos = positions.get(targetId);
+            if (!targetPos) continue;
 
-              const burstIndex = perTargetCount.get(targetId) || 0;
-              perTargetCount.set(targetId, burstIndex + 1);
-              const offsetAngle = (burstIndex * 137.5) * (Math.PI / 180);
-              const offsetDistance = ctx.muToSvg(Math.min(0.16, 0.06 * burstIndex));
-              const x = ctx.toSvgX(targetPos.x) + Math.cos(offsetAngle) * offsetDistance;
-              const y = ctx.toSvgY(targetPos.y) + Math.sin(offsetAngle) * offsetDistance;
+            const burstIndex = perTargetCount.get(targetId) || 0;
+            perTargetCount.set(targetId, burstIndex + 1);
+            const offsetAngle = (burstIndex * 137.5) * (Math.PI / 180);
+            const offsetDistance = ctx.muToSvg(Math.min(0.16, 0.06 * burstIndex));
+            const x = ctx.toSvgX(targetPos.x) + Math.cos(offsetAngle) * offsetDistance;
+            const y = ctx.toSvgY(targetPos.y) + Math.sin(offsetAngle) * offsetDistance;
 
-              const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-              group.setAttribute('class', 'attack-burst');
-              group.setAttribute('transform', `translate(${x} ${y})`);
-
-              const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-              ring.setAttribute('class', 'attack-burst-ring');
-              ring.setAttribute('r', String(ctx.muToSvg(0.26)));
-              ring.setAttribute('stroke-width', String(ctx.muToSvg(0.05)));
-              ring.style.animationDelay = `${rendered * 80}ms`;
-
-              const star = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-              star.setAttribute('class', 'attack-burst-star');
-              star.setAttribute('points', buildStarPoints(ctx.muToSvg(0.22), ctx.muToSvg(0.1), 7));
-              star.setAttribute('stroke-width', String(ctx.muToSvg(0.035)));
-              star.style.animationDelay = `${rendered * 80}ms`;
-
-              group.appendChild(ring);
-              group.appendChild(star);
-              layer.appendChild(group);
-              rendered += 1;
+            const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            group.setAttribute('class', 'attack-burst');
+            group.setAttribute('transform', `translate(${x} ${y})`);
+            if (revealDelayMs > 0) {
+              group.style.opacity = '0';
+              group.style.transition = 'opacity 120ms linear';
             }
+
+            const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            ring.setAttribute('class', 'attack-burst-ring');
+            ring.setAttribute('r', String(ctx.muToSvg(0.26)));
+            ring.setAttribute('stroke-width', String(ctx.muToSvg(0.05)));
+            ring.style.animationDelay = `${rendered * 80}ms`;
+
+            const star = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            star.setAttribute('class', 'attack-burst-star');
+            star.setAttribute('points', buildStarPoints(ctx.muToSvg(0.22), ctx.muToSvg(0.1), 7));
+            star.setAttribute('stroke-width', String(ctx.muToSvg(0.035)));
+            star.style.animationDelay = `${rendered * 80}ms`;
+
+            group.appendChild(ring);
+            group.appendChild(star);
+            layer.appendChild(group);
+            if (revealDelayMs > 0) {
+              const revealAfterMs = revealDelayMs + rendered * 30;
+              setTimeout(() => {
+                if (layer.dataset.renderToken !== renderToken) return;
+                if (!group.isConnected) return;
+                group.style.opacity = '1';
+              }, revealAfterMs);
+            }
+            rendered += 1;
           }
         }
       }
 
       // Keep bursts above model markers.
       ctx.svgRoot.appendChild(layer);
+      layer.dataset.renderedInitiative = String(selectedInitiative);
     }
 
     // Load model roster with portraits
@@ -3274,6 +3487,7 @@
         const activePortrait = findPortraitElement(selectedModel);
         if (activePortrait) activePortrait.classList.add('selected');
       }
+      decorateActiveInitiativeProfile(activeInitiativeModelId);
     }
 
     function getPortraitClipMetrics(column, row, sheetWidth = 1920, sheetHeight = 1920) {
@@ -3396,6 +3610,19 @@
       return Array.from(document.querySelectorAll('.model-portrait')).find(el => el.dataset.modelId === modelId) || null;
     }
 
+    function decorateActiveInitiativeProfile(modelId) {
+      activeInitiativeModelId = modelId || null;
+      document.querySelectorAll('.model-portrait').forEach(el => {
+        const isActive = !!activeInitiativeModelId && el.dataset.modelId === activeInitiativeModelId;
+        el.classList.toggle('active-initiative', isActive);
+      });
+      const statsRing = document.querySelector('.stats-portrait-ring');
+      if (statsRing) {
+        const isStatsActive = !!activeInitiativeModelId && selectedModel === activeInitiativeModelId;
+        statsRing.classList.toggle('active-initiative', isStatsActive);
+      }
+    }
+
     function getSelectedModelIndex(modelId) {
       return orderedModelIds.indexOf(modelId);
     }
@@ -3409,7 +3636,7 @@
       selectModel(nextModelId, findPortraitElement(nextModelId), { centerMap: true });
     }
 
-    function centerMapOnModel(modelId) {
+    function centerMapOnModel(modelId, options = {}) {
       if (!currentBattle) return;
       const svgContainer = document.getElementById('battlefield-svg');
       const viewer = document.querySelector('.visual-audit-viewer');
@@ -3433,7 +3660,7 @@
       viewer.scrollTo({
         left: Math.max(0, px - (viewer.clientWidth / 2)),
         top: Math.max(0, py - (viewer.clientHeight / 2)),
-        behavior: 'smooth'
+        behavior: options.behavior || 'smooth'
       });
     }
 
@@ -3455,11 +3682,12 @@
       
       // Show model stats
       showModelStats(modelId);
+      decorateActiveInitiativeProfile(activeInitiativeModelId);
       
       // Highlight model on battlefield
       highlightModelOnBattlefield(modelId);
       if (centerMap) {
-        centerMapOnModel(modelId);
+        centerMapOnModel(modelId, { behavior: 'smooth' });
       }
     }
 
@@ -3507,6 +3735,7 @@
       
       const portraitHtml = buildRosterPortraitSvg(modelId, getPortraitClipData(modelId), 86, 'stats');
       const sideColor = getSideColor(modelData.sideName);
+      const isActiveInitiativeProfile = activeInitiativeModelId === modelId;
       const modelIndex = getSelectedModelIndex(modelId);
       const navMeta = modelIndex >= 0 ? `${modelIndex + 1}/${orderedModelIds.length}` : `1/${Math.max(1, orderedModelIds.length)}`;
       const navHtml = orderedModelIds.length > 1 ? `
@@ -3521,7 +3750,7 @@
       statsContent.innerHTML = `
         ${navHtml}
         <div style="display:flex;justify-content:center;align-items:center;margin-bottom:0.75rem;">
-          <div class="stats-portrait-ring" style="--side-ring: ${sideColor};">
+          <div class="stats-portrait-ring${isActiveInitiativeProfile ? ' active-initiative' : ''}" style="--side-ring: ${sideColor};">
             ${portraitHtml}
           </div>
         </div>
@@ -3572,76 +3801,38 @@
         return;
       }
 
-      const entries = [];
-      audit.turns.forEach(turn => {
-        turn.activations.forEach((act, actIndex) => {
-          act.steps.forEach((step, stepIndex) => {
-            entries.push({
-              turn: turn.turn,
-              turnIndex: audit.turns.indexOf(turn),
-              activationIndex: actIndex,
-              stepIndex: stepIndex,
-              modelId: act.modelId,
-              modelName: act.modelName,
-              side: act.sideName,
-              actionType: step.actionType || 'Idle',
-              success: step.success !== false
-            });
-          });
-          // If no steps, still add an entry for the activation
-          if (act.steps.length === 0) {
-            entries.push({
-              turn: turn.turn,
-              turnIndex: audit.turns.indexOf(turn),
-              activationIndex: actIndex,
-              stepIndex: 0,
-              modelId: act.modelId,
-              modelName: act.modelName,
-              side: act.sideName,
-              actionType: 'Idle',
-              success: true
-            });
-          }
-        });
-      });
-
-      logContainer.innerHTML = entries.map((e, index) => {
-        const successClass = e.success ? '' : 'failed-action';
-        const clickable = e.turnIndex !== undefined ? `onclick="jumpToTurn(${e.turnIndex}, '${e.modelId}', this)"` : '';
+      const entries = buildInitiativeTimeline(audit);
+      activationTimeline = entries;
+      logContainer.innerHTML = entries.map((e) => {
+        const steps = e.activation?.steps || [];
+        const stepTypes = steps.length > 0
+          ? steps.map(step => step?.actionType || 'Idle').join(' → ')
+          : 'Idle';
+        const successClass = steps.some(step => step?.success === false) ? 'failed-action' : '';
+        const clickable = `onclick="jumpToInitiative(${e.initiative}, '${e.modelId}', this)"`;
         return `
-          <div class="log-entry ${successClass}" ${clickable} data-turn="${e.turn}" data-model="${e.modelId}">
-            Turn ${e.turn}: ${e.side} - ${e.modelName}: ${e.actionType}
+          <div class="log-entry ${successClass}" ${clickable} data-turn="${e.turn}" data-model="${e.modelId}" data-initiative="${e.initiative}">
+            Init ${e.initiative} (T${e.turn}.${e.activationIndexInTurn}): ${e.sideName} - ${e.modelName}: ${stepTypes}
           </div>
         `;
       }).join('');
     }
 
-    // Jump to specific turn and highlight model
-    function jumpToTurn(turnIndex, modelId, element) {
+    // Jump to specific initiative and highlight model
+    function jumpToInitiative(initiativeIndex, modelId, element) {
       if (!currentBattle || !currentBattle.turns) return;
+      stopPlayback();
       
       // Highlight clicked entry
       document.querySelectorAll('.log-entry').forEach(el => el.classList.remove('active'));
       if (element) element.classList.add('active');
       
-      // Update turn slider
+      // Update initiative slider
       const slider = document.getElementById('turn-slider');
-      const turnDisplay = document.getElementById('turn-display');
-      const targetTurn = currentBattle.turns[turnIndex]?.turn || 1;
-      
-      slider.value = targetTurn;
-      turnDisplay.textContent = targetTurn;
-      currentTurn = targetTurn;
-      
-      // Re-render overlays for this turn
-      const svgEl = document.getElementById('battlefield-svg');
-      if (svgEl) {
-        // Clear and re-render overlays
-        renderPathOverlays(currentBattle, svgEl, currentTurn);
-        renderLOSLOFOverlays(currentBattle, svgEl, currentTurn);
-        renderModelMarkers(currentBattle, svgEl, currentTurn);
-        renderAttackBursts(currentBattle, svgEl, currentTurn);
-      }
+      const targetInitiative = Math.max(0, Math.min(getMaxInitiative(), Number(initiativeIndex) || 0));
+      slider.value = String(targetInitiative);
+      currentTurn = targetInitiative;
+      updateTurnDisplay();
       
       // Highlight and focus model
       selectModel(modelId, findPortraitElement(modelId), { centerMap: true });
@@ -3651,7 +3842,7 @@
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
       
-      console.log(`Jumped to Turn ${targetTurn}, model ${modelId}`);
+      console.log(`Jumped to Initiative ${targetInitiative}, model ${modelId}`);
     }
 
     // Tab 3: Load summaries
@@ -3802,7 +3993,7 @@
     // Timeline controls
     document.getElementById('btn-stop').addEventListener('click', () => {
       stopPlayback();
-      currentTurn = 1;
+      currentTurn = 0;
       updateTurnDisplay();
     });
 
@@ -3815,14 +4006,16 @@
     });
 
     document.getElementById('btn-prev').addEventListener('click', () => {
-      if (currentTurn > 1) {
+      stopPlayback();
+      if (currentTurn > 0) {
         currentTurn--;
         updateTurnDisplay();
       }
     });
 
     document.getElementById('btn-next').addEventListener('click', () => {
-      const maxTurn = currentBattle?.turns?.length || 1;
+      stopPlayback();
+      const maxTurn = getMaxInitiative();
       if (currentTurn < maxTurn) {
         currentTurn++;
         updateTurnDisplay();
@@ -3830,6 +4023,7 @@
     });
 
     document.getElementById('turn-slider').addEventListener('input', (e) => {
+      stopPlayback();
       currentTurn = parseInt(e.target.value);
       updateTurnDisplay();
     });
@@ -3855,7 +4049,7 @@
     function startPlayback() {
       isPlaying = true;
       document.getElementById('btn-play').textContent = '⏸ Pause';
-      const maxTurn = currentBattle?.turns?.length || 1;
+      const maxTurn = getMaxInitiative();
       
       // Get playback speed
       const speedSelect = document.getElementById('playback-speed');
@@ -3867,7 +4061,8 @@
       playInterval = setInterval(() => {
         if (currentTurn >= maxTurn) {
           stopPlayback();
-          currentTurn = 1;
+          currentTurn = 0;
+          updateTurnDisplay();
         } else {
           currentTurn++;
           updateTurnDisplay();
@@ -3885,8 +4080,17 @@
     }
 
     function updateTurnDisplay() {
-      document.getElementById('turn-display').textContent = currentTurn;
-      document.getElementById('turn-slider').value = currentTurn;
+      const maxInitiative = getMaxInitiative();
+      const clamped = Math.max(0, Math.min(maxInitiative, Number(currentTurn) || 0));
+      currentTurn = clamped;
+      const currentEntry = getInitiativeEntry(currentBattle, clamped);
+      const activeModelId = currentEntry?.modelId || null;
+      decorateActiveInitiativeProfile(activeModelId);
+      const turnDisplayValue = currentEntry
+        ? `${clamped}/${maxInitiative} (T${currentEntry.turn}.${currentEntry.activationIndexInTurn} ${getModelShortId(currentEntry.modelId)})`
+        : `${clamped}/${maxInitiative}`;
+      document.getElementById('turn-display').textContent = turnDisplayValue;
+      document.getElementById('turn-slider').value = String(clamped);
       const svgEl = document.getElementById('battlefield-svg');
       if (svgEl && currentBattle) {
         renderPathOverlays(currentBattle, svgEl, currentTurn);
@@ -3894,6 +4098,12 @@
         renderModelMarkers(currentBattle, svgEl, currentTurn);
         renderAttackBursts(currentBattle, svgEl, currentTurn);
       }
+      if (activeModelId) {
+        centerMapOnModel(activeModelId, { behavior: isPlaying ? 'auto' : 'smooth' });
+      }
+      document.querySelectorAll('#action-log .log-entry').forEach(el => el.classList.remove('active'));
+      const activeEntry = document.querySelector(`#action-log .log-entry[data-initiative="${currentTurn}"]`);
+      if (activeEntry) activeEntry.classList.add('active');
     }
 
     // Load portrait review (Tab 4)
