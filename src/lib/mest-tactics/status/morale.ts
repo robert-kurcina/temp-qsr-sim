@@ -27,7 +27,20 @@ export interface MoraleOptions {
 export interface FearResult {
   pass: boolean;
   fearAdded: number;
+  woundsTrigger: number;
+  testRequired: boolean;
+  testAttempted: boolean;
+  skipReason?: FearSkipReason;
+  moraleScore?: number;
 }
+
+export type FearSkipReason =
+  | 'no_wounds_added'
+  | 'already_disordered'
+  | 'engaged_not_distracted'
+  | 'already_tested_this_turn'
+  | 'immune_to_fear'
+  | 'morale_exempt';
 
 export interface AllyFearResult {
   ally: Character;
@@ -39,33 +52,76 @@ export function applyFearFromWounds(
   woundsAdded: number,
   rolls?: number[]
 ): FearResult {
-  if (woundsAdded <= 0) {
-    return { pass: true, fearAdded: 0 };
+  const woundsTrigger = Math.max(0, Math.floor(woundsAdded));
+  if (woundsTrigger <= 0) {
+    return {
+      pass: true,
+      fearAdded: 0,
+      woundsTrigger,
+      testRequired: false,
+      testAttempted: false,
+      skipReason: 'no_wounds_added',
+    };
   }
 
   const isDisordered = character.state.isDisordered || character.state.fearTokens >= 2;
   if (isDisordered) {
-    return { pass: true, fearAdded: 0 };
+    return {
+      pass: true,
+      fearAdded: 0,
+      woundsTrigger,
+      testRequired: false,
+      testAttempted: false,
+      skipReason: 'already_disordered',
+    };
   }
 
   const isDistracted = character.state.isDistracted || character.state.delayTokens > 0;
   if (character.state.isEngaged && !isDistracted) {
-    return { pass: true, fearAdded: 0 };
+    return {
+      pass: true,
+      fearAdded: 0,
+      woundsTrigger,
+      testRequired: false,
+      testAttempted: false,
+      skipReason: 'engaged_not_distracted',
+    };
   }
 
   const fearTestsThisTurn = character.state.fearTestsThisTurn ?? 0;
   if (fearTestsThisTurn >= 1) {
-    return { pass: true, fearAdded: 0 };
+    return {
+      pass: true,
+      fearAdded: 0,
+      woundsTrigger,
+      testRequired: false,
+      testAttempted: false,
+      skipReason: 'already_tested_this_turn',
+    };
   }
 
   if (isImmuneToFear(character)) {
-    return { pass: true, fearAdded: 0 };
+    return {
+      pass: true,
+      fearAdded: 0,
+      woundsTrigger,
+      testRequired: false,
+      testAttempted: false,
+      skipReason: 'immune_to_fear',
+    };
   }
   
   // Insane trait: exempt from Morale Tests unless has Hindrance tokens
   const hasHindranceTokens = character.state.wounds > 0 || character.state.fearTokens > 0 || character.state.delayTokens > 0;
   if (isExemptFromMoraleTests(character, hasHindranceTokens)) {
-    return { pass: true, fearAdded: 0 };
+    return {
+      pass: true,
+      fearAdded: 0,
+      woundsTrigger,
+      testRequired: false,
+      testAttempted: false,
+      skipReason: 'morale_exempt',
+    };
   }
   
   character.state.fearTestsThisTurn = fearTestsThisTurn + 1;
@@ -73,7 +129,14 @@ export function applyFearFromWounds(
   const currentFear = character.state.fearTokens;
   const result = resolveMoraleTest(character, currentFear, {}, rolls ?? null);
   if (result.pass) {
-    return { pass: true, fearAdded: 0 };
+    return {
+      pass: true,
+      fearAdded: 0,
+      woundsTrigger,
+      testRequired: true,
+      testAttempted: true,
+      moraleScore: result.score,
+    };
   }
 
   const cascades = Math.max(1, Math.abs(result.score || 0));
@@ -98,7 +161,14 @@ export function applyFearFromWounds(
   character.state.delayTokens += conversion.delayTokensConverted;
   character.state.fearTokens += conversion.fearTokensApplied;
   updateFearState(character);
-  return { pass: false, fearAdded: conversion.fearTokensApplied };
+  return {
+    pass: false,
+    fearAdded: conversion.fearTokensApplied,
+    woundsTrigger,
+    testRequired: true,
+    testAttempted: true,
+    moraleScore: result.score,
+  };
 }
 
 export function applyFearFromAllyKO(

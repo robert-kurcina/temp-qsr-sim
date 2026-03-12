@@ -14,9 +14,87 @@ import type { PassiveOption, PassiveOptionType } from '../../../src/lib/mest-tac
 import { performTest, type TestDice } from '../../../src/lib/mest-tactics/subroutines/dice-roller';
 import type { TacticalDoctrine } from '../../../src/lib/mest-tactics/ai/stratagems/AIStratagems';
 
+const COUNTER_STRIKE_MIN_DAMAGE_POTENTIAL = 2;
+const COUNTER_FIRE_MIN_DAMAGE_POTENTIAL = 1;
+const COUNTER_ACTION_MIN_CARRY_OVER = 1;
+
+interface PassiveResponseCandidate {
+  type: PassiveOptionType;
+  score: number;
+  execute: () => { type?: PassiveOptionType; result?: unknown };
+}
+
 export function countDiceInPoolForRunner(dice: TestDice | undefined): number {
   if (!dice) return 0;
   return (dice.base ?? 0) + (dice.modifier ?? 0) + (dice.wild ?? 0);
+}
+
+function getCarryOverCount(hitTestResult: any): number {
+  const carryOverDice = (hitTestResult?.p2Result?.carryOverDice ?? {}) as TestDice;
+  return countDiceInPoolForRunner(carryOverDice);
+}
+
+function isFailedHitTest(hitTestResult: any): boolean {
+  if (typeof hitTestResult?.pass === 'boolean') {
+    return hitTestResult.pass === false;
+  }
+  if (typeof hitTestResult?.score === 'number') {
+    return hitTestResult.score < 0;
+  }
+  return false;
+}
+
+function parseNumericTraitLevel(character: Character, prefix: string): number {
+  const traitCandidates = [
+    ...(Array.isArray((character as any)?.profile?.finalTraits) ? (character as any).profile.finalTraits : []),
+    ...(Array.isArray((character as any)?.profile?.allTraits) ? (character as any).profile.allTraits : []),
+  ]
+    .filter((value): value is string => typeof value === 'string')
+    .map(value => value.trim());
+  const escapedPrefix = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`^${escapedPrefix}\\s*(\\d+)?$`, 'i');
+  let best = 0;
+  for (const trait of traitCandidates) {
+    const match = trait.match(pattern);
+    if (!match) continue;
+    const parsed = Number.parseInt(match[1] ?? '1', 10);
+    if (Number.isFinite(parsed) && parsed > best) {
+      best = parsed;
+    }
+  }
+  return best;
+}
+
+function estimateCounterDamagePotential(weapon: any, target: Character, carryOverCount: number): number {
+  const weaponImpact = Number.isFinite(weapon?.impact) ? Number(weapon.impact) : 0;
+  const targetArmor = Math.max(0, Number((target as any)?.state?.armor?.total ?? 0));
+  const impactPressure = Math.max(0, weaponImpact - targetArmor);
+  const hasDamageFormula = typeof weapon?.dmg === 'string' && weapon.dmg !== '-';
+  const damageFormulaBonus = hasDamageFormula ? 1 : 0;
+  return carryOverCount + impactPressure + damageFormulaBonus;
+}
+
+function estimateCounterActionSetupScore(
+  defender: Character,
+  attackType: 'melee' | 'ranged',
+  carryOverCount: number
+): number {
+  const expectedCascades = carryOverCount * 0.8;
+  const fight = parseNumericTraitLevel(defender, 'Fight');
+  const brawl = parseNumericTraitLevel(defender, 'Brawl');
+  const setupTraits = Math.max(0, fight - 1) + Math.max(0, brawl - 1);
+  const threat = Math.max(
+    0,
+    Number(defender.state.wounds ?? 0) + Number(defender.state.delayTokens ?? 0) + Number(defender.state.fearTokens ?? 0)
+  );
+  const combatContextBonus = attackType === 'melee' ? 0.8 : 0.2;
+  return expectedCascades + setupTraits + Math.min(2, threat * 0.25) + combatContextBonus;
+}
+
+function priorityWeightForType(type: PassiveOptionType, prioritized: PassiveOptionType[]): number {
+  const index = prioritized.indexOf(type);
+  if (index < 0) return 0;
+  return Math.max(0, (prioritized.length - index) * 4);
 }
 
 export function resolveCarryOverBonusCascadesForRunner(hitTestResult: any): number {
@@ -284,7 +362,12 @@ export function executeFailedHitPassiveResponseForRunner(params: {
     bonusActionOutcomes?: BonusActionOutcome[];
   };
   trackPassiveUsage: (type: string) => void;
+  trackPassiveRejection?: (reason: string) => void;
 }): { type?: PassiveOptionType; result?: unknown } {
+  if (!isFailedHitTest(params.hitTestResult)) {
+    params.trackPassiveRejection?.('Requires failed Hit Test.');
+    return {};
+  }
   const available = params.options.filter(option => option.available);
   if (available.length === 0) {
     return {};
@@ -296,85 +379,184 @@ export function executeFailedHitPassiveResponseForRunner(params: {
     params.attackType,
     params.defender
   );
+  const isPrioritized = (type: PassiveOptionType): boolean => prioritized.includes(type);
+  const carryOverCount = getCarryOverCount(params.hitTestResult);
+  const candidates: PassiveResponseCandidate[] = [];
 
-  for (const type of prioritized) {
-    if (!hasType(type)) continue;
-    if (type === 'CounterStrike' && params.attackType === 'melee') {
-      const weapon = params.pickMeleeWeapon(params.defender);
-      if (weapon) {
-        const result = params.gameManager.executeCounterStrike(
-          params.defender,
-          params.attacker,
-          weapon as any,
-          params.hitTestResult as any
-        );
-        if (result.executed) {
-          params.trackPassiveUsage('CounterStrike');
-          const battlefield = params.gameManager.battlefield;
-          const bonusFollowup = battlefield && result.bonusActionEligible
-            ? params.applyPassiveFollowupBonusActions({
-                defender: params.defender,
-                attacker: params.attacker,
-                battlefield,
-                doctrine: params.doctrine,
-                attackType: params.attackType,
-                cascades: resolveCarryOverBonusCascadesForRunner(params.hitTestResult),
-              })
-            : { bonusActionCascades: 0 };
-          return { type: 'CounterStrike', result: { ...result, ...bonusFollowup } };
-        }
+  if (hasType('CounterStrike') && !isPrioritized('CounterStrike')) {
+    params.trackPassiveRejection?.('Not prioritized by doctrine.');
+  }
+  if (hasType('CounterStrike') && carryOverCount < 1) {
+    params.trackPassiveRejection?.('Requires carry-over from the failed Hit Test.');
+  }
+  if (isPrioritized('CounterStrike') && hasType('CounterStrike') && params.attackType === 'melee' && carryOverCount >= 1) {
+    const weapon = params.pickMeleeWeapon(params.defender);
+    if (weapon) {
+      const damagePotential = estimateCounterDamagePotential(weapon, params.attacker, carryOverCount);
+      if (damagePotential >= COUNTER_STRIKE_MIN_DAMAGE_POTENTIAL) {
+        const score = priorityWeightForType('CounterStrike', prioritized) + damagePotential * 6;
+        candidates.push({
+          type: 'CounterStrike',
+          score,
+          execute: () => {
+            const result = params.gameManager.executeCounterStrike(
+              params.defender,
+              params.attacker,
+              weapon as any,
+              params.hitTestResult as any
+            );
+            if (!result.executed) return {};
+            params.trackPassiveUsage('CounterStrike');
+            const battlefield = params.gameManager.battlefield;
+            const bonusFollowup = battlefield && result.bonusActionEligible
+              ? params.applyPassiveFollowupBonusActions({
+                  defender: params.defender,
+                  attacker: params.attacker,
+                  battlefield,
+                  doctrine: params.doctrine,
+                  attackType: params.attackType,
+                  cascades: resolveCarryOverBonusCascadesForRunner(params.hitTestResult),
+                })
+              : { bonusActionCascades: 0 };
+            return {
+              type: 'CounterStrike',
+              result: {
+                ...result,
+                ...bonusFollowup,
+                passiveSelectionScore: score,
+                passiveSelectionContext: {
+                  carryOverCount,
+                  damagePotential,
+                },
+              },
+            };
+          },
+        });
+      } else {
+        params.trackPassiveRejection?.('Low damage potential.');
       }
+    } else {
+      params.trackPassiveRejection?.('No weapon available.');
     }
-    if (type === 'CounterFire' && params.attackType === 'ranged') {
-      const weapon = params.pickRangedWeapon(params.defender) ?? params.pickMeleeWeapon(params.defender);
-      if (weapon) {
-        const result = params.gameManager.executeCounterFire(
+  }
+
+  if (hasType('CounterFire') && !isPrioritized('CounterFire')) {
+    params.trackPassiveRejection?.('Not prioritized by doctrine.');
+  }
+  if (hasType('CounterFire') && carryOverCount < 1) {
+    params.trackPassiveRejection?.('Requires carry-over from the failed Hit Test.');
+  }
+  if (isPrioritized('CounterFire') && hasType('CounterFire') && params.attackType === 'ranged' && carryOverCount >= 1) {
+    const weapon = params.pickRangedWeapon(params.defender) ?? params.pickMeleeWeapon(params.defender);
+    if (weapon) {
+      const damagePotential = estimateCounterDamagePotential(weapon, params.attacker, carryOverCount);
+      if (damagePotential >= COUNTER_FIRE_MIN_DAMAGE_POTENTIAL) {
+        const score = priorityWeightForType('CounterFire', prioritized) + damagePotential * 5;
+        candidates.push({
+          type: 'CounterFire',
+          score,
+          execute: () => {
+            const result = params.gameManager.executeCounterFire(
+              params.defender,
+              params.attacker,
+              weapon as any,
+              params.hitTestResult as any,
+              { visibilityOrMu: params.visibilityOrMu }
+            );
+            if (!result.executed) return {};
+            params.trackPassiveUsage('CounterFire');
+            const battlefield = params.gameManager.battlefield;
+            const bonusFollowup = battlefield && result.bonusActionEligible
+              ? params.applyPassiveFollowupBonusActions({
+                  defender: params.defender,
+                  attacker: params.attacker,
+                  battlefield,
+                  doctrine: params.doctrine,
+                  attackType: params.attackType,
+                  cascades: resolveCarryOverBonusCascadesForRunner(params.hitTestResult),
+                })
+              : { bonusActionCascades: 0 };
+            return {
+              type: 'CounterFire',
+              result: {
+                ...result,
+                ...bonusFollowup,
+                passiveSelectionScore: score,
+                passiveSelectionContext: {
+                  carryOverCount,
+                  damagePotential,
+                },
+              },
+            };
+          },
+        });
+      } else {
+        params.trackPassiveRejection?.('Low damage potential.');
+      }
+    } else {
+      params.trackPassiveRejection?.('No weapon available.');
+    }
+  }
+
+  if (hasType('CounterAction') && !isPrioritized('CounterAction')) {
+    params.trackPassiveRejection?.('Not prioritized by doctrine.');
+  }
+  if (hasType('CounterAction') && carryOverCount < COUNTER_ACTION_MIN_CARRY_OVER) {
+    params.trackPassiveRejection?.('Requires carry-over from the failed Hit Test.');
+  }
+  if (isPrioritized('CounterAction') && hasType('CounterAction') && carryOverCount >= COUNTER_ACTION_MIN_CARRY_OVER) {
+    const setupScore = estimateCounterActionSetupScore(params.defender, params.attackType, carryOverCount);
+    const score = priorityWeightForType('CounterAction', prioritized) + setupScore * 5;
+    candidates.push({
+      type: 'CounterAction',
+      score,
+      execute: () => {
+        const result = params.gameManager.executeCounterAction(
           params.defender,
           params.attacker,
-          weapon as any,
           params.hitTestResult as any,
-          { visibilityOrMu: params.visibilityOrMu }
+          { attackType: params.attackType }
         );
-        if (result.executed) {
-          params.trackPassiveUsage('CounterFire');
-          const battlefield = params.gameManager.battlefield;
-          const bonusFollowup = battlefield && result.bonusActionEligible
-            ? params.applyPassiveFollowupBonusActions({
-                defender: params.defender,
-                attacker: params.attacker,
-                battlefield,
-                doctrine: params.doctrine,
-                attackType: params.attackType,
-                cascades: resolveCarryOverBonusCascadesForRunner(params.hitTestResult),
-              })
-            : { bonusActionCascades: 0 };
-          return { type: 'CounterFire', result: { ...result, ...bonusFollowup } };
-        }
-      }
-    }
-    if (type === 'CounterAction') {
-      const result = params.gameManager.executeCounterAction(
-        params.defender,
-        params.attacker,
-        params.hitTestResult as any,
-        { attackType: params.attackType }
-      );
-      if (result.executed) {
+        if (!result.executed) return {};
         params.trackPassiveUsage('CounterAction');
         const battlefield = params.gameManager.battlefield;
-        const bonusFollowup = battlefield
+        const cascades = Math.max(0, result.bonusActionCascades ?? 0);
+        const bonusFollowup = battlefield && cascades > 0
           ? params.applyPassiveFollowupBonusActions({
               defender: params.defender,
               attacker: params.attacker,
               battlefield,
               doctrine: params.doctrine,
               attackType: params.attackType,
-              cascades: result.bonusActionCascades ?? 0,
+              cascades,
             })
-          : { bonusActionCascades: result.bonusActionCascades ?? 0 };
-        return { type: 'CounterAction', result: { ...result, ...bonusFollowup } };
-      }
+          : { bonusActionCascades: cascades };
+        return {
+          type: 'CounterAction',
+          result: {
+            ...result,
+            ...bonusFollowup,
+            passiveSelectionScore: score,
+            passiveSelectionContext: {
+              carryOverCount,
+              setupScore,
+            },
+          },
+        };
+      },
+    });
+  }
+
+  candidates.sort((left, right) => right.score - left.score);
+  for (const candidate of candidates) {
+    const executed = candidate.execute();
+    if (executed.type) {
+      return executed;
     }
+    params.trackPassiveRejection?.('Execution failed.');
+  }
+  if (available.length > 0) {
+    params.trackPassiveRejection?.('No viable passive candidate.');
   }
 
   return {};

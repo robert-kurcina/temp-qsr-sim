@@ -119,7 +119,7 @@ export class BattleOrchestrator {
       sides: createDefaultHeadToHeadSides(this.config.gameSize, TacticalDoctrine.Operative),
       densityRatio: this.config.densityRatio,
       lighting,
-      allowWaitAction: false,
+      allowWaitAction: true,
       allowHideAction: false,
       verbose: this.config.verbose ?? true,
       seed: this.config.seed,

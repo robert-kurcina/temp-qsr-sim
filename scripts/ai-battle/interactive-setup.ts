@@ -211,7 +211,7 @@ export class AIBattleSetup {
       maxOrm: 3,
       allowConcentrateRangeExtension: true,
       perCharacterFovLos: false,
-      allowWaitAction: false,
+      allowWaitAction: true,
       allowHideAction: false,
       initiativeCardTieBreakerOnTie: true,
       verbose: true,

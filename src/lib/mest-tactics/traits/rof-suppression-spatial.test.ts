@@ -525,13 +525,15 @@ describe('ROF Spatial Geometry - Suppression Test', () => {
     it('should perform Unopposed REF Test vs Suppression DR', () => {
       const character = createTestCharacter('Average');
       character.finalAttributes.ref = 3;
+      const scriptedRolls = [0.99, 0.99, 0.01, 0.01];
+      let rollIndex = 0;
       
       // With REF 3 vs DR 2, should have good chance of success
       const result = performSuppressionTest(
         character,
         2, // DR 2
         2, // 2 markers
-        () => 4 // Fixed roll of 4 (success vs DR 2)
+        () => scriptedRolls[Math.min(rollIndex++, scriptedRolls.length - 1)]
       );
       
       expect(result.misses).toBe(0);

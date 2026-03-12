@@ -179,7 +179,19 @@ function buildCombatMetricsAudit(report: BattleReport): BattleCombatMetricsAudit
     },
     assignments: totalAssignments,
     damageAssignments,
+    combinedCombatFearAssigned:
+      damageAssignments.fear + toSafeNonNegative((report.stats as any).fearTestsFromWoundsFearAdded),
     passiveOrOtherDelay,
+    fearFromWounds: {
+      triggered: toSafeNonNegative((report.stats as any).fearTestsFromWoundsTriggered),
+      required: toSafeNonNegative((report.stats as any).fearTestsFromWoundsRequired),
+      attempted: toSafeNonNegative((report.stats as any).fearTestsFromWoundsAttempted),
+      passed: toSafeNonNegative((report.stats as any).fearTestsFromWoundsPassed),
+      failed: toSafeNonNegative((report.stats as any).fearTestsFromWoundsFailed),
+      skipped: toSafeNonNegative((report.stats as any).fearTestsFromWoundsSkipped),
+      fearAdded: toSafeNonNegative((report.stats as any).fearTestsFromWoundsFearAdded),
+      failedNoFearAdded: toSafeNonNegative((report.stats as any).fearTestsFromWoundsFailedNoFearAdded),
+    },
     passiveUsageByType: {
       ...(report.advancedRules?.passiveOptions?.usedByType ?? {}),
     },

@@ -1,9 +1,18 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { Character } from '../core/Character';
 import type { Profile } from '../core/Profile';
 import { addStatusToken, applyStatusFromTrait, applyStatusTraitOnHit, getStatusDefinitions, getStatusTokenCount, removeStatusToken, getPendingStatusTokenCount, promotePendingStatusTokens } from './status-system';
+import { resetRoller, setRoller } from '../subroutines/dice-roller';
 
 describe('status-system', () => {
+  beforeEach(() => {
+    setRoller((diceCount: number) => Array.from({ length: diceCount }, () => 1));
+  });
+
+  afterEach(() => {
+    resetRoller();
+  });
+
   it('should track status tokens on a character', () => {
     const profile: Profile = {
       name: 'Status Tester',

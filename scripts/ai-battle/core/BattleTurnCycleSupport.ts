@@ -644,6 +644,7 @@ export async function runBattleTurnCycleForRunner(params: BattleTurnCycleParams)
   while (!gameOver && turn < config.maxTurns) {
     const turnStartedMs = Date.now();
     turn++;
+    gameManager.currentTurn = turn;
     tracker.setTurnsCompleted(turn);
     const coordinatorMissionConfig = {
       totalVPPool: 5,

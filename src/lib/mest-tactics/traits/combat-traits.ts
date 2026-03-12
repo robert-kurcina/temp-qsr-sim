@@ -9,6 +9,7 @@ import { Character } from '../core/Character';
 import { getCharacterTraitLevel } from '../status/status-system';
 import { Item } from '../core/Item';
 import { parseTrait } from './trait-parser';
+import { resolveUnopposedTest } from '../subroutines/dice-roller';
 
 // ============================================================================
 // CLEAVE
@@ -1546,17 +1547,11 @@ export function calculateClimbDistance(
   let testPassed = !testRequired;
   
   if (testRequired && agilityTestRolls && agilityTestRolls.length > 0) {
-    // Simple unopposed test vs. System (2 Base + 2)
-    const systemScore = 4;
-    let characterScore = 0;
-    
-    for (const roll of agilityTestRolls) {
-      if (roll >= 6) characterScore += 2;
-      else if (roll >= 4) characterScore += 1;
-    }
-    characterScore += agility;
-    
-    testPassed = characterScore >= systemScore;
+    const result = resolveUnopposedTest(
+      { attributeValue: agility },
+      { p1Rolls: agilityTestRolls }
+    );
+    testPassed = result.pass;
   }
   
   return {
@@ -1611,17 +1606,11 @@ export function calculateJump(
   let testPassed = !testRequired;
   
   if (testRequired && agilityTestRolls && agilityTestRolls.length > 0) {
-    // Unopposed Agility Test
-    const systemScore = 4;
-    let characterScore = 0;
-    
-    for (const roll of agilityTestRolls) {
-      if (roll >= 6) characterScore += 2;
-      else if (roll >= 4) characterScore += 1;
-    }
-    characterScore += agility;
-    
-    testPassed = characterScore >= systemScore;
+    const result = resolveUnopposedTest(
+      { attributeValue: agility },
+      { p1Rolls: agilityTestRolls }
+    );
+    testPassed = result.pass;
   }
   
   return {
@@ -1668,16 +1657,11 @@ export function calculateRunningJump(
   let testPassed = !testRequired;
   
   if (testRequired && agilityTestRolls && agilityTestRolls.length > 0) {
-    const systemScore = 4;
-    let characterScore = 0;
-    
-    for (const roll of agilityTestRolls) {
-      if (roll >= 6) characterScore += 2;
-      else if (roll >= 4) characterScore += 1;
-    }
-    characterScore += agility;
-    
-    testPassed = characterScore >= systemScore;
+    const result = resolveUnopposedTest(
+      { attributeValue: agility },
+      { p1Rolls: agilityTestRolls }
+    );
+    testPassed = result.pass;
   }
   
   return {

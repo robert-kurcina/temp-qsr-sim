@@ -28,6 +28,27 @@ function formatTypeBreakdownLines(
   return entries.map(([type, count]) => `${indent}${type}: ${count}`);
 }
 
+function formatTurnBucketBreakdownLines(
+  breakdownByTurn: Record<string, Record<string, number>>,
+  indent: string = '    '
+): string[] {
+  if (!breakdownByTurn || Object.keys(breakdownByTurn).length === 0) {
+    return [`${indent}none`];
+  }
+  const preferredOrder = ['T1', 'T2', 'T3+', 'unknown'];
+  const allBuckets = Object.keys(breakdownByTurn);
+  const orderedBuckets = [
+    ...preferredOrder.filter(bucket => allBuckets.includes(bucket)),
+    ...allBuckets.filter(bucket => !preferredOrder.includes(bucket)).sort(),
+  ];
+  const lines: string[] = [];
+  for (const bucket of orderedBuckets) {
+    lines.push(`${indent}${bucket}:`);
+    lines.push(...formatTypeBreakdownLines(breakdownByTurn[bucket] ?? {}, `${indent}  `));
+  }
+  return lines;
+}
+
 function deriveCombatEfficacySummary(report: ValidationAggregateReport): CombatEfficacySummary {
   if (report.combatEfficacy) {
     return report.combatEfficacy;
@@ -124,6 +145,21 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   const attackOpportunityImmediateLow = report.totals.attackOpportunityImmediateLow ?? 0;
   const attackOpportunitySetup = report.totals.attackOpportunitySetup ?? 0;
   const attackOpportunityNone = report.totals.attackOpportunityNone ?? 0;
+  const fearTestsFromWoundsTriggered = report.totals.fearTestsFromWoundsTriggered ?? 0;
+  const fearTestsFromWoundsRequired = report.totals.fearTestsFromWoundsRequired ?? 0;
+  const fearTestsFromWoundsAttempted = report.totals.fearTestsFromWoundsAttempted ?? 0;
+  const fearTestsFromWoundsPassed = report.totals.fearTestsFromWoundsPassed ?? 0;
+  const fearTestsFromWoundsFailed = report.totals.fearTestsFromWoundsFailed ?? 0;
+  const fearTestsFromWoundsSkipped = report.totals.fearTestsFromWoundsSkipped ?? 0;
+  const fearTestsFromWoundsSkippedAlreadyDisordered = report.totals.fearTestsFromWoundsSkippedAlreadyDisordered ?? 0;
+  const fearTestsFromWoundsSkippedEngagedNotDistracted = report.totals.fearTestsFromWoundsSkippedEngagedNotDistracted ?? 0;
+  const fearTestsFromWoundsSkippedAlreadyTestedThisTurn = report.totals.fearTestsFromWoundsSkippedAlreadyTestedThisTurn ?? 0;
+  const fearTestsFromWoundsSkippedImmuneToFear = report.totals.fearTestsFromWoundsSkippedImmuneToFear ?? 0;
+  const fearTestsFromWoundsSkippedMoraleExempt = report.totals.fearTestsFromWoundsSkippedMoraleExempt ?? 0;
+  const fearTestsFromWoundsFearAdded = report.totals.fearTestsFromWoundsFearAdded ?? 0;
+  const fearTestsFromWoundsFailedNoFearAdded = report.totals.fearTestsFromWoundsFailedNoFearAdded ?? 0;
+  const combinedCombatFearAssigned =
+    combatEfficacy.damageAssignments.fear + fearTestsFromWoundsFearAdded;
 
   const lines: string[] = [];
   lines.push('════════════════════════════════════════════════════════════');
@@ -170,9 +206,21 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
     `  Combat Efficacy (Damage): ${(combatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${combatEfficacy.damageTests.passes}/${combatEfficacy.damageTests.attempts})`
   );
   lines.push(
-    `  Combat Assignments (Damage W/F/D): ${combatEfficacy.damageAssignments.wounds}/${combatEfficacy.damageAssignments.fear}/${combatEfficacy.damageAssignments.delay}`
+    `  Damage-Test Assignments (W/F/D): ${combatEfficacy.damageAssignments.wounds}/${combatEfficacy.damageAssignments.fear}/${combatEfficacy.damageAssignments.delay}`
+  );
+  lines.push(
+    `  Combat-Caused Fear Tokens (Damage + Wound-Fear): ${combinedCombatFearAssigned} (${combatEfficacy.damageAssignments.fear} + ${fearTestsFromWoundsFearAdded})`
   );
   lines.push(`  Combat Delay (Passive/Other): ${combatEfficacy.passiveOrOtherDelay}`);
+  lines.push(
+    `  Fear Tests (Wound Trigger): triggered=${fearTestsFromWoundsTriggered}, required=${fearTestsFromWoundsRequired}, attempted=${fearTestsFromWoundsAttempted}, pass=${fearTestsFromWoundsPassed}, fail=${fearTestsFromWoundsFailed}, skipped=${fearTestsFromWoundsSkipped}`
+  );
+  lines.push(
+    `    Wound-Fear Added (Pre-KO Cleanup, non-damage): ${fearTestsFromWoundsFearAdded}, failed_no_fear=${fearTestsFromWoundsFailedNoFearAdded}`
+  );
+  lines.push(
+    `    Skips: disordered=${fearTestsFromWoundsSkippedAlreadyDisordered}, engaged_not_distracted=${fearTestsFromWoundsSkippedEngagedNotDistracted}, already_tested=${fearTestsFromWoundsSkippedAlreadyTestedThisTurn}, immune=${fearTestsFromWoundsSkippedImmuneToFear}, morale_exempt=${fearTestsFromWoundsSkippedMoraleExempt}`
+  );
   lines.push(`  Turns Completed: ${report.totals.turnsCompleted}`);
   lines.push(`  Total Actions: ${report.totals.totalActions}`);
   lines.push(`  Moves: ${report.totals.moves}`);
@@ -490,6 +538,16 @@ export function formatValidationAggregateReportHumanReadable(report: ValidationA
   lines.push(`  Used: ${advanced.passiveOptions.used}`);
   lines.push('  Available By Type:');
   lines.push(...formatTypeBreakdownLines(advanced.passiveOptions.availableByType, '    '));
+  lines.push('  Rejected By Reason:');
+  lines.push(...formatTypeBreakdownLines(advanced.passiveOptions.rejectedByReason, '    '));
+  lines.push('  Rejected By Reason (Turn Buckets):');
+  lines.push(...formatTurnBucketBreakdownLines(advanced.passiveOptions.rejectedByReasonByTurn, '    '));
+  lines.push('  Status-Gated Windows By Type:');
+  lines.push(...formatTypeBreakdownLines(advanced.passiveOptions.rejectedStatusByType, '    '));
+  lines.push('  Prefiltered By Reason:');
+  lines.push(...formatTypeBreakdownLines(advanced.passiveOptions.prefilteredByReason, '    '));
+  lines.push('  Prefiltered By Reason (Turn Buckets):');
+  lines.push(...formatTurnBucketBreakdownLines(advanced.passiveOptions.prefilteredByReasonByTurn, '    '));
   lines.push('  Used By Type:');
   lines.push(...formatTypeBreakdownLines(advanced.passiveOptions.usedByType, '    '));
   lines.push('');

@@ -1,4 +1,6 @@
 import type { Battlefield } from '../../../src/lib/mest-tactics/battlefield/Battlefield';
+import { SpatialRules, type SpatialModel } from '../../../src/lib/mest-tactics/battlefield/spatial/spatial-rules';
+import { getBaseDiameterFromSiz } from '../../../src/lib/mest-tactics/battlefield/spatial/size-utils';
 import type { Character } from '../../../src/lib/mest-tactics/core/Character';
 import type { GameManager } from '../../../src/lib/mest-tactics/engine/GameManager';
 import {
@@ -73,6 +75,25 @@ function applyRefreshLocally(character: Character): void {
   character.refreshStatusFlags();
 }
 
+function buildSpatialModel(character: Character, battlefield: Battlefield): SpatialModel | null {
+  const position = battlefield.getCharacterPosition(character);
+  if (!position) return null;
+  const siz = character.finalAttributes.siz ?? character.attributes.siz ?? 3;
+  return {
+    id: character.id,
+    position,
+    baseDiameter: getBaseDiameterFromSiz(siz),
+    siz,
+  };
+}
+
+function getAttentiveOrderedReason(character: Character): string | null {
+  if (!character.state.isAttentive && !character.state.isOrdered) return 'Requires Attentive+Ordered.';
+  if (!character.state.isAttentive) return 'Requires Attentive.';
+  if (!character.state.isOrdered) return 'Requires Ordered.';
+  return null;
+}
+
 export function createPassiveCombatExecutionSupportForRunner(
   params: CreatePassiveCombatExecutionSupportParams
 ): PassiveCombatExecutionSupport {
@@ -86,18 +107,91 @@ export function createPassiveCombatExecutionSupportForRunner(
     visibilityOrMu: number,
     moveApSpent: number
   ): { moveConcluded: PassiveOption[]; engagementBroken: PassiveOption[] } => {
+    const currentTurn = gameManager.currentTurn;
+    const moverModel = buildSpatialModel(mover, battlefield);
+    const prefilteredObservers: Character[] = [];
+    for (const observer of opponents) {
+      const statusReason = getAttentiveOrderedReason(observer);
+      if (statusReason) {
+        tracker.trackPassivePrefilter(statusReason, 1, currentTurn);
+        continue;
+      }
+
+      if (!moverModel) {
+        prefilteredObservers.push(observer);
+        continue;
+      }
+
+      const observerModel = buildSpatialModel(observer, battlefield);
+      if (!observerModel) {
+        tracker.trackPassivePrefilter('LOS unavailable.', 1, currentTurn);
+        continue;
+      }
+
+      const edgeDistance = SpatialRules.distanceEdgeToEdge(observerModel, moverModel);
+      if (edgeDistance > visibilityOrMu) {
+        tracker.trackPassivePrefilter('Out of Visibility OR range.', 1, currentTurn);
+        continue;
+      }
+
+      const moveLimit = observer.finalAttributes.mov ?? observer.attributes.mov ?? 0;
+      if (edgeDistance > moveLimit) {
+        tracker.trackPassivePrefilter('Requires move to engage.', 1, currentTurn);
+        continue;
+      }
+
+      const observerRef = observer.finalAttributes.ref ?? observer.attributes.ref ?? 0;
+      const moverMov = mover.finalAttributes.mov ?? mover.attributes.mov ?? 0;
+      const requiredAp = observerRef > moverMov ? 1 : 2;
+      if (moveApSpent < requiredAp) {
+        tracker.trackPassivePrefilter('Requires target to spend enough AP on movement.', 1, currentTurn);
+        continue;
+      }
+
+      prefilteredObservers.push(observer);
+    }
+
     const moveConcluded = tracker.inspectPassiveOptions(gameManager, {
       kind: 'MoveConcluded',
       mover,
-      observers: opponents,
+      observers: prefilteredObservers,
       battlefield,
       moveApSpent,
       visibilityOrMu,
     });
+
+    const prefilteredOpportunityOpponents: Character[] = [];
+    for (const opponent of opponents) {
+      const statusReason = getAttentiveOrderedReason(opponent);
+      if (statusReason) {
+        tracker.trackPassivePrefilter(statusReason, 1, currentTurn);
+        continue;
+      }
+
+      if (!moverModel) {
+        prefilteredOpportunityOpponents.push(opponent);
+        continue;
+      }
+
+      const opponentModel = buildSpatialModel(opponent, battlefield);
+      if (!opponentModel) {
+        tracker.trackPassivePrefilter('Requires opponent engaged with mover.', 1, currentTurn);
+        continue;
+      }
+
+      const wasEngaged = SpatialRules.isEngaged(moverModel, opponentModel);
+      if (!wasEngaged) {
+        tracker.trackPassivePrefilter('Requires opponent engaged with mover.', 1, currentTurn);
+        continue;
+      }
+
+      prefilteredOpportunityOpponents.push(opponent);
+    }
+
     const engagementBroken = tracker.inspectPassiveOptions(gameManager, {
       kind: 'EngagementBroken',
       mover,
-      opponents,
+      opponents: prefilteredOpportunityOpponents,
       battlefield,
     });
     return { moveConcluded, engagementBroken };
@@ -166,6 +260,7 @@ export function createPassiveCombatExecutionSupportForRunner(
           trackBonusActionOutcome: outcome => tracker.trackBonusActionOutcome(outcome),
         }),
       trackPassiveUsage: type => tracker.trackPassiveUsage(type as PassiveOptionType),
+      trackPassiveRejection: reason => tracker.trackPassiveRejection(reason, 1, supportParams.gameManager.currentTurn),
     });
 
   const processMoveConcludedPassives = (
@@ -218,4 +313,3 @@ export function createPassiveCombatExecutionSupportForRunner(
     processMoveConcludedPassives,
   };
 }
-

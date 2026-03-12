@@ -59,7 +59,7 @@ export function createPresetBattleConfig(
     terrainDensity: options.terrainDensity ?? 0.50,
     lighting: LIGHTING_PRESETS['Day, Clear'],
     missionId: options.missionId,
-    allowWaitAction: false,
+    allowWaitAction: true,
     allowHideAction: false,
     sides: options.sideTemplates.map(createSideConfig),
     instrumentationGrade: options.instrumentationGrade ?? InstrumentationGrade.BY_ACTION_WITH_TESTS,

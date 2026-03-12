@@ -2,7 +2,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from '../utils/character-factory';
 import { resolveMoraleTest } from './morale-test';
-import { setRoller, resetRoller, Roller, DiceType } from '../subroutines/dice-roller';
+import { setRoller, resetRoller, DiceType } from '../subroutines/dice-roller';
 import { metricsService } from '../engine/MetricsService';
 import type { Profile } from '../core/Profile';
 import type { Character } from '../core/Character';
@@ -18,7 +18,7 @@ describe('resolveMoraleTest', () => {
     const profile: Profile = { name: 'Test Character', archetype, equipment: [] } as any;
     character = await createCharacter(profile);
     metricsService.clearEvents();
-    resetRoller();
+    setRoller((diceCount: number) => Array.from({ length: diceCount }, () => 1));
   });
 
   afterEach(() => {

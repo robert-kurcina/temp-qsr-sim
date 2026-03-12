@@ -1,0 +1,80 @@
+[
+  {
+    "id": "Assembly A-1-average-sword-broad-armored-gear-loadout",
+    "name": "average-sword-broad-armored-gear-loadout",
+    "sideId": "side-1-side-a",
+    "sideName": "Side A",
+    "sideIndex": 0,
+    "assemblyId": "assembly-1-assembly-a",
+    "assemblyName": "Assembly A",
+    "assemblyIndex": 0,
+    "profileId": "profile-1",
+    "loadoutId": "loadout-1",
+    "totalBp": 68
+  },
+  {
+    "id": "Assembly A-2-average-sword-broad-armored-gear-loadout",
+    "name": "average-sword-broad-armored-gear-loadout",
+    "sideId": "side-1-side-a",
+    "sideName": "Side A",
+    "sideIndex": 0,
+    "assemblyId": "assembly-1-assembly-a",
+    "assemblyName": "Assembly A",
+    "assemblyIndex": 0,
+    "profileId": "profile-1",
+    "loadoutId": "loadout-1",
+    "totalBp": 68
+  },
+  {
+    "id": "Assembly A-3-average-sword-broad-armored-gear-loadout",
+    "name": "average-sword-broad-armored-gear-loadout",
+    "sideId": "side-1-side-a",
+    "sideName": "Side A",
+    "sideIndex": 0,
+    "assemblyId": "assembly-1-assembly-a",
+    "assemblyName": "Assembly A",
+    "assemblyIndex": 0,
+    "profileId": "profile-1",
+    "loadoutId": "loadout-1",
+    "totalBp": 68
+  },
+  {
+    "id": "Assembly B-1-average-sword-broad-armored-gear-loadout",
+    "name": "average-sword-broad-armored-gear-loadout",
+    "sideId": "side-2-side-b",
+    "sideName": "Side B",
+    "sideIndex": 1,
+    "assemblyId": "assembly-2-assembly-b",
+    "assemblyName": "Assembly B",
+    "assemblyIndex": 0,
+    "profileId": "profile-1",
+    "loadoutId": "loadout-1",
+    "totalBp": 68
+  },
+  {
+    "id": "Assembly B-2-average-sword-broad-armored-gear-loadout",
+    "name": "average-sword-broad-armored-gear-loadout",
+    "sideId": "side-2-side-b",
+    "sideName": "Side B",
+    "sideIndex": 1,
+    "assemblyId": "assembly-2-assembly-b",
+    "assemblyName": "Assembly B",
+    "assemblyIndex": 0,
+    "profileId": "profile-1",
+    "loadoutId": "loadout-1",
+    "totalBp": 68
+  },
+  {
+    "id": "Assembly B-3-average-sword-broad-armored-gear-loadout",
+    "name": "average-sword-broad-armored-gear-loadout",
+    "sideId": "side-2-side-b",
+    "sideName": "Side B",
+    "sideIndex": 1,
+    "assemblyId": "assembly-2-assembly-b",
+    "assemblyName": "Assembly B",
+    "assemblyIndex": 0,
+    "profileId": "profile-1",
+    "loadoutId": "loadout-1",
+    "totalBp": 68
+  }
+]

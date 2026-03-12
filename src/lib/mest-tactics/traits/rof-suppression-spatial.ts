@@ -19,6 +19,7 @@ import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
 import { SpatialRules, type CoverResult } from '../battlefield/spatial/spatial-rules';
 import { TerrainType } from '../battlefield/terrain/Terrain';
 import { pointInPolygon, segmentPolygonIntersections } from '../battlefield/terrain/BattlefieldUtils';
+import { resolveUnopposedTest } from '../subroutines/dice-roller';
 
 // Helper to create SpatialModel from Position
 function createSpatialModel(position: Position, siz: number = 3) {
@@ -952,19 +953,13 @@ export function performSuppressionTest(
   rng: () => number = Math.random
 ): SuppressionTestResult {
   const refAttr = character.finalAttributes?.ref ?? character.attributes?.ref ?? 0;
-  
-  // Roll REF dice (simplified - would need full dice roller integration)
-  const dicePool = refAttr;
-  let successes = 0;
-  
-  for (let i = 0; i < dicePool; i++) {
-    const roll = Math.floor(rng() * 6) + 1;
-    if (roll >= suppressionDR) {
-      successes++;
-    }
-  }
-
-  const misses = Math.max(0, suppressionDR - successes);
+  const p1Rolls = [Math.floor(rng() * 6) + 1, Math.floor(rng() * 6) + 1];
+  const p2Rolls = [Math.floor(rng() * 6) + 1, Math.floor(rng() * 6) + 1];
+  const result = resolveUnopposedTest(
+    { attributeValue: refAttr },
+    { dr: suppressionDR, p1Rolls, p2Rolls }
+  );
+  const misses = Math.max(0, -result.score);
   
   // Delay tokens = misses, up to markers in range
   const delayTokensReceived = Math.min(misses, markersInRange);

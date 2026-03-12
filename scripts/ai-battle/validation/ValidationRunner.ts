@@ -1308,7 +1308,7 @@ export async function runValidationBatch(
     maxOrm: 3,
     allowConcentrateRangeExtension: true,
     perCharacterFovLos: false,
-    allowWaitAction: false,
+    allowWaitAction: true,
     allowHideAction: false,
     initiativeCardTieBreakerOnTie,
     initiativeCardHolderSideId,
@@ -1380,8 +1380,15 @@ export async function runValidationBatch(
       combatEfficacy: runCombatEfficacy,
     });
     const elapsedLabel = report.performance ? `, elapsedMs=${report.performance.elapsedMs.toFixed(2)}` : '';
+    const runFearRequired = report.stats.fearTestsFromWoundsRequired ?? 0;
+    const runFearAttempted = report.stats.fearTestsFromWoundsAttempted ?? 0;
+    const runFearFailed = report.stats.fearTestsFromWoundsFailed ?? 0;
+    const runFearSkipped = report.stats.fearTestsFromWoundsSkipped ?? 0;
+    const runFearAdded = report.stats.fearTestsFromWoundsFearAdded ?? 0;
+    const runFearFailedNoFear = report.stats.fearTestsFromWoundsFailedNoFearAdded ?? 0;
+    const runCombinedCombatFear = runCombatEfficacy.damageAssignments.fear + runFearAdded;
     console.log(
-      `  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}, path=${(report.usage?.totalPathLength ?? 0).toFixed(2)}, hit=${(runCombatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.hitTests.passes}/${runCombatEfficacy.hitTests.attempts}), damage=${(runCombatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.damageTests.passes}/${runCombatEfficacy.damageTests.attempts}), assigned(dmg w/f/d)=${runCombatEfficacy.damageAssignments.wounds}/${runCombatEfficacy.damageAssignments.fear}/${runCombatEfficacy.damageAssignments.delay}, passive/other delay=${runCombatEfficacy.passiveOrOtherDelay}, ${runScoringSummary}${elapsedLabel}`
+      `  Run ${i + 1}/${runs}: winner=${report.winner}, moves=${report.stats.moves}, ranged=${report.stats.rangedCombats}, close=${report.stats.closeCombats}, path=${(report.usage?.totalPathLength ?? 0).toFixed(2)}, hit=${(runCombatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.hitTests.passes}/${runCombatEfficacy.hitTests.attempts}), damage=${(runCombatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${runCombatEfficacy.damageTests.passes}/${runCombatEfficacy.damageTests.attempts}), damage_assign(w/f/d)=${runCombatEfficacy.damageAssignments.wounds}/${runCombatEfficacy.damageAssignments.fear}/${runCombatEfficacy.damageAssignments.delay}, combat_fear=${runCombinedCombatFear} (damage=${runCombatEfficacy.damageAssignments.fear}+wound=${runFearAdded}), passive/other delay=${runCombatEfficacy.passiveOrOtherDelay}, wound_fear_tests(req/att/fail/skip/fear/no_fear)=${runFearRequired}/${runFearAttempted}/${runFearFailed}/${runFearSkipped}/${runFearAdded}/${runFearFailedNoFear}, ${runScoringSummary}${elapsedLabel}`
     );
   }
 
@@ -1470,6 +1477,16 @@ export async function runValidationBatch(
   console.log(`  Combined Coverage: ${JSON.stringify(coverage)}`);
   console.log(`  Bonus Actions: offered=${advancedRuleTotals.bonusActions.optionsOffered}, executed=${advancedRuleTotals.bonusActions.executed}`);
   console.log(`  Passive Options: offered=${advancedRuleTotals.passiveOptions.optionsOffered}, used=${advancedRuleTotals.passiveOptions.used}`);
+  const passiveRejectionTop = Object.entries(advancedRuleTotals.passiveOptions.rejectedByReason ?? {})
+    .sort((left, right) => right[1] - left[1])
+    .slice(0, 5);
+  if (passiveRejectionTop.length > 0) {
+    console.log(
+      `  Passive Rejections (top): ${passiveRejectionTop
+        .map(([reason, count]) => `${reason}=${count}`)
+        .join(', ')}`
+    );
+  }
   console.log(`  Situational Modifiers: tests=${advancedRuleTotals.situationalModifiers.testsObserved}, applied=${advancedRuleTotals.situationalModifiers.modifiersApplied}`);
   console.log(
     `  Wait Efficacy: given=${totals.waitChoicesGiven}, taken=${totals.waitChoicesTaken}, success=${totals.waitChoicesSucceeded}, takeRate=${(safeRate(totals.waitChoicesTaken, totals.waitChoicesGiven) * 100).toFixed(1)}%, successRate=${(safeRate(totals.waitChoicesSucceeded, totals.waitChoicesTaken) * 100).toFixed(1)}%`
@@ -1478,7 +1495,10 @@ export async function runValidationBatch(
     `  React Efficacy: windows=${totals.reactChoiceWindows}, choices=${totals.reactChoicesGiven}, taken=${totals.reactChoicesTaken}, takeRate=${(safeRate(totals.reactChoicesTaken, totals.reactChoiceWindows) * 100).toFixed(1)}%, optionSelectRate=${(safeRate(totals.reactChoicesTaken, totals.reactChoicesGiven) * 100).toFixed(1)}%, waitReact=${totals.waitTriggeredReacts}, waitReactWounds=${totals.waitReactWoundsInflicted.toFixed(2)}`
   );
   console.log(
-    `  Combat Efficacy: hit=${(combatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${combatEfficacy.hitTests.passes}/${combatEfficacy.hitTests.attempts}), damage=${(combatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${combatEfficacy.damageTests.passes}/${combatEfficacy.damageTests.attempts}), assigned(dmg w/f/d)=${combatEfficacy.damageAssignments.wounds}/${combatEfficacy.damageAssignments.fear}/${combatEfficacy.damageAssignments.delay}, passive/other delay=${combatEfficacy.passiveOrOtherDelay}`
+    `  Combat Efficacy: hit=${(combatEfficacy.hitTests.passRate * 100).toFixed(1)}% (${combatEfficacy.hitTests.passes}/${combatEfficacy.hitTests.attempts}), damage=${(combatEfficacy.damageTests.passRate * 100).toFixed(1)}% (${combatEfficacy.damageTests.passes}/${combatEfficacy.damageTests.attempts}), damage_assign(w/f/d)=${combatEfficacy.damageAssignments.wounds}/${combatEfficacy.damageAssignments.fear}/${combatEfficacy.damageAssignments.delay}, combat_fear=${combatEfficacy.damageAssignments.fear + (totals.fearTestsFromWoundsFearAdded ?? 0)} (damage=${combatEfficacy.damageAssignments.fear}+wound=${totals.fearTestsFromWoundsFearAdded ?? 0}), passive/other delay=${combatEfficacy.passiveOrOtherDelay}`
+  );
+  console.log(
+    `  Fear Tests (Wounds): required=${totals.fearTestsFromWoundsRequired ?? 0}, attempted=${totals.fearTestsFromWoundsAttempted ?? 0}, passed=${totals.fearTestsFromWoundsPassed ?? 0}, failed=${totals.fearTestsFromWoundsFailed ?? 0}, skipped=${totals.fearTestsFromWoundsSkipped ?? 0}, fear_added=${totals.fearTestsFromWoundsFearAdded ?? 0}, failed_no_fear=${totals.fearTestsFromWoundsFailedNoFearAdded ?? 0} [disordered=${totals.fearTestsFromWoundsSkippedAlreadyDisordered ?? 0}, engaged_not_distracted=${totals.fearTestsFromWoundsSkippedEngagedNotDistracted ?? 0}, already_tested=${totals.fearTestsFromWoundsSkippedAlreadyTestedThisTurn ?? 0}, immune=${totals.fearTestsFromWoundsSkippedImmuneToFear ?? 0}, morale_exempt=${totals.fearTestsFromWoundsSkippedMoraleExempt ?? 0}]`
   );
   if (scoringSummary.sideScores.length > 0) {
     console.log('  Mission Scoring:');

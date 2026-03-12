@@ -34,6 +34,11 @@ function createEmptyAdvancedRuleMetrics(): AdvancedRuleMetrics {
       optionsAvailable: 0,
       offeredByType: {},
       availableByType: {},
+      rejectedByReason: {},
+      rejectedByReasonByTurn: {},
+      rejectedStatusByType: {},
+      prefilteredByReason: {},
+      prefilteredByReasonByTurn: {},
       used: 0,
       usedByType: {},
     },
@@ -71,6 +76,27 @@ function formatTypeBreakdownLines(
   }
   const entries = Object.entries(breakdown).sort((a, b) => b[1] - a[1]);
   return entries.map(([type, count]) => `${indent}${type}: ${count}`);
+}
+
+function formatTurnBucketBreakdownLines(
+  breakdownByTurn: Record<string, Record<string, number>>,
+  indent: string = '  '
+): string[] {
+  if (!breakdownByTurn || Object.keys(breakdownByTurn).length === 0) {
+    return [`${indent}none`];
+  }
+  const preferredOrder = ['T1', 'T2', 'T3+', 'unknown'];
+  const allBuckets = Object.keys(breakdownByTurn);
+  const orderedBuckets = [
+    ...preferredOrder.filter(bucket => allBuckets.includes(bucket)),
+    ...allBuckets.filter(bucket => !preferredOrder.includes(bucket)).sort(),
+  ];
+  const lines: string[] = [];
+  for (const bucket of orderedBuckets) {
+    lines.push(`${indent}${bucket}:`);
+    lines.push(...formatTypeBreakdownLines(breakdownByTurn[bucket] ?? {}, `${indent}  `));
+  }
+  return lines;
 }
 
 /**
@@ -142,6 +168,20 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   const damageDelayAssigned = stats.damageDelayAssigned ?? totalDelayAssigned;
   const passiveOrOtherDelayAssigned =
     stats.passiveOrOtherDelayAssigned ?? Math.max(0, totalDelayAssigned - damageDelayAssigned);
+  const fearTestsFromWoundsTriggered = stats.fearTestsFromWoundsTriggered ?? 0;
+  const fearTestsFromWoundsRequired = stats.fearTestsFromWoundsRequired ?? 0;
+  const fearTestsFromWoundsAttempted = stats.fearTestsFromWoundsAttempted ?? 0;
+  const fearTestsFromWoundsPassed = stats.fearTestsFromWoundsPassed ?? 0;
+  const fearTestsFromWoundsFailed = stats.fearTestsFromWoundsFailed ?? 0;
+  const fearTestsFromWoundsSkipped = stats.fearTestsFromWoundsSkipped ?? 0;
+  const fearTestsFromWoundsSkippedAlreadyDisordered = stats.fearTestsFromWoundsSkippedAlreadyDisordered ?? 0;
+  const fearTestsFromWoundsSkippedEngagedNotDistracted = stats.fearTestsFromWoundsSkippedEngagedNotDistracted ?? 0;
+  const fearTestsFromWoundsSkippedAlreadyTestedThisTurn = stats.fearTestsFromWoundsSkippedAlreadyTestedThisTurn ?? 0;
+  const fearTestsFromWoundsSkippedImmuneToFear = stats.fearTestsFromWoundsSkippedImmuneToFear ?? 0;
+  const fearTestsFromWoundsSkippedMoraleExempt = stats.fearTestsFromWoundsSkippedMoraleExempt ?? 0;
+  const fearTestsFromWoundsFearAdded = stats.fearTestsFromWoundsFearAdded ?? 0;
+  const fearTestsFromWoundsFailedNoFearAdded = stats.fearTestsFromWoundsFailedNoFearAdded ?? 0;
+  const combinedCombatFearAssigned = damageFearAssigned + fearTestsFromWoundsFearAdded;
 
   const lines: string[] = [];
   lines.push('════════════════════════════════════════════════════════════');
@@ -307,9 +347,21 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(`  KO's: ${stats.kos ?? 0}`);
   lines.push(`  Hit Tests: ${(safeRate(hitTestsPassed, hitTestsAttempted) * 100).toFixed(1)}% (${hitTestsPassed}/${hitTestsAttempted})`);
   lines.push(`  Damage Tests: ${(safeRate(damageTestsPassed, damageTestsAttempted) * 100).toFixed(1)}% (${damageTestsPassed}/${damageTestsAttempted})`);
-  lines.push(`  Combat Assignments (Damage W/F/D): ${damageWoundsAssigned}/${damageFearAssigned}/${damageDelayAssigned}`);
+  lines.push(`  Damage-Test Assignments (W/F/D): ${damageWoundsAssigned}/${damageFearAssigned}/${damageDelayAssigned}`);
+  lines.push(
+    `  Combat-Caused Fear Tokens (Damage + Wound-Fear): ${combinedCombatFearAssigned} (${damageFearAssigned} + ${fearTestsFromWoundsFearAdded})`
+  );
   lines.push(`  Combat Delay (Passive/Other): ${passiveOrOtherDelayAssigned}`);
   lines.push(`  Combat Assignments (All W/F/D): ${totalWoundsAssigned}/${totalFearAssigned}/${totalDelayAssigned}`);
+  lines.push(
+    `  Fear Tests (Wound Trigger): triggered=${fearTestsFromWoundsTriggered}, required=${fearTestsFromWoundsRequired}, attempted=${fearTestsFromWoundsAttempted}, pass=${fearTestsFromWoundsPassed}, fail=${fearTestsFromWoundsFailed}, skipped=${fearTestsFromWoundsSkipped}`
+  );
+  lines.push(
+    `    Wound-Fear Added (Pre-KO Cleanup, non-damage): ${fearTestsFromWoundsFearAdded}, failed_no_fear=${fearTestsFromWoundsFailedNoFearAdded}`
+  );
+  lines.push(
+    `    Skips: disordered=${fearTestsFromWoundsSkippedAlreadyDisordered}, engaged_not_distracted=${fearTestsFromWoundsSkippedEngagedNotDistracted}, already_tested=${fearTestsFromWoundsSkippedAlreadyTestedThisTurn}, immune=${fearTestsFromWoundsSkippedImmuneToFear}, morale_exempt=${fearTestsFromWoundsSkippedMoraleExempt}`
+  );
   lines.push(`  Decision Telemetry Samples: ${decisionTelemetrySamples}`);
   if (decisionTelemetrySamples > 0) {
     lines.push(`  Attack Gate Applied: ${attackGateAppliedDecisions} (${(attackGateAppliedRate * 100).toFixed(1)}%)`);
@@ -351,6 +403,16 @@ export function formatBattleReportHumanReadable(report: BattleReport): string {
   lines.push(`  Used: ${advancedRules.passiveOptions.used}`);
   lines.push('  Available By Type:');
   lines.push(...formatTypeBreakdownLines(advancedRules.passiveOptions.availableByType, '    '));
+  lines.push('  Rejected By Reason:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.passiveOptions.rejectedByReason, '    '));
+  lines.push('  Rejected By Reason (Turn Buckets):');
+  lines.push(...formatTurnBucketBreakdownLines(advancedRules.passiveOptions.rejectedByReasonByTurn, '    '));
+  lines.push('  Status-Gated Windows By Type:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.passiveOptions.rejectedStatusByType, '    '));
+  lines.push('  Prefiltered By Reason:');
+  lines.push(...formatTypeBreakdownLines(advancedRules.passiveOptions.prefilteredByReason, '    '));
+  lines.push('  Prefiltered By Reason (Turn Buckets):');
+  lines.push(...formatTurnBucketBreakdownLines(advancedRules.passiveOptions.prefilteredByReasonByTurn, '    '));
   lines.push('  Used By Type:');
   lines.push(...formatTypeBreakdownLines(advancedRules.passiveOptions.usedByType, '    '));
   lines.push('');

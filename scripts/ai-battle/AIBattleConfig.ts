@@ -265,7 +265,7 @@ export function createDefaultGameConfig(
     maxOrm: 3,
     allowConcentrateRangeExtension: true,
     perCharacterFovLos: false,
-    allowWaitAction: false,
+    allowWaitAction: true,
     allowHideAction: false,
     auditLevel: 'none',
     initiativeCardTieBreakerOnTie: true,

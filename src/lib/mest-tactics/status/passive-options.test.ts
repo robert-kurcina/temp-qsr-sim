@@ -291,6 +291,13 @@ describe('Passive Player Options', () => {
         defender,
         battlefield,
         attackType: 'melee',
+        hitTestResult: {
+          pass: false,
+          score: -1,
+          p1Rolls: [],
+          p2Rolls: [],
+          p2Result: { carryOverDice: { base: 1 } },
+        } as any,
       };
       
       const options = buildPassiveOptions(event);
@@ -315,6 +322,13 @@ describe('Passive Player Options', () => {
         defender,
         battlefield,
         attackType: 'melee',
+        hitTestResult: {
+          pass: false,
+          score: -1,
+          p1Rolls: [],
+          p2Rolls: [],
+          p2Result: { carryOverDice: { base: 1 } },
+        } as any,
       };
       
       const options = buildPassiveOptions(event);
@@ -339,12 +353,83 @@ describe('Passive Player Options', () => {
         defender,
         battlefield,
         attackType: 'melee',
+        hitTestResult: {
+          pass: false,
+          score: -1,
+          p1Rolls: [],
+          p2Rolls: [],
+          p2Result: { carryOverDice: { base: 1 } },
+        } as any,
       };
       
       const options = buildPassiveOptions(event);
       const counterStrike = options.find(option => option.type === 'CounterStrike');
       
       expect(counterStrike?.available).toBe(false);
+    });
+
+    it('should NOT offer Counter-strike! when failed hit has no carry-over', () => {
+      const battlefield = new Battlefield(8, 8);
+      const attacker = createTestCharacter('Attacker');
+      const defender = createArmedCharacter('Defender', ['Sword, Broad']);
+      defender.profile.allTraits = ['Counter-strike!'];
+      defender.profile.finalTraits = ['Counter-strike!'];
+
+      battlefield.placeCharacter(attacker, { x: 2, y: 2 });
+      battlefield.placeCharacter(defender, { x: 3, y: 2 });
+
+      const event: PassiveEvent = {
+        kind: 'HitTestFailed',
+        attacker,
+        defender,
+        battlefield,
+        attackType: 'melee',
+        hitTestResult: {
+          pass: false,
+          score: -1,
+          p1Rolls: [],
+          p2Rolls: [],
+          p2Result: { carryOverDice: { base: 0, modifier: 0, wild: 0 } },
+        } as any,
+      };
+
+      const options = buildPassiveOptions(event);
+      const counterStrike = options.find(option => option.type === 'CounterStrike');
+
+      expect(counterStrike?.available).toBe(false);
+      expect(counterStrike?.reason).toContain('Requires carry-over');
+    });
+
+    it('should NOT offer Counter-strike! when the Hit Test did not fail', () => {
+      const battlefield = new Battlefield(8, 8);
+      const attacker = createTestCharacter('Attacker');
+      const defender = createArmedCharacter('Defender', ['Sword, Broad']);
+      defender.profile.allTraits = ['Counter-strike!'];
+      defender.profile.finalTraits = ['Counter-strike!'];
+
+      battlefield.placeCharacter(attacker, { x: 2, y: 2 });
+      battlefield.placeCharacter(defender, { x: 3, y: 2 });
+
+      const event: PassiveEvent = {
+        kind: 'HitTestFailed',
+        attacker,
+        defender,
+        battlefield,
+        attackType: 'melee',
+        hitTestResult: {
+          pass: true,
+          score: 0,
+          p1Rolls: [],
+          p2Rolls: [],
+          p2Result: { carryOverDice: { base: 1 } },
+        } as any,
+      };
+
+      const options = buildPassiveOptions(event);
+      const counterStrike = options.find(option => option.type === 'CounterStrike');
+
+      expect(counterStrike?.available).toBe(false);
+      expect(counterStrike?.reason).toContain('Requires failed Hit Test');
     });
   });
 
@@ -464,6 +549,37 @@ describe('Passive Player Options', () => {
       const counterAction = options.find(option => option.type === 'CounterAction');
       
       expect(counterAction).toBeDefined();
+    });
+
+    it('should NOT offer Counter-action! when the Hit Test did not fail', () => {
+      const battlefield = new Battlefield(8, 8);
+      const attacker = createTestCharacter('Attacker');
+      const defender = createArmedCharacter('Defender', ['Sword, Broad']);
+
+      battlefield.placeCharacter(attacker, { x: 2, y: 2 });
+      battlefield.placeCharacter(defender, { x: 3, y: 2 });
+
+      const event: PassiveEvent = {
+        kind: 'HitTestFailed',
+        attacker,
+        defender,
+        battlefield,
+        attackType: 'melee',
+        hitTestResult: {
+          pass: true,
+          score: 0,
+          p1Rolls: [],
+          p2Rolls: [],
+          p2Result: { carryOverDice: { base: 1 } },
+        } as any,
+      };
+
+      const options = buildPassiveOptions(event);
+      const counterAction = options.find(option => option.type === 'CounterAction');
+
+      expect(counterAction).toBeDefined();
+      expect(counterAction?.available).toBe(false);
+      expect(counterAction?.reason).toContain('Requires failed Hit Test');
     });
   });
 

@@ -116,6 +116,7 @@ export interface TestParticipant {
     bonusDice?: TestDice;
     penaltyDice?: TestDice;
     isSystemPlayer?: boolean; // For Unopposed tests
+    systemAttributeValue?: number; // Optional override for System score baseline (e.g., DR-adjusted tests)
 }
 
 export interface ResolveTestResult {
@@ -192,16 +193,21 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
   const p2TotalDice = (p2Pool.base || 0) + (p2Pool.modifier || 0) + (p2Pool.wild || 0);
 
   const p1FinalRolls = p1Rolls ?? roller(p1TotalDice);
-  const p2FinalRolls = p2Rolls ?? (p2.isSystemPlayer ? [] : roller(p2TotalDice));
+  const p2FinalRolls = p2Rolls ?? roller(p2TotalDice);
 
   if (p1FinalRolls.length < p1TotalDice) throw new Error('Not enough dice rolls provided for p1');
-  if (!p2.isSystemPlayer && p2FinalRolls.length < p2TotalDice) throw new Error('Not enough dice rolls provided for p2');
+  if (p2FinalRolls.length < p2TotalDice) throw new Error('Not enough dice rolls provided for p2');
 
   const p1AttributeValue = p1.attributeValue !== undefined ? p1.attributeValue : (p1.character && p1.attribute ? p1.character.finalAttributes[p1.attribute] || 0 : 0);
-  const p2AttributeValue = p2.isSystemPlayer ? 2 : (p2.attributeValue !== undefined ? p2.attributeValue : (p2.character && p2.attribute ? p2.character.finalAttributes[p2.attribute] || 0 : 0));
+  const p2AttributeValue = p2.isSystemPlayer
+    ? (p2.systemAttributeValue ?? 2)
+    : (p2.attributeValue !== undefined ? p2.attributeValue : (p2.character && p2.attribute ? p2.character.finalAttributes[p2.attribute] || 0 : 0));
 
   const p1Result = performTest(p1Pool, p1AttributeValue, p1FinalRolls);
-  const p2Result = p2.isSystemPlayer ? { score: p2AttributeValue, carryOverDice: { base: 0, modifier: 0, wild: 0 } } : performTest(p2Pool, p2AttributeValue, p2FinalRolls);
+  const rawP2Result = performTest(p2Pool, p2AttributeValue, p2FinalRolls);
+  const p2Result = p2.isSystemPlayer
+    ? { ...rawP2Result, carryOverDice: { base: 0, modifier: 0, wild: 0 } }
+    : rawP2Result;
 
   const p1FinalScore = p1Result.score;
   const p2FinalScore = p2Result.score;
@@ -234,4 +240,35 @@ export function resolveTest(p1: TestParticipant, p2: TestParticipant, p1Rolls: n
     p1Result,
     p2Result,
   };
+}
+
+export interface ResolveUnopposedTestOptions {
+  /** QSR Difficulty Rating added to System score */
+  dr?: number;
+  /** Optional fixed rolls for active participant */
+  p1Rolls?: number[] | null;
+  /** Optional fixed rolls for System participant */
+  p2Rolls?: number[] | null;
+  /** Optional System bonus dice */
+  systemBonusDice?: TestDice;
+  /** Optional System penalty dice */
+  systemPenaltyDice?: TestDice;
+}
+
+/**
+ * QSR unopposed test helper using the shared resolver.
+ * System uses normal unopposed baseline score with optional DR adjustment.
+ */
+export function resolveUnopposedTest(
+  active: TestParticipant,
+  options: ResolveUnopposedTestOptions = {}
+): ResolveTestResult {
+  const system: TestParticipant = {
+    isSystemPlayer: true,
+    systemAttributeValue: 2 + Math.max(0, options.dr ?? 0),
+    bonusDice: options.systemBonusDice ?? {},
+    penaltyDice: options.systemPenaltyDice ?? {},
+  };
+
+  return resolveTest(active, system, options.p1Rolls ?? null, options.p2Rolls ?? null);
 }

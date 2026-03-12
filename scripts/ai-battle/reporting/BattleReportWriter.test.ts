@@ -110,6 +110,11 @@ function createMockReport(): BattleReport {
         optionsAvailable: 0,
         offeredByType: {},
         availableByType: {},
+        rejectedByReason: {},
+        rejectedByReasonByTurn: {},
+        rejectedStatusByType: {},
+        prefilteredByReason: {},
+        prefilteredByReasonByTurn: {},
         used: 0,
         usedByType: {
           Defend: 2,

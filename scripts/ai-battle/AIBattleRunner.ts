@@ -38,7 +38,7 @@ import {
 import { createEmptyStats, createEmptyAdvancedRuleMetrics, safeRate, createSeededRandom } from './validation/ValidationMetrics';
 import { StatisticsTracker } from './tracking/StatisticsTracker';
 import { PerformanceProfiler } from './instrumentation/PerformanceProfiler';
-import { getDefaultSimpleBattlefieldPath, normalizeGameSizeSegment } from '../shared/BattlefieldPaths';
+import { normalizeGameSizeSegment } from '../shared/BattlefieldPaths';
 import {
   createBattlefieldWithTerrain,
   deployModels as deployModelsIntoBattlefield,
@@ -320,10 +320,7 @@ export class AIBattleRunner {
       });
       out();
 
-      const resolvedBattlefieldPath = config.battlefieldPath ?? getDefaultSimpleBattlefieldPath(String(config.gameSize));
-      if (!config.battlefieldPath && resolvedBattlefieldPath) {
-        out(`Using default battlefield: ${resolvedBattlefieldPath}`);
-      }
+      const resolvedBattlefieldPath = config.battlefieldPath;
 
       // Create battlefield using canonical rectangular dimensions.
       const battlefield = this.profiler.withPhaseTiming(

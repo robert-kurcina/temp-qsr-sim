@@ -69,6 +69,19 @@ export interface BattleStats {
   damageFearAssigned?: number;
   damageDelayAssigned?: number;
   passiveOrOtherDelayAssigned?: number;
+  fearTestsFromWoundsTriggered?: number;
+  fearTestsFromWoundsRequired?: number;
+  fearTestsFromWoundsAttempted?: number;
+  fearTestsFromWoundsPassed?: number;
+  fearTestsFromWoundsFailed?: number;
+  fearTestsFromWoundsSkipped?: number;
+  fearTestsFromWoundsSkippedAlreadyDisordered?: number;
+  fearTestsFromWoundsSkippedEngagedNotDistracted?: number;
+  fearTestsFromWoundsSkippedAlreadyTestedThisTurn?: number;
+  fearTestsFromWoundsSkippedImmuneToFear?: number;
+  fearTestsFromWoundsSkippedMoraleExempt?: number;
+  fearTestsFromWoundsFearAdded?: number;
+  fearTestsFromWoundsFailedNoFearAdded?: number;
 }
 
 // ============================================================================
@@ -95,6 +108,11 @@ export interface PassiveOptionMetrics {
   optionsAvailable: number;
   offeredByType: RuleTypeBreakdown;
   availableByType: RuleTypeBreakdown;
+  rejectedByReason: RuleTypeBreakdown;
+  rejectedByReasonByTurn: Record<string, RuleTypeBreakdown>;
+  rejectedStatusByType: RuleTypeBreakdown;
+  prefilteredByReason: RuleTypeBreakdown;
+  prefilteredByReasonByTurn: Record<string, RuleTypeBreakdown>;
   used: number;
   usedByType: RuleTypeBreakdown;
 }
@@ -583,6 +601,19 @@ export function createEmptyStats(): BattleStats {
     damageFearAssigned: 0,
     damageDelayAssigned: 0,
     passiveOrOtherDelayAssigned: 0,
+    fearTestsFromWoundsTriggered: 0,
+    fearTestsFromWoundsRequired: 0,
+    fearTestsFromWoundsAttempted: 0,
+    fearTestsFromWoundsPassed: 0,
+    fearTestsFromWoundsFailed: 0,
+    fearTestsFromWoundsSkipped: 0,
+    fearTestsFromWoundsSkippedAlreadyDisordered: 0,
+    fearTestsFromWoundsSkippedEngagedNotDistracted: 0,
+    fearTestsFromWoundsSkippedAlreadyTestedThisTurn: 0,
+    fearTestsFromWoundsSkippedImmuneToFear: 0,
+    fearTestsFromWoundsSkippedMoraleExempt: 0,
+    fearTestsFromWoundsFearAdded: 0,
+    fearTestsFromWoundsFailedNoFearAdded: 0,
   };
 }
 
@@ -606,6 +637,11 @@ export function createEmptyAdvancedRuleMetrics(): AdvancedRuleMetrics {
       optionsAvailable: 0,
       offeredByType: {},
       availableByType: {},
+      rejectedByReason: {},
+      rejectedByReasonByTurn: {},
+      rejectedStatusByType: {},
+      prefilteredByReason: {},
+      prefilteredByReasonByTurn: {},
       used: 0,
       usedByType: {},
     },
@@ -715,6 +751,29 @@ export function divideTypeBreakdown(total: RuleTypeBreakdown, runs: number): Rul
   return avg;
 }
 
+function mergeReasonByTurnBreakdown(
+  total: Record<string, RuleTypeBreakdown>,
+  add: Record<string, RuleTypeBreakdown>
+) {
+  for (const [turnBucket, breakdown] of Object.entries(add)) {
+    if (!total[turnBucket]) {
+      total[turnBucket] = {};
+    }
+    mergeTypeBreakdown(total[turnBucket], breakdown);
+  }
+}
+
+function divideReasonByTurnBreakdown(
+  total: Record<string, RuleTypeBreakdown>,
+  runs: number
+): Record<string, RuleTypeBreakdown> {
+  const avg: Record<string, RuleTypeBreakdown> = {};
+  for (const [turnBucket, breakdown] of Object.entries(total)) {
+    avg[turnBucket] = divideTypeBreakdown(breakdown, runs);
+  }
+  return avg;
+}
+
 /**
  * Accumulate advanced rule metrics
  */
@@ -733,6 +792,11 @@ export function accumulateAdvancedRuleMetrics(total: AdvancedRuleMetrics, add: A
   total.passiveOptions.used += add.passiveOptions.used;
   mergeTypeBreakdown(total.passiveOptions.offeredByType, add.passiveOptions.offeredByType);
   mergeTypeBreakdown(total.passiveOptions.availableByType, add.passiveOptions.availableByType);
+  mergeTypeBreakdown(total.passiveOptions.rejectedByReason, add.passiveOptions.rejectedByReason);
+  mergeReasonByTurnBreakdown(total.passiveOptions.rejectedByReasonByTurn, add.passiveOptions.rejectedByReasonByTurn);
+  mergeTypeBreakdown(total.passiveOptions.rejectedStatusByType, add.passiveOptions.rejectedStatusByType);
+  mergeTypeBreakdown(total.passiveOptions.prefilteredByReason, add.passiveOptions.prefilteredByReason);
+  mergeReasonByTurnBreakdown(total.passiveOptions.prefilteredByReasonByTurn, add.passiveOptions.prefilteredByReasonByTurn);
   mergeTypeBreakdown(total.passiveOptions.usedByType, add.passiveOptions.usedByType);
 
   total.situationalModifiers.testsObserved += add.situationalModifiers.testsObserved;
@@ -761,6 +825,11 @@ export function divideAdvancedRuleMetrics(total: AdvancedRuleMetrics, runs: numb
       optionsAvailable: Number((total.passiveOptions.optionsAvailable / runs).toFixed(2)),
       offeredByType: divideTypeBreakdown(total.passiveOptions.offeredByType, runs),
       availableByType: divideTypeBreakdown(total.passiveOptions.availableByType, runs),
+      rejectedByReason: divideTypeBreakdown(total.passiveOptions.rejectedByReason, runs),
+      rejectedByReasonByTurn: divideReasonByTurnBreakdown(total.passiveOptions.rejectedByReasonByTurn, runs),
+      rejectedStatusByType: divideTypeBreakdown(total.passiveOptions.rejectedStatusByType, runs),
+      prefilteredByReason: divideTypeBreakdown(total.passiveOptions.prefilteredByReason, runs),
+      prefilteredByReasonByTurn: divideReasonByTurnBreakdown(total.passiveOptions.prefilteredByReasonByTurn, runs),
       used: Number((total.passiveOptions.used / runs).toFixed(2)),
       usedByType: divideTypeBreakdown(total.passiveOptions.usedByType, runs),
     },

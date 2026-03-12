@@ -7,6 +7,7 @@ import {
   applyAutoBonusActionIfPossibleForRunner,
   applyPassiveFollowupBonusActionsForRunner,
   countDiceInPoolForRunner,
+  executeFailedHitPassiveResponseForRunner,
   processMoveConcludedPassivesForRunner,
 } from './PassiveCombatFollowups';
 
@@ -222,5 +223,125 @@ describe('PassiveCombatFollowups', () => {
     const outcomes = (result.bonusActionOutcomes ?? []) as unknown[];
     expect(outcomes.length).toBe(2);
     expect(applyRefreshLocally).toHaveBeenCalledTimes(2);
+  });
+
+  it('prefers CounterAction when CounterStrike damage potential is poor', () => {
+    const attacker = createCharacter('attacker');
+    const defender = createCharacter('defender');
+    attacker.state.armor = { total: 4 } as any;
+
+    const executeCounterStrike = vi.fn(() => ({ executed: true, bonusActionEligible: false }));
+    const executeCounterAction = vi.fn(() => ({ executed: true, bonusActionCascades: 2 }));
+    const applyPassiveFollowupBonusActions = vi.fn(() => ({ bonusActionCascades: 2 }));
+    const trackPassiveUsage = vi.fn();
+    const trackPassiveRejection = vi.fn();
+
+    const result = executeFailedHitPassiveResponseForRunner({
+      gameManager: {
+        battlefield: {} as Battlefield,
+        executeCounterStrike,
+        executeCounterAction,
+      } as unknown as GameManager,
+      attacker,
+      defender,
+      hitTestResult: {
+        score: -1,
+        p2Result: { carryOverDice: { base: 1 } },
+      },
+      attackType: 'melee',
+      options: [
+        { type: 'CounterStrike', available: true, id: '1', actorId: defender.id },
+        { type: 'CounterAction', available: true, id: '2', actorId: defender.id },
+      ] as unknown as PassiveOption[],
+      doctrine: 'Operative' as any,
+      visibilityOrMu: 16,
+      pickMeleeWeapon: () => ({ name: 'Knife', impact: 0, dmg: '-' }),
+      pickRangedWeapon: () => undefined,
+      getPassiveResponsePriorityList: () => ['CounterStrike', 'CounterAction'],
+      applyPassiveFollowupBonusActions,
+      trackPassiveUsage,
+      trackPassiveRejection,
+    });
+
+    expect(result.type).toBe('CounterAction');
+    expect(executeCounterStrike).not.toHaveBeenCalled();
+    expect(executeCounterAction).toHaveBeenCalledTimes(1);
+    expect(trackPassiveUsage).toHaveBeenCalledWith('CounterAction');
+    expect(applyPassiveFollowupBonusActions).toHaveBeenCalledTimes(1);
+    expect(trackPassiveRejection).toHaveBeenCalledWith('Low damage potential.');
+  });
+
+  it('does not trigger CounterAction follow-up bonus actions when cascades are zero', () => {
+    const attacker = createCharacter('attacker');
+    const defender = createCharacter('defender');
+    const executeCounterAction = vi.fn(() => ({ executed: true, bonusActionCascades: 0 }));
+    const applyPassiveFollowupBonusActions = vi.fn(() => ({ bonusActionCascades: 0 }));
+
+    const result = executeFailedHitPassiveResponseForRunner({
+      gameManager: {
+        battlefield: {} as Battlefield,
+        executeCounterAction,
+      } as unknown as GameManager,
+      attacker,
+      defender,
+      hitTestResult: {
+        score: -1,
+        p2Result: { carryOverDice: { base: 1 } },
+      },
+      attackType: 'melee',
+      options: [
+        { type: 'CounterAction', available: true, id: 'counter-action', actorId: defender.id },
+      ] as unknown as PassiveOption[],
+      doctrine: 'Operative' as any,
+      visibilityOrMu: 16,
+      pickMeleeWeapon: () => undefined,
+      pickRangedWeapon: () => undefined,
+      getPassiveResponsePriorityList: () => ['CounterAction'],
+      applyPassiveFollowupBonusActions,
+      trackPassiveUsage: vi.fn(),
+    });
+
+    expect(result.type).toBe('CounterAction');
+    expect(executeCounterAction).toHaveBeenCalledTimes(1);
+    expect(applyPassiveFollowupBonusActions).not.toHaveBeenCalled();
+    expect((result.result as any)?.bonusActionCascades).toBe(0);
+  });
+
+  it('does not execute failed-hit passives when hit test is not failed', () => {
+    const attacker = createCharacter('attacker');
+    const defender = createCharacter('defender');
+    const executeCounterAction = vi.fn(() => ({ executed: true, bonusActionCascades: 2 }));
+    const trackPassiveRejection = vi.fn();
+
+    const result = executeFailedHitPassiveResponseForRunner({
+      gameManager: {
+        battlefield: {} as Battlefield,
+        executeCounterAction,
+      } as unknown as GameManager,
+      attacker,
+      defender,
+      hitTestResult: {
+        pass: true,
+        score: 0,
+        p2Result: { carryOverDice: { base: 1 } },
+      },
+      attackType: 'melee',
+      options: [
+        { type: 'CounterAction', available: true, id: 'counter-action', actorId: defender.id },
+      ] as unknown as PassiveOption[],
+      doctrine: 'Operative' as any,
+      visibilityOrMu: 16,
+      pickMeleeWeapon: () => undefined,
+      pickRangedWeapon: () => undefined,
+      getPassiveResponsePriorityList: () => ['CounterAction'],
+      applyPassiveFollowupBonusActions: vi.fn(() => ({ bonusActionCascades: 2 })),
+      trackPassiveUsage: vi.fn(),
+      trackPassiveRejection,
+    });
+
+    expect(result.type).toBeUndefined();
+    expect(result.result).toBeUndefined();
+    expect(executeCounterAction).not.toHaveBeenCalled();
+    expect(trackPassiveRejection).toHaveBeenCalledWith('Requires failed Hit Test.');
   });
 });

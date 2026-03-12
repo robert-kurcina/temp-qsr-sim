@@ -42,6 +42,15 @@ interface CombatAssignmentBreakdown {
   delay: number;
 }
 
+interface FearFromWoundsTelemetry {
+  woundsTrigger?: number;
+  testRequired?: boolean;
+  testAttempted?: boolean;
+  pass?: boolean;
+  skipReason?: string;
+  fearAdded?: number;
+}
+
 export class StatisticsTracker {
   private stats: BattleStats;
   private advancedRules: AdvancedRuleMetrics;
@@ -239,6 +248,72 @@ export class StatisticsTracker {
     breakdown[type] = (breakdown[type] ?? 0) + amount;
   }
 
+  private isPassiveStatusGateReason(normalizedReason: string): boolean {
+    return normalizedReason === 'not_attentive'
+      || normalizedReason === 'not_ordered'
+      || normalizedReason === 'not_attentive_ordered';
+  }
+
+  private trackPassiveStatusGateByType(
+    normalizedReason: string,
+    optionType: string | undefined,
+    amount: number = 1
+  ) {
+    if (!optionType || !Number.isFinite(amount) || amount <= 0) return;
+    if (!this.isPassiveStatusGateReason(normalizedReason)) {
+      return;
+    }
+    this.incrementTypeBreakdown(
+      this.advancedRules.passiveOptions.rejectedStatusByType,
+      `${normalizedReason}:${optionType}`,
+      amount
+    );
+  }
+
+  private normalizePassiveRejectionReason(reason: string | undefined): string {
+    const normalized = String(reason ?? '').trim().toLowerCase();
+    if (!normalized) return 'unknown';
+    if (normalized.includes('carry-over')) return 'no_carry_over';
+    if (normalized.includes('failed hit test')) return 'not_failed_hit';
+    if (normalized.includes('attentive+ordered')) return 'not_attentive_ordered';
+    if (normalized.includes('requires attentive')) return 'not_attentive';
+    if (normalized.includes('requires ordered')) return 'not_ordered';
+    if (normalized.includes('attentive defender')) return 'not_attentive';
+    if (normalized.includes('engaged with mover')) return 'not_engaged_with_mover';
+    if (normalized.includes('engaged in melee')) return 'not_melee_engaged';
+    if (normalized.includes('ref >=') || normalized.includes('ref >=')) return 'ref_gate';
+    if (normalized.includes('melee engagement')) return 'not_melee_engaged';
+    if (normalized.includes('counter-strike')) return 'missing_counter_strike_trait';
+    if (normalized.includes('out of visibility')) return 'out_of_visibility';
+    if (normalized.includes('los blocked by model')) return 'no_los_model_blocker';
+    if (normalized.includes('los blocked')) return 'no_los_terrain_or_other';
+    if (normalized.includes('los unavailable')) return 'no_los_unavailable';
+    if (normalized.includes('los within visibility')) return 'no_los_or_visibility';
+    if (normalized.includes('requires los')) return 'no_los';
+    if (normalized.includes('requires defender to be free')) return 'defender_not_free';
+    if (normalized.includes('requires revealed attacker')) return 'attacker_hidden';
+    if (normalized.includes('ranged attack context')) return 'wrong_attack_context';
+    if (normalized.includes('battlefield context required')) return 'missing_battlefield_context';
+    if (normalized.includes('not prioritized')) return 'not_prioritized';
+    if (normalized.includes('low damage potential')) return 'low_damage_potential';
+    if (normalized.includes('no weapon available')) return 'no_weapon';
+    if (normalized.includes('execution failed')) return 'execution_failed';
+    if (normalized.includes('no viable passive candidate')) return 'no_viable_candidate';
+    if (normalized.includes('unable to reach engagement')) return 'cannot_reach_engagement';
+    if (normalized.includes('requires move to engage')) return 'cannot_reach_engagement';
+    if (normalized.includes('move blocked')) return 'move_blocked';
+    if (normalized.includes('target to spend enough ap on movement')) return 'insufficient_move_ap_spent';
+    if (normalized.includes('available when hidden status is removed')) return 'hidden_reposition_unavailable';
+    return 'other';
+  }
+
+  private passiveTurnBucket(currentTurn: number | undefined): string {
+    if (typeof currentTurn !== 'number' || !Number.isFinite(currentTurn)) return 'unknown';
+    if (currentTurn <= 1) return 'T1';
+    if (currentTurn === 2) return 'T2';
+    return 'T3+';
+  }
+
   trackBonusActionOptions(options: BonusActionOption[] | undefined) {
     if (!Array.isArray(options) || options.length === 0) return;
     
@@ -266,7 +341,7 @@ export class StatisticsTracker {
   // Passive Options Tracking
   // ============================================================================
 
-  trackPassiveOptions(options: PassiveOption[] | undefined) {
+  trackPassiveOptions(options: PassiveOption[] | undefined, currentTurn?: number) {
     if (!Array.isArray(options) || options.length === 0) return;
     
     this.advancedRules.passiveOptions.opportunities += 1;
@@ -277,6 +352,19 @@ export class StatisticsTracker {
       if (option.available) {
         this.advancedRules.passiveOptions.optionsAvailable += 1;
         this.incrementTypeBreakdown(this.advancedRules.passiveOptions.availableByType, option.type);
+      } else {
+        const normalizedReason = this.normalizePassiveRejectionReason(option.reason);
+        this.incrementTypeBreakdown(
+          this.advancedRules.passiveOptions.rejectedByReason,
+          normalizedReason
+        );
+        this.trackPassiveStatusGateByType(normalizedReason, option.type, 1);
+        const turnBucket = this.passiveTurnBucket(currentTurn);
+        const byTurn = this.advancedRules.passiveOptions.rejectedByReasonByTurn;
+        if (!byTurn[turnBucket]) {
+          byTurn[turnBucket] = {};
+        }
+        this.incrementTypeBreakdown(byTurn[turnBucket], normalizedReason);
       }
     }
   }
@@ -287,10 +375,68 @@ export class StatisticsTracker {
     this.incrementTypeBreakdown(this.advancedRules.passiveOptions.usedByType, type, amount);
   }
 
+  trackPassiveRejection(
+    reason: string,
+    amount: number = 1,
+    currentTurn?: number,
+    optionType?: PassiveOptionType
+  ) {
+    if (!Number.isFinite(amount) || amount <= 0) return;
+    const normalizedReason = this.normalizePassiveRejectionReason(reason);
+    this.incrementTypeBreakdown(
+      this.advancedRules.passiveOptions.rejectedByReason,
+      normalizedReason,
+      amount
+    );
+    this.trackPassiveStatusGateByType(normalizedReason, optionType, amount);
+    const turnBucket = this.passiveTurnBucket(currentTurn);
+    const byTurn = this.advancedRules.passiveOptions.rejectedByReasonByTurn;
+    if (!byTurn[turnBucket]) {
+      byTurn[turnBucket] = {};
+    }
+    this.incrementTypeBreakdown(byTurn[turnBucket], normalizedReason, amount);
+  }
+
+  trackPassivePrefilter(reason: string, amount: number = 1, currentTurn?: number) {
+    if (!Number.isFinite(amount) || amount <= 0) return;
+    const normalizedReason = this.normalizePassiveRejectionReason(reason);
+    this.incrementTypeBreakdown(
+      this.advancedRules.passiveOptions.prefilteredByReason,
+      normalizedReason,
+      amount
+    );
+    const turnBucket = this.passiveTurnBucket(currentTurn);
+    const byTurn = this.advancedRules.passiveOptions.prefilteredByReasonByTurn;
+    if (!byTurn[turnBucket]) {
+      byTurn[turnBucket] = {};
+    }
+    this.incrementTypeBreakdown(byTurn[turnBucket], normalizedReason, amount);
+  }
+
   inspectPassiveOptions(gameManager: GameManager, event: PassiveEvent): PassiveOption[] {
+    const currentTurn = gameManager.currentTurn;
     const options = gameManager.getPassiveOptions(event);
-    this.trackPassiveOptions(options);
-    return options;
+    if (!Array.isArray(options) || options.length === 0) {
+      return options;
+    }
+
+    const filtered: PassiveOption[] = [];
+    for (const option of options) {
+      if (option.available) {
+        filtered.push(option);
+        continue;
+      }
+      const normalizedReason = this.normalizePassiveRejectionReason(option.reason);
+      if (this.isPassiveStatusGateReason(normalizedReason)) {
+        this.trackPassivePrefilter(option.reason ?? 'unknown', 1, currentTurn);
+        this.trackPassiveStatusGateByType(normalizedReason, option.type, 1);
+        continue;
+      }
+      filtered.push(option);
+    }
+
+    this.trackPassiveOptions(filtered, currentTurn);
+    return filtered;
   }
 
   // ============================================================================
@@ -374,6 +520,7 @@ export class StatisticsTracker {
       this.trackSituationalModifiers({ context: params.context, hitTestResult });
     }
 
+    this.trackFearFromWoundsTelemetry(combatResultPayload ?? params.result ?? params);
     this.trackCombatTests(combatResultPayload ?? params.hitTestResult);
   }
 
@@ -504,6 +651,67 @@ export class StatisticsTracker {
     }
   }
 
+  private trackFearFromWoundsTelemetry(rawResult: unknown) {
+    const fear = this.extractFearFromWoundsResult(rawResult);
+    if (!fear) return;
+
+    const woundsTrigger = this.toSafeNonNegativeNumber(fear.woundsTrigger);
+    const testRequired = Boolean(fear.testRequired);
+    const testAttempted = Boolean(fear.testAttempted);
+    const pass = typeof fear.pass === 'boolean' ? fear.pass : undefined;
+    const skipReason = typeof fear.skipReason === 'string' ? fear.skipReason : undefined;
+    const fearAdded = this.toSafeNonNegativeNumber(fear.fearAdded);
+
+    if (woundsTrigger > 0) {
+      this.stats.fearTestsFromWoundsTriggered = (this.stats.fearTestsFromWoundsTriggered ?? 0) + 1;
+    }
+    if (testRequired) {
+      this.stats.fearTestsFromWoundsRequired = (this.stats.fearTestsFromWoundsRequired ?? 0) + 1;
+    }
+    if (testAttempted) {
+      this.stats.fearTestsFromWoundsAttempted = (this.stats.fearTestsFromWoundsAttempted ?? 0) + 1;
+      this.stats.fearTestsFromWoundsFearAdded = (this.stats.fearTestsFromWoundsFearAdded ?? 0) + fearAdded;
+      if (pass === true) {
+        this.stats.fearTestsFromWoundsPassed = (this.stats.fearTestsFromWoundsPassed ?? 0) + 1;
+      } else if (pass === false) {
+        this.stats.fearTestsFromWoundsFailed = (this.stats.fearTestsFromWoundsFailed ?? 0) + 1;
+        if (fearAdded <= 0) {
+          this.stats.fearTestsFromWoundsFailedNoFearAdded =
+            (this.stats.fearTestsFromWoundsFailedNoFearAdded ?? 0) + 1;
+        }
+      }
+      return;
+    }
+
+    if (!testRequired && woundsTrigger > 0) {
+      this.stats.fearTestsFromWoundsSkipped = (this.stats.fearTestsFromWoundsSkipped ?? 0) + 1;
+      switch (skipReason) {
+        case 'already_disordered':
+          this.stats.fearTestsFromWoundsSkippedAlreadyDisordered =
+            (this.stats.fearTestsFromWoundsSkippedAlreadyDisordered ?? 0) + 1;
+          break;
+        case 'engaged_not_distracted':
+          this.stats.fearTestsFromWoundsSkippedEngagedNotDistracted =
+            (this.stats.fearTestsFromWoundsSkippedEngagedNotDistracted ?? 0) + 1;
+          break;
+        case 'already_tested_this_turn':
+          this.stats.fearTestsFromWoundsSkippedAlreadyTestedThisTurn =
+            (this.stats.fearTestsFromWoundsSkippedAlreadyTestedThisTurn ?? 0) + 1;
+          break;
+        case 'immune_to_fear':
+          this.stats.fearTestsFromWoundsSkippedImmuneToFear =
+            (this.stats.fearTestsFromWoundsSkippedImmuneToFear ?? 0) + 1;
+          break;
+        case 'morale_exempt':
+          this.stats.fearTestsFromWoundsSkippedMoraleExempt =
+            (this.stats.fearTestsFromWoundsSkippedMoraleExempt ?? 0) + 1;
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   private extractHitTestPass(rawResult: unknown): boolean | undefined {
     const hitTest = this.extractHitTestResult(rawResult);
     return this.extractPassValue(hitTest);
@@ -551,6 +759,20 @@ export class StatisticsTracker {
     const nestedResult = this.asRecord(payload.result);
     const nestedResolution = this.asRecord(nestedResult?.damageResolution ?? nestedResult?.damageResult);
     if (nestedResolution) return nestedResolution;
+
+    return undefined;
+  }
+
+  private extractFearFromWoundsResult(rawResult: unknown): FearFromWoundsTelemetry | undefined {
+    const payload = this.asRecord(rawResult);
+    if (!payload) return undefined;
+
+    const directFear = this.asRecord(payload.fearFromWounds);
+    if (directFear) return directFear as FearFromWoundsTelemetry;
+
+    const directResult = this.asRecord(payload.result);
+    const nestedFear = this.asRecord(directResult?.fearFromWounds);
+    if (nestedFear) return nestedFear as FearFromWoundsTelemetry;
 
     return undefined;
   }
@@ -727,6 +949,19 @@ export class StatisticsTracker {
       damageFearAssigned: 0,
       damageDelayAssigned: 0,
       passiveOrOtherDelayAssigned: 0,
+      fearTestsFromWoundsTriggered: 0,
+      fearTestsFromWoundsRequired: 0,
+      fearTestsFromWoundsAttempted: 0,
+      fearTestsFromWoundsPassed: 0,
+      fearTestsFromWoundsFailed: 0,
+      fearTestsFromWoundsSkipped: 0,
+      fearTestsFromWoundsSkippedAlreadyDisordered: 0,
+      fearTestsFromWoundsSkippedEngagedNotDistracted: 0,
+      fearTestsFromWoundsSkippedAlreadyTestedThisTurn: 0,
+      fearTestsFromWoundsSkippedImmuneToFear: 0,
+      fearTestsFromWoundsSkippedMoraleExempt: 0,
+      fearTestsFromWoundsFearAdded: 0,
+      fearTestsFromWoundsFailedNoFearAdded: 0,
     };
   }
 
@@ -747,6 +982,11 @@ export class StatisticsTracker {
         optionsAvailable: 0,
         offeredByType: {},
         availableByType: {},
+        rejectedByReason: {},
+        rejectedByReasonByTurn: {},
+        rejectedStatusByType: {},
+        prefilteredByReason: {},
+        prefilteredByReasonByTurn: {},
         used: 0,
         usedByType: {},
       },

@@ -11,7 +11,7 @@ import { Battlefield } from '../battlefield/Battlefield';
 import { TerrainElement } from '../battlefield/terrain/TerrainElement';
 import { SpatialRules } from '../battlefield/spatial/spatial-rules';
 import { getBaseDiameterFromSiz } from '../battlefield/spatial/size-utils';
-import { d6, getDieSuccesses, DiceType } from '../subroutines/dice-roller';
+import { resolveUnopposedTest } from '../subroutines/dice-roller';
 import { getAvailableHands, getTotalHands } from './hand-requirements';
 
 export interface AgilityState {
@@ -241,23 +241,11 @@ export function resolveFallingTest(
   const beyondAgility = Math.max(0, fallDistance - agility);
   const dr = siz + Math.round(beyondAgility / 4);
 
-  // Unopposed FOR Test: Character rolls 2 Base dice + FOR, System rolls 2 Base dice + 2
-  // For Unopposed tests, System score = 2 (base) + 2 (fixed) = 4
-  const systemScore = 4;
-
-  // Character rolls 2 Base dice + FOR attribute using dice-roller
-  const roll1 = d6();
-  const roll2 = d6();
-
-  // Count successes: 4-5 = 1 success, 6 = 2 successes (using getDieSuccesses)
-  let successes = 0;
-  successes += getDieSuccesses(DiceType.Base, roll1).successes;
-  successes += getDieSuccesses(DiceType.Base, roll2).successes;
-
-  const characterScore = forAttribute + successes;
-
-  // Calculate misses (how much test failed by)
-  const misses = Math.max(0, systemScore - characterScore);
+  const result = resolveUnopposedTest(
+    { attributeValue: forAttribute },
+    { dr }
+  );
+  const misses = Math.max(0, -result.score);
 
   // Wound if fall >= Agility - 0.5
   const woundAdded = fallDistance >= agility - 0.5;

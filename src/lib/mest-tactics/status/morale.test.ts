@@ -1,8 +1,9 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { createCharacter } from '../utils/character-factory';
 import { Battlefield } from '../battlefield/Battlefield';
 import { applyFearFromWounds, applyFearFromAllyKO } from './morale';
 import type { Profile } from '../core/Profile';
+import { setRoller, resetRoller } from '../subroutines/dice-roller';
 
 describe('morale', () => {
   let battlefield: Battlefield;
@@ -10,6 +11,7 @@ describe('morale', () => {
   let defender: any;
 
   beforeEach(async () => {
+    setRoller((diceCount: number) => Array.from({ length: diceCount }, () => 1));
     battlefield = new Battlefield(12, 12);
     const attackerProfile: Profile = {
       name: 'Attacker',
@@ -53,9 +55,15 @@ describe('morale', () => {
     battlefield.placeCharacter(defender, { x: 6, y: 6 });
   });
 
+  afterEach(() => {
+    resetRoller();
+  });
+
   it('should add fear tokens when failing a morale test after wounds', () => {
     const result = applyFearFromWounds(defender, 1, [1, 1]);
     expect(result.pass).toBe(false);
+    expect(result.testRequired).toBe(true);
+    expect(result.testAttempted).toBe(true);
     expect(defender.state.fearTokens).toBeGreaterThan(0);
   });
 
@@ -104,6 +112,9 @@ describe('morale', () => {
 
     expect(result.pass).toBe(true);
     expect(result.fearAdded).toBe(0);
+    expect(result.testRequired).toBe(false);
+    expect(result.testAttempted).toBe(false);
+    expect(result.skipReason).toBe('already_disordered');
     expect(defender.state.fearTokens).toBe(2);
   });
 
@@ -116,6 +127,9 @@ describe('morale', () => {
 
     expect(result.pass).toBe(true);
     expect(result.fearAdded).toBe(0);
+    expect(result.testRequired).toBe(false);
+    expect(result.testAttempted).toBe(false);
+    expect(result.skipReason).toBe('engaged_not_distracted');
     expect(defender.state.fearTokens).toBe(0);
   });
 
@@ -142,6 +156,9 @@ describe('morale', () => {
     expect(first.pass).toBe(false);
     expect(second.pass).toBe(true);
     expect(second.fearAdded).toBe(0);
+    expect(second.testRequired).toBe(false);
+    expect(second.testAttempted).toBe(false);
+    expect(second.skipReason).toBe('already_disordered');
     expect(defender.state.fearTokens).toBe(fearAfterFirst);
   });
 

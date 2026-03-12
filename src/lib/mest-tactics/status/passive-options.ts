@@ -111,8 +111,52 @@ function countCarryOverDice(dice?: TestDice): number {
   return (dice.base ?? 0) + (dice.modifier ?? 0) + (dice.wild ?? 0);
 }
 
+function isFailedHitTest(result?: ResolveTestResult): boolean {
+  if (!result) return true;
+  if (typeof result.pass === 'boolean') {
+    return result.pass === false;
+  }
+  if (typeof result.score === 'number') {
+    return result.score < 0;
+  }
+  return true;
+}
+
 function hasTrait(character: Character, name: string): boolean {
   return getCharacterTraitLevel(character, name) > 0;
+}
+
+function attentiveOrderedRequirementReason(character: Character): string {
+  const isAttentive = character.state.isAttentive;
+  const isOrdered = character.state.isOrdered;
+  if (!isAttentive && !isOrdered) return 'Requires Attentive+Ordered.';
+  if (!isAttentive) return 'Requires Attentive.';
+  if (!isOrdered) return 'Requires Ordered.';
+  return 'Requires Attentive+Ordered.';
+}
+
+function resolveLosVisibilityFailureReason(params: {
+  battlefield?: Battlefield;
+  sourceModel: SpatialModel | null;
+  targetModel: SpatialModel | null;
+  hasLOS: boolean;
+  withinVisibility: boolean;
+}): string | null {
+  const { battlefield, sourceModel, targetModel, hasLOS, withinVisibility } = params;
+  if (!withinVisibility) {
+    return 'Out of Visibility OR range.';
+  }
+  if (hasLOS) {
+    return null;
+  }
+  if (!battlefield || !sourceModel || !targetModel) {
+    return 'LOS unavailable.';
+  }
+  const cover = SpatialRules.getCoverResult(battlefield, sourceModel, targetModel);
+  if (cover.blockingModelId) {
+    return 'LOS blocked by model.';
+  }
+  return 'LOS blocked.';
 }
 
 export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
@@ -132,13 +176,24 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       && !engaged
       && cover.hasLOS
       && defenderRef >= attackerRef;
+    const takeCoverReason = canUse
+      ? undefined
+      : (!defender.state.isAttentive || !defender.state.isOrdered)
+        ? attentiveOrderedRequirementReason(defender)
+        : engaged
+          ? 'Requires defender to be Free.'
+          : !cover.hasLOS
+            ? 'Requires LOS.'
+            : defenderRef < attackerRef
+              ? 'Requires defender REF >= attacker REF.'
+              : 'Unavailable.';
     options.push({
       id: `${defender.id}:TakeCover`,
       type: 'TakeCover',
       actorId: defender.id,
       targetId: attacker.id,
       available: canUse,
-      reason: canUse ? undefined : 'Requires Attentive+Ordered, not engaged, in LOS, and REF >= attacker.',
+      reason: takeCoverReason,
       payload: {
         maxMove: defender.finalAttributes.mov ?? defender.attributes.mov ?? 0,
         requiresLOS: true,
@@ -151,7 +206,7 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       actorId: defender.id,
       targetId: attacker.id,
       available: canDefend,
-      reason: canDefend ? undefined : 'Requires Attentive defender.',
+      reason: canDefend ? undefined : 'Requires Attentive.',
     });
     return options;
   }
@@ -164,13 +219,18 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
     if (!attackerModel || !defenderModel) return options;
     const engaged = SpatialRules.isEngaged(attackerModel, defenderModel);
     const canDefend = defender.state.isAttentive && engaged;
+    const defendReason = canDefend
+      ? undefined
+      : !defender.state.isAttentive
+        ? 'Requires Attentive.'
+        : 'Requires melee engagement.';
     options.push({
       id: `${defender.id}:Defend`,
       type: 'Defend',
       actorId: defender.id,
       targetId: attacker.id,
       available: canDefend,
-      reason: canDefend ? undefined : 'Requires Attentive defender engaged in melee.',
+      reason: defendReason,
     });
     return options;
   }
@@ -192,10 +252,18 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       ? SpatialRules.distanceEdgeToEdge(defenderModel, attackerModel)
       : Infinity;
     const withinVisibility = edgeDistance <= visibilityOrMu;
+    const losFailureReason = resolveLosVisibilityFailureReason({
+      battlefield,
+      sourceModel: defenderModel,
+      targetModel: attackerModel,
+      hasLOS,
+      withinVisibility,
+    });
     const carryOverCount = event.hitTestResult
       ? countCarryOverDice(event.hitTestResult.p2Result?.carryOverDice)
       : null;
     const hasCarryOver = carryOverCount === null ? true : carryOverCount > 0;
+    const failedHitTest = isFailedHitTest(event.hitTestResult);
     const hasCounterStrikeTrait = hasTrait(event.defender, 'Counter-strike!')
       || hasTrait(event.defender, 'Counter-strike');
 
@@ -204,11 +272,13 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       type: 'CounterAction',
       actorId: event.defender.id,
       targetId: event.attacker.id,
-      available: canReact && hasCarryOver && (event.attackType !== 'ranged' || defenderRef >= attackerRef),
-      reason: canReact && hasCarryOver && (event.attackType !== 'ranged' || defenderRef >= attackerRef)
+      available: canReact && failedHitTest && hasCarryOver && (event.attackType !== 'ranged' || defenderRef >= attackerRef),
+      reason: canReact && failedHitTest && hasCarryOver && (event.attackType !== 'ranged' || defenderRef >= attackerRef)
         ? undefined
         : !canReact
-          ? 'Requires Attentive+Ordered.'
+          ? attentiveOrderedRequirementReason(event.defender)
+          : !failedHitTest
+            ? 'Requires failed Hit Test.'
           : !hasCarryOver
             ? 'Requires carry-over from the failed Hit Test.'
             : 'Requires defender REF >= attacker REF.',
@@ -220,10 +290,10 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       actorId: event.defender.id,
       targetId: event.attacker.id,
       available: canReact,
-      reason: canReact ? undefined : 'Requires Attentive+Ordered.',
+      reason: canReact ? undefined : attentiveOrderedRequirementReason(event.defender),
     });
 
-    const allowStrike = canReact && event.attackType === 'melee' && engaged;
+    const allowStrike = canReact && failedHitTest && event.attackType === 'melee' && engaged && hasCarryOver;
     options.push({
       id: `${event.defender.id}:CounterStrike`,
       type: 'CounterStrike',
@@ -233,13 +303,18 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       reason: allowStrike && hasCounterStrikeTrait
         ? undefined
         : !canReact
-          ? 'Requires Attentive+Ordered.'
+          ? attentiveOrderedRequirementReason(event.defender)
+          : !failedHitTest
+            ? 'Requires failed Hit Test.'
+          : !hasCarryOver
+            ? 'Requires carry-over from the failed Hit Test.'
           : !engaged || event.attackType !== 'melee'
             ? 'Requires melee engagement.'
             : 'Requires Counter-strike! trait.',
     });
 
     const allowFire = canReact
+      && failedHitTest
       && event.attackType === 'ranged'
       && hasLOS
       && withinVisibility
@@ -255,9 +330,11 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       reason: allowFire
         ? undefined
         : !canReact
-          ? 'Requires Attentive+Ordered.'
-          : !hasLOS || !withinVisibility
-            ? 'Requires LOS within Visibility.'
+          ? attentiveOrderedRequirementReason(event.defender)
+          : !failedHitTest
+            ? 'Requires failed Hit Test.'
+          : losFailureReason
+            ? losFailureReason
             : engaged
               ? 'Requires defender to be Free.'
               : event.attacker.state.isHidden
@@ -298,6 +375,13 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
       const visibilityOrMu = event.visibilityOrMu ?? 16;
       const edgeDistance = SpatialRules.distanceEdgeToEdge(observerModel, moverModel);
       const withinVisibility = edgeDistance <= visibilityOrMu;
+      const losFailureReason = resolveLosVisibilityFailureReason({
+        battlefield,
+        sourceModel: observerModel,
+        targetModel: moverModel,
+        hasLOS,
+        withinVisibility,
+      });
       const moveLimit = observer.finalAttributes.mov ?? observer.attributes.mov ?? 0;
       const canEngage = edgeDistance <= moveLimit;
       const observerRef = observer.finalAttributes.ref ?? observer.attributes.ref ?? 0;
@@ -313,9 +397,9 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
         reason: canReact && hasLOS && withinVisibility && canEngage && moveApSpent >= requiredAp
           ? undefined
           : !canReact
-            ? 'Requires Attentive+Ordered observer.'
-            : !hasLOS || !withinVisibility
-              ? 'Requires LOS within Visibility.'
+            ? attentiveOrderedRequirementReason(observer)
+            : losFailureReason
+              ? losFailureReason
               : !canEngage
                 ? 'Requires move to engage.'
                 : 'Requires target to spend enough AP on movement.',
@@ -356,7 +440,11 @@ export function buildPassiveOptions(event: PassiveEvent): PassiveOption[] {
         actorId: opponent.id,
         targetId: event.mover.id,
         available: canReact && wasEngaged,
-        reason: canReact && wasEngaged ? undefined : 'Requires Attentive+Ordered opponent engaged with mover.',
+        reason: canReact && wasEngaged
+          ? undefined
+          : !canReact
+            ? attentiveOrderedRequirementReason(opponent)
+            : 'Requires opponent engaged with mover.',
       });
     }
     return options;
@@ -424,7 +512,7 @@ export function buildActiveToggleOptions(params: {
     available: params.attacker.state.isAttentive && params.attacker.state.isOrdered,
     reason: params.attacker.state.isAttentive && params.attacker.state.isOrdered
       ? undefined
-      : 'Requires Attentive+Ordered.',
+      : attentiveOrderedRequirementReason(params.attacker),
   });
 
   options.push({

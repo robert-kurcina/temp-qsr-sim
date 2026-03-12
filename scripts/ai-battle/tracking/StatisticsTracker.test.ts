@@ -153,6 +153,67 @@ describe('StatisticsTracker', () => {
     expect(stats.damageTestsFailed).toBe(1);
   });
 
+  it('tracks fear-test telemetry for wound-triggered checks', () => {
+    const tracker = new StatisticsTracker();
+    tracker.trackCombatExtras({
+      result: {
+        hitTestResult: { pass: true },
+        damageResolution: {
+          damageTestResult: { pass: true },
+        },
+        fearFromWounds: {
+          woundsTrigger: 1,
+          testRequired: false,
+          testAttempted: false,
+          skipReason: 'engaged_not_distracted',
+          pass: true,
+        },
+      },
+    } as any);
+
+    tracker.trackCombatExtras({
+      result: {
+        hitTestResult: { pass: true },
+        damageResolution: {
+          damageTestResult: { pass: true },
+        },
+        fearFromWounds: {
+          woundsTrigger: 2,
+          testRequired: true,
+          testAttempted: true,
+          pass: false,
+          fearAdded: 0,
+        },
+      },
+    } as any);
+
+    tracker.trackCombatExtras({
+      result: {
+        hitTestResult: { pass: true },
+        damageResolution: {
+          damageTestResult: { pass: true },
+        },
+        fearFromWounds: {
+          woundsTrigger: 1,
+          testRequired: true,
+          testAttempted: true,
+          pass: false,
+          fearAdded: 2,
+        },
+      },
+    } as any);
+
+    const stats = tracker.getStats();
+    expect(stats.fearTestsFromWoundsTriggered).toBe(3);
+    expect(stats.fearTestsFromWoundsRequired).toBe(2);
+    expect(stats.fearTestsFromWoundsAttempted).toBe(2);
+    expect(stats.fearTestsFromWoundsFailed).toBe(2);
+    expect(stats.fearTestsFromWoundsFearAdded).toBe(2);
+    expect(stats.fearTestsFromWoundsFailedNoFearAdded).toBe(1);
+    expect(stats.fearTestsFromWoundsSkipped).toBe(1);
+    expect(stats.fearTestsFromWoundsSkippedEngagedNotDistracted).toBe(1);
+  });
+
   it('splits combat assignment delay into damage vs passive/other buckets', () => {
     const tracker = new StatisticsTracker();
     tracker.trackCombatAssignmentsFromStep({
@@ -187,5 +248,135 @@ describe('StatisticsTracker', () => {
     expect(stats.damageWoundsAssigned).toBe(2);
     expect(stats.damageDelayAssigned).toBe(1);
     expect(stats.passiveOrOtherDelayAssigned).toBe(1);
+  });
+
+  it('tracks passive-option rejection reasons from unavailable options and runtime soft rejections', () => {
+    const tracker = new StatisticsTracker();
+    tracker.trackPassiveOptions([
+      {
+        id: 'a',
+        type: 'CounterAction',
+        actorId: 'def',
+        available: false,
+        reason: 'Requires failed Hit Test.',
+      } as any,
+      {
+        id: 'b',
+        type: 'CounterAction',
+        actorId: 'def',
+        available: false,
+        reason: 'Requires carry-over from the failed Hit Test.',
+      } as any,
+      {
+        id: 'c',
+        type: 'CounterFire',
+        actorId: 'def',
+        available: false,
+        reason: 'LOS blocked by model.',
+      } as any,
+      {
+        id: 'd',
+        type: 'CounterCharge',
+        actorId: 'def',
+        available: false,
+        reason: 'Out of Visibility OR range.',
+      } as any,
+      {
+        id: 'e',
+        type: 'CounterCharge',
+        actorId: 'def',
+        available: false,
+        reason: 'Requires move to engage.',
+      } as any,
+      {
+        id: 'f',
+        type: 'CounterCharge',
+        actorId: 'def',
+        available: false,
+        reason: 'Requires target to spend enough AP on movement.',
+      } as any,
+      {
+        id: 'g',
+        type: 'Defend',
+        actorId: 'def',
+        available: false,
+        reason: 'Requires Attentive defender.',
+      } as any,
+      {
+        id: 'h',
+        type: 'CounterAction',
+        actorId: 'def',
+        available: false,
+        reason: 'Requires Ordered.',
+      } as any,
+    ], 2);
+    tracker.trackPassiveRejection('Low damage potential.', 1, 3);
+    tracker.trackPassiveRejection('No weapon available.', 1, 3);
+    tracker.trackPassivePrefilter('Requires move to engage.', 2, 1);
+
+    const advanced = tracker.getAdvancedRules();
+    expect(advanced.passiveOptions.rejectedByReason.not_failed_hit).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.no_carry_over).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.no_los_model_blocker).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.out_of_visibility).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.cannot_reach_engagement).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.insufficient_move_ap_spent).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.not_attentive).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.not_ordered).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.low_damage_potential).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.no_weapon).toBe(1);
+    expect(advanced.passiveOptions.rejectedStatusByType['not_attentive:Defend']).toBe(1);
+    expect(advanced.passiveOptions.rejectedStatusByType['not_ordered:CounterAction']).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReasonByTurn.T2.no_los_model_blocker).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReasonByTurn.T2.out_of_visibility).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReasonByTurn.T2.cannot_reach_engagement).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReasonByTurn.T2.insufficient_move_ap_spent).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReasonByTurn.T2.not_attentive).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReasonByTurn.T2.not_ordered).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReasonByTurn['T3+'].low_damage_potential).toBe(1);
+    expect(advanced.passiveOptions.prefilteredByReason.cannot_reach_engagement).toBe(2);
+    expect(advanced.passiveOptions.prefilteredByReasonByTurn.T1.cannot_reach_engagement).toBe(2);
+  });
+
+  it('prefilters status-gated passive options during inspect', () => {
+    const tracker = new StatisticsTracker();
+    const gameManager = {
+      currentTurn: 2,
+      getPassiveOptions: () => [
+        {
+          id: 'a',
+          type: 'CounterAction',
+          actorId: 'def',
+          available: false,
+          reason: 'Requires Attentive.',
+        },
+        {
+          id: 'b',
+          type: 'CounterFire',
+          actorId: 'def',
+          available: false,
+          reason: 'Requires defender REF >= attacker REF.',
+        },
+        {
+          id: 'c',
+          type: 'React',
+          actorId: 'def',
+          available: true,
+        },
+      ],
+    } as any;
+
+    const options = tracker.inspectPassiveOptions(gameManager, {} as any);
+    expect(options).toHaveLength(2);
+    expect(options.some(option => option.id === 'a')).toBe(false);
+    expect(options.some(option => option.id === 'b')).toBe(true);
+    expect(options.some(option => option.id === 'c')).toBe(true);
+
+    const advanced = tracker.getAdvancedRules();
+    expect(advanced.passiveOptions.prefilteredByReason.not_attentive).toBe(1);
+    expect(advanced.passiveOptions.prefilteredByReasonByTurn.T2.not_attentive).toBe(1);
+    expect(advanced.passiveOptions.rejectedByReason.not_attentive).toBeUndefined();
+    expect(advanced.passiveOptions.rejectedByReason.ref_gate).toBe(1);
+    expect(advanced.passiveOptions.rejectedStatusByType['not_attentive:CounterAction']).toBe(1);
   });
 });

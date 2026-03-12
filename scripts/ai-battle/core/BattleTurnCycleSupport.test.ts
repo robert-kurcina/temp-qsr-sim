@@ -92,6 +92,7 @@ describe('BattleTurnCycleSupport', () => {
     expect(startTurn).toHaveBeenCalledTimes(2);
     expect(resolveCharacterTurn).toHaveBeenCalledTimes(4);
     expect(auditTurns).toHaveLength(2);
+    expect((gameManager as any).currentTurn).toBe(2);
   });
 
   it('uses game-manager activation queue when getNextToActivate is available', async () => {

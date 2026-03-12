@@ -544,25 +544,17 @@ export class GameManager {
       // Tactics X: +X Base dice for Initiative Tests
       const tacticsBonus = getTacticsInitiativeBonus(character);
 
-      // Roll 2 Base dice + Tactics bonus dice
-      let initiativeRoll = 0;
-      let dicePips = 0;
-      const dice: number[] = [];
+      // Initiative Test uses the shared performing-tests API:
+      // 2 Base dice + Tactics bonus dice, then add INT.
       const totalDice = 2 + tacticsBonus;
-      for (let i = 0; i < totalDice; i++) {
-        const roll = Math.floor(roller() * 6) + 1;
-        dice.push(roll);
-        dicePips += roll; // Track total pips for tie-breaker
-        // Base dice: 4-5 = 1 success, 6 = 2 successes
-        if (roll >= 6) {
-          initiativeRoll += 2;
-        } else if (roll >= 4) {
-          initiativeRoll += 1;
-        }
-      }
-
-      // QSR: Initiative Test uses INT attribute
-      character.initiative = initiativeRoll + character.attributes.int;
+      const dice = Array.from({ length: totalDice }, () => Math.floor(roller() * 6) + 1);
+      const dicePips = dice.reduce((sum, die) => sum + die, 0);
+      const initiativeTest = performTest(
+        { base: totalDice, modifier: 0, wild: 0 },
+        character.attributes.int,
+        dice
+      );
+      character.initiative = initiativeTest.score;
 
       const side = characterToSide.get(character.id);
       initiativeResults.push({

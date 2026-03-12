@@ -35,7 +35,6 @@ import {
 } from './ai-battle/cli/ArgParser';
 import { parseAiBattleCliArgs, resolveQuickBattleCliDefaults } from './ai-battle/cli/SetupCliParser';
 import { GAME_SIZE_CONFIG } from './ai-battle/AIBattleConfig';
-import { getDefaultSimpleBattlefieldPath } from './shared/BattlefieldPaths';
 import { resolveMissionName } from './shared/MissionCatalog';
 
 // ============================================================================
@@ -79,7 +78,6 @@ async function runQuickBattle(
   const visibilityOrMu = getVisibilityOrForLighting(lighting);
   const resolvedMissionId = parseMissionIdArg(missionId, 'QAI_11');
 
-  const resolvedBattlefieldPath = battlefieldPath ?? getDefaultSimpleBattlefieldPath(gameSize);
   const config = {
     missionId: resolvedMissionId,
     missionName: resolveMissionName(resolvedMissionId),
@@ -110,13 +108,13 @@ async function runQuickBattle(
     maxOrm: 3,
     allowConcentrateRangeExtension: true,
     perCharacterFovLos: false,
-    allowWaitAction: false,
+    allowWaitAction: true,
     allowHideAction: false,
     verbose: true,
     seed,
     audit: enableAudit,
     viewer: enableViewer,
-    battlefieldPath: resolvedBattlefieldPath ?? undefined,
+    battlefieldPath: battlefieldPath ?? undefined,
     initiativeCardTieBreakerOnTie,
     initiativeCardHolderSideId,
   };

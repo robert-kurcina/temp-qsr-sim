@@ -170,6 +170,9 @@ export async function runActivationDecisionLoopForRunner(
     });
     let guard = 0;
     const activationStartMs = Date.now();
+    let activationBuildContextMs = 0;
+    let activationDecisionCycleMs = 0;
+    let activationStepExecutionMs = 0;
     while (guard < loopBudget.maxDecisionAttempts) {
       guard++;
       const apBefore = gameManager.getApRemaining(character);
@@ -187,7 +190,7 @@ export async function runActivationDecisionLoopForRunner(
 
       if (loopStartMs - activationStartMs > 5000) {
         console.warn(
-          `[DEBUG] ${character.profile.name} activation taking too long: ${loopStartMs - activationStartMs}ms, guard=${guard}, ap=${apBefore}`
+          `[DEBUG] ${character.profile.name} activation taking too long: ${loopStartMs - activationStartMs}ms, guard=${guard}, ap=${apBefore}, buildContextMs=${activationBuildContextMs.toFixed(1)}, decisionCycleMs=${activationDecisionCycleMs.toFixed(1)}, stepExecutionMs=${activationStepExecutionMs.toFixed(1)}`
         );
       }
 
@@ -206,6 +209,7 @@ export async function runActivationDecisionLoopForRunner(
         includeFractionalPotentialLedger: false,
       });
       const resourceSnapshot = cloneSideResourceMaps(missionVpBySide, missionRpBySide);
+      const buildContextStartMs = Date.now();
       const context: AIContext = buildAIContext({
         character,
         allies,
@@ -225,6 +229,10 @@ export async function runActivationDecisionLoopForRunner(
         side: missionSides[sideIndex],
         coordinator: coordinatorSlice,
       });
+      const buildContextMs = Date.now() - buildContextStartMs;
+      activationBuildContextMs += buildContextMs;
+      profiler.recordPhaseDuration('ai.build_context', buildContextMs);
+
       const aiDecisionStartMs = Date.now();
       const aiResult = runAIDecisionCycle(context, {
         updateKnowledge: () => profiler.withPhaseTiming(
@@ -237,6 +245,8 @@ export async function runActivationDecisionLoopForRunner(
         ),
       });
       const aiDecisionMs = Date.now() - aiDecisionStartMs;
+      activationDecisionCycleMs += aiDecisionMs;
+      profiler.recordPhaseDuration('ai.decision_cycle', aiDecisionMs);
       if (aiDecisionMs > 1000) {
         console.warn(`[DEBUG] AI decision took ${aiDecisionMs}ms for ${character.profile.name}`);
       }
@@ -249,6 +259,7 @@ export async function runActivationDecisionLoopForRunner(
         break;
       }
 
+      const stepExecutionStartMs = Date.now();
       const stepOutcome = await executeActivationDecisionStepForRunner({
         decision: decision as ActionDecision,
         apBefore,
@@ -305,6 +316,9 @@ export async function runActivationDecisionLoopForRunner(
           });
         },
       });
+      const stepExecutionMs = Date.now() - stepExecutionStartMs;
+      activationStepExecutionMs += stepExecutionMs;
+      profiler.recordPhaseDuration('ai.step_execution', stepExecutionMs);
 
       lastKnownAp = stepOutcome.lastKnownAp;
       if (stepOutcome.continueLoop) {

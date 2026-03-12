@@ -3,6 +3,7 @@ import { Item } from '../core/Item';
 import { TestContext } from '../utils/TestContext';
 import { ResolveTestResult, TestDice } from '../subroutines/dice-roller';
 import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
+import type { FearResult } from '../status/morale';
 import { resolveDamage, DamageResolution } from '../subroutines/damage-test';
 import { getCharacterTraitLevel } from '../status/status-system';
 import { SpatialRules, SpatialModel } from '../battlefield/spatial/spatial-rules';
@@ -13,6 +14,7 @@ export interface CounterStrikeResult {
   executed: boolean;
   reason?: string;
   damageResolution?: DamageResolution;
+  fearFromWounds?: FearResult;
   bonusActionEligible?: boolean;
   removedWait?: boolean;
   delayAdded?: boolean;
@@ -22,6 +24,7 @@ export interface CounterFireResult {
   executed: boolean;
   reason?: string;
   damageResolution?: DamageResolution;
+  fearFromWounds?: FearResult;
   bonusActionEligible?: boolean;
   removedWait?: boolean;
   delayAdded?: boolean;
@@ -56,6 +59,16 @@ export interface CounterActionDeps {
   resolveCarryOverSuccesses: (dice: TestDice, rolls?: number[]) => number;
 }
 
+function isFailedHitTest(hitTestResult: ResolveTestResult): boolean {
+  if (typeof hitTestResult.pass === 'boolean') {
+    return hitTestResult.pass === false;
+  }
+  if (typeof hitTestResult.score === 'number') {
+    return hitTestResult.score < 0;
+  }
+  return false;
+}
+
 export function executeCounterStrike(
   deps: CounterActionDeps,
   defender: Character,
@@ -76,8 +89,8 @@ export function executeCounterStrike(
   if (requireTrait && !hasTrait) {
     return { executed: false, reason: 'Requires Counter-strike! trait.' };
   }
-  if (hitTestResult.score > 0) {
-    return { executed: false, reason: 'Hit Test did not fail.' };
+  if (!isFailedHitTest(hitTestResult)) {
+    return { executed: false, reason: 'Requires failed Hit Test.' };
   }
 
   const defenderModel = deps.buildSpatialModel(defender);
@@ -98,9 +111,10 @@ export function executeCounterStrike(
   attacker.state.delayTokens = damageResolution.defenderState.delayTokens;
   attacker.state.isKOd = damageResolution.defenderState.isKOd;
   attacker.state.isEliminated = damageResolution.defenderState.isEliminated;
+  let fearFromWounds: FearResult | undefined;
   if (damageResolution) {
     const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-    applyFearFromWounds(attacker, woundsAdded);
+    fearFromWounds = applyFearFromWounds(attacker, woundsAdded);
     if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
       if (deps.battlefield && options.moraleAllies) {
         applyFearFromAllyKO(deps.battlefield, attacker, options.moraleAllies, options.moraleOptions);
@@ -112,6 +126,7 @@ export function executeCounterStrike(
   return {
     executed: true,
     damageResolution,
+    fearFromWounds,
     bonusActionEligible: Boolean(damageResolution.damageTestResult?.pass),
     removedWait: cost.removedWait,
     delayAdded: cost.delayAdded,
@@ -132,8 +147,8 @@ export function executeCounterFire(
   if (!defender.state.isAttentive || !defender.state.isOrdered) {
     return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
   }
-  if (hitTestResult.score > 0) {
-    return { executed: false, reason: 'Hit Test did not fail.' };
+  if (!isFailedHitTest(hitTestResult)) {
+    return { executed: false, reason: 'Requires failed Hit Test.' };
   }
   const defenderModel = deps.buildSpatialModel(defender);
   const attackerModel = deps.buildSpatialModel(attacker);
@@ -170,9 +185,10 @@ export function executeCounterFire(
   attacker.state.delayTokens = damageResolution.defenderState.delayTokens;
   attacker.state.isKOd = damageResolution.defenderState.isKOd;
   attacker.state.isEliminated = damageResolution.defenderState.isEliminated;
+  let fearFromWounds: FearResult | undefined;
   if (damageResolution) {
     const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-    applyFearFromWounds(attacker, woundsAdded);
+    fearFromWounds = applyFearFromWounds(attacker, woundsAdded);
     if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
       if (deps.battlefield && options.moraleAllies) {
         applyFearFromAllyKO(deps.battlefield, attacker, options.moraleAllies, options.moraleOptions);
@@ -184,6 +200,7 @@ export function executeCounterFire(
   return {
     executed: true,
     damageResolution,
+    fearFromWounds,
     bonusActionEligible: Boolean(damageResolution.damageTestResult?.pass),
     removedWait: cost.removedWait,
     delayAdded: cost.delayAdded,
@@ -200,8 +217,8 @@ export function executeCounterAction(
   if (!defender.state.isAttentive || !defender.state.isOrdered) {
     return { executed: false, reason: 'Requires Attentive+Ordered defender.' };
   }
-  if (hitTestResult.score > 0) {
-    return { executed: false, reason: 'Hit Test did not fail.' };
+  if (!isFailedHitTest(hitTestResult)) {
+    return { executed: false, reason: 'Requires failed Hit Test.' };
   }
   const carryOverDice = hitTestResult.p2Result?.carryOverDice ?? {};
   const carryOverCount = deps.countDice(carryOverDice);

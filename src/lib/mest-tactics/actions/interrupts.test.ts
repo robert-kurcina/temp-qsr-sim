@@ -181,6 +181,27 @@ describe('interrupt execution', () => {
     expect(defender.state.delayTokens).toBe(1);
   });
 
+  it('should not execute Counter-action when the hit test did not fail', () => {
+    const attacker = new Character(makeProfile('Attacker', { cca: 1, rca: 1, ref: 1, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));
+    const defender = new Character(makeProfile('Defender', { cca: 1, rca: 1, ref: 2, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));
+
+    manager = new GameManager([attacker, defender], battlefield);
+
+    const nonFailedHitTestResult = {
+      score: 0,
+      pass: true,
+      cascades: 1,
+      p1FinalScore: 2,
+      p2FinalScore: 2,
+      p1Result: { score: 2, carryOverDice: { base: 0, modifier: 0, wild: 0 } },
+      p2Result: { score: 2, carryOverDice: { base: 1, modifier: 0, wild: 0 } },
+    };
+
+    const result = manager.executeCounterAction(defender, attacker, nonFailedHitTestResult as any);
+    expect(result.executed).toBe(false);
+    expect(result.reason).toContain('failed Hit Test');
+  });
+
   it('should execute Counter-charge to engage the mover', () => {
     const mover = new Character(makeProfile('Mover', { cca: 1, rca: 1, ref: 1, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));
     const observer = new Character(makeProfile('Observer', { cca: 1, rca: 1, ref: 3, int: 0, pow: 0, str: 1, for: 1, mov: 3, siz: 3 }));

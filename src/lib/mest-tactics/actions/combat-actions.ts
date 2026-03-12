@@ -14,6 +14,7 @@ import { BonusActionOutcome, BonusActionSelection, applyBonusAction, buildBonusA
 import { parseStatusTrait, applyStatusTraitOnHit } from '../status/status-system';
 import { parseTrait } from '../traits/trait-parser';
 import { MoraleOptions, applyFearFromAllyKO, applyFearFromWounds } from '../status/morale';
+import type { FearResult } from '../status/morale';
 import { makeIndirectRangedAttack } from '../combat/indirect-ranged-combat';
 import { calculateLOFAngle, resolveScatter, isValidIndirectArc, type ScatterResult } from '../combat/scatter';
 import { LOSOperations } from '../battlefield/los/LOSOperations';
@@ -671,9 +672,10 @@ export function executeRangedAttack(
       attacker.state.isHidden = false;
     }
   }
+  let fearFromWounds: FearResult | undefined;
   if (damageResolution) {
     const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-    applyFearFromWounds(defender, woundsAdded);
+    fearFromWounds = applyFearFromWounds(defender, woundsAdded);
     if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
       if (deps.battlefield && options.moraleAllies) {
         applyFearFromAllyKO(deps.battlefield, defender, options.moraleAllies, options.moraleOptions);
@@ -687,7 +689,7 @@ export function executeRangedAttack(
   }
 
   return {
-    result: { hit: true, hitTestResult, damageResolution },
+    result: { hit: true, hitTestResult, damageResolution, fearFromWounds },
     context: resolvedContext,
     friendlyFire,
     takeCover: takeCoverResult,
@@ -1416,9 +1418,10 @@ export function executeCloseCombatAttack(
   if (weapon.traits?.includes('[Reveal]')) {
     attacker.state.isHidden = false;
   }
+  let fearFromWounds: FearResult | undefined;
   if (damageResolution) {
     const woundsAdded = damageResolution.woundsAdded + damageResolution.stunWoundsAdded;
-    applyFearFromWounds(defender, woundsAdded);
+    fearFromWounds = applyFearFromWounds(defender, woundsAdded);
     if (damageResolution.defenderState.isKOd || damageResolution.defenderState.isEliminated) {
       if (deps.battlefield && options.moraleAllies) {
         applyFearFromAllyKO(deps.battlefield, defender, options.moraleAllies, options.moraleOptions);
@@ -1435,6 +1438,7 @@ export function executeCloseCombatAttack(
     hit: true,
     hitTestResult,
     damageResolution,
+    fearFromWounds,
     bonusActionOptions,
     bonusActionOutcome,
     context: mergedContext,
