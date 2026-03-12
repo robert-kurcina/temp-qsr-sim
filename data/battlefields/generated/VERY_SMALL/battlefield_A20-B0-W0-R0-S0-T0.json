@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "exportedAt": "2026-03-12T05:22:40.939Z",
+  "dimensions": {
+    "width": 18,
+    "height": 24
+  },
+  "terrainTypes": {},
+  "terrainInstances": [],
+  "delaunayMesh": {
+    "vertices": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ],
+    "triangles": [
+      [
+        0,
+        2,
+        1
+      ],
+      [
+        2,
+        3,
+        1
+      ]
+    ]
+  },
+  "stats": {
+    "placed": 0,
+    "density": 0
+  },
+  "metadata": {
+    "mode": "balanced",
+    "generator": "TerrainPlacementService v1.0"
+  }
+}

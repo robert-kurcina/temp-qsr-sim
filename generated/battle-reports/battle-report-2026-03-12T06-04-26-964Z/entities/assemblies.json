@@ -1,0 +1,30 @@
+[
+  {
+    "id": "assembly-1-assembly-a",
+    "name": "Assembly A",
+    "sideId": "side-1-side-a",
+    "sideName": "Side A",
+    "sideIndex": 0,
+    "members": [
+      "Assembly A-1-veteran-sword-broad-armored-gear-loadout",
+      "Assembly A-2-veteran-sword-broad-armored-gear-loadout",
+      "Assembly A-3-veteran-sword-broad-armored-gear-loadout",
+      "Assembly A-4-veteran-sword-broad-armored-gear-loadout"
+    ],
+    "totalBp": 396
+  },
+  {
+    "id": "assembly-2-assembly-b",
+    "name": "Assembly B",
+    "sideId": "side-2-side-b",
+    "sideName": "Side B",
+    "sideIndex": 1,
+    "members": [
+      "Assembly B-1-veteran-sword-broad-armored-gear-loadout",
+      "Assembly B-2-veteran-sword-broad-armored-gear-loadout",
+      "Assembly B-3-veteran-sword-broad-armored-gear-loadout",
+      "Assembly B-4-veteran-sword-broad-armored-gear-loadout"
+    ],
+    "totalBp": 396
+  }
+]

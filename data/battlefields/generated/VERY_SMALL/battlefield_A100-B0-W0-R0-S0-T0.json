@@ -1,0 +1,110 @@
+{
+  "version": "1.0",
+  "exportedAt": "2026-03-12T05:22:48.178Z",
+  "dimensions": {
+    "width": 18,
+    "height": 24
+  },
+  "terrainTypes": {
+    "Rough": {
+      "name": "Rough",
+      "los": "clear",
+      "movement": "normal",
+      "cover": "none",
+      "baseSize": 1
+    }
+  },
+  "terrainInstances": [
+    {
+      "typeRef": "Large Rough Patch",
+      "position": {
+        "x": 12.157176821807152,
+        "y": 6.300478648038839
+      },
+      "rotation": 57,
+      "vertices": [
+        {
+          "x": 12.157176821807152,
+          "y": 6.300478648038839
+        },
+        {
+          "x": 18.692845241987477,
+          "y": 16.364525463383924
+        },
+        {
+          "x": 6.112786722806118,
+          "y": 24.53411098860933
+        },
+        {
+          "x": -0.42288169737420755,
+          "y": 14.470064173264248
+        }
+      ]
+    }
+  ],
+  "delaunayMesh": {
+    "vertices": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ],
+    "triangles": [
+      [
+        4,
+        5,
+        1
+      ],
+      [
+        6,
+        3,
+        5
+      ],
+      [
+        4,
+        6,
+        5
+      ],
+      [
+        4,
+        7,
+        6
+      ],
+      [
+        0,
+        7,
+        4
+      ],
+      [
+        1,
+        0,
+        4
+      ],
+      [
+        7,
+        2,
+        6
+      ]
+    ]
+  },
+  "stats": {
+    "placed": 1,
+    "density": 0.23148148148148145
+  },
+  "metadata": {
+    "mode": "balanced",
+    "generator": "TerrainPlacementService v1.0"
+  }
+}

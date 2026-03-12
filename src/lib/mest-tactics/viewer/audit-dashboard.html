@@ -116,9 +116,20 @@
       background: #fff;
       border-radius: 8px;
       overflow: auto;
+      display: block;
+      padding: 0;
     }
-    .visual-audit-viewer svg {
-      margin: 1rem;
+    .visual-audit-viewer #battlefield-svg {
+      width: 100%;
+      min-height: 100%;
+    }
+    .visual-audit-viewer #battlefield-svg > svg {
+      margin: 0;
+      display: block;
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      overflow: visible;
     }
     .visual-audit-sidebar {
       width: 450px;
@@ -170,7 +181,7 @@
       height: 60px;
       border-radius: 50%;
       overflow: hidden;
-      border: 2px solid #0f3460;
+      border: 2px solid var(--side-ring, #0f3460);
       cursor: pointer;
       position: relative;
       background: #fff;
@@ -179,14 +190,51 @@
       border-color: #e94560;
     }
     .model-portrait.selected {
-      border-color: #e94560;
-      box-shadow: 0 0 8px #e94560;
+      border-color: var(--side-ring, #e94560);
+      box-shadow: 0 0 8px var(--side-ring, #e94560);
     }
     .model-portrait img {
+      position: absolute;
+      left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      clip-path: circle(50% at 50% 50%);
+      max-width: none;
+      max-height: none;
+      object-fit: none;
+      transform-origin: top left;
+      image-rendering: auto;
+    }
+    .attack-burst-star {
+      fill: #ffd166;
+      stroke: #ff8c42;
+      stroke-linejoin: round;
+      pointer-events: none;
+      animation: attackBurstFlash 700ms ease-in-out infinite;
+    }
+    .attack-burst-ring {
+      fill: none;
+      stroke: #ffe29a;
+      stroke-dasharray: 0.16 0.1;
+      pointer-events: none;
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: attackBurstRing 700ms ease-out infinite;
+    }
+    @keyframes attackBurstFlash {
+      0% { opacity: 0.15; }
+      35% { opacity: 0.95; }
+      100% { opacity: 0.25; }
+    }
+    @keyframes attackBurstRing {
+      0% {
+        opacity: 0.9;
+        transform: scale(0.55);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.35);
+      }
     }
     .model-portrait .callsign {
       position: absolute;
@@ -213,6 +261,45 @@
       color: #e94560;
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
+    }
+    .stats-portrait-ring {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid var(--side-ring, #aaa);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 10px color-mix(in oklab, var(--side-ring, #aaa) 45%, transparent);
+      background: #0f1a2c;
+    }
+    .stats-model-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      margin-bottom: 0.55rem;
+    }
+    .stats-nav-btn {
+      border: 1px solid #0f3460;
+      background: #12315b;
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      min-width: 28px;
+      height: 28px;
+      line-height: 1;
+    }
+    .stats-nav-btn:hover {
+      background: #164578;
+      border-color: #1e5fa4;
+    }
+    .stats-nav-meta {
+      color: #aaa;
+      font-size: 0.75rem;
+      min-width: 3.5rem;
+      text-align: center;
     }
     .stat-row {
       display: flex;
@@ -257,6 +344,7 @@
     }
     .path-line {
       stroke-linecap: round;
+      stroke-linejoin: round;
       pointer-events: none;
     }
     .path-waypoint {
@@ -270,6 +358,14 @@
       stroke-dasharray: 0.3, 0.3;
       fill: none;
       pointer-events: none;
+    }
+    .model-marker .hover-label {
+      opacity: 0;
+      transition: opacity 120ms ease-in-out;
+      pointer-events: none;
+    }
+    .model-marker:hover .hover-label {
+      opacity: 0.95;
     }
     .audit-controls {
       padding: 1rem;
@@ -1024,7 +1120,7 @@
   <div id="tab2" class="tab-content">
     <div class="visual-audit-container">
       <div class="visual-audit-viewer">
-        <svg id="battlefield-svg" viewBox="0 0 600 600"></svg>
+        <div id="battlefield-svg"></div>
       </div>
       <div class="visual-audit-sidebar">
         <div class="sidebar-tabs">
@@ -1596,6 +1692,7 @@
     let isPlaying = false;
     let playInterval = null;
     let selectedModel = null;
+    let orderedModelIds = [];
     let battleAuditFilter = 'all';
     let visualizationState = {
       paths: true,
@@ -1605,6 +1702,42 @@
       grid: true,
       deployment: true
     };
+    const MODEL_RADIUS_MU = 0.42;
+    const MODEL_PORTRAIT_RADIUS_MU = 0.31;
+
+    function getTurnAnimationDurationMs() {
+      const speed = parseFloat(document.getElementById('playback-speed')?.value || '1');
+      const normalizedSpeed = Number.isFinite(speed) && speed > 0 ? speed : 1;
+      return Math.max(180, Math.round((1000 / normalizedSpeed) * 0.9));
+    }
+
+    function parseBattleTimestamp(rawTimestamp) {
+      if (rawTimestamp === null || rawTimestamp === undefined) return null;
+      const raw = String(rawTimestamp).trim();
+      if (raw.length === 0) return null;
+
+      let parsed = new Date(raw);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed;
+      }
+
+      // Normalize run-id timestamps like 2026-03-12T06-21-40-364Z.
+      const runIdMatch = raw.match(/^(\d{4}-\d{2}-\d{2})T(\d{2})-(\d{2})-(\d{2})-(\d{3})Z$/);
+      if (runIdMatch) {
+        const normalized = `${runIdMatch[1]}T${runIdMatch[2]}:${runIdMatch[3]}:${runIdMatch[4]}.${runIdMatch[5]}Z`;
+        parsed = new Date(normalized);
+        if (!Number.isNaN(parsed.getTime())) {
+          return parsed;
+        }
+      }
+
+      return null;
+    }
+
+    function formatBattleTimestamp(rawTimestamp) {
+      const parsed = parseBattleTimestamp(rawTimestamp);
+      return parsed ? parsed.toLocaleString() : String(rawTimestamp);
+    }
 
     // ========== Battlefield Generator =========
     // LocalStorage keys for density sliders
@@ -2128,7 +2261,7 @@
       select.innerHTML = '<option value="">Select a battle...</option>' +
         battles.map(b => {
           const auditBadge = b.hasAuditOutput ? ' [audit]' : ' [no-audit]';
-          return `<option value="${b.id}">${b.missionName} - ${new Date(b.timestamp).toLocaleString()}${auditBadge}</option>`;
+          return `<option value="${b.id}">${b.missionName} - ${formatBattleTimestamp(b.timestamp)}${auditBadge}</option>`;
         }).join('');
     }
 
@@ -2149,16 +2282,26 @@
         
         currentBattle = await auditResponse.json();
         const svgText = await svgResponse.text();
+        selectedModel = null;
+        orderedModelIds = [];
         
         // Display SVG
         const svgEl = document.getElementById('battlefield-svg');
         svgEl.innerHTML = svgText;
-        
+        fitBattlefieldSvgToViewer(svgEl);
+        stripSvgLabels(svgEl);
+        currentTurn = 1;
+
         // Render path overlays
-        renderPathOverlays(currentBattle, svgEl);
-        
+        renderPathOverlays(currentBattle, svgEl, currentTurn);
+
         // Render LOS/LOF overlays
-        renderLOSLOFOverlays(currentBattle, svgEl);
+        renderLOSLOFOverlays(currentBattle, svgEl, currentTurn);
+
+        // Render deployment zones and initial model markers
+        renderDeploymentZones(currentBattle, svgEl);
+        renderModelMarkers(currentBattle, svgEl, currentTurn);
+        renderAttackBursts(currentBattle, svgEl, currentTurn);
         
         // Update select
         document.getElementById('battle-select').value = battleId;
@@ -2173,7 +2316,6 @@
         const slider = document.getElementById('turn-slider');
         slider.max = currentBattle.turns?.length || 1;
         slider.value = 1;
-        currentTurn = 1;
         document.getElementById('turn-display').textContent = '1';
         
       } catch (error) {
@@ -2183,24 +2325,89 @@
       }
     }
 
+    function fitBattlefieldSvgToViewer(svgContainer) {
+      const root =
+        svgContainer?.querySelector?.('svg')
+        || (svgContainer?.tagName?.toLowerCase?.() === 'svg' ? svgContainer : null);
+      if (!root) return;
+
+      let originalViewBox = root.dataset.originalViewBox || root.getAttribute('viewBox') || '';
+      if (!originalViewBox) {
+        try {
+          const bbox = root.getBBox();
+          if (Number.isFinite(bbox?.x) && Number.isFinite(bbox?.y) && Number.isFinite(bbox?.width) && Number.isFinite(bbox?.height) && bbox.width > 0 && bbox.height > 0) {
+            originalViewBox = `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`;
+            root.setAttribute('viewBox', originalViewBox);
+          }
+        } catch {
+          // Keep default when bbox is unavailable.
+        }
+      }
+      if (originalViewBox && !root.dataset.originalViewBox) {
+        root.dataset.originalViewBox = originalViewBox;
+      }
+
+      // Expand viewBox by ~1 MU so model circles at perimeter are fully visible.
+      if (originalViewBox && currentBattle?.battlefield?.widthMu && currentBattle?.battlefield?.heightMu) {
+        const parts = originalViewBox.split(/\s+/).map(Number);
+        if (parts.length === 4 && parts.every(v => Number.isFinite(v))) {
+          const [origMinX, origMinY, origWidth, origHeight] = parts;
+          const widthMu = Number(currentBattle.battlefield.widthMu) || 1;
+          const heightMu = Number(currentBattle.battlefield.heightMu) || 1;
+          const muPadding = 1;
+          const padX = muPadding * (origWidth / widthMu);
+          const padY = muPadding * (origHeight / heightMu);
+          root.dataset.overlayPadSvgX = String(padX);
+          root.dataset.overlayPadSvgY = String(padY);
+          root.setAttribute(
+            'viewBox',
+            `${origMinX - padX} ${origMinY - padY} ${origWidth + padX * 2} ${origHeight + padY * 2}`
+          );
+        }
+      }
+
+      root.style.display = 'block';
+      root.style.maxWidth = '100%';
+      root.style.width = '100%';
+      root.style.height = 'auto';
+      root.style.margin = '0 auto';
+      root.setAttribute('preserveAspectRatio', root.getAttribute('preserveAspectRatio') || 'xMidYMid meet');
+
+      if (svgContainer && typeof svgContainer.scrollTo === 'function') {
+        svgContainer.scrollTo({ left: 0, top: 0, behavior: 'auto' });
+      }
+    }
+
     // Render path overlays on SVG
-    function renderPathOverlays(battle, svgEl) {
+    function renderPathOverlays(battle, svgEl, turnLimit = null) {
       if (!battle || !battle.turns) return;
+      const ctx = getSvgProjectionContext(battle, svgEl);
+      if (!ctx) return;
+      const hasTurnFilter = turnLimit !== null && turnLimit !== undefined && Number.isFinite(Number(turnLimit));
+      const selectedTurn = hasTurnFilter ? Number(turnLimit) : null;
       
       // Create or get path layer
-      let pathLayer = svgEl.querySelector('#layer-paths');
+      let pathLayer = ctx.svgRoot.querySelector('#layer-paths');
       if (!pathLayer) {
         pathLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         pathLayer.id = 'layer-paths';
         pathLayer.setAttribute('class', 'layer');
         // Insert after terrain layer
-        const terrainLayer = svgEl.querySelector('#layer-area') || svgEl.querySelector('g');
+        const terrainLayer = ctx.svgRoot.querySelector('#layer-area') || ctx.svgRoot.querySelector('g');
         if (terrainLayer && terrainLayer.nextSibling) {
-          svgEl.insertBefore(pathLayer, terrainLayer.nextSibling);
+          ctx.svgRoot.insertBefore(pathLayer, terrainLayer.nextSibling);
         } else {
-          svgEl.appendChild(pathLayer);
+          ctx.svgRoot.appendChild(pathLayer);
         }
       }
+      const previousTurn = Number(pathLayer.dataset.renderedTurn);
+      const shouldAnimateCurrentTurn =
+        hasTurnFilter
+        && Number.isFinite(previousTurn)
+        && selectedTurn === previousTurn + 1;
+      const animationSourceTurn = shouldAnimateCurrentTurn ? previousTurn : null;
+      const latestCompletedTurn = hasTurnFilter ? Math.max(0, selectedTurn - 1) : null;
+      const turnAnimationMs = getTurnAnimationDurationMs();
       
       // Clear existing paths
       pathLayer.innerHTML = '';
@@ -2208,13 +2415,48 @@
       // Collect all movement vectors from position changes
       const allPaths = [];
       battle.turns.forEach(turn => {
+        const turnNumber = Number(turn.turn || 0);
+        if (hasTurnFilter && turnNumber >= selectedTurn) return;
         turn.activations.forEach(act => {
           act.steps.forEach(step => {
-            if (step.actionType === 'move' && step.actorPositionBefore && step.actorPositionAfter) {
+            const movementVectors = (step.vectors || []).filter(vec =>
+              vec &&
+              vec.kind === 'movement' &&
+              vec.from &&
+              vec.to &&
+              Number.isFinite(vec.from.x) &&
+              Number.isFinite(vec.from.y) &&
+              Number.isFinite(vec.to.x) &&
+              Number.isFinite(vec.to.y)
+            );
+
+            if (movementVectors.length > 0) {
+              movementVectors.forEach(vec => {
+                const sampled = Array.isArray(vec.sampledPoints) ? vec.sampledPoints.filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.y)) : [];
+                const points = sampled.length >= 2 ? sampled : [vec.from, vec.to];
+                allPaths.push({
+                  points,
+                  turn: turnNumber,
+                  age: latestCompletedTurn !== null ? Math.max(0, latestCompletedTurn - turnNumber) : 0,
+                  model: act.modelName,
+                  success: step.success !== false
+                });
+              });
+              return;
+            }
+
+            if (
+              step.actorPositionBefore &&
+              step.actorPositionAfter &&
+              (
+                step.actorPositionBefore.x !== step.actorPositionAfter.x ||
+                step.actorPositionBefore.y !== step.actorPositionAfter.y
+              )
+            ) {
               allPaths.push({
-                from: step.actorPositionBefore,
-                to: step.actorPositionAfter,
-                turn: turn.turn,
+                points: [step.actorPositionBefore, step.actorPositionAfter],
+                turn: turnNumber,
+                age: latestCompletedTurn !== null ? Math.max(0, latestCompletedTurn - turnNumber) : 0,
                 model: act.modelName,
                 success: step.success !== false
               });
@@ -2223,52 +2465,89 @@
         });
       });
       
-      // Render paths
-      const viewBox = svgEl.getAttribute('viewBox').split(' ').map(Number);
-      const scaleX = viewBox[2] / (battle.battlefield?.widthMu || 24);
-      const scaleY = viewBox[3] / (battle.battlefield?.heightMu || 24);
-      
       allPaths.forEach((path, index) => {
-        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', path.from.x * scaleX);
-        line.setAttribute('y1', path.from.y * scaleY);
-        line.setAttribute('x2', path.to.x * scaleX);
-        line.setAttribute('y2', path.to.y * scaleY);
-        line.setAttribute('class', 'path-line');
-        line.setAttribute('stroke', path.success ? '#27ae60' : '#e74c3c');
-        line.setAttribute('stroke-width', '0.1');
-        line.setAttribute('opacity', '0.7');
-        line.setAttribute('data-turn', path.turn);
-        line.setAttribute('data-model', path.model);
-        
-        // Add arrowhead marker for direction
-        const midX = (path.from.x + path.to.x) / 2 * scaleX;
-        const midY = (path.from.y + path.to.y) / 2 * scaleY;
-        const arrow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        arrow.setAttribute('cx', midX);
-        arrow.setAttribute('cy', midY);
-        arrow.setAttribute('r', '0.15');
-        arrow.setAttribute('fill', path.success ? '#27ae60' : '#e74c3c');
-        arrow.setAttribute('class', 'path-waypoint');
-        
-        pathLayer.appendChild(line);
-        pathLayer.appendChild(arrow);
+        const pointsAttr = (path.points || [])
+          .map(p => `${ctx.toSvgX(p.x)},${ctx.toSvgY(p.y)}`)
+          .join(' ');
+        if (!pointsAttr.includes(',')) return;
+
+        const age = Number(path.age || 0);
+        const opacity = Math.max(0.14, 0.72 - age * 0.085);
+        const widthMu = Math.max(0.04, 0.09 - age * 0.004);
+
+        const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+        polyline.setAttribute('points', pointsAttr);
+        polyline.setAttribute('class', 'path-line');
+        polyline.setAttribute('fill', 'none');
+        polyline.setAttribute('stroke', path.success ? '#27ae60' : '#e74c3c');
+        polyline.setAttribute('stroke-width', String(ctx.muToSvg(widthMu)));
+        polyline.setAttribute('opacity', String(path.success ? opacity : Math.max(0.12, opacity * 0.75)));
+        polyline.setAttribute('data-turn', path.turn);
+        polyline.setAttribute('data-age', String(age));
+        polyline.setAttribute('data-model', path.model);
+        pathLayer.appendChild(polyline);
+
+        if (shouldAnimateCurrentTurn && Number(path.turn) === animationSourceTurn) {
+          try {
+            const totalLength = polyline.getTotalLength();
+            if (Number.isFinite(totalLength) && totalLength > 0.5) {
+              polyline.style.strokeDasharray = `${totalLength} ${totalLength}`;
+              polyline.style.strokeDashoffset = String(totalLength);
+              const animation = polyline.animate(
+                [
+                  { strokeDashoffset: totalLength },
+                  { strokeDashoffset: 0 }
+                ],
+                {
+                  duration: turnAnimationMs,
+                  easing: 'linear',
+                  fill: 'forwards'
+                }
+              );
+              animation.onfinish = () => {
+                polyline.style.strokeDasharray = 'none';
+                polyline.style.strokeDashoffset = '0';
+              };
+              animation.oncancel = () => {
+                polyline.style.strokeDasharray = 'none';
+                polyline.style.strokeDashoffset = '0';
+              };
+            }
+          } catch {
+            // Skip path animation if browser cannot compute total length.
+          }
+        } else {
+          polyline.style.strokeDasharray = 'none';
+          polyline.style.strokeDashoffset = '0';
+        }
       });
+
+      const modelLayer = ctx.svgRoot.querySelector('#layer-models');
+      if (modelLayer && modelLayer.parentNode === ctx.svgRoot) {
+        ctx.svgRoot.insertBefore(pathLayer, modelLayer);
+      }
+      if (hasTurnFilter) {
+        pathLayer.dataset.renderedTurn = String(selectedTurn);
+      }
       
       console.log(`Rendered ${allPaths.length} path segments`);
     }
 
     // Render LOS/LOF overlays on SVG
-    function renderLOSLOFOverlays(battle, svgEl) {
+    function renderLOSLOFOverlays(battle, svgEl, turnLimit = null) {
       if (!battle || !battle.turns) return;
+      const ctx = getSvgProjectionContext(battle, svgEl);
+      if (!ctx) return;
+      const hasTurnFilter = turnLimit !== null && turnLimit !== undefined && Number.isFinite(Number(turnLimit));
+      const selectedTurn = hasTurnFilter ? Number(turnLimit) : null;
       
       // Create or get LOS/LOF layer
-      let losLayer = svgEl.querySelector('#layer-los');
+      let losLayer = ctx.svgRoot.querySelector('#layer-los');
       if (!losLayer) {
         losLayer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         losLayer.id = 'layer-los';
         losLayer.setAttribute('class', 'layer');
-        svgEl.appendChild(losLayer);
+        ctx.svgRoot.appendChild(losLayer);
       }
       
       // Clear existing
@@ -2279,6 +2558,7 @@
       const allLOF = [];
       
       battle.turns.forEach(turn => {
+        if (hasTurnFilter && Number(turn.turn || 0) !== selectedTurn) return;
         turn.activations.forEach(act => {
           act.steps.forEach(step => {
             if (step.vectors) {
@@ -2306,21 +2586,16 @@
         });
       });
       
-      // Render
-      const viewBox = svgEl.getAttribute('viewBox').split(' ').map(Number);
-      const scaleX = viewBox[2] / (battle.battlefield?.widthMu || 24);
-      const scaleY = viewBox[3] / (battle.battlefield?.heightMu || 24);
-      
       // Render LOS lines
       allLOS.forEach((los, index) => {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', los.from.x * scaleX);
-        line.setAttribute('y1', los.from.y * scaleY);
-        line.setAttribute('x2', los.to.x * scaleX);
-        line.setAttribute('y2', los.to.y * scaleY);
+        line.setAttribute('x1', ctx.toSvgX(los.from.x));
+        line.setAttribute('y1', ctx.toSvgY(los.from.y));
+        line.setAttribute('x2', ctx.toSvgX(los.to.x));
+        line.setAttribute('y2', ctx.toSvgY(los.to.y));
         line.setAttribute('class', 'los-line');
         line.setAttribute('stroke', los.success ? '#3498db' : '#e74c3c');
-        line.setAttribute('stroke-width', '0.08');
+        line.setAttribute('stroke-width', String(ctx.muToSvg(0.08)));
         line.setAttribute('opacity', '0.6');
         line.setAttribute('data-turn', los.turn);
         line.setAttribute('data-model', los.model);
@@ -2330,13 +2605,13 @@
       // Render LOF arcs (as lines for now, could be curved)
       allLOF.forEach((lof, index) => {
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', lof.from.x * scaleX);
-        line.setAttribute('y1', lof.from.y * scaleY);
-        line.setAttribute('x2', lof.to.x * scaleX);
-        line.setAttribute('y2', lof.to.y * scaleY);
+        line.setAttribute('x1', ctx.toSvgX(lof.from.x));
+        line.setAttribute('y1', ctx.toSvgY(lof.from.y));
+        line.setAttribute('x2', ctx.toSvgX(lof.to.x));
+        line.setAttribute('y2', ctx.toSvgY(lof.to.y));
         line.setAttribute('class', 'lof-arc');
         line.setAttribute('stroke', '#9b59b6');
-        line.setAttribute('stroke-width', lof.width * 0.1 || 0.1);
+        line.setAttribute('stroke-width', String(ctx.muToSvg((lof.width || 1) * 0.1)));
         line.setAttribute('opacity', '0.4');
         line.setAttribute('data-turn', lof.turn);
         line.setAttribute('data-model', lof.model);
@@ -2346,10 +2621,610 @@
       console.log(`Rendered ${allLOS.length} LOS lines, ${allLOF.length} LOF arcs`);
     }
 
+    function getSvgProjectionContext(audit, svgContainer) {
+      const svgRoot =
+        svgContainer?.querySelector?.('svg')
+        || (svgContainer?.tagName?.toLowerCase?.() === 'svg' ? svgContainer : null);
+      if (!svgRoot) return null;
+
+      const viewBoxRaw = svgRoot.getAttribute('viewBox');
+      let minX = 0;
+      let minY = 0;
+      let width = Number(svgRoot.getAttribute('width')) || 1000;
+      let height = Number(svgRoot.getAttribute('height')) || 1000;
+
+      if (viewBoxRaw) {
+        const parts = viewBoxRaw.split(/\s+/).map(Number);
+        if (parts.length === 4 && parts.every(v => Number.isFinite(v))) {
+          [minX, minY, width, height] = parts;
+        }
+      }
+
+      const widthMu = audit?.battlefield?.widthMu || 24;
+      const heightMu = audit?.battlefield?.heightMu || 24;
+      const padX = Number(svgRoot.dataset.overlayPadSvgX || 0);
+      const padY = Number(svgRoot.dataset.overlayPadSvgY || 0);
+      const battlefieldMinX = minX + padX;
+      const battlefieldMinY = minY + padY;
+      const battlefieldWidth = Math.max(0.0001, width - (padX * 2));
+      const battlefieldHeight = Math.max(0.0001, height - (padY * 2));
+      return {
+        svgRoot,
+        toSvgX: (x) => battlefieldMinX + x * (battlefieldWidth / widthMu),
+        toSvgY: (y) => battlefieldMinY + y * (battlefieldHeight / heightMu),
+        muToSvg: (mu) => mu * (Math.min(battlefieldWidth / widthMu, battlefieldHeight / heightMu)),
+      };
+    }
+
+    function getModelShortId(modelId) {
+      if (!modelId) return 'M';
+      const match = String(modelId).match(/Assembly\s+([A-Z])-(\d+)/i);
+      if (match) {
+        return `${match[1].toUpperCase()}-${match[2]}`;
+      }
+      return String(modelId).slice(0, 6);
+    }
+
+    function stripSvgLabels(svgContainer) {
+      const root =
+        svgContainer?.querySelector?.('svg')
+        || (svgContainer?.tagName?.toLowerCase?.() === 'svg' ? svgContainer : null);
+      if (!root) return;
+
+      // Remove embedded SVG legends/toggles and text labels from battlefield source SVGs.
+      root.querySelectorAll('text, g.toggle, g.legend, [class*="legend"], [id*="legend"], script').forEach(el => el.remove());
+      root.querySelectorAll('[class*="label"], [id*="label"]').forEach(el => {
+        if (!el.closest('#layer-models')) {
+          el.remove();
+        }
+      });
+    }
+
+    function collectInitialModelPositions(audit) {
+      const positions = new Map();
+      if (!audit?.turns) return positions;
+
+      // Prefer explicit start-of-battle positions from first turn activations.
+      const firstTurn =
+        (audit.turns || []).find(turn => Number(turn?.turn) === 1)
+        || (audit.turns || [])[0];
+      if (firstTurn) {
+        for (const act of firstTurn.activations || []) {
+          const firstStep = (act.steps || [])[0];
+          const startPos = firstStep?.actorPositionBefore || firstStep?.actorPositionAfter;
+          if (startPos && Number.isFinite(startPos.x) && Number.isFinite(startPos.y)) {
+            positions.set(act.modelId, {
+              modelId: act.modelId,
+              modelName: act.modelName,
+              sideName: act.sideName,
+              x: startPos.x,
+              y: startPos.y,
+            });
+          }
+        }
+      }
+
+      for (const turn of audit.turns) {
+        for (const act of turn.activations || []) {
+          if (!positions.has(act.modelId)) {
+            positions.set(act.modelId, {
+              modelId: act.modelId,
+              modelName: act.modelName,
+              sideName: act.sideName,
+              x: null,
+              y: null,
+            });
+          }
+          const current = positions.get(act.modelId);
+          for (const step of act.steps || []) {
+            if (current.x === null && step.actorPositionBefore) {
+              current.x = step.actorPositionBefore.x;
+              current.y = step.actorPositionBefore.y;
+              break;
+            }
+            if (current.x === null && step.actorPositionAfter) {
+              current.x = step.actorPositionAfter.x;
+              current.y = step.actorPositionAfter.y;
+              break;
+            }
+          }
+        }
+      }
+      for (const [modelId, value] of positions) {
+        if (value.x === null || value.y === null) {
+          positions.delete(modelId);
+        }
+      }
+      return positions;
+    }
+
+    function collectModelPositionsAtTurn(audit, targetTurn) {
+      const positions = collectInitialModelPositions(audit);
+      if (!audit?.turns) return positions;
+      for (const turn of audit.turns) {
+        if ((turn.turn || 0) > targetTurn) break;
+        for (const act of turn.activations || []) {
+          if (!positions.has(act.modelId)) continue;
+          const current = positions.get(act.modelId);
+          for (const step of act.steps || []) {
+            if (step.actorPositionAfter) {
+              current.x = step.actorPositionAfter.x;
+              current.y = step.actorPositionAfter.y;
+            }
+          }
+        }
+      }
+      return positions;
+    }
+
+    function getDisplayedModelPositions(audit, turnNumber) {
+      const numericTurn = Number.isFinite(Number(turnNumber)) ? Number(turnNumber) : 1;
+      // Turn slider semantics: show model positions at start of selected turn.
+      return collectModelPositionsAtTurn(audit, Math.max(0, numericTurn - 1));
+    }
+
+    function appendUniquePoint(points, candidate) {
+      if (!candidate || !Number.isFinite(candidate.x) || !Number.isFinite(candidate.y)) return;
+      const last = points[points.length - 1];
+      if (last && Math.abs(last.x - candidate.x) < 0.0001 && Math.abs(last.y - candidate.y) < 0.0001) {
+        return;
+      }
+      points.push({ x: candidate.x, y: candidate.y });
+    }
+
+    function collectTurnMovementTrajectories(audit, turnNumber) {
+      const trajectories = new Map();
+      const turnData = (audit?.turns || []).find(turn => Number(turn.turn) === Number(turnNumber));
+      if (!turnData) return trajectories;
+
+      for (const activation of turnData.activations || []) {
+        const points = trajectories.get(activation.modelId) || [];
+        for (const step of activation.steps || []) {
+          const movementVectors = (step.vectors || []).filter(vec =>
+            vec &&
+            vec.kind === 'movement' &&
+            vec.from &&
+            vec.to &&
+            Number.isFinite(vec.from.x) &&
+            Number.isFinite(vec.from.y) &&
+            Number.isFinite(vec.to.x) &&
+            Number.isFinite(vec.to.y)
+          );
+
+          if (movementVectors.length > 0) {
+            for (const vec of movementVectors) {
+              const sampled = Array.isArray(vec.sampledPoints)
+                ? vec.sampledPoints.filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.y))
+                : [];
+              if (sampled.length >= 2) {
+                for (const sampledPoint of sampled) {
+                  appendUniquePoint(points, sampledPoint);
+                }
+              } else {
+                appendUniquePoint(points, vec.from);
+                appendUniquePoint(points, vec.to);
+              }
+            }
+            continue;
+          }
+
+          if (
+            step.actorPositionBefore &&
+            step.actorPositionAfter &&
+            (
+              step.actorPositionBefore.x !== step.actorPositionAfter.x ||
+              step.actorPositionBefore.y !== step.actorPositionAfter.y
+            )
+          ) {
+            appendUniquePoint(points, step.actorPositionBefore);
+            appendUniquePoint(points, step.actorPositionAfter);
+          }
+        }
+        if (points.length > 1) {
+          trajectories.set(activation.modelId, points);
+        }
+      }
+      return trajectories;
+    }
+
+    function pointDistance(a, b) {
+      if (!a || !b) return Number.POSITIVE_INFINITY;
+      const dx = Number(a.x || 0) - Number(b.x || 0);
+      const dy = Number(a.y || 0) - Number(b.y || 0);
+      return Math.hypot(dx, dy);
+    }
+
+    function animateMarkerAlongSvgPoints(markerGroup, svgPoints, durationMs, finalTransform) {
+      if (!markerGroup) return;
+      const points = Array.isArray(svgPoints)
+        ? svgPoints.filter(p => Number.isFinite(p?.x) && Number.isFinite(p?.y))
+        : [];
+      if (points.length < 2) {
+        markerGroup.setAttribute('transform', finalTransform);
+        return;
+      }
+
+      const token = String((Number(markerGroup.dataset.animToken || '0') + 1));
+      markerGroup.dataset.animToken = token;
+      markerGroup.setAttribute('transform', `translate(${points[0].x} ${points[0].y})`);
+
+      const segments = [];
+      let totalLength = 0;
+      for (let i = 1; i < points.length; i++) {
+        const start = points[i - 1];
+        const end = points[i];
+        const length = pointDistance(start, end);
+        if (!(length > 0.0001)) continue;
+        segments.push({
+          start,
+          end,
+          length,
+          cumulativeStart: totalLength,
+          cumulativeEnd: totalLength + length
+        });
+        totalLength += length;
+      }
+
+      if (!(totalLength > 0.0001) || segments.length === 0) {
+        markerGroup.setAttribute('transform', finalTransform);
+        return;
+      }
+
+      const startTs = performance.now();
+      const safeDurationMs = Math.max(120, Number(durationMs) || 300);
+      const frame = (now) => {
+        if (markerGroup.dataset.animToken !== token) return;
+
+        const t = Math.max(0, Math.min(1, (now - startTs) / safeDurationMs));
+        const travelled = totalLength * t;
+        let segment = segments[segments.length - 1];
+        for (const candidate of segments) {
+          if (travelled <= candidate.cumulativeEnd) {
+            segment = candidate;
+            break;
+          }
+        }
+
+        const localLength = Math.max(0, travelled - segment.cumulativeStart);
+        const ratio = segment.length > 0 ? Math.max(0, Math.min(1, localLength / segment.length)) : 1;
+        const x = segment.start.x + (segment.end.x - segment.start.x) * ratio;
+        const y = segment.start.y + (segment.end.y - segment.start.y) * ratio;
+        markerGroup.setAttribute('transform', `translate(${x} ${y})`);
+
+        if (t < 1) {
+          requestAnimationFrame(frame);
+          return;
+        }
+        if (markerGroup.dataset.animToken === token) {
+          markerGroup.setAttribute('transform', finalTransform);
+        }
+      };
+
+      requestAnimationFrame(frame);
+    }
+
+    function getSideColor(sideName) {
+      if (String(sideName).toLowerCase().includes('a')) return '#4da3ff';
+      if (String(sideName).toLowerCase().includes('b')) return '#ff7a7a';
+      return '#f1c40f';
+    }
+
+    function renderDeploymentZones(audit, svgContainer) {
+      if (!audit?.turns?.length) return;
+      const ctx = getSvgProjectionContext(audit, svgContainer);
+      if (!ctx) return;
+
+      let layer = ctx.svgRoot.querySelector('#layer-deployments');
+      if (!layer) {
+        layer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        layer.id = 'layer-deployments';
+        layer.setAttribute('class', 'layer');
+        ctx.svgRoot.appendChild(layer);
+      }
+      layer.innerHTML = '';
+
+      // Render broad deployment bands (top / bottom) for quick visual reference.
+      const widthMu = audit?.battlefield?.widthMu || 24;
+      const heightMu = audit?.battlefield?.heightMu || 24;
+      const zoneDepthMu = Math.min(4, heightMu * 0.2);
+
+      const topBand = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      topBand.setAttribute('class', 'deployment-zone');
+      topBand.setAttribute('x', String(ctx.toSvgX(0)));
+      topBand.setAttribute('y', String(ctx.toSvgY(0)));
+      topBand.setAttribute('width', String(ctx.toSvgX(widthMu) - ctx.toSvgX(0)));
+      topBand.setAttribute('height', String(ctx.toSvgY(zoneDepthMu) - ctx.toSvgY(0)));
+      topBand.setAttribute('fill', '#4da3ff');
+      topBand.setAttribute('opacity', '0.1');
+      layer.appendChild(topBand);
+
+      const bottomBand = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      bottomBand.setAttribute('class', 'deployment-zone');
+      bottomBand.setAttribute('x', String(ctx.toSvgX(0)));
+      bottomBand.setAttribute('y', String(ctx.toSvgY(heightMu - zoneDepthMu)));
+      bottomBand.setAttribute('width', String(ctx.toSvgX(widthMu) - ctx.toSvgX(0)));
+      bottomBand.setAttribute('height', String(ctx.toSvgY(heightMu) - ctx.toSvgY(heightMu - zoneDepthMu)));
+      bottomBand.setAttribute('fill', '#ff7a7a');
+      bottomBand.setAttribute('opacity', '0.1');
+      layer.appendChild(bottomBand);
+
+      const initialPositions = collectInitialModelPositions(audit);
+      for (const model of initialPositions.values()) {
+        const color = getSideColor(model.sideName);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'deployment-zone');
+        circle.setAttribute('cx', String(ctx.toSvgX(model.x)));
+        circle.setAttribute('cy', String(ctx.toSvgY(model.y)));
+        circle.setAttribute('r', String(ctx.muToSvg(0.75)));
+        circle.setAttribute('fill', 'none');
+        circle.setAttribute('stroke', color);
+        circle.setAttribute('stroke-width', String(ctx.muToSvg(0.06)));
+        circle.setAttribute('stroke-dasharray', `${ctx.muToSvg(0.2)} ${ctx.muToSvg(0.15)}`);
+        circle.setAttribute('opacity', '0.6');
+        layer.appendChild(circle);
+      }
+    }
+
+    function renderModelMarkers(audit, svgContainer, turnNumber) {
+      if (!audit?.turns?.length) return;
+      const ctx = getSvgProjectionContext(audit, svgContainer);
+      if (!ctx) return;
+
+      let layer = ctx.svgRoot.querySelector('#layer-models');
+      if (!layer) {
+        layer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        layer.id = 'layer-models';
+        layer.setAttribute('class', 'layer');
+        ctx.svgRoot.appendChild(layer);
+      }
+      // Keep models above path/LOS layers.
+      ctx.svgRoot.appendChild(layer);
+
+      const previousTurn = Number(layer.dataset.renderedTurn);
+      const shouldAnimateForward = Number.isFinite(previousTurn) && Number(turnNumber) === previousTurn + 1;
+      const animationSourceTurn = shouldAnimateForward ? previousTurn : null;
+      const turnTrajectories = shouldAnimateForward ? collectTurnMovementTrajectories(audit, animationSourceTurn) : new Map();
+      const turnAnimationMs = getTurnAnimationDurationMs();
+      const markerRadiusPx = ctx.muToSvg(MODEL_RADIUS_MU);
+      const portraitRadiusPx = ctx.muToSvg(MODEL_PORTRAIT_RADIUS_MU);
+      const hoverLabelY = -(markerRadiusPx + ctx.muToSvg(0.14));
+      const hoverLabelFont = ctx.muToSvg(0.24);
+      const hoverLabelStroke = ctx.muToSvg(0.03);
+
+      const existingById = new Map();
+      Array.from(layer.querySelectorAll('g[data-model-id]')).forEach(group => {
+        existingById.set(group.getAttribute('data-model-id'), group);
+      });
+
+      const positions = shouldAnimateForward
+        ? getDisplayedModelPositions(audit, animationSourceTurn)
+        : getDisplayedModelPositions(audit, turnNumber);
+      const endPositions = shouldAnimateForward
+        ? collectModelPositionsAtTurn(audit, Math.max(0, Number(animationSourceTurn)))
+        : positions;
+      const seen = new Set();
+      for (const model of positions.values()) {
+        seen.add(model.modelId);
+        const color = getSideColor(model.sideName);
+        const endModel = endPositions.get(model.modelId) || model;
+        const markerGroup = existingById.get(model.modelId) || (() => {
+          const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          group.setAttribute('data-model-id', model.modelId);
+          group.setAttribute('class', 'model-marker');
+          group.style.cursor = 'pointer';
+          group.addEventListener('click', () => selectModel(model.modelId));
+
+          const marker = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          marker.setAttribute('data-role', 'dot');
+          marker.setAttribute('r', String(markerRadiusPx));
+          marker.setAttribute('opacity', '0.95');
+          group.appendChild(marker);
+
+          const portrait = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          portrait.setAttribute('data-role', 'portrait');
+          group.appendChild(portrait);
+
+          const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+          title.setAttribute('data-role', 'title');
+          title.textContent = model.modelName ? `${getModelShortId(model.modelId)} - ${model.modelName}` : getModelShortId(model.modelId);
+          group.appendChild(title);
+
+          const hoverLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          hoverLabel.setAttribute('data-role', 'hover-label');
+          hoverLabel.setAttribute('class', 'hover-label');
+          hoverLabel.setAttribute('x', '0');
+          hoverLabel.setAttribute('y', String(hoverLabelY));
+          hoverLabel.setAttribute('text-anchor', 'middle');
+          hoverLabel.setAttribute('font-size', String(hoverLabelFont));
+          hoverLabel.setAttribute('fill', '#ffffff');
+          hoverLabel.setAttribute('stroke', '#0b0f1a');
+          hoverLabel.setAttribute('stroke-width', String(hoverLabelStroke));
+          hoverLabel.setAttribute('paint-order', 'stroke');
+          hoverLabel.textContent = getModelShortId(model.modelId);
+          group.appendChild(hoverLabel);
+
+          layer.appendChild(group);
+          return group;
+        })();
+
+        const dot = markerGroup.querySelector('circle[data-role="dot"]');
+        if (dot) {
+          dot.setAttribute('r', String(markerRadiusPx));
+          dot.setAttribute('fill', color);
+          dot.setAttribute('stroke', selectedModel === model.modelId ? '#ffffff' : '#1f2a44');
+          dot.setAttribute('stroke-width', String(ctx.muToSvg(selectedModel === model.modelId ? 0.14 : 0.08)));
+        }
+        upsertModelPortraitOnMarker(markerGroup, model.modelId, portraitRadiusPx);
+
+        const title = markerGroup.querySelector('title[data-role="title"]');
+        if (title) {
+          title.textContent = model.modelName ? `${getModelShortId(model.modelId)} - ${model.modelName}` : getModelShortId(model.modelId);
+        }
+        const hoverLabel = markerGroup.querySelector('text[data-role="hover-label"]');
+        if (hoverLabel) {
+          hoverLabel.textContent = getModelShortId(model.modelId);
+          hoverLabel.setAttribute('y', String(hoverLabelY));
+          hoverLabel.setAttribute('font-size', String(hoverLabelFont));
+          hoverLabel.setAttribute('stroke-width', String(hoverLabelStroke));
+        }
+
+        const startTx = ctx.toSvgX(model.x);
+        const startTy = ctx.toSvgY(model.y);
+        const endTx = ctx.toSvgX(endModel.x);
+        const endTy = ctx.toSvgY(endModel.y);
+        const finalTransform = shouldAnimateForward
+          ? `translate(${endTx} ${endTy})`
+          : `translate(${startTx} ${startTy})`;
+
+        const turnPath = turnTrajectories.get(model.modelId);
+        if (shouldAnimateForward && Array.isArray(turnPath) && turnPath.length > 1) {
+          const svgPoints = turnPath
+            .map(point => ({ x: ctx.toSvgX(point.x), y: ctx.toSvgY(point.y) }))
+            .filter(point => Number.isFinite(point.x) && Number.isFinite(point.y));
+          if (svgPoints.length === 0 || pointDistance(svgPoints[0], { x: startTx, y: startTy }) > 0.25) {
+            svgPoints.unshift({ x: startTx, y: startTy });
+          }
+          if (pointDistance(svgPoints[svgPoints.length - 1], { x: endTx, y: endTy }) > 0.25) {
+            svgPoints.push({ x: endTx, y: endTy });
+          }
+          animateMarkerAlongSvgPoints(markerGroup, svgPoints, turnAnimationMs, finalTransform);
+        } else if (shouldAnimateForward && (Math.abs(endTx - startTx) > 0.01 || Math.abs(endTy - startTy) > 0.01)) {
+          animateMarkerAlongSvgPoints(
+            markerGroup,
+            [{ x: startTx, y: startTy }, { x: endTx, y: endTy }],
+            turnAnimationMs,
+            finalTransform
+          );
+        } else {
+          markerGroup.dataset.animToken = String((Number(markerGroup.dataset.animToken || '0') + 1));
+          markerGroup.setAttribute('transform', finalTransform);
+        }
+      }
+
+      for (const [modelId, group] of existingById.entries()) {
+        if (!seen.has(modelId)) {
+          group.remove();
+        }
+      }
+
+      layer.dataset.renderedTurn = String(Number(turnNumber));
+    }
+
+    function normalizeActionType(actionType) {
+      return String(actionType || '').toLowerCase().replace(/\s+/g, '_');
+    }
+
+    function isAttackAction(step) {
+      const actionType = normalizeActionType(step?.actionType);
+      if (!actionType) return false;
+      return actionType.includes('combat') || actionType.includes('attack');
+    }
+
+    function extractAttackTargetIds(step) {
+      const targetIds = new Set();
+      const preferred = [];
+      for (const affected of step?.affectedModels || []) {
+        if (!affected?.modelId) continue;
+        const relation = String(affected.relation || '').toLowerCase();
+        if (relation === 'target' || relation === 'enemy' || relation === 'opponent') {
+          preferred.push(affected.modelId);
+        }
+      }
+      if (preferred.length > 0) {
+        preferred.forEach(id => targetIds.add(id));
+        return Array.from(targetIds);
+      }
+
+      for (const target of step?.targets || []) {
+        const relation = String(target?.relation || '').toLowerCase();
+        if (!target?.modelId) continue;
+        if (!relation || relation === 'enemy' || relation === 'target' || relation === 'opponent') {
+          targetIds.add(target.modelId);
+        }
+      }
+      return Array.from(targetIds);
+    }
+
+    function buildStarPoints(radiusOuter, radiusInner, tips) {
+      const points = [];
+      for (let i = 0; i < tips * 2; i++) {
+        const radius = i % 2 === 0 ? radiusOuter : radiusInner;
+        const angle = (Math.PI * i) / tips - Math.PI / 2;
+        points.push(`${(Math.cos(angle) * radius).toFixed(3)},${(Math.sin(angle) * radius).toFixed(3)}`);
+      }
+      return points.join(' ');
+    }
+
+    function renderAttackBursts(audit, svgContainer, turnNumber) {
+      if (!audit?.turns?.length) return;
+      const ctx = getSvgProjectionContext(audit, svgContainer);
+      if (!ctx) return;
+
+      let layer = ctx.svgRoot.querySelector('#layer-attack-bursts');
+      if (!layer) {
+        layer = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        layer.id = 'layer-attack-bursts';
+        layer.setAttribute('class', 'layer');
+        ctx.svgRoot.appendChild(layer);
+      }
+      layer.innerHTML = '';
+
+      const completedTurn = Math.max(0, Number(turnNumber) - 1);
+      const turnData = (audit.turns || []).find(turn => Number(turn.turn) === completedTurn);
+      if (!turnData) return;
+
+      const positions = collectModelPositionsAtTurn(audit, completedTurn);
+      const perTargetCount = new Map();
+      let rendered = 0;
+
+      for (const activation of turnData.activations || []) {
+        for (const step of activation.steps || []) {
+          if (isAttackAction(step)) {
+            const targetIds = extractAttackTargetIds(step);
+            for (const targetId of targetIds) {
+              const targetPos = positions.get(targetId);
+              if (!targetPos) continue;
+
+              const burstIndex = perTargetCount.get(targetId) || 0;
+              perTargetCount.set(targetId, burstIndex + 1);
+              const offsetAngle = (burstIndex * 137.5) * (Math.PI / 180);
+              const offsetDistance = ctx.muToSvg(Math.min(0.16, 0.06 * burstIndex));
+              const x = ctx.toSvgX(targetPos.x) + Math.cos(offsetAngle) * offsetDistance;
+              const y = ctx.toSvgY(targetPos.y) + Math.sin(offsetAngle) * offsetDistance;
+
+              const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+              group.setAttribute('class', 'attack-burst');
+              group.setAttribute('transform', `translate(${x} ${y})`);
+
+              const ring = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+              ring.setAttribute('class', 'attack-burst-ring');
+              ring.setAttribute('r', String(ctx.muToSvg(0.26)));
+              ring.setAttribute('stroke-width', String(ctx.muToSvg(0.05)));
+              ring.style.animationDelay = `${rendered * 80}ms`;
+
+              const star = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+              star.setAttribute('class', 'attack-burst-star');
+              star.setAttribute('points', buildStarPoints(ctx.muToSvg(0.22), ctx.muToSvg(0.1), 7));
+              star.setAttribute('stroke-width', String(ctx.muToSvg(0.035)));
+              star.style.animationDelay = `${rendered * 80}ms`;
+
+              group.appendChild(ring);
+              group.appendChild(star);
+              layer.appendChild(group);
+              rendered += 1;
+            }
+          }
+        }
+      }
+
+      // Keep bursts above model markers.
+      ctx.svgRoot.appendChild(layer);
+    }
+
     // Load model roster with portraits
     function loadModelRoster(audit) {
       const modelList = document.getElementById('model-list');
-      if (!audit || !audit.session) {
+      if (!audit || !Array.isArray(audit.turns)) {
         modelList.innerHTML = '<div style="color:#666;font-size:0.8rem;">No model data</div>';
         return;
       }
@@ -2364,7 +3239,7 @@
                 id: act.modelId,
                 name: act.modelName,
                 side: act.sideName,
-                callSign: act.modelId.split('-').pop() || act.modelId,
+                callSign: getModelShortId(act.modelId),
               });
             }
           });
@@ -2375,61 +3250,199 @@
         modelList.innerHTML = '<div style="color:#666;font-size:0.8rem;">No models found</div>';
         return;
       }
-      
+
+      const orderedModels = Array.from(models.values()).sort((a, b) => {
+        const callSignCmp = a.callSign.localeCompare(b.callSign, undefined, { numeric: true, sensitivity: 'base' });
+        if (callSignCmp !== 0) return callSignCmp;
+        return a.id.localeCompare(b.id);
+      });
+      orderedModelIds = orderedModels.map(model => model.id);
+
       // Generate portrait grid
-      modelList.innerHTML = Array.from(models.values()).map(model => {
-        const { column, row } = parseCallSign(model.callSign);
-        const clipData = getPortraitClipData(column, row);
-        
+      modelList.innerHTML = orderedModels.map(model => {
+        const clipData = getPortraitClipData(model.id);
+        const sideColor = getSideColor(model.side);
         return `
-          <div class="model-portrait" onclick="selectModel('${model.id}')" title="${model.name} (${model.side})">
-            <img src="${clipData.sheetPath}" 
-                 style="object-position: ${clipData.clipX}px ${clipData.clipY}px;" 
-                 alt="${model.callSign}">
+          <div class="model-portrait" data-model-id="${model.id}" style="--side-ring: ${sideColor};" onclick="selectModel('${model.id}', this)" title="${model.name} (${model.side})">
+            ${buildRosterPortraitSvg(model.id, clipData, 60, 'roster')}
             <div class="callsign">${model.callSign}</div>
           </div>
         `;
       }).join('');
+
+      if (selectedModel) {
+        const activePortrait = findPortraitElement(selectedModel);
+        if (activePortrait) activePortrait.classList.add('selected');
+      }
     }
 
-    // Parse call sign to column/row
-    function parseCallSign(callSign) {
-      const match = callSign.match(/^([A-Z]{2})-(\d)(\d)$/);
-      if (!match) return { column: 0, row: 0 };
-      return {
-        column: parseInt(match[2], 10),
-        row: parseInt(match[3], 10)
-      };
+    function getPortraitClipMetrics(column, row, sheetWidth = 1920, sheetHeight = 1920) {
+      const CLIP_EXAMPLE = { cx: 168.47746, cy: 456.87289, r: 94.130058 };
+      const EXAMPLE_CELL_WIDTH = 225.00734;
+      const EXAMPLE_CELL_HEIGHT = 223.54691;
+      const EXAMPLE_CANVAS_WIDTH = 1920;
+      const EXAMPLE_CANVAS_HEIGHT = 1920;
+
+      const scaleX = sheetWidth / EXAMPLE_CANVAS_WIDTH;
+      const scaleY = sheetHeight / EXAMPLE_CANVAS_HEIGHT;
+      const centerX = (CLIP_EXAMPLE.cx + column * EXAMPLE_CELL_WIDTH) * scaleX;
+      const centerY = (CLIP_EXAMPLE.cy + row * EXAMPLE_CELL_HEIGHT) * scaleY;
+      const radius = CLIP_EXAMPLE.r * (0.5 * (scaleX + scaleY));
+      return { centerX, centerY, radius };
+    }
+
+    function buildRosterPortraitSvg(modelId, clipData, size = 60, idPrefix = 'roster') {
+      const viewSize = clipData.radius * 2;
+      const imageX = clipData.radius - clipData.centerX;
+      const imageY = clipData.radius - clipData.centerY;
+      const clipId = `${idPrefix}-clip-${String(modelId).replace(/[^a-zA-Z0-9_-]/g, '-')}`;
+      return `
+        <svg viewBox="0 0 ${viewSize} ${viewSize}" width="${size}" height="${size}" aria-hidden="true">
+          <defs>
+            <clipPath id="${clipId}">
+              <circle cx="${clipData.radius}" cy="${clipData.radius}" r="${clipData.radius}"></circle>
+            </clipPath>
+          </defs>
+          <image href="${clipData.sheetPath}"
+                 x="${imageX}"
+                 y="${imageY}"
+                 width="${clipData.sheetWidth}"
+                 height="${clipData.sheetHeight}"
+                 preserveAspectRatio="none"
+                 clip-path="url(#${clipId})"></image>
+        </svg>
+      `.trim();
+    }
+
+    function upsertModelPortraitOnMarker(markerGroup, modelId, radiusPx) {
+      const portraitGroup = markerGroup.querySelector('g[data-role="portrait"]');
+      if (!portraitGroup) return;
+
+      const clipData = getPortraitClipData(modelId);
+      const safeId = String(modelId).replace(/[^a-zA-Z0-9_-]/g, '-');
+      const clipId = `marker-clip-${safeId}`;
+
+      let defs = portraitGroup.querySelector('defs[data-role="portrait-defs"]');
+      if (!defs) {
+        defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        defs.setAttribute('data-role', 'portrait-defs');
+        portraitGroup.appendChild(defs);
+      }
+
+      let clipPath = defs.querySelector(`clipPath#${clipId}`);
+      if (!clipPath) {
+        clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+        clipPath.setAttribute('id', clipId);
+        defs.appendChild(clipPath);
+      }
+
+      let clipCircle = clipPath.querySelector('circle');
+      if (!clipCircle) {
+        clipCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        clipPath.appendChild(clipCircle);
+      }
+      clipCircle.setAttribute('cx', '0');
+      clipCircle.setAttribute('cy', '0');
+      clipCircle.setAttribute('r', String(radiusPx));
+
+      let image = portraitGroup.querySelector('image[data-role="portrait-image"]');
+      if (!image) {
+        image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+        image.setAttribute('data-role', 'portrait-image');
+        portraitGroup.appendChild(image);
+      }
+
+      const scale = radiusPx / clipData.radius;
+      const imageX = -clipData.centerX * scale;
+      const imageY = -clipData.centerY * scale;
+      image.setAttribute('href', clipData.sheetPath);
+      image.setAttribute('x', String(imageX));
+      image.setAttribute('y', String(imageY));
+      image.setAttribute('width', String(clipData.sheetWidth * scale));
+      image.setAttribute('height', String(clipData.sheetHeight * scale));
+      image.setAttribute('preserveAspectRatio', 'none');
+      image.setAttribute('clip-path', `url(#${clipId})`);
+      image.setAttribute('opacity', '0.98');
     }
 
     // Get portrait clip data
-    function getPortraitClipData(column, row, siz = 3) {
-      // Sheet metrics (8 columns x 6 rows on 1920x1920)
-      const cellWidth = 1920 / 8;
-      const cellHeight = 1920 / 6;
-      const baseCx = 168.47746;
-      const baseCy = 456.87289;
-      const baseR = 94.130058;
-      
-      const clipX = baseCx + column * cellWidth;
-      const clipY = baseCy + row * cellHeight;
-      
-      // SIZ-based radius scaling
-      const sizScale = siz === 1 ? 0.33 : siz === 2 ? 0.67 : 1.0;
-      
+    function getPortraitClipData(modelId) {
+      const text = String(modelId || '');
+      let hash = 0;
+      for (let i = 0; i < text.length; i++) {
+        hash = ((hash << 5) - hash + text.charCodeAt(i)) | 0;
+      }
+      const absoluteHash = Math.abs(hash);
+      const column = absoluteHash % 8;
+      const row = Math.floor(absoluteHash / 8) % 6;
+
+      const sheetWidth = 1920;
+      const sheetHeight = 1920;
+      const metrics = getPortraitClipMetrics(column, row, sheetWidth, sheetHeight);
+
       return {
-        sheetPath: 'assets/portraits/human-quaggkhir-male.jpg',
-        clipX,
-        clipY,
-        radius: baseR * sizScale,
-        siz
+        sheetPath: '/assets/portraits/human-quaggkhir-male.jpg',
+        column,
+        row,
+        sheetWidth,
+        sheetHeight,
+        centerX: metrics.centerX,
+        centerY: metrics.centerY,
+        radius: metrics.radius,
       };
     }
 
+    function findPortraitElement(modelId) {
+      return Array.from(document.querySelectorAll('.model-portrait')).find(el => el.dataset.modelId === modelId) || null;
+    }
+
+    function getSelectedModelIndex(modelId) {
+      return orderedModelIds.indexOf(modelId);
+    }
+
+    function cycleSelectedModel(direction = 1) {
+      if (!orderedModelIds.length) return;
+      const currentIndex = getSelectedModelIndex(selectedModel);
+      const safeIndex = currentIndex >= 0 ? currentIndex : 0;
+      const wrappedIndex = (safeIndex + direction + orderedModelIds.length) % orderedModelIds.length;
+      const nextModelId = orderedModelIds[wrappedIndex];
+      selectModel(nextModelId, findPortraitElement(nextModelId), { centerMap: true });
+    }
+
+    function centerMapOnModel(modelId) {
+      if (!currentBattle) return;
+      const svgContainer = document.getElementById('battlefield-svg');
+      const viewer = document.querySelector('.visual-audit-viewer');
+      if (!svgContainer || !viewer) return;
+      const ctx = getSvgProjectionContext(currentBattle, svgContainer);
+      if (!ctx) return;
+      const positions = getDisplayedModelPositions(currentBattle, currentTurn);
+      const model = positions.get(modelId);
+      if (!model) return;
+
+      const svgRoot = ctx.svgRoot;
+      const viewBoxRaw = svgRoot.getAttribute('viewBox');
+      if (!viewBoxRaw) return;
+      const parts = viewBoxRaw.split(/\s+/).map(Number);
+      if (parts.length !== 4 || !parts.every(v => Number.isFinite(v))) return;
+      const [minX, minY, width, height] = parts;
+      if (!(width > 0 && height > 0)) return;
+
+      const px = ((ctx.toSvgX(model.x) - minX) / width) * svgRoot.clientWidth;
+      const py = ((ctx.toSvgY(model.y) - minY) / height) * svgRoot.clientHeight;
+      viewer.scrollTo({
+        left: Math.max(0, px - (viewer.clientWidth / 2)),
+        top: Math.max(0, py - (viewer.clientHeight / 2)),
+        behavior: 'smooth'
+      });
+    }
+
     // Select model
-    function selectModel(modelId) {
+    function selectModel(modelId, portraitEl = null, options = {}) {
+      const centerMap = options?.centerMap !== false;
       document.querySelectorAll('.model-portrait').forEach(el => el.classList.remove('selected'));
-      event.currentTarget.classList.add('selected');
+      const selectedPortrait = portraitEl || findPortraitElement(modelId);
+      if (selectedPortrait) selectedPortrait.classList.add('selected');
       
       // Store selected model
       selectedModel = modelId;
@@ -2443,21 +3456,24 @@
       // Show model stats
       showModelStats(modelId);
       
-      // Highlight model on battlefield (future)
+      // Highlight model on battlefield
       highlightModelOnBattlefield(modelId);
+      if (centerMap) {
+        centerMapOnModel(modelId);
+      }
     }
 
     // Show model statistics
     function showModelStats(modelId) {
       const statsContent = document.getElementById('model-stats-content');
-      if (!currentBattle || !currentBattle.audit) {
+      if (!currentBattle || !Array.isArray(currentBattle.turns)) {
         statsContent.innerHTML = '<div style="color:#666;">No data available</div>';
         return;
       }
       
       // Find model in audit data
       let modelData = null;
-      for (const turn of currentBattle.audit.turns) {
+      for (const turn of currentBattle.turns) {
         for (const act of turn.activations) {
           if (act.modelId === modelId) {
             modelData = act;
@@ -2475,9 +3491,11 @@
       // Count actions
       let actionCounts = {};
       let totalAP = 0;
-      for (const turn of currentBattle.audit.turns) {
+      let totalActivations = 0;
+      for (const turn of currentBattle.turns) {
         for (const act of turn.activations) {
           if (act.modelId === modelId) {
+            totalActivations += 1;
             for (const step of act.steps) {
               const actionType = step.actionType || 'Unknown';
               actionCounts[actionType] = (actionCounts[actionType] || 0) + 1;
@@ -2487,8 +3505,26 @@
         }
       }
       
+      const portraitHtml = buildRosterPortraitSvg(modelId, getPortraitClipData(modelId), 86, 'stats');
+      const sideColor = getSideColor(modelData.sideName);
+      const modelIndex = getSelectedModelIndex(modelId);
+      const navMeta = modelIndex >= 0 ? `${modelIndex + 1}/${orderedModelIds.length}` : `1/${Math.max(1, orderedModelIds.length)}`;
+      const navHtml = orderedModelIds.length > 1 ? `
+        <div class="stats-model-nav">
+          <button class="stats-nav-btn" onclick="cycleSelectedModel(-1)" title="Previous model">◀</button>
+          <span class="stats-nav-meta">${navMeta}</span>
+          <button class="stats-nav-btn" onclick="cycleSelectedModel(1)" title="Next model">▶</button>
+        </div>
+      ` : '';
+
       // Generate stats HTML
       statsContent.innerHTML = `
+        ${navHtml}
+        <div style="display:flex;justify-content:center;align-items:center;margin-bottom:0.75rem;">
+          <div class="stats-portrait-ring" style="--side-ring: ${sideColor};">
+            ${portraitHtml}
+          </div>
+        </div>
         <div class="stat-row">
           <span class="stat-label">Call Sign:</span>
           <span class="stat-value">${modelData.modelId}</span>
@@ -2507,7 +3543,7 @@
         </div>
         <div class="stat-row">
           <span class="stat-label">Activations:</span>
-          <span class="stat-value">${modelData.initiative || 'N/A'}</span>
+          <span class="stat-value">${totalActivations}</span>
         </div>
         <hr style="border: 0; border-top: 1px solid #0f3460; margin: 0.5rem 0;">
         <div style="color: #e94560; font-size: 0.85rem; margin-bottom: 0.5rem;">Action Breakdown:</div>
@@ -2523,14 +3559,9 @@
     // Highlight model on battlefield
     function highlightModelOnBattlefield(modelId) {
       const svg = document.getElementById('battlefield-svg');
-      if (!svg) return;
-      
-      // Remove existing highlights
-      svg.querySelectorAll('.model-highlight').forEach(el => el.remove());
-      
-      // Find model position in current turn (simplified - would need full position tracking)
-      // For now, just log that we'd highlight here
-      console.log('Would highlight model:', modelId);
+      if (!svg || !currentBattle) return;
+      selectedModel = modelId;
+      renderModelMarkers(currentBattle, svg, currentTurn);
     }
 
     // Load action log from audit
@@ -2606,20 +3637,14 @@
       const svgEl = document.getElementById('battlefield-svg');
       if (svgEl) {
         // Clear and re-render overlays
-        renderPathOverlays(currentBattle, svgEl);
-        renderLOSLOFOverlays(currentBattle, svgEl);
+        renderPathOverlays(currentBattle, svgEl, currentTurn);
+        renderLOSLOFOverlays(currentBattle, svgEl, currentTurn);
+        renderModelMarkers(currentBattle, svgEl, currentTurn);
+        renderAttackBursts(currentBattle, svgEl, currentTurn);
       }
       
-      // Highlight model
-      selectedModel = modelId;
-      highlightModelOnBattlefield(modelId);
-      
-      // Switch to stats tab to show model
-      document.querySelectorAll('.sidebar-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.sidebar-content').forEach(c => c.style.display = 'none');
-      document.querySelector('[data-sidebar="stats"]').classList.add('active');
-      document.getElementById('sidebar-stats').style.display = 'block';
-      showModelStats(modelId);
+      // Highlight and focus model
+      selectModel(modelId, findPortraitElement(modelId), { centerMap: true });
       
       // Scroll log to keep clicked entry visible
       if (element) {
@@ -2653,7 +3678,7 @@
 
       container.innerHTML = exportHtml + battles.map(battle => `
         <div class="summary-card">
-          <h2>${battle.missionName} - ${new Date(battle.timestamp).toLocaleString()}</h2>
+          <h2>${battle.missionName} - ${formatBattleTimestamp(battle.timestamp)}</h2>
           <div class="summary-grid">
             <div class="summary-stat">
               <div class="value">${battle.winner || 'Draw'}</div>
@@ -2707,7 +3732,7 @@
 
       for (const battle of battles) {
         text += `MISSION: ${battle.missionName}\n`;
-        text += `DATE: ${new Date(battle.timestamp).toLocaleString()}\n`;
+        text += `DATE: ${formatBattleTimestamp(battle.timestamp)}\n`;
         text += `GAME SIZE: ${battle.gameSize}\n`;
         text += `WINNER: ${battle.winner || 'Draw'}\n`;
         text += `TURNS: ${battle.turnsCompleted || 0}\n`;
@@ -2733,7 +3758,7 @@
       let text = `MEST TACTICS BATTLE SUMMARY\n`;
       text += '=' .repeat(60) + '\n\n';
       text += `MISSION: ${battle.missionName}\n`;
-      text += `DATE: ${new Date(battle.timestamp).toLocaleString()}\n`;
+      text += `DATE: ${formatBattleTimestamp(battle.timestamp)}\n`;
       text += `GAME SIZE: ${battle.gameSize}\n`;
       text += `WINNER: ${battle.winner || 'Draw'}\n`;
       text += `TURNS: ${battle.turnsCompleted || 0}\n`;
@@ -2862,7 +3887,13 @@
     function updateTurnDisplay() {
       document.getElementById('turn-display').textContent = currentTurn;
       document.getElementById('turn-slider').value = currentTurn;
-      // TODO: Update SVG to show turn state
+      const svgEl = document.getElementById('battlefield-svg');
+      if (svgEl && currentBattle) {
+        renderPathOverlays(currentBattle, svgEl, currentTurn);
+        renderLOSLOFOverlays(currentBattle, svgEl, currentTurn);
+        renderModelMarkers(currentBattle, svgEl, currentTurn);
+        renderAttackBursts(currentBattle, svgEl, currentTurn);
+      }
     }
 
     // Load portrait review (Tab 4)
@@ -2975,7 +4006,7 @@
       const battles = await loadBattles();
 
       select.innerHTML = '<option value="">Select a battle to analyze...</option>' +
-        battles.map(b => `<option value="${b.id}">${b.missionName} - ${new Date(b.timestamp).toLocaleString()}</option>`).join('');
+        battles.map(b => `<option value="${b.id}">${b.missionName} - ${formatBattleTimestamp(b.timestamp)}</option>`).join('');
 
       // Add change handler
       select.onchange = async (e) => {
