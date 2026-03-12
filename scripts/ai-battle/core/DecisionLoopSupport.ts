@@ -106,7 +106,7 @@ export function validateDecisionForExecutionForRunner(
   } = params;
 
   let validationDecision: ActionDecision | undefined;
-  if (decision.type === 'move' && !decision.position) {
+  if (decision.type === 'move' && !decision.position && apBefore > 0) {
     const fallbackMove = computeFallbackMovePosition(character, enemies, battlefield);
     if (fallbackMove) {
       validationDecision = { ...decision, position: fallbackMove };

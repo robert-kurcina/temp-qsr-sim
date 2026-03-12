@@ -11,6 +11,10 @@ import type {
 } from '../../shared/BattleReportTypes';
 import type { ReactAuditResult } from '../validation/ValidationMetrics';
 import { pickMeleeWeaponForRunner } from './CombatRuntimeSupport';
+import {
+  computeDirectAdvanceStepForRunner,
+  snapToOpenCellForRunner,
+} from './MovementPlanningSupport';
 
 export interface StalledDecisionFallbackAdvanceParams {
   character: Character;
@@ -46,6 +50,7 @@ export interface StalledDecisionFallbackAdvanceParams {
     after: ModelStateAudit
   ) => ModelEffectAudit | null;
   sanitizeForAudit: (value: unknown) => unknown;
+  useCheapFallback?: boolean;
 }
 
 export interface StalledDecisionFallbackAdvanceResult {
@@ -78,9 +83,22 @@ export function runStalledDecisionFallbackAdvance(
     createMovementVector,
     createModelEffect,
     sanitizeForAudit,
+    useCheapFallback = false,
   } = params;
 
-  const fallback = computeFallbackMovePosition(character, enemies, battlefield);
+  // Fallback advance is an AP spend; skip path planning when AP is exhausted.
+  if (apBefore <= 0 || gameManager.getApRemaining(character) <= 0) {
+    return {
+      attempted: false,
+      executed: false,
+      apAfter: gameManager.getApRemaining(character),
+      movedDistance: 0,
+    };
+  }
+
+  const fallback = (
+    useCheapFallback ? computeCheapFallbackMovePosition(character, enemies, battlefield) : null
+  ) ?? computeFallbackMovePosition(character, enemies, battlefield);
   if (!fallback) {
     return {
       attempted: false,
@@ -201,6 +219,40 @@ export function runStalledDecisionFallbackAdvance(
     stateAfter,
     step,
   };
+}
+
+function computeCheapFallbackMovePosition(
+  actor: Character,
+  enemies: Character[],
+  battlefield: Battlefield
+): { x: number; y: number } | null {
+  const actorPos = battlefield.getCharacterPosition(actor);
+  if (!actorPos || enemies.length === 0) return null;
+
+  let nearestEnemyPos: { x: number; y: number } | null = null;
+  let nearestDistance = Number.POSITIVE_INFINITY;
+  for (const enemy of enemies) {
+    const enemyPos = battlefield.getCharacterPosition(enemy);
+    if (!enemyPos) continue;
+    const distance = Math.hypot(enemyPos.x - actorPos.x, enemyPos.y - actorPos.y);
+    if (distance < nearestDistance) {
+      nearestDistance = distance;
+      nearestEnemyPos = enemyPos;
+    }
+  }
+  if (!nearestEnemyPos || nearestDistance <= 1) {
+    return null;
+  }
+
+  const mov = actor.finalAttributes?.mov ?? actor.attributes?.mov ?? 2;
+  const moveAllowance = Math.max(1, mov + 2);
+  const directAdvance = computeDirectAdvanceStepForRunner(actorPos, nearestEnemyPos, moveAllowance);
+  if (!directAdvance) {
+    return null;
+  }
+
+  return snapToOpenCellForRunner(directAdvance, actor, battlefield) ??
+    snapToOpenCellForRunner(actorPos, actor, battlefield);
 }
 
 function isEngagedWithAnyOpponent(

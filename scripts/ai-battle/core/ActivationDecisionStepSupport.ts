@@ -122,6 +122,13 @@ export async function executeActivationDecisionStepForRunner(
   lastKnownAp: number;
   continueLoop: boolean;
   breakLoop: boolean;
+  decisionType: ActionDecision['type'];
+  resultCode: string;
+  actionExecuted: boolean;
+  timingMs: {
+    decisionExecution: number;
+    finalizeStep: number;
+  };
 }> {
   const {
     decision,
@@ -175,6 +182,7 @@ export async function executeActivationDecisionStepForRunner(
   let result = '';
   const targetStateBefore = decision.target ? snapshotModelState(decision.target) : undefined;
 
+  const decisionExecutionStartedMs = Date.now();
   const execution = await executeActivationDecisionForRunner({
     decision,
     apBefore,
@@ -205,6 +213,7 @@ export async function executeActivationDecisionStepForRunner(
     initialRangeCheck: stepRangeCheck,
     initialDetails: stepDetails,
   });
+  const decisionExecutionMs = Date.now() - decisionExecutionStartedMs;
 
   actionExecuted = execution.actionExecuted;
   result = execution.resultCode;
@@ -215,7 +224,8 @@ export async function executeActivationDecisionStepForRunner(
     stepVectors.push(...execution.vectors);
   }
 
-  return finalizeActivationDecisionStepForRunner({
+  const finalizeStartedMs = Date.now();
+  const finalizeResult = finalizeActivationDecisionStepForRunner({
     decision,
     actionExecuted,
     resultCode: result,
@@ -250,4 +260,16 @@ export async function executeActivationDecisionStepForRunner(
     syncMissionRuntimeForAttack,
     onAttackDecision,
   });
+  const finalizeStepMs = Date.now() - finalizeStartedMs;
+
+  return {
+    ...finalizeResult,
+    decisionType: decision.type,
+    resultCode: result,
+    actionExecuted,
+    timingMs: {
+      decisionExecution: decisionExecutionMs,
+      finalizeStep: finalizeStepMs,
+    },
+  };
 }

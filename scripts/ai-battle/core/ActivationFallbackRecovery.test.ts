@@ -29,6 +29,47 @@ function createState(overrides: Partial<ModelStateAudit> = {}): ModelStateAudit 
 }
 
 describe('ActivationFallbackRecovery', () => {
+  it('skips fallback planning when AP is exhausted', () => {
+    const actor = createCharacter('actor');
+    const enemy = createCharacter('enemy');
+    const computeFallbackMovePosition = vi.fn(() => ({ x: 1, y: 0 }));
+    const battlefield = {
+      getCharacterPosition: () => ({ x: 0, y: 0 }),
+    } as unknown as Battlefield;
+    const spendAp = vi.fn(() => false);
+    const gameManager = {
+      getApRemaining: () => 0,
+      spendAp,
+      executeMove: vi.fn(() => ({ moved: false })),
+    } as unknown as GameManager;
+
+    const result = runStalledDecisionFallbackAdvance({
+      character: actor,
+      enemies: [enemy],
+      battlefield,
+      gameManager,
+      visibilityOrMu: 12,
+      apBefore: 0,
+      computeFallbackMovePosition,
+      snapshotModelState: () => createState(),
+      processReacts: () => ({ executed: false }),
+      createMovementVector: () => ({
+        kind: 'movement',
+        from: { x: 0, y: 0 },
+        to: { x: 1, y: 0 },
+        distanceMu: 1,
+      }),
+      createModelEffect: () => null,
+      sanitizeForAudit: value => value,
+    });
+
+    expect(result.attempted).toBe(false);
+    expect(result.executed).toBe(false);
+    expect(result.apAfter).toBe(0);
+    expect(computeFallbackMovePosition).not.toHaveBeenCalled();
+    expect(spendAp).not.toHaveBeenCalled();
+  });
+
   it('returns not attempted when no fallback position is available', () => {
     const actor = createCharacter('actor');
     const enemy = createCharacter('enemy');

@@ -220,20 +220,7 @@ export function maximizeClosingMoveDestinationForRunner(params: MaximizeMovePara
     return intendedDestination;
   }
 
-  const engine = new PathfindingEngine(battlefield);
-  const path = engine.findPathWithMaxMu(
-    actorPos,
-    targetPos,
-    {
-      movementMetric: 'length',
-      useNavMesh: true,
-      useHierarchical: true,
-      optimizeWithLOS: true,
-      footprintDiameter: getBaseDiameterFromSiz(actor.finalAttributes.siz ?? actor.attributes.siz ?? 3),
-    },
-    moveAllowance
-  );
-  const desired = path.points[path.points.length - 1] ?? computeDirectAdvanceStepForRunner(actorPos, targetPos, moveAllowance);
+  const desired = computeDirectAdvanceStepForRunner(actorPos, targetPos, moveAllowance);
   if (!desired) {
     return intendedDestination;
   }

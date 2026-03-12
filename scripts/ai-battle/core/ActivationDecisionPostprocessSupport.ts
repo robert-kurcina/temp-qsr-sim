@@ -136,6 +136,9 @@ export function finalizeActivationDecisionStepForRunner(
     onAttackDecision,
   } = params;
 
+  const finalizeStartMs = Date.now();
+
+  const actionPostProcessingStartMs = Date.now();
   const actionPostProcessing = applyActionExecutionReactPostProcessingForRunner({
     actionExecuted,
     character,
@@ -173,7 +176,9 @@ export function finalizeActivationDecisionStepForRunner(
       );
     },
   });
+  const actionPostProcessingMs = Date.now() - actionPostProcessingStartMs;
 
+  const finalizeActionStepStartMs = Date.now();
   const finalizedStep = finalizeActionStepForRunner({
     decision,
     character,
@@ -220,10 +225,12 @@ export function finalizeActivationDecisionStepForRunner(
       tracker.trackMovesWhileWaiting();
     },
   });
+  const finalizeActionStepMs = Date.now() - finalizeActionStepStartMs;
 
   activationAudit.steps.push(finalizedStep.activationStep);
   tracker.trackCombatAssignmentsFromStep(finalizedStep.activationStep);
 
+  const stalledRecoveryStartMs = Date.now();
   const stalledRecovery = resolveStalledDecisionRecoveryForRunner({
     actionExecuted,
     decisionType: decision.type,
@@ -309,6 +316,14 @@ export function finalizeActivationDecisionStepForRunner(
     },
     nextStepSequence: activationAudit.steps.length + 1,
   });
+  const stalledRecoveryMs = Date.now() - stalledRecoveryStartMs;
+
+  const finalizeTotalMs = Date.now() - finalizeStartMs;
+  if (process.env.AI_BATTLE_TRACE_SLOW_STEPS === '1' && finalizeTotalMs > 1000) {
+    console.warn(
+      `[DEBUG] slow finalize ${character.profile.name}: decision=${decision.type}, result=${resultCode}, totalMs=${finalizeTotalMs.toFixed(1)}, actionPostMs=${actionPostProcessingMs.toFixed(1)}, finalizeActionStepMs=${finalizeActionStepMs.toFixed(1)}, stalledRecoveryMs=${stalledRecoveryMs.toFixed(1)}`
+    );
+  }
 
   return {
     lastKnownAp: stalledRecovery.lastKnownAp,

@@ -1,0 +1,4395 @@
+{
+  "missionId": "QAI_11",
+  "gameSize": "VERY_SMALL",
+  "densityRatio": 40,
+  "tacticalDoctrine": "operative",
+  "sideDoctrines": [
+    {
+      "sideName": "Alpha",
+      "tacticalDoctrine": "operative",
+      "loadoutProfile": "default"
+    },
+    {
+      "sideName": "Bravo",
+      "tacticalDoctrine": "operative",
+      "loadoutProfile": "default"
+    }
+  ],
+  "loadoutProfile": "default",
+  "lighting": "Day, Clear",
+  "visibilityOrMu": 16,
+  "maxOrm": 3,
+  "allowConcentrateRangeExtension": true,
+  "perCharacterFovLos": false,
+  "runs": 1,
+  "baseSeed": 424242,
+  "winners": {
+    "Alpha": 1
+  },
+  "totals": {
+    "totalActions": 38,
+    "moves": 13,
+    "movesWhileWaiting": 1,
+    "closeCombats": 0,
+    "rangedCombats": 0,
+    "disengages": 0,
+    "waits": 1,
+    "waitsSelectedPlanner": 1,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 2,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 1,
+    "losChecks": 0,
+    "lofChecks": 0,
+    "totalPathLength": 36.486832980505135,
+    "modelsMoved": 0,
+    "decisionTelemetrySamples": 21,
+    "attackGateAppliedDecisions": 3,
+    "attackGateImmediateHighApplied": 3,
+    "attackGateDirectiveApplied": 0,
+    "attackOpportunityImmediateHigh": 3,
+    "attackOpportunityImmediateLow": 2,
+    "attackOpportunitySetup": 0,
+    "attackOpportunityNone": 16,
+    "hitTestsAttempted": 0,
+    "hitTestsPassed": 0,
+    "hitTestsFailed": 0,
+    "damageTestsAttempted": 0,
+    "damageTestsPassed": 0,
+    "damageTestsFailed": 0,
+    "woundsAssigned": 0,
+    "fearAssigned": 0,
+    "delayAssigned": 0,
+    "damageWoundsAssigned": 0,
+    "damageFearAssigned": 0,
+    "damageDelayAssigned": 0,
+    "passiveOrOtherDelayAssigned": 0,
+    "fearTestsFromWoundsTriggered": 0,
+    "fearTestsFromWoundsRequired": 0,
+    "fearTestsFromWoundsAttempted": 0,
+    "fearTestsFromWoundsPassed": 0,
+    "fearTestsFromWoundsFailed": 0,
+    "fearTestsFromWoundsSkipped": 0,
+    "fearTestsFromWoundsSkippedAlreadyDisordered": 0,
+    "fearTestsFromWoundsSkippedEngagedNotDistracted": 0,
+    "fearTestsFromWoundsSkippedAlreadyTestedThisTurn": 0,
+    "fearTestsFromWoundsSkippedImmuneToFear": 0,
+    "fearTestsFromWoundsSkippedMoraleExempt": 0,
+    "fearTestsFromWoundsFearAdded": 0,
+    "fearTestsFromWoundsFailedNoFearAdded": 0
+  },
+  "averages": {
+    "totalActions": 38,
+    "moves": 13,
+    "movesWhileWaiting": 1,
+    "closeCombats": 0,
+    "rangedCombats": 0,
+    "disengages": 0,
+    "waits": 1,
+    "waitsSelectedPlanner": 1,
+    "waitsSelectedUtility": 0,
+    "waitChoicesGiven": 2,
+    "waitChoicesTaken": 0,
+    "waitChoicesSucceeded": 0,
+    "waitMaintained": 0,
+    "waitUpkeepPaid": 0,
+    "detects": 0,
+    "hides": 0,
+    "reacts": 0,
+    "reactChoiceWindows": 0,
+    "reactChoicesGiven": 0,
+    "reactChoicesTaken": 0,
+    "waitTriggeredReacts": 0,
+    "reactWoundsInflicted": 0,
+    "waitReactWoundsInflicted": 0,
+    "eliminations": 0,
+    "kos": 0,
+    "turnsCompleted": 1,
+    "losChecks": 0,
+    "lofChecks": 0,
+    "totalPathLength": 36.49,
+    "modelsMoved": 0,
+    "decisionTelemetrySamples": 21,
+    "attackGateAppliedDecisions": 3,
+    "attackGateImmediateHighApplied": 3,
+    "attackGateDirectiveApplied": 0,
+    "attackOpportunityImmediateHigh": 3,
+    "attackOpportunityImmediateLow": 2,
+    "attackOpportunitySetup": 0,
+    "attackOpportunityNone": 16,
+    "hitTestsAttempted": 0,
+    "hitTestsPassed": 0,
+    "hitTestsFailed": 0,
+    "damageTestsAttempted": 0,
+    "damageTestsPassed": 0,
+    "damageTestsFailed": 0,
+    "woundsAssigned": 0,
+    "fearAssigned": 0,
+    "delayAssigned": 0,
+    "damageWoundsAssigned": 0,
+    "damageFearAssigned": 0,
+    "damageDelayAssigned": 0,
+    "passiveOrOtherDelayAssigned": 0,
+    "fearTestsFromWoundsTriggered": 0,
+    "fearTestsFromWoundsRequired": 0,
+    "fearTestsFromWoundsAttempted": 0,
+    "fearTestsFromWoundsPassed": 0,
+    "fearTestsFromWoundsFailed": 0,
+    "fearTestsFromWoundsSkipped": 0,
+    "fearTestsFromWoundsSkippedAlreadyDisordered": 0,
+    "fearTestsFromWoundsSkippedEngagedNotDistracted": 0,
+    "fearTestsFromWoundsSkippedAlreadyTestedThisTurn": 0,
+    "fearTestsFromWoundsSkippedImmuneToFear": 0,
+    "fearTestsFromWoundsSkippedMoraleExempt": 0,
+    "fearTestsFromWoundsFearAdded": 0,
+    "fearTestsFromWoundsFailedNoFearAdded": 0
+  },
+  "scoringSummary": {
+    "sideScores": [
+      {
+        "sideId": "Alpha",
+        "totalVp": 0,
+        "averageVp": 0,
+        "totalRp": 0,
+        "averageRp": 0,
+        "keys": []
+      },
+      {
+        "sideId": "Bravo",
+        "totalVp": 0,
+        "averageVp": 0,
+        "totalRp": 0,
+        "averageRp": 0,
+        "keys": []
+      }
+    ]
+  },
+  "combatEfficacy": {
+    "hitTests": {
+      "attempts": 0,
+      "passes": 0,
+      "fails": 0,
+      "passRate": 0
+    },
+    "damageTests": {
+      "attempts": 0,
+      "passes": 0,
+      "fails": 0,
+      "passRate": 0
+    },
+    "damageAssignments": {
+      "wounds": 0,
+      "fear": 0,
+      "delay": 0
+    },
+    "passiveOrOtherDelay": 0,
+    "assignments": {
+      "wounds": 0,
+      "fear": 0,
+      "delay": 0
+    }
+  },
+  "advancedRuleTotals": {
+    "bonusActions": {
+      "opportunities": 0,
+      "optionsOffered": 0,
+      "optionsAvailable": 0,
+      "offeredByType": {},
+      "availableByType": {},
+      "executed": 0,
+      "executedByType": {}
+    },
+    "passiveOptions": {
+      "opportunities": 0,
+      "optionsOffered": 0,
+      "optionsAvailable": 0,
+      "offeredByType": {},
+      "availableByType": {},
+      "rejectedByReason": {},
+      "rejectedByReasonByTurn": {},
+      "rejectedStatusByType": {},
+      "prefilteredByReason": {
+        "out_of_visibility": 10,
+        "cannot_reach_engagement": 17,
+        "not_engaged_with_mover": 27,
+        "not_attentive": 24
+      },
+      "prefilteredByReasonByTurn": {
+        "T1": {
+          "out_of_visibility": 10,
+          "cannot_reach_engagement": 17,
+          "not_engaged_with_mover": 27,
+          "not_attentive": 24
+        }
+      },
+      "used": 0,
+      "usedByType": {}
+    },
+    "situationalModifiers": {
+      "testsObserved": 0,
+      "modifiedTests": 0,
+      "modifiersApplied": 0,
+      "byType": {}
+    }
+  },
+  "advancedRuleAverages": {
+    "bonusActions": {
+      "opportunities": 0,
+      "optionsOffered": 0,
+      "optionsAvailable": 0,
+      "offeredByType": {},
+      "availableByType": {},
+      "executed": 0,
+      "executedByType": {}
+    },
+    "passiveOptions": {
+      "opportunities": 0,
+      "optionsOffered": 0,
+      "optionsAvailable": 0,
+      "offeredByType": {},
+      "availableByType": {},
+      "rejectedByReason": {},
+      "rejectedByReasonByTurn": {},
+      "rejectedStatusByType": {},
+      "prefilteredByReason": {
+        "out_of_visibility": 10,
+        "cannot_reach_engagement": 17,
+        "not_engaged_with_mover": 27,
+        "not_attentive": 24
+      },
+      "prefilteredByReasonByTurn": {
+        "T1": {
+          "out_of_visibility": 10,
+          "cannot_reach_engagement": 17,
+          "not_engaged_with_mover": 27,
+          "not_attentive": 24
+        }
+      },
+      "used": 0,
+      "usedByType": {}
+    },
+    "situationalModifiers": {
+      "testsObserved": 0,
+      "modifiedTests": 0,
+      "modifiersApplied": 0,
+      "byType": {}
+    }
+  },
+  "coverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "runtimeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": false,
+    "closeCombat": false,
+    "react": false,
+    "wait": true,
+    "detect": false,
+    "los": false,
+    "lof": false
+  },
+  "probeCoverage": {
+    "movement": true,
+    "pathfinding": true,
+    "rangedCombat": true,
+    "closeCombat": true,
+    "react": true,
+    "wait": true,
+    "detect": true,
+    "los": true,
+    "lof": true
+  },
+  "performanceGates": {
+    "enabled": true,
+    "runsEvaluated": 0,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 40,
+      "densityBucket": "25-49",
+      "densityBucketIndex": 1
+    },
+    "thresholds": {
+      "turn1ElapsedMsMax": 35000,
+      "activationP95MsMax": 2100,
+      "minLosCacheHitRate": 0.567,
+      "minPathCacheHitRate": 0.1935,
+      "minGridCacheHitRate": 0.95,
+      "minMinimaxLiteCacheHitRate": 0.0315,
+      "minMinimaxPatchCacheHitRate": 0.231
+    },
+    "observed": {
+      "avgTurn1ElapsedMs": null,
+      "avgActivationP95Ms": null,
+      "avgLosCacheHitRate": null,
+      "avgPathCacheHitRate": null,
+      "avgGridCacheHitRate": null,
+      "avgMinimaxLiteCacheHitRate": null,
+      "avgMinimaxPatchCacheHitRate": null
+    },
+    "pass": {
+      "turn1Elapsed": null,
+      "activationP95": null,
+      "losCacheHitRate": null,
+      "pathCacheHitRate": null,
+      "gridCacheHitRate": null,
+      "minimaxLiteCacheHitRate": null,
+      "minimaxPatchCacheHitRate": null,
+      "overall": null
+    }
+  },
+  "coordinatorTraceGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "thresholds": {
+      "minRunCoverage": 1,
+      "minTurnCoverage": 0.95,
+      "minSideCoveragePerTurn": 0.9
+    },
+    "observed": {
+      "runCoverage": 1,
+      "avgTurnCoverage": 1,
+      "avgSideCoveragePerTurn": 1
+    },
+    "pass": {
+      "runCoverage": true,
+      "turnCoverage": true,
+      "sideCoveragePerTurn": true,
+      "overall": true
+    }
+  },
+  "pressureContinuityDiagnostics": {
+    "runsEvaluated": 1,
+    "runsWithData": 1,
+    "observed": {
+      "avgScrumBreakRate": null,
+      "avgLaneBreakRate": 0.3333333333333333,
+      "avgCombinedBreakRate": 0.3333333333333333,
+      "avgSignatureCoverageRate": 1,
+      "avgBreaksPerRun": 1,
+      "avgSignatureSamplesPerRun": 3
+    }
+  },
+  "pressureContinuityGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 40,
+      "densityBucket": "25-49",
+      "densityBucketIndex": 1
+    },
+    "thresholds": {
+      "minRunsWithDataRate": 0.525,
+      "minSignatureCoverageRate": 0.77,
+      "maxCombinedBreakRate": 0.63,
+      "maxLaneBreakRate": 0.675,
+      "maxScrumBreakRate": 0.675
+    },
+    "observed": {
+      "runsWithDataRate": 1,
+      "avgSignatureCoverageRate": 1,
+      "avgCombinedBreakRate": 0.3333333333333333,
+      "avgLaneBreakRate": 0.3333333333333333,
+      "avgScrumBreakRate": null
+    },
+    "pass": {
+      "runsWithDataRate": true,
+      "signatureCoverageRate": true,
+      "combinedBreakRate": true,
+      "laneBreakRate": true,
+      "scrumBreakRate": null,
+      "overall": null
+    }
+  },
+  "combatActivityGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 40,
+      "densityBucket": "25-49",
+      "densityBucketIndex": 1,
+      "maxTurns": 1,
+      "configuredMaxTurns": 6,
+      "horizonRatio": 0.16666666666666666
+    },
+    "thresholds": {
+      "minTurnHorizonRatio": 0.85,
+      "minAttackActionRatio": 0.092,
+      "minRunsWithCombatRate": 0.805,
+      "maxZeroAttackRunRate": 0.255
+    },
+    "observed": {
+      "avgAttackActionRatio": null,
+      "runsWithCombatRate": 0,
+      "zeroAttackRunRate": 1
+    },
+    "skippedReason": "insufficient turn horizon (1/6 turns; min 85.0%)",
+    "pass": {
+      "attackActionRatio": null,
+      "runsWithCombatRate": null,
+      "zeroAttackRunRate": null,
+      "overall": null
+    }
+  },
+  "passivenessGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 40,
+      "densityBucket": "25-49",
+      "densityBucketIndex": 1,
+      "maxTurns": 1,
+      "configuredMaxTurns": 6,
+      "horizonRatio": 0.16666666666666666
+    },
+    "thresholds": {
+      "minTurnHorizonRatio": 0.85,
+      "maxPassiveActionRatio": 0.405,
+      "maxDetectHideActionRatio": 0.225,
+      "maxWaitActionRatio": 0.18
+    },
+    "observed": {
+      "avgPassiveActionRatio": 0.02631578947368421,
+      "avgDetectHideActionRatio": 0,
+      "avgWaitActionRatio": 0.02631578947368421
+    },
+    "skippedReason": "insufficient turn horizon (1/6 turns; min 85.0%)",
+    "pass": {
+      "passiveActionRatio": null,
+      "detectHideActionRatio": null,
+      "waitActionRatio": null,
+      "overall": null
+    }
+  },
+  "attackGateTelemetryGates": {
+    "enabled": true,
+    "runsEvaluated": 1,
+    "profile": {
+      "missionId": "QAI_11",
+      "gameSize": "VERY_SMALL",
+      "densityRatio": 40,
+      "densityBucket": "25-49",
+      "densityBucketIndex": 1,
+      "maxTurns": 1,
+      "configuredMaxTurns": 6,
+      "horizonRatio": 0.16666666666666666
+    },
+    "thresholds": {
+      "minTurnHorizonRatio": 0.85,
+      "minTelemetrySamplesPerRun": 14,
+      "minImmediateHighOpportunityCount": 2,
+      "minImmediateHighConversionRate": 0.055,
+      "minPressureOpportunityGateApplyRate": 0.033
+    },
+    "observed": {
+      "avgTelemetrySamplesPerRun": 21,
+      "totalTelemetrySamples": 21,
+      "totalImmediateHighOpportunities": 3,
+      "totalImmediateLowOpportunities": 2,
+      "totalPressureOpportunities": 5,
+      "totalGateImmediateHighApplied": 3,
+      "totalGateDirectiveApplied": 0,
+      "totalGateApplied": 3,
+      "immediateHighConversionRate": 1,
+      "pressureOpportunityGateApplyRate": 0.6
+    },
+    "skippedReason": "insufficient turn horizon (1/6 turns; min 85.0%)",
+    "pass": {
+      "telemetrySamples": null,
+      "immediateHighConversion": null,
+      "pressureOpportunityApplyRate": null,
+      "overall": null
+    }
+  },
+  "runReports": [
+    {
+      "run": 1,
+      "seed": 424242,
+      "winner": "Alpha",
+      "winnerReason": "initiative_card",
+      "tieBreakMethod": "initiative_card",
+      "finalCounts": [
+        {
+          "name": "Alpha",
+          "remaining": 3
+        },
+        {
+          "name": "Bravo",
+          "remaining": 3
+        }
+      ],
+      "stats": {
+        "totalActions": 38,
+        "moves": 13,
+        "movesWhileWaiting": 1,
+        "closeCombats": 0,
+        "rangedCombats": 0,
+        "disengages": 0,
+        "waits": 1,
+        "waitsSelectedPlanner": 1,
+        "waitsSelectedUtility": 0,
+        "waitChoicesGiven": 2,
+        "waitChoicesTaken": 0,
+        "waitChoicesSucceeded": 0,
+        "waitMaintained": 0,
+        "waitUpkeepPaid": 0,
+        "detects": 0,
+        "hides": 0,
+        "reacts": 0,
+        "reactChoiceWindows": 0,
+        "reactChoicesGiven": 0,
+        "reactChoicesTaken": 0,
+        "waitTriggeredReacts": 0,
+        "reactWoundsInflicted": 0,
+        "waitReactWoundsInflicted": 0,
+        "eliminations": 0,
+        "kos": 0,
+        "turnsCompleted": 1,
+        "losChecks": 0,
+        "lofChecks": 0,
+        "totalPathLength": 36.486832980505135,
+        "modelsMoved": 0,
+        "decisionTelemetrySamples": 21,
+        "attackGateAppliedDecisions": 3,
+        "attackGateImmediateHighApplied": 3,
+        "attackGateDirectiveApplied": 0,
+        "attackOpportunityImmediateHigh": 3,
+        "attackOpportunityImmediateLow": 2,
+        "attackOpportunitySetup": 0,
+        "attackOpportunityNone": 16,
+        "hitTestsAttempted": 0,
+        "hitTestsPassed": 0,
+        "hitTestsFailed": 0,
+        "damageTestsAttempted": 0,
+        "damageTestsPassed": 0,
+        "damageTestsFailed": 0,
+        "woundsAssigned": 0,
+        "fearAssigned": 0,
+        "delayAssigned": 0,
+        "damageWoundsAssigned": 0,
+        "damageFearAssigned": 0,
+        "damageDelayAssigned": 0,
+        "passiveOrOtherDelayAssigned": 0,
+        "fearTestsFromWoundsTriggered": 0,
+        "fearTestsFromWoundsRequired": 0,
+        "fearTestsFromWoundsAttempted": 0,
+        "fearTestsFromWoundsPassed": 0,
+        "fearTestsFromWoundsFailed": 0,
+        "fearTestsFromWoundsSkipped": 0,
+        "fearTestsFromWoundsSkippedAlreadyDisordered": 0,
+        "fearTestsFromWoundsSkippedEngagedNotDistracted": 0,
+        "fearTestsFromWoundsSkippedAlreadyTestedThisTurn": 0,
+        "fearTestsFromWoundsSkippedImmuneToFear": 0,
+        "fearTestsFromWoundsSkippedMoraleExempt": 0,
+        "fearTestsFromWoundsFearAdded": 0,
+        "fearTestsFromWoundsFailedNoFearAdded": 0
+      },
+      "usage": {
+        "modelCount": 6,
+        "modelsMoved": 6,
+        "modelsUsedWait": 1,
+        "modelsUsedDetect": 0,
+        "modelsUsedHide": 0,
+        "modelsUsedReact": 0,
+        "totalPathLength": 36.486832980505135,
+        "averagePathLengthPerMovedModel": 6.081138830084189,
+        "averagePathLengthPerModel": 6.081138830084189,
+        "topPathModels": [
+          {
+            "modelId": "Alpha Assembly-3-militia-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "militia-armor-heavy-mail-armored-gear-loadout",
+            "side": "Alpha",
+            "pathLength": 9,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Alpha Assembly-1-veteran-armor-heavy-mail-club-circus-mallet-loadout",
+            "modelName": "veteran-armor-heavy-mail-club-circus-mallet-loadout",
+            "side": "Alpha",
+            "pathLength": 8.16227766016838,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Alpha Assembly-2-veteran-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "veteran-armor-heavy-mail-armored-gear-loadout",
+            "side": "Alpha",
+            "pathLength": 7,
+            "moveActions": 4
+          },
+          {
+            "modelId": "Bravo Assembly-1-veteran-armor-heavy-mail-armored-gear-loadout",
+            "modelName": "veteran-armor-heavy-mail-armored-gear-loadout",
+            "side": "Bravo",
+            "pathLength": 6.16227766016838,
+            "moveActions": 3
+          },
+          {
+            "modelId": "Bravo Assembly-2-average-armor-medium-mail-armored-gear-loadout",
+            "modelName": "average-armor-medium-mail-armored-gear-loadout",
+            "side": "Bravo",
+            "pathLength": 3.1622776601683795,
+            "moveActions": 1
+          },
+          {
+            "modelId": "Bravo Assembly-3-veteran-armor-heavy-mail-helmet-common-loadout",
+            "modelName": "veteran-armor-heavy-mail-helmet-common-loadout",
+            "side": "Bravo",
+            "pathLength": 3,
+            "moveActions": 3
+          }
+        ]
+      },
+      "missionRuntime": {
+        "vpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "rpBySide": {
+          "Alpha": 0,
+          "Bravo": 0
+        },
+        "predictedScoring": {
+          "bySide": {
+            "Alpha": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 1,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            },
+            "Bravo": {
+              "predictedVp": 0,
+              "predictedRp": 0,
+              "keyScores": {
+                "elimination": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "bottled": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                },
+                "aggression": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": -2
+                },
+                "first_blood": {
+                  "current": 0,
+                  "predicted": 0,
+                  "confidence": 0,
+                  "leadMargin": 0
+                }
+              }
+            }
+          }
+        }
+      },
+      "nestedSections": {
+        "sides": [
+          {
+            "name": "Alpha",
+            "assemblies": [
+              {
+                "name": "Alpha Assembly",
+                "totalBP": 378,
+                "characters": [
+                  {
+                    "id": "Alpha Assembly-1-veteran-armor-heavy-mail-club-circus-mallet-loadout",
+                    "name": "veteran-armor-heavy-mail-club-circus-mallet-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-club-circus-mallet-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 82,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Club, Circus Mallet",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "[Stun-only]",
+                            "Reach",
+                            "[Awkward]",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Staff, Sling",
+                          "classification": "Thrown",
+                          "traits": [
+                            "[Awkward]",
+                            "Stun",
+                            "[Arc 2]",
+                            "[2H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 8,
+                      "y": 1
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-2-veteran-armor-heavy-mail-armored-gear-loadout",
+                    "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 189,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Helmet, Common",
+                          "classification": "Armor",
+                          "traits": [
+                            "Protective"
+                          ]
+                        },
+                        {
+                          "name": "Hammer, War, Ban-2",
+                          "classification": "Melee",
+                          "traits": [
+                            "Aura X > List",
+                            "Stun 2",
+                            "[Hafted]",
+                            "Impale",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Hammer, War, Ban-1",
+                          "classification": "Melee",
+                          "traits": [
+                            "Aura X > List",
+                            "Stun 2",
+                            "[Hafted]",
+                            "Impale",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Throwing Axes",
+                          "classification": "Thrown",
+                          "traits": [
+                            "Cleave",
+                            "Conceal",
+                            "[Awkward]",
+                            "[Hafted]",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 7,
+                      "y": 12
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Alpha Assembly-3-militia-armor-heavy-mail-armored-gear-loadout",
+                    "name": "militia-armor-heavy-mail-armored-gear-loadout",
+                    "profile": {
+                      "name": "militia-armor-heavy-mail-armored-gear-loadout",
+                      "archetype": "Militia",
+                      "attributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 1,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 1,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 145,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Hammer, War, Ban-2",
+                          "classification": "Melee",
+                          "traits": [
+                            "Aura X > List",
+                            "Stun 2",
+                            "[Hafted]",
+                            "Impale",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Hammer, War, Ban-1",
+                          "classification": "Melee",
+                          "traits": [
+                            "Aura X > List",
+                            "Stun 2",
+                            "[Hafted]",
+                            "Impale",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Throwing Axes",
+                          "classification": "Thrown",
+                          "traits": [
+                            "Cleave",
+                            "Conceal",
+                            "[Awkward]",
+                            "[Hafted]",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 0,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 9,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Bravo",
+            "assemblies": [
+              {
+                "name": "Bravo Assembly",
+                "totalBP": 275,
+                "characters": [
+                  {
+                    "id": "Bravo Assembly-1-veteran-armor-heavy-mail-armored-gear-loadout",
+                    "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-armored-gear-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 107,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Club, Mace, Spiked",
+                          "classification": "Melee",
+                          "traits": [
+                            "Stun",
+                            "[Hafted]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Flail",
+                          "classification": "Melee",
+                          "traits": [
+                            "Thresh",
+                            "Stun",
+                            "[Hafted]",
+                            "[Stub]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Throwing Stars",
+                          "classification": "Thrown",
+                          "traits": [
+                            "Discrete",
+                            "[Awkward]",
+                            "[Stub]",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 0
+                    },
+                    "endPosition": {
+                      "x": 10,
+                      "y": 1
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-2-average-armor-medium-mail-armored-gear-loadout",
+                    "name": "average-armor-medium-mail-armored-gear-loadout",
+                    "profile": {
+                      "name": "average-armor-medium-mail-armored-gear-loadout",
+                      "archetype": "Average",
+                      "attributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 2,
+                        "rca": 2,
+                        "ref": 2,
+                        "int": 2,
+                        "pow": 2,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 56,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Medium Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 4",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]"
+                          ]
+                        },
+                        {
+                          "name": "Armored Gear",
+                          "classification": "Armor",
+                          "traits": [
+                            "Deflect",
+                            "Conceal"
+                          ]
+                        },
+                        {
+                          "name": "Helmet, Common",
+                          "classification": "Armor",
+                          "traits": [
+                            "Protective"
+                          ]
+                        },
+                        {
+                          "name": "Club, Circus Mallet",
+                          "classification": "Melee",
+                          "traits": [
+                            "[Stub]",
+                            "[Stun-only]",
+                            "Reach",
+                            "[Awkward]",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Staff, Sling",
+                          "classification": "Thrown",
+                          "traits": [
+                            "[Awkward]",
+                            "Stun",
+                            "[Arc 2]",
+                            "[2H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 12
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 13
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 0,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": false,
+                      "isAttentive": true,
+                      "isOrdered": true
+                    }
+                  },
+                  {
+                    "id": "Bravo Assembly-3-veteran-armor-heavy-mail-helmet-common-loadout",
+                    "name": "veteran-armor-heavy-mail-helmet-common-loadout",
+                    "profile": {
+                      "name": "veteran-armor-heavy-mail-helmet-common-loadout",
+                      "archetype": "Veteran",
+                      "attributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "finalAttributes": {
+                        "cca": 3,
+                        "rca": 3,
+                        "ref": 3,
+                        "int": 2,
+                        "pow": 3,
+                        "str": 2,
+                        "for": 2,
+                        "mov": 2,
+                        "siz": 3
+                      },
+                      "totalBp": 122,
+                      "burdenTotal": 0,
+                      "equipment": [
+                        {
+                          "name": "Armor, Heavy Mail",
+                          "classification": "Armor",
+                          "traits": [
+                            "Armor 6",
+                            "[Laden 2]",
+                            "Deflect",
+                            "[Mail]",
+                            "[Lumbering]"
+                          ]
+                        },
+                        {
+                          "name": "Helmet, Common",
+                          "classification": "Armor",
+                          "traits": [
+                            "Protective"
+                          ]
+                        },
+                        {
+                          "name": "Axe, Long",
+                          "classification": "Melee",
+                          "traits": [
+                            "Cleave 2",
+                            "Throwable",
+                            "Reach",
+                            "[Hafted]",
+                            "[2H]"
+                          ]
+                        },
+                        {
+                          "name": "Club, Mace, Spiked",
+                          "classification": "Melee",
+                          "traits": [
+                            "Stun",
+                            "[Hafted]",
+                            "[1H]"
+                          ]
+                        },
+                        {
+                          "name": "Throwing Stars",
+                          "classification": "Thrown",
+                          "traits": [
+                            "Discrete",
+                            "[Awkward]",
+                            "[Stub]",
+                            "[1H]"
+                          ]
+                        }
+                      ]
+                    },
+                    "startPosition": {
+                      "x": 16,
+                      "y": 23
+                    },
+                    "endPosition": {
+                      "x": 13,
+                      "y": 23
+                    },
+                    "state": {
+                      "wounds": 0,
+                      "delayTokens": 1,
+                      "fearTokens": 0,
+                      "isKOd": false,
+                      "isEliminated": false,
+                      "isHidden": false,
+                      "isWaiting": true,
+                      "isAttentive": false,
+                      "isOrdered": true
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "battlefieldLayout": {
+          "widthMu": 18,
+          "heightMu": 24,
+          "densityRatio": 40,
+          "terrainFeatures": [
+            {
+              "id": "Medium Rocks",
+              "type": "Rough",
+              "metaName": "Medium Rocks",
+              "movement": "Rough",
+              "los": "Hard",
+              "rotationDegrees": 333,
+              "vertices": [
+                {
+                  "x": 6.278828042073098,
+                  "y": 14.831083391076872
+                },
+                {
+                  "x": 6.5584734943193315,
+                  "y": 15.547588230024667
+                },
+                {
+                  "x": 6.659897795139988,
+                  "y": 16.224127640526415
+                },
+                {
+                  "x": 6.567660014148699,
+                  "y": 16.75770463017826
+                },
+                {
+                  "x": 6.295802517363825,
+                  "y": 17.067086939193157
+                },
+                {
+                  "x": 5.885713144276514,
+                  "y": 17.105173915581204
+                },
+                {
+                  "x": 5.3998242844698865,
+                  "y": 16.866167162446622
+                },
+                {
+                  "x": 4.9121081122560195,
+                  "y": 16.386453291352545
+                },
+                {
+                  "x": 4.496814993696363,
+                  "y": 15.739064390555965
+                },
+                {
+                  "x": 4.21716954145013,
+                  "y": 15.022559551608172
+                },
+                {
+                  "x": 4.115745240629473,
+                  "y": 14.346020141106422
+                },
+                {
+                  "x": 4.207983021620761,
+                  "y": 13.812443151454579
+                },
+                {
+                  "x": 4.479840518405636,
+                  "y": 13.503060842439684
+                },
+                {
+                  "x": 4.8899298914929465,
+                  "y": 13.464973866051634
+                },
+                {
+                  "x": 5.375818751299573,
+                  "y": 13.703980619186213
+                },
+                {
+                  "x": 5.863534923513441,
+                  "y": 14.183694490280294
+                }
+              ]
+            },
+            {
+              "id": "Medium Rocks",
+              "type": "Rough",
+              "metaName": "Medium Rocks",
+              "movement": "Rough",
+              "los": "Hard",
+              "rotationDegrees": 45,
+              "vertices": [
+                {
+                  "x": 8.00590621400067,
+                  "y": 2.9487214558702077
+                },
+                {
+                  "x": 7.410884815106112,
+                  "y": 3.4360922572680455
+                },
+                {
+                  "x": 6.798799432814121,
+                  "y": 3.7416146746836603
+                },
+                {
+                  "x": 6.262834518010843,
+                  "y": 3.818775689633135
+                },
+                {
+                  "x": 5.884585870441026,
+                  "y": 3.655828237056755
+                },
+                {
+                  "x": 5.721638417864646,
+                  "y": 3.2775795894869386
+                },
+                {
+                  "x": 5.798799432814121,
+                  "y": 2.7416146746836603
+                },
+                {
+                  "x": 6.104321850229735,
+                  "y": 2.129529292391669
+                },
+                {
+                  "x": 6.591692651627573,
+                  "y": 1.534507893497113
+                },
+                {
+                  "x": 7.186714050522129,
+                  "y": 1.047137092099275
+                },
+                {
+                  "x": 7.798799432814121,
+                  "y": 0.74161467468366
+                },
+                {
+                  "x": 8.334764347617398,
+                  "y": 0.6644536597341848
+                },
+                {
+                  "x": 8.713012995187217,
+                  "y": 0.8274011123105651
+                },
+                {
+                  "x": 8.875960447763596,
+                  "y": 1.2056497598803821
+                },
+                {
+                  "x": 8.798799432814121,
+                  "y": 1.74161467468366
+                },
+                {
+                  "x": 8.493277015398506,
+                  "y": 2.3537000569756503
+                }
+              ]
+            },
+            {
+              "id": "Small Rocks",
+              "type": "Rough",
+              "metaName": "Small Rocks",
+              "movement": "Rough",
+              "los": "Hard",
+              "rotationDegrees": 262,
+              "vertices": [
+                {
+                  "x": 2.845558123999929,
+                  "y": 3.2086334101019753
+                },
+                {
+                  "x": 3.229814268260969,
+                  "y": 3.1930640042995613
+                },
+                {
+                  "x": 3.5661648193558206,
+                  "y": 3.255244567725303
+                },
+                {
+                  "x": 3.8034034549056326,
+                  "y": 3.3857086732658432
+                },
+                {
+                  "x": 3.9054127432215315,
+                  "y": 3.5645943435126957
+                },
+                {
+                  "x": 3.8566626948739238,
+                  "y": 3.764667856773416
+                },
+                {
+                  "x": 3.664575062803443,
+                  "y": 3.955469834324974
+                },
+                {
+                  "x": 3.3583934477141,
+                  "y": 4.107952404709378
+                },
+                {
+                  "x": 2.9847312249599938,
+                  "y": 4.1989014788435455
+                },
+                {
+                  "x": 2.600475080698954,
+                  "y": 4.21447088464596
+                },
+                {
+                  "x": 2.264124529604102,
+                  "y": 4.152290321220217
+                },
+                {
+                  "x": 2.02688589405429,
+                  "y": 4.0218262156796785
+                },
+                {
+                  "x": 1.924876605738391,
+                  "y": 3.842940545432825
+                },
+                {
+                  "x": 1.9736266540859992,
+                  "y": 3.642867032172105
+                },
+                {
+                  "x": 2.16571428615648,
+                  "y": 3.4520650546205474
+                },
+                {
+                  "x": 2.4718959012458224,
+                  "y": 3.299582484236143
+                }
+              ]
+            },
+            {
+              "id": "Small Rocks",
+              "type": "Rough",
+              "metaName": "Small Rocks",
+              "movement": "Rough",
+              "los": "Hard",
+              "rotationDegrees": 320,
+              "vertices": [
+                {
+                  "x": 9.803346688682046,
+                  "y": 6.674602707163698
+                },
+                {
+                  "x": 10.020175026874968,
+                  "y": 6.992219870673319
+                },
+                {
+                  "x": 10.145681555004451,
+                  "y": 7.310411993590648
+                },
+                {
+                  "x": 10.160759041882292,
+                  "y": 7.5807372096203
+                },
+                {
+                  "x": 10.063112076809096,
+                  "y": 7.762040955125946
+                },
+                {
+                  "x": 9.867606525045316,
+                  "y": 7.826721378376898
+                },
+                {
+                  "x": 9.60400633458475,
+                  "y": 7.764931471262692
+                },
+                {
+                  "x": 9.312442244883337,
+                  "y": 7.586078187014566
+                },
+                {
+                  "x": 9.037302245563067,
+                  "y": 7.317390316850238
+                },
+                {
+                  "x": 8.820473907370145,
+                  "y": 6.999773153340618
+                },
+                {
+                  "x": 8.694967379240662,
+                  "y": 6.681581030423288
+                },
+                {
+                  "x": 8.679889892362821,
+                  "y": 6.411255814393638
+                },
+                {
+                  "x": 8.777536857436017,
+                  "y": 6.22995206888799
+                },
+                {
+                  "x": 8.973042409199797,
+                  "y": 6.165271645637039
+                },
+                {
+                  "x": 9.236642599660364,
+                  "y": 6.227061552751245
+                },
+                {
+                  "x": 9.528206689361776,
+                  "y": 6.4059148369993695
+                }
+              ]
+            },
+            {
+              "id": "Small Rocks",
+              "type": "Rough",
+              "metaName": "Small Rocks",
+              "movement": "Rough",
+              "los": "Hard",
+              "rotationDegrees": 209,
+              "vertices": [
+                {
+                  "x": 8.608878150745202,
+                  "y": 18.446928697202328
+                },
+                {
+                  "x": 8.827694990755834,
+                  "y": 18.130678193128162
+                },
+                {
+                  "x": 9.07977541143673,
+                  "y": 17.89947789641751
+                },
+                {
+                  "x": 9.326742453853932,
+                  "y": 17.78852595640865
+                },
+                {
+                  "x": 9.530997624561236,
+                  "y": 17.8147138001861
+                },
+                {
+                  "x": 9.661444925396186,
+                  "y": 17.97405456592814
+                },
+                {
+                  "x": 9.698224937314388,
+                  "y": 18.24229006647817
+                },
+                {
+                  "x": 9.635738236912935,
+                  "y": 18.578583878438323
+                },
+                {
+                  "x": 9.483497857884597,
+                  "y": 18.931738317448666
+                },
+                {
+                  "x": 9.264681017873965,
+                  "y": 19.24798882152283
+                },
+                {
+                  "x": 9.01260059719307,
+                  "y": 19.479189118233485
+                },
+                {
+                  "x": 8.765633554775867,
+                  "y": 19.59014105824234
+                },
+                {
+                  "x": 8.561378384068563,
+                  "y": 19.56395321446489
+                },
+                {
+                  "x": 8.430931083233613,
+                  "y": 19.404612448722855
+                },
+                {
+                  "x": 8.394151071315411,
+                  "y": 19.136376948172824
+                },
+                {
+                  "x": 8.456637771716863,
+                  "y": 18.80008313621267
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 285,
+              "vertices": [
+                {
+                  "x": 9.234508209663591,
+                  "y": 10.374760262869144
+                },
+                {
+                  "x": 9.409479401616693,
+                  "y": 10.461046505868062
+                },
+                {
+                  "x": 9.53811138900455,
+                  "y": 10.60772317601368
+                },
+                {
+                  "x": 9.600821117799235,
+                  "y": 10.792460079903652
+                },
+                {
+                  "x": 9.588061600256866,
+                  "y": 10.987132698564938
+                },
+                {
+                  "x": 9.501775357257948,
+                  "y": 11.16210389051804
+                },
+                {
+                  "x": 9.35509868711233,
+                  "y": 11.290735877905897
+                },
+                {
+                  "x": 9.170361783222358,
+                  "y": 11.353445606700582
+                },
+                {
+                  "x": 8.975689164561071,
+                  "y": 11.340686089158213
+                },
+                {
+                  "x": 8.80071797260797,
+                  "y": 11.254399846159295
+                },
+                {
+                  "x": 8.672085985220113,
+                  "y": 11.107723176013677
+                },
+                {
+                  "x": 8.609376256425428,
+                  "y": 10.922986272123705
+                },
+                {
+                  "x": 8.622135773967797,
+                  "y": 10.728313653462418
+                },
+                {
+                  "x": 8.708422016966715,
+                  "y": 10.553342461509317
+                },
+                {
+                  "x": 8.855098687112333,
+                  "y": 10.42471047412146
+                },
+                {
+                  "x": 9.039835591002305,
+                  "y": 10.362000745326775
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 189,
+              "vertices": [
+                {
+                  "x": 2.332960273896271,
+                  "y": 19.408051828467865
+                },
+                {
+                  "x": 2.400484362016794,
+                  "y": 19.225019778630006
+                },
+                {
+                  "x": 2.532911818047603,
+                  "y": 19.081760563800504
+                },
+                {
+                  "x": 2.710081762265887,
+                  "y": 19.00008410078914
+                },
+                {
+                  "x": 2.9050216767139556,
+                  "y": 18.992424890690412
+                },
+                {
+                  "x": 3.088053726551814,
+                  "y": 19.059948978810933
+                },
+                {
+                  "x": 3.2313129413813138,
+                  "y": 19.192376434841744
+                },
+                {
+                  "x": 3.3129894043926784,
+                  "y": 19.369546379060026
+                },
+                {
+                  "x": 3.320648614491409,
+                  "y": 19.564486293508093
+                },
+                {
+                  "x": 3.253124526370886,
+                  "y": 19.747518343345952
+                },
+                {
+                  "x": 3.120697070340077,
+                  "y": 19.890777558175454
+                },
+                {
+                  "x": 2.9435271261217935,
+                  "y": 19.972454021186817
+                },
+                {
+                  "x": 2.7485872116737244,
+                  "y": 19.980113231285547
+                },
+                {
+                  "x": 2.565555161835866,
+                  "y": 19.912589143165025
+                },
+                {
+                  "x": 2.4222959470063667,
+                  "y": 19.780161687134214
+                },
+                {
+                  "x": 2.340619483995002,
+                  "y": 19.602991742915933
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 183,
+              "vertices": [
+                {
+                  "x": 3.968456900609821,
+                  "y": 7.041354756282138
+                },
+                {
+                  "x": 4.0164790258121785,
+                  "y": 6.852267185999462
+                },
+                {
+                  "x": 4.133206364807679,
+                  "y": 6.695950321664913
+                },
+                {
+                  "x": 4.300868238370223,
+                  "y": 6.596201988857522
+                },
+                {
+                  "x": 4.49393964610858,
+                  "y": 6.568207967026323
+                },
+                {
+                  "x": 4.683027216391256,
+                  "y": 6.6162300922286805
+                },
+                {
+                  "x": 4.839344080725805,
+                  "y": 6.732957431224181
+                },
+                {
+                  "x": 4.939092413533197,
+                  "y": 6.900619304786725
+                },
+                {
+                  "x": 4.967086435364395,
+                  "y": 7.093690712525082
+                },
+                {
+                  "x": 4.919064310162038,
+                  "y": 7.282778282807758
+                },
+                {
+                  "x": 4.802336971166538,
+                  "y": 7.439095147142307
+                },
+                {
+                  "x": 4.634675097603994,
+                  "y": 7.538843479949699
+                },
+                {
+                  "x": 4.441603689865636,
+                  "y": 7.566837501780897
+                },
+                {
+                  "x": 4.25251611958296,
+                  "y": 7.51881537657854
+                },
+                {
+                  "x": 4.096199255248411,
+                  "y": 7.40208803758304
+                },
+                {
+                  "x": 3.99645092244102,
+                  "y": 7.234426164020496
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 94,
+              "vertices": [
+                {
+                  "x": 12.493034327703612,
+                  "y": 10.351909118649928
+                },
+                {
+                  "x": 12.304813658020768,
+                  "y": 10.300594274321027
+                },
+                {
+                  "x": 12.150557774464287,
+                  "y": 10.181156608015268
+                },
+                {
+                  "x": 12.053750736972574,
+                  "y": 10.011779421722562
+                },
+                {
+                  "x": 12.029130539445761,
+                  "y": 9.818248856647953
+                },
+                {
+                  "x": 12.080445383774663,
+                  "y": 9.63002818696511
+                },
+                {
+                  "x": 12.199883050080421,
+                  "y": 9.475772303408629
+                },
+                {
+                  "x": 12.369260236373128,
+                  "y": 9.378965265916916
+                },
+                {
+                  "x": 12.562790801447736,
+                  "y": 9.354345068390103
+                },
+                {
+                  "x": 12.75101147113058,
+                  "y": 9.405659912719004
+                },
+                {
+                  "x": 12.90526735468706,
+                  "y": 9.525097579024763
+                },
+                {
+                  "x": 13.002074392178773,
+                  "y": 9.69447476531747
+                },
+                {
+                  "x": 13.026694589705587,
+                  "y": 9.888005330392078
+                },
+                {
+                  "x": 12.975379745376685,
+                  "y": 10.076226000074922
+                },
+                {
+                  "x": 12.855942079070926,
+                  "y": 10.230481883631402
+                },
+                {
+                  "x": 12.68656489277822,
+                  "y": 10.327288921123115
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 160,
+              "vertices": [
+                {
+                  "x": 4.59439405582752,
+                  "y": 14.195932284714303
+                },
+                {
+                  "x": 4.564716255429546,
+                  "y": 14.003112519368798
+                },
+                {
+                  "x": 4.611086472702149,
+                  "y": 13.813613082181119
+                },
+                {
+                  "x": 4.7264452624126445,
+                  "y": 13.656283544646406
+                },
+                {
+                  "x": 4.89323029455764,
+                  "y": 13.555075902658514
+                },
+                {
+                  "x": 5.086050059903142,
+                  "y": 13.525398102260539
+                },
+                {
+                  "x": 5.275549497090824,
+                  "y": 13.571768319533144
+                },
+                {
+                  "x": 5.432879034625535,
+                  "y": 13.687127109243637
+                },
+                {
+                  "x": 5.534086676613429,
+                  "y": 13.853912141388633
+                },
+                {
+                  "x": 5.563764477011403,
+                  "y": 14.046731906734138
+                },
+                {
+                  "x": 5.5173942597388,
+                  "y": 14.236231343921817
+                },
+                {
+                  "x": 5.402035470028304,
+                  "y": 14.39356088145653
+                },
+                {
+                  "x": 5.235250437883309,
+                  "y": 14.494768523444423
+                },
+                {
+                  "x": 5.042430672537806,
+                  "y": 14.524446323842398
+                },
+                {
+                  "x": 4.852931235350124,
+                  "y": 14.478076106569793
+                },
+                {
+                  "x": 4.695601697815413,
+                  "y": 14.3627173168593
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 219,
+              "vertices": [
+                {
+                  "x": 15.385884894910715,
+                  "y": 14.810076674182785
+                },
+                {
+                  "x": 15.535878495509397,
+                  "y": 14.68532831337672
+                },
+                {
+                  "x": 15.722193644005374,
+                  "y": 14.627475922023567
+                },
+                {
+                  "x": 15.91646554799116,
+                  "y": 14.645327002273607
+                },
+                {
+                  "x": 16.08911807116412,
+                  "y": 14.736163888979219
+                },
+                {
+                  "x": 16.213866431970185,
+                  "y": 14.8861574895779
+                },
+                {
+                  "x": 16.271718823323337,
+                  "y": 15.072472638073876
+                },
+                {
+                  "x": 16.253867743073297,
+                  "y": 15.266744542059664
+                },
+                {
+                  "x": 16.163030856367687,
+                  "y": 15.439397065232622
+                },
+                {
+                  "x": 16.013037255769003,
+                  "y": 15.564145426038687
+                },
+                {
+                  "x": 15.826722107273026,
+                  "y": 15.62199781739184
+                },
+                {
+                  "x": 15.63245020328724,
+                  "y": 15.6041467371418
+                },
+                {
+                  "x": 15.459797680114281,
+                  "y": 15.513309850436189
+                },
+                {
+                  "x": 15.335049319308217,
+                  "y": 15.363316249837506
+                },
+                {
+                  "x": 15.277196927955066,
+                  "y": 15.177001101341531
+                },
+                {
+                  "x": 15.295048008205104,
+                  "y": 14.982729197355743
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 58,
+              "vertices": [
+                {
+                  "x": 16.220605845260668,
+                  "y": 5.260303182344291
+                },
+                {
+                  "x": 16.038170016074403,
+                  "y": 5.329421935034694
+                },
+                {
+                  "x": 15.843170685972131,
+                  "y": 5.323464166658696
+                },
+                {
+                  "x": 15.665294735288596,
+                  "y": 5.243336893444239
+                },
+                {
+                  "x": 15.531622165065851,
+                  "y": 5.101238766382681
+                },
+                {
+                  "x": 15.462503412375447,
+                  "y": 4.918802937196416
+                },
+                {
+                  "x": 15.468461180751445,
+                  "y": 4.723803607094147
+                },
+                {
+                  "x": 15.548588453965905,
+                  "y": 4.545927656410609
+                },
+                {
+                  "x": 15.690686581027462,
+                  "y": 4.412255086187866
+                },
+                {
+                  "x": 15.873122410213725,
+                  "y": 4.343136333497463
+                },
+                {
+                  "x": 16.068121740315995,
+                  "y": 4.349094101873461
+                },
+                {
+                  "x": 16.245997690999534,
+                  "y": 4.429221375087918
+                },
+                {
+                  "x": 16.379670261222277,
+                  "y": 4.571319502149476
+                },
+                {
+                  "x": 16.44878901391268,
+                  "y": 4.753755331335741
+                },
+                {
+                  "x": 16.44283124553668,
+                  "y": 4.94875466143801
+                },
+                {
+                  "x": 16.362703972322223,
+                  "y": 5.126630612121548
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 281,
+              "vertices": [
+                {
+                  "x": 8.922432548706986,
+                  "y": 22.019286959691406
+                },
+                {
+                  "x": 9.102996543674744,
+                  "y": 22.093157640381655
+                },
+                {
+                  "x": 9.241546837296234,
+                  "y": 22.230504099679866
+                },
+                {
+                  "x": 9.316990403329129,
+                  "y": 22.410416584206637
+                },
+                {
+                  "x": 9.317841642742547,
+                  "y": 22.60550504910351
+                },
+                {
+                  "x": 9.243970962052298,
+                  "y": 22.78606904407127
+                },
+                {
+                  "x": 9.106624502754087,
+                  "y": 22.924619337692757
+                },
+                {
+                  "x": 8.926712018227315,
+                  "y": 23.000062903725656
+                },
+                {
+                  "x": 8.731623553330444,
+                  "y": 23.00091414313907
+                },
+                {
+                  "x": 8.551059558362686,
+                  "y": 22.92704346244882
+                },
+                {
+                  "x": 8.412509264741196,
+                  "y": 22.78969700315061
+                },
+                {
+                  "x": 8.337065698708301,
+                  "y": 22.60978451862384
+                },
+                {
+                  "x": 8.336214459294883,
+                  "y": 22.414696053726967
+                },
+                {
+                  "x": 8.410085139985132,
+                  "y": 22.234132058759208
+                },
+                {
+                  "x": 8.547431599283343,
+                  "y": 22.09558176513772
+                },
+                {
+                  "x": 8.727344083810115,
+                  "y": 22.02013819910482
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 173,
+              "vertices": [
+                {
+                  "x": 0.8409213557524915,
+                  "y": 12.526099739166687
+                },
+                {
+                  "x": 0.8553792049688408,
+                  "y": 12.331545879424983
+                },
+                {
+                  "x": 0.9431890547697916,
+                  "y": 12.157334329801284
+                },
+                {
+                  "x": 1.0909826515214192,
+                  "y": 12.029987219494163
+                },
+                {
+                  "x": 1.2762597598705787,
+                  "y": 11.968891991643453
+                },
+                {
+                  "x": 1.470813619612281,
+                  "y": 11.983349840859802
+                },
+                {
+                  "x": 1.6450251692359816,
+                  "y": 12.071159690660753
+                },
+                {
+                  "x": 1.7723722795431023,
+                  "y": 12.21895328741238
+                },
+                {
+                  "x": 1.8334675073938136,
+                  "y": 12.40423039576154
+                },
+                {
+                  "x": 1.8190096581774642,
+                  "y": 12.598784255503244
+                },
+                {
+                  "x": 1.7311998083765137,
+                  "y": 12.772995805126943
+                },
+                {
+                  "x": 1.5834062116248864,
+                  "y": 12.900342915434063
+                },
+                {
+                  "x": 1.3981291032757264,
+                  "y": 12.961438143284774
+                },
+                {
+                  "x": 1.203575243534024,
+                  "y": 12.946980294068425
+                },
+                {
+                  "x": 1.0293636939103235,
+                  "y": 12.859170444267473
+                },
+                {
+                  "x": 0.9020165836032029,
+                  "y": 12.711376847515847
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 234,
+              "vertices": [
+                {
+                  "x": 11.787395868023477,
+                  "y": 19.168778935360184
+                },
+                {
+                  "x": 11.964565812241762,
+                  "y": 19.087102472348818
+                },
+                {
+                  "x": 12.15950572668983,
+                  "y": 19.07944326225009
+                },
+                {
+                  "x": 12.342537776527688,
+                  "y": 19.146967350370613
+                },
+                {
+                  "x": 12.485796991357187,
+                  "y": 19.279394806401424
+                },
+                {
+                  "x": 12.567473454368553,
+                  "y": 19.45656475061971
+                },
+                {
+                  "x": 12.575132664467283,
+                  "y": 19.651504665067772
+                },
+                {
+                  "x": 12.507608576346762,
+                  "y": 19.83453671490563
+                },
+                {
+                  "x": 12.37518112031595,
+                  "y": 19.977795929735134
+                },
+                {
+                  "x": 12.198011176097665,
+                  "y": 20.0594723927465
+                },
+                {
+                  "x": 12.003071261649598,
+                  "y": 20.067131602845226
+                },
+                {
+                  "x": 11.82003921181174,
+                  "y": 19.999607514724705
+                },
+                {
+                  "x": 11.67677999698224,
+                  "y": 19.867180058693894
+                },
+                {
+                  "x": 11.595103533970875,
+                  "y": 19.69001011447561
+                },
+                {
+                  "x": 11.587444323872145,
+                  "y": 19.495070200027545
+                },
+                {
+                  "x": 11.654968411992666,
+                  "y": 19.312038150189686
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 192,
+              "vertices": [
+                {
+                  "x": 13.226004434305644,
+                  "y": 13.78757099754662
+                },
+                {
+                  "x": 13.303015140361538,
+                  "y": 13.608323724493083
+                },
+                {
+                  "x": 13.442758717165033,
+                  "y": 13.47219155898279
+                },
+                {
+                  "x": 13.623960471926473,
+                  "y": 13.399899389173523
+                },
+                {
+                  "x": 13.819034080081426,
+                  "y": 13.402453042588597
+                },
+                {
+                  "x": 13.998281353134963,
+                  "y": 13.479463748644491
+                },
+                {
+                  "x": 14.134413518645259,
+                  "y": 13.619207325447988
+                },
+                {
+                  "x": 14.206705688454523,
+                  "y": 13.800409080209427
+                },
+                {
+                  "x": 14.20415203503945,
+                  "y": 13.99548268836438
+                },
+                {
+                  "x": 14.127141328983555,
+                  "y": 14.174729961417917
+                },
+                {
+                  "x": 13.98739775218006,
+                  "y": 14.31086212692821
+                },
+                {
+                  "x": 13.80619599741862,
+                  "y": 14.383154296737477
+                },
+                {
+                  "x": 13.611122389263667,
+                  "y": 14.380600643322403
+                },
+                {
+                  "x": 13.43187511621013,
+                  "y": 14.303589937266509
+                },
+                {
+                  "x": 13.295742950699834,
+                  "y": 14.163846360463012
+                },
+                {
+                  "x": 13.22345078089057,
+                  "y": 13.982644605701573
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 258,
+              "vertices": [
+                {
+                  "x": 14.960209541893757,
+                  "y": 20.679958994987825
+                },
+                {
+                  "x": 15.15528315004871,
+                  "y": 20.67740534157275
+                },
+                {
+                  "x": 15.336484904810149,
+                  "y": 20.749697511382017
+                },
+                {
+                  "x": 15.476228481613644,
+                  "y": 20.88582967689231
+                },
+                {
+                  "x": 15.55323918766954,
+                  "y": 21.065076949945848
+                },
+                {
+                  "x": 15.555792841084616,
+                  "y": 21.2601505581008
+                },
+                {
+                  "x": 15.483500671275348,
+                  "y": 21.441352312862243
+                },
+                {
+                  "x": 15.347368505765054,
+                  "y": 21.581095889665733
+                },
+                {
+                  "x": 15.168121232711517,
+                  "y": 21.65810659572163
+                },
+                {
+                  "x": 14.973047624556564,
+                  "y": 21.660660249136704
+                },
+                {
+                  "x": 14.791845869795125,
+                  "y": 21.588368079327438
+                },
+                {
+                  "x": 14.65210229299163,
+                  "y": 21.452235913817145
+                },
+                {
+                  "x": 14.575091586935734,
+                  "y": 21.272988640763607
+                },
+                {
+                  "x": 14.572537933520659,
+                  "y": 21.077915032608654
+                },
+                {
+                  "x": 14.644830103329927,
+                  "y": 20.896713277847212
+                },
+                {
+                  "x": 14.78096226884022,
+                  "y": 20.756969701043722
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 296,
+              "vertices": [
+                {
+                  "x": 16.01928532623792,
+                  "y": 5.800613116624947
+                },
+                {
+                  "x": 16.174577613237883,
+                  "y": 5.918700115666663
+                },
+                {
+                  "x": 16.272859040643038,
+                  "y": 6.0872260625459536
+                },
+                {
+                  "x": 16.299167152054313,
+                  "y": 6.280534409541959
+                },
+                {
+                  "x": 16.249496775992963,
+                  "y": 6.46919571316907
+                },
+                {
+                  "x": 16.131409776951248,
+                  "y": 6.624488000169032
+                },
+                {
+                  "x": 15.96288383007196,
+                  "y": 6.722769427574189
+                },
+                {
+                  "x": 15.769575483075952,
+                  "y": 6.749077538985464
+                },
+                {
+                  "x": 15.580914179448841,
+                  "y": 6.699407162924115
+                },
+                {
+                  "x": 15.425621892448879,
+                  "y": 6.581320163882399
+                },
+                {
+                  "x": 15.327340465043722,
+                  "y": 6.412794217003109
+                },
+                {
+                  "x": 15.301032353632447,
+                  "y": 6.219485870007103
+                },
+                {
+                  "x": 15.350702729693797,
+                  "y": 6.030824566379993
+                },
+                {
+                  "x": 15.468789728735512,
+                  "y": 5.87553227938003
+                },
+                {
+                  "x": 15.6373156756148,
+                  "y": 5.777250851974873
+                },
+                {
+                  "x": 15.83062402261081,
+                  "y": 5.750942740563598
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 276,
+              "vertices": [
+                {
+                  "x": 3.4560663731810295,
+                  "y": 12.240765384891692
+                },
+                {
+                  "x": 3.6423815216770077,
+                  "y": 12.298617776244846
+                },
+                {
+                  "x": 3.7923751222756876,
+                  "y": 12.423366137050909
+                },
+                {
+                  "x": 3.883212008981299,
+                  "y": 12.596018660223866
+                },
+                {
+                  "x": 3.90106308923134,
+                  "y": 12.790290564209654
+                },
+                {
+                  "x": 3.843210697878186,
+                  "y": 12.97660571270563
+                },
+                {
+                  "x": 3.7184623370721215,
+                  "y": 13.126599313304315
+                },
+                {
+                  "x": 3.545809813899165,
+                  "y": 13.217436200009924
+                },
+                {
+                  "x": 3.3515379099133766,
+                  "y": 13.235287280259964
+                },
+                {
+                  "x": 3.1652227614173984,
+                  "y": 13.17743488890681
+                },
+                {
+                  "x": 3.0152291608187185,
+                  "y": 13.052686528100747
+                },
+                {
+                  "x": 2.9243922741131065,
+                  "y": 12.88003400492779
+                },
+                {
+                  "x": 2.9065411938630663,
+                  "y": 12.685762100942002
+                },
+                {
+                  "x": 2.96439358521622,
+                  "y": 12.499446952446025
+                },
+                {
+                  "x": 3.0891419460222846,
+                  "y": 12.349453351847343
+                },
+                {
+                  "x": 3.261794469195241,
+                  "y": 12.258616465141731
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 127,
+              "vertices": [
+                {
+                  "x": 15.093470036671551,
+                  "y": 19.364496252159284
+                },
+                {
+                  "x": 14.963562968026812,
+                  "y": 19.21894767861599
+                },
+                {
+                  "x": 14.89924351387679,
+                  "y": 19.03476504761567
+                },
+                {
+                  "x": 14.910303728058523,
+                  "y": 18.839988495108418
+                },
+                {
+                  "x": 14.995059793223929,
+                  "y": 18.664270985559615
+                },
+                {
+                  "x": 15.140608366767225,
+                  "y": 18.534363916914874
+                },
+                {
+                  "x": 15.324790997767543,
+                  "y": 18.470044462764854
+                },
+                {
+                  "x": 15.519567550274795,
+                  "y": 18.481104676946586
+                },
+                {
+                  "x": 15.6952850598236,
+                  "y": 18.565860742111994
+                },
+                {
+                  "x": 15.82519212846834,
+                  "y": 18.71140931565529
+                },
+                {
+                  "x": 15.889511582618361,
+                  "y": 18.895591946655607
+                },
+                {
+                  "x": 15.878451368436629,
+                  "y": 19.09036849916286
+                },
+                {
+                  "x": 15.793695303271223,
+                  "y": 19.266086008711664
+                },
+                {
+                  "x": 15.648146729727927,
+                  "y": 19.395993077356405
+                },
+                {
+                  "x": 15.463964098727608,
+                  "y": 19.460312531506425
+                },
+                {
+                  "x": 15.269187546220357,
+                  "y": 19.449252317324692
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 216,
+              "vertices": [
+                {
+                  "x": 10.435452442994736,
+                  "y": 1.7525433646902349
+                },
+                {
+                  "x": 10.578711657824234,
+                  "y": 1.6201159086594257
+                },
+                {
+                  "x": 10.761743707662093,
+                  "y": 1.5525918205389027
+                },
+                {
+                  "x": 10.95668362211016,
+                  "y": 1.5602510306376325
+                },
+                {
+                  "x": 11.133853566328446,
+                  "y": 1.6419274936489976
+                },
+                {
+                  "x": 11.266281022359257,
+                  "y": 1.7851867084784971
+                },
+                {
+                  "x": 11.333805110479778,
+                  "y": 1.9682187583163553
+                },
+                {
+                  "x": 11.326145900381048,
+                  "y": 2.163158672764424
+                },
+                {
+                  "x": 11.244469437369682,
+                  "y": 2.340328616982708
+                },
+                {
+                  "x": 11.101210222540184,
+                  "y": 2.4727560730135174
+                },
+                {
+                  "x": 10.918178172702325,
+                  "y": 2.5402801611340395
+                },
+                {
+                  "x": 10.723238258254257,
+                  "y": 2.5326209510353097
+                },
+                {
+                  "x": 10.546068314035972,
+                  "y": 2.450944488023945
+                },
+                {
+                  "x": 10.413640858005161,
+                  "y": 2.307685273194445
+                },
+                {
+                  "x": 10.34611676988464,
+                  "y": 2.1246532233565874
+                },
+                {
+                  "x": 10.35377597998337,
+                  "y": 1.9297133089085192
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 196,
+              "vertices": [
+                {
+                  "x": 6.613928296259537,
+                  "y": 8.887554223091584
+                },
+                {
+                  "x": 6.70325506580249,
+                  "y": 8.714115582681274
+                },
+                {
+                  "x": 6.852154334105528,
+                  "y": 8.588063047430387
+                },
+                {
+                  "x": 7.037957537344743,
+                  "y": 8.52858697316179
+                },
+                {
+                  "x": 7.232377822137196,
+                  "y": 8.544742053030925
+                },
+                {
+                  "x": 7.405816462547506,
+                  "y": 8.634068822573877
+                },
+                {
+                  "x": 7.531868997798394,
+                  "y": 8.782968090876915
+                },
+                {
+                  "x": 7.59134507206699,
+                  "y": 8.96877129411613
+                },
+                {
+                  "x": 7.575189992197856,
+                  "y": 9.163191578908584
+                },
+                {
+                  "x": 7.485863222654904,
+                  "y": 9.336630219318895
+                },
+                {
+                  "x": 7.336963954351866,
+                  "y": 9.462682754569782
+                },
+                {
+                  "x": 7.15116075111265,
+                  "y": 9.522158828838378
+                },
+                {
+                  "x": 6.9567404663201975,
+                  "y": 9.506003748969244
+                },
+                {
+                  "x": 6.783301825909888,
+                  "y": 9.416676979426292
+                },
+                {
+                  "x": 6.657249290658999,
+                  "y": 9.267777711123253
+                },
+                {
+                  "x": 6.5977732163904035,
+                  "y": 9.081974507884038
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 51,
+              "vertices": [
+                {
+                  "x": 5.449982617314088,
+                  "y": 11.468995231748112
+                },
+                {
+                  "x": 5.27733009414113,
+                  "y": 11.559832118453723
+                },
+                {
+                  "x": 5.083058190155343,
+                  "y": 11.577683198703763
+                },
+                {
+                  "x": 4.896743041659366,
+                  "y": 11.51983080735061
+                },
+                {
+                  "x": 4.746749441060684,
+                  "y": 11.395082446544546
+                },
+                {
+                  "x": 4.655912554355074,
+                  "y": 11.222429923371587
+                },
+                {
+                  "x": 4.638061474105033,
+                  "y": 11.028158019385799
+                },
+                {
+                  "x": 4.695913865458186,
+                  "y": 10.841842870889824
+                },
+                {
+                  "x": 4.8206622262642504,
+                  "y": 10.691849270291142
+                },
+                {
+                  "x": 4.993314749437209,
+                  "y": 10.60101238358553
+                },
+                {
+                  "x": 5.187586653422995,
+                  "y": 10.58316130333549
+                },
+                {
+                  "x": 5.373901801918973,
+                  "y": 10.641013694688644
+                },
+                {
+                  "x": 5.523895402517654,
+                  "y": 10.765762055494708
+                },
+                {
+                  "x": 5.614732289223265,
+                  "y": 10.938414578667667
+                },
+                {
+                  "x": 5.632583369473306,
+                  "y": 11.132686482653455
+                },
+                {
+                  "x": 5.574730978120153,
+                  "y": 11.31900163114943
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 242,
+              "vertices": [
+                {
+                  "x": 10.448133820601807,
+                  "y": 9.222879540709428
+                },
+                {
+                  "x": 10.634946725734642,
+                  "y": 9.166655237955302
+                },
+                {
+                  "x": 10.829055454356121,
+                  "y": 9.186200959157373
+                },
+                {
+                  "x": 11.000908712133635,
+                  "y": 9.27854104544503
+                },
+                {
+                  "x": 11.124343398424216,
+                  "y": 9.429617555745946
+                },
+                {
+                  "x": 11.180567701178342,
+                  "y": 9.61643046087878
+                },
+                {
+                  "x": 11.16102197997627,
+                  "y": 9.81053918950026
+                },
+                {
+                  "x": 11.068681893688614,
+                  "y": 9.982392447277773
+                },
+                {
+                  "x": 10.917605383387698,
+                  "y": 10.105827133568354
+                },
+                {
+                  "x": 10.730792478254864,
+                  "y": 10.16205143632248
+                },
+                {
+                  "x": 10.536683749633385,
+                  "y": 10.142505715120409
+                },
+                {
+                  "x": 10.364830491855871,
+                  "y": 10.050165628832753
+                },
+                {
+                  "x": 10.24139580556529,
+                  "y": 9.899089118531837
+                },
+                {
+                  "x": 10.185171502811164,
+                  "y": 9.712276213399003
+                },
+                {
+                  "x": 10.204717224013235,
+                  "y": 9.518167484777523
+                },
+                {
+                  "x": 10.297057310300891,
+                  "y": 9.34631422700001
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 43,
+              "vertices": [
+                {
+                  "x": 17.142720767094623,
+                  "y": 12.068531817802468
+                },
+                {
+                  "x": 16.98439053761316,
+                  "y": 12.18251327320949
+                },
+                {
+                  "x": 16.79449366463629,
+                  "y": 12.227228051280765
+                },
+                {
+                  "x": 16.601940225655305,
+                  "y": 12.195868732395418
+                },
+                {
+                  "x": 16.436044736253788,
+                  "y": 12.093209488580804
+                },
+                {
+                  "x": 16.322063280846763,
+                  "y": 11.934879259099336
+                },
+                {
+                  "x": 16.277348502775492,
+                  "y": 11.74498238612247
+                },
+                {
+                  "x": 16.30870782166084,
+                  "y": 11.552428947141486
+                },
+                {
+                  "x": 16.411367065475453,
+                  "y": 11.38653345773997
+                },
+                {
+                  "x": 16.569697294956917,
+                  "y": 11.272552002332947
+                },
+                {
+                  "x": 16.759594167933788,
+                  "y": 11.227837224261673
+                },
+                {
+                  "x": 16.95214760691477,
+                  "y": 11.25919654314702
+                },
+                {
+                  "x": 17.11804309631629,
+                  "y": 11.361855786961634
+                },
+                {
+                  "x": 17.232024551723313,
+                  "y": 11.520186016443102
+                },
+                {
+                  "x": 17.276739329794584,
+                  "y": 11.710082889419969
+                },
+                {
+                  "x": 17.245380010909237,
+                  "y": 11.902636328400952
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 281,
+              "vertices": [
+                {
+                  "x": 3.74334495455549,
+                  "y": 20.95001130670166
+                },
+                {
+                  "x": 3.9239089495232475,
+                  "y": 21.02388198739191
+                },
+                {
+                  "x": 4.062459243144739,
+                  "y": 21.16122844669012
+                },
+                {
+                  "x": 4.137902809177633,
+                  "y": 21.341140931216895
+                },
+                {
+                  "x": 4.13875404859105,
+                  "y": 21.536229396113765
+                },
+                {
+                  "x": 4.064883367900802,
+                  "y": 21.71679339108152
+                },
+                {
+                  "x": 3.927536908602591,
+                  "y": 21.855343684703012
+                },
+                {
+                  "x": 3.7476244240758176,
+                  "y": 21.93078725073591
+                },
+                {
+                  "x": 3.552535959178946,
+                  "y": 21.931638490149325
+                },
+                {
+                  "x": 3.371971964211188,
+                  "y": 21.857767809459077
+                },
+                {
+                  "x": 3.233421670589698,
+                  "y": 21.720421350160866
+                },
+                {
+                  "x": 3.1579781045568036,
+                  "y": 21.54050886563409
+                },
+                {
+                  "x": 3.157126865143386,
+                  "y": 21.345420400737222
+                },
+                {
+                  "x": 3.230997545833634,
+                  "y": 21.164856405769466
+                },
+                {
+                  "x": 3.368344005131845,
+                  "y": 21.026306112147974
+                },
+                {
+                  "x": 3.548256489658618,
+                  "y": 20.950862546115076
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 79,
+              "vertices": [
+                {
+                  "x": 1.6068935760907916,
+                  "y": 20.92687243010992
+                },
+                {
+                  "x": 1.41180511119392,
+                  "y": 20.926021190696506
+                },
+                {
+                  "x": 1.2318926266671464,
+                  "y": 20.850577624663607
+                },
+                {
+                  "x": 1.0945461673689354,
+                  "y": 20.712027331042115
+                },
+                {
+                  "x": 1.0206754866786873,
+                  "y": 20.53146333607436
+                },
+                {
+                  "x": 1.0215267260921048,
+                  "y": 20.33637487117749
+                },
+                {
+                  "x": 1.096970292124999,
+                  "y": 20.156462386650716
+                },
+                {
+                  "x": 1.2355205857464893,
+                  "y": 20.019115927352505
+                },
+                {
+                  "x": 1.4160845807142468,
+                  "y": 19.945245246662257
+                },
+                {
+                  "x": 1.6111730456111184,
+                  "y": 19.94609648607567
+                },
+                {
+                  "x": 1.7910855301378918,
+                  "y": 20.02154005210857
+                },
+                {
+                  "x": 1.9284319894361028,
+                  "y": 20.16009034573006
+                },
+                {
+                  "x": 2.002302670126351,
+                  "y": 20.340654340697817
+                },
+                {
+                  "x": 2.001451430712934,
+                  "y": 20.535742805594687
+                },
+                {
+                  "x": 1.9260078646800394,
+                  "y": 20.71565529012146
+                },
+                {
+                  "x": 1.787457571058549,
+                  "y": 20.853001749419672
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 51,
+              "vertices": [
+                {
+                  "x": 14.522793434823978,
+                  "y": 12.054766749110557
+                },
+                {
+                  "x": 14.35014091165102,
+                  "y": 12.145603635816169
+                },
+                {
+                  "x": 14.155869007665231,
+                  "y": 12.163454716066207
+                },
+                {
+                  "x": 13.969553859169256,
+                  "y": 12.105602324713056
+                },
+                {
+                  "x": 13.819560258570574,
+                  "y": 11.980853963906991
+                },
+                {
+                  "x": 13.728723371864962,
+                  "y": 11.808201440734033
+                },
+                {
+                  "x": 13.710872291614923,
+                  "y": 11.613929536748246
+                },
+                {
+                  "x": 13.768724682968076,
+                  "y": 11.42761438825227
+                },
+                {
+                  "x": 13.89347304377414,
+                  "y": 11.277620787653587
+                },
+                {
+                  "x": 14.066125566947099,
+                  "y": 11.186783900947976
+                },
+                {
+                  "x": 14.260397470932887,
+                  "y": 11.168932820697938
+                },
+                {
+                  "x": 14.446712619428862,
+                  "y": 11.22678521205109
+                },
+                {
+                  "x": 14.596706220027544,
+                  "y": 11.351533572857154
+                },
+                {
+                  "x": 14.687543106733155,
+                  "y": 11.524186096030112
+                },
+                {
+                  "x": 14.705394186983195,
+                  "y": 11.718458000015898
+                },
+                {
+                  "x": 14.647541795630042,
+                  "y": 11.904773148511875
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 105,
+              "vertices": [
+                {
+                  "x": 1.635898511123695,
+                  "y": 9.914243422713286
+                },
+                {
+                  "x": 1.4609273191705943,
+                  "y": 9.82795717971437
+                },
+                {
+                  "x": 1.3322953317827366,
+                  "y": 9.68128050956875
+                },
+                {
+                  "x": 1.2695856029880506,
+                  "y": 9.496543605678776
+                },
+                {
+                  "x": 1.2823451205304213,
+                  "y": 9.301870987017491
+                },
+                {
+                  "x": 1.3686313635293381,
+                  "y": 9.126899795064391
+                },
+                {
+                  "x": 1.515308033674956,
+                  "y": 8.99826780767653
+                },
+                {
+                  "x": 1.700044937564929,
+                  "y": 8.935558078881845
+                },
+                {
+                  "x": 1.8947175562262157,
+                  "y": 8.948317596424216
+                },
+                {
+                  "x": 2.0696887481793165,
+                  "y": 9.034603839423132
+                },
+                {
+                  "x": 2.198320735567174,
+                  "y": 9.18128050956875
+                },
+                {
+                  "x": 2.2610304643618604,
+                  "y": 9.366017413458724
+                },
+                {
+                  "x": 2.2482709468194897,
+                  "y": 9.56069003212001
+                },
+                {
+                  "x": 2.161984703820573,
+                  "y": 9.735661224073112
+                },
+                {
+                  "x": 2.015308033674955,
+                  "y": 9.864293211460971
+                },
+                {
+                  "x": 1.830571129784982,
+                  "y": 9.927002940255656
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 95,
+              "vertices": [
+                {
+                  "x": 1.6934548103297384,
+                  "y": 19.512797618838103
+                },
+                {
+                  "x": 1.5061583750860497,
+                  "y": 19.45820568638134
+                },
+                {
+                  "x": 1.354010460144079,
+                  "y": 19.3360940746355
+                },
+                {
+                  "x": 1.2601742063294543,
+                  "y": 19.165053169544365
+                },
+                {
+                  "x": 1.2389353326576948,
+                  "y": 18.971122398418398
+                },
+                {
+                  "x": 1.293527265114457,
+                  "y": 18.783825963174714
+                },
+                {
+                  "x": 1.4156388768602985,
+                  "y": 18.63167804823274
+                },
+                {
+                  "x": 1.5866797819514302,
+                  "y": 18.537841794418114
+                },
+                {
+                  "x": 1.7806105530773966,
+                  "y": 18.516602920746354
+                },
+                {
+                  "x": 1.9679069883210853,
+                  "y": 18.571194853203117
+                },
+                {
+                  "x": 2.120054903263056,
+                  "y": 18.693306464948957
+                },
+                {
+                  "x": 2.2138911570776805,
+                  "y": 18.864347370040093
+                },
+                {
+                  "x": 2.23513003074944,
+                  "y": 19.05827814116606
+                },
+                {
+                  "x": 2.180538098292678,
+                  "y": 19.245574576409744
+                },
+                {
+                  "x": 2.0584264865468365,
+                  "y": 19.39772249135172
+                },
+                {
+                  "x": 1.8873855814557048,
+                  "y": 19.491558745166344
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 307,
+              "vertices": [
+                {
+                  "x": 17.22443553091487,
+                  "y": 14.699213887905072
+                },
+                {
+                  "x": 17.354342599559608,
+                  "y": 14.844762461448369
+                },
+                {
+                  "x": 17.41866205370963,
+                  "y": 15.028945092448687
+                },
+                {
+                  "x": 17.4076018395279,
+                  "y": 15.223721644955939
+                },
+                {
+                  "x": 17.32284577436249,
+                  "y": 15.399439154504744
+                },
+                {
+                  "x": 17.177297200819197,
+                  "y": 15.529346223149483
+                },
+                {
+                  "x": 16.99311456981888,
+                  "y": 15.593665677299505
+                },
+                {
+                  "x": 16.79833801731163,
+                  "y": 15.582605463117773
+                },
+                {
+                  "x": 16.62262050776282,
+                  "y": 15.497849397952367
+                },
+                {
+                  "x": 16.492713439118084,
+                  "y": 15.35230082440907
+                },
+                {
+                  "x": 16.42839398496806,
+                  "y": 15.168118193408752
+                },
+                {
+                  "x": 16.439454199149793,
+                  "y": 14.9733416409015
+                },
+                {
+                  "x": 16.5242102643152,
+                  "y": 14.797624131352695
+                },
+                {
+                  "x": 16.669758837858495,
+                  "y": 14.667717062707956
+                },
+                {
+                  "x": 16.853941468858814,
+                  "y": 14.603397608557934
+                },
+                {
+                  "x": 17.048718021366064,
+                  "y": 14.614457822739666
+                }
+              ]
+            },
+            {
+              "id": "Shrub",
+              "type": "Difficult",
+              "metaName": "Shrub",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 26,
+              "vertices": [
+                {
+                  "x": 10.57718713147268,
+                  "y": 21.30400866816858
+                },
+                {
+                  "x": 10.459100132430965,
+                  "y": 21.459300955168544
+                },
+                {
+                  "x": 10.290574185551677,
+                  "y": 21.5575823825737
+                },
+                {
+                  "x": 10.09726583855567,
+                  "y": 21.583890493984974
+                },
+                {
+                  "x": 9.908604534928559,
+                  "y": 21.534220117923624
+                },
+                {
+                  "x": 9.753312247928596,
+                  "y": 21.41613311888191
+                },
+                {
+                  "x": 9.65503082052344,
+                  "y": 21.247607172002617
+                },
+                {
+                  "x": 9.628722709112164,
+                  "y": 21.05429882500661
+                },
+                {
+                  "x": 9.678393085173514,
+                  "y": 20.8656375213795
+                },
+                {
+                  "x": 9.79648008421523,
+                  "y": 20.71034523437954
+                },
+                {
+                  "x": 9.965006031094518,
+                  "y": 20.612063806974383
+                },
+                {
+                  "x": 10.158314378090525,
+                  "y": 20.58575569556311
+                },
+                {
+                  "x": 10.346975681717636,
+                  "y": 20.635426071624458
+                },
+                {
+                  "x": 10.502267968717598,
+                  "y": 20.753513070666173
+                },
+                {
+                  "x": 10.600549396122755,
+                  "y": 20.922039017545465
+                },
+                {
+                  "x": 10.62685750753403,
+                  "y": 21.11534736454147
+                }
+              ]
+            },
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 318,
+              "vertices": [
+                {
+                  "x": 12.166768901426586,
+                  "y": 3.963766373446224
+                },
+                {
+                  "x": 12.366265567041369,
+                  "y": 4.299090120571312
+                },
+                {
+                  "x": 12.422253610703766,
+                  "y": 4.685232936048026
+                },
+                {
+                  "x": 12.326209360299053,
+                  "y": 5.063408076613378
+                },
+                {
+                  "x": 12.09275468230805,
+                  "y": 5.376041805282476
+                },
+                {
+                  "x": 11.757430935182963,
+                  "y": 5.575538470897261
+                },
+                {
+                  "x": 11.371288119706247,
+                  "y": 5.631526514559656
+                },
+                {
+                  "x": 10.993112979140898,
+                  "y": 5.535482264154942
+                },
+                {
+                  "x": 10.680479250471798,
+                  "y": 5.30202758616394
+                },
+                {
+                  "x": 10.480982584857015,
+                  "y": 4.9667038390388525
+                },
+                {
+                  "x": 10.424994541194618,
+                  "y": 4.580561023562138
+                },
+                {
+                  "x": 10.52103879159933,
+                  "y": 4.202385882996787
+                },
+                {
+                  "x": 10.754493469590335,
+                  "y": 3.889752154327688
+                },
+                {
+                  "x": 11.08981721671542,
+                  "y": 3.690255488712904
+                },
+                {
+                  "x": 11.475960032192138,
+                  "y": 3.634267445050508
+                },
+                {
+                  "x": 11.854135172757486,
+                  "y": 3.7303116954552213
+                }
+              ]
+            },
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 278,
+              "vertices": [
+                {
+                  "x": 12.029222342443276,
+                  "y": 15.122037117481668
+                },
+                {
+                  "x": 12.397587604443917,
+                  "y": 15.250676025781713
+                },
+                {
+                  "x": 12.688684751530504,
+                  "y": 15.51049016307119
+                },
+                {
+                  "x": 12.85819688186132,
+                  "y": 15.861925182168799
+                },
+                {
+                  "x": 12.880317310224783,
+                  "y": 16.251478287183303
+                },
+                {
+                  "x": 12.751678401924737,
+                  "y": 16.61984354918394
+                },
+                {
+                  "x": 12.49186426463526,
+                  "y": 16.91094069627053
+                },
+                {
+                  "x": 12.140429245537653,
+                  "y": 17.080452826601345
+                },
+                {
+                  "x": 11.750876140523147,
+                  "y": 17.10257325496481
+                },
+                {
+                  "x": 11.382510878522508,
+                  "y": 16.973934346664763
+                },
+                {
+                  "x": 11.091413731435917,
+                  "y": 16.714120209375288
+                },
+                {
+                  "x": 10.921901601105104,
+                  "y": 16.36268519027768
+                },
+                {
+                  "x": 10.89978117274164,
+                  "y": 15.973132085263174
+                },
+                {
+                  "x": 11.028420081041686,
+                  "y": 15.604766823262535
+                },
+                {
+                  "x": 11.288234218331162,
+                  "y": 15.313669676175945
+                },
+                {
+                  "x": 11.639669237428771,
+                  "y": 15.14415754584513
+                }
+              ]
+            },
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 297,
+              "vertices": [
+                {
+                  "x": 3.6531956300782156,
+                  "y": 16.191907215884036
+                },
+                {
+                  "x": 3.959611095938701,
+                  "y": 16.433465691742217
+                },
+                {
+                  "x": 4.150261646633822,
+                  "y": 16.773896745697453
+                },
+                {
+                  "x": 4.196122464071796,
+                  "y": 17.161372835800247
+                },
+                {
+                  "x": 4.090211654527037,
+                  "y": 17.53690423981195
+                },
+                {
+                  "x": 3.848653178668852,
+                  "y": 17.84331970567243
+                },
+                {
+                  "x": 3.508222124713615,
+                  "y": 18.033970256367557
+                },
+                {
+                  "x": 3.120746034610826,
+                  "y": 18.079831073805533
+                },
+                {
+                  "x": 2.745214630599122,
+                  "y": 17.97392026426077
+                },
+                {
+                  "x": 2.4387991647386364,
+                  "y": 17.73236178840259
+                },
+                {
+                  "x": 2.2481486140435165,
+                  "y": 17.391930734447353
+                },
+                {
+                  "x": 2.2022877966055407,
+                  "y": 17.00445464434456
+                },
+                {
+                  "x": 2.3081986061503006,
+                  "y": 16.628923240332856
+                },
+                {
+                  "x": 2.549757082008486,
+                  "y": 16.322507774472374
+                },
+                {
+                  "x": 2.8901881359637227,
+                  "y": 16.13185722377725
+                },
+                {
+                  "x": 3.2776642260665114,
+                  "y": 16.085996406339277
+                }
+              ]
+            },
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 40,
+              "vertices": [
+                {
+                  "x": 12.013391775656153,
+                  "y": 14.836983742163913
+                },
+                {
+                  "x": 11.709095945772209,
+                  "y": 15.081206965655594
+                },
+                {
+                  "x": 11.334503075284832,
+                  "y": 15.190390830569118
+                },
+                {
+                  "x": 10.946641533032901,
+                  "y": 15.1479130832256
+                },
+                {
+                  "x": 10.604559722850635,
+                  "y": 14.960240575596352
+                },
+                {
+                  "x": 10.360336499358953,
+                  "y": 14.655944745712407
+                },
+                {
+                  "x": 10.251152634445429,
+                  "y": 14.281351875225031
+                },
+                {
+                  "x": 10.293630381788947,
+                  "y": 13.8934903329731
+                },
+                {
+                  "x": 10.481302889418195,
+                  "y": 13.551408522790833
+                },
+                {
+                  "x": 10.78559871930214,
+                  "y": 13.307185299299151
+                },
+                {
+                  "x": 11.160191589789516,
+                  "y": 13.198001434385628
+                },
+                {
+                  "x": 11.548053132041447,
+                  "y": 13.240479181729146
+                },
+                {
+                  "x": 11.890134942223714,
+                  "y": 13.428151689358394
+                },
+                {
+                  "x": 12.134358165715396,
+                  "y": 13.732447519242339
+                },
+                {
+                  "x": 12.24354203062892,
+                  "y": 14.107040389729715
+                },
+                {
+                  "x": 12.201064283285401,
+                  "y": 14.494901931981646
+                }
+              ]
+            },
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 242,
+              "vertices": [
+                {
+                  "x": 1.3813088460435599,
+                  "y": 7.043057216468497
+                },
+                {
+                  "x": 1.7549346563092265,
+                  "y": 6.9306086109602445
+                },
+                {
+                  "x": 2.143152113552188,
+                  "y": 6.969700053364388
+                },
+                {
+                  "x": 2.486858629107214,
+                  "y": 7.154380225939704
+                },
+                {
+                  "x": 2.7337280016883776,
+                  "y": 7.456533246541532
+                },
+                {
+                  "x": 2.846176607196629,
+                  "y": 7.8301590568072
+                },
+                {
+                  "x": 2.807085164792486,
+                  "y": 8.21837651405016
+                },
+                {
+                  "x": 2.6224049922171706,
+                  "y": 8.562083029605187
+                },
+                {
+                  "x": 2.3202519716153414,
+                  "y": 8.80895240218635
+                },
+                {
+                  "x": 1.9466261613496747,
+                  "y": 8.921401007694602
+                },
+                {
+                  "x": 1.5584087041067138,
+                  "y": 8.88230956529046
+                },
+                {
+                  "x": 1.2147021885516875,
+                  "y": 8.697629392715143
+                },
+                {
+                  "x": 0.9678328159705236,
+                  "y": 8.395476372113315
+                },
+                {
+                  "x": 0.8553842104622714,
+                  "y": 8.021850561847646
+                },
+                {
+                  "x": 0.8944756528664147,
+                  "y": 7.633633104604687
+                },
+                {
+                  "x": 1.0791558254417302,
+                  "y": 7.28992658904966
+                }
+              ]
+            },
+            {
+              "id": "Tree",
+              "type": "Difficult",
+              "metaName": "Tree",
+              "movement": "Difficult",
+              "los": "Soft",
+              "rotationDegrees": 12,
+              "vertices": [
+                {
+                  "x": 12.543047700964976,
+                  "y": 12.367995866229371
+                },
+                {
+                  "x": 12.389026288853186,
+                  "y": 12.726490412336444
+                },
+                {
+                  "x": 12.109539135246198,
+                  "y": 12.998754743357036
+                },
+                {
+                  "x": 11.747135625723319,
+                  "y": 13.143339082975567
+                },
+                {
+                  "x": 11.356988409413411,
+                  "y": 13.138231776145417
+                },
+                {
+                  "x": 10.998493863306338,
+                  "y": 12.984210364033627
+                },
+                {
+                  "x": 10.726229532285746,
+                  "y": 12.70472321042664
+                },
+                {
+                  "x": 10.581645192667215,
+                  "y": 12.34231970090376
+                },
+                {
+                  "x": 10.586752499497365,
+                  "y": 11.952172484593852
+                },
+                {
+                  "x": 10.740773911609155,
+                  "y": 11.59367793848678
+                },
+                {
+                  "x": 11.020261065216143,
+                  "y": 11.321413607466187
+                },
+                {
+                  "x": 11.382664574739023,
+                  "y": 11.176829267847657
+                },
+                {
+                  "x": 11.77281179104893,
+                  "y": 11.181936574677806
+                },
+                {
+                  "x": 12.131306337156003,
+                  "y": 11.335957986789596
+                },
+                {
+                  "x": 12.403570668176595,
+                  "y": 11.615445140396584
+                },
+                {
+                  "x": 12.548155007795126,
+                  "y": 11.977848649919464
+                }
+              ]
+            }
+          ],
+          "deployments": [
+            {
+              "characterId": "Alpha Assembly-1-veteran-armor-heavy-mail-club-circus-mallet-loadout",
+              "characterName": "veteran-armor-heavy-mail-club-circus-mallet-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 8,
+                "y": 1
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-2-veteran-armor-heavy-mail-armored-gear-loadout",
+              "characterName": "veteran-armor-heavy-mail-armored-gear-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 7,
+                "y": 12
+              }
+            },
+            {
+              "characterId": "Alpha Assembly-3-militia-armor-heavy-mail-armored-gear-loadout",
+              "characterName": "militia-armor-heavy-mail-armored-gear-loadout",
+              "sideName": "Alpha",
+              "assemblyName": "Alpha Assembly",
+              "startPosition": {
+                "x": 0,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 9,
+                "y": 23
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-1-veteran-armor-heavy-mail-armored-gear-loadout",
+              "characterName": "veteran-armor-heavy-mail-armored-gear-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 0
+              },
+              "endPosition": {
+                "x": 10,
+                "y": 1
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-2-average-armor-medium-mail-armored-gear-loadout",
+              "characterName": "average-armor-medium-mail-armored-gear-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 12
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 13
+              }
+            },
+            {
+              "characterId": "Bravo Assembly-3-veteran-armor-heavy-mail-helmet-common-loadout",
+              "characterName": "veteran-armor-heavy-mail-helmet-common-loadout",
+              "sideName": "Bravo",
+              "assemblyName": "Bravo Assembly",
+              "startPosition": {
+                "x": 16,
+                "y": 23
+              },
+              "endPosition": {
+                "x": 13,
+                "y": 23
+              }
+            }
+          ]
+        }
+      },
+      "advancedRules": {
+        "bonusActions": {
+          "opportunities": 0,
+          "optionsOffered": 0,
+          "optionsAvailable": 0,
+          "offeredByType": {},
+          "availableByType": {},
+          "executed": 0,
+          "executedByType": {}
+        },
+        "passiveOptions": {
+          "opportunities": 0,
+          "optionsOffered": 0,
+          "optionsAvailable": 0,
+          "offeredByType": {},
+          "availableByType": {},
+          "rejectedByReason": {},
+          "rejectedByReasonByTurn": {},
+          "rejectedStatusByType": {},
+          "prefilteredByReason": {
+            "out_of_visibility": 10,
+            "cannot_reach_engagement": 17,
+            "not_engaged_with_mover": 27,
+            "not_attentive": 24
+          },
+          "prefilteredByReasonByTurn": {
+            "T1": {
+              "out_of_visibility": 10,
+              "cannot_reach_engagement": 17,
+              "not_engaged_with_mover": 27,
+              "not_attentive": 24
+            }
+          },
+          "used": 0,
+          "usedByType": {}
+        },
+        "situationalModifiers": {
+          "testsObserved": 0,
+          "modifiedTests": 0,
+          "modifiersApplied": 0,
+          "byType": {}
+        }
+      },
+      "coordinatorTrace": {
+        "hasTrace": true,
+        "turnsWithTrace": 1,
+        "totalTurns": 1,
+        "turnCoverage": 1,
+        "avgSideCoveragePerTurn": 1
+      },
+      "pressureContinuity": {
+        "hasData": true,
+        "sideCount": 2,
+        "scrumBreakRate": null,
+        "laneBreakRate": 0.3333333333333333,
+        "combinedBreakRate": 0.3333333333333333,
+        "signatureCoverageRate": 1,
+        "totalBreaks": 1,
+        "totalSignatureSamples": 3,
+        "totalUpdates": 3
+      },
+      "combatActivity": {
+        "attackActions": 0,
+        "totalActions": 38,
+        "attackActionRatio": 0,
+        "hasCombat": false
+      },
+      "passiveness": {
+        "passiveActions": 1,
+        "detectHideActions": 0,
+        "waitActions": 1,
+        "totalActions": 38,
+        "passiveActionRatio": 0.02631578947368421,
+        "detectHideActionRatio": 0,
+        "waitActionRatio": 0.02631578947368421
+      },
+      "attackGateTelemetry": {
+        "telemetrySamples": 21,
+        "immediateHighOpportunities": 3,
+        "immediateLowOpportunities": 2,
+        "pressureOpportunities": 5,
+        "gateApplied": 3,
+        "gateImmediateHighApplied": 3,
+        "gateDirectiveApplied": 0,
+        "immediateHighConversionRate": 1,
+        "pressureOpportunityGateApplyRate": 0.6
+      },
+      "combatEfficacy": {
+        "hitTests": {
+          "attempts": 0,
+          "passes": 0,
+          "fails": 0,
+          "passRate": 0
+        },
+        "damageTests": {
+          "attempts": 0,
+          "passes": 0,
+          "fails": 0,
+          "passRate": 0
+        },
+        "damageAssignments": {
+          "wounds": 0,
+          "fear": 0,
+          "delay": 0
+        },
+        "passiveOrOtherDelay": 0,
+        "assignments": {
+          "wounds": 0,
+          "fear": 0,
+          "delay": 0
+        }
+      }
+    }
+  ],
+  "generatedAt": "2026-03-12T04:49:43.561Z"
+}

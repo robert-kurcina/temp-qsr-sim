@@ -167,6 +167,7 @@ export async function executeCoreDecisionForRunner(
   if (!isCoreDecisionType(decision.type)) {
     return null;
   }
+  const traceSlowSteps = process.env.AI_BATTLE_TRACE_SLOW_STEPS === '1';
 
   let actionExecuted = false;
   let resultCode = '';
@@ -177,31 +178,33 @@ export async function executeCoreDecisionForRunner(
 
   switch (decision.type) {
     case 'hold': {
-      const fallback = computeFallbackMovePosition(character, enemies, battlefield);
-      if (fallback && gameManager.spendAp(character, 1)) {
-        const moveOutcome = executeMoveAndTrackOpportunity(
-          gameManager,
-          character,
-          fallback,
-          enemies,
-          actorStateBefore,
-          stepInteractions,
-          stepOpposedTest,
-          undefined
-        );
-        if (moveOutcome.moved) {
-          stepOpposedTest = moveOutcome.opposedTest;
-          incrementAction('Move');
-          actionExecuted = true;
-          resultCode = 'move=true:from-hold';
-          stepDetails = {
-            source: 'hold_fallback_move',
-            moveResult: sanitizeForAudit(moveOutcome.moveResult) as Record<string, unknown>,
-            opportunityAttack: (
-              moveOutcome.details as { opportunityAttack?: Record<string, unknown> } | undefined
-            )?.opportunityAttack,
-          };
-          break;
+      if (apBefore > 0) {
+        const fallback = computeFallbackMovePosition(character, enemies, battlefield);
+        if (fallback && gameManager.spendAp(character, 1)) {
+          const moveOutcome = executeMoveAndTrackOpportunity(
+            gameManager,
+            character,
+            fallback,
+            enemies,
+            actorStateBefore,
+            stepInteractions,
+            stepOpposedTest,
+            undefined
+          );
+          if (moveOutcome.moved) {
+            stepOpposedTest = moveOutcome.opposedTest;
+            incrementAction('Move');
+            actionExecuted = true;
+            resultCode = 'move=true:from-hold';
+            stepDetails = {
+              source: 'hold_fallback_move',
+              moveResult: sanitizeForAudit(moveOutcome.moveResult) as Record<string, unknown>,
+              opportunityAttack: (
+                moveOutcome.details as { opportunityAttack?: Record<string, unknown> } | undefined
+              )?.opportunityAttack,
+            };
+            break;
+          }
         }
       }
 
@@ -237,17 +240,22 @@ export async function executeCoreDecisionForRunner(
         resultCode = 'move=false:not-enough-ap';
         break;
       }
+      const destinationResolveStartMs = Date.now();
       let destination = decision.position ?? computeFallbackMovePosition(character, enemies, battlefield);
+      const destinationResolveMs = Date.now() - destinationResolveStartMs;
       if (!destination) {
         resultCode = 'move=false:no-destination';
         break;
       }
+      const maximizeStartMs = Date.now();
       destination = maximizeClosingMoveDestination(
         character,
         destination,
         enemies,
         battlefield
       );
+      const maximizeMs = Date.now() - maximizeStartMs;
+      const executeMoveStartMs = Date.now();
       const moveOutcome = executeMoveAndTrackOpportunity(
         gameManager,
         character,
@@ -258,6 +266,12 @@ export async function executeCoreDecisionForRunner(
         stepOpposedTest,
         undefined
       );
+      const executeMoveMs = Date.now() - executeMoveStartMs;
+      if (traceSlowSteps && (destinationResolveMs > 1000 || maximizeMs > 1000 || executeMoveMs > 1000)) {
+        console.warn(
+          `[DEBUG] slow move internals ${character.profile.name}: destinationResolveMs=${destinationResolveMs.toFixed(1)}, maximizeMs=${maximizeMs.toFixed(1)}, executeMoveMs=${executeMoveMs.toFixed(1)}`
+        );
+      }
       if (moveOutcome.moved) {
         incrementAction('Move');
         actionExecuted = true;

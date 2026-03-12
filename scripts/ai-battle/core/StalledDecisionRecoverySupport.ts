@@ -88,6 +88,7 @@ export function resolveStalledDecisionRecoveryForRunner(
     createMovementVector: params.createMovementVector,
     createModelEffect: params.createModelEffect,
     sanitizeForAudit: params.sanitizeForAudit,
+    useCheapFallback: true,
   });
   const fallbackResolution = handleStalledDecisionOutcomeForRunner({
     fallbackOutcome,

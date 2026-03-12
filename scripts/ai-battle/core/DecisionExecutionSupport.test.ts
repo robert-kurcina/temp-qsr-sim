@@ -125,6 +125,32 @@ describe('DecisionExecutionSupport', () => {
     expect(result?.details).toEqual({ source: 'test' });
   });
 
+  it('skips hold fallback path planning when AP is exhausted', async () => {
+    const computeFallbackMovePosition = vi.fn(() => ({ x: 3, y: 3 }));
+    const executeWaitAction = vi.fn(() => ({
+      executed: false,
+      resultCode: 'wait=false:no-threat',
+      details: { source: 'test' },
+    }));
+
+    const params = buildParams({
+      decision: { type: 'hold' },
+      apBefore: 0,
+      computeFallbackMovePosition,
+      executeWaitAction,
+      gameManager: {
+        spendAp: vi.fn(() => false),
+        getAttackApCost: vi.fn(() => 1),
+        getApRemaining: vi.fn(() => 0),
+      },
+    });
+    const result = await executeCoreDecisionForRunner(params);
+
+    expect(computeFallbackMovePosition).not.toHaveBeenCalled();
+    expect(executeWaitAction).toHaveBeenCalledTimes(1);
+    expect(result?.resultCode).toBe('wait=false:no-threat');
+  });
+
   it('rejects charge decisions when attacker is already engaged', async () => {
     vi.mocked(areCharactersEngagedForRunner).mockReturnValue(true);
 

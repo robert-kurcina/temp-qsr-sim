@@ -169,6 +169,7 @@ export async function runActivationDecisionLoopForRunner(
       maxStalledDecisions: 3,
     });
     let guard = 0;
+    const traceSlowSteps = process.env.AI_BATTLE_TRACE_SLOW_STEPS === '1';
     const activationStartMs = Date.now();
     let activationBuildContextMs = 0;
     let activationDecisionCycleMs = 0;
@@ -319,6 +320,14 @@ export async function runActivationDecisionLoopForRunner(
       const stepExecutionMs = Date.now() - stepExecutionStartMs;
       activationStepExecutionMs += stepExecutionMs;
       profiler.recordPhaseDuration('ai.step_execution', stepExecutionMs);
+      profiler.recordPhaseDuration('ai.step.decision_execution', stepOutcome.timingMs.decisionExecution);
+      profiler.recordPhaseDuration('ai.step.finalize', stepOutcome.timingMs.finalizeStep);
+
+      if (traceSlowSteps && stepExecutionMs > 1000) {
+        console.warn(
+          `[DEBUG] slow step ${character.profile.name}: decision=${stepOutcome.decisionType}, result=${stepOutcome.resultCode}, actionExecuted=${stepOutcome.actionExecuted}, stepExecutionMs=${stepExecutionMs.toFixed(1)}, decisionExecutionMs=${stepOutcome.timingMs.decisionExecution.toFixed(1)}, finalizeMs=${stepOutcome.timingMs.finalizeStep.toFixed(1)}`
+        );
+      }
 
       lastKnownAp = stepOutcome.lastKnownAp;
       if (stepOutcome.continueLoop) {

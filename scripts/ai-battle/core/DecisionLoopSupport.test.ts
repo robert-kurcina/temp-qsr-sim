@@ -102,4 +102,34 @@ describe('DecisionLoopSupport', () => {
       errors: ['not engaged'],
     });
   });
+
+  it('skips fallback planning for move validation when AP is exhausted', () => {
+    const actor = createCharacter('actor');
+    const decision: ActionDecision = {
+      type: 'move',
+      reason: 'advance',
+      priority: 1,
+      requiresAP: true,
+    };
+    const computeFallbackMovePosition = vi.fn(() => ({ x: 1, y: 1 }));
+    const validateActionDecision = vi.fn(() => ({ isValid: true, errors: [] }));
+
+    validateDecisionForExecutionForRunner({
+      actionValidator: { validateActionDecision },
+      decision,
+      character: actor,
+      turn: 1,
+      apBefore: 0,
+      allies: [],
+      enemies: [],
+      battlefield: {} as Battlefield,
+      shouldValidateWithExecutor: () => false,
+      computeFallbackMovePosition,
+      buildValidationContext: () => ({}),
+      sanitizeForAudit: value => value,
+    });
+
+    expect(computeFallbackMovePosition).not.toHaveBeenCalled();
+    expect(validateActionDecision).not.toHaveBeenCalled();
+  });
 });
